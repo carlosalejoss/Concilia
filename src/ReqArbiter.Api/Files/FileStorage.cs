@@ -1,0 +1,15 @@
+namespace ReqArbiter.Api.Files;
+
+// Knows where uploaded files live on disk: {RootPath}/projects/{projectId}/.
+// RootPath comes from the "Storage:RootPath" setting.
+public class FileStorage(IConfiguration configuration, IHostEnvironment environment)
+{
+    // A relative path is resolved from the API's content root, so "../../data"
+    // in development points to the data/ folder at the root of the repository.
+    public string RootPath { get; } = Path.GetFullPath(
+        configuration["Storage:RootPath"] ?? "data",
+        environment.ContentRootPath);
+
+    public string ProjectFolder(int projectId) =>
+        Path.Combine(RootPath, "projects", projectId.ToString());
+}

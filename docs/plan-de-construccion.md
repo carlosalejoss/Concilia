@@ -30,7 +30,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 
 ## Hito 2: subir archivos (sin IA)
 
-- [ ] 12. Endpoint de subida que guarda el archivo en `data/projects/{id}/` y registra nombre, tipo, tamaño y hash en la base de datos.
+- [x] 12. Endpoint de subida que guarda el archivo en `data/projects/{id}/` y registra nombre, tipo, tamaño y hash en la base de datos.
 - [ ] 13. Frontend: zona de arrastrar y soltar y lista de archivos del proyecto.
 - [ ] 14. Extracción de texto solo para `.txt` y `.md`, guardada junto al original. PDF y DOCX, más adelante.
 - [ ] 15. Límite de tamaño, tipos permitidos y mensajes de error claros.
