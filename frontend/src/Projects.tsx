@@ -1,25 +1,12 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { errorMessage, formatDate, type Project } from './api.ts'
 
-type Project = {
-  id: number
-  name: string
-  createdAt: string
+type ProjectsProps = {
+  selectedId: number | null
+  onSelect: (project: Project) => void
 }
 
-// Reads the first validation message from an ASP.NET Core "problem details"
-// response, or falls back to the HTTP status.
-async function errorMessage(response: Response): Promise<string> {
-  try {
-    const problem: { errors?: Record<string, string[]> } = await response.json()
-    const first = Object.values(problem.errors ?? {})[0]?.[0]
-    if (first) return first
-  } catch {
-    // The body was not JSON; use the status below.
-  }
-  return `HTTP ${response.status}`
-}
-
-function Projects() {
+function Projects({ selectedId, onSelect }: ProjectsProps) {
   const [projects, setProjects] = useState<Project[]>([])
   const [name, setName] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -56,6 +43,7 @@ function Projects() {
       const created: Project = await response.json()
       setProjects((current) => [created, ...current])
       setName('')
+      onSelect(created) // Open the new project straight away.
     } catch (e: unknown) {
       setError(String(e))
     } finally {
@@ -91,11 +79,18 @@ function Projects() {
       ) : (
         <ul className="mt-4 divide-y divide-gray-200 rounded border border-gray-200">
           {projects.map((project) => (
-            <li key={project.id} className="flex justify-between px-3 py-2">
-              <span>{project.name}</span>
-              <span className="text-sm text-gray-500">
-                {new Date(project.createdAt).toLocaleString('es-ES')}
-              </span>
+            <li key={project.id}>
+              {/* A button, so the project can also be opened with the keyboard. */}
+              <button
+                type="button"
+                onClick={() => onSelect(project)}
+                className={`flex w-full justify-between px-3 py-2 text-left hover:bg-gray-50 ${
+                  project.id === selectedId ? 'bg-blue-50 font-semibold' : ''
+                }`}
+              >
+                <span>{project.name}</span>
+                <span className="text-sm font-normal text-gray-500">{formatDate(project.createdAt)}</span>
+              </button>
             </li>
           ))}
         </ul>
