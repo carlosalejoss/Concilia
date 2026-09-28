@@ -46,6 +46,10 @@ public record RunResult
     // Short explanation for the user when Status is not Done.
     public string? ErrorMessage { get; init; }
 
+    // Set only when the run failed because the verdict was missing or invalid.
+    // That is the one failure worth retrying: the process and the API worked.
+    public string? VerdictError { get; init; }
+
     // total_cost_usd is deliberately not here: Claude Code computes it for a
     // model it does not know, so the value is not reliable.
 }
