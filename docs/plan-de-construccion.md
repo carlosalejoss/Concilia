@@ -19,7 +19,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 
 ## Hito 1: esqueleto que arranca en Docker
 
-- [ ] 6. Solución .NET con `ReqArbiter.Api`, `ReqArbiter.Core` y un proyecto de tests. Endpoint `GET /health`.
+- [x] 6. Solución .NET con `ReqArbiter.Api`, `ReqArbiter.Core` y un proyecto de tests. Endpoint `GET /health`.
 - [ ] 7. Frontend con Vite, React 19, TypeScript y Tailwind, con una página que muestra el estado de `/health`.
 - [ ] 8. Dockerfile de la API y del frontend, y `docker-compose.yml` con `db`, `api` y `web`. `.env.example` con `LITELLM_BASE_URL` y `LITELLM_API_KEY` (solo nombres, sin valores).
 - [ ] 9. EF Core y el proveedor de la base de datos elegida, con una primera migración de la tabla `Projects`.
