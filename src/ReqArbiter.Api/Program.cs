@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Persistence;
+using ReqArbiter.Api.Projects;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 }
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+app.MapProjectEndpoints();
 
 app.Run();
 

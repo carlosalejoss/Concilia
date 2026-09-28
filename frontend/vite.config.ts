@@ -11,6 +11,7 @@ export default defineConfig({
     // setup is needed in the API.
     proxy: {
       '/health': 'http://localhost:5292',
+      '/projects': 'http://localhost:5292',
     },
   },
 })
