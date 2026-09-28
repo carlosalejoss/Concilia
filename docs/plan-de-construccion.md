@@ -7,7 +7,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - Un paso cada vez, en orden, con un commit por paso.
 - Si un paso se atasca más de 30 minutos, se anota el bloqueo y se pasa al siguiente que no dependa de él.
 - No se pule la interfaz hasta que exista el árbitro.
-- Decisiones abiertas que afectan al plan: base de datos (antes del paso 8), origen de los embeddings (antes del árbitro) y jerarquía del backlog (antes de la fase de backlog).
+- Decisiones abiertas que afectan al plan: origen de los embeddings (antes del árbitro) y jerarquía del backlog (antes de la fase de backlog).
 
 ## Hito 0: preparación y prueba de humo (completado)
 
