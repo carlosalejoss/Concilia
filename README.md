@@ -83,7 +83,7 @@ reqarbiter/
 ## Hoja de ruta
 
 - [x] **Hito 0.** Preparación del repositorio y prueba de humo de la pasarela con Claude Code.
-- [ ] **Hito 1.** Esqueleto que arranca en Docker: API, base de datos y web mínima.
+- [x] **Hito 1.** Esqueleto que arranca en Docker: API, base de datos y web mínima.
 - [ ] **Hito 2.** Subida de archivos y extracción de texto, sin IA.
 - [ ] **Hito 3.** Primera llamada a un modelo desde la web, con progreso en vivo.
 - [ ] **Hito 4.** Doble modelo en paralelo, sin árbitro.
