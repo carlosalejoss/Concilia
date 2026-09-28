@@ -22,7 +22,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - [x] 6. Solución .NET con `ReqArbiter.Api`, `ReqArbiter.Core` y un proyecto de tests. Endpoint `GET /health`.
 - [x] 7. Frontend con Vite, React 19, TypeScript y Tailwind, con una página que muestra el estado de `/health`.
 - [x] 8. Dockerfile de la API y del frontend, y `docker-compose.yml` con `db`, `api` y `web`. `.env.example` con `LITELLM_BASE_URL` y `LITELLM_API_KEY` (solo nombres, sin valores).
-- [ ] 9. EF Core y el proveedor de la base de datos elegida, con una primera migración de la tabla `Projects`.
+- [x] 9. EF Core y el proveedor de la base de datos elegida, con una primera migración de la tabla `Projects`.
 - [ ] 10. Frontend: crear y listar proyectos (nombre). Primer flujo de punta a punta.
 - [ ] 11. GitHub Actions mínimo: compilar y testear la API y compilar el frontend.
 
