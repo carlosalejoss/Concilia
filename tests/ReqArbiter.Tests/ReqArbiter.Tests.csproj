@@ -28,6 +28,7 @@
     <ProjectReference Include="..\..\src\ReqArbiter.Api\ReqArbiter.Api.csproj" />
     <ProjectReference Include="..\..\src\ReqArbiter.Core\ReqArbiter.Core.csproj" />
     <ProjectReference Include="..\..\src\ReqArbiter.Runner\ReqArbiter.Runner.csproj" />
+    <ProjectReference Include="..\FakeClaude\FakeClaude.csproj" />
   </ItemGroup>
 
 </Project>
