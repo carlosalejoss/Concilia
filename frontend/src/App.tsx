@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import type { Project } from './api.ts'
+import ProjectFiles from './ProjectFiles.tsx'
 import Projects from './Projects.tsx'
 
 type HealthState =
@@ -8,6 +10,7 @@ type HealthState =
 
 function App() {
   const [health, setHealth] = useState<HealthState>({ kind: 'loading' })
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   // Ask the API for its status once, when the page loads.
   useEffect(() => {
@@ -26,7 +29,7 @@ function App() {
   }, [])
 
   return (
-    <main className="mx-auto max-w-xl p-8 font-sans">
+    <main className="mx-auto max-w-3xl p-8 font-sans">
       <h1 className="text-2xl font-bold">ReqArbiter</h1>
       <p className="mt-4">
         Estado de la API:{' '}
@@ -36,7 +39,9 @@ function App() {
           <span className="font-semibold text-red-700">sin conexión ({health.message})</span>
         )}
       </p>
-      <Projects />
+      <Projects selectedId={selectedProject?.id ?? null} onSelect={setSelectedProject} />
+      {/* key: a different project creates a new ProjectFiles with empty state. */}
+      {selectedProject && <ProjectFiles key={selectedProject.id} project={selectedProject} />}
     </main>
   )
 }
