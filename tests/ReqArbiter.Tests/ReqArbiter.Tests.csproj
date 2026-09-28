@@ -20,8 +20,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Recorded outputs used by the runner tests, copied next to the test DLL. -->
+    <None Include="..\fixtures\**\*.jsonl" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\ReqArbiter.Api\ReqArbiter.Api.csproj" />
     <ProjectReference Include="..\..\src\ReqArbiter.Core\ReqArbiter.Core.csproj" />
+    <ProjectReference Include="..\..\src\ReqArbiter.Runner\ReqArbiter.Runner.csproj" />
   </ItemGroup>
 
 </Project>

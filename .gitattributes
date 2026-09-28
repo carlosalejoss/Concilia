@@ -1,0 +1,3 @@
+# Recorded stream-json outputs are test data: keep their bytes exactly as
+# committed (CRLF line endings included), without line-ending conversion.
+tests/fixtures/** -text

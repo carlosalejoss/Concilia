@@ -41,7 +41,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 ## Hito 3: primera llamada a un modelo desde la web
 
 - [x] 16. En `Core`, contrato del runner: `IRunnerProvider`, `RunRequest` y `RunResult` (con veredicto). Primero `FakeProvider`, que devuelve un JSON fijo.
-- [ ] 17. Proyecto `ReqArbiter.Runner` y parser de stream-json, probado con las salidas grabadas en la prueba de humo del hito 0 (saneadas antes de copiarlas al repositorio).
+- [x] 17. Proyecto `ReqArbiter.Runner` y parser de stream-json, probado con las salidas grabadas en la prueba de humo del hito 0 (saneadas antes de copiarlas al repositorio).
 - [ ] 18. Lanzamiento del proceso con carpeta de trabajo, lectura línea a línea de stdout, lectura de stderr por separado (el aviso `unrecognized_model` no es un fallo), latido y tiempo máximo.
 - [ ] 19. Lectura del veredicto final en el campo `result`, con reintento si falta o es inválido.
 - [ ] 20. `LiteLlmProvider`: `claude -p` real contra la pasarela, con entorno construido de forma explícita, `CLAUDE_CONFIG_DIR` propio por ejecución y `--allowedTools`. Node y Claude Code en la imagen de la API.
