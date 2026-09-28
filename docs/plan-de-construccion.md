@@ -34,6 +34,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - [x] 13. Frontend: zona de arrastrar y soltar y lista de archivos del proyecto.
 - [x] 14. Extracción de texto solo para `.txt` y `.md`, guardada junto al original. PDF y DOCX, más adelante.
 - [x] 15. Límite de tamaño, tipos permitidos y mensajes de error claros.
+- [x] 15b. Extracción de texto de `.docx` (DocumentFormat.OpenXml) y `.pdf` (PdfPig), con tests. Añadido durante el hito 2: adelanta lo que el paso 14 dejaba para más adelante. Sin OCR: un PDF escaneado queda sin texto.
 
 **Hecho cuando:** se sube un `.md` y se ve su texto en la web.
 

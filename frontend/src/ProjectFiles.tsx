@@ -167,10 +167,17 @@ function ProjectFiles({ project }: ProjectFilesProps) {
       {shown && (
         <div className="mt-6">
           <h3 className="font-semibold">Texto extraído de «{shown.file.fileName}»</h3>
-          {/* <pre> keeps the line breaks; whitespace-pre-wrap wraps long lines. */}
-          <pre className="mt-2 max-h-96 overflow-auto whitespace-pre-wrap rounded border border-gray-200 bg-gray-50 p-3 text-sm">
-            {shown.text}
-          </pre>
+          {shown.text.trim() === '' ? (
+            <p className="mt-2 text-gray-500">
+              No se ha encontrado texto. Si es un PDF escaneado, sus páginas son imágenes y no se
+              puede extraer texto sin OCR.
+            </p>
+          ) : (
+            // <pre> keeps the line breaks; whitespace-pre-wrap wraps long lines.
+            <pre className="mt-2 max-h-96 overflow-auto whitespace-pre-wrap rounded border border-gray-200 bg-gray-50 p-3 text-sm">
+              {shown.text}
+            </pre>
+          )}
         </div>
       )}
     </section>

@@ -19,8 +19,8 @@ public class TextExtractorTests
     }
 
     [Theory]
-    [InlineData(".pdf")]
-    [InlineData(".docx")]
+    [InlineData(".xlsx")]
+    [InlineData(".doc")]
     [InlineData("")]
     public void Unsupported_extensions_return_null(string extension)
     {
