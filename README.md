@@ -73,7 +73,8 @@ Se creará de forma incremental, según lo necesite cada hito.
 reqarbiter/
 ├── docs/          # decisiones de arquitectura, investigación, diseño y memoria
 ├── prompts/       # prompts versionados por fase
-├── src/           # solución .NET: API, dominio, runner, árbitro y tests
+├── src/           # solución .NET: API, dominio, runner y árbitro
+├── tests/         # tests de la solución .NET
 ├── frontend/      # aplicación React
 ├── evaluation/    # descarga de datasets, notebooks y resultados
 └── data/          # archivos de trabajo (ignorado por git)
@@ -91,7 +92,28 @@ reqarbiter/
 
 ## Puesta en marcha
 
-Disponible a partir del hito 1. Requisitos: Docker Desktop.
+Requisitos: Docker Desktop.
+
+1. Copia `.env.example` a `.env` y rellena los valores. Para arrancar la aplicación basta con `POSTGRES_PASSWORD` (cualquier valor en local); las variables de LiteLLM se necesitan a partir del hito 3.
+2. Desde la raíz del repositorio:
+
+   ```bash
+   docker compose up --build -d
+   ```
+
+3. Abre <http://localhost:8080>.
+
+Los datos se guardan en el volumen `db-data` y sobreviven a `docker compose down`. Para borrarlos: `docker compose down -v`.
+
+### Desarrollo sin Docker
+
+Con .NET 10 y Node 24 instalados:
+
+- API: `dotnet run --project src/ReqArbiter.Api --launch-profile http` (escucha en <http://localhost:5292>).
+- Web: `npm install` y `npm run dev` dentro de `frontend/` (<http://localhost:5173>; reenvía las llamadas a la API).
+- Tests: `dotnet test src/ReqArbiter.slnx`.
+
+La API necesita una base de datos PostgreSQL en la cadena de conexión `ConnectionStrings__Default`; el endpoint `/health` funciona sin ella.
 
 ## Configuración y secretos
 
