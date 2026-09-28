@@ -1,0 +1,45 @@
+# Starts the whole application: database, API and web.
+# Usage: copy .env.example to .env, fill in the values and run `docker compose up --build`.
+# The web is then available at http://localhost:8080.
+
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: reqarbiter
+      POSTGRES_USER: reqarbiter
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      # Named volume: the data survives when the containers are recreated.
+      # PostgreSQL 18 images keep their data under /var/lib/postgresql.
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reqarbiter -d reqarbiter"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      # The context is src/ so the build can see both Api and Core; the
+      # Dockerfile path is relative to that context.
+      context: ./src
+      dockerfile: ReqArbiter.Api/Dockerfile
+    image: reqarbiter-api
+    environment:
+      LITELLM_BASE_URL: ${LITELLM_BASE_URL:-}
+      LITELLM_API_KEY: ${LITELLM_API_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    image: reqarbiter-web
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  db-data:
