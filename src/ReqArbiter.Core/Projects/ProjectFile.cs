@@ -23,4 +23,8 @@ public class ProjectFile
     public required string Sha256 { get; set; }
 
     public DateTimeOffset UploadedAt { get; set; }
+
+    // Name on disk of the extracted plain text (next to the original), or null
+    // when the file type has no text extraction yet.
+    public string? TextStoredName { get; set; }
 }

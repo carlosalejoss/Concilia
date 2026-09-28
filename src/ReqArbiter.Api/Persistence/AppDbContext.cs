@@ -27,6 +27,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
             file.Property(f => f.FileName).HasMaxLength(255);
             file.Property(f => f.StoredName).HasMaxLength(100);
+            file.Property(f => f.TextStoredName).HasMaxLength(100);
             file.Property(f => f.ContentType).HasMaxLength(255);
             file.Property(f => f.Sha256).HasMaxLength(64).IsFixedLength();
         });

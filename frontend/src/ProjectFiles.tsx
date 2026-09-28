@@ -19,6 +19,7 @@ function ProjectFiles({ project }: ProjectFilesProps) {
   const [errors, setErrors] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
   const [dragging, setDragging] = useState(false)
+  const [shown, setShown] = useState<{ file: ProjectFile; text: string } | null>(null)
 
   useEffect(() => {
     fetch(`/projects/${project.id}/files`)
@@ -53,6 +54,20 @@ function ProjectFiles({ project }: ProjectFilesProps) {
       }
     }
     setUploading(false)
+  }
+
+  async function showText(file: ProjectFile) {
+    setErrors([])
+    try {
+      const response = await fetch(`/projects/${project.id}/files/${file.id}/text`)
+      if (!response.ok) {
+        setErrors([`${file.fileName}: ${await errorMessage(response)}`])
+        return
+      }
+      setShown({ file, text: await response.text() })
+    } catch (e: unknown) {
+      setErrors([`${file.fileName}: ${String(e)}`])
+    }
   }
 
   function handleDrop(event: DragEvent) {
@@ -113,9 +128,22 @@ function ProjectFiles({ project }: ProjectFilesProps) {
           <tbody className="divide-y divide-gray-200">
             {files.map((file) => (
               <tr key={file.id}>
-                {/* The SHA-256 hash is shown as a tooltip on hover. */}
+                {/* The SHA-256 hash is shown as a tooltip on hover. Files with
+                    extracted text can be clicked to show it. */}
                 <td className="py-1" title={`SHA-256: ${file.sha256}`}>
-                  {file.fileName}
+                  {file.textStoredName ? (
+                    <button
+                      type="button"
+                      onClick={() => showText(file)}
+                      className={`text-left text-blue-700 underline ${
+                        shown?.file.id === file.id ? 'font-semibold' : ''
+                      }`}
+                    >
+                      {file.fileName}
+                    </button>
+                  ) : (
+                    file.fileName
+                  )}
                 </td>
                 <td className="py-1 text-gray-500">{file.contentType}</td>
                 <td className="py-1 text-right">{formatSize(file.sizeBytes)}</td>
@@ -124,6 +152,16 @@ function ProjectFiles({ project }: ProjectFilesProps) {
             ))}
           </tbody>
         </table>
+      )}
+
+      {shown && (
+        <div className="mt-6">
+          <h3 className="font-semibold">Texto extraído de «{shown.file.fileName}»</h3>
+          {/* <pre> keeps the line breaks; whitespace-pre-wrap wraps long lines. */}
+          <pre className="mt-2 max-h-96 overflow-auto whitespace-pre-wrap rounded border border-gray-200 bg-gray-50 p-3 text-sm">
+            {shown.text}
+          </pre>
+        </div>
       )}
     </section>
   )
