@@ -24,7 +24,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - [x] 8. Dockerfile de la API y del frontend, y `docker-compose.yml` con `db`, `api` y `web`. `.env.example` con `LITELLM_BASE_URL` y `LITELLM_API_KEY` (solo nombres, sin valores).
 - [x] 9. EF Core y el proveedor de la base de datos elegida, con una primera migración de la tabla `Projects`.
 - [x] 10. Frontend: crear y listar proyectos (nombre). Primer flujo de punta a punta.
-- [ ] 11. GitHub Actions mínimo: compilar y testear la API y compilar el frontend.
+- [x] 11. GitHub Actions mínimo: compilar y testear la API y compilar el frontend.
 
 **Hecho cuando:** con `docker compose up` se crea un proyecto en el navegador, se reinician los contenedores y sigue ahí.
 
