@@ -60,7 +60,7 @@ La comparación entre notaciones se apoya en [Großer et al., 2024](https://link
 |---|---|
 | Frontend | React 19, TypeScript, Vite y Tailwind |
 | Backend | .NET 10 (ASP.NET Core) y EF Core |
-| Base de datos | PostgreSQL (SQL Server por decidir) |
+| Base de datos | PostgreSQL |
 | Modelos de IA | Pasarela LiteLLM de la empresa; los roles de Modelo A, Modelo B y árbitro son configurables |
 | Ejecución de los modelos | Runner en .NET que lanza Claude Code no interactivo (`claude -p`), con salida stream-json y veredicto final obligatorio |
 | Despliegue | Docker y Docker Compose |

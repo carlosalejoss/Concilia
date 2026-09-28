@@ -8,7 +8,7 @@ Hito 0 completado. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso 
 
 ## Decisiones vigentes
 
-- Stack: React 19 + TypeScript + Vite + Tailwind; .NET 10 (ASP.NET Core y EF Core); PostgreSQL o SQL Server (por decidir); todo en Docker.
+- Stack: React 19 + TypeScript + Vite + Tailwind; .NET 10 (ASP.NET Core y EF Core); PostgreSQL; todo en Docker.
 - Patrón: cada tarea se lanza a Modelo A y Modelo B en paralelo; un Árbitro compara, pregunta al usuario si hay discrepancias graves y fusiona. Se aplica a tres fases: dudas, catálogo de requisitos y backlog.
 - Modelos: solo a través de la pasarela LiteLLM de la empresa. Ids exactos: `SS - GPT-6-SOL` y `SS - GPT-6-LUNA` (llevan prefijo y espacios). El reparto de roles es configuración.
 - Runner: proceso hijo `claude -p`, con el prompt por entrada estándar, `--output-format stream-json --verbose` y veredicto final obligatorio (`VEREDICTO: {...}`). Proveedores: `LiteLlm` y `Fake`. No existe proveedor de suscripción personal ni debe crearse.
@@ -18,7 +18,7 @@ Hito 0 completado. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso 
 
 ## Decisiones abiertas (no las cierres sin preguntar)
 
-Base de datos (PostgreSQL o SQL Server), origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro, umbral de "discrepancia grave" y ventana de contexto real de los modelos.
+Origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro, umbral de "discrepancia grave" y ventana de contexto real de los modelos.
 
 ## Runner y pasarela (verificado)
 
