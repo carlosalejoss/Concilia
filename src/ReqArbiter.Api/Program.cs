@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
 using ReqArbiter.Api.Projects;
 
@@ -9,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 // needs the database, so the API can start without one (e.g. in the /health test).
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+
+// Where uploaded files are stored (setting "Storage:RootPath").
+builder.Services.AddSingleton<FileStorage>();
 
 var app = builder.Build();
 
@@ -23,6 +27,7 @@ if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapProjectEndpoints();
+app.MapProjectFileEndpoints();
 
 app.Run();
 

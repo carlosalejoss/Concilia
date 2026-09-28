@@ -29,8 +29,13 @@ services:
     environment:
       ConnectionStrings__Default: Host=db;Database=reqarbiter;Username=reqarbiter;Password=${POSTGRES_PASSWORD}
       Database__MigrateOnStartup: "true"
+      Storage__RootPath: /data
       LITELLM_BASE_URL: ${LITELLM_BASE_URL:-}
       LITELLM_API_KEY: ${LITELLM_API_KEY:-}
+    volumes:
+      # Uploaded files go to the data/ folder of the repository (ignored by git),
+      # so they can be inspected from the host.
+      - ./data:/data
     depends_on:
       db:
         condition: service_healthy
