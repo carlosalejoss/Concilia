@@ -1,5 +1,6 @@
 import { useEffect, useState, type DragEvent } from 'react'
 import { errorMessage, formatDate, type Project, type ProjectFile } from './api.ts'
+import { ALLOWED_EXTENSIONS, MAX_BYTES, validateUpload } from './uploadRules.ts'
 
 type ProjectFilesProps = {
   project: Project
@@ -38,6 +39,11 @@ function ProjectFiles({ project }: ProjectFilesProps) {
     setUploading(true)
     setErrors([])
     for (const file of selected) {
+      const invalid = validateUpload(file)
+      if (invalid) {
+        setErrors((current) => [...current, `${file.name}: ${invalid}`])
+        continue
+      }
       try {
         const form = new FormData()
         form.append('file', file) // Field name expected by the API.
@@ -95,9 +101,13 @@ function ProjectFiles({ project }: ProjectFilesProps) {
         }`}
       >
         {uploading ? 'Subiendo…' : 'Arrastra archivos aquí o haz clic para elegirlos'}
+        <span className="mt-1 block text-sm text-gray-500">
+          {ALLOWED_EXTENSIONS.join(', ')} · máximo {MAX_BYTES / (1024 * 1024)} MB por archivo
+        </span>
         <input
           type="file"
           multiple
+          accept={ALLOWED_EXTENSIONS.join(',')}
           className="hidden"
           disabled={uploading}
           onChange={(e) => {
