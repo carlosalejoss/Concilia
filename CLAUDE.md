@@ -35,6 +35,15 @@ Origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro, 
 - No leas ni imprimas `.env` ni variables de entorno con credenciales.
 - Usa solo datos ficticios o públicos (por ejemplo, el ejemplo ReservaSalas y los datasets públicos). Nunca documentos reales de la empresa, salvo autorización expresa del autor.
 
+## Reglas de seguridad para Claude Code
+
+Copiadas de `docs/hito-3-runner.md`.
+
+- No ejecutes comandos que impriman variables de entorno, ni siquiera las de un contenedor: `docker compose config`, `docker inspect`, `docker exec ... env`, `printenv`, `Get-ChildItem Env:`.
+- No leas `.env`. El repo solo lleva `.env.example`, con nombres y sin valores.
+- Ningún test debe llamar a la pasarela.
+- Los logs, eventos y filas de base de datos nunca contienen la clave ni la dirección de la pasarela (ver `SecretRedactor`).
+
 ## Convenciones
 
 - Código, identificadores y commits en inglés (Conventional Commits: `feat:`, `fix:`, `docs:`, `test:`, `chore:`). Documentación y memoria en español.
