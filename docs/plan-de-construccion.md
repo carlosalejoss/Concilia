@@ -17,7 +17,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - [x] 4. Lista de modelos y una llamada de chat a cada modelo.
 - [x] 5. `claude -p` contra la pasarela, con y sin herramientas, y captura en stream-json.
 
-## Hito 1: esqueleto que arranca en Docker
+## Hito 1: esqueleto que arranca en Docker (completado)
 
 - [x] 6. Solución .NET con `ReqArbiter.Api`, `ReqArbiter.Core` y un proyecto de tests. Endpoint `GET /health`.
 - [x] 7. Frontend con Vite, React 19, TypeScript y Tailwind, con una página que muestra el estado de `/health`.
