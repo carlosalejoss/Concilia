@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Projects from './Projects.tsx'
 
 type HealthState =
   | { kind: 'loading' }
@@ -35,6 +36,7 @@ function App() {
           <span className="font-semibold text-red-700">sin conexión ({health.message})</span>
         )}
       </p>
+      <Projects />
     </main>
   )
 }
