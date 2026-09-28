@@ -15,6 +15,7 @@ export type ProjectFile = {
   sizeBytes: number
   sha256: string
   uploadedAt: string
+  textStoredName: string | null // null: no text extracted for this type
 }
 
 // Reads the first validation message from an ASP.NET Core "problem details"

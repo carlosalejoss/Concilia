@@ -78,6 +78,10 @@ namespace ReqArbiter.Api.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("TextStoredName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<DateTimeOffset>("UploadedAt")
                         .HasColumnType("timestamp with time zone");
 

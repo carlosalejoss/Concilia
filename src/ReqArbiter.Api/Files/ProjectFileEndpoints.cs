@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Persistence;
+using ReqArbiter.Core.Files;
 using ReqArbiter.Core.Projects;
 
 namespace ReqArbiter.Api.Files;
@@ -23,6 +24,22 @@ public static class ProjectFileEndpoints
                 .ToListAsync();
 
             return Results.Ok(files);
+        });
+
+        // The extracted plain text of one file, or 404 if it has none.
+        app.MapGet("/projects/{projectId:int}/files/{fileId:int}/text",
+            async (int projectId, int fileId, AppDbContext db, FileStorage storage) =>
+        {
+            var file = await db.ProjectFiles
+                .FirstOrDefaultAsync(f => f.Id == fileId && f.ProjectId == projectId);
+
+            if (file?.TextStoredName is null)
+            {
+                return Results.NotFound();
+            }
+
+            var path = Path.Combine(storage.ProjectFolder(projectId), file.TextStoredName);
+            return Results.Text(await File.ReadAllTextAsync(path), "text/plain; charset=utf-8");
         });
 
         // Expects a multipart/form-data request with the file in a field named "file".
@@ -57,11 +74,19 @@ public static class ProjectFileEndpoints
                 await file.CopyToAsync(output);
             }
 
-            // Hash the saved copy, so the hash describes exactly what is on disk.
-            string sha256;
-            await using (var saved = File.OpenRead(path))
+            // Read back the saved copy: the hash and the text describe exactly
+            // what is on disk. Files are small (the upload size is limited).
+            var content = await File.ReadAllBytesAsync(path);
+            var sha256 = Convert.ToHexStringLower(SHA256.HashData(content));
+
+            // For supported types, save the plain text next to the original
+            // ("{guid}.extracted.txt"), always as UTF-8.
+            string? textStoredName = null;
+            var text = TextExtractor.Extract(content, Path.GetExtension(fileName));
+            if (text is not null)
             {
-                sha256 = Convert.ToHexStringLower(await SHA256.HashDataAsync(saved));
+                textStoredName = Path.GetFileNameWithoutExtension(storedName) + ".extracted.txt";
+                await File.WriteAllTextAsync(Path.Combine(folder, textStoredName), text);
             }
 
             var record = new ProjectFile
@@ -73,6 +98,7 @@ public static class ProjectFileEndpoints
                 SizeBytes = file.Length,
                 Sha256 = sha256,
                 UploadedAt = DateTimeOffset.UtcNow,
+                TextStoredName = textStoredName,
             };
             db.ProjectFiles.Add(record);
             await db.SaveChangesAsync();
