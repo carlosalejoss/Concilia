@@ -27,6 +27,8 @@ services:
       dockerfile: ReqArbiter.Api/Dockerfile
     image: reqarbiter-api
     environment:
+      ConnectionStrings__Default: Host=db;Database=reqarbiter;Username=reqarbiter;Password=${POSTGRES_PASSWORD}
+      Database__MigrateOnStartup: "true"
       LITELLM_BASE_URL: ${LITELLM_BASE_URL:-}
       LITELLM_API_KEY: ${LITELLM_API_KEY:-}
     depends_on:
