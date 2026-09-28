@@ -103,4 +103,4 @@ Sin definir; pendiente de acordar con la tutora y con la empresa.
 
 ## Autoría
 
-Autor: `<tu nombre>` · Tutora: `<nombre de la tutora>`
+Autor: `Carlos Alejos Fumanal` · Tutores: `Francisco Javier Zarazaga-Soria & Patricia Berdejo`
