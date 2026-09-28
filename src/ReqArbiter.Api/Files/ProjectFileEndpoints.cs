@@ -51,16 +51,26 @@ public static class ProjectFileEndpoints
                 return Results.NotFound();
             }
 
-            if (file is null || file.Length == 0)
+            if (file is null)
             {
                 return Results.ValidationProblem(new Dictionary<string, string[]>
                 {
-                    ["file"] = ["Selecciona un archivo que no esté vacío."],
+                    ["file"] = ["Selecciona un archivo."],
                 });
             }
 
             // Only the last part of the name the browser sends ("C:\x\a.md" -> "a.md").
             var fileName = Path.GetFileName(file.FileName);
+
+            // Type and size rules (UploadRules, in Core).
+            var error = UploadRules.Validate(fileName, file.Length);
+            if (error is not null)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["file"] = [error],
+                });
+            }
 
             // The name on disk is generated; only the extension is kept from the user.
             var storedName = Guid.NewGuid().ToString("N") + Path.GetExtension(fileName).ToLowerInvariant();

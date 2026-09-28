@@ -21,6 +21,10 @@ export type ProjectFile = {
 // Reads the first validation message from an ASP.NET Core "problem details"
 // response, or falls back to the HTTP status.
 export async function errorMessage(response: Response): Promise<string> {
+  // 413 comes from nginx or the API server itself, before our code runs.
+  if (response.status === 413) {
+    return 'El archivo es demasiado grande.'
+  }
   try {
     const problem: { errors?: Record<string, string[]> } = await response.json()
     const first = Object.values(problem.errors ?? {})[0]?.[0]
