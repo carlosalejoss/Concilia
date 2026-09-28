@@ -72,27 +72,40 @@ public static class ProjectFileEndpoints
                 });
             }
 
+            // Read the whole file into memory (at most UploadRules.MaxBytes), so we
+            // can hash it and extract its text before writing anything to disk.
+            byte[] content;
+            using (var buffer = new MemoryStream())
+            {
+                await file.CopyToAsync(buffer);
+                content = buffer.ToArray();
+            }
+            var sha256 = Convert.ToHexStringLower(SHA256.HashData(content));
+
+            // A damaged PDF or DOCX is rejected here, and nothing is stored.
+            string? text;
+            try
+            {
+                text = TextExtractor.Extract(content, Path.GetExtension(fileName));
+            }
+            catch (TextExtractionException e)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["file"] = [e.Message],
+                });
+            }
+
             // The name on disk is generated; only the extension is kept from the user.
             var storedName = Guid.NewGuid().ToString("N") + Path.GetExtension(fileName).ToLowerInvariant();
 
             var folder = storage.ProjectFolder(projectId);
             Directory.CreateDirectory(folder);
-            var path = Path.Combine(folder, storedName);
+            await File.WriteAllBytesAsync(Path.Combine(folder, storedName), content);
 
-            await using (var output = File.Create(path))
-            {
-                await file.CopyToAsync(output);
-            }
-
-            // Read back the saved copy: the hash and the text describe exactly
-            // what is on disk. Files are small (the upload size is limited).
-            var content = await File.ReadAllBytesAsync(path);
-            var sha256 = Convert.ToHexStringLower(SHA256.HashData(content));
-
-            // For supported types, save the plain text next to the original
-            // ("{guid}.extracted.txt"), always as UTF-8.
+            // The plain text goes next to the original ("{guid}.extracted.txt"),
+            // always as UTF-8.
             string? textStoredName = null;
-            var text = TextExtractor.Extract(content, Path.GetExtension(fileName));
             if (text is not null)
             {
                 textStoredName = Path.GetFileNameWithoutExtension(storedName) + ".extracted.txt";
