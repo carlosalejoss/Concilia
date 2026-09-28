@@ -1,0 +1,10 @@
+§1 El objetivo del proyecto es reducir los conflictos de uso de las salas.
+§2.1 El empleado puede reservar una sala indicando fecha, hora de inicio, hora de fin y número de asistentes. Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto.
+§2.2 Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado.
+§2.3 Mientras una sala esté en mantenimiento, no se podrá reservar.
+§2.4 Si la empresa contrata el módulo de catering, los empleados podrán añadir catering a la reserva.
+§2.5 Mientras el modo festivo esté activado, cuando un empleado intente reservar una sala, el sistema mostrará un aviso de día festivo.
+§2.6 Si la reserva dura más de 4 horas y tiene más de 20 asistentes, deberá aprobarla el administrador.
+§3.1 La aplicación debe ser rápida.
+§3.2 Sería deseable que el administrador pudiera exportar el histórico de reservas a CSV.
+§3.3 La aplicación debe funcionar en Chrome y Edge.
