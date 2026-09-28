@@ -28,7 +28,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 
 **Hecho cuando:** con `docker compose up` se crea un proyecto en el navegador, se reinician los contenedores y sigue ahí.
 
-## Hito 2: subir archivos (sin IA)
+## Hito 2: subir archivos (sin IA) (completado)
 
 - [x] 12. Endpoint de subida que guarda el archivo en `data/projects/{id}/` y registra nombre, tipo, tamaño y hash en la base de datos.
 - [x] 13. Frontend: zona de arrastrar y soltar y lista de archivos del proyecto.

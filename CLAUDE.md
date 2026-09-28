@@ -4,7 +4,7 @@ Plataforma web (TFG) que genera catálogos de requisitos (EARS/MASTeR) y backlog
 
 ## Estado
 
-Hitos 0 y 1 completados. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
+Hitos 0, 1 y 2 completados. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
 
 ## Decisiones vigentes
 
