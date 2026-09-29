@@ -19,7 +19,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         modelBuilder.Entity<Project>(project =>
         {
-            project.Property(p => p.Name).HasMaxLength(200);
+            project.Property(p => p.Name).HasMaxLength(ProjectSettings.MaxNameLength);
+            project.Property(p => p.SystemName).HasMaxLength(ProjectSettings.MaxSystemNameLength);
+            project.Property(p => p.Language).HasMaxLength(2);
         });
 
         modelBuilder.Entity<ProjectFile>(file =>

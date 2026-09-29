@@ -50,6 +50,10 @@ public record RunResult
     // That is the one failure worth retrying: the process and the API worked.
     public string? VerdictError { get; init; }
 
+    // Version of Claude Code that ran the model (from the "init" event), to
+    // know which version produced each result.
+    public string? ClaudeCodeVersion { get; init; }
+
     // total_cost_usd is deliberately not here: Claude Code computes it for a
     // model it does not know, so the value is not reliable.
 }

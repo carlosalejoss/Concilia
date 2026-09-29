@@ -1,35 +1,31 @@
 using ReqArbiter.Api.Files;
+using ReqArbiter.Core.Projects;
 using ReqArbiter.Core.Runner;
 using ReqArbiter.Core.Runs;
 using ReqArbiter.Runner;
 
 namespace ReqArbiter.Api.Runs;
 
-// Executes one run of the summary task, with its verdict retries, without
-// touching the database: prepares input/, builds the request, runs it and
-// publishes the progress events. The caller stores the result.
-public class RunExecutor(IRunnerProvider provider, RunEventStore events, FileStorage storage, RunnerOptions options)
-{
-    public Task<IReadOnlyList<RunAttempt>> ExecuteAsync(
-        Run run,
-        IReadOnlyList<RunInputFile> inputs,
-        CancellationToken cancellationToken)
-    {
-        var workDirectory = storage.RunFolder(run.Id);
-        var inputNames = RunInput.Prepare(Path.Combine(workDirectory, "input"), inputs);
+// What every run of a job shares: the project settings and the job's plan.
+public record JobContext(Project Project, CatalogPlan Plan);
 
-        var request = new RunRequest
-        {
-            RunId = run.Id,
-            ModelId = run.Model,
-            Prompt = SummaryTask.Prompt(workDirectory, inputNames),
-            WorkDirectory = workDirectory,
-            ExpectedOutputFiles = [SummaryTask.OutputFile],
-            MaxContextTokens = options.MaxContextTokens,
-        };
+// Executes one run (one lot for one model), with its retries, without touching
+// the database: prepares the run folder, builds the request, runs it and
+// publishes the progress events. The caller stores the result.
+public class RunExecutor(
+    IRunnerProvider provider,
+    RunEventStore events,
+    FileStorage storage,
+    RunnerOptions runnerOptions,
+    CatalogOptions catalogOptions)
+{
+    public Task<IReadOnlyList<RunAttempt>> ExecuteAsync(Run run, JobContext context, CancellationToken cancellationToken)
+    {
+        var request = CatalogTask.BuildRequest(
+            run, context.Project, context.Plan, storage.RunFolder(run.Id), catalogOptions, runnerOptions.MaxContextTokens);
 
         // Retries publish into the same event stream, marked, so the console
-        // in the web shows the whole task of this slot.
+        // in the web shows the whole task of this lot.
         return new VerdictRetryRunner(provider).RunAsync(
             request,
             attempt => runEvent => events.Publish(

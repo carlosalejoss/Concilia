@@ -1,13 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import {
-  errorMessage,
-  formatDate,
-  type JobView,
-  type Project,
-  type Run,
-  type RunDetails,
-  type RunEvent,
-} from './api.ts'
+import { errorMessage, formatDate, type JobView, type Project, type Run, type RunEvent } from './api.ts'
 
 const SLOTS = ['A', 'B'] as const
 
@@ -22,9 +14,32 @@ function isFinished(run: Run): boolean {
   return run.state !== 'Queued' && run.state !== 'Running'
 }
 
-// The runs of one slot in attempt order: the first run, then its retries.
-function runsOfSlot(view: JobView, slot: string): Run[] {
-  return view.runs.filter((r) => r.slot === slot).sort((a, b) => a.attempt - b.attempt)
+// The lots of one slot, each with its runs in attempt order (the first run,
+// then its retries).
+function lotsOfSlot(view: JobView, slot: string): Run[][] {
+  const byLot = new Map<number, Run[]>()
+  for (const run of view.runs.filter((r) => r.slot === slot)) {
+    const lot = run.lotNumber ?? 1
+    byLot.set(lot, [...(byLot.get(lot) ?? []), run])
+  }
+  return [...byLot.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([, runs]) => runs.sort((a, b) => a.attempt - b.attempt))
+}
+
+// One line for the list: the state that counts is the last attempt of each lot.
+function slotSummary(view: JobView, slot: string): { text: string; state: string } {
+  const finals = lotsOfSlot(view, slot).map((runs) => runs[runs.length - 1])
+  if (finals.length === 0) return { text: '—', state: '' }
+  const done = finals.filter((r) => r.state === 'Done').length
+  const lots = finals.length > 1 ? ` (${done}/${finals.length} lotes)` : ''
+  if (finals.some((r) => !isFinished(r))) {
+    const running = finals.some((r) => r.state === 'Running')
+    return { text: (running ? 'Running' : 'Queued') + lots, state: running ? 'Running' : 'Queued' }
+  }
+  if (done === finals.length) return { text: 'Done' + lots, state: 'Done' }
+  const failed = finals.find((r) => r.state !== 'Done')!
+  return { text: failed.state + lots, state: failed.state }
 }
 
 async function fetchJobs(projectId: number): Promise<JobView[]> {
@@ -33,17 +48,17 @@ async function fetchJobs(projectId: number): Promise<JobView[]> {
   return response.json()
 }
 
-// Jobs of one project: a button that launches the summary task to models A
-// and B at the same time, the list of jobs and the A/B view of the selected one.
+// Jobs of one project: a button that launches the catalog task to models A and
+// B at the same time, the list of jobs and the A/B view of the selected one.
 function Jobs({ project }: { project: Project }) {
   const [jobs, setJobs] = useState<JobView[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [starting, setStarting] = useState(false)
 
-  // Reloads the list; also called when a run ends, to get its final state
-  // and any retries. useCallback keeps the same function between renders,
-  // so the consoles below do not reconnect every time this component renders.
+  // Reloads the list; also called when a run starts or ends. useCallback keeps
+  // the same function between renders, so the consoles below do not reconnect
+  // every time this component renders.
   const reload = useCallback(() => {
     fetchJobs(project.id)
       .then(setJobs)
@@ -74,10 +89,20 @@ function Jobs({ project }: { project: Project }) {
   }
 
   const selected = jobs.find((j) => j.job.id === selectedId)
+  const selectedUnfinished = selected?.runs.some((r) => !isFinished(r)) ?? false
+
+  // While the selected job has queued or running runs, reload every 3 s: the
+  // next lot of a slot starts right after the previous one ends, and its new
+  // state must reach the page even if no console is open to announce it.
+  useEffect(() => {
+    if (!selectedUnfinished) return
+    const timer = setInterval(reload, 3000)
+    return () => clearInterval(timer)
+  }, [selectedUnfinished, reload])
 
   return (
     <section className="mt-8">
-      <h2 className="text-xl font-semibold">Ejecuciones A/B</h2>
+      <h2 className="text-xl font-semibold">Catálogos A/B</h2>
 
       <button
         type="button"
@@ -85,7 +110,7 @@ function Jobs({ project }: { project: Project }) {
         disabled={starting}
         className="mt-4 rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
       >
-        Ejecutar resumen con A y B
+        Generar catálogo con A y B
       </button>
 
       {error && <p className="mt-2 text-red-700">{error}</p>}
@@ -108,11 +133,10 @@ function Jobs({ project }: { project: Project }) {
               >
                 <td className="py-1">{formatDate(view.job.createdAt)}</td>
                 {SLOTS.map((slot) => {
-                  // The state that counts is the one of the last attempt.
-                  const last = runsOfSlot(view, slot).at(-1)
+                  const summary = slotSummary(view, slot)
                   return (
-                    <td key={slot} className={`py-1 font-semibold ${stateColors[last?.state ?? ''] ?? 'text-red-700'}`}>
-                      {last ? `${last.state}${last.attempt > 1 ? ` (intento ${last.attempt})` : ''}` : '—'}
+                    <td key={slot} className={`py-1 font-semibold ${stateColors[summary.state] ?? 'text-red-700'}`}>
+                      {summary.text}
                     </td>
                   )
                 })}
@@ -126,7 +150,7 @@ function Jobs({ project }: { project: Project }) {
       {selected && (
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
           {SLOTS.map((slot) => (
-            <SlotColumn key={`${selected.job.id}-${slot}`} slot={slot} runs={runsOfSlot(selected, slot)} onFinished={reload} />
+            <SlotColumn key={`${selected.job.id}-${slot}`} slot={slot} lots={lotsOfSlot(selected, slot)} onChange={reload} />
           ))}
         </div>
       )}
@@ -134,12 +158,11 @@ function Jobs({ project }: { project: Project }) {
   )
 }
 
-// One side of a job: the live console of its run (retries included, they
-// publish into the same stream) and the result of its last attempt.
-function SlotColumn({ slot, runs, onFinished }: { slot: string; runs: Run[]; onFinished: () => void }) {
-  const first = runs[0]
-  const last = runs.at(-1)
-  if (!first || !last) {
+// One side of a job: for each lot, the live console of its run (retries
+// included, they publish into the same stream) and the state of its last attempt.
+function SlotColumn({ slot, lots, onChange }: { slot: string; lots: Run[][]; onChange: () => void }) {
+  const first = lots[0]?.[0]
+  if (!first) {
     return null
   }
 
@@ -148,8 +171,26 @@ function SlotColumn({ slot, runs, onFinished }: { slot: string; runs: Run[]; onF
       <h3 className="font-semibold">
         {slot} · {first.model} <span className="font-normal text-gray-500">({first.provider})</span>
       </h3>
-      <RunConsole runId={first.id} onFinished={onFinished} />
-      {isFinished(last) && <RunResult key={last.id} run={last} />}
+      {lots.map((runs) => {
+        const lotRun = runs[0]
+        const last = runs[runs.length - 1]
+        return (
+          <div key={lotRun.id} className="mt-3">
+            {(lotRun.lotTotal ?? 1) > 1 && (
+              <p className="text-sm font-semibold text-gray-600">
+                Lote {lotRun.lotNumber} de {lotRun.lotTotal}
+              </p>
+            )}
+            {/* Queued lots have nothing to show yet: their console opens when they start. */}
+            {lotRun.state !== 'Queued' ? (
+              <RunConsole runId={lotRun.id} onFinished={onChange} />
+            ) : (
+              <p className="text-sm text-gray-500">En cola…</p>
+            )}
+            {isFinished(last) && <RunResult run={last} />}
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -190,19 +231,10 @@ function RunConsole({ runId, onFinished }: { runId: string; onFinished: () => vo
   )
 }
 
-// Final state of a run and the summary it wrote, if any.
+// Final state of a run. The catalog itself is shown from step 28 on.
 function RunResult({ run }: { run: Run }) {
-  const [summary, setSummary] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetch(`/runs/${run.id}`)
-      .then((response) => response.json())
-      .then((body: RunDetails) => setSummary(body.summary))
-      .catch(() => {})
-  }, [run.id])
-
   return (
-    <div className="mt-4">
+    <div className="mt-2 text-sm">
       <p>
         Estado: <span className={`font-semibold ${stateColors[run.state] ?? 'text-red-700'}`}>{run.state}</span>
         {run.attempt > 1 && <> · Intento {run.attempt}</>}
@@ -210,17 +242,16 @@ function RunResult({ run }: { run: Run }) {
         {run.numTurns !== null && <> · Turnos: {run.numTurns}</>}
       </p>
       {run.inputTokens !== null && (
-        <p className="text-sm text-gray-500">
+        <p className="text-gray-500">
           Tokens: {run.inputTokens} de entrada, {run.outputTokens} de salida
         </p>
       )}
+      <p className="text-gray-500">
+        Prompt {run.promptVersion ?? '—'}
+        {run.claudeCodeVersion && <> · Claude Code {run.claudeCodeVersion}</>}
+      </p>
       {run.verdictReason && <p className="mt-1 text-amber-700">Motivo: {run.verdictReason}</p>}
       {run.errorMessage && <p className="mt-1 text-red-700">{run.errorMessage}</p>}
-      {summary && (
-        <pre className="mt-2 max-h-96 overflow-auto whitespace-pre-wrap rounded border border-gray-200 bg-gray-50 p-3 text-sm">
-          {summary}
-        </pre>
-      )}
     </div>
   )
 }

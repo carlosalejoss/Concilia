@@ -3,6 +3,7 @@ import type { Project } from './api.ts'
 import ProjectFiles from './ProjectFiles.tsx'
 import Projects from './Projects.tsx'
 import Jobs from './Jobs.tsx'
+import ProjectSettings from './ProjectSettings.tsx'
 
 type HealthState =
   | { kind: 'loading' }
@@ -42,6 +43,9 @@ function App() {
       </p>
       <Projects selectedId={selectedProject?.id ?? null} onSelect={setSelectedProject} />
       {/* key: a different project creates a new ProjectFiles with empty state. */}
+      {selectedProject && (
+        <ProjectSettings key={`settings-${selectedProject.id}`} project={selectedProject} onSaved={setSelectedProject} />
+      )}
       {selectedProject && <ProjectFiles key={selectedProject.id} project={selectedProject} />}
       {selectedProject && <Jobs key={selectedProject.id} project={selectedProject} />}
     </main>

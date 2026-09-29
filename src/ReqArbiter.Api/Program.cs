@@ -22,6 +22,7 @@ builder.Services.AddRunnerProvider(builder.Configuration);
 // Jobs (model A and model B over the same input) are queued by the API and
 // executed in the background by JobWorker; the progress events of each run
 // are kept in memory for the SSE endpoint.
+builder.Services.AddSingleton(builder.Configuration.GetSection("Catalog").Get<CatalogOptions>() ?? new CatalogOptions());
 builder.Services.AddSingleton<JobQueue>();
 builder.Services.AddSingleton<RunEventStore>();
 builder.Services.AddSingleton<RunExecutor>();

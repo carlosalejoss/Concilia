@@ -4,8 +4,9 @@ namespace ReqArbiter.Runner.StreamJson;
 // hold several blocks (text and tool calls), so one line can give several events.
 public abstract record StreamEvent;
 
-// "system" / "init": first line, with the model and the available tools.
-public record InitEvent(string? Model, IReadOnlyList<string> Tools, string? SessionId) : StreamEvent;
+// "system" / "init": first line, with the model, the available tools and the
+// Claude Code version that produced the run.
+public record InitEvent(string? Model, IReadOnlyList<string> Tools, string? SessionId, string? ClaudeCodeVersion = null) : StreamEvent;
 
 // Text written by the model. IsApiError marks the message Claude Code
 // synthesises when the API call fails (e.g. a 403 from the gateway).

@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
+using ReqArbiter.Core.Catalog;
 using ReqArbiter.Core.Runner;
 using ReqArbiter.Core.Runs;
 
 namespace ReqArbiter.Api.Runs;
 
-// Executes the queued jobs in the background, one job at a time; the runs of
-// each job (A and B) run in parallel through JobRunner.
+// Executes the queued jobs in the background, one job at a time. Within a job,
+// JobRunner runs slots A and B in parallel and the lots of each slot in order.
 public class JobWorker(
     JobQueue queue,
     IServiceScopeFactory scopes,
@@ -50,31 +51,35 @@ public class JobWorker(
             return;
         }
 
+        var project = await db.Projects.FindAsync([job.ProjectId], cancellationToken)
+            ?? throw new InvalidOperationException($"Project {job.ProjectId} of job {jobId} not found");
+
         var runs = await db.Runs
             .Where(r => r.JobId == jobId && r.State == RunState.Queued)
-            .OrderBy(r => r.Slot)
+            .OrderBy(r => r.Slot).ThenBy(r => r.LotNumber)
             .ToListAsync(cancellationToken);
 
-        // Both runs read the same input: the extracted texts of the project.
-        var files = await db.ProjectFiles
-            .Where(f => f.ProjectId == job.ProjectId && f.TextStoredName != null)
-            .OrderBy(f => f.UploadedAt)
-            .ToListAsync(cancellationToken);
-        var inputs = files
-            .Select(f => new RunInputFile(f.FileName, Path.Combine(storage.ProjectFolder(f.ProjectId), f.TextStoredName!)))
-            .ToList();
+        // Every run of the job reads the plan saved when the job was created.
+        var plan = CatalogTask.LoadPlan(Path.Combine(storage.JobFolder(jobId), CatalogTask.PlanFile));
 
-        foreach (var run in runs)
-        {
-            run.State = RunState.Running;
-            run.StartedAt = DateTimeOffset.UtcNow;
-        }
-        await db.SaveChangesAsync(cancellationToken);
-
-        await jobRunner.RunAsync(runs, inputs, SaveOutcomeAsync, cancellationToken);
+        await jobRunner.RunAsync(runs, new JobContext(project, plan), MarkRunningAsync, SaveOutcomeAsync, cancellationToken);
 
         job.FinishedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(CancellationToken.None);
+    }
+
+    // Called by JobRunner just before each run starts.
+    private async Task MarkRunningAsync(Run started)
+    {
+        using var scope = scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var run = await db.Runs.FindAsync(started.Id);
+        if (run is not null)
+        {
+            run.State = RunState.Running;
+            run.StartedAt = DateTimeOffset.UtcNow;
+            await db.SaveChangesAsync();
+        }
     }
 
     // Called by JobRunner as soon as each run ends. It uses its own DbContext
@@ -111,6 +116,8 @@ public class JobWorker(
                         ProjectId = run.ProjectId,
                         JobId = run.JobId,
                         Slot = run.Slot,
+                        LotNumber = run.LotNumber,
+                        LotTotal = run.LotTotal,
                         RetryOfRunId = attempts[i].PreviousRunId,
                         Attempt = i + 1,
                         Provider = run.Provider,
@@ -119,6 +126,8 @@ public class JobWorker(
                         StartedAt = run.StartedAt,
                     };
                     Apply(target, attempts[i].Result);
+                    target.PromptVersion = PromptBuilder.Version;
+                    target.PromptSha256 = PromptBuilder.Sha256(attempts[i].Request.Prompt);
                     if (i > 0)
                     {
                         db.Runs.Add(target);
@@ -157,6 +166,7 @@ public class JobWorker(
         run.OutputTokens = result.Usage?.OutputTokens;
         run.NumTurns = result.NumTurns;
         run.ErrorMessage = result.ErrorMessage;
+        run.ClaudeCodeVersion = result.ClaudeCodeVersion;
     }
 
     private static void MarkFailed(Run run, string message)

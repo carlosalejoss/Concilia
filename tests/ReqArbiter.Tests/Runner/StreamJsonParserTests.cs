@@ -15,6 +15,7 @@ public class StreamJsonParserTests
 
         var init = Assert.IsType<InitEvent>(events[0]);
         Assert.Equal("SS - GPT-6-SOL", init.Model);
+        Assert.Equal("2.1.283", init.ClaudeCodeVersion);
         Assert.Contains("Read", init.Tools);
         Assert.Contains("Write", init.Tools);
 

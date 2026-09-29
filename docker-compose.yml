@@ -21,10 +21,10 @@ services:
 
   api:
     build:
-      # The context is src/ so the build can see both Api and Core; the
-      # Dockerfile path is relative to that context.
-      context: ./src
-      dockerfile: ReqArbiter.Api/Dockerfile
+      # The context is the repository root, so the build sees src/ and prompts/.
+      # .dockerignore keeps .env, data/ and the rest out of it.
+      context: .
+      dockerfile: src/ReqArbiter.Api/Dockerfile
     image: reqarbiter-api
     environment:
       ConnectionStrings__Default: Host=db;Database=reqarbiter;Username=reqarbiter;Password=${POSTGRES_PASSWORD}
