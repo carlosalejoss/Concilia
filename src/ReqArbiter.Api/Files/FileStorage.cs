@@ -12,4 +12,8 @@ public class FileStorage(IConfiguration configuration, IHostEnvironment environm
 
     public string ProjectFolder(int projectId) =>
         Path.Combine(RootPath, "projects", projectId.ToString());
+
+    // Work folder of a model run: {RootPath}/runs/{runId}/ (see RunFolders).
+    public string RunFolder(Guid runId) =>
+        Path.Combine(RootPath, "runs", runId.ToString());
 }

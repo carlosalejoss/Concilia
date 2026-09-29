@@ -45,7 +45,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - [x] 18. Lanzamiento del proceso con carpeta de trabajo, lectura línea a línea de stdout, lectura de stderr por separado (el aviso `unrecognized_model` no es un fallo), latido y tiempo máximo.
 - [x] 19. Lectura del veredicto final en el campo `result`, con reintento si falta o es inválido.
 - [x] 20. `LiteLlmProvider`: `claude -p` real contra la pasarela, con entorno construido de forma explícita, `CLAUDE_CONFIG_DIR` propio por ejecución y `--allowedTools`. Node y Claude Code en la imagen de la API.
-- [ ] 21. `POST /projects/{id}/runs` con una tarea trivial (resumir los archivos) y tabla `Runs` con estado y resultado.
+- [x] 21. `POST /projects/{id}/runs` con una tarea trivial (resumir los archivos) y tabla `Runs` con estado y resultado.
 - [ ] 22. Progreso en vivo por SSE y una consola de eventos en la web.
 
 **Hecho cuando:** se pulsa "Ejecutar", se ve el progreso y el resultado de un modelo.

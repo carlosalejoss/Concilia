@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
@@ -18,6 +19,16 @@ builder.Services.AddSingleton<FileStorage>();
 // The model runner: Fake by default, LiteLlm when Runner:Provider says so.
 builder.Services.AddRunnerProvider(builder.Configuration);
 
+// Runs are queued by the API and executed in the background by RunWorker;
+// their progress events are kept in memory for the SSE endpoint.
+builder.Services.AddSingleton<RunQueue>();
+builder.Services.AddSingleton<RunEventStore>();
+builder.Services.AddHostedService<RunWorker>();
+
+// Enums travel as text in JSON ("Done", not 2), easier to read in the web.
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
 var app = builder.Build();
 
 // Apply pending migrations on startup when asked to (docker-compose.yml sets
@@ -32,6 +43,7 @@ if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapProjectEndpoints();
 app.MapProjectFileEndpoints();
+app.MapRunEndpoints();
 
 app.Run();
 
