@@ -23,6 +23,8 @@ export type RunState = 'Queued' | 'Running' | 'Done' | 'Blocked' | 'Failed' | 'T
 export type Run = {
   id: string
   projectId: number
+  jobId: string | null
+  slot: 'A' | 'B' | null
   retryOfRunId: string | null
   attempt: number
   provider: string
@@ -38,6 +40,20 @@ export type Run = {
   outputTokens: number | null
   numTurns: number | null
   errorMessage: string | null
+}
+
+export type Job = {
+  id: string
+  projectId: number
+  kind: string
+  createdAt: string
+  finishedAt: string | null
+}
+
+// A job with all its runs: slot A and slot B, plus their retries.
+export type JobView = {
+  job: Job
+  runs: Run[]
 }
 
 export type RunDetails = {
