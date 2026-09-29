@@ -1,0 +1,213 @@
+using Microsoft.EntityFrameworkCore;
+using ReqArbiter.Api.Files;
+using ReqArbiter.Api.Persistence;
+using ReqArbiter.Core.Runner;
+using ReqArbiter.Core.Runs;
+
+namespace ReqArbiter.Api.Runs;
+
+// Executes the queued jobs in the background, one job at a time; the runs of
+// each job (A and B) run in parallel through JobRunner.
+public class JobWorker(
+    JobQueue queue,
+    IServiceScopeFactory scopes,
+    JobRunner jobRunner,
+    RunEventStore events,
+    FileStorage storage,
+    ILogger<JobWorker> logger) : BackgroundService
+{
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        await MarkInterruptedRunsAsync();
+
+        await foreach (var jobId in queue.Reader.ReadAllAsync(stoppingToken))
+        {
+            try
+            {
+                await ExecuteJobAsync(jobId, stoppingToken);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                await FailUnfinishedRunsAsync(jobId, "Cancelada: la API se estaba deteniendo.");
+            }
+            catch (Exception e)
+            {
+                // The exception goes to the API log; the user sees a generic message.
+                logger.LogError(e, "Job {JobId} failed unexpectedly", jobId);
+                await FailUnfinishedRunsAsync(jobId, "Error interno al ejecutar. Consulta el log de la API.");
+            }
+        }
+    }
+
+    private async Task ExecuteJobAsync(Guid jobId, CancellationToken cancellationToken)
+    {
+        using var scope = scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var job = await db.Jobs.FindAsync([jobId], cancellationToken);
+        if (job is null)
+        {
+            return;
+        }
+
+        var runs = await db.Runs
+            .Where(r => r.JobId == jobId && r.State == RunState.Queued)
+            .OrderBy(r => r.Slot)
+            .ToListAsync(cancellationToken);
+
+        // Both runs read the same input: the extracted texts of the project.
+        var files = await db.ProjectFiles
+            .Where(f => f.ProjectId == job.ProjectId && f.TextStoredName != null)
+            .OrderBy(f => f.UploadedAt)
+            .ToListAsync(cancellationToken);
+        var inputs = files
+            .Select(f => new RunInputFile(f.FileName, Path.Combine(storage.ProjectFolder(f.ProjectId), f.TextStoredName!)))
+            .ToList();
+
+        foreach (var run in runs)
+        {
+            run.State = RunState.Running;
+            run.StartedAt = DateTimeOffset.UtcNow;
+        }
+        await db.SaveChangesAsync(cancellationToken);
+
+        await jobRunner.RunAsync(runs, inputs, SaveOutcomeAsync, cancellationToken);
+
+        job.FinishedAt = DateTimeOffset.UtcNow;
+        await db.SaveChangesAsync(CancellationToken.None);
+    }
+
+    // Called by JobRunner as soon as each run ends. It uses its own DbContext
+    // (a DbContext must not be shared between runs finishing at the same time)
+    // and closes the run's event stream only after saving, so the web reads
+    // the final state when the stream ends.
+    private async Task SaveOutcomeAsync(RunOutcome outcome)
+    {
+        try
+        {
+            using var scope = scopes.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var run = await db.Runs.FindAsync(outcome.Run.Id);
+            if (run is null)
+            {
+                return;
+            }
+
+            if (outcome.Attempts is null)
+            {
+                logger.LogError(outcome.Error, "Run {RunId} failed unexpectedly", run.Id);
+                MarkFailed(run, "Error interno al ejecutar. Consulta el log de la API.");
+            }
+            else
+            {
+                // The first attempt updates this run; each retry becomes a new
+                // linked run in the same job and slot.
+                var attempts = outcome.Attempts;
+                for (var i = 0; i < attempts.Count; i++)
+                {
+                    var target = i == 0 ? run : new Run
+                    {
+                        Id = attempts[i].Request.RunId,
+                        ProjectId = run.ProjectId,
+                        JobId = run.JobId,
+                        Slot = run.Slot,
+                        RetryOfRunId = attempts[i].PreviousRunId,
+                        Attempt = i + 1,
+                        Provider = run.Provider,
+                        Model = run.Model,
+                        CreatedAt = DateTimeOffset.UtcNow,
+                        StartedAt = run.StartedAt,
+                    };
+                    Apply(target, attempts[i].Result);
+                    if (i > 0)
+                    {
+                        db.Runs.Add(target);
+                    }
+                }
+            }
+
+            await db.SaveChangesAsync();
+        }
+        finally
+        {
+            events.Complete(outcome.Run.Id);
+        }
+    }
+
+    private static void Apply(Run run, RunResult result)
+    {
+        run.State = result.Status switch
+        {
+            RunStatus.Done => RunState.Done,
+            RunStatus.Blocked => RunState.Blocked,
+            RunStatus.TimedOut => RunState.TimedOut,
+            RunStatus.HeartbeatLost => RunState.HeartbeatLost,
+            _ => RunState.Failed,
+        };
+        run.FinishedAt = DateTimeOffset.UtcNow;
+        run.VerdictState = result.Verdict?.State switch
+        {
+            VerdictState.Done => "hecho",
+            VerdictState.Blocked => "bloqueada",
+            _ => null,
+        };
+        run.VerdictReason = result.Verdict?.Reason;
+        run.ResultText = result.ResultText;
+        run.InputTokens = result.Usage?.InputTokens;
+        run.OutputTokens = result.Usage?.OutputTokens;
+        run.NumTurns = result.NumTurns;
+        run.ErrorMessage = result.ErrorMessage;
+    }
+
+    private static void MarkFailed(Run run, string message)
+    {
+        run.State = RunState.Failed;
+        run.FinishedAt = DateTimeOffset.UtcNow;
+        run.ErrorMessage = message;
+    }
+
+    // After an unexpected error or a shutdown: fail the runs of the job that
+    // did not finish and close their event streams.
+    private async Task FailUnfinishedRunsAsync(Guid jobId, string message)
+    {
+        try
+        {
+            using var scope = scopes.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var unfinished = await db.Runs
+                .Where(r => r.JobId == jobId && (r.State == RunState.Queued || r.State == RunState.Running))
+                .ToListAsync();
+            foreach (var run in unfinished)
+            {
+                MarkFailed(run, message);
+                events.Complete(run.Id);
+            }
+            await db.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Could not mark the runs of job {JobId} as failed", jobId);
+        }
+    }
+
+    // Runs that were queued or running when the API stopped will never finish.
+    private async Task MarkInterruptedRunsAsync()
+    {
+        try
+        {
+            using var scope = scopes.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            await db.Runs
+                .Where(r => r.State == RunState.Queued || r.State == RunState.Running)
+                .ExecuteUpdateAsync(set => set
+                    .SetProperty(r => r.State, RunState.Failed)
+                    .SetProperty(r => r.FinishedAt, DateTimeOffset.UtcNow)
+                    .SetProperty(r => r.ErrorMessage, "Interrumpida: la API se reinició."));
+        }
+        catch (Exception e)
+        {
+            // Without a database (e.g. in the /health test) there is nothing to mark.
+            logger.LogWarning(e, "Could not check for interrupted runs");
+        }
+    }
+}

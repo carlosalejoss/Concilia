@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
-using ReqArbiter.Core.Runner;
 using ReqArbiter.Core.Runs;
 
 namespace ReqArbiter.Api.Runs;
@@ -16,39 +15,8 @@ public static class RunEndpoints
 {
     public static void MapRunEndpoints(this WebApplication app)
     {
-        // Launch the summary task in the background. Answers 202 at once.
-        app.MapPost("/projects/{projectId:int}/runs",
-            async (int projectId, AppDbContext db, RunQueue queue, IRunnerProvider provider, RunnerOptions options) =>
-        {
-            if (!await db.Projects.AnyAsync(p => p.Id == projectId))
-            {
-                return Results.NotFound();
-            }
-
-            if (!await db.ProjectFiles.AnyAsync(f => f.ProjectId == projectId && f.TextStoredName != null))
-            {
-                return Results.ValidationProblem(new Dictionary<string, string[]>
-                {
-                    ["project"] = ["El proyecto no tiene archivos con texto. Sube algún .txt, .md, .docx o .pdf."],
-                });
-            }
-
-            var run = new Run
-            {
-                Id = Guid.NewGuid(),
-                ProjectId = projectId,
-                Provider = provider.Name,
-                Model = options.Model,
-                State = RunState.Queued,
-                CreatedAt = DateTimeOffset.UtcNow,
-            };
-            db.Runs.Add(run);
-            await db.SaveChangesAsync();
-            queue.Enqueue(run.Id);
-
-            return Results.Accepted($"/runs/{run.Id}", run);
-        });
-
+        // Runs are launched through jobs (POST /projects/{id}/jobs, in
+        // JobEndpoints); these endpoints read single runs.
         app.MapGet("/projects/{projectId:int}/runs", async (int projectId, AppDbContext db) =>
             await db.Runs
                 .Where(r => r.ProjectId == projectId)

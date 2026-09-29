@@ -12,8 +12,10 @@ public class RunnerOptions
     // "claude" in Linux and Docker; "claude.cmd" when the API runs on Windows.
     public string ClaudeExecutable { get; set; } = "claude";
 
-    // One configurable model is enough for milestone 3.
-    public string Model { get; set; } = "SS - GPT-6-SOL";
+    // The two models that run every job in parallel. Which model plays each
+    // role is configuration (the arbiter, still undecided, is not set here).
+    public string ModelA { get; set; } = "SS - GPT-6-SOL";
+    public string ModelB { get; set; } = "SS - GPT-6-LUNA";
 
     // Input window of the models, confirmed by the team leader.
     public int MaxContextTokens { get; set; } = 128_000;

@@ -92,6 +92,33 @@ namespace ReqArbiter.Api.Persistence.Migrations
                     b.ToTable("ProjectFiles");
                 });
 
+            modelBuilder.Entity("ReqArbiter.Core.Runs.Job", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("FinishedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Jobs");
+                });
+
             modelBuilder.Entity("ReqArbiter.Core.Runs.Run", b =>
                 {
                     b.Property<Guid>("Id")
@@ -112,6 +139,9 @@ namespace ReqArbiter.Api.Persistence.Migrations
 
                     b.Property<long?>("InputTokens")
                         .HasColumnType("bigint");
+
+                    b.Property<Guid?>("JobId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Model")
                         .IsRequired()
@@ -138,6 +168,10 @@ namespace ReqArbiter.Api.Persistence.Migrations
                     b.Property<Guid?>("RetryOfRunId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Slot")
+                        .HasMaxLength(1)
+                        .HasColumnType("character varying(1)");
+
                     b.Property<DateTimeOffset?>("StartedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -155,6 +189,8 @@ namespace ReqArbiter.Api.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("JobId");
+
                     b.HasIndex("ProjectId");
 
                     b.HasIndex("RetryOfRunId");
@@ -171,8 +207,22 @@ namespace ReqArbiter.Api.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ReqArbiter.Core.Runs.Job", b =>
+                {
+                    b.HasOne("ReqArbiter.Core.Projects.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ReqArbiter.Core.Runs.Run", b =>
                 {
+                    b.HasOne("ReqArbiter.Core.Runs.Job", null)
+                        .WithMany()
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("ReqArbiter.Core.Projects.Project", null)
                         .WithMany()
                         .HasForeignKey("ProjectId")

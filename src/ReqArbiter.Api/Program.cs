@@ -19,11 +19,14 @@ builder.Services.AddSingleton<FileStorage>();
 // The model runner: Fake by default, LiteLlm when Runner:Provider says so.
 builder.Services.AddRunnerProvider(builder.Configuration);
 
-// Runs are queued by the API and executed in the background by RunWorker;
-// their progress events are kept in memory for the SSE endpoint.
-builder.Services.AddSingleton<RunQueue>();
+// Jobs (model A and model B over the same input) are queued by the API and
+// executed in the background by JobWorker; the progress events of each run
+// are kept in memory for the SSE endpoint.
+builder.Services.AddSingleton<JobQueue>();
 builder.Services.AddSingleton<RunEventStore>();
-builder.Services.AddHostedService<RunWorker>();
+builder.Services.AddSingleton<RunExecutor>();
+builder.Services.AddSingleton<JobRunner>();
+builder.Services.AddHostedService<JobWorker>();
 
 // Enums travel as text in JSON ("Done", not 2), easier to read in the web.
 builder.Services.ConfigureHttpJsonOptions(options =>
@@ -44,6 +47,7 @@ app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapProjectEndpoints();
 app.MapProjectFileEndpoints();
 app.MapRunEndpoints();
+app.MapJobEndpoints();
 
 app.Run();
 
