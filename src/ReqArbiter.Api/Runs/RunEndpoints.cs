@@ -2,14 +2,10 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
 using ReqArbiter.Core.Runs;
 
 namespace ReqArbiter.Api.Runs;
-
-// A run plus the summary it produced, if any.
-public record RunDetails(Run Run, string? Summary);
 
 public static class RunEndpoints
 {
@@ -23,18 +19,8 @@ public static class RunEndpoints
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync());
 
-        app.MapGet("/runs/{runId:guid}", async (Guid runId, AppDbContext db, FileStorage storage) =>
-        {
-            var run = await db.Runs.FindAsync(runId);
-            if (run is null)
-            {
-                return Results.NotFound();
-            }
-
-            var summaryPath = Path.Combine(storage.RunFolder(runId), SummaryTask.OutputFile);
-            var summary = File.Exists(summaryPath) ? await File.ReadAllTextAsync(summaryPath) : null;
-            return Results.Ok(new RunDetails(run, summary));
-        });
+        app.MapGet("/runs/{runId:guid}", async (Guid runId, AppDbContext db) =>
+            await db.Runs.FindAsync(runId) is { } run ? Results.Ok(run) : Results.NotFound());
 
         // Server-Sent Events: one "data:" message per event, then "event: end".
         // The browser's EventSource reads this format directly.

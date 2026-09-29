@@ -4,6 +4,10 @@ export type Project = {
   id: number
   name: string
   createdAt: string
+  // Inputs of the requirements prompt.
+  systemName: string // with article: "el sistema ReservaSalas"
+  language: 'es' | 'en'
+  glossary: string | null
 }
 
 export type ProjectFile = {
@@ -25,6 +29,11 @@ export type Run = {
   projectId: number
   jobId: string | null
   slot: 'A' | 'B' | null
+  lotNumber: number | null
+  lotTotal: number | null
+  promptVersion: string | null
+  promptSha256: string | null
+  claudeCodeVersion: string | null
   retryOfRunId: string | null
   attempt: number
   provider: string
@@ -54,11 +63,6 @@ export type Job = {
 export type JobView = {
   job: Job
   runs: Run[]
-}
-
-export type RunDetails = {
-  run: Run
-  summary: string | null // content of output/resumen.md, if it was written
 }
 
 // One progress event, as sent by GET /runs/{id}/events.

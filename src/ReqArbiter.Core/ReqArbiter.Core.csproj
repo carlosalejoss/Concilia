@@ -11,4 +11,13 @@
     <PackageReference Include="PdfPig" Version="0.1.16" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The current requirements prompt, its repair annex and the catalog schema,
+         embedded in the DLL from prompts/ (the versioned source), so the API never
+         depends on files next to it. LogicalName is the resource name used in code. -->
+    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\prompt_requisitos_v1.2.md" LogicalName="prompt_requisitos.md" />
+    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\anexo_reparacion_v1.2.md" LogicalName="anexo_reparacion.md" />
+    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\requirements.schema.json" LogicalName="requirements.schema.json" />
+  </ItemGroup>
+
 </Project>

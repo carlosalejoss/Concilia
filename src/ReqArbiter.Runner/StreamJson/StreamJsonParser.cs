@@ -59,7 +59,7 @@ public static class StreamJsonParser
             ? list.EnumerateArray().Where(t => t.ValueKind == JsonValueKind.String).Select(t => t.GetString()!).ToList()
             : [];
 
-        return new InitEvent(GetString(root, "model"), tools, GetString(root, "session_id"));
+        return new InitEvent(GetString(root, "model"), tools, GetString(root, "session_id"), GetString(root, "claude_code_version"));
     }
 
     // "assistant" lines carry message.content: a list of "text" and "tool_use" blocks.

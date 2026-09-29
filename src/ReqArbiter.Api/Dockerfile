@@ -1,18 +1,22 @@
-# Build context: the src/ folder (see docker-compose.yml).
+# Build context: the repository root (see docker-compose.yml and .dockerignore),
+# because the API embeds the versioned prompt files from prompts/.
 
 # Stage 1: compile and publish the API with the full .NET SDK.
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-WORKDIR /src
+WORKDIR /repo
 
 # Restore first, copying only the project files, so Docker can cache the
 # NuGet packages while the code changes.
-COPY ReqArbiter.Api/ReqArbiter.Api.csproj ReqArbiter.Api/
-COPY ReqArbiter.Core/ReqArbiter.Core.csproj ReqArbiter.Core/
-COPY ReqArbiter.Runner/ReqArbiter.Runner.csproj ReqArbiter.Runner/
-RUN dotnet restore ReqArbiter.Api/ReqArbiter.Api.csproj
+COPY src/ReqArbiter.Api/ReqArbiter.Api.csproj src/ReqArbiter.Api/
+COPY src/ReqArbiter.Core/ReqArbiter.Core.csproj src/ReqArbiter.Core/
+COPY src/ReqArbiter.Runner/ReqArbiter.Runner.csproj src/ReqArbiter.Runner/
+RUN dotnet restore src/ReqArbiter.Api/ReqArbiter.Api.csproj
 
-COPY . .
-RUN dotnet publish ReqArbiter.Api/ReqArbiter.Api.csproj -c Release -o /app --no-restore
+# The same folder layout as the repository, so the relative paths of the
+# embedded prompt files (..\..\prompts\...) still work.
+COPY src/ src/
+COPY prompts/ prompts/
+RUN dotnet publish src/ReqArbiter.Api/ReqArbiter.Api.csproj -c Release -o /app --no-restore
 
 # Source of the Node.js runtime (LTS) that Claude Code needs.
 FROM node:24-bookworm-slim AS node

@@ -13,6 +13,10 @@ public class FileStorage(IConfiguration configuration, IHostEnvironment environm
     public string ProjectFolder(int projectId) =>
         Path.Combine(RootPath, "projects", projectId.ToString());
 
+    // Folder of a job (A/B over the same input): {RootPath}/jobs/{jobId}/, with its plan.
+    public string JobFolder(Guid jobId) =>
+        Path.Combine(RootPath, "jobs", jobId.ToString());
+
     // Work folder of a model run: {RootPath}/runs/{runId}/ (see RunFolders).
     public string RunFolder(Guid runId) =>
         Path.Combine(RootPath, "runs", runId.ToString());

@@ -59,7 +59,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 
 ## Hito 5: primer catálogo real
 
-- [ ] 25. Prompt v1 en `prompts/generacion_requisitos/` y montaje de sus entradas (nombre del sistema, idioma, glosario, dudas resueltas vacías y documentación).
+- [x] 25. Prompt v1 en `prompts/generacion_requisitos/` y montaje de sus entradas (nombre del sistema, idioma, glosario, dudas resueltas vacías y documentación).
 - [ ] 26. Esquema y validador portados a C#, con tests con el ejemplo ReservaSalas del propio prompt.
 - [ ] 27. Reintento con la lista de errores del validador, máximo dos veces.
 - [ ] 28. Catálogo validado en la web: tabla de requisitos y preguntas abiertas.

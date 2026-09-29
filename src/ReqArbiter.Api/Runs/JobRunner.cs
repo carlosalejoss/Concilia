@@ -8,24 +8,43 @@ namespace ReqArbiter.Api.Runs;
 // as attempts with a failed status).
 public record RunOutcome(Run Run, IReadOnlyList<RunAttempt>? Attempts, Exception? Error);
 
-// Runs the runs of a job (A and B) at the same time. Each one is independent:
-// if one throws, the other still finishes. onRunFinished is called as soon as
-// each run ends, so its result can be stored and shown without waiting for
-// the other one.
+// Runs the runs of a job: the two slots (A and B) at the same time, and within
+// each slot its lots one after another. Each run is independent: if one throws,
+// the others still run. onRunStarting is called just before each run starts,
+// and onRunFinished as soon as it ends, so its state can be stored and shown
+// without waiting for the rest.
 public class JobRunner(RunExecutor executor)
 {
     public async Task RunAsync(
         IReadOnlyList<Run> runs,
-        IReadOnlyList<RunInputFile> inputs,
+        JobContext context,
+        Func<Run, Task> onRunStarting,
         Func<RunOutcome, Task> onRunFinished,
         CancellationToken cancellationToken)
     {
-        var running = runs.Select(async run =>
+        var slots = runs
+            .GroupBy(r => r.Slot)
+            .Select(slot => RunSlotAsync(slot.OrderBy(r => r.LotNumber).ToList(), context, onRunStarting, onRunFinished, cancellationToken));
+
+        // ToList() starts every slot (Select is lazy until enumerated), so they
+        // run at the same time; Task.WhenAll then waits for all of them.
+        await Task.WhenAll(slots.ToList());
+    }
+
+    private async Task RunSlotAsync(
+        IReadOnlyList<Run> lots,
+        JobContext context,
+        Func<Run, Task> onRunStarting,
+        Func<RunOutcome, Task> onRunFinished,
+        CancellationToken cancellationToken)
+    {
+        foreach (var run in lots)
         {
+            await onRunStarting(run);
             RunOutcome outcome;
             try
             {
-                outcome = new RunOutcome(run, await executor.ExecuteAsync(run, inputs, cancellationToken), null);
+                outcome = new RunOutcome(run, await executor.ExecuteAsync(run, context, cancellationToken), null);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -37,10 +56,6 @@ public class JobRunner(RunExecutor executor)
             }
 
             await onRunFinished(outcome);
-        });
-
-        // ToList() starts every run (Select is lazy until enumerated), so they
-        // all run at the same time; Task.WhenAll then waits for all of them.
-        await Task.WhenAll(running.ToList());
+        }
     }
 }

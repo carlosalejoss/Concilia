@@ -33,7 +33,20 @@ namespace ReqArbiter.Api.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Glossary")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("SystemName")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
@@ -128,6 +141,9 @@ namespace ReqArbiter.Api.Persistence.Migrations
                     b.Property<int>("Attempt")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ClaudeCodeVersion")
+                        .HasColumnType("text");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -143,6 +159,12 @@ namespace ReqArbiter.Api.Persistence.Migrations
                     b.Property<Guid?>("JobId")
                         .HasColumnType("uuid");
 
+                    b.Property<int?>("LotNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("LotTotal")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -156,6 +178,12 @@ namespace ReqArbiter.Api.Persistence.Migrations
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("PromptSha256")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PromptVersion")
+                        .HasColumnType("text");
 
                     b.Property<string>("Provider")
                         .IsRequired()

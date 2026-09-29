@@ -43,6 +43,7 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
             request.TotalTimeout);
 
         ResultEvent? result = null;
+        string? claudeCodeVersion = null;
         var warnings = new List<string>();
 
         void OnLine(string rawLine)
@@ -52,6 +53,9 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
             {
                 switch (streamEvent)
                 {
+                    case InitEvent init:
+                        claudeCodeVersion = init.ClaudeCodeVersion;
+                        break;
                     case ResultEvent r:
                         result = r;
                         break;
@@ -100,7 +104,7 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
                 $"Ventana de contexto asumida para {model.Model}: {model.ContextWindow} tokens (salida máxima {model.MaxOutputTokens})"));
         }
 
-        return Finish(onEvent, RunEvaluator.Evaluate(outcome, result, request, warnings));
+        return Finish(onEvent, RunEvaluator.Evaluate(outcome, result, request, warnings) with { ClaudeCodeVersion = claudeCodeVersion });
     }
 
     private static RunResult Finish(Action<RunEvent> onEvent, RunResult result)

@@ -26,6 +26,17 @@ public class Run
     public Guid? JobId { get; set; }
     public string? Slot { get; set; }
 
+    // Which lot of the job's documentation this run processes (1-based), and
+    // how many lots there are. Retries keep the lot of the run they repeat.
+    public int? LotNumber { get; set; }
+    public int? LotTotal { get; set; }
+
+    // What exactly was sent: prompt version ("req-1.2") and SHA-256 of the
+    // assembled prompt, and the Claude Code version that ran it.
+    public string? PromptVersion { get; set; }
+    public string? PromptSha256 { get; set; }
+    public string? ClaudeCodeVersion { get; set; }
+
     // For a retry: the run it repeats. Attempt is 1 for the first run.
     public Guid? RetryOfRunId { get; set; }
     public int Attempt { get; set; } = 1;
