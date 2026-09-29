@@ -1,11 +1,22 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "system": "el sistema ReservaSalas",
   "language": "es",
   "requirements": [
     {
       "id": "REQ-001",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F002",
+          "quote": "El empleado puede reservar una sala indicando fecha, hora de inicio, hora de fin y número de asistentes"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
       "kind": "functional",
+      "notation_rationale": "Capacidad siempre disponible (D5); 'puede' aplicado al actor = SHALL implícito; enumeración sin trocear (G3).",
+      "decision_branch": "D5",
       "notation": "EARS",
       "ears_pattern": "ubiquitous",
       "master_template": null,
@@ -14,35 +25,34 @@
       "escalation_reason": null,
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHALL",
-      "obligation_basis": "implicit",
-      "obligation_evidence": null,
       "slots": {
         "system": "el sistema ReservaSalas",
-        "response": "permitir al empleado reservar una sala indicando la fecha, la hora de inicio, la hora de fin y el número de asistentes",
+        "feature": null,
+        "states": [],
         "trigger": null,
         "trigger_keyword": null,
-        "state": null,
-        "feature": null
+        "response": "permitir al empleado reservar una sala indicando la fecha, la hora de inicio, la hora de fin y el número de asistentes"
       },
-      "text": "El sistema ReservaSalas DEBERÁ permitir al empleado reservar una sala indicando la fecha, la hora de inicio, la hora de fin y el número de asistentes.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§2.1",
-          "quote": "El empleado puede reservar una sala indicando fecha, hora de inicio, hora de fin y número de asistentes"
-        }
-      ],
-      "notation_rationale": "Capacidad siempre disponible sin condición; 'puede' = capacidad del actor (SHALL implícito); enumeración no troceada (G3).",
       "open_question_ids": [
         "Q-001"
       ]
     },
     {
       "id": "REQ-002",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F003",
+          "quote": "Al confirmar la reserva, el sistema envía un correo de confirmación al empleado"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
       "kind": "functional",
+      "notation_rationale": "Respuesta funcional a un evento puntual (confirmación); la cota de 1 minuto se separa en REQ-003 (G4).",
+      "decision_branch": "D5",
       "notation": "EARS",
       "ears_pattern": "event_driven",
       "master_template": null,
@@ -51,33 +61,32 @@
       "escalation_reason": null,
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHALL",
-      "obligation_basis": "implicit",
-      "obligation_evidence": null,
       "slots": {
         "system": "el sistema ReservaSalas",
-        "response": "enviar un correo de confirmación al empleado",
+        "feature": null,
+        "states": [],
         "trigger": "el empleado confirme una reserva",
         "trigger_keyword": "WHEN",
-        "state": null,
-        "feature": null
+        "response": "enviar un correo de confirmación al empleado"
       },
-      "text": "CUANDO el empleado confirme una reserva, el sistema ReservaSalas DEBERÁ enviar un correo de confirmación al empleado.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§2.1",
-          "quote": "Al confirmar la reserva, el sistema envía un correo de confirmación al empleado"
-        }
-      ],
-      "notation_rationale": "Respuesta funcional a un evento puntual; la cota de 1 minuto se separa en REQ-003 (G4).",
       "open_question_ids": []
     },
     {
       "id": "REQ-003",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F003",
+          "quote": "el sistema envía un correo de confirmación al empleado en menos de 1 minuto"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
       "kind": "non_functional",
+      "notation_rationale": "Propiedad cuantificada de rendimiento (D1): PropertyMASTeR con comparador y valor.",
+      "decision_branch": "D1",
       "notation": "MASTeR",
       "ears_pattern": null,
       "master_template": "property",
@@ -86,9 +95,6 @@
       "escalation_reason": "non_functional_property",
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHALL",
-      "obligation_basis": "implicit",
-      "obligation_evidence": null,
       "slots": {
         "condition": null,
         "characteristic": "el tiempo transcurrido",
@@ -96,22 +102,24 @@
         "qualifying_expression": "menor que",
         "value": "1 minuto"
       },
-      "text": "El tiempo transcurrido desde la confirmación de una reserva hasta el envío del correo de confirmación DEBERÁ SER menor que 1 minuto.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§2.1",
-          "quote": "el sistema envía un correo de confirmación al empleado en menos de 1 minuto"
-        }
-      ],
-      "notation_rationale": "Propiedad cuantificada de rendimiento (D1): PropertyMASTeR con comparador y valor.",
       "open_question_ids": []
     },
     {
       "id": "REQ-004",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F004",
+          "quote": "Si la sala ya está reservada en esa franja, se rechaza la reserva"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
       "kind": "functional",
+      "notation_rationale": "Situación no deseada (conflicto de franja) con reacción definida en la fuente (D5).",
+      "decision_branch": "D5",
       "notation": "EARS",
       "ears_pattern": "unwanted_behaviour",
       "master_template": null,
@@ -120,33 +128,32 @@
       "escalation_reason": null,
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHALL",
-      "obligation_basis": "implicit",
-      "obligation_evidence": null,
       "slots": {
         "system": "el sistema ReservaSalas",
-        "response": "rechazar la reserva",
+        "feature": null,
+        "states": [],
         "trigger": "la sala solicitada ya está reservada en la franja indicada",
         "trigger_keyword": "IF",
-        "state": null,
-        "feature": null
+        "response": "rechazar la reserva"
       },
-      "text": "SI la sala solicitada ya está reservada en la franja indicada, ENTONCES el sistema ReservaSalas DEBERÁ rechazar la reserva.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§2.2",
-          "quote": "Si la sala ya está reservada en esa franja, se rechaza la reserva"
-        }
-      ],
-      "notation_rationale": "Situación no deseada (conflicto de franja) con reacción definida en la fuente.",
       "open_question_ids": []
     },
     {
       "id": "REQ-005",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F004",
+          "quote": "Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
       "kind": "functional",
+      "notation_rationale": "Segunda respuesta al mismo disparador no deseado, separada por G2 (D5).",
+      "decision_branch": "D5",
       "notation": "EARS",
       "ears_pattern": "unwanted_behaviour",
       "master_template": null,
@@ -155,33 +162,32 @@
       "escalation_reason": null,
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHALL",
-      "obligation_basis": "implicit",
-      "obligation_evidence": null,
       "slots": {
         "system": "el sistema ReservaSalas",
-        "response": "informar al empleado del rechazo de la reserva",
+        "feature": null,
+        "states": [],
         "trigger": "la sala solicitada ya está reservada en la franja indicada",
         "trigger_keyword": "IF",
-        "state": null,
-        "feature": null
+        "response": "informar al empleado del rechazo de la reserva"
       },
-      "text": "SI la sala solicitada ya está reservada en la franja indicada, ENTONCES el sistema ReservaSalas DEBERÁ informar al empleado del rechazo de la reserva.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§2.2",
-          "quote": "Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado"
-        }
-      ],
-      "notation_rationale": "Segunda respuesta al mismo disparador no deseado, separada por G2.",
       "open_question_ids": []
     },
     {
       "id": "REQ-006",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F005",
+          "quote": "Mientras una sala esté en mantenimiento, no se podrá reservar"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
       "kind": "functional",
+      "notation_rationale": "Comportamiento mientras se mantiene un estado (D5); prohibición expresada en positivo (R-e).",
+      "decision_branch": "D5",
       "notation": "EARS",
       "ears_pattern": "state_driven",
       "master_template": null,
@@ -190,33 +196,34 @@
       "escalation_reason": null,
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHALL",
-      "obligation_basis": "implicit",
-      "obligation_evidence": null,
       "slots": {
         "system": "el sistema ReservaSalas",
-        "response": "impedir la reserva de dicha sala",
+        "feature": null,
+        "states": [
+          "una sala esté en mantenimiento"
+        ],
         "trigger": null,
         "trigger_keyword": null,
-        "state": "una sala esté en mantenimiento",
-        "feature": null
+        "response": "impedir la reserva de esa sala"
       },
-      "text": "MIENTRAS una sala esté en mantenimiento, el sistema ReservaSalas DEBERÁ impedir la reserva de dicha sala.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§2.3",
-          "quote": "Mientras una sala esté en mantenimiento, no se podrá reservar"
-        }
-      ],
-      "notation_rationale": "Comportamiento activo mientras se mantiene un estado.",
       "open_question_ids": []
     },
     {
       "id": "REQ-007",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F006",
+          "quote": "Si la empresa contrata el módulo de catering, los empleados podrán añadir catering a la reserva"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
       "kind": "functional",
+      "notation_rationale": "Aplica solo si se contrata un módulo (D5); 'podrán' aplicado al actor = SHALL implícito.",
+      "decision_branch": "D5",
       "notation": "EARS",
       "ears_pattern": "optional_feature",
       "master_template": null,
@@ -225,33 +232,32 @@
       "escalation_reason": null,
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHALL",
-      "obligation_basis": "implicit",
-      "obligation_evidence": null,
       "slots": {
         "system": "el sistema ReservaSalas",
-        "response": "permitir a los empleados añadir catering a una reserva",
+        "feature": "se incluya el módulo de catering",
+        "states": [],
         "trigger": null,
         "trigger_keyword": null,
-        "state": null,
-        "feature": "se incluya el módulo de catering"
+        "response": "permitir a los empleados añadir catering a una reserva"
       },
-      "text": "DONDE se incluya el módulo de catering, el sistema ReservaSalas DEBERÁ permitir a los empleados añadir catering a una reserva.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§2.4",
-          "quote": "Si la empresa contrata el módulo de catering, los empleados podrán añadir catering a la reserva"
-        }
-      ],
-      "notation_rationale": "Aplica solo si se contrata un módulo; 'podrán' = capacidad del actor (SHALL implícito).",
       "open_question_ids": []
     },
     {
       "id": "REQ-008",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F007",
+          "quote": "Mientras el modo festivo esté activado, cuando un empleado intente reservar una sala, el sistema mostrará un aviso de día festivo"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
       "kind": "functional",
+      "notation_rationale": "Un estado y un disparador simples: EARS complex (D5).",
+      "decision_branch": "D5",
       "notation": "EARS",
       "ears_pattern": "complex",
       "master_template": null,
@@ -260,44 +266,42 @@
       "escalation_reason": null,
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHALL",
-      "obligation_basis": "implicit",
-      "obligation_evidence": null,
       "slots": {
         "system": "el sistema ReservaSalas",
-        "response": "mostrar al empleado un aviso de día festivo",
+        "feature": null,
+        "states": [
+          "el modo festivo esté activado"
+        ],
         "trigger": "un empleado intente reservar una sala",
         "trigger_keyword": "WHEN",
-        "state": "el modo festivo esté activado",
-        "feature": null
+        "response": "mostrar al empleado un aviso de día festivo"
       },
-      "text": "MIENTRAS el modo festivo esté activado, CUANDO un empleado intente reservar una sala, el sistema ReservaSalas DEBERÁ mostrar al empleado un aviso de día festivo.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§2.5",
-          "quote": "Mientras el modo festivo esté activado, cuando un empleado intente reservar una sala, el sistema mostrará un aviso de día festivo"
-        }
-      ],
-      "notation_rationale": "Un estado y un disparador simples: EARS complex.",
       "open_question_ids": []
     },
     {
       "id": "REQ-009",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F008",
+          "quote": "Si la reserva dura más de 4 horas y tiene más de 20 asistentes, deberá aprobarla el administrador"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "deberá",
       "kind": "functional",
+      "notation_rationale": "El sistema media la aprobación. Condición lógica sobre datos de la reserva, no es situación no deseada (D4): LogicMASTeR.",
+      "decision_branch": "D4",
       "notation": "MASTeR",
       "ears_pattern": null,
       "master_template": "functional",
       "master_activity": "autonomous",
       "master_condition": "logic",
-      "escalation_reason": "compound_condition",
+      "escalation_reason": "data_condition",
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHALL",
-      "obligation_basis": "explicit",
-      "obligation_evidence": "deberá",
       "slots": {
         "system": "el sistema ReservaSalas",
         "condition": "la reserva dura más de 4 horas y tiene más de 20 asistentes",
@@ -306,22 +310,61 @@
         "object": "la aprobación del administrador",
         "details": null
       },
-      "text": "SI la reserva dura más de 4 horas y tiene más de 20 asistentes, el sistema ReservaSalas DEBERÁ requerir la aprobación del administrador.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§2.6",
-          "quote": "Si la reserva dura más de 4 horas y tiene más de 20 asistentes, deberá aprobarla el administrador"
-        }
-      ],
-      "notation_rationale": "Dos condiciones unidas por 'y' inseparables (D4): FunctionalMASTeR con LogicMASTeR.",
       "open_question_ids": []
     },
     {
       "id": "REQ-010",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F009",
+          "quote": "Mientras el empleado tenga una sesión iniciada y el calendario corporativo esté sincronizado, el sistema mostrará al empleado sus reservas del día"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "kind": "functional",
+      "notation_rationale": "Dos estados unidos por 'y': caben en EARS (cero o muchas precondiciones), no es D4.",
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "state_driven",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_reason": null,
+      "escalation_fallback": null,
+      "out_of_subset": null,
+      "slots": {
+        "system": "el sistema ReservaSalas",
+        "feature": null,
+        "states": [
+          "el empleado tenga una sesión iniciada",
+          "el calendario corporativo esté sincronizado"
+        ],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "mostrar al empleado sus reservas del día"
+      },
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "REQ-011",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F010",
+          "quote": "La aplicación debe ser rápida"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "debe",
       "kind": "non_functional",
+      "notation_rationale": "Término vago 'rápida' (N3, D1): característica nominalizada, sin elegir métrica; valor pendiente y pregunta.",
+      "decision_branch": "D1",
       "notation": "MASTeR",
       "ears_pattern": null,
       "master_template": "property",
@@ -330,34 +373,33 @@
       "escalation_reason": "non_functional_property",
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHALL",
-      "obligation_basis": "explicit",
-      "obligation_evidence": "debe",
       "slots": {
         "condition": null,
-        "characteristic": "el tiempo de respuesta",
+        "characteristic": "la rapidez",
         "subject_matter": "del sistema ReservaSalas",
         "qualifying_expression": null,
         "value": "[POR DEFINIR]"
       },
-      "text": "El tiempo de respuesta del sistema ReservaSalas DEBERÁ SER [POR DEFINIR].",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§3.1",
-          "quote": "La aplicación debe ser rápida"
-        }
-      ],
-      "notation_rationale": "Término vago 'rápida' (N3): propiedad con valor pendiente y pregunta abierta.",
       "open_question_ids": [
         "Q-002"
       ]
     },
     {
-      "id": "REQ-011",
+      "id": "REQ-012",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F011",
+          "quote": "Sería deseable que el administrador pudiera exportar el histórico de reservas a CSV"
+        }
+      ],
+      "obligation": "SHOULD",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "Sería deseable",
       "kind": "functional",
+      "notation_rationale": "Obligatoriedad SHOULD (D3): EARS solo expresa SHALL; FunctionalMASTeR de interacción de usuario.",
+      "decision_branch": "D3",
       "notation": "MASTeR",
       "ears_pattern": null,
       "master_template": "functional",
@@ -366,9 +408,6 @@
       "escalation_reason": "non_mandatory_obligation",
       "escalation_fallback": null,
       "out_of_subset": null,
-      "obligation": "SHOULD",
-      "obligation_basis": "explicit",
-      "obligation_evidence": "Sería deseable",
       "slots": {
         "system": "el sistema ReservaSalas",
         "condition": null,
@@ -377,22 +416,24 @@
         "object": "el histórico de reservas",
         "details": "a formato CSV"
       },
-      "text": "El sistema ReservaSalas DEBERÍA PROPORCIONAR AL administrador LA CAPACIDAD DE exportar el histórico de reservas a formato CSV.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§3.2",
-          "quote": "Sería deseable que el administrador pudiera exportar el histórico de reservas a CSV"
-        }
-      ],
-      "notation_rationale": "Obligatoriedad SHOULD (D3): EARS solo expresa SHALL; FunctionalMASTeR de interacción de usuario.",
       "open_question_ids": []
     },
     {
-      "id": "REQ-012",
+      "id": "REQ-013",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F012",
+          "quote": "La aplicación debe funcionar en Chrome y Edge"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "debe",
       "kind": "non_functional",
+      "notation_rationale": "Requisito de entorno con SHALL (D2): EARS ubiquitous; EnvironmentMASTeR fuera del subconjunto.",
+      "decision_branch": "D2",
       "notation": "EARS",
       "ears_pattern": "ubiquitous",
       "master_template": null,
@@ -401,28 +442,16 @@
       "escalation_reason": null,
       "escalation_fallback": null,
       "out_of_subset": "environment",
-      "obligation": "SHALL",
-      "obligation_basis": "explicit",
-      "obligation_evidence": "debe",
       "slots": {
         "system": "el sistema ReservaSalas",
-        "response": "funcionar en los navegadores Chrome y Edge",
+        "feature": null,
+        "states": [],
         "trigger": null,
         "trigger_keyword": null,
-        "state": null,
-        "feature": null
+        "response": "funcionar en los navegadores Chrome y Edge"
       },
-      "text": "El sistema ReservaSalas DEBERÁ funcionar en los navegadores Chrome y Edge.",
       "origin": "explicit",
       "derived_from": [],
-      "source_trace": [
-        {
-          "source": "DOC-01",
-          "locator": "§3.3",
-          "quote": "La aplicación debe funcionar en Chrome y Edge"
-        }
-      ],
-      "notation_rationale": "Requisito de entorno (D2) con SHALL: EARS ubiquitous; EnvironmentMASTeR fuera del subconjunto.",
       "open_question_ids": []
     }
   ],
@@ -430,14 +459,13 @@
     {
       "id": "Q-001",
       "type": "missing_error_handling",
-      "question": "¿Qué debe hacer el sistema si la hora de fin indicada es anterior o igual a la hora de inicio, o si el número de asistentes supera la capacidad de la sala?",
+      "question": "¿Qué debe hacer el sistema si la hora de fin indicada es igual o anterior a la hora de inicio?",
       "related_requirements": [
         "REQ-001"
       ],
       "source_trace": [
         {
-          "source": "DOC-01",
-          "locator": "§2.1",
+          "fragment": "DOC-01#F002",
           "quote": "indicando fecha, hora de inicio, hora de fin y número de asistentes"
         }
       ]
@@ -445,45 +473,61 @@
     {
       "id": "Q-002",
       "type": "missing_value",
-      "question": "¿Qué operaciones deben ser rápidas y cuál es el tiempo máximo de respuesta aceptable para cada una?",
+      "question": "¿Qué operaciones deben ser rápidas, con qué métrica (por ejemplo, tiempo de respuesta) y cuál es el valor máximo aceptable?",
       "related_requirements": [
-        "REQ-010"
+        "REQ-011"
       ],
       "source_trace": [
         {
-          "source": "DOC-01",
-          "locator": "§3.1",
+          "fragment": "DOC-01#F010",
           "quote": "La aplicación debe ser rápida"
+        }
+      ]
+    },
+    {
+      "id": "Q-003",
+      "type": "scope",
+      "question": "¿La integración con Outlook entra en el alcance de esta versión?",
+      "related_requirements": [],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F013",
+          "quote": "En una versión futura, el sistema se integrará con Outlook"
         }
       ]
     }
   ],
   "discarded_statements": [
     {
-      "source": "DOC-01",
-      "locator": "§1",
-      "quote": "El objetivo del proyecto es reducir los conflictos de uso de las salas",
+      "fragment": "DOC-01#F001",
+      "quote": null,
       "reason": "business_goal",
       "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+    },
+    {
+      "fragment": "DOC-01#F014",
+      "quote": null,
+      "reason": "human_activity",
+      "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
     }
   ],
   "verdict": {
     "status": "complete",
     "counts": {
-      "requirements": 12,
-      "ears": 8,
+      "requirements": 13,
+      "ears": 9,
       "master": 4,
-      "open_questions": 2,
-      "discarded": 1
+      "open_questions": 3,
+      "discarded": 2
     },
     "self_check": {
-      "render_matches_text": true,
       "quotes_are_literal": true,
-      "all_statements_accounted": true,
+      "all_fragments_accounted": true,
       "no_vague_terms": true,
-      "ears_only_shall": true
+      "ears_only_shall": true,
+      "decision_tree_consistent": true
     },
     "issues": [],
-    "unprocessed_sections": []
+    "unprocessed_fragments": []
   }
 }
