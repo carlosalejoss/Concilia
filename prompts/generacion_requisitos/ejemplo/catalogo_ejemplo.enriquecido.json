@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "system": "el sistema ReservaSalas",
   "language": "es",
   "requirements": [
@@ -472,7 +472,7 @@
     {
       "id": "Q-001",
       "type": "missing_error_handling",
-      "question": "¿Qué debe hacer el sistema si la hora de fin indicada es igual o anterior a la hora de inicio?",
+      "question": "¿Cómo debe reaccionar el sistema si la reserva no puede completarse o los datos indicados no son válidos?",
       "related_requirements": [
         "REQ-001"
       ],
@@ -524,6 +524,7 @@
       "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
     }
   ],
+  "domain_terms": [],
   "verdict": {
     "status": "complete",
     "counts": {
@@ -535,6 +536,7 @@
     },
     "self_check": {
       "quotes_are_literal": true,
+      "figures_from_source": true,
       "all_fragments_accounted": true,
       "no_vague_terms": true,
       "ears_only_shall": true,

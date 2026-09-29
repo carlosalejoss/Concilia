@@ -1,0 +1,117 @@
+{
+  "version": "1.2",
+  "fragments": [
+    {
+      "id": "DOC-01#F001",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "1.",
+      "text": "Introduction",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F002",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "1.",
+      "text": "The purpose of LibraryLoan is to reduce the workload of the library staff.",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F003",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "2.",
+      "text": "Functional requirements",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F004",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "2.1",
+      "text": "A member can reserve a book that is on loan.",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F005",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "2.2",
+      "text": "When a member returns a book, the system will update the loan record.",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F006",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "2.3",
+      "text": "If the barcode of a book cannot be read, the system shall display an error message to the librarian.",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F007",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "2.4",
+      "text": "The librarian shall be able to:",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F008",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "2.4",
+      "text": "register new members,",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F009",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "2.4",
+      "text": "deactivate members.",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F010",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "2.5",
+      "text": "The system may send reminder emails before the due date.",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F011",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "2.6",
+      "text": "Members can subscribe to the Flexible Loan plan.",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F012",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "3.",
+      "text": "Non-functional requirements",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F013",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "3.1",
+      "text": "The response time of the search function shall be less than 2 seconds.",
+      "source_ref": null
+    },
+    {
+      "id": "DOC-01#F014",
+      "source": "DOC-01",
+      "kind": "document",
+      "section": "3.2",
+      "text": "In a future release, the system will integrate with the city card.",
+      "source_ref": null
+    }
+  ]
+}

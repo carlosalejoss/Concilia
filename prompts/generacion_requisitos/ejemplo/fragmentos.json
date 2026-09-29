@@ -1,103 +1,117 @@
 {
-  "version": "1.1",
+  "version": "1.2",
   "fragments": [
     {
       "id": "DOC-01#F001",
       "source": "DOC-01",
       "kind": "document",
       "section": "§1",
-      "text": "El objetivo del proyecto es reducir los conflictos de uso de las salas."
+      "text": "El objetivo del proyecto es reducir los conflictos de uso de las salas.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F002",
       "source": "DOC-01",
       "kind": "document",
       "section": "§2.1",
-      "text": "El empleado puede reservar una sala indicando fecha, hora de inicio, hora de fin y número de asistentes."
+      "text": "El empleado puede reservar una sala indicando fecha, hora de inicio, hora de fin y número de asistentes.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F003",
       "source": "DOC-01",
       "kind": "document",
       "section": "§2.1",
-      "text": "Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto."
+      "text": "Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F004",
       "source": "DOC-01",
       "kind": "document",
       "section": "§2.2",
-      "text": "Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado."
+      "text": "Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F005",
       "source": "DOC-01",
       "kind": "document",
       "section": "§2.3",
-      "text": "Mientras una sala esté en mantenimiento, no se podrá reservar."
+      "text": "Mientras una sala esté en mantenimiento, no se podrá reservar.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F006",
       "source": "DOC-01",
       "kind": "document",
       "section": "§2.4",
-      "text": "Si la empresa contrata el módulo de catering, los empleados podrán añadir catering a la reserva."
+      "text": "Si la empresa contrata el módulo de catering, los empleados podrán añadir catering a la reserva.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F007",
       "source": "DOC-01",
       "kind": "document",
       "section": "§2.5",
-      "text": "Mientras el modo festivo esté activado, cuando un empleado intente reservar una sala, el sistema mostrará un aviso de día festivo."
+      "text": "Mientras el modo festivo esté activado, cuando un empleado intente reservar una sala, el sistema mostrará un aviso de día festivo.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F008",
       "source": "DOC-01",
       "kind": "document",
       "section": "§2.6",
-      "text": "Si la reserva dura más de 4 horas y tiene más de 20 asistentes, deberá aprobarla el administrador."
+      "text": "Si la reserva dura más de 4 horas y tiene más de 20 asistentes, deberá aprobarla el administrador.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F009",
       "source": "DOC-01",
       "kind": "document",
       "section": "§2.7",
-      "text": "Mientras el empleado tenga una sesión iniciada y el calendario corporativo esté sincronizado, el sistema mostrará al empleado sus reservas del día."
+      "text": "Mientras el empleado tenga una sesión iniciada y el calendario corporativo esté sincronizado, el sistema mostrará al empleado sus reservas del día.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F010",
       "source": "DOC-01",
       "kind": "document",
       "section": "§3.1",
-      "text": "La aplicación debe ser rápida."
+      "text": "La aplicación debe ser rápida.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F011",
       "source": "DOC-01",
       "kind": "document",
       "section": "§3.2",
-      "text": "Sería deseable que el administrador pudiera exportar el histórico de reservas a CSV."
+      "text": "Sería deseable que el administrador pudiera exportar el histórico de reservas a CSV.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F012",
       "source": "DOC-01",
       "kind": "document",
       "section": "§3.3",
-      "text": "La aplicación debe funcionar en Chrome y Edge."
+      "text": "La aplicación debe funcionar en Chrome y Edge.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F013",
       "source": "DOC-01",
       "kind": "document",
       "section": "§3.4",
-      "text": "En una versión futura, el sistema se integrará con Outlook."
+      "text": "En una versión futura, el sistema se integrará con Outlook.",
+      "source_ref": null
     },
     {
       "id": "DOC-01#F014",
       "source": "DOC-01",
       "kind": "document",
       "section": "§3.5",
-      "text": "El administrador revisará cada mes las reservas que no se hayan utilizado."
+      "text": "El administrador revisará cada mes las reservas que no se hayan utilizado.",
+      "source_ref": null
     }
   ]
 }
