@@ -84,6 +84,15 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
             onEvent(new RunEvent(RunEventKind.Warning, EventSummaries.Truncate(redacted, EventSummaries.MaxToolTextLength)));
         }
 
+        // Report the context window Claude Code assumed for the model: it shows
+        // whether CLAUDE_CODE_MAX_CONTEXT_TOKENS took effect (128000) or not (200000).
+        foreach (var model in result?.ModelUsage ?? [])
+        {
+            onEvent(new RunEvent(
+                RunEventKind.ModelInfo,
+                $"Ventana de contexto asumida para {model.Model}: {model.ContextWindow} tokens (salida máxima {model.MaxOutputTokens})"));
+        }
+
         return Finish(onEvent, RunEvaluator.Evaluate(outcome, result, request, warnings));
     }
 

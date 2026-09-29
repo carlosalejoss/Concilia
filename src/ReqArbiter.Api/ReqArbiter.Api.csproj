@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ReqArbiter.Core\ReqArbiter.Core.csproj" />
+    <ProjectReference Include="..\ReqArbiter.Runner\ReqArbiter.Runner.csproj" />
   </ItemGroup>
 
   <ItemGroup>
