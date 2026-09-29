@@ -62,6 +62,18 @@ public class ClaudeCliRunnerTests
     }
 
     [Fact]
+    public async Task Reports_the_context_window_assumed_by_claude_code()
+    {
+        using var temp = new TempDirectory();
+
+        var (_, events) = await Run(Request(temp.Path, Directive("tools-sol.jsonl", writeFiles: [Output]), Output));
+
+        // The recordings were made without CLAUDE_CODE_MAX_CONTEXT_TOKENS: 200000.
+        Assert.Contains(events, e => e.Kind == RunEventKind.ModelInfo
+            && e.Text == "Ventana de contexto asumida para SS - GPT-6-SOL: 200000 tokens (salida máxima 32000)");
+    }
+
+    [Fact]
     public async Task Missing_output_file_fails_even_with_verdict_done()
     {
         using var temp = new TempDirectory();

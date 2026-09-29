@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
 using ReqArbiter.Api.Projects;
+using ReqArbiter.Api.Runs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Where uploaded files are stored (setting "Storage:RootPath").
 builder.Services.AddSingleton<FileStorage>();
+
+// The model runner: Fake by default, LiteLlm when Runner:Provider says so.
+builder.Services.AddRunnerProvider(builder.Configuration);
 
 var app = builder.Build();
 
