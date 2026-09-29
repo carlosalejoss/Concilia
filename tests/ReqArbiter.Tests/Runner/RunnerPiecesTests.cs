@@ -24,8 +24,26 @@ public class RunnerPiecesTests
         };
 
         Assert.Equal(
-            ["-p", "--model", "SS - GPT-6-LUNA", "--output-format", "stream-json", "--verbose", "--allowedTools", "Read,Write", "--max-turns", "10"],
+            [
+                "-p", "--model", "SS - GPT-6-LUNA", "--output-format", "stream-json", "--verbose",
+                "--tools", "Read,Write", "--allowedTools", "Read,Write", "--disable-slash-commands",
+                "--max-turns", "10",
+            ],
             ClaudeArguments.Build(request));
+    }
+
+    [Fact]
+    public void Only_api_retry_system_lines_are_retries()
+    {
+        const string denied = """{"type":"system","subtype":"permission_denied","tool_name":"Skill"}""";
+        const string retry = """{"type":"system","subtype":"api_retry","attempt":1}""";
+
+        var deniedEvent = EventSummaries.From(ReqArbiter.Runner.StreamJson.StreamJsonParser.ParseLine(denied).Single());
+        var retryEvent = EventSummaries.From(ReqArbiter.Runner.StreamJson.StreamJsonParser.ParseLine(retry).Single());
+
+        Assert.Equal(RunEventKind.Warning, deniedEvent?.Kind);
+        Assert.Contains("permission_denied", deniedEvent?.Text);
+        Assert.Equal(RunEventKind.ApiRetry, retryEvent?.Kind);
     }
 
     [Fact]
