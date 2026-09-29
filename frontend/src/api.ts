@@ -18,6 +18,41 @@ export type ProjectFile = {
   textStoredName: string | null // null: no text extracted for this type
 }
 
+export type RunState = 'Queued' | 'Running' | 'Done' | 'Blocked' | 'Failed' | 'TimedOut' | 'HeartbeatLost'
+
+export type Run = {
+  id: string
+  projectId: number
+  retryOfRunId: string | null
+  attempt: number
+  provider: string
+  model: string
+  state: RunState
+  createdAt: string
+  startedAt: string | null
+  finishedAt: string | null
+  verdictState: string | null
+  verdictReason: string | null
+  resultText: string | null
+  inputTokens: number | null
+  outputTokens: number | null
+  numTurns: number | null
+  errorMessage: string | null
+}
+
+export type RunDetails = {
+  run: Run
+  summary: string | null // content of output/resumen.md, if it was written
+}
+
+// One progress event, as sent by GET /runs/{id}/events.
+export type RunEvent = {
+  index: number
+  kind: string
+  text: string
+  at: string
+}
+
 // Reads the first validation message from an ASP.NET Core "problem details"
 // response, or falls back to the HTTP status.
 export async function errorMessage(response: Response): Promise<string> {
