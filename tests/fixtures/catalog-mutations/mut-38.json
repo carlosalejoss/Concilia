@@ -1,0 +1,368 @@
+{
+  "schema_version": "1.2",
+  "system": "the LibraryLoan system",
+  "language": "en",
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F004",
+          "quote": "A member can reserve a book that is on loan"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "kind": "functional",
+      "notation_rationale": "Capability offered to an actor ('can' + actor = implicit SHALL); always available (D5, ubiquitous).",
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "ubiquitous",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_reason": null,
+      "escalation_fallback": null,
+      "out_of_subset": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "feature": null,
+        "states": [],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "allow a member to reserve a book that is on loan"
+      },
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": [
+        "Q-001"
+      ]
+    },
+    {
+      "id": "REQ-002",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F005",
+          "quote": "When a member returns a book, the system will update the loan record"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "will",
+      "kind": "functional",
+      "notation_rationale": "Response to a discrete event (D5); 'will' states system behaviour, not a future release: implicit SHALL.",
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "event_driven",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_reason": null,
+      "escalation_fallback": null,
+      "out_of_subset": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "feature": null,
+        "states": [],
+        "trigger": "a member returns a book",
+        "trigger_keyword": "WHEN",
+        "response": "update the loan record"
+      },
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "REQ-003",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F006",
+          "quote": "If the barcode of a book cannot be read, the system shall display an error message to the librarian"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "shall",
+      "kind": "functional",
+      "notation_rationale": "Unwanted situation (unreadable barcode) with the reaction given by the source (D5).",
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "unwanted_behaviour",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_reason": null,
+      "escalation_fallback": null,
+      "out_of_subset": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "feature": null,
+        "states": [],
+        "trigger": "the barcode of a book cannot be read",
+        "trigger_keyword": "IF",
+        "response": "display an error message to the librarian"
+      },
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "REQ-004",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F007",
+          "quote": "The librarian shall be able to"
+        },
+        {
+          "fragment": "DOC-01#F008",
+          "quote": "register new members"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "shall",
+      "kind": "functional",
+      "notation_rationale": "List item: cites its lead-in sentence, which carries 'shall'. Capability of an actor, always available (D5).",
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "ubiquitous",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_reason": null,
+      "escalation_fallback": null,
+      "out_of_subset": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "feature": null,
+        "states": [],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "allow the librarian to register new members"
+      },
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "REQ-005",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F007",
+          "quote": "The librarian shall be able to"
+        },
+        {
+          "fragment": "DOC-01#F009",
+          "quote": "deactivate members"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "shall",
+      "kind": "functional",
+      "notation_rationale": "Second list item of the same lead-in sentence; separate action (G2), D5.",
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "ubiquitous",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_reason": null,
+      "escalation_fallback": null,
+      "out_of_subset": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "feature": null,
+        "states": [],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "allow the librarian to deactivate members"
+      },
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "REQ-006",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F010",
+          "quote": "The system may send reminder emails before the due date"
+        }
+      ],
+      "obligation": "MAY",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "may",
+      "kind": "functional",
+      "notation_rationale": "'may' with the system as subject = optional (MAY). EARS only expresses SHALL (D3): FunctionalMASTeR, autonomous.",
+      "decision_branch": "D3",
+      "notation": "MASTeR",
+      "ears_pattern": null,
+      "master_template": "functional",
+      "master_activity": "autonomous",
+      "master_condition": "none",
+      "escalation_reason": "non_mandatory_obligation",
+      "escalation_fallback": null,
+      "out_of_subset": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "condition": null,
+        "actor": null,
+        "process_verb": "send",
+        "object": "reminder emails",
+        "details": "before the due date"
+      },
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "REQ-007",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F011",
+          "quote": "Members can subscribe to the Flexible Loan plan"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "kind": "functional",
+      "notation_rationale": "Capability of an actor ('can', implicit SHALL), D5. 'Flexible Loan plan' is a domain name, declared in domain_terms.",
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "ubiquitous",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_reason": null,
+      "escalation_fallback": null,
+      "out_of_subset": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "feature": null,
+        "states": [],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "allow members to subscribe to the Flexible Loan plan"
+      },
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "REQ-008",
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F013",
+          "quote": "The response time of the search function shall be less than 2 seconds"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "shall",
+      "kind": "non_functional",
+      "notation_rationale": "Quantified performance property (D1): PropertyMASTeR with comparator and value.",
+      "decision_branch": "D1",
+      "notation": "MASTeR",
+      "ears_pattern": null,
+      "master_template": "property",
+      "master_activity": null,
+      "master_condition": "none",
+      "escalation_reason": "non_functional_property",
+      "escalation_fallback": null,
+      "out_of_subset": null,
+      "slots": {
+        "condition": null,
+        "characteristic": "the response time",
+        "subject_matter": "of the search function",
+        "qualifying_expression": "less than",
+        "value": "2 seconds"
+      },
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "Q-001",
+      "type": "missing_error_handling",
+      "question": "How shall the system react if the reservation of a book that is on loan cannot be completed?",
+      "related_requirements": [
+        "REQ-001"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F004",
+          "quote": "A member can reserve a book that is on loan"
+        }
+      ]
+    },
+    {
+      "id": "Q-002",
+      "type": "scope",
+      "question": "Is the integration with the city card within the scope of this version?",
+      "related_requirements": [],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F014",
+          "quote": "In a future release, the system will integrate with the city card"
+        }
+      ]
+    }
+  ],
+  "discarded_statements": [
+    {
+      "fragment": "DOC-01#F001",
+      "quote": null,
+      "reason": "heading",
+      "note": null
+    },
+    {
+      "fragment": "DOC-01#F002",
+      "quote": null,
+      "reason": "business_goal",
+      "note": "Business goal, not a verifiable system behaviour."
+    },
+    {
+      "fragment": "DOC-01#F003",
+      "quote": null,
+      "reason": "heading",
+      "note": null
+    },
+    {
+      "fragment": "DOC-01#F012",
+      "quote": null,
+      "reason": "heading",
+      "note": null
+    }
+  ],
+  "domain_terms": [
+    {
+      "term": "Flexible Loan plan",
+      "fragment": "DOC-01#F011"
+    }
+  ],
+  "verdict": {
+    "status": "complete",
+    "counts": {
+      "requirements": 8,
+      "ears": 6,
+      "master": 2,
+      "open_questions": 2,
+      "discarded": 4
+    },
+    "self_check": {
+      "quotes_are_literal": true,
+      "figures_from_source": true,
+      "all_fragments_accounted": true,
+      "no_vague_terms": true,
+      "ears_only_shall": true,
+      "decision_tree_consistent": true
+    },
+    "issues": [],
+    "unprocessed_fragments": []
+  }
+}

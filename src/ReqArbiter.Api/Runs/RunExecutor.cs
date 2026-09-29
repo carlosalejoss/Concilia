@@ -19,18 +19,27 @@ public class RunExecutor(
     RunnerOptions runnerOptions,
     CatalogOptions catalogOptions)
 {
-    public Task<IReadOnlyList<RunAttempt>> ExecuteAsync(Run run, JobContext context, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<RunAttempt>> ExecuteAsync(Run run, JobContext context, CancellationToken cancellationToken)
     {
         var request = CatalogTask.BuildRequest(
             run, context.Project, context.Plan, storage.RunFolder(run.Id), catalogOptions, runnerOptions.MaxContextTokens);
 
         // Retries publish into the same event stream, marked, so the console
         // in the web shows the whole task of this lot.
-        return new VerdictRetryRunner(provider).RunAsync(
+        var attempts = await new VerdictRetryRunner(provider).RunAsync(
             request,
             attempt => runEvent => events.Publish(
                 run.Id,
                 attempt.RunId == run.Id ? runEvent : runEvent with { Text = $"[reintento] {runEvent.Text}" }),
             cancellationToken);
+
+        // Every attempt keeps the validator's report of its catalog
+        // (output/informe.json). Step 27 turns an invalid catalog into a retry.
+        foreach (var attempt in attempts)
+        {
+            CatalogReport.ValidateRunFolder(attempt.Request.WorkDirectory, context.Project.SystemName);
+        }
+
+        return attempts;
     }
 }
