@@ -203,6 +203,21 @@ public class ClaudeCliRunnerTests
     }
 
     [Fact]
+    public async Task Input_files_count_towards_the_budget()
+    {
+        using var temp = new TempDirectory();
+        Directory.CreateDirectory(Path.Combine(temp.Path, "input"));
+        // ~100,000 estimated tokens in a file, with a short prompt.
+        File.WriteAllText(Path.Combine(temp.Path, "input", "grande.txt"), new string('a', 350_000));
+
+        var (result, _) = await Run(Request(temp.Path, Directive("tools-sol.jsonl"), Output));
+
+        Assert.Equal(RunStatus.Failed, result.Status);
+        Assert.Contains("demasiado grande", result.ErrorMessage);
+        Assert.False(File.Exists(Path.Combine(temp.Path, "fake-received.json")));
+    }
+
+    [Fact]
     public async Task Missing_executable_fails_with_a_clear_message()
     {
         using var temp = new TempDirectory();
