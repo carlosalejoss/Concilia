@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Project } from './api.ts'
 import ProjectFiles from './ProjectFiles.tsx'
 import Projects from './Projects.tsx'
+import Runs from './Runs.tsx'
 
 type HealthState =
   | { kind: 'loading' }
@@ -42,6 +43,7 @@ function App() {
       <Projects selectedId={selectedProject?.id ?? null} onSelect={setSelectedProject} />
       {/* key: a different project creates a new ProjectFiles with empty state. */}
       {selectedProject && <ProjectFiles key={selectedProject.id} project={selectedProject} />}
+      {selectedProject && <Runs key={selectedProject.id} project={selectedProject} />}
     </main>
   )
 }
