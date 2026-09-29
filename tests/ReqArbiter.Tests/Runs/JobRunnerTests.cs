@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting.Internal;
 using ReqArbiter.Api.Files;
@@ -70,19 +69,38 @@ public class JobRunnerTests
                 : _fake.RunAsync(request, onEvent, cancellationToken);
     }
 
+    // Each run waits until the other one has also started, then continues.
+    // If the runs went one after the other, the first would wait forever
+    // (here: until the 10 s timeout makes the test fail).
+    private sealed class BarrierProvider(int expectedRuns) : IRunnerProvider
+    {
+        private readonly FakeProvider _fake = new();
+        private readonly TaskCompletionSource _allStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private int _started;
+        public string Name => "Barrier";
+
+        public async Task<RunResult> RunAsync(RunRequest request, Action<RunEvent> onEvent, CancellationToken cancellationToken)
+        {
+            if (Interlocked.Increment(ref _started) == expectedRuns)
+            {
+                _allStarted.SetResult();
+            }
+            await _allStarted.Task.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
+            return await _fake.RunAsync(request, onEvent, cancellationToken);
+        }
+    }
+
     [Fact]
     public async Task Both_runs_execute_at_the_same_time()
     {
-        // Each fake run takes ~5 x 200 ms = 1 s.
-        using var setup = new Setup(new FakeProvider(stepDelay: TimeSpan.FromMilliseconds(200)));
+        using var setup = new Setup(new BarrierProvider(expectedRuns: 2));
         var outcomes = new List<RunOutcome>();
-        var clock = Stopwatch.StartNew();
 
         await setup.Runner.RunAsync(JobRuns(), setup.Inputs, o => { lock (outcomes) outcomes.Add(o); return Task.CompletedTask; }, CancellationToken.None);
 
-        // In sequence it would take ~2 s; in parallel, ~1 s.
-        Assert.True(clock.Elapsed < TimeSpan.FromMilliseconds(1800), $"Tardó {clock.Elapsed}");
+        // A TimeoutException inside a run would show up as an Error here.
         Assert.Equal(2, outcomes.Count);
+        Assert.All(outcomes, o => Assert.Null(o.Error));
         Assert.All(outcomes, o => Assert.Equal(RunStatus.Done, Assert.Single(o.Attempts!).Result.Status));
     }
 

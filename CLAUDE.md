@@ -26,6 +26,7 @@ Origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro y
 - `ANTHROPIC_BASE_URL` es la dirección de la pasarela sin el `/v1` final, y `ANTHROPIC_AUTH_TOKEN` es la clave de la pasarela.
 - Cada ejecución usa su propio `CLAUDE_CONFIG_DIR` vacío y un entorno construido de forma explícita: no se heredan variables del usuario ni `ANTHROPIC_API_KEY`.
 - Las herramientas se permiten con `--allowedTools "Read,Write"`. Los dos modelos ejecutan herramientas correctamente.
+- `--allowedTools` no limita las herramientas disponibles: en una ejecución real del hito 4, SOL usó `Bash` (Claude Code aprueba solo los comandos de lectura) e intentó el skill `claude-api`, siguiendo instrucciones del prompt de sistema de Claude Code. Desde entonces el runner pasa también `--tools "Read,Write"` (herramientas que existen) y `--disable-slash-commands` (sin skills). Pendiente de verificar en una ejecución real.
 - El aviso `unrecognized_model` sale por stderr y no es un error. Claude Code asume 200k de contexto y 32k de salida.
 - Con `CLAUDE_CODE_MAX_CONTEXT_TOKENS=128000` Claude Code asume 128k de contexto (verificado en el hito 3 con Claude Code 2.1.283: `modelUsage.contextWindow` = 128000). La salida máxima sigue en 32k.
 - Ejecución real desde la web verificada con `SS - GPT-6-SOL` y `SS - GPT-6-LUNA`: veredicto `hecho` y `resumen.md` escrito.

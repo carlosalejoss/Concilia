@@ -18,7 +18,10 @@ public static class EventSummaries
         ToolResultEvent result => new RunEvent(
             RunEventKind.ToolResult,
             (result.IsError ? "Error: " : "") + Truncate(result.Content, MaxToolTextLength)),
-        SystemEvent system => new RunEvent(RunEventKind.ApiRetry, $"Aviso del sistema ({system.Subtype}): {Truncate(system.RawJson, MaxToolTextLength)}"),
+        // Only "api_retry" is a retry; other system lines (e.g. a tool call
+        // denied with "permission_denied") are warnings.
+        SystemEvent { Subtype: "api_retry" } retry => new RunEvent(RunEventKind.ApiRetry, $"Reintento de la API: {Truncate(retry.RawJson, MaxToolTextLength)}"),
+        SystemEvent system => new RunEvent(RunEventKind.Warning, $"Aviso del sistema ({system.Subtype}): {Truncate(system.RawJson, MaxToolTextLength)}"),
         InvalidLineEvent invalid => new RunEvent(RunEventKind.Warning, $"Línea no JSON: {Truncate(invalid.Line, MaxToolTextLength)}"),
         _ => null, // result (reported at the end) and unknown types
     };
