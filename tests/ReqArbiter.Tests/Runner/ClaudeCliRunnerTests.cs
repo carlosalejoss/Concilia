@@ -70,7 +70,7 @@ public class ClaudeCliRunnerTests
 
         // The recordings were made without CLAUDE_CODE_MAX_CONTEXT_TOKENS: 200000.
         Assert.Contains(events, e => e.Kind == RunEventKind.ModelInfo
-            && e.Text == "Ventana de contexto asumida para SS - GPT-6-SOL: 200000 tokens (salida máxima 32000)");
+            && e.Text == "Ventana de contexto asumida para SS - GPT-6-SOL: 200000 tokens (salida máxima por defecto 32000; el runner pide 64000)");
     }
 
     [Fact]

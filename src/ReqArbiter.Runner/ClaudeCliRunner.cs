@@ -97,11 +97,15 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
 
         // Report the context window Claude Code assumed for the model: it shows
         // whether CLAUDE_CODE_MAX_CONTEXT_TOKENS took effect (128000) or not (200000).
+        // Its maxOutputTokens is only the model's default (32000 for unknown
+        // models), not the cap in use: Claude Code 2.1.283 applies
+        // CLAUDE_CODE_MAX_OUTPUT_TOKENS up to 128000 for them, so both are shown.
         foreach (var model in result?.ModelUsage ?? [])
         {
             onEvent(new RunEvent(
                 RunEventKind.ModelInfo,
-                $"Ventana de contexto asumida para {model.Model}: {model.ContextWindow} tokens (salida máxima {model.MaxOutputTokens})"));
+                $"Ventana de contexto asumida para {model.Model}: {model.ContextWindow} tokens " +
+                $"(salida máxima por defecto {model.MaxOutputTokens}; el runner pide {request.MaxOutputTokens})"));
         }
 
         return Finish(onEvent, RunEvaluator.Evaluate(outcome, result, request, warnings) with { ClaudeCodeVersion = claudeCodeVersion });
