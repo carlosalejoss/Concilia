@@ -30,6 +30,12 @@ public record RunRequest
     // Provisional until the real context window of the models is confirmed.
     public int MaxContextTokens { get; init; } = 128_000;
 
+    // Output cap per model response (CLAUDE_CODE_MAX_OUTPUT_TOKENS). Without it
+    // Claude Code assumes 32k for these models, and the reasoning of a model
+    // counts towards it: in milestone 5 LUNA spent the 32k before finishing
+    // the catalog, so its Write call arrived cut and could not be parsed.
+    public int MaxOutputTokens { get; init; } = 64_000;
+
     // Estimated input tokens above which the run is not launched.
     public int InputTokenBudget { get; init; } = 80_000;
 }

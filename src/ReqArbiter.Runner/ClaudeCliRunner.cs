@@ -37,7 +37,7 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
             executable,
             ClaudeArguments.Build(request),
             folders.Root,
-            ChildEnvironment.Build(gateway, folders, request.MaxContextTokens, Environment.GetEnvironmentVariables()),
+            ChildEnvironment.Build(gateway, folders, request.MaxContextTokens, request.MaxOutputTokens, Environment.GetEnvironmentVariables()),
             request.Prompt,
             request.HeartbeatTimeout,
             request.TotalTimeout);

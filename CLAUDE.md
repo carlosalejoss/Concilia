@@ -36,6 +36,7 @@ Origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro y
 - Ejecución real desde la web verificada con `SS - GPT-6-SOL` y `SS - GPT-6-LUNA`: veredicto `hecho` y `resumen.md` escrito.
 - El evento `result` final trae `is_error`, `terminal_reason`, `num_turns`, `result` (con el veredicto) y el uso de tokens. Su `total_cost_usd` no es fiable.
 - Cada ejecución arrastra unos 15.000 tokens de contexto base.
+- El razonamiento del modelo cuenta en el tope de salida. En la primera prueba real del catálogo (hito 5), LUNA gastó los 32.000 tokens en cada respuesta (unos 28.000 razonando) y su `Write` llegó cortado, con JSON imposible de leer; tras dos intentos agotó los 30 minutos. SOL usó 23.000 y terminó. Desde entonces el runner pasa `CLAUDE_CODE_MAX_OUTPUT_TOKENS` (`Runner:MaxOutputTokens`, 64.000 por defecto); falta verificar que Claude Code y la pasarela lo respetan.
 - Con `--tools "Read,Write"` y `--disable-slash-commands` el consumo baja mucho: la misma tarea de resumen pasó de 59.000–89.000 a unos 21.400 tokens de entrada (3 turnos), también en el modelo que no usaba herramientas de más.
 
 ## Secretos y datos

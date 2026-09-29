@@ -18,6 +18,7 @@ public static class ChildEnvironment
         GatewaySettings gateway,
         RunFolders folders,
         int maxContextTokens,
+        int maxOutputTokens,
         IDictionary parentEnvironment)
     {
         // Variable names are case-insensitive on Windows and case-sensitive elsewhere.
@@ -40,6 +41,7 @@ public static class ChildEnvironment
 
         environment["CLAUDE_CONFIG_DIR"] = folders.ClaudeConfig;
         environment["CLAUDE_CODE_MAX_CONTEXT_TOKENS"] = maxContextTokens.ToString(CultureInfo.InvariantCulture);
+        environment["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] = maxOutputTokens.ToString(CultureInfo.InvariantCulture);
         environment["ANTHROPIC_BASE_URL"] = gateway.BaseUrl;
         environment["ANTHROPIC_AUTH_TOKEN"] = gateway.AuthToken;
 

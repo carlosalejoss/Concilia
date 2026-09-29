@@ -60,7 +60,7 @@ public class RunnerPiecesTests
             ["HOME"] = "/home/usuario",
         };
 
-        var environment = ChildEnvironment.Build(Gateway, folders, 128_000, parent);
+        var environment = ChildEnvironment.Build(Gateway, folders, 128_000, 64_000, parent);
 
         Assert.Equal("/usr/bin", environment["PATH"]);
         Assert.False(environment.ContainsKey("ANTHROPIC_API_KEY"));
@@ -70,6 +70,7 @@ public class RunnerPiecesTests
         Assert.Equal(folders.Home, environment["HOME"]);
         Assert.Equal(folders.ClaudeConfig, environment["CLAUDE_CONFIG_DIR"]);
         Assert.Equal("128000", environment["CLAUDE_CODE_MAX_CONTEXT_TOKENS"]);
+        Assert.Equal("64000", environment["CLAUDE_CODE_MAX_OUTPUT_TOKENS"]);
     }
 
     [Fact]

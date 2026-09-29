@@ -43,7 +43,7 @@ public static class FakeClaudeLauncher
             ExecutablePath,
             arguments ?? [],
             folders.Root,
-            ChildEnvironment.Build(FakeGateway, folders, 128_000, Environment.GetEnvironmentVariables()),
+            ChildEnvironment.Build(FakeGateway, folders, 128_000, 64_000, Environment.GetEnvironmentVariables()),
             stdin,
             heartbeat ?? TimeSpan.FromSeconds(30),
             total ?? TimeSpan.FromSeconds(60));

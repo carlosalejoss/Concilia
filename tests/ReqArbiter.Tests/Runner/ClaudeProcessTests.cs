@@ -51,7 +51,7 @@ public class ClaudeProcessTests
         // of variables of its own to every process, so compare case-insensitively
         // and allow only names from our list).
         var allowed = ChildEnvironment.InheritedVariables
-            .Concat(["HOME", "USERPROFILE", "CLAUDE_CONFIG_DIR", "CLAUDE_CODE_MAX_CONTEXT_TOKENS", "ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN"])
+            .Concat(["HOME", "USERPROFILE", "CLAUDE_CONFIG_DIR", "CLAUDE_CODE_MAX_CONTEXT_TOKENS", "CLAUDE_CODE_MAX_OUTPUT_TOKENS", "ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN"])
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var unexpected = environment.EnumerateObject().Select(p => p.Name).Where(n => !allowed.Contains(n)).ToList();
         Assert.Empty(unexpected);
