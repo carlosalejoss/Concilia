@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Project } from './api.ts'
 import ProjectFiles from './ProjectFiles.tsx'
 import Projects from './Projects.tsx'
-import Runs from './Runs.tsx'
+import Jobs from './Jobs.tsx'
 
 type HealthState =
   | { kind: 'loading' }
@@ -30,7 +30,7 @@ function App() {
   }, [])
 
   return (
-    <main className="mx-auto max-w-3xl p-8 font-sans">
+    <main className="mx-auto max-w-6xl p-8 font-sans">
       <h1 className="text-2xl font-bold">ReqArbiter</h1>
       <p className="mt-4">
         Estado de la API:{' '}
@@ -43,7 +43,7 @@ function App() {
       <Projects selectedId={selectedProject?.id ?? null} onSelect={setSelectedProject} />
       {/* key: a different project creates a new ProjectFiles with empty state. */}
       {selectedProject && <ProjectFiles key={selectedProject.id} project={selectedProject} />}
-      {selectedProject && <Runs key={selectedProject.id} project={selectedProject} />}
+      {selectedProject && <Jobs key={selectedProject.id} project={selectedProject} />}
     </main>
   )
 }

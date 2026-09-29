@@ -53,7 +53,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 ## Hito 4: doble modelo, sin árbitro
 
 - [x] 23. La misma tarea a `SS - GPT-6-SOL` y `SS - GPT-6-LUNA` en paralelo, con dos ejecuciones ligadas a una misma tarea.
-- [ ] 24. Vista de dos columnas (A y B) en la web.
+- [x] 24. Vista de dos columnas (A y B) en la web.
 
 **Hecho cuando:** se ven dos resultados independientes de la misma entrada.
 
