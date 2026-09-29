@@ -12,6 +12,7 @@ export default defineConfig({
     proxy: {
       '/health': 'http://localhost:5292',
       '/projects': 'http://localhost:5292',
+      '/runs': 'http://localhost:5292',
     },
   },
 })
