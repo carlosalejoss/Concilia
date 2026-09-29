@@ -15,6 +15,10 @@ Hitos 0 a 4 completados. Se trabaja siguiendo `docs/plan-de-construccion.md`, un
 - Notación: EARS por defecto; MASTeR para requisitos no funcionales o complejos y para expresar obligatoriedad (shall, should, may).
 - Árbitro: el emparejamiento por embeddings se calcula fuera del LLM; el LLM explica y fusiona. La pasarela no ofrece modelos de embeddings.
 - Backlog: épica → historia → tarea por defecto; falta decidir si "feature" es un nivel propio.
+- Catálogo: el modelo escribe `output/catalogo.json` con Write y termina con `VEREDICTO:`; el texto de cada requisito lo genera la plataforma a partir de los slots (D-23).
+- La documentación se divide en fragmentos con id estable (`DOC-01#F001`) y en lotes que respetan el tope de salida (D-24). Un lote agrupa secciones completas, de uno o varios documentos.
+- Los scripts de `prompts/generacion_requisitos/` son la referencia del fragmentador y del validador en C#.
+- Validación de JSON Schema en C#: LateApexEarlySpeed.Json.Schema (BSD-3-Clause). Se descarta JsonSchema.Net: sus binarios exigen una cuota de mantenimiento a empresas con ingresos.
 - Ventana de los modelos (confirmada por el team leader): 128k tokens de entrada y hasta 1M de salida. El runner pasa `CLAUDE_CODE_MAX_CONTEXT_TOKENS=128000`.
 
 ## Decisiones abiertas (no las cierres sin preguntar)

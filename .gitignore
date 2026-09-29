@@ -7,6 +7,9 @@ obj/
 TestResults/
 *.log
 
+# Python (scripts de referencia de prompts/)
+__pycache__/
+
 # Node / frontend
 node_modules/
 dist/
