@@ -15,10 +15,11 @@ Hitos 0, 1 y 2 completados. Se trabaja siguiendo `docs/plan-de-construccion.md`,
 - Notación: EARS por defecto; MASTeR para requisitos no funcionales o complejos y para expresar obligatoriedad (shall, should, may).
 - Árbitro: el emparejamiento por embeddings se calcula fuera del LLM; el LLM explica y fusiona. La pasarela no ofrece modelos de embeddings.
 - Backlog: épica → historia → tarea por defecto; falta decidir si "feature" es un nivel propio.
+- Ventana de los modelos (confirmada por el team leader): 128k tokens de entrada y hasta 1M de salida. El runner pasa `CLAUDE_CODE_MAX_CONTEXT_TOKENS=128000`.
 
 ## Decisiones abiertas (no las cierres sin preguntar)
 
-Origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro, umbral de "discrepancia grave" y ventana de contexto real de los modelos.
+Origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro y umbral de "discrepancia grave".
 
 ## Runner y pasarela (verificado)
 
