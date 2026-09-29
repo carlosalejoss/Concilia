@@ -1,0 +1,16 @@
+<documento id="DOC-01" nombre="DOC-01.txt">
+<f id="DOC-01#F001" sec="1.">Introduction</f>
+<f id="DOC-01#F002" sec="1.">The purpose of LibraryLoan is to reduce the workload of the library staff.</f>
+<f id="DOC-01#F003" sec="2.">Functional requirements</f>
+<f id="DOC-01#F004" sec="2.1">A member can reserve a book that is on loan.</f>
+<f id="DOC-01#F005" sec="2.2">When a member returns a book, the system will update the loan record.</f>
+<f id="DOC-01#F006" sec="2.3">If the barcode of a book cannot be read, the system shall display an error message to the librarian.</f>
+<f id="DOC-01#F007" sec="2.4">The librarian shall be able to:</f>
+<f id="DOC-01#F008" sec="2.4">register new members,</f>
+<f id="DOC-01#F009" sec="2.4">deactivate members.</f>
+<f id="DOC-01#F010" sec="2.5">The system may send reminder emails before the due date.</f>
+<f id="DOC-01#F011" sec="2.6">Members can subscribe to the Flexible Loan plan.</f>
+<f id="DOC-01#F012" sec="3.">Non-functional requirements</f>
+<f id="DOC-01#F013" sec="3.1">The response time of the search function shall be less than 2 seconds.</f>
+<f id="DOC-01#F014" sec="3.2">In a future release, the system will integrate with the city card.</f>
+</documento>
