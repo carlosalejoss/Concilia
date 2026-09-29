@@ -1,17 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "tfg/requirements.schema.json",
-  "title": "Catálogo de requisitos EARS/MASTeR v1.1 (salida de Modelo A / Modelo B)",
+  "title": "Catálogo de requisitos EARS/MASTeR v1.2 (salida de Modelo A / Modelo B)",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "system", "language", "requirements", "open_questions", "discarded_statements", "verdict"],
+  "required": ["schema_version", "system", "language", "requirements", "open_questions", "discarded_statements", "domain_terms", "verdict"],
   "properties": {
-    "schema_version": { "const": "1.1" },
+    "schema_version": { "const": "1.2" },
     "system": { "type": "string", "minLength": 1 },
     "language": { "enum": ["es", "en"] },
     "requirements": { "type": "array", "items": { "$ref": "#/$defs/requirement" } },
     "open_questions": { "type": "array", "items": { "$ref": "#/$defs/open_question" } },
     "discarded_statements": { "type": "array", "items": { "$ref": "#/$defs/discarded" } },
+    "domain_terms": { "type": "array", "items": { "$ref": "#/$defs/domain_term" } },
     "verdict": { "$ref": "#/$defs/verdict" }
   },
   "$defs": {
@@ -173,6 +174,15 @@
         "note": { "$ref": "#/$defs/nullable_string" }
       }
     },
+    "domain_term": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["term", "fragment"],
+      "properties": {
+        "term": { "type": "string", "minLength": 3 },
+        "fragment": { "$ref": "#/$defs/fragment_id" }
+      }
+    },
     "verdict": {
       "type": "object",
       "additionalProperties": false,
@@ -194,9 +204,10 @@
         "self_check": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["quotes_are_literal", "all_fragments_accounted", "no_vague_terms", "ears_only_shall", "decision_tree_consistent"],
+          "required": ["quotes_are_literal", "figures_from_source", "all_fragments_accounted", "no_vague_terms", "ears_only_shall", "decision_tree_consistent"],
           "properties": {
             "quotes_are_literal": { "type": "boolean" },
+            "figures_from_source": { "type": "boolean" },
             "all_fragments_accounted": { "type": "boolean" },
             "no_vague_terms": { "type": "boolean" },
             "ears_only_shall": { "type": "boolean" },

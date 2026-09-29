@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fragmentador de referencia para el prompt de requisitos v1.1.
+Fragmentador de referencia para el prompt de requisitos v1.2.
 
 Divide cada documento de entrada en fragmentos (frases) con un id estable, y las dudas
 resueltas en un fragmento por duda. El modelo cita fragmentos por su id y el validador
@@ -30,6 +30,15 @@ from pathlib import Path
 SECTION_RE = re.compile(r"^(§\s?\d+(?:\.\d+)*\.?|\d+(?:\.\d+)+\.?|\d+\.)\s+")
 MD_HEADING_RE = re.compile(r"^#{1,6}\s+(.*)$")
 BULLET_RE = re.compile(r"^([-*•·]|[a-z]\)|\(?[ivx]+\))\s+", re.IGNORECASE)
+
+# Un título numerado ("2. Requisitos funcionales") es corto y no termina en signo de puntuación.
+HEADING_MAX_WORDS = 10
+HEADING_END_RE = re.compile(r"[.,;:!?…]$")
+
+# Identificador de requisito de la fuente al principio de un párrafo ("FR-12", "NFR_3", "REQ-001", "R12").
+# El texto del fragmento no cambia: el id se copia aparte en `source_ref` para cruzar con catálogos
+# de referencia (p. ej., los requisitos numerados de PURE).
+SOURCE_REF_RE = re.compile(r"^((?:[A-Z]{1,6}[-_]\d+(?:[.-]\d+)*)|(?:[A-Z]{1,4}\d+(?:\.\d+)*))\b[:.)]?\s")
 
 # Corte de frase: signo de cierre + espacio + inicio de frase en mayúscula, dígito o apertura.
 SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?…])\s+(?=[«\"“(¿¡]?[A-ZÁÉÍÓÚÑÜ0-9])")
@@ -71,12 +80,26 @@ def split_sentences(paragraph: str) -> list[str]:
     return [norm(p) for p in out if norm(p)]
 
 
+def starts_new_block(line: str) -> bool:
+    """La línea abre un bloque propio: etiqueta de sección, título markdown, viñeta o mayúscula inicial."""
+    return bool(SECTION_RE.match(line) or MD_HEADING_RE.match(line) or BULLET_RE.match(line)
+                or re.match(r"^[«\"“(¿¡]?[A-ZÁÉÍÓÚÑÜ]", line))
+
+
+def is_numbered_heading(rest: str, next_line: str | None) -> bool:
+    """Tras una etiqueta de sección, el resto es un título si es corto, no termina en puntuación y lo que
+    sigue no es su continuación (una línea partida de PDF sigue en minúscula)."""
+    return (0 < len(rest.split()) <= HEADING_MAX_WORDS and not HEADING_END_RE.search(rest)
+            and (next_line is None or next_line == "" or starts_new_block(next_line)))
+
+
 def paragraphs(text: str):
     """Genera (sección, párrafo, es_título). Una línea con etiqueta de sección, un título markdown o una viñeta
     abre párrafo nuevo; las líneas que continúan un párrafo (texto extraído de PDF) se unen."""
     section = ""
     current: list[str] = []
     current_section = ""
+    lines = [raw.strip() for raw in text.splitlines()]
 
     def flush():
         nonlocal current
@@ -84,8 +107,7 @@ def paragraphs(text: str):
             yield current_section, norm(" ".join(current)), False
             current = []
 
-    for raw in text.splitlines():
-        line = raw.strip()
+    for i, line in enumerate(lines):
         if not line:
             yield from flush()
             continue
@@ -102,6 +124,9 @@ def paragraphs(text: str):
             section = m_sec.group(1).replace(" ", "")
             current_section = section
             rest = line[m_sec.end():]
+            if is_numbered_heading(rest, lines[i + 1] if i + 1 < len(lines) else None):
+                yield section, norm(rest), True  # título numerado: fragmento propio, sin la etiqueta
+                continue
             current = [rest] if rest else []
             continue
         m_bullet = BULLET_RE.match(line)
@@ -122,14 +147,17 @@ def fragment_document(doc_id: str, text: str) -> list[dict]:
     for section, par, is_heading in paragraphs(text):
         for sentence in ([norm(par)] if is_heading else split_sentences(par)):
             n += 1
+            m_ref = None if is_heading else SOURCE_REF_RE.match(sentence)
             frags.append({"id": f"{doc_id}#F{n:03d}", "source": doc_id, "kind": "document",
-                          "section": safe_attr(section), "text": safe_text(sentence)})
+                          "section": safe_attr(section), "text": safe_text(sentence),
+                          "source_ref": m_ref.group(1) if m_ref else None})
     return frags
 
 
 def fragment_dudas(dudas: list[dict]) -> list[dict]:
     return [{"id": f"DUDAS#{d['id']}", "source": "DUDAS", "kind": "clarification",
-             "section": safe_attr(norm(d.get("pregunta", ""))), "text": safe_text(norm(d["respuesta"]))}
+             "section": safe_attr(norm(d.get("pregunta", ""))), "text": safe_text(norm(d["respuesta"])),
+             "source_ref": None}
             for d in dudas]
 
 
@@ -171,7 +199,7 @@ def main():
     if a.dudas:
         frags += fragment_dudas(json.loads(Path(a.dudas).read_text(encoding="utf-8")))
 
-    Path(a.salida).write_text(json.dumps({"version": "1.1", "fragments": frags}, ensure_ascii=False, indent=2) + "\n",
+    Path(a.salida).write_text(json.dumps({"version": "1.2", "fragments": frags}, ensure_ascii=False, indent=2) + "\n",
                               encoding="utf-8")
     if a.bloque_doc:
         Path(a.bloque_doc).write_text(doc_block(frags, names) + "\n", encoding="utf-8")

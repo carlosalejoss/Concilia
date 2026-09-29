@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Validador determinista del catálogo EARS/MASTeR v1.1 generado por el Modelo A o el Modelo B.
+Validador determinista del catálogo EARS/MASTeR v1.2 generado por el Modelo A o el Modelo B.
 
 Es la implementación de referencia: el port a C# debe dar los mismos códigos de error para
 los mismos ficheros (ver test_validador.py --exportar).
@@ -10,7 +10,7 @@ Uso:
                                [--schema requirements.schema.json] [--enriquecido salida.json]
 
 --fragmentos   fichero generado por fragmentar.py con los fragmentos del lote (y de las dudas).
-               Sin él no se comprueban C6, C10, C13 ni C16.
+               Sin él no se comprueban C6, C10, C13, C16, C17, N2 ni los términos de dominio.
 --enriquecido  escribe una copia del catálogo con el campo `text` renderizado en cada requisito.
                El texto lo genera siempre la plataforma, nunca el modelo.
 
@@ -29,7 +29,9 @@ from pathlib import Path
 try:
     import jsonschema
 except ImportError:  # pragma: no cover
-    sys.exit("Falta jsonschema: pip install jsonschema")
+    sys.exit('Falta jsonschema: pip install "jsonschema>=4.18"')
+if not hasattr(jsonschema, "Draft202012Validator"):  # pragma: no cover
+    sys.exit('jsonschema demasiado antiguo para el draft 2020-12: pip install "jsonschema>=4.18"')
 
 KW = {
     "es": {"WHEN": "CUANDO", "WHILE": "MIENTRAS", "IF": "SI", "THEN": "ENTONCES", "WHERE": "DONDE",
@@ -85,6 +87,22 @@ VAGUE = {
     },
 }
 
+# C13: señales modales explícitas de §7, por obligatoriedad. Se admiten las de los dos idiomas porque la
+# evidencia se copia de la fuente, que puede estar en otro idioma que `language`.
+OBLIGATION_SIGNALS = {
+    "SHALL": [r"deb(e|en|erá|erán)", r"tienen? que", r"han? de", r"es obligatori[oa]", r"obligatoriamente",
+              r"se requiere", r"requerid[oa]s?", r"necesariamente",
+              r"must", r"shall", r"required", r"(is|are) required to", r"(has|have) to", r"mandatory"],
+    "SHOULD": [r"debería(n)?", r"sería deseable", r"deseable", r"preferiblemente", r"preferentemente", r"idealmente",
+               r"se recomienda", r"recomendable",
+               r"should", r"preferably", r"recommended", r"desirable", r"ideally"],
+    "MAY": [r"opcionalmente", r"de forma opcional", r"opcional(es)?", r"si es posible", r"podría(n)?",
+            r"may", r"could", r"optionally", r"optional", r"if possible", r"nice to have"],
+}
+
+QUOTE_MIN_WORDS = 3  # C6: una cita más corta solo vale si es el fragmento entero
+NUMBER_RE = re.compile(r"\d+(?:[.,]\d+)*")
+
 TBD = ("[POR DEFINIR]", "[TBD]")
 SUBJECT_PREPS = {"es": {"de", "del", "desde", "en", "para", "durante"},
                  "en": {"of", "from", "for", "in", "during"}}
@@ -104,7 +122,17 @@ CATEGORY = {"C2": "sintaxis", "C3": "sintaxis", "C14": "sintaxis",
             "C5": "redaccion", "C15": "redaccion",
             "C7": "decision", "C12": "decision",
             "C6": "trazabilidad", "C13": "trazabilidad", "C16": "trazabilidad",
-            "C11": "referencias", "N3": "referencias"}
+            "C11": "referencias", "N3": "referencias",
+            "N2": "fidelidad", "C17": "trazabilidad"}
+
+# C18: orden de claves de §10 (la cita y la justificación antes de la decisión).
+REQ_KEY_ORDER = ["id", "source_trace", "obligation", "obligation_basis", "obligation_evidence", "kind",
+                 "notation_rationale", "decision_branch", "notation", "ears_pattern", "master_template",
+                 "master_activity", "master_condition", "escalation_reason", "escalation_fallback",
+                 "out_of_subset", "slots", "origin", "derived_from", "open_question_ids"]
+SLOT_KEY_ORDER = {"EARS": ["system", "feature", "states", "trigger", "trigger_keyword", "response"],
+                  "functional": ["system", "condition", "actor", "process_verb", "object", "details"],
+                  "property": ["condition", "characteristic", "subject_matter", "qualifying_expression", "value"]}
 
 QUOTE_MAP = str.maketrans({"“": '"', "”": '"', "„": '"', "«": '"', "»": '"', "‘": "'", "’": "'",
                            "–": "-", "—": "-", " ": " "})
@@ -114,6 +142,20 @@ def norm(s: str) -> str:
     """Normaliza para comparar citas: NFC, comillas y guiones tipográficos, espacios."""
     s = unicodedata.normalize("NFC", s).translate(QUOTE_MAP)
     return re.sub(r"\s+", " ", s).strip()
+
+
+def trim_end(s: str) -> str:
+    return norm(s).rstrip(".,;:")
+
+
+def contains_words(haystack: str, needle: str) -> bool:
+    """`needle` aparece en `haystack` como palabras completas (normalizado y sin distinguir mayúsculas)."""
+    return re.search(rf"(?<!\w){re.escape(norm(needle).lower())}(?!\w)", norm(haystack).lower()) is not None
+
+
+def numbers(s: str) -> set[str]:
+    """Cifras de un texto, sin separadores de miles ni decimales ("99,9" y "99.9" dan "999")."""
+    return {re.sub(r"[.,]", "", n) for n in NUMBER_RE.findall(s)}
 
 
 def cap(s: str) -> str:
@@ -237,7 +279,26 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
     q_by_id = {q["id"]: q for q in questions}
     texts = {}
     per_req_categories: dict[str, set] = {}
-    found = {"quotes": True, "fragments": True, "vague": True, "ears_shall": True, "tree": True}
+    found = {"quotes": True, "figures": True, "fragments": True, "vague": True, "ears_shall": True, "tree": True}
+    whole_discards = {d["fragment"] for d in cat["discarded_statements"] if d["quote"] is None}
+
+    # Términos de dominio declarados (N7): nombres de entidades que contienen una palabra de C5.
+    domain_terms = []
+    for i, dt in enumerate(cat["domain_terms"]):
+        local = []
+        if len(dt["term"].split()) < 2:
+            local.append(f"C5 el término de dominio '{dt['term']}' debe tener al menos dos palabras")
+        if fragments is not None:
+            frag = fragments.get(dt["fragment"])
+            if frag is None:
+                local.append(f"C5 fragmento inexistente {dt['fragment']}")
+            elif not contains_words(frag["text"], dt["term"]):
+                local.append(f"C5 el término de dominio '{dt['term']}' no aparece en {dt['fragment']}")
+        if local:
+            found["vague"] = False
+        else:
+            domain_terms.append(dt["term"])
+        errors += [f"DOMAIN[{i}] {m}" for m in local]
 
     if len(set(req_ids)) != len(req_ids):
         errors.append("C9 ids de requisito duplicados")
@@ -249,9 +310,11 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
     referenced: set[str] = set()
     trace_total, trace_ok = 0, 0
 
-    def check_trace(owner: str, t: dict, local: list):
+    def check_trace(owner: str, t: dict, local: list, is_discard: bool = False):
         nonlocal trace_total, trace_ok
         referenced.add(t["fragment"])
+        if not is_discard and t["fragment"] in whole_discards:
+            local.append(f"C17 cita {t['fragment']}, que está descartado entero")
         if fragments is None or t.get("quote") is None:
             return
         trace_total += 1
@@ -261,6 +324,9 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
             found["quotes"] = False
         elif norm(t["quote"]) not in norm(frag["text"]):
             local.append(f"C6 cita no literal en {t['fragment']}: «{t['quote']}»")
+            found["quotes"] = False
+        elif len(t["quote"].split()) < QUOTE_MIN_WORDS and trim_end(t["quote"]) != trim_end(frag["text"]):
+            local.append(f"C6 cita de menos de {QUOTE_MIN_WORDS} palabras que no es el fragmento entero: «{t['quote']}»")
             found["quotes"] = False
         else:
             trace_ok += 1
@@ -298,6 +364,10 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
                 first = s["subject_matter"].split()[0].lower() if s["subject_matter"].split() else ""
                 if first not in SUBJECT_PREPS[lang]:
                     local.append(f"C14 subject_matter debe empezar por {sorted(SUBJECT_PREPS[lang])}: '{s['subject_matter']}'")
+        # C18 orden de claves (aviso)
+        tpl_key = "EARS" if r["notation"] == "EARS" else r["master_template"]
+        if list(r.keys()) != REQ_KEY_ORDER or list(s.keys()) != SLOT_KEY_ORDER.get(tpl_key, list(s.keys())):
+            warnings.append(f"{rid} C18 orden de claves distinto del de §10")
         # C3 sistema
         if "system" in s and s["system"] != sistema:
             local.append(f"C3 slots.system '{s['system']}' ≠ '{sistema}'")
@@ -318,6 +388,10 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
                 local.append(f"C15 prohibición en negativo en '{verb_slot}' (R-e: usa impedir, rechazar, bloquear…)")
             if lang == "es" and not ES_INFINITIVE.match(verb_slot.split()[0]):
                 warnings.append(f"{rid} el slot de respuesta no parece empezar por infinitivo (R-c): {verb_slot}")
+            if lang == "es":
+                coord = [w for w in re.findall(r"\b(?:y|e|o|u)\s+(\w+)", verb_slot) if ES_INFINITIVE.match(w)]
+                if coord:
+                    warnings.append(f"{rid} C4 posible segundo verbo coordinado {coord} (revisar G1/G2): {verb_slot}")
         # Render (lo hace siempre la plataforma)
         try:
             texts[rid] = render(r, lang)
@@ -329,6 +403,8 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
             txt = texts[rid]
             for t in TBD:
                 txt = txt.replace(t, "")
+            for term in domain_terms:  # N7: los términos de dominio declarados no son lenguaje vago
+                txt = re.sub(re.escape(term), "", txt, flags=re.IGNORECASE)
             if r["master_template"] == "property" and s.get("value") in TBD:
                 txt = txt.replace(s["characteristic"], "")  # N3: la característica nominalizada se admite
             for category, pats in VAGUE[lang].items():
@@ -352,9 +428,19 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
         if fragments is not None:
             cited = [fragments[t["fragment"]] for t in r["source_trace"] if t["fragment"] in fragments]
             if r["obligation_basis"] == "explicit":
-                ev = norm(r["obligation_evidence"]).lower()
-                if not any(ev in norm(f["text"]).lower() for f in cited):
-                    local.append(f"C13 obligation_evidence '{r['obligation_evidence']}' no aparece en los fragmentos citados")
+                ev = r["obligation_evidence"]
+                if not any(contains_words(f["text"], ev) for f in cited):
+                    local.append(f"C13 obligation_evidence '{ev}' no aparece en los fragmentos citados")
+                signals = OBLIGATION_SIGNALS[r["obligation"]]
+                if not any(re.search(rf"(?<!\w)(?:{pat})(?!\w)", norm(ev).lower()) for pat in signals):
+                    local.append(f"C13 obligation_evidence '{ev}' no es una señal de {r['obligation']} (§7)")
+            # N2 cifras: toda cifra de los slots aparece en algún fragmento citado
+            source_numbers = set().union(*(numbers(f["text"]) for f in cited)) if cited else set()
+            for key, val in slot_values(r).items():
+                invented = sorted(numbers(val) - source_numbers)
+                if invented:
+                    local.append(f"N2 cifra {invented} del slot '{key}' no aparece en los fragmentos citados")
+                    found["figures"] = False
             kinds = {f["kind"] for f in cited}
             if r["origin"] == "explicit" and "document" not in kinds:
                 local.append("C16 origin explicit sin ningún fragmento de documento citado")
@@ -391,7 +477,7 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
         local = []
         if fragments is not None and d["fragment"] not in fragments:
             local.append(f"C6 fragmento inexistente {d['fragment']}")
-        check_trace(f"DISCARDED[{i}]", d, local)
+        check_trace(f"DISCARDED[{i}]", d, local, is_discard=True)
         errors += [f"DISCARDED[{i}] {m}" for m in local]
 
     # C10 cobertura de fragmentos del documento
@@ -420,7 +506,8 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
     # Autoverificación declarada frente a la del validador (métrica, no bloquea)
     sc = v["self_check"]
     declared_vs_found = {
-        "quotes_are_literal": found["quotes"], "all_fragments_accounted": found["fragments"],
+        "quotes_are_literal": found["quotes"], "figures_from_source": found["figures"],
+        "all_fragments_accounted": found["fragments"],
         "no_vague_terms": found["vague"], "ears_only_shall": found["ears_shall"],
         "decision_tree_consistent": found["tree"],
     }
@@ -443,6 +530,7 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
         "calidad_redaccion": share("redaccion"),
         "coherencia_decision": share("decision"),
         "trazabilidad": share("trazabilidad"),
+        "fidelidad_cifras": share("fidelidad"),
         "requisitos_sin_errores": share(None),
         "citas_literales": f"{trace_ok}/{trace_total}" if fragments is not None else "no comprobado",
         "cobertura_fragmentos": (f"{len(doc_frags) - len(uncovered) - len(unprocessed & set(doc_frags))}/{len(doc_frags)}"
@@ -450,6 +538,7 @@ def check(cat: dict, sistema: str, fragments: dict | None, schema: dict) -> dict
         "proporcion_master": round(real["master"] / n, 3) if n else None,
         "ramas": {b: sum(r["decision_branch"] == b for r in reqs) for b in ("D1", "D2", "D3", "D4", "D5")},
         "preguntas_abiertas": len(questions),
+        "terminos_dominio": len(cat["domain_terms"]),
         "autoverificacion_coincide": not mismatches,
     }
     return {"valid": not errors, "errors": errors, "warnings": warnings, "metrics": metrics, "texts": texts}

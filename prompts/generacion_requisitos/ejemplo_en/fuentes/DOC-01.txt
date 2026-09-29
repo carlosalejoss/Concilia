@@ -1,0 +1,14 @@
+1. Introduction
+The purpose of LibraryLoan is to reduce the workload of the library staff.
+2. Functional requirements
+2.1 A member can reserve a book that is on loan.
+2.2 When a member returns a book, the system will update the loan record.
+2.3 If the barcode of a book cannot be read, the system shall display an error message to the librarian.
+2.4 The librarian shall be able to:
+- register new members,
+- deactivate members.
+2.5 The system may send reminder emails before the due date.
+2.6 Members can subscribe to the Flexible Loan plan.
+3. Non-functional requirements
+3.1 The response time of the search function shall be less than 2 seconds.
+3.2 In a future release, the system will integrate with the city card.
