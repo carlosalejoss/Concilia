@@ -5,6 +5,9 @@
 §2.4 Si la empresa contrata el módulo de catering, los empleados podrán añadir catering a la reserva.
 §2.5 Mientras el modo festivo esté activado, cuando un empleado intente reservar una sala, el sistema mostrará un aviso de día festivo.
 §2.6 Si la reserva dura más de 4 horas y tiene más de 20 asistentes, deberá aprobarla el administrador.
+§2.7 Mientras el empleado tenga una sesión iniciada y el calendario corporativo esté sincronizado, el sistema mostrará al empleado sus reservas del día.
 §3.1 La aplicación debe ser rápida.
 §3.2 Sería deseable que el administrador pudiera exportar el histórico de reservas a CSV.
 §3.3 La aplicación debe funcionar en Chrome y Edge.
+§3.4 En una versión futura, el sistema se integrará con Outlook.
+§3.5 El administrador revisará cada mes las reservas que no se hayan utilizado.
