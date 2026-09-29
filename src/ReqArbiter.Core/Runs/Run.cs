@@ -20,6 +20,12 @@ public class Run
 
     public int ProjectId { get; set; }
 
+    // The job this run belongs to and its side in it: "A" or "B". Retries
+    // keep the slot of the run they repeat. Null for the single runs of
+    // milestone 3, made before jobs existed.
+    public Guid? JobId { get; set; }
+    public string? Slot { get; set; }
+
     // For a retry: the run it repeats. Attempt is 1 for the first run.
     public Guid? RetryOfRunId { get; set; }
     public int Attempt { get; set; } = 1;

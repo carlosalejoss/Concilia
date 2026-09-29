@@ -32,7 +32,9 @@ services:
       Storage__RootPath: /data
       # Fake (default) or LiteLlm. With LiteLlm the two LITELLM_* variables are required.
       Runner__Provider: ${RUNNER_PROVIDER:-Fake}
-      Runner__Model: "${RUNNER_MODEL:-SS - GPT-6-SOL}"
+      # Models A and B of every job (roles are configuration).
+      Runner__ModelA: "${RUNNER_MODEL_A:-SS - GPT-6-SOL}"
+      Runner__ModelB: "${RUNNER_MODEL_B:-SS - GPT-6-LUNA}"
       # Only the api service receives the gateway variables.
       LITELLM_BASE_URL: ${LITELLM_BASE_URL:-}
       LITELLM_API_KEY: ${LITELLM_API_KEY:-}

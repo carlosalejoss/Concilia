@@ -13,6 +13,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<Run> Runs => Set<Run>();
 
+    public DbSet<Job> Jobs => Set<Job>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Project>(project =>
@@ -48,6 +50,23 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             run.Property(r => r.Model).HasMaxLength(100);
             run.Property(r => r.VerdictState).HasMaxLength(20);
             run.HasIndex(r => r.RetryOfRunId);
+            run.Property(r => r.Slot).HasMaxLength(1);
+
+            // Deleting a job also deletes its runs.
+            run.HasOne<Job>()
+                .WithMany()
+                .HasForeignKey(r => r.JobId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Job>(job =>
+        {
+            job.HasOne<Project>()
+                .WithMany()
+                .HasForeignKey(j => j.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            job.Property(j => j.Kind).HasMaxLength(20);
         });
     }
 }
