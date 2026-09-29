@@ -18,8 +18,15 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
         var redactor = SecretRedactor.ForGateway(gateway);
         onEvent(new RunEvent(RunEventKind.Started, $"Ejecución {request.RunId} con {request.ModelId}"));
 
-        // Refuse before launching anything if the input is too big.
-        var budgetError = InputBudget.Check(request.Prompt, request.InputTokenBudget);
+        // Refuse before launching anything if the input is too big. The input is
+        // the prompt plus the files in input/, which the model reads with Read.
+        // File sizes in bytes stand in for characters: for UTF-8 text that
+        // slightly overestimates, which is the safe side.
+        var inputFolder = Path.Combine(request.WorkDirectory, "input");
+        var inputFilesSize = Directory.Exists(inputFolder)
+            ? Directory.EnumerateFiles(inputFolder, "*", SearchOption.AllDirectories).Sum(f => new FileInfo(f).Length)
+            : 0;
+        var budgetError = InputBudget.Check(request.Prompt.Length + inputFilesSize, request.InputTokenBudget);
         if (budgetError is not null)
         {
             return Finish(onEvent, new RunResult { Status = RunStatus.Failed, ErrorMessage = budgetError });

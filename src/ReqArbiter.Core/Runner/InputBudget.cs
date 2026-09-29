@@ -9,13 +9,19 @@ public static class InputBudget
     // the real count depends on the model's tokenizer.
     public const double CharactersPerToken = 3.5;
 
-    public static int EstimateTokens(string text) =>
-        (int)Math.Ceiling(text.Length / CharactersPerToken);
+    public static int EstimateTokens(string text) => EstimateTokens(text.Length);
+
+    public static int EstimateTokens(long characters) =>
+        (int)Math.Ceiling(characters / CharactersPerToken);
 
     // Returns an error message for the user, or null if the input fits.
-    public static string? Check(string input, int budgetTokens)
+    public static string? Check(string input, int budgetTokens) => Check(input.Length, budgetTokens);
+
+    // The same, for input made of several parts (the prompt plus the files the
+    // model will read), given their total number of characters.
+    public static string? Check(long characters, int budgetTokens)
     {
-        var estimated = EstimateTokens(input);
+        var estimated = EstimateTokens(characters);
         return estimated > budgetTokens
             ? $"La entrada es demasiado grande: unos {estimated} tokens estimados, y el máximo es {budgetTokens}. Reduce el número o el tamaño de los archivos."
             : null;
