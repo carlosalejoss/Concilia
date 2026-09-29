@@ -86,7 +86,7 @@ reqarbiter/
 - [x] **Hito 1.** Esqueleto que arranca en Docker: API, base de datos y web mínima.
 - [x] **Hito 2.** Subida de archivos y extracción de texto, sin IA.
 - [x] **Hito 3.** Primera llamada a un modelo desde la web, con progreso en vivo.
-- [ ] **Hito 4.** Doble modelo en paralelo, sin árbitro.
+- [x] **Hito 4.** Doble modelo en paralelo, sin árbitro.
 - [ ] **Hito 5.** Primer catálogo de requisitos real, validado.
 - [ ] **Después.** Árbitro con embeddings y fusión, fase de dudas, backlog, aprobación por umbral y evaluación.
 

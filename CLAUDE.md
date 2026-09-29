@@ -4,7 +4,7 @@ Plataforma web (TFG) que genera catálogos de requisitos (EARS/MASTeR) y backlog
 
 ## Estado
 
-Hitos 0, 1, 2 y 3 completados. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
+Hitos 0 a 4 completados. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
 
 ## Decisiones vigentes
 
@@ -26,12 +26,13 @@ Origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro y
 - `ANTHROPIC_BASE_URL` es la dirección de la pasarela sin el `/v1` final, y `ANTHROPIC_AUTH_TOKEN` es la clave de la pasarela.
 - Cada ejecución usa su propio `CLAUDE_CONFIG_DIR` vacío y un entorno construido de forma explícita: no se heredan variables del usuario ni `ANTHROPIC_API_KEY`.
 - Las herramientas se permiten con `--allowedTools "Read,Write"`. Los dos modelos ejecutan herramientas correctamente.
-- `--allowedTools` no limita las herramientas disponibles: en una ejecución real del hito 4, SOL usó `Bash` (Claude Code aprueba solo los comandos de lectura) e intentó el skill `claude-api`, siguiendo instrucciones del prompt de sistema de Claude Code. Desde entonces el runner pasa también `--tools "Read,Write"` (herramientas que existen) y `--disable-slash-commands` (sin skills). Pendiente de verificar en una ejecución real.
+- `--allowedTools` no limita las herramientas disponibles: en una ejecución real del hito 4, SOL usó `Bash` (Claude Code aprueba solo los comandos de lectura) e intentó el skill `claude-api`, siguiendo instrucciones del prompt de sistema de Claude Code. Desde entonces el runner pasa también `--tools "Read,Write"` (herramientas que existen) y `--disable-slash-commands` (sin skills). Verificado con SOL y LUNA: solo usan Read y Write.
 - El aviso `unrecognized_model` sale por stderr y no es un error. Claude Code asume 200k de contexto y 32k de salida.
 - Con `CLAUDE_CODE_MAX_CONTEXT_TOKENS=128000` Claude Code asume 128k de contexto (verificado en el hito 3 con Claude Code 2.1.283: `modelUsage.contextWindow` = 128000). La salida máxima sigue en 32k.
 - Ejecución real desde la web verificada con `SS - GPT-6-SOL` y `SS - GPT-6-LUNA`: veredicto `hecho` y `resumen.md` escrito.
 - El evento `result` final trae `is_error`, `terminal_reason`, `num_turns`, `result` (con el veredicto) y el uso de tokens. Su `total_cost_usd` no es fiable.
 - Cada ejecución arrastra unos 15.000 tokens de contexto base.
+- Con `--tools "Read,Write"` y `--disable-slash-commands` el consumo baja mucho: la misma tarea de resumen pasó de 59.000–89.000 a unos 21.400 tokens de entrada (3 turnos), también en el modelo que no usaba herramientas de más.
 
 ## Secretos y datos
 
