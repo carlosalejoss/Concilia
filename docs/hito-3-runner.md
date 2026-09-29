@@ -119,4 +119,4 @@ No tomes decisiones con `total_cost_usd`: Claude Code lo calcula para un modelo 
 - Grabar `error-*.jsonl` y `sin-herramientas.jsonl`, antes del paso 19.
 - Dar la versión de `claude --version`, antes del paso 20.
 - Crear `.env` con los valores reales, antes de probar el paso 20.
-- Aclarar con el team leader si la ventana de contexto es de 128k y el máximo de salida de 1M, o al revés. Hasta entonces se usan 128k.
+- Aclarar con el team leader si la ventana de contexto es de 128k y el máximo de salida de 1M, o al revés. Hasta entonces se usan 128k. **Resuelto:** 128k de entrada y 1M de salida.
