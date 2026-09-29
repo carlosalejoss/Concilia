@@ -76,7 +76,7 @@ public static class CatalogTask
     // for the validator) and returns the request for that lot.
     public static RunRequest BuildRequest(
         Run run, Project project, CatalogPlan plan, string workDirectory,
-        CatalogOptions options, int maxContextTokens)
+        CatalogOptions options, RunnerOptions runner)
     {
         var lot = plan.Lots.Single(l => l.Number == run.LotNumber);
         var ids = lot.FragmentIds.ToHashSet();
@@ -107,7 +107,8 @@ public static class CatalogTask
             AllowedTools = ["Write"],
             HeartbeatTimeout = options.HeartbeatTimeout,
             TotalTimeout = options.TotalTimeout,
-            MaxContextTokens = maxContextTokens,
+            MaxContextTokens = runner.MaxContextTokens,
+            MaxOutputTokens = runner.MaxOutputTokens,
         };
     }
 }

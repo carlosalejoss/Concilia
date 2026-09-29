@@ -64,7 +64,7 @@ public class CatalogTaskTests
         using var temp = new TempDirectory();
         var plan = CatalogTask.Plan([new CatalogDocument("DOC-01", "DOC-01.txt", Example("ejemplo"))], new CatalogOptions());
 
-        var request = CatalogTask.BuildRequest(RunFor(plan.Lots[0]), Project, plan, temp.Path, new CatalogOptions(), 128_000);
+        var request = CatalogTask.BuildRequest(RunFor(plan.Lots[0]), Project, plan, temp.Path, new CatalogOptions(), new RunnerOptions());
 
         Assert.Equal(["Write"], request.AllowedTools);
         Assert.Equal([CatalogTask.OutputFile], request.ExpectedOutputFiles);
@@ -79,7 +79,7 @@ public class CatalogTaskTests
         using var temp = new TempDirectory();
         var plan = CatalogTask.Plan([new CatalogDocument("DOC-01", "DOC-01.txt", Example("ejemplo"))], new CatalogOptions());
 
-        var prompt = CatalogTask.BuildRequest(RunFor(plan.Lots[0]), Project, plan, temp.Path, new CatalogOptions(), 128_000).Prompt;
+        var prompt = CatalogTask.BuildRequest(RunFor(plan.Lots[0]), Project, plan, temp.Path, new CatalogOptions(), new RunnerOptions()).Prompt;
 
         Assert.Contains("<nombre_sistema>el sistema ReservaSalas</nombre_sistema>", prompt);
         Assert.Contains("<glosario>sala: espacio reservable</glosario>", prompt);
@@ -95,7 +95,7 @@ public class CatalogTaskTests
         var plan = CatalogTask.Plan([new CatalogDocument("DOC-01", "DOC-01.txt", Example("ejemplo"))], options);
         var lot = plan.Lots[1];
 
-        var request = CatalogTask.BuildRequest(RunFor(lot), Project, plan, temp.Path, options, 128_000);
+        var request = CatalogTask.BuildRequest(RunFor(lot), Project, plan, temp.Path, options, new RunnerOptions());
 
         using var file = JsonDocument.Parse(File.ReadAllText(Path.Combine(temp.Path, CatalogTask.FragmentsFile)));
         var ids = file.RootElement.GetProperty("fragments").EnumerateArray().Select(f => f.GetProperty("id").GetString());

@@ -35,6 +35,8 @@ services:
       # Models A and B of every job (roles are configuration).
       Runner__ModelA: "${RUNNER_MODEL_A:-SS - GPT-6-SOL}"
       Runner__ModelB: "${RUNNER_MODEL_B:-SS - GPT-6-LUNA}"
+      # Output cap per model response, passed to Claude Code (default 64000).
+      Runner__MaxOutputTokens: ${RUNNER_MAX_OUTPUT_TOKENS:-64000}
       # Only the api service receives the gateway variables.
       LITELLM_BASE_URL: ${LITELLM_BASE_URL:-}
       LITELLM_API_KEY: ${LITELLM_API_KEY:-}

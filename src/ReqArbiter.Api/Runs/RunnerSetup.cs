@@ -19,6 +19,10 @@ public class RunnerOptions
 
     // Input window of the models, confirmed by the team leader.
     public int MaxContextTokens { get; set; } = 128_000;
+
+    // Output cap per response. The models accept up to 1M; Claude Code
+    // assumes 32k unless told otherwise (see RunRequest.MaxOutputTokens).
+    public int MaxOutputTokens { get; set; } = 64_000;
 }
 
 public static class RunnerSetup

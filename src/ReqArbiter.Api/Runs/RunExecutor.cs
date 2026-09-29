@@ -22,7 +22,7 @@ public class RunExecutor(
     public async Task<IReadOnlyList<RunAttempt>> ExecuteAsync(Run run, JobContext context, CancellationToken cancellationToken)
     {
         var request = CatalogTask.BuildRequest(
-            run, context.Project, context.Plan, storage.RunFolder(run.Id), catalogOptions, runnerOptions.MaxContextTokens);
+            run, context.Project, context.Plan, storage.RunFolder(run.Id), catalogOptions, runnerOptions);
 
         // Retries publish into the same event stream, marked, so the console
         // in the web shows the whole task of this lot.
