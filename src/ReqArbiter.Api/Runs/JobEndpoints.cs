@@ -105,5 +105,20 @@ public static class JobEndpoints
                 .ToListAsync();
             return Results.Ok(new JobView(job, runs));
         });
+
+        // The merged catalog of model A or B, with its validator report.
+        app.MapGet("/jobs/{jobId:guid}/catalogs/{slot}", async (Guid jobId, string slot, AppDbContext db, FileStorage storage) =>
+        {
+            var job = await db.Jobs.FindAsync(jobId);
+            var planPath = Path.Combine(storage.JobFolder(jobId), CatalogTask.PlanFile);
+            if (job is null || slot is not ("A" or "B") || !File.Exists(planPath))
+            {
+                return Results.NotFound();
+            }
+
+            var project = await db.Projects.FindAsync(job.ProjectId);
+            var runs = await db.Runs.Where(r => r.JobId == jobId).ToListAsync();
+            return Results.Ok(JobCatalog.Build(slot, runs, project!.SystemName, CatalogTask.LoadPlan(planPath), storage, jobId));
+        });
     }
 }
