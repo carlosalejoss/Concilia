@@ -46,6 +46,10 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
         string? claudeCodeVersion = null;
         var warnings = new List<string>();
 
+        // Set when going on is useless, with the reason (see TruncatedToolCall).
+        using var stop = new CancellationTokenSource();
+        string? stopReason = null;
+
         void OnLine(string rawLine)
         {
             // Redact first: everything derived from the line is then safe.
@@ -62,6 +66,10 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
                     case InvalidLineEvent invalid:
                         warnings.Add(invalid.Line);
                         break;
+                    case ToolResultEvent toolResult when stopReason is null && IsTruncatedToolCall(toolResult):
+                        stopReason = TruncatedToolCall;
+                        stop.Cancel();
+                        break;
                 }
 
                 if (EventSummaries.From(streamEvent) is { } runEvent)
@@ -74,7 +82,7 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
         ProcessOutcome outcome;
         try
         {
-            outcome = await ClaudeProcess.RunAsync(launch, OnLine, cancellationToken);
+            outcome = await ClaudeProcess.RunAsync(launch, OnLine, cancellationToken, stop.Token);
         }
         catch (Win32Exception e)
         {
@@ -108,8 +116,20 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
                 $"(salida máxima por defecto {model.MaxOutputTokens}; el runner pide {request.MaxOutputTokens})"));
         }
 
-        return Finish(onEvent, RunEvaluator.Evaluate(outcome, result, request, warnings) with { ClaudeCodeVersion = claudeCodeVersion });
+        return Finish(onEvent, RunEvaluator.Evaluate(outcome, result, request, warnings, stopReason) with { ClaudeCodeVersion = claudeCodeVersion });
     }
+
+    public const string TruncatedToolCall =
+        "La llamada a Write llegó cortada (JSON incompleto): la respuesta del modelo agotó el tope de salida " +
+        "antes de terminar el fichero. Se detuvo la ejecución en lugar de dejar que el modelo lo repitiera igual.";
+
+    // Claude Code answers a tool call whose arguments are not valid JSON with
+    // this error. In the first real catalog run (milestone 5) it meant that the
+    // answer hit the output cap in the middle of Write: the model then wrote
+    // the whole file again, hit the cap again, and used up the 30 minutes.
+    // Stopping at the first one saves that time; the caller may retry.
+    private static bool IsTruncatedToolCall(ToolResultEvent toolResult) =>
+        toolResult.IsError && toolResult.Content.Contains("could not be parsed as JSON", StringComparison.Ordinal);
 
     private static RunResult Finish(Action<RunEvent> onEvent, RunResult result)
     {

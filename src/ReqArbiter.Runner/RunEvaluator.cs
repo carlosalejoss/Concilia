@@ -15,7 +15,8 @@ public static class RunEvaluator
         ProcessOutcome outcome,
         ResultEvent? result,
         RunRequest request,
-        IReadOnlyList<string> warnings)
+        IReadOnlyList<string> warnings,
+        string? stopReason = null)
     {
         var found = request.ExpectedOutputFiles
             .Where(f => File.Exists(RunPaths.ResolveInside(request.WorkDirectory, f)))
@@ -42,6 +43,8 @@ public static class RunEvaluator
                 return baseResult with { Status = RunStatus.TimedOut, ErrorMessage = $"Se agotó el tiempo máximo ({request.TotalTimeout})." };
             case ProcessEnd.HeartbeatLost:
                 return baseResult with { Status = RunStatus.HeartbeatLost, ErrorMessage = $"Sin actividad durante {request.HeartbeatTimeout}: se detuvo la ejecución." };
+            case ProcessEnd.Stopped:
+                return Fail(stopReason ?? "Se detuvo la ejecución.");
         }
 
         if (result is null)

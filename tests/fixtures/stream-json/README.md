@@ -31,4 +31,5 @@ Derivados de `tools-sol.jsonl` cambiando solo lo indicado.
 | `synthetic-veredicto-invalido.jsonl` | `VEREDICTO: {estado: hecho` (JSON inválido). |
 | `synthetic-bloqueada.jsonl` | Veredicto `bloqueada` con motivo. |
 | `synthetic-cortada.jsonl` | Salida cortada tras el `tool_result` del Write: no hay texto final ni evento `result`. |
+| `synthetic-write-cortado.jsonl` | Un `Write` cuyos argumentos no se pueden leer (`__unparsedToolInput`) y el error que Claude Code devuelve al modelo, como en la primera prueba real del catálogo con LUNA (hito 5): la respuesta agotó el tope de salida a mitad del `Write`. No hay evento `result`. |
 | `synthetic-reintento-api.jsonl` | Añade una línea `system` con subtipo `api_retry` tras `init`. **La forma de esa línea es una suposición**: no hay captura real de un reintento. |
