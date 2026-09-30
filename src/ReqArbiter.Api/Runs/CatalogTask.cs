@@ -13,8 +13,13 @@ public class CatalogOptions
     // Estimated catalog characters per source character (the example measures 10.7).
     public double OutputRatio { get; set; } = 15;
 
-    // Estimated output tokens per lot, below Claude Code's 32k cap per answer.
+    // Estimated output tokens per lot. Kept at 20k although the cap per answer
+    // is now 64k (Runner:MaxOutputTokens): the reasoning of the model counts
+    // towards that cap too.
     public int MaxOutputTokensPerLot { get; set; } = 20_000;
+
+    // Lots of the same model that run at the same time (1 = one after another).
+    public int MaxParallelLots { get; set; } = 5;
 
     // stream-json only writes a line per complete message, so writing a large
     // catalog can take minutes without output.

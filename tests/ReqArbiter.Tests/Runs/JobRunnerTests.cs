@@ -9,7 +9,8 @@ using ReqArbiter.Core.Runs;
 namespace ReqArbiter.Tests.Runs;
 
 // The runs of a job without the database: slots A and B in parallel, lots of
-// a slot in order, isolation between runs, and separate folders and streams.
+// a slot in parallel up to the limit, isolation between runs, and separate
+// folders and streams.
 public class JobRunnerTests
 {
     private const string ModelA = "SS - GPT-6-SOL";
@@ -21,14 +22,14 @@ public class JobRunnerTests
     {
         private readonly TempDirectory _temp = new();
 
-        public Setup(IRunnerProvider provider, int maxOutputTokensPerLot = 20_000)
+        public Setup(IRunnerProvider provider, int maxOutputTokensPerLot = 20_000, int maxParallelLots = 5)
         {
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string?> { ["Storage:RootPath"] = _temp.Path })
                 .Build();
             Storage = new FileStorage(configuration, new HostingEnvironment { ContentRootPath = _temp.Path });
-            var catalogOptions = new CatalogOptions { MaxOutputTokensPerLot = maxOutputTokensPerLot };
-            Runner = new JobRunner(new RunExecutor(provider, Events, Storage, new RunnerOptions(), catalogOptions));
+            var catalogOptions = new CatalogOptions { MaxOutputTokensPerLot = maxOutputTokensPerLot, MaxParallelLots = maxParallelLots };
+            Runner = new JobRunner(new RunExecutor(provider, Events, Storage, new RunnerOptions(), catalogOptions), catalogOptions);
 
             var text = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts", "ejemplo", "fuentes", "DOC-01.txt"));
             var plan = CatalogTask.Plan([new CatalogDocument("DOC-01", "DOC-01.txt", text)], catalogOptions);
@@ -79,23 +80,51 @@ public class JobRunnerTests
     }
 
     // Each run waits until `expectedRuns` runs have started, then continues.
-    // If the slots went one after the other, the first run would wait forever
-    // (here: until the 10 s timeout makes the test fail).
+    // If the runs went one after the other, the first run would wait forever
+    // (here: until the 10 s timeout makes the test fail). It also records the
+    // most runs of one model that were ever running at the same time.
     private sealed class BarrierProvider(int expectedRuns) : IRunnerProvider
     {
         private readonly FakeProvider _fake = new();
         private readonly TaskCompletionSource _allStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly Dictionary<string, (int Now, int Max)> _perModel = [];
         private int _started;
         public string Name => "Barrier";
 
+        public int MaxAtOnce(string model)
+        {
+            lock (_perModel)
+            {
+                return _perModel[model].Max;
+            }
+        }
+
         public async Task<RunResult> RunAsync(RunRequest request, Action<RunEvent> onEvent, CancellationToken cancellationToken)
         {
-            if (Interlocked.Increment(ref _started) == expectedRuns)
+            Count(request.ModelId, +1);
+            try
             {
-                _allStarted.SetResult();
+                if (Interlocked.Increment(ref _started) == expectedRuns)
+                {
+                    _allStarted.SetResult();
+                }
+                await _allStarted.Task.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
+                return await _fake.RunAsync(request, onEvent, cancellationToken);
             }
-            await _allStarted.Task.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken);
-            return await _fake.RunAsync(request, onEvent, cancellationToken);
+            finally
+            {
+                Count(request.ModelId, -1);
+            }
+        }
+
+        private void Count(string model, int change)
+        {
+            lock (_perModel)
+            {
+                var (now, max) = _perModel.GetValueOrDefault(model);
+                now += change;
+                _perModel[model] = (now, Math.Max(now, max));
+            }
         }
     }
 
@@ -114,10 +143,28 @@ public class JobRunnerTests
     }
 
     [Fact]
-    public async Task The_lots_of_a_slot_run_in_order()
+    public async Task Up_to_max_parallel_lots_of_a_slot_run_at_the_same_time()
+    {
+        // A small lot size splits the example into more than 2 lots. The first
+        // 2 lots of each slot must run together to pass the barrier, and never
+        // more than 2 of the same model.
+        var provider = new BarrierProvider(expectedRuns: 4);
+        using var setup = new Setup(provider, maxOutputTokensPerLot: 1_500, maxParallelLots: 2);
+        var outcomes = new List<RunOutcome>();
+
+        await setup.RunAsync(setup.JobRuns(), o => { lock (outcomes) outcomes.Add(o); return Task.CompletedTask; });
+
+        Assert.True(setup.Context.Plan.Lots.Count > 2);
+        Assert.All(outcomes, o => Assert.Null(o.Error));
+        Assert.Equal(2, provider.MaxAtOnce(ModelA));
+        Assert.Equal(2, provider.MaxAtOnce(ModelB));
+    }
+
+    [Fact]
+    public async Task With_one_lot_at_a_time_the_lots_of_a_slot_run_in_order()
     {
         // A small lot size splits the example into several lots.
-        using var setup = new Setup(new FakeProvider(), maxOutputTokensPerLot: 1_500);
+        using var setup = new Setup(new FakeProvider(), maxOutputTokensPerLot: 1_500, maxParallelLots: 1);
         var runs = setup.JobRuns();
         var started = new List<(string Slot, int Lot)>();
 
