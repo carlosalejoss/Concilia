@@ -91,8 +91,8 @@ function Jobs({ project }: { project: Project }) {
   const selected = jobs.find((j) => j.job.id === selectedId)
   const selectedUnfinished = selected?.runs.some((r) => !isFinished(r)) ?? false
 
-  // While the selected job has queued or running runs, reload every 3 s: the
-  // next lot of a slot starts right after the previous one ends, and its new
+  // While the selected job has queued or running runs, reload every 3 s: a
+  // queued lot starts as soon as another lot of its slot ends, and its new
   // state must reach the page even if no console is open to announce it.
   useEffect(() => {
     if (!selectedUnfinished) return
