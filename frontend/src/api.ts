@@ -65,6 +65,79 @@ export type JobView = {
   runs: Run[]
 }
 
+// Metrics of the validator (validar_catalogo.py), with its Spanish names.
+// Ratios go from 0 to 1; null when there is nothing to measure.
+export type CatalogMetrics = {
+  requisitos: number
+  conformidad_sintactica: number | null
+  calidad_redaccion: number | null
+  coherencia_decision: number | null
+  trazabilidad: number | null
+  fidelidad_cifras: number | null
+  requisitos_sin_errores: number | null
+  citas_literales: string // "12/13"
+  cobertura_fragmentos: string // "14/14"
+  proporcion_master: number | null
+  ramas: Record<string, number>
+  preguntas_abiertas: number
+  terminos_dominio: number
+  autoverificacion_coincide: boolean
+}
+
+export type CatalogReport = {
+  valid: boolean
+  errors: string[]
+  warnings: string[]
+  metrics: CatalogMetrics | null
+}
+
+// The parts of the catalog (schema 1.2, snake_case) that the web shows.
+export type SourceTrace = { fragment: string; quote: string | null }
+
+export type Requirement = {
+  id: string
+  source_trace: SourceTrace[]
+  obligation: string // SHALL, SHOULD, MAY...
+  kind: string
+  notation: 'EARS' | 'MASTeR'
+  ears_pattern: string | null
+  master_template: string | null
+  text: string | null // rendered by the platform from the slots
+  open_question_ids: string[]
+}
+
+export type OpenQuestion = {
+  id: string
+  type: string
+  question: string
+  related_requirements: string[]
+  source_trace: SourceTrace[]
+}
+
+export type Catalog = {
+  system: string
+  language: string
+  requirements: Requirement[]
+  open_questions: OpenQuestion[]
+  discarded_statements: {
+    fragment: string
+    reason: string
+    note: string | null
+  }[]
+}
+
+// GET /jobs/{id}/catalogs/{slot}: the Done lots of one model, merged.
+export type SlotCatalog = {
+  slot: 'A' | 'B'
+  model: string
+  lotTotal: number
+  includedLots: number[]
+  failedLots: number[]
+  pendingLots: number[]
+  report: CatalogReport | null
+  catalog: Catalog | null
+}
+
 // One progress event, as sent by GET /runs/{id}/events.
 export type RunEvent = {
   index: number

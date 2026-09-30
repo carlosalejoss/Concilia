@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { errorMessage, formatDate, type JobView, type Project, type Run, type RunEvent } from './api.ts'
+import CatalogView from './CatalogView.tsx'
 
 const SLOTS = ['A', 'B'] as const
 
@@ -150,7 +151,13 @@ function Jobs({ project }: { project: Project }) {
       {selected && (
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
           {SLOTS.map((slot) => (
-            <SlotColumn key={`${selected.job.id}-${slot}`} slot={slot} lots={lotsOfSlot(selected, slot)} onChange={reload} />
+            <SlotColumn
+              key={`${selected.job.id}-${slot}`}
+              jobId={selected.job.id}
+              slot={slot}
+              lots={lotsOfSlot(selected, slot)}
+              onChange={reload}
+            />
           ))}
         </div>
       )}
@@ -158,39 +165,58 @@ function Jobs({ project }: { project: Project }) {
   )
 }
 
-// One side of a job: for each lot, the live console of its run (retries
-// included, they publish into the same stream) and the state of its last attempt.
-function SlotColumn({ slot, lots, onChange }: { slot: string; lots: Run[][]; onChange: () => void }) {
+// One side of a job: the merged catalog of its finished lots and, below, for
+// each lot the live console of its run (retries included, they publish into
+// the same stream) and the state of its last attempt.
+function SlotColumn({
+  jobId,
+  slot,
+  lots,
+  onChange,
+}: {
+  jobId: string
+  slot: string
+  lots: Run[][]
+  onChange: () => void
+}) {
   const first = lots[0]?.[0]
   if (!first) {
     return null
   }
+
+  // Changes each time a run of this slot finishes: the catalog is fetched again.
+  const finishedRuns = lots.flat().filter(isFinished).length
 
   return (
     <div className="min-w-0">
       <h3 className="font-semibold">
         {slot} · {first.model} <span className="font-normal text-gray-500">({first.provider})</span>
       </h3>
-      {lots.map((runs) => {
-        const lotRun = runs[0]
-        const last = runs[runs.length - 1]
-        return (
-          <div key={lotRun.id} className="mt-3">
-            {(lotRun.lotTotal ?? 1) > 1 && (
-              <p className="text-sm font-semibold text-gray-600">
-                Lote {lotRun.lotNumber} de {lotRun.lotTotal}
-              </p>
-            )}
-            {/* Queued lots have nothing to show yet: their console opens when they start. */}
-            {lotRun.state !== 'Queued' ? (
-              <RunConsole runId={lotRun.id} onFinished={onChange} />
-            ) : (
-              <p className="text-sm text-gray-500">En cola…</p>
-            )}
-            {isFinished(last) && <RunResult run={last} />}
-          </div>
-        )
-      })}
+      <CatalogView jobId={jobId} slot={slot} version={finishedRuns} />
+
+      <details open className="mt-4">
+        <summary className="cursor-pointer font-semibold">Ejecución por lotes</summary>
+        {lots.map((runs) => {
+          const lotRun = runs[0]
+          const last = runs[runs.length - 1]
+          return (
+            <div key={lotRun.id} className="mt-3">
+              {(lotRun.lotTotal ?? 1) > 1 && (
+                <p className="text-sm font-semibold text-gray-600">
+                  Lote {lotRun.lotNumber} de {lotRun.lotTotal}
+                </p>
+              )}
+              {/* Queued lots have nothing to show yet: their console opens when they start. */}
+              {lotRun.state !== 'Queued' ? (
+                <RunConsole runId={lotRun.id} onFinished={onChange} />
+              ) : (
+                <p className="text-sm text-gray-500">En cola…</p>
+              )}
+              {isFinished(last) && <RunResult run={last} />}
+            </div>
+          )
+        })}
+      </details>
     </div>
   )
 }
@@ -231,7 +257,7 @@ function RunConsole({ runId, onFinished }: { runId: string; onFinished: () => vo
   )
 }
 
-// Final state of a run. The catalog itself is shown from step 28 on.
+// Final state of a run. Its catalog is part of the merged one (CatalogView).
 function RunResult({ run }: { run: Run }) {
   return (
     <div className="mt-2 text-sm">
