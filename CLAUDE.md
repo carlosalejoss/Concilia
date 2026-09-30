@@ -4,7 +4,7 @@ Plataforma web (TFG) que genera catálogos de requisitos (EARS/MASTeR) y backlog
 
 ## Estado
 
-Hitos 0 a 4 completados. Hito 5: pasos 25 a 28 hechos; falta la prueba real del autor con `LiteLlm`. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
+Hitos 0 a 5 completados. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
 
 ## Decisiones vigentes
 
@@ -42,6 +42,7 @@ Origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro y
 - El evento `result` final trae `is_error`, `terminal_reason`, `num_turns`, `result` (con el veredicto) y el uso de tokens. Su `total_cost_usd` no es fiable.
 - Cada ejecución arrastra unos 15.000 tokens de contexto base.
 - El razonamiento del modelo cuenta en el tope de salida. En la primera prueba real del catálogo (hito 5), LUNA gastó los 32.000 tokens en cada respuesta (unos 28.000 razonando) y su `Write` llegó cortado, con JSON imposible de leer; tras dos intentos agotó los 30 minutos. SOL usó 23.000 y terminó. Desde entonces el runner pasa `CLAUDE_CODE_MAX_OUTPUT_TOKENS` (`Runner:MaxOutputTokens`, 64.000 por defecto). En el código de Claude Code 2.1.283, para un modelo que no reconoce, la salida vale 32.000 por defecto y la variable se acepta hasta 128.000 (por encima, se recorta a 128.000). El `maxOutputTokens` de `modelUsage` es solo el valor por defecto, no el aplicado. Falta ver una respuesta real de más de 32.000 tokens para confirmar que la pasarela también lo respeta.
+- Catálogo real verificado (hito 5) con el `DOC-01.txt` de ReservaSalas: SOL y LUNA terminan en un lote, sin reparación, con catálogos válidos de 13 requisitos y 3 preguntas abiertas y métricas al 100 %. SOL: 34.145 tokens de entrada y 5.591 de salida; LUNA: 34.085 y 8.115.
 - Con `--tools "Read,Write"` y `--disable-slash-commands` el consumo baja mucho: la misma tarea de resumen pasó de 59.000–89.000 a unos 21.400 tokens de entrada (3 turnos), también en el modelo que no usaba herramientas de más.
 
 ## Secretos y datos
