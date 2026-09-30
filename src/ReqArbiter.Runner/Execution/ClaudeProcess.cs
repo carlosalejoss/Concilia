@@ -19,6 +19,7 @@ public enum ProcessEnd
     Exited,        // The process finished by itself (any exit code).
     TimedOut,      // Killed: TotalTimeout reached.
     HeartbeatLost, // Killed: no stdout line during HeartbeatTimeout.
+    Stopped,       // Killed: the caller asked to stop (see stopRequested).
 }
 
 // ExitCode is null when the process was killed.
@@ -34,10 +35,13 @@ public static class ClaudeProcess
 
     // onStdoutLine receives every stdout line, in order, as soon as it arrives.
     // Cancelling the token kills the process tree and throws OperationCanceledException.
+    // stopRequested is different: it kills the process tree too, but the run
+    // ends normally with ProcessEnd.Stopped (the caller saw that going on is useless).
     public static async Task<ProcessOutcome> RunAsync(
         ProcessLaunch launch,
         Action<string> onStdoutLine,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        CancellationToken stopRequested = default)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -122,6 +126,13 @@ public static class ClaudeProcess
 
             if (exitTask.IsCompleted)
             {
+                break;
+            }
+
+            if (stopRequested.IsCancellationRequested)
+            {
+                end = ProcessEnd.Stopped;
+                KillTree(process);
                 break;
             }
 

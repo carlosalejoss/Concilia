@@ -172,6 +172,23 @@ public class ClaudeCliRunnerTests
     }
 
     [Fact]
+    public async Task A_truncated_write_stops_the_run_at_once()
+    {
+        using var temp = new TempDirectory();
+        // After the unreadable Write the fake stays alive for 30 s, like a model
+        // that starts writing the whole file again.
+        var request = Request(temp.Path, Directive("synthetic-write-cortado.jsonl", sleepAfterMs: 30_000));
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+
+        var (result, _) = await Run(request);
+
+        Assert.Equal(RunStatus.Failed, result.Status);
+        Assert.Equal(ClaudeCliRunner.TruncatedToolCall, result.ErrorMessage);
+        Assert.Null(result.VerdictError);
+        Assert.True(clock.Elapsed < TimeSpan.FromSeconds(15), $"Tardó {clock.Elapsed}");
+    }
+
+    [Fact]
     public async Task Stderr_is_kept_as_redacted_warnings()
     {
         using var temp = new TempDirectory();
