@@ -10,8 +10,9 @@ namespace ReqArbiter.Api.Runs;
 public record JobContext(Project Project, CatalogPlan Plan);
 
 // Executes one run (one lot for one model), with its retries, without touching
-// the database: prepares the run folder, builds the request, runs it and
-// publishes the progress events. The caller stores the result.
+// the database: prepares the run folder, builds the request, runs it, validates
+// and repairs its catalog (CatalogReview) and publishes the progress events.
+// The caller stores the result.
 public class RunExecutor(
     IRunnerProvider provider,
     RunEventStore events,
@@ -26,20 +27,12 @@ public class RunExecutor(
 
         // Retries publish into the same event stream, marked, so the console
         // in the web shows the whole task of this lot.
-        var attempts = await new VerdictRetryRunner(provider).RunAsync(
+        return await new RetryRunner(provider).RunAsync(
             request,
             attempt => runEvent => events.Publish(
                 run.Id,
                 attempt.RunId == run.Id ? runEvent : runEvent with { Text = $"[reintento] {runEvent.Text}" }),
+            (attempt, attemptsSoFar) => CatalogReview.Review(attempt, attemptsSoFar, request.Prompt, context.Project.SystemName),
             cancellationToken);
-
-        // Every attempt keeps the validator's report of its catalog
-        // (output/informe.json). Step 27 turns an invalid catalog into a retry.
-        foreach (var attempt in attempts)
-        {
-            CatalogReport.ValidateRunFolder(attempt.Request.WorkDirectory, context.Project.SystemName);
-        }
-
-        return attempts;
     }
 }

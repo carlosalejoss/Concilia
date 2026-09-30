@@ -35,6 +35,8 @@ services:
       # Models A and B of every job (roles are configuration).
       Runner__ModelA: "${RUNNER_MODEL_A:-SS - GPT-6-SOL}"
       Runner__ModelB: "${RUNNER_MODEL_B:-SS - GPT-6-LUNA}"
+      # Fake only: "true" makes the first attempt of each lot invalid, to see a repair.
+      Runner__SimulateRepair: ${RUNNER_SIMULATE_REPAIR:-false}
       # Output cap per model response, passed to Claude Code (default 64000).
       Runner__MaxOutputTokens: ${RUNNER_MAX_OUTPUT_TOKENS:-64000}
       # Only the api service receives the gateway variables.

@@ -8,7 +8,7 @@ namespace ReqArbiter.Runner;
 
 // Runs one attempt of "claude -p" against a gateway: checks the input budget,
 // prepares the run folder and the environment, launches the process, parses
-// its output and evaluates the result. It does not retry (see VerdictRetryRunner).
+// its output and evaluates the result. It does not retry (see RetryRunner).
 public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunnerProvider
 {
     public string Name => "ClaudeCli";
