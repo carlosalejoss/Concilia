@@ -19,6 +19,9 @@
     <EmbeddedResource Include="..\..\prompts\generacion_requisitos\prompt_requisitos_v1.2.md" LogicalName="prompt_requisitos.md" />
     <EmbeddedResource Include="..\..\prompts\generacion_requisitos\anexo_reparacion_v1.2.md" LogicalName="anexo_reparacion.md" />
     <EmbeddedResource Include="..\..\prompts\generacion_requisitos\requirements.schema.json" LogicalName="requirements.schema.json" />
+    <!-- The ReservaSalas example: FakeProvider answers it with its catalog. -->
+    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\ejemplo\fragmentos.json" LogicalName="ejemplo_fragmentos.json" />
+    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\ejemplo\catalogo_ejemplo.json" LogicalName="ejemplo_catalogo.json" />
   </ItemGroup>
 
 </Project>

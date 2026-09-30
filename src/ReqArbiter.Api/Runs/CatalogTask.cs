@@ -89,7 +89,10 @@ public static class CatalogTask
 
         var fragmentsPath = Path.Combine(workDirectory, FragmentsFile);
         Directory.CreateDirectory(Path.GetDirectoryName(fragmentsPath)!);
-        File.WriteAllText(fragmentsPath, JsonSerializer.Serialize(new { Version = "1.2", Fragments = fragments }, Json));
+        // System and language travel with the fragments so that whoever reads the
+        // folder alone (FakeProvider, a person) knows what the catalog is about.
+        File.WriteAllText(fragmentsPath, JsonSerializer.Serialize(
+            new { Version = "1.2", System = project.SystemName, project.Language, Fragments = fragments }, Json));
 
         var prompt = PromptBuilder.Build(new CatalogPromptInput(
             SystemName: project.SystemName,

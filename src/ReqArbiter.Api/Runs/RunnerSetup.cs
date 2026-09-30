@@ -20,6 +20,10 @@ public class RunnerOptions
     // Input window of the models, confirmed by the team leader.
     public int MaxContextTokens { get; set; } = 128_000;
 
+    // Fake only: the first attempt of each lot writes an invalid catalog, to
+    // see the repair retry working ("Runner:SimulateRepair"; RUNNER_SIMULATE_REPAIR).
+    public bool SimulateRepair { get; set; }
+
     // Output cap per response. The models accept up to 1M; Claude Code
     // assumes 32k unless told otherwise (see RunRequest.MaxOutputTokens).
     public int MaxOutputTokens { get; set; } = 64_000;
@@ -38,7 +42,7 @@ public static class RunnerSetup
         IRunnerProvider provider = options.Provider.ToLowerInvariant() switch
         {
             // The small delay lets the web show the fake events arriving one by one.
-            "fake" => new FakeProvider(stepDelay: TimeSpan.FromMilliseconds(300)),
+            "fake" => new FakeProvider(stepDelay: TimeSpan.FromMilliseconds(300), simulateRepair: options.SimulateRepair),
             "litellm" => new LiteLlmProvider(
                 options.ClaudeExecutable,
                 LiteLlmProvider.SettingsFrom(

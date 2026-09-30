@@ -20,7 +20,9 @@ public static class FakeClaudeLauncher
         string[]? stderr = null,
         int exitCode = 0,
         int sleepAfterMs = 0,
-        string[]? writeFiles = null)
+        string[]? writeFiles = null,
+        Dictionary<string, string>? copyFiles = null,
+        Dictionary<string, string>? repairCopyFiles = null)
     {
         var options = new
         {
@@ -30,6 +32,8 @@ public static class FakeClaudeLauncher
             exitCode,
             sleepAfterMs,
             writeFiles = writeFiles ?? [],
+            copyFiles = copyFiles ?? [],
+            repairCopyFiles = repairCopyFiles ?? [],
         };
         return "#fake " + JsonSerializer.Serialize(options) + "\n";
     }

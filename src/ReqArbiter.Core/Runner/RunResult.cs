@@ -47,7 +47,8 @@ public record RunResult
     public string? ErrorMessage { get; init; }
 
     // Set only when the run failed because the verdict was missing or invalid.
-    // That is the one failure worth retrying: the process and the API worked.
+    // A verdict problem is worth retrying: the process and the API worked (the
+    // catalog task also repairs invalid catalogs, see CatalogReview).
     public string? VerdictError { get; init; }
 
     // Version of Claude Code that ran the model (from the "init" event), to

@@ -1,11 +1,20 @@
+using ReqArbiter.Core.Catalog;
+
 namespace ReqArbiter.Core.Runner;
 
 // A provider that calls no model: it emits a few fixed events, writes the
-// expected output files with placeholder content and answers "hecho".
+// expected output files and answers "hecho". A catalog (output/catalogo.json,
+// with the lot's fragments in input/) gets a real one from FakeCatalog; any
+// other file, placeholder content. With simulateRepair, the first attempt of
+// each lot writes a catalog with an error, so the repair retry can be seen
+// working; the repair (its prompt carries the previous catalog) writes it right.
 // Used in development without secrets and in tests.
-public class FakeProvider(TimeSpan stepDelay = default) : IRunnerProvider
+public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = false) : IRunnerProvider
 {
     public const string VerdictLine = """VEREDICTO: {"estado":"hecho"}""";
+
+    // The repair annex wraps the previous catalog in this tag.
+    private const string RepairMarker = "<catalogo_previo>";
 
     public string Name => "Fake";
 
@@ -27,10 +36,7 @@ public class FakeProvider(TimeSpan stepDelay = default) : IRunnerProvider
             await Step(new RunEvent(RunEventKind.ToolUse, $"Write {relativePath}"));
 
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-            await File.WriteAllTextAsync(
-                path,
-                "# Resultado simulado\n\nEscrito por FakeProvider; ningún modelo ha intervenido.\n",
-                cancellationToken);
+            await File.WriteAllTextAsync(path, Content(request, relativePath), cancellationToken);
         }
 
         var resultText = "Tarea simulada completada.\n" + VerdictLine;
@@ -49,5 +55,18 @@ public class FakeProvider(TimeSpan stepDelay = default) : IRunnerProvider
             IsError = false,
             Usage = new TokenUsage(0, 0),
         };
+    }
+
+    private string Content(RunRequest request, string relativePath)
+    {
+        var isCatalog = Path.GetFileName(relativePath) == "catalogo.json"
+            && File.Exists(Path.Combine(request.WorkDirectory, FakeCatalog.FragmentsFile));
+        if (!isCatalog)
+        {
+            return "# Resultado simulado\n\nEscrito por FakeProvider; ningún modelo ha intervenido.\n";
+        }
+
+        var firstAttempt = !request.Prompt.Contains(RepairMarker, StringComparison.Ordinal);
+        return FakeCatalog.For(request.WorkDirectory, mutated: simulateRepair && firstAttempt);
     }
 }

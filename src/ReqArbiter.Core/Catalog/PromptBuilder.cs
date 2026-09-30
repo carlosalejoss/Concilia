@@ -60,7 +60,7 @@ public static partial class PromptBuilder
     private static string Fill(string template, IReadOnlyDictionary<string, string> values) =>
         PlaceholderRe().Replace(template, m => values.TryGetValue(m.Groups[1].Value, out var v) ? v : m.Value);
 
-    private static string ReadResource(string name)
+    internal static string ReadResource(string name)
     {
         using var stream = typeof(PromptBuilder).Assembly.GetManifestResourceStream(name)
             ?? throw new InvalidOperationException($"Embedded resource not found: {name}");

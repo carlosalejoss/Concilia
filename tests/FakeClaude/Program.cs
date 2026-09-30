@@ -2,7 +2,13 @@
 // model or network. It behaves as told by a first stdin line:
 //
 //   #fake {"fixture":"...", "lineDelayMs":0, "stderr":["..."], "exitCode":0,
-//          "sleepAfterMs":0, "writeFiles":["output/resumen.md"]}
+//          "sleepAfterMs":0, "writeFiles":["output/resumen.md"],
+//          "copyFiles":{"output/catalogo.json":"<file>"},
+//          "repairCopyFiles":{"output/catalogo.json":"<another file>"}}
+//
+// copyFiles copies a file (a catalog fixture) into the run folder. When the
+// prompt is a repair (it carries the repair annex, "<catalogo_previo>"),
+// repairCopyFiles is used instead, if given.
 //
 // and saves what it received (arguments, environment and stdin) to
 // fake-received.json in its working directory, so tests can check it.
@@ -55,6 +61,14 @@ foreach (var relativePath in options.WriteFiles)
     File.WriteAllText(relativePath, "# Resumen\n\nEscrito por FakeClaude.\n", utf8);
 }
 
+var isRepair = prompt.Contains("<catalogo_previo>", StringComparison.Ordinal);
+var copies = isRepair && options.RepairCopyFiles.Count > 0 ? options.RepairCopyFiles : options.CopyFiles;
+foreach (var (relativePath, source) in copies)
+{
+    Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(relativePath))!);
+    File.Copy(source, relativePath, overwrite: true);
+}
+
 if (options.Fixture is not null)
 {
     // ReadAllLines drops the CRLF of the recordings; WriteLine adds "\n".
@@ -86,4 +100,6 @@ internal sealed class FakeOptions
     public int ExitCode { get; set; }
     public int SleepAfterMs { get; set; }
     public string[] WriteFiles { get; set; } = [];
+    public Dictionary<string, string> CopyFiles { get; set; } = [];
+    public Dictionary<string, string> RepairCopyFiles { get; set; } = [];
 }

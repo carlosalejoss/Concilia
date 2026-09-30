@@ -4,7 +4,7 @@ using static ReqArbiter.Tests.Runner.FakeClaudeLauncher;
 
 namespace ReqArbiter.Tests.Runner;
 
-public class VerdictRetryRunnerTests
+public class RetryRunnerTests
 {
     // A provider that answers from a list, in order, and records each request.
     private sealed class ScriptedProvider(params RunResult[] answers) : IRunnerProvider
@@ -47,7 +47,7 @@ public class VerdictRetryRunnerTests
         var provider = new ScriptedProvider(NoVerdict, Done);
         var first = FirstRequest(temp.Path);
 
-        var attempts = await new VerdictRetryRunner(provider).RunAsync(first, _ => _ => { }, CancellationToken.None);
+        var attempts = await new RetryRunner(provider).RunAsync(first, _ => _ => { }, CancellationToken.None);
 
         Assert.Equal(2, attempts.Count);
         Assert.Null(attempts[0].PreviousRunId);
@@ -69,9 +69,9 @@ public class VerdictRetryRunnerTests
         using var temp = new TempDirectory();
         var provider = new ScriptedProvider(NoVerdict, NoVerdict, NoVerdict, Done);
 
-        var attempts = await new VerdictRetryRunner(provider).RunAsync(FirstRequest(temp.Path), _ => _ => { }, CancellationToken.None);
+        var attempts = await new RetryRunner(provider).RunAsync(FirstRequest(temp.Path), _ => _ => { }, CancellationToken.None);
 
-        Assert.Equal(1 + VerdictRetryRunner.MaxRetries, attempts.Count);
+        Assert.Equal(1 + RetryRunner.MaxRetries, attempts.Count);
         Assert.Equal(RunStatus.Failed, attempts[^1].Result.Status);
         Assert.Equal(attempts[1].Request.RunId, attempts[2].PreviousRunId);
     }
@@ -82,7 +82,7 @@ public class VerdictRetryRunnerTests
     {
         using var temp = new TempDirectory();
 
-        var attempts = await new VerdictRetryRunner(new ScriptedProvider(answer)).RunAsync(
+        var attempts = await new RetryRunner(new ScriptedProvider(answer)).RunAsync(
             FirstRequest(temp.Path), _ => _ => { }, CancellationToken.None);
 
         Assert.Single(attempts);
@@ -96,7 +96,7 @@ public class VerdictRetryRunnerTests
         using var temp = new TempDirectory();
         var streams = new Dictionary<Guid, List<RunEvent>>();
 
-        await new VerdictRetryRunner(new ScriptedProvider(NoVerdict, Done)).RunAsync(
+        await new RetryRunner(new ScriptedProvider(NoVerdict, Done)).RunAsync(
             FirstRequest(temp.Path),
             request =>
             {
@@ -120,7 +120,7 @@ public class VerdictRetryRunnerTests
             Prompt = Directive("synthetic-sin-veredicto.jsonl") + "Resume los archivos.",
         };
 
-        var attempts = await new VerdictRetryRunner(new ClaudeCliRunner(ExecutablePath, FakeGateway))
+        var attempts = await new RetryRunner(new ClaudeCliRunner(ExecutablePath, FakeGateway))
             .RunAsync(first, _ => _ => { }, CancellationToken.None);
 
         Assert.Equal(3, attempts.Count);
