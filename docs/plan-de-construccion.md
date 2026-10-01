@@ -66,6 +66,19 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 
 **Hecho cuando:** se sube un documento, A y B generan catálogos válidos y se ven en la web.
 
+## Hito 6: catálogo v1.3
+
+Especificación: `docs/hito-6-catalogo-v1.3.md`.
+
+- [ ] 29. Especificación del catálogo v1.3, revisada por el autor.
+- [ ] 30. Referencia en Python: esquema, prompt y anexo v1.3, normalizador, validador con aceptación parcial, índice en el fragmentador, ejemplos y mutaciones.
+- [ ] 31. Port a C#: normalizador, validador, prompt con índice, revisión con aceptación parcial y una reparación, unión por tipo.
+- [ ] 32. Deduplicación por modelo tras unir los lotes.
+- [ ] 33. Web: selección de secciones al lanzar el trabajo; tipo, criterios, rechazados y correcciones en el catálogo.
+- [ ] 34. Medición v1.2 frente a v1.3 y recalibrado de los lotes.
+
+**Hecho cuando:** con el documento técnico del hito 5, A y B generan catálogos independientes con muchos menos requisitos, casi sin reparaciones y con mucho menos consumo, medido frente a v1.2.
+
 ## Después
 
 Árbitro con embeddings y fusión, fase de dudas, backlog, aprobación por umbral y evaluación.

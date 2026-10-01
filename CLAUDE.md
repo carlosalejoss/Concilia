@@ -4,7 +4,7 @@ Plataforma web (TFG) que genera catálogos de requisitos (EARS/MASTeR) y backlog
 
 ## Estado
 
-Hitos 0 a 5 completados. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
+Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) en curso: ver `docs/hito-6-catalogo-v1.3.md`. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
 
 ## Decisiones vigentes
 
@@ -22,6 +22,9 @@ Hitos 0 a 5 completados. Se trabaja siguiendo `docs/plan-de-construccion.md`, un
 - El runner detiene la ejecución en cuanto Claude Code rechaza una llamada a herramienta por JSON incompleto, en lugar de dejar que el modelo la repita hasta agotar el tiempo.
 - Catálogo de un modelo en un trabajo (paso 28): se unen sus lotes `Done` en orden, renumerando `REQ-` y `Q-` y sus referencias, sin deduplicar (lo hará el árbitro). Se sirve en `GET /jobs/{id}/catalogs/{A|B}` y, cuando terminan todos sus lotes, se guarda en `data/jobs/{id}/catalogo-{A|B}.json`.
 - Con `Fake`, `FakeProvider` escribe catálogos reales: el del ejemplo ReservaSalas si se sube su `DOC-01.txt` y, para cualquier otro documento, uno válido que descarta todos los fragmentos. `RUNNER_SIMULATE_REPAIR=true` hace inválido el primer intento de cada lote.
+- Independencia de A y B (1-10-2026): el prompt no menciona al otro modelo ni al árbitro; cada modelo construye su catálogo como si fuera el único. Sustituye al criterio de la v1.2 de que "ambos modelos corten igual". El árbitro empareja de varios a varios.
+- Tipos de requisito con id por tipo: `RA` (arquitectura), `RT` (técnico), `RF` (funcional), `RI` (integración) y `RNF` (no funcional): `RF-001`, `RNF-001`… La prioridad (P0–P3) queda fuera por ahora.
+- Catálogo v1.3 (hito 6, en curso): un requisito por capacidad con criterios de aceptación; descartes `design_detail` y `project_note`; normalizador de la plataforma; rechazo por requisito con aceptación parcial del lote; una reparación; deduplicación por modelo. EARS y MASTeR se mantienen.
 - Los scripts de `prompts/generacion_requisitos/` son la referencia del fragmentador y del validador en C#.
 - Validación de JSON Schema en C#: LateApexEarlySpeed.Json.Schema (BSD-3-Clause). Se descarta JsonSchema.Net: sus binarios exigen una cuota de mantenimiento a empresas con ingresos.
 - Ventana de los modelos (confirmada por el team leader): 128k tokens de entrada y hasta 1M de salida. El runner pasa `CLAUDE_CODE_MAX_CONTEXT_TOKENS=128000`.
