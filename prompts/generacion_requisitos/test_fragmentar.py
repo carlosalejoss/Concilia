@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Tests del fragmentador de referencia v1.2.
+Tests del fragmentador de referencia (v1.2 y v1.3).
 
 Comprueba que los dos ejemplos producen exactamente su `fragmentos.json` y los casos límite que el port
 a C# debe reproducir (títulos numerados, líneas partidas de PDF, viñetas, abreviaturas, ids de la fuente).
+Desde la v1.3, también el índice del documento ({{INDICE}} del prompt).
 
 Uso:
     python test_fragmentar.py      # código 1 si algún caso falla
@@ -14,7 +15,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
-from fragmentar import fragment_document  # noqa: E402
+from fragmentar import document_index, fragment_document, index_block  # noqa: E402
 
 # (nombre, texto del documento, [(texto, sección, source_ref)] esperados)
 CASES = [
@@ -50,6 +51,24 @@ CASES = [
 ]
 
 
+# (nombre, texto del documento, líneas del índice esperadas)
+INDEX_CASES = [
+    ("ReservaSalas: secciones sin título, solo la etiqueta",
+     (HERE / "ejemplo" / "fuentes" / "DOC-01.txt").read_text(encoding="utf-8"),
+     ["§1", "§2.1", "§2.2", "§2.3", "§2.4", "§2.5", "§2.6", "§2.7", "§3.1", "§3.2", "§3.3", "§3.4", "§3.5"]),
+    ("LibraryLoan: títulos numerados con su etiqueta delante",
+     (HERE / "ejemplo_en" / "fuentes" / "DOC-01.txt").read_text(encoding="utf-8"),
+     ["1. Introduction", "2. Functional requirements", "2.1", "2.2", "2.3", "2.4", "2.5", "2.6",
+      "3. Non-functional requirements", "3.1", "3.2"]),
+    ("títulos markdown: el título es su propia etiqueta",
+     "# Calendario\n\nIntro.\n\n## 3. Roles y acceso\n\n### 3.1 Roles\nTexto.\n",
+     ["Calendario", "3. Roles y acceso", "3.1 Roles"]),
+    ("una sección que se repite aparece una vez",
+     "§2.1 Primera frase.\n§2.1 Segunda frase.\n§2.2 Otra.\n",
+     ["§2.1", "§2.2"]),
+]
+
+
 def main():
     failures, total = 0, 0
     for example in ("ejemplo", "ejemplo_en"):
@@ -65,6 +84,19 @@ def main():
         ok = got == expected
         failures += not ok
         print(f"{'OK    ' if ok else 'FALLO '} | {name}" + ("" if ok else f"\n         esperado {expected}\n         obtenido {got}"))
+    for name, text, expected in INDEX_CASES:
+        total += 1
+        got = document_index(text)
+        ok = got == expected
+        failures += not ok
+        print(f"{'OK    ' if ok else 'FALLO '} | índice: {name}" + ("" if ok else f"\n         esperado {expected}\n         obtenido {got}"))
+    total += 1
+    got = index_block([("DOC-01", "requisitos.md", "## Uno\nTexto.\n"), ("DOC-02", "anexo.txt", "§1 Texto.\n")])
+    expected = "DOC-01 requisitos.md\nUno\nDOC-02 anexo.txt\n§1"
+    ok = got == expected
+    failures += not ok
+    print(f"{'OK    ' if ok else 'FALLO '} | índice: con varios documentos, cada uno precedido de su id y nombre"
+          + ("" if ok else f"\n         esperado {expected!r}\n         obtenido {got!r}"))
     print(f"\n{total - failures}/{total} correctos")
     sys.exit(1 if failures else 0)
 
