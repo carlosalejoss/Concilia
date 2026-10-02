@@ -80,6 +80,7 @@ Copiadas de `docs/hito-3-runner.md`.
 - Si un paso exige una decisión abierta, para y pregunta.
 - Si algo del plan choca con este archivo, dilo antes de aplicarlo.
 - El autor debe poder explicar cada línea en su defensa del TFG: prefiere código claro y sin trucos, y explica lo que no sea evidente.
+- Siempre que cambie el prompt de requisitos (su texto, el anexo de reparación, el esquema o el validador que lo acompaña) o se mida una versión con modelos, actualiza `docs/evolucion-prompt-requisitos.md` en el mismo commit: sección de la versión con **Qué hace**, **Resultados** y **Qué hay que mejorar**, y su fila en el resumen. Resultados con las métricas de "Cómo se mide", fecha, documento y modelos; de documentos internos, solo cifras agregadas y anonimizadas. Es material para la memoria del TFG.
 
 ## Al terminar cada sesión
 
