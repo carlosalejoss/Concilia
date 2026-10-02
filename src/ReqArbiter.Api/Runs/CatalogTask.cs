@@ -21,6 +21,9 @@ public class CatalogOptions
     // Lots of the same model that run at the same time (1 = one after another).
     public int MaxParallelLots { get; set; } = 5;
 
+    // Repairs per lot and model (catalog v1.3: one; before, two).
+    public int MaxRepairs { get; set; } = 1;
+
     // stream-json only writes a line per complete message, so writing a large
     // catalog can take minutes without output.
     public TimeSpan HeartbeatTimeout { get; set; } = TimeSpan.FromMinutes(15);
@@ -33,13 +36,16 @@ public record CatalogDocument(string Id, string Name, string Text);
 // The fragment ids of one lot.
 public record LotPlan(int Number, int Total, IReadOnlyList<string> FragmentIds);
 
-// What a job works on: all the fragments of the project and how they are split
-// into lots. Saved in data/jobs/{jobId}/plan.json when the job is created, so
-// every run and retry of the job uses exactly the same input.
+// What a job works on: all the fragments of the project, how they are split
+// into lots and the index of the documents ({{INDICE}}, the same for every
+// lot). Saved in data/jobs/{jobId}/plan.json when the job is created, so every
+// run and retry of the job uses exactly the same input. Plans saved before the
+// catalog v1.3 have no Index.
 public record CatalogPlan(
     IReadOnlyDictionary<string, string> DocumentNames,
     IReadOnlyList<Fragment> Fragments,
-    IReadOnlyList<LotPlan> Lots);
+    IReadOnlyList<LotPlan> Lots,
+    string? Index = null);
 
 // The catalog task: from the project documents to the RunRequest of each lot.
 public static class CatalogTask
@@ -64,7 +70,8 @@ public static class CatalogTask
         var lots = LotPlanner.Plan(fragments, options.OutputRatio, options.MaxOutputTokensPerLot)
             .Select(l => new LotPlan(l.Number, l.Total, l.Fragments.Select(f => f.Id).ToList()))
             .ToList();
-        return new CatalogPlan(documents.ToDictionary(d => d.Id, d => d.Name), fragments, lots);
+        var index = Fragmenter.IndexBlock(documents.Select(d => (d.Id, d.Name, d.Text)).ToList());
+        return new CatalogPlan(documents.ToDictionary(d => d.Id, d => d.Name), fragments, lots, index);
     }
 
     public static void SavePlan(string path, CatalogPlan plan)
@@ -92,7 +99,7 @@ public static class CatalogTask
         // System and language travel with the fragments so that whoever reads the
         // folder alone (FakeProvider, a person) knows what the catalog is about.
         File.WriteAllText(fragmentsPath, JsonSerializer.Serialize(
-            new { Version = "1.2", System = project.SystemName, project.Language, Fragments = fragments }, Json));
+            new { Version = "1.3", System = project.SystemName, project.Language, Fragments = fragments }, Json));
 
         var prompt = PromptBuilder.Build(new CatalogPromptInput(
             SystemName: project.SystemName,
@@ -101,6 +108,7 @@ public static class CatalogTask
             LotTotal: lot.Total,
             Glossary: project.Glossary ?? "",
             ResolvedDoubts: "", // the doubts phase does not exist yet
+            Index: plan.Index ?? "",
             Documentation: Fragmenter.DocumentBlock(fragments, plan.DocumentNames)));
 
         return new RunRequest

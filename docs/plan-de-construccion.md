@@ -72,7 +72,7 @@ Especificación: `docs/hito-6-catalogo-v1.3.md`.
 
 - [x] 29. Especificación del catálogo v1.3, revisada por el autor.
 - [x] 30. Referencia en Python: esquema, prompt y anexo v1.3, normalizador, validador con aceptación parcial, índice en el fragmentador, ejemplos y mutaciones.
-- [ ] 31. Port a C#: normalizador, validador, prompt con índice, revisión con aceptación parcial y una reparación, unión por tipo.
+- [x] 31. Port a C#: normalizador, validador, prompt con índice, revisión con aceptación parcial y una reparación, unión por tipo.
 - [ ] 32. Deduplicación por modelo tras unir los lotes.
 - [ ] 33. Web: selección de secciones al lanzar el trabajo; tipo, criterios, rechazados y correcciones en el catálogo.
 - [ ] 34. Medición v1.2 frente a v1.3 y recalibrado de los lotes.

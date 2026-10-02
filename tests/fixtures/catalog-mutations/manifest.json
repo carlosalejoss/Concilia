@@ -1,354 +1,551 @@
 [
   {
-    "file": "mut-01.json",
-    "name": "property con escalation_reason de condición",
+    "file": "case-01.json",
+    "name": "property en una rama distinta de D1",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C12",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RNF-001",
+    "expected_code": "C12"
   },
   {
-    "file": "mut-02.json",
-    "name": "property marcada functional",
+    "file": "case-02.json",
+    "name": "RA fuera de D2",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "SCHEMA",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RA-001",
+    "expected_code": "C12"
   },
   {
-    "file": "mut-03.json",
-    "name": "slot terminado en punto",
+    "file": "case-03.json",
+    "name": "RF en D1",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C14",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-001",
+    "expected_code": "C12"
   },
   {
-    "file": "mut-04.json",
-    "name": "SHOULD con obligation_basis implicit",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "SCHEMA",
-    "kind": "error"
-  },
-  {
-    "file": "mut-05.json",
-    "name": "obligation_evidence ausente del fragmento",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C13",
-    "kind": "error"
-  },
-  {
-    "file": "mut-06.json",
-    "name": "fragmento citado equivocado (antes: locator falso)",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C6",
-    "kind": "error"
-  },
-  {
-    "file": "mut-07.json",
-    "name": "out_of_subset en un requisito EARS normal",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C12",
-    "kind": "error"
-  },
-  {
-    "file": "mut-08.json",
-    "name": "origin clarification sin traza a dudas",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C16",
-    "kind": "error"
-  },
-  {
-    "file": "mut-09.json",
-    "name": "pregunta no bidireccional",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C11",
-    "kind": "error"
-  },
-  {
-    "file": "mut-10.json",
-    "name": "status complete con fragmentos sin procesar",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "VERDICT",
-    "kind": "error"
-  },
-  {
-    "file": "mut-11.json",
-    "name": "keyword en mayúsculas dentro de un slot",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C14",
-    "kind": "error"
-  },
-  {
-    "file": "mut-12.json",
-    "name": "fragmento perdido (C10)",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C10",
-    "kind": "error"
-  },
-  {
-    "file": "mut-13.json",
-    "name": "subject_matter sin preposición",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C14",
-    "kind": "error"
-  },
-  {
-    "file": "mut-14.json",
-    "name": "EARS con escalation_fallback fuera de D1/D4",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C12",
-    "kind": "error"
-  },
-  {
-    "file": "mut-15.json",
-    "name": "functional con escalation_reason de propiedad",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C12",
-    "kind": "error"
-  },
-  {
-    "file": "mut-16.json",
-    "name": "self_check mentiroso se registra y el fallo real bloquea",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C6",
-    "kind": "error"
-  },
-  {
-    "file": "mut-17.json",
-    "name": "prohibición en negativo (R-e)",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C15",
-    "kind": "error"
-  },
-  {
-    "file": "mut-18.json",
-    "name": "término vago de la categoría escape",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C5",
-    "kind": "error"
-  },
-  {
-    "file": "mut-19.json",
-    "name": "término vago de la categoría pronombre",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C5",
-    "kind": "error"
-  },
-  {
-    "file": "mut-20.json",
-    "name": "valor pendiente sin pregunta missing_value",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "N3",
-    "kind": "error"
-  },
-  {
-    "file": "mut-21.json",
-    "name": "D4 aplicado a estados en vez de datos (EARS con D4)",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "C12",
-    "kind": "error"
-  },
-  {
-    "file": "mut-22.json",
+    "file": "case-04.json",
     "name": "D3 con obligación SHALL",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C12",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-007",
+    "expected_code": "C12"
   },
   {
-    "file": "mut-23.json",
-    "name": "D2 sin out_of_subset",
+    "file": "case-05.json",
+    "name": "EARS con escalation_fallback fuera de D1/D4",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C12",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-001",
+    "expected_code": "C12"
   },
   {
-    "file": "mut-24.json",
+    "file": "case-06.json",
     "name": "state_driven sin estados",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C2",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-006",
+    "expected_code": "C2"
   },
   {
-    "file": "mut-25.json",
+    "file": "case-07.json",
     "name": "complex con un solo tipo de condición",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C2",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-004",
+    "expected_code": "C2"
   },
   {
-    "file": "mut-26.json",
-    "name": "campo text escrito por el modelo",
+    "file": "case-08.json",
+    "name": "event_driven con trigger_keyword IF",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "SCHEMA",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-002",
+    "expected_code": "C2"
   },
   {
-    "file": "mut-27.json",
-    "name": "MAY en EARS",
+    "file": "case-09.json",
+    "name": "término vago en un slot (escape)",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "SCHEMA",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-001",
+    "expected_code": "C5"
   },
   {
-    "file": "mut-28.json",
-    "name": "sistema distinto de nombre_sistema",
+    "file": "case-10.json",
+    "name": "término vago en un criterio",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C3",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-001",
+    "expected_code": "C5"
   },
   {
-    "file": "mut-29.json",
-    "name": "recuento del veredicto incorrecto",
+    "file": "case-11.json",
+    "name": "pronombre vago",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "VERDICT",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-002",
+    "expected_code": "C5"
   },
   {
-    "file": "mut-30.json",
-    "name": "fragmento inexistente en un descarte",
+    "file": "case-12.json",
+    "name": "cita no literal en ningún fragmento",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C6",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-005",
+    "expected_code": "C6"
   },
   {
-    "file": "mut-31.json",
-    "name": "cifra inventada (N2)",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "N2",
-    "kind": "error"
-  },
-  {
-    "file": "mut-32.json",
-    "name": "cifra convertida de unidad (4 horas -> 240 minutos)",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "expected_code": "N2",
-    "kind": "error"
-  },
-  {
-    "file": "mut-33.json",
+    "file": "case-13.json",
     "name": "cita trivial de menos de tres palabras",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C6",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-002",
+    "expected_code": "C6"
   },
   {
-    "file": "mut-34.json",
-    "name": "evidencia modal trivial",
+    "file": "case-14.json",
+    "name": "fragmento inexistente y cita que no está en el lote",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C13",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-003",
+    "expected_code": "C6"
   },
   {
-    "file": "mut-35.json",
-    "name": "evidencia de SHOULD con obligación MAY",
+    "file": "case-15.json",
+    "name": "MAY en EARS",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C13",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-001",
+    "expected_code": "SCHEMA"
   },
   {
-    "file": "mut-36.json",
-    "name": "'puede' de capacidad marcado como SHALL explícito",
+    "file": "case-16.json",
+    "name": "campo text escrito por el modelo",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C13",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-001",
+    "expected_code": "SCHEMA"
   },
   {
-    "file": "mut-37.json",
-    "name": "fragmento descartado entero y citado por un requisito",
+    "file": "case-17.json",
+    "name": "SHOULD con obligation_basis implicit",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C17",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-007",
+    "expected_code": "SCHEMA"
   },
   {
-    "file": "mut-38.json",
-    "name": "'will' marcado como SHALL explícito",
+    "file": "case-18.json",
+    "name": "tipo de requisito desconocido",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "reject",
+    "target": "RF-003",
+    "expected_code": "SCHEMA"
+  },
+  {
+    "file": "case-19.json",
+    "name": "prohibición en negativo (R-e)",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "reject",
+    "target": "RF-006",
+    "expected_code": "C15"
+  },
+  {
+    "file": "case-20.json",
+    "name": "cifra inventada en un criterio",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "reject",
+    "target": "RF-002",
+    "expected_code": "N2"
+  },
+  {
+    "file": "case-21.json",
+    "name": "cifra convertida de unidad (4 horas -> 240 minutos)",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "reject",
+    "target": "RF-005",
+    "expected_code": "N2"
+  },
+  {
+    "file": "case-22.json",
+    "name": "valor pendiente sin pregunta missing_value",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "reject",
+    "target": "RNF-001",
+    "expected_code": "N3"
+  },
+  {
+    "file": "case-23.json",
+    "name": "pregunta con una cita que no está en la fuente",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "reject",
+    "target": "Q-002",
+    "expected_code": "C6"
+  },
+  {
+    "file": "case-24.json",
+    "name": "cifra inventada en un slot",
     "example": "ejemplo_en",
     "sistema": "the LibraryLoan system",
-    "expected_code": "C13",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RNF-001",
+    "expected_code": "N2"
   },
   {
-    "file": "mut-39.json",
-    "name": "término de dominio sin declarar (C5)",
+    "file": "case-25.json",
+    "name": "término de dominio sin declarar",
     "example": "ejemplo_en",
     "sistema": "the LibraryLoan system",
-    "expected_code": "C5",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-005",
+    "expected_code": "C5"
   },
   {
-    "file": "mut-40.json",
+    "file": "case-26.json",
     "name": "término de dominio de una sola palabra",
     "example": "ejemplo_en",
     "sistema": "the LibraryLoan system",
-    "expected_code": "C5",
-    "kind": "error"
+    "kind": "reject",
+    "target": "RF-005",
+    "expected_code": "C5"
   },
   {
-    "file": "mut-41.json",
-    "name": "término de dominio que no está en el fragmento",
-    "example": "ejemplo_en",
-    "sistema": "the LibraryLoan system",
-    "expected_code": "C5",
-    "kind": "error"
-  },
-  {
-    "file": "mut-42.json",
-    "name": "self_check de cifras mentiroso: el fallo real bloquea",
-    "example": "ejemplo_en",
-    "sistema": "the LibraryLoan system",
-    "expected_code": "N2",
-    "kind": "error"
-  },
-  {
-    "file": "warn-01.json",
-    "name": "dos verbos coordinados en response (C4)",
+    "file": "case-27.json",
+    "name": "falta el inventario de funcionalidades",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C4",
-    "kind": "warning"
+    "kind": "lot",
+    "target": null,
+    "expected_code": "SCHEMA"
   },
   {
-    "file": "warn-02.json",
-    "name": "orden de claves distinto de §10 (C18)",
+    "file": "case-28.json",
+    "name": "versión de esquema 1.2",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
-    "expected_code": "C18",
-    "kind": "warning"
+    "kind": "lot",
+    "target": null,
+    "expected_code": "SCHEMA"
+  },
+  {
+    "file": "case-29.json",
+    "name": "más del 10 % de los fragmentos sin tratar",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "lot",
+    "target": null,
+    "expected_code": "C10"
+  },
+  {
+    "file": "case-30.json",
+    "name": "el catálogo declara status failed",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "lot",
+    "target": null,
+    "expected_code": "VERDICT"
+  },
+  {
+    "file": "case-31.json",
+    "name": "fichero que no es JSON",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "lot",
+    "target": null,
+    "expected_code": "JSON"
+  },
+  {
+    "file": "case-32.json",
+    "name": "obligation_evidence ausente del fragmento",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": "RF-005",
+    "expected_code": "C13"
+  },
+  {
+    "file": "case-33.json",
+    "name": "'puede' de capacidad marcado como SHALL explícito",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": "RF-001",
+    "expected_code": "C13"
+  },
+  {
+    "file": "case-34.json",
+    "name": "'will' marcado como SHALL explícito",
+    "example": "ejemplo_en",
+    "sistema": "the LibraryLoan system",
+    "kind": "warning",
+    "target": "RF-002",
+    "expected_code": "C13"
+  },
+  {
+    "file": "case-35.json",
+    "name": "subject_matter sin preposición",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": "RNF-001",
+    "expected_code": "C14"
+  },
+  {
+    "file": "case-36.json",
+    "name": "keyword en mayúsculas dentro de un slot",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": "RF-006",
+    "expected_code": "C14"
+  },
+  {
+    "file": "case-37.json",
+    "name": "origin clarification sin traza a dudas",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": "RF-002",
+    "expected_code": "C16"
+  },
+  {
+    "file": "case-38.json",
+    "name": "fragmento descartado entero y citado por un requisito",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": "RF-002",
+    "expected_code": "C17"
+  },
+  {
+    "file": "case-39.json",
+    "name": "criterio sin etiqueta",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": "RF-001",
+    "expected_code": "C19"
+  },
+  {
+    "file": "case-40.json",
+    "name": "criterio que empieza por una palabra que es etiqueta, sin corchetes",
+    "example": "ejemplo_en",
+    "sistema": "the LibraryLoan system",
+    "kind": "warning",
+    "target": "RF-002",
+    "expected_code": "C19"
+  },
+  {
+    "file": "case-41.json",
+    "name": "RF sin capability_ids (su funcionalidad la cubre otro)",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": "RF-004",
+    "expected_code": "C21"
+  },
+  {
+    "file": "case-42.json",
+    "name": "verbo paraguas sin criterios [OPERATION]",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": "RF-001",
+    "expected_code": "C22"
+  },
+  {
+    "file": "case-43.json",
+    "name": "pregunta de ambigüedad sin requisitos relacionados",
+    "example": "ejemplo_en",
+    "sistema": "the LibraryLoan system",
+    "kind": "warning",
+    "target": "Q-001",
+    "expected_code": "C11"
+  },
+  {
+    "file": "case-44.json",
+    "name": "un fragmento sin tratar (no llega al 10 %)",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": null,
+    "expected_code": "C10"
+  },
+  {
+    "file": "case-45.json",
+    "name": "autoverificación que no coincide con el validador",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": null,
+    "expected_code": "SELF_CHECK"
+  },
+  {
+    "file": "case-46.json",
+    "name": "status complete con fragmentos sin procesar",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": null,
+    "expected_code": "VERDICT"
+  },
+  {
+    "file": "case-47.json",
+    "name": "sección descartada que no está en el lote",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "warning",
+    "target": null,
+    "expected_code": "C10"
+  },
+  {
+    "file": "case-48.json",
+    "name": "ids con otro formato: se renumeran por tipo",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-49.json",
+    "name": "vínculo declarado en un solo sentido",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-50.json",
+    "name": "slot terminado en punto",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-51.json",
+    "name": "slots.system distinto del nombre del sistema",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-52.json",
+    "name": "cita en el fragmento equivocado: se corrige el id",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-53.json",
+    "name": "cita repetida",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-54.json",
+    "name": "etiqueta de criterio en minúsculas y con dos puntos",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-55.json",
+    "name": "referencia a una pregunta inexistente",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-56.json",
+    "name": "funcionalidad con un fragmento fuera del lote",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-57.json",
+    "name": "cita con comillas de código y mayúsculas distintas",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "accept",
+    "target": null,
+    "expected_code": null
+  },
+  {
+    "file": "case-58.json",
+    "name": "funcionalidad del inventario sin requisito (C20)",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "repair",
+    "target": null,
+    "expected_code": "C20"
+  },
+  {
+    "file": "case-59.json",
+    "name": "funcionalidad cubierta solo por un RNF (C20)",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "repair",
+    "target": null,
+    "expected_code": "C20"
+  },
+  {
+    "file": "case-60.json",
+    "name": "más del 20 % de los requisitos rechazados",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "repair",
+    "target": null,
+    "expected_code": "C15"
+  },
+  {
+    "file": "case-61.json",
+    "name": "un solo rechazo (11 %) no pide reparación",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "reject",
+    "target": "RF-004",
+    "expected_code": "C5"
   }
 ]

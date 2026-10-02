@@ -108,5 +108,10 @@ public class CatalogTaskTests
         var documentation = request.Prompt[start..end];
         Assert.DoesNotContain($"<f id=\"{plan.Lots[0].FragmentIds[0]}\"", documentation);
         Assert.Contains($"<f id=\"{lot.FragmentIds[0]}\"", documentation);
+
+        // The index is the whole document's, the same for every lot.
+        Assert.Contains($"<indice>{plan.Index}</indice>", request.Prompt);
+        Assert.StartsWith("§1\n§2.1", plan.Index);
+        Assert.EndsWith("§3.5", plan.Index);
     }
 }

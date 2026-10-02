@@ -4,10 +4,10 @@ using ReqArbiter.Core.Catalog;
 
 namespace ReqArbiter.Tests.Catalog;
 
-// Two synthetic lots: the ReservaSalas example catalog (lot 1) and the same
-// catalog as if it came from a second document, DOC-02 (lot 2). Each lot
-// numbers its ids from REQ-001 and Q-001; the merge renumbers them and
-// rewrites every reference.
+// Two synthetic lots: the ReservaSalas example catalog v1.3 (lot 1) and the
+// same catalog as if it came from a second document, DOC-02 (lot 2). Each lot
+// numbers its ids from 001 (RF-, RNF-, RA-, Q-, CAP-); the merge renumbers
+// each type on its own and rewrites every reference.
 public class CatalogMergerTests
 {
     private const string System = "el sistema ReservaSalas";
@@ -15,7 +15,7 @@ public class CatalogMergerTests
 
     private static string ExamplePath(string file) => Path.Combine(AppContext.BaseDirectory, "prompts", "ejemplo", file);
 
-    private static string Lot1 => File.ReadAllText(ExamplePath("catalogo_ejemplo.json"));
+    private static string Lot1 => File.ReadAllText(ExamplePath("catalogo_ejemplo_v1.3.json"));
     private static string Lot2 => Lot1.Replace("DOC-01#", "DOC-02#");
 
     private record FragmentsFile(List<Fragment> Fragments);
@@ -34,38 +34,36 @@ public class CatalogMergerTests
 
     private static List<string> Strings(JsonNode? array) => array!.AsArray().Select(s => s!.GetValue<string>()).ToList();
 
-    [Fact]
-    public void Ids_are_renumbered_consecutively_across_lots()
-    {
-        var merged = Merged();
+    private static JsonObject Req(JsonObject catalog, int index) => catalog["requirements"]![index]!.AsObject();
 
-        Assert.Equal(Enumerable.Range(1, 26).Select(i => $"REQ-{i:D3}"), Ids(merged, "requirements"));
-        Assert.Equal(Enumerable.Range(1, 6).Select(i => $"Q-{i:D3}"), Ids(merged, "open_questions"));
+    [Fact]
+    public void Each_type_is_renumbered_consecutively_across_lots()
+    {
+        var ids = Ids(Merged(), "requirements");
+
+        Assert.Equal(Enumerable.Range(1, 14).Select(i => $"RF-{i:000}"), ids.Where(id => id.StartsWith("RF-")));
+        Assert.Equal(["RNF-001", "RNF-002"], ids.Where(id => id.StartsWith("RNF-")));
+        Assert.Equal(["RA-001", "RA-002"], ids.Where(id => id.StartsWith("RA-")));
+        Assert.Equal(Enumerable.Range(1, 4).Select(i => $"Q-{i:000}"), Ids(Merged(), "open_questions"));
+        Assert.Equal(Enumerable.Range(1, 12).Select(i => $"CAP-{i:000}"), Ids(Merged(), "capabilities"));
     }
 
     [Fact]
     public void References_of_the_second_lot_point_to_its_new_ids()
     {
-        var lot = JsonNode.Parse(Lot1)!.AsObject();
         var merged = Merged();
-        var requirementsInLot1 = lot["requirements"]!.AsArray().Count; // 13
-        var questionsInLot1 = lot["open_questions"]!.AsArray().Count;  // 3
+        var count = JsonNode.Parse(Lot1)!["requirements"]!.AsArray().Count; // 9 per lot
 
-        string Shift(string id, string prefix, int by) => $"{prefix}-{int.Parse(id[(prefix.Length + 1)..]) + by:D3}";
+        // RNF-001 of lot 2 is now RNF-002, linked to its question (Q-001 of lot 2, now Q-003).
+        var rnf = Req(merged, count + 6);
+        Assert.Equal("RNF-002", rnf["id"]!.GetValue<string>());
+        Assert.Equal(["Q-003"], Strings(rnf["open_question_ids"]));
+        Assert.Equal(["RNF-002"], Strings(merged["open_questions"]![2]!["related_requirements"]));
 
-        for (var i = 0; i < requirementsInLot1; i++)
-        {
-            var original = lot["requirements"]![i]!;
-            var copy = merged["requirements"]![requirementsInLot1 + i]!;
-            Assert.Equal(Strings(original["open_question_ids"]).Select(q => Shift(q, "Q", questionsInLot1)), Strings(copy["open_question_ids"]));
-            Assert.Equal(Strings(original["derived_from"]).Select(r => Shift(r, "REQ", requirementsInLot1)), Strings(copy["derived_from"]));
-        }
-        for (var i = 0; i < questionsInLot1; i++)
-        {
-            var original = lot["open_questions"]![i]!;
-            var copy = merged["open_questions"]![questionsInLot1 + i]!;
-            Assert.Equal(Strings(original["related_requirements"]).Select(r => Shift(r, "REQ", requirementsInLot1)), Strings(copy["related_requirements"]));
-        }
+        // RF-001 of lot 2 (now RF-008) covers CAP-001 of lot 2 (now CAP-007).
+        var rf = Req(merged, count);
+        Assert.Equal("RF-008", rf["id"]!.GetValue<string>());
+        Assert.Equal(["CAP-007"], Strings(rf["capability_ids"]));
     }
 
     [Fact]
@@ -81,14 +79,13 @@ public class CatalogMergerTests
     }
 
     [Fact]
-    public void The_verdict_adds_the_counts_of_the_lots()
+    public void Discards_and_the_verdict_are_joined()
     {
         var merged = Merged();
 
-        Assert.Equal(26, merged["verdict"]!["counts"]!["requirements"]!.GetValue<int>());
-        Assert.Equal(4, merged["verdict"]!["counts"]!["discarded"]!.GetValue<int>());
-        Assert.Equal("complete", merged["verdict"]!["status"]!.GetValue<string>());
         Assert.Equal(4, merged["discarded_statements"]!.AsArray().Count);
+        Assert.Equal("complete", merged["verdict"]!["status"]!.GetValue<string>());
+        Assert.True(merged["verdict"]!["self_check"]!["all_capabilities_covered"]!.GetValue<bool>());
     }
 
     [Fact]
@@ -97,8 +94,10 @@ public class CatalogMergerTests
         var report = CatalogValidator.Validate(CatalogMerger.Merge([Lot1, Lot2]), System, BothDocuments());
 
         Assert.True(report.Valid, string.Join("\n", report.Errors));
+        Assert.False(report.NeedsRepair, string.Join("\n", report.RepairReasons));
         Assert.Empty(report.Warnings);
-        Assert.Equal(26, report.Metrics!.Requirements);
+        Assert.Equal(18, report.Metrics!.Requirements);
+        Assert.Equal("12/12", report.Metrics.CapabilityCoverage);
     }
 
     [Fact]

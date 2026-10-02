@@ -129,4 +129,33 @@ public class FragmenterTests
         Assert.Equal("El administrador ＜jefe＞.", doubt.Text);
         Assert.Equal("<f id=\"DUDAS#D-001\" pregunta=\"¿Quién aprueba?\">El administrador ＜jefe＞.</f>", Fragmenter.DoubtsBlock(fragments));
     }
+
+    // The index ({{INDICE}}, prompt v1.3): the same lines as document_index in
+    // fragmentar.py (see INDEX_CASES in test_fragmentar.py).
+    public static TheoryData<string, string[]> IndexCases => new()
+    {
+        { Example("ejemplo"), ["§1", "§2.1", "§2.2", "§2.3", "§2.4", "§2.5", "§2.6", "§2.7", "§3.1", "§3.2", "§3.3", "§3.4", "§3.5"] },
+        { Example("ejemplo_en"), ["1. Introduction", "2. Functional requirements", "2.1", "2.2", "2.3", "2.4", "2.5", "2.6",
+                                  "3. Non-functional requirements", "3.1", "3.2"] },
+        { "# Calendario\n\nIntro.\n\n## 3. Roles y acceso\n\n### 3.1 Roles\nTexto.\n", ["Calendario", "3. Roles y acceso", "3.1 Roles"] },
+        { "§2.1 Primera frase.\n§2.1 Segunda frase.\n§2.2 Otra.\n", ["§2.1", "§2.2"] },
+    };
+
+    private static string Example(string example) =>
+        File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts", example, "fuentes", "DOC-01.txt"));
+
+    [Theory]
+    [MemberData(nameof(IndexCases))]
+    public void Index_matches_the_reference_script(string text, string[] expected)
+    {
+        Assert.Equal(expected, Fragmenter.DocumentIndex(text));
+    }
+
+    [Fact]
+    public void Index_of_several_documents_starts_each_one_with_its_id_and_name()
+    {
+        var block = Fragmenter.IndexBlock([("DOC-01", "requisitos.md", "## Uno\nTexto.\n"), ("DOC-02", "anexo.txt", "§1 Texto.\n")]);
+
+        Assert.Equal("DOC-01 requisitos.md\nUno\nDOC-02 anexo.txt\n§1", block);
+    }
 }

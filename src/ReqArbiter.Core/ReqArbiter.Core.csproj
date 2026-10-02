@@ -16,12 +16,12 @@
     <!-- The current requirements prompt, its repair annex and the catalog schema,
          embedded in the DLL from prompts/ (the versioned source), so the API never
          depends on files next to it. LogicalName is the resource name used in code. -->
-    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\prompt_requisitos_v1.2.md" LogicalName="prompt_requisitos.md" />
-    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\anexo_reparacion_v1.2.md" LogicalName="anexo_reparacion.md" />
-    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\requirements.schema.json" LogicalName="requirements.schema.json" />
+    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\prompt_requisitos_v1.3.md" LogicalName="prompt_requisitos.md" />
+    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\anexo_reparacion_v1.3.md" LogicalName="anexo_reparacion.md" />
+    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\requirements_v1.3.schema.json" LogicalName="requirements.schema.json" />
     <!-- The ReservaSalas example: FakeProvider answers it with its catalog. -->
     <EmbeddedResource Include="..\..\prompts\generacion_requisitos\ejemplo\fragmentos.json" LogicalName="ejemplo_fragmentos.json" />
-    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\ejemplo\catalogo_ejemplo.json" LogicalName="ejemplo_catalogo.json" />
+    <EmbeddedResource Include="..\..\prompts\generacion_requisitos\ejemplo\catalogo_ejemplo_v1.3.json" LogicalName="ejemplo_catalogo.json" />
   </ItemGroup>
 
 </Project>

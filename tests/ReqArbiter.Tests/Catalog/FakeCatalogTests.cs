@@ -38,7 +38,9 @@ public class FakeCatalogTests
         var report = CatalogValidator.Validate(catalog, "el sistema de reservas", Fragments(folder));
 
         Assert.True(report.Valid, string.Join("\n", report.Errors));
-        Assert.Equal(13, report.Metrics!.Requirements);
+        Assert.False(report.NeedsRepair);
+        Assert.Empty(report.Warnings); // the system name is already the project's: no FIX
+        Assert.Equal(9, report.Metrics!.Requirements);
     }
 
     [Fact]
@@ -54,12 +56,13 @@ public class FakeCatalogTests
         var report = CatalogValidator.Validate(catalog, "el sistema Pedidos", Fragments(folder));
 
         Assert.True(report.Valid, string.Join("\n", report.Errors));
+        Assert.False(report.NeedsRepair);
         Assert.Equal(0, report.Metrics!.Requirements);
         Assert.Equal($"{fragments.Count}/{fragments.Count}", report.Metrics.FragmentCoverage);
     }
 
     [Fact]
-    public void The_mutated_catalog_is_invalid()
+    public void The_mutated_catalog_has_an_error_of_the_lot()
     {
         using var temp = new TempDirectory();
         var folder = RunFolder(temp, "el sistema ReservaSalas", "es", ExampleFragments);
@@ -67,6 +70,7 @@ public class FakeCatalogTests
         var report = CatalogValidator.Validate(FakeCatalog.For(folder, mutated: true), "el sistema ReservaSalas", Fragments(folder));
 
         Assert.False(report.Valid);
-        Assert.Contains(report.Errors, e => e.StartsWith("SCHEMA", StringComparison.Ordinal));
+        Assert.True(report.NeedsRepair);
+        Assert.Contains(report.Errors, e => e.StartsWith("LOTE SCHEMA", StringComparison.Ordinal));
     }
 }

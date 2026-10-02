@@ -12,6 +12,7 @@ public record CatalogPromptInput(
     int LotTotal,
     string Glossary,          // may be empty
     string ResolvedDoubts,    // <f id="DUDAS#..."> block; empty until the doubts phase exists
+    string Index,             // titles of every section of the documents (Fragmenter.IndexBlock)
     string Documentation);    // <documento> block of the lot's fragments
 
 // Assembles the prompt that models A and B receive, from the versioned files in
@@ -19,7 +20,7 @@ public record CatalogPromptInput(
 public static partial class PromptBuilder
 {
     // Stored with every run, together with the SHA-256 of the assembled prompt.
-    public const string Version = "req-1.2";
+    public const string Version = "req-1.3";
 
     public static string Template { get; } = ReadResource("prompt_requisitos.md");
     public static string RepairAnnexTemplate { get; } = ReadResource("anexo_reparacion.md");
@@ -36,11 +37,12 @@ public static partial class PromptBuilder
         ["LOTE_TOTAL"] = input.LotTotal.ToString(System.Globalization.CultureInfo.InvariantCulture),
         ["GLOSARIO"] = input.Glossary,
         ["DUDAS_RESUELTAS"] = input.ResolvedDoubts,
+        ["INDICE"] = input.Index,
         ["DOCUMENTACION"] = input.Documentation,
     });
 
     // The text added after the original prompt in a repair retry (§12).
-    // errors: one validator error per line.
+    // errors: one line per reason for the repair (CatalogValidationReport.RepairReasons).
     public static string BuildRepairAnnex(int attempt, string previousCatalog, IEnumerable<string> errors) =>
         Fill(RepairAnnexTemplate, new Dictionary<string, string>
         {

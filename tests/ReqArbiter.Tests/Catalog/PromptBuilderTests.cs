@@ -12,15 +12,16 @@ public class PromptBuilderTests
         LotTotal: 3,
         Glossary: "sala: espacio reservable",
         ResolvedDoubts: "",
+        Index: "§1 Objetivo\n§2 Reservas",
         Documentation: documentation);
 
     [Fact]
-    public void Template_is_the_embedded_v1_2_prompt()
+    public void Template_is_the_embedded_v1_3_prompt()
     {
-        var file = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts", "prompt_requisitos_v1.2.md"));
+        var file = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts", "prompt_requisitos_v1.3.md"));
 
         Assert.Equal(file, PromptBuilder.Template);
-        Assert.Equal("req-1.2", PromptBuilder.Version);
+        Assert.Equal("req-1.3", PromptBuilder.Version);
     }
 
     [Fact]
@@ -34,9 +35,10 @@ public class PromptBuilderTests
         Assert.Contains("<lote numero=\"2\" total=\"3\"/>", prompt);
         Assert.Contains("<glosario>sala: espacio reservable</glosario>", prompt);
         Assert.Contains("<dudas_resueltas></dudas_resueltas>", prompt);
+        Assert.Contains("<indice>§1 Objetivo\n§2 Reservas</indice>", prompt);
         Assert.Contains("<documentacion><documento id=\"DOC-01\"", prompt);
-        // {{IDIOMA}} appears twice in the template (§1 and the keyword table of §3).
-        Assert.Contains("Columna según `es`.", prompt);
+        // {{IDIOMA}} appears twice in the template (§1 and the keyword table of §6).
+        Assert.Contains("Columna según `es`;", prompt);
     }
 
     [Fact]
@@ -65,10 +67,10 @@ public class PromptBuilderTests
     [Fact]
     public void Repair_annex_carries_the_attempt_the_catalog_and_one_error_per_line()
     {
-        var annex = PromptBuilder.BuildRepairAnnex(1, "{\"schema_version\":\"1.2\"}", ["REQ-001 C5 término vago", "C10 fragmentos sin tratar"]);
+        var annex = PromptBuilder.BuildRepairAnnex(1, "{\"schema_version\":\"1.3\"}", ["RF-001 C5 término vago", "LOTE C10 fragmentos sin tratar"]);
 
-        Assert.Contains("# §12 REPARACIÓN (intento 1 de 2)", annex);
-        Assert.Contains("<catalogo_previo>{\"schema_version\":\"1.2\"}</catalogo_previo>", annex);
-        Assert.Contains("<errores>\nREQ-001 C5 término vago\nC10 fragmentos sin tratar\n</errores>", annex.Replace("\r\n", "\n"));
+        Assert.Contains("# §12 REPARACIÓN (intento 1)", annex);
+        Assert.Contains("<catalogo_previo>{\"schema_version\":\"1.3\"}</catalogo_previo>", annex);
+        Assert.Contains("<errores>\nRF-001 C5 término vago\nLOTE C10 fragmentos sin tratar\n</errores>", annex.Replace("\r\n", "\n"));
     }
 }

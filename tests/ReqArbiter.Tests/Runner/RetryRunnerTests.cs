@@ -71,7 +71,7 @@ public class RetryRunnerTests
 
         var attempts = await new RetryRunner(provider).RunAsync(FirstRequest(temp.Path), _ => _ => { }, CancellationToken.None);
 
-        Assert.Equal(1 + RetryRunner.MaxRetries, attempts.Count);
+        Assert.Equal(1 + RetryRunner.DefaultMaxRetries, attempts.Count);
         Assert.Equal(RunStatus.Failed, attempts[^1].Result.Status);
         Assert.Equal(attempts[1].Request.RunId, attempts[2].PreviousRunId);
     }

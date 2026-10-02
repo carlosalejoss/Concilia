@@ -1,0 +1,343 @@
+{
+  "schema_version": "1.3",
+  "system": "the LibraryLoan system",
+  "language": "en",
+  "capabilities": [
+    {
+      "id": "CAP-001",
+      "name": "reserve a book that is on loan",
+      "actor": "a member",
+      "fragments": [
+        "DOC-01#F004"
+      ]
+    },
+    {
+      "id": "CAP-002",
+      "name": "update the loan record when a book is returned",
+      "actor": null,
+      "fragments": [
+        "DOC-01#F005",
+        "DOC-01#F006"
+      ]
+    },
+    {
+      "id": "CAP-003",
+      "name": "register and deactivate members",
+      "actor": "the librarian",
+      "fragments": [
+        "DOC-01#F007",
+        "DOC-01#F008",
+        "DOC-01#F009"
+      ]
+    },
+    {
+      "id": "CAP-004",
+      "name": "send reminder emails before the due date",
+      "actor": null,
+      "fragments": [
+        "DOC-01#F010"
+      ]
+    },
+    {
+      "id": "CAP-005",
+      "name": "subscribe to the Flexible Loan plan",
+      "actor": "a member",
+      "fragments": [
+        "DOC-01#F011"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "RF-001",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-001"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F004",
+          "quote": "A member can reserve a book that is on loan"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "ubiquitous",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_fallback": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "feature": null,
+        "states": [],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "allow a member to reserve a book that is on loan"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RF-002",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-002"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F005",
+          "quote": "When a member returns a book, the system will update the loan record"
+        },
+        {
+          "fragment": "DOC-01#F006",
+          "quote": "If the barcode of a book cannot be read, the system shall display an error message to the librarian"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "event_driven",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_fallback": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "feature": null,
+        "states": [],
+        "trigger": "a member returns a book",
+        "trigger_keyword": "WHEN",
+        "response": "update the loan record"
+      },
+      "acceptance_criteria": [
+        "[ERROR] If the barcode of a book cannot be read, the system displays an error message to the librarian."
+      ],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": [
+        "Q-001"
+      ]
+    },
+    {
+      "id": "RF-003",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-003"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F007",
+          "quote": "The librarian shall be able to:"
+        },
+        {
+          "fragment": "DOC-01#F008",
+          "quote": "register new members,"
+        },
+        {
+          "fragment": "DOC-01#F009",
+          "quote": "deactivate members."
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "shall",
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "ubiquitous",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_fallback": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "feature": null,
+        "states": [],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "allow the librarian to register new members and deactivate members"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RF-004",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-004"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F010",
+          "quote": "The system may send reminder emails before the due date"
+        }
+      ],
+      "obligation": "MAY",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "may",
+      "decision_branch": "D3",
+      "notation": "MASTeR",
+      "ears_pattern": null,
+      "master_template": "functional",
+      "master_activity": "autonomous",
+      "master_condition": "none",
+      "escalation_fallback": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "condition": null,
+        "actor": null,
+        "process_verb": "send",
+        "object": "reminder emails",
+        "details": "before the due date"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RF-005",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-005"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F011",
+          "quote": "Members can subscribe to the Flexible Loan plan"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "ubiquitous",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_fallback": null,
+      "slots": {
+        "system": "the LibraryLoan system",
+        "feature": null,
+        "states": [],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "allow members to subscribe to the Flexible Loan plan"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RNF-001",
+      "type": "RNF",
+      "capability_ids": [],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F013",
+          "quote": "The response time of the search function shall be less than 2 seconds"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "shall",
+      "decision_branch": "D1",
+      "notation": "MASTeR",
+      "ears_pattern": null,
+      "master_template": "property",
+      "master_activity": null,
+      "master_condition": "none",
+      "escalation_fallback": null,
+      "slots": {
+        "condition": null,
+        "characteristic": "the response time",
+        "subject_matter": "of the search function",
+        "qualifying_expression": "less than",
+        "value": "1.5 seconds"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "Q-001",
+      "type": "ambiguity",
+      "question": "Does the error message for an unreadable barcode apply only when a member returns a book, or to every operation that reads a barcode?",
+      "related_requirements": [
+        "RF-002"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F006",
+          "quote": "If the barcode of a book cannot be read"
+        }
+      ]
+    },
+    {
+      "id": "Q-002",
+      "type": "scope",
+      "question": "Is the integration with the city card within the scope of this version?",
+      "related_requirements": [],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F014",
+          "quote": "In a future release, the system will integrate with the city card"
+        }
+      ]
+    }
+  ],
+  "discarded_statements": [
+    {
+      "fragment": "DOC-01#F003",
+      "quote": null,
+      "reason": "heading",
+      "note": null
+    },
+    {
+      "fragment": "DOC-01#F012",
+      "quote": null,
+      "reason": "heading",
+      "note": null
+    }
+  ],
+  "discarded_sections": [
+    {
+      "section": "1.",
+      "reason": "context"
+    }
+  ],
+  "domain_terms": [
+    {
+      "term": "Flexible Loan plan",
+      "fragment": "DOC-01#F011"
+    }
+  ],
+  "verdict": {
+    "status": "complete",
+    "self_check": {
+      "quotes_are_literal": true,
+      "figures_from_source": true,
+      "all_fragments_accounted": true,
+      "all_capabilities_covered": true,
+      "no_vague_terms": true,
+      "ears_only_shall": true,
+      "decision_tree_consistent": true
+    },
+    "issues": [],
+    "unprocessed_fragments": []
+  }
+}

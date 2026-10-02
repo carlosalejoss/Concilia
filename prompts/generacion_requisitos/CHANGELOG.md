@@ -33,7 +33,9 @@ Hito 6 (`docs/hito-6-catalogo-v1.3.md`), tras la primera ejecución grande del h
 - Desaparecen C3 (lo corrige el normalizador), C4, C18 y las comprobaciones de recuentos del veredicto.
 - Salida: el catálogo aceptado, normalizado y renumerado, y la correspondencia entre los ids del modelo y los finales. Los mensajes de cada elemento usan el id que escribió el modelo, que es el que ve en la reparación.
 - Métricas nuevas: requisitos escritos y rechazados, recuento por tipo, funcionalidades y su cobertura, criterios por requisito y por etiqueta, correcciones.
-- `test_validador.py`: 64 casos (2 bases, idempotencia de la normalización y 60 mutaciones: 27 rechazos, 5 errores del lote, 15 avisos, 9 correcciones, 1 aceptación y 3 reparaciones).
+- `test_validador.py`: 65 casos (2 bases, idempotencia de la normalización y 61 mutaciones: 27 rechazos, 5 errores del lote, 16 avisos, 9 correcciones, 1 aceptación y 3 reparaciones).
+- Paso 31: una etiqueta de criterio exige corchetes o dos puntos ("[DATA]", "DATA:"). Antes, un criterio sin etiqueta que empezara por "Error", "Data"… se tomaba por etiquetado.
+- Paso 31: se retiran de la carpeta los ficheros v1.2 (prompt, anexo, `requirements.schema.json` y `catalogo_ejemplo.json` con su enriquecido); siguen en el historial de git.
 
 **Fragmentador**
 - Índice del documento (`document_index`, `index_block`, `--bloque-indice`): una línea por sección, con su etiqueta y, si empieza con un título, el título. Los fragmentos no cambian.
