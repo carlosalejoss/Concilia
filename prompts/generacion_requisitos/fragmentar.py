@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """
-Fragmentador de referencia para el prompt de requisitos v1.2.
+Fragmentador de referencia para el prompt de requisitos (v1.2 y v1.3).
 
 Divide cada documento de entrada en fragmentos (frases) con un id estable, y las dudas
 resueltas en un fragmento por duda. El modelo cita fragmentos por su id y el validador
 comprueba que cada cita es literal dentro de su fragmento y que ningún fragmento del
 documento queda sin tratar (C10).
+
+Desde la v1.3 genera también el índice del documento ({{INDICE}} del prompt): los títulos de
+todas sus secciones, uno por línea con su etiqueta, para que el modelo sepa en qué parte del
+documento está cada fragmento de su lote. Los fragmentos no cambian respecto a la v1.2.
 
 Es la implementación de referencia: la versión en C# del runner debe producir exactamente
 la misma salida para los mismos ficheros (los tests comparan con ejemplo/fragmentos.json).
@@ -13,12 +17,14 @@ la misma salida para los mismos ficheros (los tests comparan con ejemplo/fragmen
 Uso:
     python fragmentar.py --docs DIR [--dudas dudas.json] --salida fragmentos.json
                          [--bloque-doc documentacion.xml] [--bloque-dudas dudas.xml]
+                         [--bloque-indice indice.txt]
 
 --docs          carpeta con un .txt o .md por documento; el nombre sin extensión es su id (DOC-01).
 --dudas         JSON con una lista [{"id": "D-001", "pregunta": "...", "respuesta": "..."}].
 --salida        fragmentos.json (lo lee validar_catalogo.py).
 --bloque-doc    texto que sustituye a {{DOCUMENTACION}} en el prompt.
 --bloque-dudas  texto que sustituye a {{DUDAS_RESUELTAS}} en el prompt.
+--bloque-indice texto que sustituye a {{INDICE}} en el prompt (v1.3).
 """
 import argparse
 import json
@@ -154,6 +160,34 @@ def fragment_document(doc_id: str, text: str) -> list[dict]:
     return frags
 
 
+def document_index(text: str) -> list[str]:
+    """Una línea por sección del documento, en orden y sin repetir: la etiqueta de la sección y, si la
+    sección empieza con un título, el título ("2. Functional requirements"). Un título markdown ya es su
+    propia etiqueta ("3.1 Roles"). Una sección sin título queda solo con su etiqueta ("§2.1").
+    Usa la misma lectura del texto que fragment_document, así que las etiquetas coinciden con el `sec`
+    de los fragmentos."""
+    lines, seen = [], set()
+    for section, par, is_heading in paragraphs(text):
+        if not section or section in seen:
+            continue
+        seen.add(section)
+        label = safe_attr(section)
+        title = safe_text(norm(par))
+        lines.append(f"{label} {title}" if is_heading and title != label else label)
+    return lines
+
+
+def index_block(documents: list[tuple[str, str, str]]) -> str:
+    """{{INDICE}}: el índice de cada documento (id, nombre, texto). Con varios documentos, cada índice va
+    precedido de una línea con el id y el nombre del documento."""
+    out = []
+    for doc_id, name, text in documents:
+        if len(documents) > 1:
+            out.append(f"{doc_id} {safe_text(name)}")
+        out += document_index(text)
+    return "\n".join(out)
+
+
 def fragment_dudas(dudas: list[dict]) -> list[dict]:
     return [{"id": f"DUDAS#{d['id']}", "source": "DUDAS", "kind": "clarification",
              "section": safe_attr(norm(d.get("pregunta", ""))), "text": safe_text(norm(d["respuesta"])),
@@ -189,13 +223,16 @@ def main():
     ap.add_argument("--salida", required=True)
     ap.add_argument("--bloque-doc")
     ap.add_argument("--bloque-dudas")
+    ap.add_argument("--bloque-indice")
     a = ap.parse_args()
 
-    frags, names = [], {}
+    frags, names, documents = [], {}, []
     for p in sorted(Path(a.docs).iterdir()):
         if p.is_file() and p.suffix.lower() in (".txt", ".md"):
             names[p.stem] = p.name
-            frags += fragment_document(p.stem, p.read_text(encoding="utf-8"))
+            text = p.read_text(encoding="utf-8")
+            documents.append((p.stem, p.name, text))
+            frags += fragment_document(p.stem, text)
     if a.dudas:
         frags += fragment_dudas(json.loads(Path(a.dudas).read_text(encoding="utf-8")))
 
@@ -205,6 +242,8 @@ def main():
         Path(a.bloque_doc).write_text(doc_block(frags, names) + "\n", encoding="utf-8")
     if a.bloque_dudas:
         Path(a.bloque_dudas).write_text(dudas_block(frags) + "\n", encoding="utf-8")
+    if a.bloque_indice:
+        Path(a.bloque_indice).write_text(index_block(documents) + "\n", encoding="utf-8")
     print(f"{len(frags)} fragmentos")
 
 

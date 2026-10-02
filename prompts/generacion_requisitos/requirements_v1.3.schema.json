@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tfg/requirements_v1.3.schema.json",
+  "title": "Catálogo de requisitos EARS/MASTeR v1.3 (salida de Modelo A / Modelo B)",
+  "$comment": "Los ids y las referencias son cadenas libres: el normalizador las renumera por tipo. Los criterios sin etiqueta (C19) y los RF/RI sin capability_ids (C21) son avisos, no errores de esquema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "system", "language", "capabilities", "requirements", "open_questions",
+               "discarded_statements", "discarded_sections", "domain_terms", "verdict"],
+  "properties": {
+    "schema_version": { "const": "1.3" },
+    "system": { "type": "string", "minLength": 1 },
+    "language": { "enum": ["es", "en"] },
+    "capabilities": { "type": "array", "items": { "$ref": "#/$defs/capability" } },
+    "requirements": { "type": "array", "items": { "$ref": "#/$defs/requirement" } },
+    "open_questions": { "type": "array", "items": { "$ref": "#/$defs/open_question" } },
+    "discarded_statements": { "type": "array", "items": { "$ref": "#/$defs/discarded" } },
+    "discarded_sections": { "type": "array", "items": { "$ref": "#/$defs/discarded_section" } },
+    "domain_terms": { "type": "array", "items": { "$ref": "#/$defs/domain_term" } },
+    "verdict": { "$ref": "#/$defs/verdict" }
+  },
+  "$defs": {
+    "nullable_string": { "type": ["string", "null"], "minLength": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "fragment_id": { "type": "string", "pattern": "^(DOC-[A-Za-z0-9_-]+#F[0-9]{3,}|DUDAS#[A-Za-z0-9_-]+)$" },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fragment", "quote"],
+      "properties": {
+        "fragment": { "$ref": "#/$defs/fragment_id" },
+        "quote": { "type": "string", "minLength": 1, "maxLength": 300 }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "actor", "fragments"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "actor": { "$ref": "#/$defs/nullable_string" },
+        "fragments": { "type": "array", "items": { "$ref": "#/$defs/fragment_id" } }
+      }
+    },
+    "slots_ears": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "feature", "states", "trigger", "trigger_keyword", "response"],
+      "properties": {
+        "system": { "type": "string", "minLength": 1 },
+        "feature": { "$ref": "#/$defs/nullable_string" },
+        "states": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "trigger": { "$ref": "#/$defs/nullable_string" },
+        "trigger_keyword": { "enum": ["WHEN", "IF", null] },
+        "response": { "type": "string", "minLength": 1 }
+      }
+    },
+    "slots_master_functional": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "condition", "actor", "process_verb", "object", "details"],
+      "properties": {
+        "system": { "type": "string", "minLength": 1 },
+        "condition": { "$ref": "#/$defs/nullable_string" },
+        "actor": { "$ref": "#/$defs/nullable_string" },
+        "process_verb": { "type": "string", "minLength": 1 },
+        "object": { "type": "string", "minLength": 1 },
+        "details": { "$ref": "#/$defs/nullable_string" }
+      }
+    },
+    "slots_master_property": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["condition", "characteristic", "subject_matter", "qualifying_expression", "value"],
+      "properties": {
+        "condition": { "$ref": "#/$defs/nullable_string" },
+        "characteristic": { "type": "string", "minLength": 1 },
+        "subject_matter": { "type": "string", "minLength": 1 },
+        "qualifying_expression": { "$ref": "#/$defs/nullable_string" },
+        "value": { "type": "string", "minLength": 1 }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "capability_ids", "source_trace", "obligation", "obligation_basis",
+                   "obligation_evidence", "decision_branch", "notation", "ears_pattern", "master_template",
+                   "master_activity", "master_condition", "escalation_fallback", "slots", "acceptance_criteria",
+                   "origin", "derived_from", "open_question_ids"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["RF", "RI", "RNF", "RA", "RT"] },
+        "capability_ids": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "source_trace": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/trace" } },
+        "obligation": { "enum": ["SHALL", "SHOULD", "MAY"] },
+        "obligation_basis": { "enum": ["explicit", "implicit"] },
+        "obligation_evidence": { "$ref": "#/$defs/nullable_string" },
+        "decision_branch": { "enum": ["D1", "D2", "D3", "D4", "D5"] },
+        "notation": { "enum": ["EARS", "MASTeR"] },
+        "ears_pattern": { "enum": ["ubiquitous", "event_driven", "state_driven", "unwanted_behaviour",
+                                   "optional_feature", "complex", null] },
+        "master_template": { "enum": ["functional", "property", null] },
+        "master_activity": { "enum": ["autonomous", "user_interaction", "interface", null] },
+        "master_condition": { "enum": ["none", "logic", "event", "time", null] },
+        "escalation_fallback": { "$ref": "#/$defs/nullable_string" },
+        "slots": { "type": "object" },
+        "acceptance_criteria": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "origin": { "enum": ["explicit", "clarification", "derived"] },
+        "derived_from": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "open_question_ids": { "type": "array", "items": { "$ref": "#/$defs/id" } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "notation": { "const": "EARS" } } },
+          "then": {
+            "properties": {
+              "ears_pattern": { "not": { "const": null } },
+              "master_template": { "const": null },
+              "master_activity": { "const": null },
+              "master_condition": { "const": null },
+              "obligation": { "const": "SHALL" },
+              "slots": { "$ref": "#/$defs/slots_ears" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "notation": { "const": "MASTeR" } } },
+          "then": {
+            "properties": {
+              "ears_pattern": { "const": null },
+              "master_template": { "not": { "const": null } },
+              "master_condition": { "not": { "const": null } },
+              "escalation_fallback": { "const": null }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "notation": { "const": "MASTeR" }, "master_template": { "const": "functional" } } },
+          "then": {
+            "properties": {
+              "master_activity": { "not": { "const": null } },
+              "slots": { "$ref": "#/$defs/slots_master_functional" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "notation": { "const": "MASTeR" }, "master_template": { "const": "property" } } },
+          "then": {
+            "properties": {
+              "master_activity": { "const": null },
+              "slots": { "$ref": "#/$defs/slots_master_property" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "obligation_basis": { "const": "explicit" } } },
+          "then": { "properties": { "obligation_evidence": { "type": "string", "minLength": 1 } } },
+          "else": { "properties": { "obligation_evidence": { "const": null }, "obligation": { "const": "SHALL" } } }
+        },
+        {
+          "if": { "properties": { "origin": { "const": "derived" } } },
+          "then": { "properties": { "derived_from": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "open_question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "question", "related_requirements", "source_trace"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["missing_value", "missing_error_handling", "ambiguity", "contradiction",
+                           "missing_actor", "scope"] },
+        "question": { "type": "string", "minLength": 1 },
+        "related_requirements": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "source_trace": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/trace" } }
+      }
+    },
+    "discarded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fragment", "quote", "reason", "note"],
+      "properties": {
+        "fragment": { "$ref": "#/$defs/fragment_id" },
+        "quote": { "type": ["string", "null"], "minLength": 1, "maxLength": 300 },
+        "reason": { "enum": ["business_goal", "context", "heading", "out_of_scope", "other_system",
+                             "human_activity", "design_detail", "project_note"] },
+        "note": { "$ref": "#/$defs/nullable_string" }
+      }
+    },
+    "discarded_section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["section", "reason"],
+      "properties": {
+        "section": { "type": "string", "minLength": 1 },
+        "reason": { "enum": ["context", "heading", "out_of_scope", "design_detail", "project_note"] }
+      }
+    },
+    "domain_term": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["term", "fragment"],
+      "properties": {
+        "term": { "type": "string", "minLength": 3 },
+        "fragment": { "$ref": "#/$defs/fragment_id" }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "self_check", "issues", "unprocessed_fragments"],
+      "properties": {
+        "status": { "enum": ["complete", "partial", "failed"] },
+        "self_check": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["quotes_are_literal", "figures_from_source", "all_fragments_accounted",
+                       "all_capabilities_covered", "no_vague_terms", "ears_only_shall", "decision_tree_consistent"],
+          "properties": {
+            "quotes_are_literal": { "type": "boolean" },
+            "figures_from_source": { "type": "boolean" },
+            "all_fragments_accounted": { "type": "boolean" },
+            "all_capabilities_covered": { "type": "boolean" },
+            "no_vague_terms": { "type": "boolean" },
+            "ears_only_shall": { "type": "boolean" },
+            "decision_tree_consistent": { "type": "boolean" }
+          }
+        },
+        "issues": { "type": "array", "items": { "type": "string" } },
+        "unprocessed_fragments": { "type": "array", "items": { "$ref": "#/$defs/fragment_id" } }
+      }
+    }
+  }
+}

@@ -1,5 +1,44 @@
 # Cambios del prompt de generación de requisitos
 
+## v1.3 (2026-10-02)
+
+Hito 6 (`docs/hito-6-catalogo-v1.3.md`), tras la primera ejecución grande del hito 5: 1.133 y 862 requisitos para un documento técnico, más de la mitad de secciones que no eran especificación, 13 y 17 de 22 lotes reparados, y entre el 46 % y el 72 % de la salida gastada en intentos fallidos. El prompt y el anexo los redactó el autor en el proyecto de Claude; esta entrada recoge también el esquema, el validador y el fragmentador.
+
+**Carpeta**
+- Nuevos `prompt_requisitos_v1.3.md`, `anexo_reparacion_v1.3.md`, `requirements_v1.3.schema.json` y, en cada ejemplo, `catalogo_ejemplo_v1.3.json` y `catalogo_ejemplo_v1.3.enriquecido.json`.
+- Los ficheros v1.2 (`prompt_requisitos_v1.2.md`, `anexo_reparacion_v1.2.md`, `requirements.schema.json`, `catalogo_ejemplo.json` y su enriquecido) se mantienen mientras los use el código C#; se quitan en el paso 31.
+- `validar_catalogo.py` y `test_validador.py` pasan a ser la v1.3; la v1.2 está en el historial de git (commit `54310cd`).
+
+**Prompt**
+- Independencia: no menciona al otro modelo ni al árbitro.
+- Cobertura antes que detalle (U0): toda funcionalidad de la fuente queda en al menos un requisito.
+- Inventario de funcionalidades (`capabilities`) antes de los requisitos; cada `RF`/`RI` indica cuáles cubre (`capability_ids`).
+- Tipos `RF`, `RI`, `RNF`, `RA`, `RT`, con id por tipo (`RF-001`…). Sustituyen a `kind` y `out_of_subset`. El árbol D1–D5 se mantiene, ligado al tipo; `RNF` también en D2–D5.
+- Un requisito por capacidad (U1–U6), con sus detalles como criterios de aceptación etiquetados (`[OPERATION]`, `[DATA]`, `[RULE]`, `[LIMIT]`, `[MESSAGE]`, `[ERROR]`). Los errores que describe la fuente son criterios `[ERROR]`, no requisitos `unwanted_behaviour`. Sin verbos paraguas con cuatro operaciones o menos (U7).
+- Descartes nuevos `design_detail` y `project_note`, y descarte de una sección entera (`discarded_sections`).
+- Índice del documento (`{{INDICE}}`).
+- N4: como máximo una pregunta `missing_error_handling` por proceso o pantalla.
+- Salida más corta: sin `notation_rationale`, `escalation_reason` ni `verdict.counts`.
+- §9 indica qué rechaza un requisito, qué es aviso y qué repara el lote.
+
+**Esquema 1.3**
+- `capabilities`, `discarded_sections`, `type`, `capability_ids`, `acceptance_criteria` y `verdict.self_check.all_capabilities_covered`.
+- Ids y referencias como cadenas libres: los renumera el normalizador. Los criterios sin etiqueta y los `RF`/`RI` sin `capability_ids` no son errores de esquema (son los avisos C19 y C21).
+
+**Validador**
+- Normalizador antes de validar, con aviso `FIX` por corrección: renumeración por tipo, `Q-` y `CAP-`; vínculos completados en los dos sentidos; referencias a ids inexistentes quitadas; puntuación final de los slots; `slots.system` (antes C3); etiquetas de criterios; citas comparadas sin Markdown ni mayúsculas, con el fragmento corregido si la cita está literal en uno solo; citas repetidas.
+- Tres niveles. Error del lote (JSON, estructura raíz, C10 con más del 10 % de fragmentos sin tratar, `status` `failed`): reparación. Error de un elemento (esquema, C2, C5, C6, C7, C12, C15, N2, N3): se rechaza ese requisito o pregunta. Avisos: C13, C14, C16, C17, C19, C20, C21, C22, C9, C11, `FIX`, `VERDICT`, `SELF_CHECK`.
+- Aceptación parcial: el lote necesita reparación si se rechaza más del 20 % de los requisitos o hay algún C20 (funcionalidad sin `RF`/`RI` aceptado). `repair_reasons` son las líneas del anexo.
+- C5 y N2 se aplican también a los criterios. C12 comprueba el tipo frente a la rama.
+- Desaparecen C3 (lo corrige el normalizador), C4, C18 y las comprobaciones de recuentos del veredicto.
+- Salida: el catálogo aceptado, normalizado y renumerado, y la correspondencia entre los ids del modelo y los finales. Los mensajes de cada elemento usan el id que escribió el modelo, que es el que ve en la reparación.
+- Métricas nuevas: requisitos escritos y rechazados, recuento por tipo, funcionalidades y su cobertura, criterios por requisito y por etiqueta, correcciones.
+- `test_validador.py`: 64 casos (2 bases, idempotencia de la normalización y 60 mutaciones: 27 rechazos, 5 errores del lote, 15 avisos, 9 correcciones, 1 aceptación y 3 reparaciones).
+
+**Fragmentador**
+- Índice del documento (`document_index`, `index_block`, `--bloque-indice`): una línea por sección, con su etiqueta y, si empieza con un título, el título. Los fragmentos no cambian.
+- `test_fragmentar.py`: 16 casos.
+
 ## v1.2 (2026-09-29)
 
 Revisión de la v1.1 antes de la primera medición con PURE (documentos en inglés). Solo entra lo que falsearía o bloquearía esa medición; lo que conviene decidir con datos queda pendiente (ver la justificación v1.2 en el proyecto de Claude).

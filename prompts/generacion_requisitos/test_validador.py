@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
 """
-Batería de mutaciones del validador v1.2.
+Batería de mutaciones del validador v1.3.
 
-Cada caso parte de un catálogo de ejemplo válido (`ejemplo/`, en español, o `ejemplo_en/`, en inglés),
-introduce un único error y comprueba que el validador lo detecta con el código esperado. Los casos de
-aviso comprueban que el catálogo sigue siendo válido y que aparece el aviso esperado.
+Cada caso parte de un catálogo de ejemplo válido (`ejemplo/catalogo_ejemplo_v1.3.json`, en español, o
+`ejemplo_en/catalogo_ejemplo_v1.3.json`, en inglés), introduce un único cambio y comprueba cómo lo trata el
+validador, según su nivel:
+
+- reject:  el lote se acepta y el elemento indicado se rechaza con ese código.
+- lot:     error del lote con ese código (el lote no se puede usar y se repara).
+- warning: el lote se acepta sin rechazos ni reparación y aparece el aviso.
+- fix:     como warning, con el aviso FIX del normalizador.
+- accept:  el lote se acepta sin rechazos, sin reparación y sin avisos.
+- repair:  el lote se puede usar, pero necesita reparación por ese código (C20 o rechazos de más del 20 %).
+
+Algunos casos comprueban además el catálogo aceptado (ids renumerados, vínculos completados…).
 
 Uso:
     python test_validador.py                   # ejecuta la batería; código 1 si algún caso falla
-    python test_validador.py --exportar DIR    # escribe cada caso como fixture (JSON + código esperado,
-                                               # ejemplo de origen y nombre del sistema) para el port a C#
+    python test_validador.py --exportar DIR    # escribe cada caso como fixture (catálogo, nivel, código
+                                               # esperado, ejemplo y nombre del sistema) para el port a C#
 """
 import argparse
 import copy
@@ -19,14 +28,16 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
-from validar_catalogo import check, load_fragments  # noqa: E402
+from validar_catalogo import SCHEMA_FILE, check_text, enrich, load_fragments  # noqa: E402
 
-SCHEMA = json.loads((HERE / "requirements.schema.json").read_text(encoding="utf-8"))
+SCHEMA = json.loads((HERE / SCHEMA_FILE).read_text(encoding="utf-8"))
 EXAMPLES = {
     "ejemplo": "el sistema ReservaSalas",
     "ejemplo_en": "the LibraryLoan system",
 }
-BASES = {name: json.loads((HERE / name / "catalogo_ejemplo.json").read_text(encoding="utf-8")) for name in EXAMPLES}
+BASE_FILE = "catalogo_ejemplo_v1.3.json"
+ENRICHED_FILE = "catalogo_ejemplo_v1.3.enriquecido.json"
+BASES = {name: json.loads((HERE / name / BASE_FILE).read_text(encoding="utf-8")) for name in EXAMPLES}
 FRAGMENTS = {name: load_fragments(str(HERE / name / "fragmentos.json")) for name in EXAMPLES}
 ES, EN = "ejemplo", "ejemplo_en"
 
@@ -39,125 +50,214 @@ def q(c, qid):
     return next(x for x in c["open_questions"] if x["id"] == qid)
 
 
-# (nombre, código esperado al principio de algún error tras el id, mutación)
-# (ejemplo, nombre, código esperado al principio de algún error tras el id, mutación)
-CASES = [
-    # --- Casos que el validador v1 dejaba pasar ---
-    (ES, "property con escalation_reason de condición", "C12",
-     lambda c: req(c, "REQ-003").update(escalation_reason="data_condition")),
-    (ES, "property marcada functional", "SCHEMA",
-     lambda c: req(c, "REQ-003").update(kind="functional")),
-    (ES, "slot terminado en punto", "C14",
-     lambda c: req(c, "REQ-001")["slots"].update(response=req(c, "REQ-001")["slots"]["response"] + ".")),
-    (ES, "SHOULD con obligation_basis implicit", "SCHEMA",
-     lambda c: req(c, "REQ-012").update(obligation_basis="implicit", obligation_evidence=None)),
-    (ES, "obligation_evidence ausente del fragmento", "C13",
-     lambda c: req(c, "REQ-009").update(obligation_evidence="obligatoriamente")),
-    (ES, "fragmento citado equivocado (antes: locator falso)", "C6",
-     lambda c: req(c, "REQ-002")["source_trace"][0].update(fragment="DOC-01#F012")),
-    (ES, "out_of_subset en un requisito EARS normal", "C12",
-     lambda c: req(c, "REQ-001").update(out_of_subset="process")),
-    (ES, "origin clarification sin traza a dudas", "C16",
-     lambda c: req(c, "REQ-002").update(origin="clarification")),
-    (ES, "pregunta no bidireccional", "C11",
-     lambda c: q(c, "Q-001").update(related_requirements=["REQ-002"])),
-    (ES, "status complete con fragmentos sin procesar", "VERDICT",
-     lambda c: c["verdict"].update(unprocessed_fragments=["DOC-01#F014"])),
-    (ES, "keyword en mayúsculas dentro de un slot", "C14",
-     lambda c: req(c, "REQ-006")["slots"].update(response="impedir la reserva Y DEBERÁ avisar")),
-    (ES, "fragmento perdido (C10)", "C10",
-     lambda c: (c["discarded_statements"].pop(), c["verdict"]["counts"].update(discarded=1))),
-    (ES, "subject_matter sin preposición", "C14",
-     lambda c: req(c, "REQ-003")["slots"].update(subject_matter="la confirmación de una reserva")),
-    (ES, "EARS con escalation_fallback fuera de D1/D4", "C12",
-     lambda c: req(c, "REQ-004").update(escalation_fallback="no se pudo rellenar")),
-    (ES, "functional con escalation_reason de propiedad", "C12",
-     lambda c: req(c, "REQ-009").update(escalation_reason="non_functional_property")),
-    (ES, "self_check mentiroso se registra y el fallo real bloquea", "C6",
-     lambda c: req(c, "REQ-004")["source_trace"][0].update(quote="se rechaza la solicitud")),
-    # --- Reglas nuevas de v1.1 ---
-    (ES, "prohibición en negativo (R-e)", "C15",
-     lambda c: req(c, "REQ-006")["slots"].update(response="no permitir la reserva de esa sala")),
-    (ES, "término vago de la categoría escape", "C5",
-     lambda c: req(c, "REQ-001")["slots"].update(response=req(c, "REQ-001")["slots"]["response"] + " si procede")),
-    (ES, "término vago de la categoría pronombre", "C5",
-     lambda c: req(c, "REQ-005")["slots"].update(response="informar al empleado de lo anterior")),
-    (ES, "valor pendiente sin pregunta missing_value", "N3",
-     lambda c: (req(c, "REQ-011").update(open_question_ids=[]), q(c, "Q-002").update(related_requirements=[]))),
-    (ES, "D4 aplicado a estados en vez de datos (EARS con D4)", "C12",
-     lambda c: req(c, "REQ-010").update(decision_branch="D4")),
-    (ES, "D3 con obligación SHALL", "C12",
-     lambda c: req(c, "REQ-012").update(obligation="SHALL", escalation_reason="non_mandatory_obligation")),
-    (ES, "D2 sin out_of_subset", "C12",
-     lambda c: req(c, "REQ-013").update(out_of_subset=None)),
-    (ES, "state_driven sin estados", "C2",
-     lambda c: req(c, "REQ-006")["slots"].update(states=[])),
-    (ES, "complex con un solo tipo de condición", "C2",
-     lambda c: req(c, "REQ-008")["slots"].update(trigger=None, trigger_keyword=None)),
-    (ES, "campo text escrito por el modelo", "SCHEMA",
-     lambda c: req(c, "REQ-001").update(text="El sistema ReservaSalas DEBERÁ …")),
-    (ES, "MAY en EARS", "SCHEMA",
-     lambda c: req(c, "REQ-001").update(obligation="MAY", obligation_basis="explicit", obligation_evidence="puede")),
-    (ES, "sistema distinto de nombre_sistema", "C3",
-     lambda c: req(c, "REQ-002")["slots"].update(system="la aplicación")),
-    (ES, "recuento del veredicto incorrecto", "VERDICT",
-     lambda c: c["verdict"]["counts"].update(requirements=12)),
-    (ES, "fragmento inexistente en un descarte", "C6",
-     lambda c: c["discarded_statements"][0].update(fragment="DOC-01#F099")),
-    # --- Reglas nuevas de v1.2 ---
-    (ES, "cifra inventada (N2)", "N2",
-     lambda c: req(c, "REQ-003")["slots"].update(value="30 segundos")),
-    (ES, "cifra convertida de unidad (4 horas -> 240 minutos)", "N2",
-     lambda c: req(c, "REQ-009")["slots"].update(condition="la reserva dura más de 240 minutos y tiene más de 20 asistentes")),
-    (ES, "cita trivial de menos de tres palabras", "C6",
-     lambda c: req(c, "REQ-002")["source_trace"][0].update(quote="la reserva")),
-    (ES, "evidencia modal trivial", "C13",
-     lambda c: req(c, "REQ-009").update(obligation_evidence="a")),
-    (ES, "evidencia de SHOULD con obligación MAY", "C13",
-     lambda c: req(c, "REQ-012").update(obligation="MAY")),
-    (ES, "'puede' de capacidad marcado como SHALL explícito", "C13",
-     lambda c: req(c, "REQ-001").update(obligation_basis="explicit", obligation_evidence="puede")),
-    (ES, "fragmento descartado entero y citado por un requisito", "C17",
-     lambda c: req(c, "REQ-002")["source_trace"].append(
-         {"fragment": "DOC-01#F001", "quote": "reducir los conflictos de uso"})),
-    (EN, "'will' marcado como SHALL explícito", "C13",
-     lambda c: req(c, "REQ-002").update(obligation_basis="explicit", obligation_evidence="will")),
-    (EN, "término de dominio sin declarar (C5)", "C5",
-     lambda c: c.update(domain_terms=[])),
-    (EN, "término de dominio de una sola palabra", "C5",
-     lambda c: c["domain_terms"][0].update(term="Flexible")),
-    (EN, "término de dominio que no está en el fragmento", "C5",
-     lambda c: c["domain_terms"][0].update(term="Flexible Return plan")),
-    (EN, "self_check de cifras mentiroso: el fallo real bloquea", "N2",
-     lambda c: req(c, "REQ-008")["slots"].update(value="1.5 seconds")),
-]
+def cap(c, cid):
+    return next(x for x in c["capabilities"] if x["id"] == cid)
 
-# Avisos: el catálogo sigue siendo válido y aparece el código esperado entre los avisos.
-WARNING_CASES = [
-    (ES, "dos verbos coordinados en response (C4)", "C4",
-     lambda c: req(c, "REQ-002")["slots"].update(response="enviar un correo de confirmación y registrar el envío")),
-    (ES, "orden de claves distinto de §10 (C18)", "C18",
-     lambda c: c["requirements"].__setitem__(1, dict(reversed(list(req(c, "REQ-002").items()))))),
+
+def final_req(report, rid):
+    return next(r for r in report["catalog"]["requirements"] if r["id"] == rid)
+
+
+# (ejemplo, nombre, nivel, elemento afectado o None, código esperado, mutación[, comprobación extra])
+# Una mutación que devuelve una cadena sustituye el fichero entero por ese texto.
+CASES = [
+    # --- Rechazo de un requisito o una pregunta ---
+    (ES, "property en una rama distinta de D1", "reject", "RNF-001", "C12",
+     lambda c: req(c, "RNF-001").update(decision_branch="D5")),
+    (ES, "RA fuera de D2", "reject", "RA-001", "C12",
+     lambda c: req(c, "RA-001").update(decision_branch="D5")),
+    (ES, "RF en D1", "reject", "RF-001", "C12",
+     lambda c: req(c, "RF-001").update(decision_branch="D1")),
+    (ES, "D3 con obligación SHALL", "reject", "RF-007", "C12",
+     lambda c: req(c, "RF-007").update(obligation="SHALL")),
+    (ES, "EARS con escalation_fallback fuera de D1/D4", "reject", "RF-001", "C12",
+     lambda c: req(c, "RF-001").update(escalation_fallback="no se pudo rellenar")),
+    (ES, "state_driven sin estados", "reject", "RF-006", "C2",
+     lambda c: req(c, "RF-006")["slots"].update(states=[])),
+    (ES, "complex con un solo tipo de condición", "reject", "RF-004", "C2",
+     lambda c: req(c, "RF-004")["slots"].update(trigger=None, trigger_keyword=None)),
+    (ES, "event_driven con trigger_keyword IF", "reject", "RF-002", "C2",
+     lambda c: req(c, "RF-002")["slots"].update(trigger_keyword="IF")),
+    (ES, "término vago en un slot (escape)", "reject", "RF-001", "C5",
+     lambda c: req(c, "RF-001")["slots"].update(response="permitir al empleado reservar una sala si procede")),
+    (ES, "término vago en un criterio", "reject", "RF-001", "C5",
+     lambda c: req(c, "RF-001")["acceptance_criteria"].append("[RULE] La reserva se confirma de forma rápida.")),
+    (ES, "pronombre vago", "reject", "RF-002", "C5",
+     lambda c: req(c, "RF-002")["slots"].update(response="enviar lo anterior al empleado")),
+    (ES, "cita no literal en ningún fragmento", "reject", "RF-005", "C6",
+     lambda c: req(c, "RF-005")["source_trace"][0].update(
+         quote="Si la reserva es larga, deberá aprobarla el administrador")),
+    (ES, "cita trivial de menos de tres palabras", "reject", "RF-002", "C6",
+     lambda c: req(c, "RF-002")["source_trace"][0].update(quote="la reserva")),
+    (ES, "fragmento inexistente y cita que no está en el lote", "reject", "RF-003", "C6",
+     lambda c: req(c, "RF-003")["source_trace"][0].update(fragment="DOC-01#F099",
+                                                         quote="Si la empresa compra el módulo de catering")),
+    (ES, "MAY en EARS", "reject", "RF-001", "SCHEMA",
+     lambda c: req(c, "RF-001").update(obligation="MAY", obligation_basis="explicit", obligation_evidence="puede")),
+    (ES, "campo text escrito por el modelo", "reject", "RF-001", "SCHEMA",
+     lambda c: req(c, "RF-001").update(text="El sistema ReservaSalas DEBERÁ …")),
+    (ES, "SHOULD con obligation_basis implicit", "reject", "RF-007", "SCHEMA",
+     lambda c: req(c, "RF-007").update(obligation_basis="implicit", obligation_evidence=None)),
+    (ES, "tipo de requisito desconocido", "reject", "RF-003", "SCHEMA",
+     lambda c: req(c, "RF-003").update(type="RX")),
+    (ES, "prohibición en negativo (R-e)", "reject", "RF-006", "C15",
+     lambda c: req(c, "RF-006")["slots"].update(response="no mostrar al empleado sus reservas del día")),
+    (ES, "cifra inventada en un criterio", "reject", "RF-002", "N2",
+     lambda c: req(c, "RF-002").update(acceptance_criteria=["[LIMIT] El correo se envía en menos de 5 minutos."])),
+    (ES, "cifra convertida de unidad (4 horas -> 240 minutos)", "reject", "RF-005", "N2",
+     lambda c: req(c, "RF-005")["slots"].update(
+         condition="la reserva dura más de 240 minutos y tiene más de 20 asistentes")),
+    (ES, "valor pendiente sin pregunta missing_value", "reject", "RNF-001", "N3",
+     lambda c: (req(c, "RNF-001").update(open_question_ids=[]), q(c, "Q-001").update(related_requirements=[]))),
+    (ES, "pregunta con una cita que no está en la fuente", "reject", "Q-002", "C6",
+     lambda c: q(c, "Q-002")["source_trace"][0].update(quote="el sistema se integrará con Gmail")),
+    (EN, "cifra inventada en un slot", "reject", "RNF-001", "N2",
+     lambda c: req(c, "RNF-001")["slots"].update(value="1.5 seconds")),
+    (EN, "término de dominio sin declarar", "reject", "RF-005", "C5",
+     lambda c: c.update(domain_terms=[])),
+    (EN, "término de dominio de una sola palabra", "reject", "RF-005", "C5",
+     lambda c: c["domain_terms"][0].update(term="Flexible")),
+
+    # --- Errores del lote ---
+    (ES, "falta el inventario de funcionalidades", "lot", None, "SCHEMA",
+     lambda c: c.pop("capabilities")),
+    (ES, "versión de esquema 1.2", "lot", None, "SCHEMA",
+     lambda c: c.update(schema_version="1.2")),
+    (ES, "más del 10 % de los fragmentos sin tratar", "lot", None, "C10",
+     lambda c: c.update(discarded_statements=[])),
+    (ES, "el catálogo declara status failed", "lot", None, "VERDICT",
+     lambda c: c["verdict"].update(status="failed")),
+    (ES, "fichero que no es JSON", "lot", None, "JSON",
+     lambda c: '{"schema_version": "1.3", "requirements": ['),
+
+    # --- Avisos ---
+    (ES, "obligation_evidence ausente del fragmento", "warning", "RF-005", "C13",
+     lambda c: req(c, "RF-005").update(obligation_evidence="obligatoriamente")),
+    (ES, "'puede' de capacidad marcado como SHALL explícito", "warning", "RF-001", "C13",
+     lambda c: req(c, "RF-001").update(obligation_basis="explicit", obligation_evidence="puede")),
+    (EN, "'will' marcado como SHALL explícito", "warning", "RF-002", "C13",
+     lambda c: req(c, "RF-002").update(obligation_basis="explicit", obligation_evidence="will")),
+    (ES, "subject_matter sin preposición", "warning", "RNF-001", "C14",
+     lambda c: req(c, "RNF-001")["slots"].update(subject_matter="el sistema ReservaSalas")),
+    (ES, "keyword en mayúsculas dentro de un slot", "warning", "RF-006", "C14",
+     lambda c: req(c, "RF-006")["slots"].update(response="mostrar al empleado sus reservas del día Y DEBERÁ avisar")),
+    (ES, "origin clarification sin traza a dudas", "warning", "RF-002", "C16",
+     lambda c: req(c, "RF-002").update(origin="clarification")),
+    (ES, "fragmento descartado entero y citado por un requisito", "warning", "RF-002", "C17",
+     lambda c: req(c, "RF-002")["source_trace"].append(
+         {"fragment": "DOC-01#F001", "quote": "reducir los conflictos de uso"})),
+    (ES, "criterio sin etiqueta", "warning", "RF-001", "C19",
+     lambda c: req(c, "RF-001")["acceptance_criteria"].__setitem__(
+         0, "El empleado indica la fecha, la hora de inicio, la hora de fin y el número de asistentes.")),
+    (ES, "RF sin capability_ids (su funcionalidad la cubre otro)", "warning", "RF-004", "C21",
+     lambda c: req(c, "RF-004").update(capability_ids=[])),
+    (ES, "verbo paraguas sin criterios [OPERATION]", "warning", "RF-001", "C22",
+     lambda c: req(c, "RF-001")["slots"].update(response="permitir al empleado gestionar sus reservas")),
+    (EN, "pregunta de ambigüedad sin requisitos relacionados", "warning", "Q-001", "C11",
+     lambda c: (q(c, "Q-001").update(related_requirements=[]), req(c, "RF-002").update(open_question_ids=[]))),
+    (ES, "un fragmento sin tratar (no llega al 10 %)", "warning", None, "C10",
+     lambda c: c["discarded_statements"].pop()),
+    (ES, "autoverificación que no coincide con el validador", "warning", None, "SELF_CHECK",
+     lambda c: c["discarded_statements"].pop()),
+    (ES, "status complete con fragmentos sin procesar", "warning", None, "VERDICT",
+     lambda c: c["verdict"].update(unprocessed_fragments=["DOC-01#F014"])),
+    (ES, "sección descartada que no está en el lote", "warning", None, "C10",
+     lambda c: c["discarded_sections"].append({"section": "§9", "reason": "project_note"})),
+
+    # --- Correcciones del normalizador ---
+    (ES, "ids con otro formato: se renumeran por tipo", "fix", None, "FIX",
+     lambda c: (req(c, "RF-001").update(id="REQ-1"), cap(c, "CAP-001").update(id="F-1"),
+                [r.update(capability_ids=["F-1" if x == "CAP-001" else x for x in r["capability_ids"]])
+                 for r in c["requirements"]]),
+     lambda r: [x["id"] for x in r["catalog"]["requirements"][:2]] == ["RF-001", "RF-002"]
+     and r["catalog"]["capabilities"][0]["id"] == "CAP-001" and final_req(r, "RF-004")["capability_ids"] == ["CAP-001"]),
+    (ES, "vínculo declarado en un solo sentido", "fix", None, "FIX",
+     lambda c: req(c, "RNF-001").update(open_question_ids=[]),
+     lambda r: final_req(r, "RNF-001")["open_question_ids"] == ["Q-001"]),
+    (ES, "slot terminado en punto", "fix", None, "FIX",
+     lambda c: req(c, "RF-001")["slots"].update(response="permitir al empleado reservar una sala."),
+     lambda r: r["texts"]["RF-001"].endswith("reservar una sala.")),
+    (ES, "slots.system distinto del nombre del sistema", "fix", None, "FIX",
+     lambda c: req(c, "RF-002")["slots"].update(system="la aplicación"),
+     lambda r: final_req(r, "RF-002")["slots"]["system"] == "el sistema ReservaSalas"),
+    (ES, "cita en el fragmento equivocado: se corrige el id", "fix", None, "FIX",
+     lambda c: req(c, "RF-002")["source_trace"][0].update(fragment="DOC-01#F012"),
+     lambda r: final_req(r, "RF-002")["source_trace"][0]["fragment"] == "DOC-01#F003"),
+    (ES, "cita repetida", "fix", None, "FIX",
+     lambda c: req(c, "RF-001")["source_trace"].append(dict(req(c, "RF-001")["source_trace"][0])),
+     lambda r: len(final_req(r, "RF-001")["source_trace"]) == 3),
+    (ES, "etiqueta de criterio en minúsculas y con dos puntos", "fix", None, "FIX",
+     lambda c: req(c, "RF-001")["acceptance_criteria"].__setitem__(
+         0, "data: El empleado indica la fecha, la hora de inicio, la hora de fin y el número de asistentes."),
+     lambda r: final_req(r, "RF-001")["acceptance_criteria"][0].startswith("[DATA] El empleado")),
+    (ES, "referencia a una pregunta inexistente", "fix", None, "FIX",
+     lambda c: req(c, "RF-001").update(open_question_ids=["Q-099"]),
+     lambda r: final_req(r, "RF-001")["open_question_ids"] == []),
+    (ES, "funcionalidad con un fragmento fuera del lote", "fix", None, "FIX",
+     lambda c: cap(c, "CAP-001")["fragments"].append("DOC-01#F099"),
+     lambda r: "DOC-01#F099" not in r["catalog"]["capabilities"][0]["fragments"]),
+
+    # --- Aceptación sin cambios ---
+    (ES, "cita con comillas de código y mayúsculas distintas", "accept", None, None,
+     lambda c: req(c, "RF-002")["source_trace"][0].update(
+         quote="al confirmar la `reserva`, el sistema envía un correo de confirmación")),
+
+    # --- Reparación ---
+    (ES, "funcionalidad del inventario sin requisito (C20)", "repair", None, "C20",
+     lambda c: req(c, "RF-006").update(capability_ids=[])),
+    (ES, "funcionalidad cubierta solo por un RNF (C20)", "repair", None, "C20",
+     lambda c: (req(c, "RNF-001").update(capability_ids=["CAP-005"]), req(c, "RF-006").update(capability_ids=[]))),
+    (ES, "más del 20 % de los requisitos rechazados", "repair", None, "C15",
+     lambda c: (req(c, "RF-003")["slots"].update(response="no permitir a los empleados añadir catering"),
+                req(c, "RF-004")["slots"].update(response="mostrar al empleado un aviso si procede"))),
+    (ES, "un solo rechazo (11 %) no pide reparación", "reject", "RF-004", "C5",
+     lambda c: req(c, "RF-004")["slots"].update(response="mostrar al empleado un aviso si procede"),
+     lambda r: not r["needs_repair"]),
 ]
 
 
 def run_case(example, mutate):
     c = copy.deepcopy(BASES[example])
-    mutate(c)
-    return c, check(c, EXAMPLES[example], FRAGMENTS[example], SCHEMA)
+    result = mutate(c)
+    raw = result if isinstance(result, str) else json.dumps(c, ensure_ascii=False, indent=2)
+    return raw, check_text(raw, EXAMPLES[example], FRAGMENTS[example], SCHEMA)
 
 
-def error_codes(report):
-    codes = set()
-    for e in report["errors"]:
-        head = e.split()
-        # "REQ-001 C14 …", "Q-001 C11 …", "DISCARDED[0] C6 …", "DOMAIN[0] C5 …", "C10 …", "SCHEMA …", "VERDICT …"
-        codes.add(head[1] if head[0].startswith(("REQ-", "Q-", "DISCARDED[", "DOMAIN[")) else head[0])
-    return codes
+def code_of(message):
+    """'RF-001 C14 …' -> 'C14'; 'LOTE C10 …' -> 'C10'; 'LOTE JSON no válido' -> 'JSON'."""
+    parts = message.split()
+    return parts[1] if len(parts) > 1 else parts[0]
+
+
+def lot_codes(report):
+    return {code_of(e) for e in report["errors"]}
 
 
 def warning_codes(report):
-    return {w.split()[1] for w in report["warnings"] if len(w.split()) > 1}
+    return {code_of(w) for w in report["warnings"]}
+
+
+def repair_codes(report):
+    return {code_of(x) for x in report["repair_reasons"]}
+
+
+def rejected_codes(report, element_id):
+    return {e.split()[0] for x in report["rejected"] if x["id"] == element_id for e in x["errors"]}
+
+
+def outcome_ok(kind, target, code, report):
+    if kind == "reject":
+        return report["valid"] and code in rejected_codes(report, target)
+    if kind == "lot":
+        return not report["valid"] and report["needs_repair"] and code in lot_codes(report)
+    if kind in ("warning", "fix"):
+        return (report["valid"] and not report["needs_repair"] and not report["rejected"]
+                and code in warning_codes(report))
+    if kind == "accept":
+        return report["valid"] and not report["needs_repair"] and not report["rejected"] and not report["warnings"]
+    if kind == "repair":
+        return report["valid"] and report["needs_repair"] and code in repair_codes(report)
+    raise ValueError(kind)
 
 
 def main():
@@ -168,43 +268,42 @@ def main():
     failures, total = 0, 0
     for example, sistema in EXAMPLES.items():
         total += 1
-        base_report = check(copy.deepcopy(BASES[example]), sistema, FRAGMENTS[example], SCHEMA)
-        ok = base_report["valid"] and not base_report["warnings"]
+        raw = (HERE / example / BASE_FILE).read_text(encoding="utf-8")
+        report = check_text(raw, sistema, FRAGMENTS[example], SCHEMA)
+        enriched = json.loads((HERE / example / ENRICHED_FILE).read_text(encoding="utf-8"))
+        ok = (report["valid"] and not report["needs_repair"] and not report["rejected"] and not report["warnings"]
+              and enrich(report["catalog"], report["texts"]) == enriched)
         failures += not ok
-        print(f"{'OK    ' if ok else 'FALLO '} | base    | {example} es válido y sin avisos"
-              + ("" if ok else f"  -> {base_report['errors'] + base_report['warnings']}"))
+        print(f"{'OK    ' if ok else 'FALLO '} | base    | {example}: válido, sin avisos y con el texto de "
+              f"{ENRICHED_FILE}" + ("" if ok else f"  -> {report['errors'] + report['warnings']}"))
+        # El catálogo aceptado ya está normalizado: validarlo otra vez no cambia nada.
+        total += 1
+        again = check_text(json.dumps(report["catalog"], ensure_ascii=False), sistema, FRAGMENTS[example], SCHEMA)
+        ok = again["catalog"] == report["catalog"] and not again["warnings"]
+        failures += not ok
+        print(f"{'OK    ' if ok else 'FALLO '} | base    | {example}: normalizar dos veces da lo mismo")
 
     out_dir = Path(a.exportar) if a.exportar else None
     if out_dir:
         out_dir.mkdir(parents=True, exist_ok=True)
     manifest = []
-    for i, (example, name, code, mutate) in enumerate(CASES, 1):
+    for i, (example, name, kind, target, code, mutate, *extra) in enumerate(CASES, 1):
         total += 1
-        cat, report = run_case(example, mutate)
-        codes = error_codes(report)
-        ok = (not report["valid"]) and code in codes
+        raw, report = run_case(example, mutate)
+        ok = outcome_ok(kind, target, code, report) and all(check(report) for check in extra)
         failures += not ok
-        print(f"{'OK    ' if ok else 'FALLO '} | {code:<7} | {name}" + ("" if ok else f"  -> {sorted(codes)}"))
+        label = f"{kind}:{code}" if code else kind
+        print(f"{'OK    ' if ok else 'FALLO '} | {label:<16} | {name}" + ("" if ok else
+              f"\n         lote {sorted(lot_codes(report))} · rechazos {[(x['id'], x['errors']) for x in report['rejected']]}"
+              f"\n         avisos {report['warnings']} · reparación {report['repair_reasons']}"))
         if out_dir:
-            fname = f"mut-{i:02d}.json"
-            (out_dir / fname).write_text(json.dumps(cat, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            fname = f"case-{i:02d}.json"
+            (out_dir / fname).write_text(raw if raw.endswith("\n") else raw + "\n", encoding="utf-8", newline="\n")
             manifest.append({"file": fname, "name": name, "example": example, "sistema": EXAMPLES[example],
-                             "expected_code": code, "kind": "error"})
-    for i, (example, name, code, mutate) in enumerate(WARNING_CASES, 1):
-        total += 1
-        cat, report = run_case(example, mutate)
-        ok = report["valid"] and code in warning_codes(report)
-        failures += not ok
-        print(f"{'OK    ' if ok else 'FALLO '} | {code:<7} | aviso: {name}"
-              + ("" if ok else f"  -> {report['errors'] + report['warnings']}"))
-        if out_dir:
-            fname = f"warn-{i:02d}.json"
-            (out_dir / fname).write_text(json.dumps(cat, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-            manifest.append({"file": fname, "name": name, "example": example, "sistema": EXAMPLES[example],
-                             "expected_code": code, "kind": "warning"})
+                             "kind": kind, "target": target, "expected_code": code})
     if out_dir:
         (out_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
-                                               encoding="utf-8")
+                                               encoding="utf-8", newline="\n")
     print(f"\n{total - failures}/{total} correctos")
     sys.exit(1 if failures else 0)
 
