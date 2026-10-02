@@ -129,7 +129,10 @@ UMBRELLA_MIN_OPERATIONS = 5  # U7: un verbo paraguas solo con más de cuatro ope
 TYPES = ("RF", "RI", "RNF", "RA", "RT")
 FUNCTIONAL_TYPES = ("RF", "RI")  # los que explican una funcionalidad del inventario (C20, C21)
 LABELS = ("OPERATION", "DATA", "RULE", "LIMIT", "MESSAGE", "ERROR")
-LABEL_RE = re.compile(r"^\s*\[?\s*(" + "|".join(LABELS) + r")\s*\]?\s*:?\s*", re.IGNORECASE)
+# Una etiqueta va entre corchetes ("[DATA]", "[data]:") o seguida de dos puntos ("DATA:"). Sin eso no es una
+# etiqueta: "Error messages are shown…" es un criterio sin etiqueta (C19), no un [ERROR].
+_LABEL_WORDS = "|".join(LABELS)
+LABEL_RE = re.compile(rf"^\s*(?:\[\s*({_LABEL_WORDS})\s*\]\s*:?|({_LABEL_WORDS})\s*:)\s*", re.IGNORECASE)
 
 MAX_REJECTED_SHARE = 0.20   # aceptación parcial: más rechazos que esto -> reparación
 MAX_UNTREATED_SHARE = 0.10  # C10: más fragmentos sin tratar que esto -> error del lote
@@ -226,7 +229,7 @@ def split_label(criterion: str) -> tuple[str | None, str]:
     m = LABEL_RE.match(criterion)
     if not m:
         return None, criterion.strip()
-    return m.group(1).upper(), criterion[m.end():].strip()
+    return (m.group(1) or m.group(2)).upper(), criterion[m.end():].strip()
 
 
 def render(req: dict, lang: str) -> str:

@@ -3,13 +3,15 @@ using System.Text.Json.Nodes;
 
 namespace ReqArbiter.Core.Catalog;
 
-// The catalogs FakeProvider writes, so that the whole flow (validation,
+// The catalogs (v1.3) FakeProvider writes, so that the whole flow (validation,
 // repair, merge and web) can be tried without the gateway. No model is
 // involved:
 // - For the ReservaSalas example (the same fragments as prompts/.../ejemplo),
-//   its reference catalog, with the project's system name.
+//   its reference catalog (catalogo_ejemplo_v1.3.json), with the project's
+//   system name.
 // - For any other input, a valid catalog that discards every fragment.
-// - Mutated (for a simulated repair): the same catalog with a schema error.
+// - Mutated (for a simulated repair): the same catalog with an error of the
+//   lot (wrong schema version), which asks for a repair.
 public static class FakeCatalog
 {
     public const string FragmentsFile = "input/fragmentos.json";
@@ -36,7 +38,7 @@ public static class FakeCatalog
 
         if (mutated)
         {
-            catalog["schema_version"] = "0.0"; // SCHEMA: the schema only accepts "1.2"
+            catalog["schema_version"] = "0.0"; // SCHEMA of the lot: the schema only accepts "1.3"
         }
         return catalog.ToJsonString(Indented);
     }
@@ -48,7 +50,7 @@ public static class FakeCatalog
     }
 
     // The reference catalog names "el sistema ReservaSalas"; the project may
-    // call it otherwise, and the validator checks the name (C3).
+    // call it otherwise (the normalizer would fix it, but with a FIX warning).
     private static JsonObject ExampleCatalog(string system)
     {
         var catalog = JsonNode.Parse(PromptBuilder.ReadResource("ejemplo_catalogo.json"))!.AsObject();
@@ -79,29 +81,24 @@ public static class FakeCatalog
 
         return new JsonObject
         {
-            ["schema_version"] = "1.2",
+            ["schema_version"] = "1.3",
             ["system"] = system,
             ["language"] = language,
+            ["capabilities"] = new JsonArray(),
             ["requirements"] = new JsonArray(),
             ["open_questions"] = new JsonArray(),
             ["discarded_statements"] = discarded,
+            ["discarded_sections"] = new JsonArray(),
             ["domain_terms"] = new JsonArray(),
             ["verdict"] = new JsonObject
             {
                 ["status"] = "complete",
-                ["counts"] = new JsonObject
-                {
-                    ["requirements"] = 0,
-                    ["ears"] = 0,
-                    ["master"] = 0,
-                    ["open_questions"] = 0,
-                    ["discarded"] = fragments.Count,
-                },
                 ["self_check"] = new JsonObject
                 {
                     ["quotes_are_literal"] = true,
                     ["figures_from_source"] = true,
                     ["all_fragments_accounted"] = true,
+                    ["all_capabilities_covered"] = true,
                     ["no_vague_terms"] = true,
                     ["ears_only_shall"] = true,
                     ["decision_tree_consistent"] = true,

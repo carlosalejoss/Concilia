@@ -111,6 +111,41 @@ public static class Fragmenter
             .Where(f => f.Kind == ClarificationKind)
             .Select(f => $"<f id=\"{f.Id}\" pregunta=\"{f.Section}\">{f.Text}</f>"));
 
+    // {{INDICE}} of the prompt v1.3 (document_index in fragmentar.py): one line
+    // per section, in order and without repeats, with its label and, when the
+    // section starts with a heading, the heading ("2. Functional requirements").
+    // A markdown heading is its own label ("3.1 Roles"); a section without a
+    // heading keeps only its label ("§2.1"). It reads the text the same way as
+    // FragmentDocument, so the labels match the `sec` of the fragments.
+    public static List<string> DocumentIndex(string text)
+    {
+        var lines = new List<string>();
+        var seen = new HashSet<string>();
+        foreach (var (section, paragraph, isHeading) in Paragraphs(text))
+        {
+            if (section.Length == 0 || !seen.Add(section))
+                continue;
+            var label = SafeAttr(section);
+            var title = SafeText(Norm(paragraph));
+            lines.Add(isHeading && title != label ? $"{label} {title}" : label);
+        }
+        return lines;
+    }
+
+    // The index of every document (id, name, text). With several documents,
+    // each index starts with a line with the document's id and name.
+    public static string IndexBlock(IReadOnlyList<(string Id, string Name, string Text)> documents)
+    {
+        var lines = new List<string>();
+        foreach (var (id, name, text) in documents)
+        {
+            if (documents.Count > 1)
+                lines.Add($"{id} {SafeText(name)}");
+            lines.AddRange(DocumentIndex(text));
+        }
+        return string.Join("\n", lines);
+    }
+
     private static List<string> SplitSentences(string paragraph)
     {
         var output = new List<string>();

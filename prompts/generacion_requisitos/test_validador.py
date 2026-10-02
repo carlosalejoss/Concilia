@@ -149,6 +149,9 @@ CASES = [
     (ES, "criterio sin etiqueta", "warning", "RF-001", "C19",
      lambda c: req(c, "RF-001")["acceptance_criteria"].__setitem__(
          0, "El empleado indica la fecha, la hora de inicio, la hora de fin y el número de asistentes.")),
+    (EN, "criterio que empieza por una palabra que es etiqueta, sin corchetes", "warning", "RF-002", "C19",
+     lambda c: req(c, "RF-002")["acceptance_criteria"].append("Error messages are shown to the librarian."),
+     lambda r: final_req(r, "RF-002")["acceptance_criteria"][-1] == "Error messages are shown to the librarian."),
     (ES, "RF sin capability_ids (su funcionalidad la cubre otro)", "warning", "RF-004", "C21",
      lambda c: req(c, "RF-004").update(capability_ids=[])),
     (ES, "verbo paraguas sin criterios [OPERATION]", "warning", "RF-001", "C22",

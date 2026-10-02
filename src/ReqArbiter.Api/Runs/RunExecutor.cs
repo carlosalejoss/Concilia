@@ -27,7 +27,7 @@ public class RunExecutor(
 
         // Retries publish into the same event stream, marked, so the console
         // in the web shows the whole task of this lot.
-        return await new RetryRunner(provider).RunAsync(
+        return await new RetryRunner(provider, catalogOptions.MaxRepairs).RunAsync(
             request,
             attempt => runEvent => events.Publish(
                 run.Id,

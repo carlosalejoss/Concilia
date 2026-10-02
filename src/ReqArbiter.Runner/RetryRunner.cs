@@ -11,14 +11,18 @@ public record RunAttempt(RunRequest Request, RunResult Result, Guid? PreviousRun
 // of the next attempt. A null RetryPrompt means no retry.
 public record AttemptReview(RunResult Result, string? RetryPrompt);
 
-// Runs a task and retries it while the review asks for it, at most MaxRetries
-// times. Each retry is a new run with its own RunId and folder, linked to the
-// previous one. By default (ReviewVerdict) only a missing or invalid verdict
-// is retried: an API error, a timeout or a "bloqueada" verdict would not
-// change by asking again. The catalog task adds its own review (step 27).
-public class RetryRunner(IRunnerProvider provider)
+// Runs a task and retries it while the review asks for it, at most maxRetries
+// times (DefaultMaxRetries unless the caller says otherwise; the catalog task
+// uses Catalog:MaxRepairs). Each retry is a new run with its own RunId and
+// folder, linked to the previous one. By default (ReviewVerdict) only a
+// missing or invalid verdict is retried: an API error, a timeout or a
+// "bloqueada" verdict would not change by asking again. The catalog task adds
+// its own review (CatalogReview).
+public class RetryRunner(IRunnerProvider provider, int maxRetries = RetryRunner.DefaultMaxRetries)
 {
-    public const int MaxRetries = 2;
+    public const int DefaultMaxRetries = 2;
+
+    public int MaxRetries => maxRetries;
 
     // eventsFor gives the event callback of each attempt, so every run keeps
     // its own event stream.

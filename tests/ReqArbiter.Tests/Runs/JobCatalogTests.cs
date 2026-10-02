@@ -34,7 +34,7 @@ public class JobCatalogTests
         public Guid JobId { get; } = Guid.NewGuid();
 
         // A run of slot A for the lot, with its input and, if Done, the catalog
-        // FakeProvider would have written.
+        // FakeProvider would have written and its review (accepted catalog).
         public Run Lot(int number, RunState state, int attempt = 1)
         {
             var lot = Plan.Lots.Single(l => l.Number == number);
@@ -49,6 +49,7 @@ public class JobCatalogTests
             {
                 Directory.CreateDirectory(Path.Combine(folder, "output"));
                 File.WriteAllText(Path.Combine(folder, CatalogTask.OutputFile), FakeCatalog.For(folder, mutated: false));
+                CatalogReport.ValidateRunFolder(folder, Project.SystemName);
             }
             return run;
         }
@@ -91,6 +92,22 @@ public class JobCatalogTests
         Assert.True(catalog.Report!.Valid, string.Join("\n", catalog.Report.Errors));
         // Not saved while a lot is still running.
         Assert.False(File.Exists(Path.Combine(setup.Storage.JobFolder(setup.JobId), JobCatalog.CatalogFile("A"))));
+    }
+
+    [Fact]
+    public void A_repair_that_went_wrong_keeps_the_catalog_of_the_attempt_that_asked_for_it()
+    {
+        using var setup = new Setup();
+        var runs = new List<Run>
+        {
+            setup.Lot(1, RunState.Done),                // valid, but asked for a repair (C20, for example)
+            setup.Lot(1, RunState.Failed, attempt: 2),  // the repair broke the catalog
+        };
+
+        var catalog = JobCatalog.Build("A", runs, Project.SystemName, setup.Plan, setup.Storage, setup.JobId);
+
+        Assert.Equal([1], catalog.IncludedLots);
+        Assert.DoesNotContain(1, catalog.FailedLots);
     }
 
     // The JSON the web receives: ASP.NET Core serializes with the "Web"
