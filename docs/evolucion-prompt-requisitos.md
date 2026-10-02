@@ -11,7 +11,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1 | 28-09-2026 | Primer prompt EARS/MASTeR, respuesta en JSON | No | El validador dejaba pasar 16 tipos de error |
 | v1.1 | 29-09-2026 | Contrato con la plataforma: fragmentos, `Write`, veredicto, árbol de decisión | No | Base para ejecutar con modelos |
 | v1.2 | 29-09-2026 | Reglas más precisas (obligatoriedad, cifras, citas) y ejemplo en inglés | Sí | Perfecto en un documento pequeño; inservible en uno grande |
-| v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Pendiente | Pendiente |
+| v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 
 ## Cómo se mide
 
@@ -20,7 +20,9 @@ Cada versión se mide con el validador determinista de la plataforma (`validar_c
 - **Calidad:** proporción de requisitos sin errores de sintaxis, redacción, decisión, trazabilidad y fidelidad de cifras; citas literales; cobertura de fragmentos.
 - **Volumen:** requisitos, preguntas abiertas, descartes, y desde la v1.3 requisitos por tipo, funcionalidades del inventario y criterios por etiqueta.
 - **Coste:** tokens de entrada y salida, lotes reparados, salida gastada en intentos fallidos y duración.
-- **Comparación entre modelos:** cuántos requisitos de SOL (A) y LUNA (B) se parecen.
+- **Comparación entre modelos:** cuántos requisitos de SOL (A) y LUNA (B) se parecen. Hasta que exista el árbitro se mide con una aproximación: parejas de requisitos que comparten al menos el 60 % de sus palabras significativas (emparejamiento voraz). Subestima el parecido real.
+- **Origen de los requisitos** en el documento grande: la sección principal del fragmento que cita cada requisito, agrupada en funcional (secciones 2–5), diseño técnico (6–12) y notas del proyecto (13–18).
+- **Requisitos con detalles de implementación:** su texto contiene identificadores de código, rutas de la API, métodos HTTP, colores, medidas de interfaz o nombres de tecnologías. Es una heurística: sirve para comparar versiones, no como cifra exacta.
 
 Documentos de prueba:
 
@@ -106,7 +108,7 @@ Los dos modelos coincidieron en notación, patrón y obligatoriedad de los 13 re
 | Lotes en el catálogo | 22 de 22 | 20 de 22 (2 fallidos tras dos reparaciones) |
 | Requisitos · preguntas · descartes | 1.133 · 271 · 254 | 862 · 154 · 287 |
 | Requisitos de secciones que no son especificación | 53 % | 54 % |
-| Requisitos con detalles de implementación o apariencia | 42 % | 36 % |
+| Requisitos con detalles de implementación (heurística) | 33 % | 30 % |
 | Preguntas "¿qué pasa si falla?" | 108 | 66 |
 | Lotes reparados | 13 de 22 | 17 de 22 |
 | Salida gastada en intentos que fallaron | 46 % | 72 % |
@@ -118,7 +120,7 @@ Los dos modelos coincidieron en notación, patrón y obligatoriedad de los 13 re
   - secciones funcionales: 47 % en SOL y 45 % en LUNA;
   - diseño técnico (datos, arquitectura, API, frontend, despliegue): 38 % y 39 %;
   - notas del proyecto (historia, deuda, riesgos, recetas): 15 % en los dos.
-- **Coincidencia entre A y B:** con una similitud de palabras del 60 % solo se emparejaron 402 requisitos.
+- **Coincidencia entre A y B:** con una similitud de palabras del 60 % solo se emparejaron 407 requisitos.
 - **Causa de las reparaciones de LUNA:** sobre todo citas no literales (C6, en 24 de sus 27 intentos fallidos).
 
 Antes, en la primera ejecución con este documento, apareció además un problema de la plataforma, no del prompt. LUNA gastaba los 32.000 tokens de salida por defecto razonando y su `Write` llegaba cortado. Se resolvió subiendo el tope a 64.000 y cortando la ejecución en cuanto el `Write` llega incompleto.
@@ -154,30 +156,61 @@ En los ejemplos de referencia, ReservaSalas pasa de 13 a 9 requisitos y LibraryL
 
 ### Resultados
 
-Pendiente: ejecución en curso con el documento técnico interno, y ReservaSalas.
+**Documento técnico interno, pasarela real (02-10-2026), una ejecución.** El mismo documento, los mismos 22 lotes y 5 lotes a la vez por modelo que en la v1.2:
 
-| | SOL (A) | LUNA (B) |
-|---|---|---|
-| Lotes en el catálogo | | |
-| Requisitos (por tipo) | | |
-| Funcionalidades y su cobertura | | |
-| Criterios por requisito | | |
-| Requisitos de secciones que no son especificación | | |
-| Preguntas abiertas | | |
-| Requisitos rechazados | | |
-| Lotes reparados | | |
-| Salida gastada en intentos que fallaron | | |
-| Tokens entrada / salida | | |
-| Duración | | |
-| Coincidencia entre A y B | | |
+| | v1.2 SOL | v1.3 SOL | v1.2 LUNA | v1.3 LUNA |
+|---|---|---|---|---|
+| Lotes en el catálogo | 22 de 22 | 22 de 22 | 20 de 22 | **18 de 22** |
+| Requisitos | 1.133 | **456** (−60 %) | 862 | **284** (−67 %)¹ |
+| Por tipo | — | RF 414 · RNF 16 · RI 12 · RT 10 · RA 4 | — | RF 268 · RI 8 · RNF 5 · RA 3 |
+| Funcionalidades del inventario (cubiertas) | — | 420 (419) | — | 272 (265) |
+| Criterios por requisito | — | 1,54 | — | 1,75 |
+| Criterios por etiqueta | — | DATA 289 · RULE 206 · ERROR 62 · OPERATION 61 · LIMIT 56 · MESSAGE 29 | — | DATA 222 · RULE 145 · OPERATION 51 · LIMIT 40 · ERROR 24 · MESSAGE 14 |
+| Origen: funcional / diseño técnico / proyecto | 47 / 38 / 15 % | 42 / 38 / 20 % | 45 / 39 / 15 % | 54 / 17 / 29 % |
+| Requisitos con detalles de implementación | 33 % | **9 %** | 30 % | **2 %** |
+| Descartes (y secciones enteras) | 254 | 432 (+19 secciones) | 287 | 343 (+18 secciones) |
+| Preguntas abiertas | 271 | 202 | 154 | 163 |
+| De ellas, "¿qué pasa si falla?" | 108 | 37 | 66 | 77 |
+| Lotes reparados | 13 de 22 | **4 de 22** | 17 de 22 | **8 de 22** |
+| Salida gastada en intentos que fallaron | 46 % | **3 %** | 72 % | **10 %** |
+| Tokens entrada / salida | 2,36 M / 0,79 M | **1,06 M / 0,47 M** | 2,86 M / 1,28 M | **1,78 M / 0,90 M** |
+| Duración | 14 min | 10 min | 22 min | 33 min² |
+| Casi duplicados dentro del modelo (parejas) | 29 | 29 | 19 | 16 |
+| Parejas A–B (similitud de palabras ≥ 60 %) | 407 | 133 | — | — |
+
+¹ Sobre 18 lotes. ² Tres lotes de LUNA esperaron 15 minutos sin respuesta antes de darse por perdidos.
+
+- **Lo que ha funcionado:**
+  - **Volumen:** los requisitos bajan a menos de la mitad. Los detalles de implementación casi desaparecen del texto: se descartan como `design_detail` (195 y 188 fragmentos) o pasan a criterios.
+  - **Coste:** los tokens de salida bajan un 41 % en SOL y un 30 % en LUNA, y los de entrada un 55 % y un 38 %.
+  - **Reparaciones:** casi no se pierde salida. Todas las reparaciones pedidas lo fueron por C20 (una funcionalidad del inventario sin requisito), y el catálogo del intento que las pidió se conservó.
+  - **Nuevas piezas en uso:** los modelos usan las seis etiquetas de criterio, el inventario y los tipos de requisito.
+- **Lotes perdidos de LUNA:** pierde 4 lotes.
+  - **Tres por inactividad:** los lotes 10, 11 y 12 murieron a la vez, a los 15 minutos exactos sin ninguna salida, mientras otros intentos de LUNA sí terminaron en 17 y 23 minutos. Apunta a un atasco temporal de la pasarela, no al prompt.
+  - **Uno por turnos:** el lote 16 agotó los 10 turnos, con 90.000 tokens de salida.
+- **Coincidencia entre A y B:** baja de 407 a 133 parejas por similitud de palabras. Era de esperar: la v1.3 deja de forzar que los dos modelos corten igual, y además agrupa más. El árbitro tendrá que emparejar por significado y de varios a varios.
+- **Autoverificación:** los modelos declaran como correctos aspectos que el validador encuentra mal ("autoverificación coincide: no").
 
 ### Qué hay que mejorar
 
-Pendiente de los resultados. Lo que ya se sabe:
-
-- **Duplicados entre lotes** de un mismo modelo: cada lote no ve a los demás (paso 32).
-- **Los 200 caracteres** de cada criterio no los comprueba ningún código.
-- **La web** todavía no muestra criterios, inventario ni requisitos rechazados (paso 33).
+1. **Requisitos de infraestructura tratados como funcionales.** SOL saca todavía el 38 % de sus requisitos de las secciones de diseño técnico: comportamientos internos que el usuario no ve (cabeceras HTTP, CORS, comprobaciones de salud, OpenAPI, migraciones, registros) escritos como `RF`. La regla de `design_detail` se aplica al detalle del texto, pero no a "el sistema hace X" cuando X es interno. Opciones:
+   - en el prompt, una regla para lo que no ve ningún usuario ni otro sistema externo: `design_detail`, o `RT`/`RA` si es una restricción impuesta;
+   - en la plataforma, la selección de secciones del paso 33.
+2. **Secciones de notas del proyecto.** El 20–29 % de los requisitos sale de las secciones 13–18 (historia, especificación frente a implementación, deuda, recetas, anexos). Parte puede ser legítimo; hay que revisarlo a mano antes de cambiar el prompt.
+3. **El inventario va casi uno a uno con los requisitos** (420 funcionalidades para 456 requisitos en SOL): no agrupa al nivel de funcionalidad. Además, C20 provoca todas las reparaciones. Conviene:
+   - precisar en el prompt el nivel del inventario (lo que un usuario reconocería como una función del sistema);
+   - medir si C20 aporta lo que cuesta.
+4. **Duplicados entre lotes:** por ejemplo, la exportación a CSV o la gestión de usuarios aparecen en varios lotes (paso 32).
+5. **C17 muy frecuente** (27 en SOL y 67 en LUNA): el modelo descarta un fragmento entero (o su sección) y lo cita en un requisito. Hay que aclarar en el prompt cuándo se descarta solo una parte, o tratarlo en el normalizador.
+6. **Errores de redacción en las condiciones** que ninguna regla automática detecta:
+   - condiciones que empiezan por "si" y dan "SI si la pantalla…" (el normalizador podría quitar esa palabra inicial);
+   - modo verbal tras SI ("SI el usuario esté autorizado").
+7. **Preguntas "¿qué pasa si falla?":** en LUNA suben de 66 a 77; la regla N4 no se aplica igual en los dos modelos.
+8. **Plataforma, lotes perdidos por inactividad o por turnos:** un lote que se queda sin respuesta de la pasarela se pierde sin reintento. Conviene reintentar una vez la inactividad (no es un fallo del modelo) y revisar si 10 turnos bastan.
+9. **Medición:** es una sola ejecución con un documento interno.
+   - Repetir la v1.3 y medir ReservaSalas y PURE (paso 34).
+   - Los requisitos rechazados por lote no se ven desde la API (están en el `informe.json` de cada ejecución); la web del paso 33 debe mostrarlos para medirlos.
+10. **Comprobaciones pendientes:** los 200 caracteres de cada criterio no los comprueba ningún código.
 
 ---
 
