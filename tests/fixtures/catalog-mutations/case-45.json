@@ -422,6 +422,12 @@
       "quote": null,
       "reason": "business_goal",
       "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+    },
+    {
+      "fragment": "DOC-01#F014",
+      "quote": null,
+      "reason": "human_activity",
+      "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
     }
   ],
   "discarded_sections": [],
@@ -438,6 +444,8 @@
       "decision_tree_consistent": true
     },
     "issues": [],
-    "unprocessed_fragments": []
+    "unprocessed_fragments": [
+      "DOC-01#F014"
+    ]
   }
 }

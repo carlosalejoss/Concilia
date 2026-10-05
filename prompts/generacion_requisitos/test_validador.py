@@ -143,9 +143,6 @@ CASES = [
      lambda c: req(c, "RF-006")["slots"].update(response="mostrar al empleado sus reservas del día Y DEBERÁ avisar")),
     (ES, "origin clarification sin traza a dudas", "warning", "RF-002", "C16",
      lambda c: req(c, "RF-002").update(origin="clarification")),
-    (ES, "fragmento descartado entero y citado por un requisito", "warning", "RF-002", "C17",
-     lambda c: req(c, "RF-002")["source_trace"].append(
-         {"fragment": "DOC-01#F001", "quote": "reducir los conflictos de uso"})),
     (ES, "criterio sin etiqueta", "warning", "RF-001", "C19",
      lambda c: req(c, "RF-001")["acceptance_criteria"].__setitem__(
          0, "El empleado indica la fecha, la hora de inicio, la hora de fin y el número de asistentes.")),
@@ -204,6 +201,15 @@ CASES = [
                                                  trigger="cuando un empleado intente reservar una sala"),
      lambda r: final_req(r, "RF-004")["slots"]["states"] == ["el modo festivo esté activado"]
      and final_req(r, "RF-004")["slots"]["trigger"] == "un empleado intente reservar una sala"),
+    (ES, "fragmento descartado entero y citado por un requisito: se quita el descarte", "fix", None, "FIX",
+     lambda c: req(c, "RF-002")["source_trace"].append(
+         {"fragment": "DOC-01#F001", "quote": "reducir los conflictos de uso"}),
+     lambda r: [d["fragment"] for d in r["catalog"]["discarded_statements"]] == ["DOC-01#F014"]),
+    (ES, "sección descartada entera con fragmentos citados: descartes de los no citados", "fix", None, "FIX",
+     lambda c: (c["discarded_statements"].pop(), c["discarded_sections"].append({"section": "§3", "reason": "project_note"})),
+     lambda r: r["catalog"]["discarded_sections"] == []
+     and r["catalog"]["discarded_statements"][-1] == {"fragment": "DOC-01#F014", "quote": None,
+                                                      "reason": "project_note", "note": None}),
     (ES, "funcionalidad con un fragmento fuera del lote", "fix", None, "FIX",
      lambda c: cap(c, "CAP-001")["fragments"].append("DOC-01#F099"),
      lambda r: "DOC-01#F099" not in r["catalog"]["capabilities"][0]["fragments"]),

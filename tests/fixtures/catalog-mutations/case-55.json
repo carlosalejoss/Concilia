@@ -101,9 +101,7 @@
       ],
       "origin": "explicit",
       "derived_from": [],
-      "open_question_ids": [
-        "Q-099"
-      ]
+      "open_question_ids": []
     },
     {
       "id": "RF-002",
@@ -238,7 +236,7 @@
       "escalation_fallback": null,
       "slots": {
         "system": "el sistema ReservaSalas",
-        "condition": "la reserva dura más de 4 horas y tiene más de 20 asistentes",
+        "condition": "si la reserva dura más de 4 horas y tiene más de 20 asistentes",
         "actor": null,
         "process_verb": "requerir",
         "object": "la aprobación del administrador",

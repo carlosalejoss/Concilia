@@ -4,7 +4,7 @@
   "language": "es",
   "capabilities": [
     {
-      "id": "F-1",
+      "id": "CAP-001",
       "name": "reservar una sala",
       "actor": "el empleado",
       "fragments": [
@@ -57,10 +57,10 @@
   ],
   "requirements": [
     {
-      "id": "REQ-1",
+      "id": "RF-001",
       "type": "RF",
       "capability_ids": [
-        "F-1"
+        "CAP-001"
       ],
       "source_trace": [
         {
@@ -179,7 +179,7 @@
       "id": "RF-004",
       "type": "RF",
       "capability_ids": [
-        "F-1"
+        "CAP-001"
       ],
       "source_trace": [
         {
@@ -315,9 +315,7 @@
       "acceptance_criteria": [],
       "origin": "explicit",
       "derived_from": [],
-      "open_question_ids": [
-        "Q-001"
-      ]
+      "open_question_ids": []
     },
     {
       "id": "RF-007",

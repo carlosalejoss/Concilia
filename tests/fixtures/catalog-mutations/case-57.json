@@ -113,6 +113,10 @@
         {
           "fragment": "DOC-01#F003",
           "quote": "Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto"
+        },
+        {
+          "fragment": "DOC-01#F001",
+          "quote": "reducir los conflictos de uso"
         }
       ],
       "obligation": "SHALL",
@@ -201,9 +205,9 @@
         "system": "el sistema ReservaSalas",
         "feature": null,
         "states": [
-          "Mientras el modo festivo esté activado"
+          "el modo festivo esté activado"
         ],
-        "trigger": "cuando un empleado intente reservar una sala",
+        "trigger": "un empleado intente reservar una sala",
         "trigger_keyword": "WHEN",
         "response": "mostrar al empleado un aviso de día festivo"
       },

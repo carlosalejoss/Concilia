@@ -102,12 +102,12 @@ public class CatalogValidatorTests
     }
 
     [Fact]
-    public void Manifest_has_the_63_cases_of_the_reference()
+    public void Manifest_has_the_64_cases_of_the_reference()
     {
         var manifest = LoadManifest();
 
-        Assert.Equal(63, manifest.Count);
-        Assert.Equal(63, Outcomes.Value.Count);
+        Assert.Equal(64, manifest.Count);
+        Assert.Equal(64, Outcomes.Value.Count);
     }
 
     private static CatalogValidationReport ValidateCase(Case c) =>

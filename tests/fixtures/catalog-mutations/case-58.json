@@ -11,8 +11,7 @@
         "DOC-01#F002",
         "DOC-01#F004",
         "DOC-01#F005",
-        "DOC-01#F007",
-        "DOC-01#F099"
+        "DOC-01#F007"
       ]
     },
     {
@@ -423,15 +422,14 @@
       "quote": null,
       "reason": "business_goal",
       "note": "Objetivo de negocio no verificable como comportamiento del sistema."
-    },
-    {
-      "fragment": "DOC-01#F014",
-      "quote": null,
-      "reason": "human_activity",
-      "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
     }
   ],
-  "discarded_sections": [],
+  "discarded_sections": [
+    {
+      "section": "§3",
+      "reason": "project_note"
+    }
+  ],
   "domain_terms": [],
   "verdict": {
     "status": "complete",

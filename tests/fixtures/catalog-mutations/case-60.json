@@ -112,7 +112,7 @@
       "source_trace": [
         {
           "fragment": "DOC-01#F003",
-          "quote": "Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto"
+          "quote": "al confirmar la `reserva`, el sistema envía un correo de confirmación"
         }
       ],
       "obligation": "SHALL",
@@ -250,7 +250,9 @@
     {
       "id": "RF-006",
       "type": "RF",
-      "capability_ids": [],
+      "capability_ids": [
+        "CAP-005"
+      ],
       "source_trace": [
         {
           "fragment": "DOC-01#F009",

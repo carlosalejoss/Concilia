@@ -430,7 +430,12 @@
       "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
     }
   ],
-  "discarded_sections": [],
+  "discarded_sections": [
+    {
+      "section": "§9",
+      "reason": "project_note"
+    }
+  ],
   "domain_terms": [],
   "verdict": {
     "status": "complete",
@@ -444,8 +449,6 @@
       "decision_tree_consistent": true
     },
     "issues": [],
-    "unprocessed_fragments": [
-      "DOC-01#F014"
-    ]
+    "unprocessed_fragments": []
   }
 }

@@ -92,7 +92,7 @@
         "states": [],
         "trigger": null,
         "trigger_keyword": null,
-        "response": "permitir al empleado reservar una sala"
+        "response": "permitir al empleado reservar una sala."
       },
       "acceptance_criteria": [
         "[DATA] El empleado indica la fecha, la hora de inicio, la hora de fin y el número de asistentes.",
@@ -315,7 +315,9 @@
       "acceptance_criteria": [],
       "origin": "explicit",
       "derived_from": [],
-      "open_question_ids": []
+      "open_question_ids": [
+        "Q-001"
+      ]
     },
     {
       "id": "RF-007",

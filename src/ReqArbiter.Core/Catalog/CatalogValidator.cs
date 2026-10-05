@@ -206,7 +206,7 @@ public static class CatalogValidator
         ["SCHEMA"] = "sintaxis", ["C2"] = "sintaxis", ["C14"] = "sintaxis",
         ["C5"] = "redaccion", ["C15"] = "redaccion", ["C19"] = "redaccion", ["C22"] = "redaccion",
         ["C7"] = "decision", ["C12"] = "decision",
-        ["C6"] = "trazabilidad", ["C13"] = "trazabilidad", ["C16"] = "trazabilidad", ["C17"] = "trazabilidad",
+        ["C6"] = "trazabilidad", ["C13"] = "trazabilidad", ["C16"] = "trazabilidad",
         ["N3"] = "referencias", ["C21"] = "referencias",
         ["N2"] = "fidelidad",
     };
@@ -492,14 +492,51 @@ public static class CatalogValidator
             }
         }
 
-        // --- 3. Checks of each element ---------------------------------------------------------
-        var wholeDiscards = c["discarded_statements"]!.AsArray()
-            .Where(d => d!["quote"] is null).Select(d => Str(d!, "fragment")!).ToHashSet();
-        var sections = c["discarded_sections"]!.AsArray().Select(d => Str(d!, "section")!).ToList();
+        // Whole discards of fragments that are cited (§3: a fragment that yields something is not
+        // discarded whole). The quotes of the requirements and questions that pass the schema count.
+        // The whole discard (quote null) is removed. A section with some cited fragment is replaced by
+        // whole discards of its fragments that are not cited, with the section's reason (skipping the
+        // fragments that already have a discard).
+        var citedFragments = validReqs.Concat(validQs)
+            .SelectMany(e => e.Obj["source_trace"]!.AsArray().Select(t => Str(t!, "fragment")!))
+            .ToHashSet();
+        var keptDiscards = new JsonArray();
+        var discardList = c["discarded_statements"]!.AsArray();
+        for (var i = 0; i < discardList.Count; i++)
+        {
+            var d = discardList[i]!;
+            if (d["quote"] is null && citedFragments.Contains(Str(d, "fragment")!))
+                Fix($"DISCARDED[{i}]", $"descarte entero de {Str(d, "fragment")} quitado: el fragmento se cita");
+            else
+                keptDiscards.Add(d.DeepClone());
+        }
+        c["discarded_statements"] = keptDiscards;
+        if (fragments is not null)
+        {
+            var keptSections = new JsonArray();
+            var sectionList = c["discarded_sections"]!.AsArray();
+            for (var i = 0; i < sectionList.Count; i++)
+            {
+                var d = sectionList[i]!;
+                var inside = docFragIds.Where(id => InSection(fragments[id].Section, Str(d, "section")!)).ToList();
+                var citedInside = inside.Where(citedFragments.Contains).ToList();
+                if (citedInside.Count == 0)
+                {
+                    keptSections.Add(d.DeepClone());
+                    continue;
+                }
+                var already = keptDiscards.Select(x => Str(x!, "fragment")!).ToHashSet();
+                var added = inside.Where(id => !citedFragments.Contains(id) && !already.Contains(id)).ToList();
+                foreach (var id in added)
+                    keptDiscards.Add(new JsonObject { ["fragment"] = id, ["quote"] = null, ["reason"] = Str(d, "reason"), ["note"] = null });
+                var addedText = added.Count > 0 ? string.Join(", ", added) : "ningún fragmento";
+                Fix($"SECTION[{i}]", $"sección '{Str(d, "section")}' sustituida por descartes enteros de {addedText}: se citan {string.Join(", ", citedInside)}");
+            }
+            c["discarded_sections"] = keptSections;
+        }
 
-        bool DiscardedWhole(string fragmentId) =>
-            wholeDiscards.Contains(fragmentId)
-            || (fragments is not null && fragments.TryGetValue(fragmentId, out var frag) && sections.Any(sec => InSection(frag.Section, sec)));
+        // --- 3. Checks of each element ---------------------------------------------------------
+        var sections = c["discarded_sections"]!.AsArray().Select(d => Str(d!, "section")!).ToList();
 
         bool foundQuotes = true, foundFigures = true, foundFragments = true, foundVague = true,
             foundEarsShall = true, foundTree = true, foundCapabilities = true;
@@ -532,8 +569,6 @@ public static class CatalogValidator
             foreach (var t in e.Obj["source_trace"]!.AsArray().Select(x => x!.AsObject()))
             {
                 e.Errors.AddRange(CheckTrace(t));
-                if (DiscardedWhole(Str(t, "fragment")!))
-                    e.Warnings.Add($"C17 cita {Str(t, "fragment")}, que está descartado entero");
             }
         }
 
@@ -649,14 +684,10 @@ public static class CatalogValidator
                 errs.AddRange(tree);
             }
 
-            // C6 quotes and C17
+            // C6 quotes
             var traces = r["source_trace"]!.AsArray().Select(x => x!.AsObject()).ToList();
             foreach (var t in traces)
-            {
                 errs.AddRange(CheckTrace(t));
-                if (DiscardedWhole(Str(t, "fragment")!))
-                    warns.Add($"C17 cita {Str(t, "fragment")}, que está descartado entero");
-            }
 
             if (fragments is not null)
             {

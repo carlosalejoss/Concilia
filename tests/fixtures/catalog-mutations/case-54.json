@@ -95,13 +95,15 @@
         "response": "permitir al empleado reservar una sala"
       },
       "acceptance_criteria": [
-        "data: El empleado indica la fecha, la hora de inicio, la hora de fin y el número de asistentes.",
+        "[DATA] El empleado indica la fecha, la hora de inicio, la hora de fin y el número de asistentes.",
         "[RULE] No se puede reservar una sala mientras esté en mantenimiento.",
         "[ERROR] Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado."
       ],
       "origin": "explicit",
       "derived_from": [],
-      "open_question_ids": []
+      "open_question_ids": [
+        "Q-099"
+      ]
     },
     {
       "id": "RF-002",
