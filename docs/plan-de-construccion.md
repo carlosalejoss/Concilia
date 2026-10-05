@@ -73,11 +73,25 @@ Especificación: `docs/hito-6-catalogo-v1.3.md`.
 - [x] 29. Especificación del catálogo v1.3, revisada por el autor.
 - [x] 30. Referencia en Python: esquema, prompt y anexo v1.3, normalizador, validador con aceptación parcial, índice en el fragmentador, ejemplos y mutaciones.
 - [x] 31. Port a C#: normalizador, validador, prompt con índice, revisión con aceptación parcial y una reparación, unión por tipo.
-- [ ] 32. Deduplicación por modelo tras unir los lotes.
-- [ ] 33. Web: selección de secciones al lanzar el trabajo; tipo, criterios, rechazados y correcciones en el catálogo.
-- [ ] 34. Medición v1.2 frente a v1.3 y recalibrado de los lotes.
+- [x] Prompt v1.4 integrado y medido (05-10-2026): ver `docs/evolucion-prompt-requisitos.md`.
+- ~~32. Deduplicación por modelo tras unir los lotes.~~ Sustituido por el hito 7: cada funcionalidad se escribe en un solo lote.
+- ~~33. Web: selección de secciones al lanzar el trabajo; tipo, criterios, rechazados y correcciones en el catálogo.~~ Pasa al hito 7.
+- ~~34. Medición v1.2 frente a v1.3 y recalibrado de los lotes.~~ Pasa al hito 7.
 
-**Hecho cuando:** con el documento técnico del hito 5, A y B generan catálogos independientes con muchos menos requisitos, casi sin reparaciones y con mucho menos consumo, medido frente a v1.2.
+**Resultado:** con el documento técnico, el catálogo pasó de 1.133 y 862 requisitos (v1.2) a 255 y 214 (v1.4), casi sin reparaciones y con la mitad de tokens, pero sigue lejos de lo revisable. El límite está en el proceso por lotes; se cierra el hito y se pasa al hito 7.
+
+## Hito 7: catálogo v2, de arriba abajo
+
+Propuesta: `docs/propuesta-catalogo-v2.md`.
+
+- [ ] 35. Prompts v2 del autor (inventario y requisitos), esquemas v2 y ejemplos de ReservaSalas.
+- [ ] 36. Informe de métricas automático de un trabajo (por tipo, por origen, preguntas por tipo, tokens, duración, lotes perdidos y su motivo).
+- [ ] 37. Referencia en Python: validador del inventario, reparto de funcionalidades en lotes, validador de la fase 2.
+- [ ] 38. Port a C#: ejecución en dos fases, unión y tope de preguntas, lista de funcionalidades sin `[ERROR]`.
+- [ ] 39. Web: inventario, catálogo y preguntas por prioridad; selección de secciones al lanzar el trabajo.
+- [ ] 40. Medición v1.4 frente a v2, dos ejecuciones por configuración.
+
+**Hecho cuando:** con el documento técnico, A y B generan cada uno 70–100 requisitos sin duplicados y 15–25 preguntas, sin perder funcionalidades frente a una lista de referencia hecha a mano.
 
 ## Después
 
