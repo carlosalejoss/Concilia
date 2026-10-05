@@ -87,11 +87,11 @@ Propuesta: `docs/propuesta-catalogo-v2.md`.
 - [ ] 35. Prompts v2 del autor (inventario y requisitos), esquemas v2 y ejemplos de ReservaSalas.
 - [ ] 36. Informe de métricas automático de un trabajo (por tipo, por origen, preguntas por tipo, tokens, duración, lotes perdidos y su motivo).
 - [ ] 37. Referencia en Python: validador del inventario, reparto de funcionalidades en lotes, validador de la fase 2.
-- [ ] 38. Port a C#: ejecución en dos fases, unión y tope de preguntas, lista de funcionalidades sin `[ERROR]`.
+- [ ] 38. Port a C#: ejecución en dos fases, unión, preguntas ordenadas por tipo, lista de funcionalidades sin `[ERROR]`.
 - [ ] 39. Web: inventario, catálogo y preguntas por prioridad; selección de secciones al lanzar el trabajo.
 - [ ] 40. Medición v1.4 frente a v2, dos ejecuciones por configuración.
 
-**Hecho cuando:** con el documento técnico, A y B generan cada uno 70–100 requisitos sin duplicados y 15–25 preguntas, sin perder funcionalidades frente a una lista de referencia hecha a mano.
+**Hecho cuando:** con el documento técnico, el catálogo de A y el de B están completos frente a una lista de referencia hecha a mano, sin requisitos ni preguntas repetidos y sin requisitos que deberían haberse descartado. No hay un número objetivo: el tamaño sale del documento.
 
 ## Después
 
