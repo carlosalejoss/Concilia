@@ -11,8 +11,7 @@
         "DOC-01#F002",
         "DOC-01#F004",
         "DOC-01#F005",
-        "DOC-01#F007",
-        "DOC-01#F099"
+        "DOC-01#F007"
       ]
     },
     {
@@ -237,7 +236,7 @@
       "escalation_fallback": null,
       "slots": {
         "system": "el sistema ReservaSalas",
-        "condition": "la reserva dura más de 4 horas y tiene más de 20 asistentes",
+        "condition": "si la reserva dura más de 4 horas y tiene más de 20 asistentes",
         "actor": null,
         "process_verb": "requerir",
         "object": "la aprobación del administrador",

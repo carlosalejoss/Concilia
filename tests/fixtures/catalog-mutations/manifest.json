@@ -496,7 +496,7 @@
   },
   {
     "file": "case-56.json",
-    "name": "funcionalidad con un fragmento fuera del lote",
+    "name": "condition que empieza por su palabra clave (R-h)",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
     "kind": "fix",
@@ -505,6 +505,24 @@
   },
   {
     "file": "case-57.json",
+    "name": "states y trigger que empiezan por su palabra clave (R-h)",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-58.json",
+    "name": "funcionalidad con un fragmento fuera del lote",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-59.json",
     "name": "cita con comillas de código y mayúsculas distintas",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -513,7 +531,7 @@
     "expected_code": null
   },
   {
-    "file": "case-58.json",
+    "file": "case-60.json",
     "name": "funcionalidad del inventario sin requisito (C20)",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -522,7 +540,7 @@
     "expected_code": "C20"
   },
   {
-    "file": "case-59.json",
+    "file": "case-61.json",
     "name": "funcionalidad cubierta solo por un RNF (C20)",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -531,7 +549,7 @@
     "expected_code": "C20"
   },
   {
-    "file": "case-60.json",
+    "file": "case-62.json",
     "name": "más del 20 % de los requisitos rechazados",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -540,7 +558,7 @@
     "expected_code": "C15"
   },
   {
-    "file": "case-61.json",
+    "file": "case-63.json",
     "name": "un solo rechazo (11 %) no pide reparación",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",

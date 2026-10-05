@@ -228,6 +228,10 @@ Ajustes de la v1.3 tras su primera ejecución real. Propuesta y evidencia en `do
 - **Una sola escritura (§2 y §10):** el catálogo se escribe con una sola llamada a `Write`, después de autoverificar. Motivo: en la ejecución de la v1.3, 8 de los 27 intentos de LUNA escribieron el catálogo más de una vez (el 36 % de lo escrito acabó sobrescrito, y un lote agotó los 10 turnos así), y 2 de 26 en SOL (6 %).
 - **Anexo:** ante un C20, una entrada del inventario que solo era un detalle o una variante se une a otra funcionalidad.
 
+Cambios en la plataforma que acompañan a la v1.4 (validador de referencia en Python y su port en C#):
+
+- **Palabra clave inicial (red de seguridad de R-h):** el normalizador quita la palabra clave del principio de `feature`, `states`, `trigger` y `condition` (si, cuando, mientras, donde, en cuanto; if, when, while, where, as soon as, as long as), sin distinguir mayúsculas y solo si la sigue un espacio. Lo anota como `FIX`. Así ya no sale «SI si la reserva dura…».
+
 ### Resultados
 
 Pendiente.

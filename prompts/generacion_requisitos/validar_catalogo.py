@@ -19,7 +19,7 @@ Qué hace, en orden:
    pregunta rechaza ese elemento; dentro de otro elemento (funcionalidad, descarte, término), se ignora
    ese elemento con un aviso.
 2. Normalizador: corrige lo mecánico y lo anota como aviso FIX (puntuación final de los slots,
-   slots.system, etiquetas de los criterios, citas con el fragmento equivocado o repetidas, vínculos en un
+   palabra clave al principio de feature, states, trigger y condition, slots.system, etiquetas de los criterios, citas con el fragmento equivocado o repetidas, vínculos en un
    solo sentido, referencias a ids que no existen).
 3. Comprobaciones por elemento. Un error rechaza el requisito o la pregunta; un aviso no hace nada.
 4. Renumeración por tipo (RF-001, RNF-001…, Q-001, CAP-001) del catálogo aceptado.
@@ -140,6 +140,15 @@ MAX_UNTREATED_SHARE = 0.10  # C10: más fragmentos sin tratar que esto -> error 
 QUOTE_MIN_WORDS = 3  # C6: una cita más corta solo vale si es el fragmento entero
 NUMBER_RE = re.compile(r"\d+(?:[.,]\d+)*")
 TBD = ("[POR DEFINIR]", "[TBD]")
+
+# R-h: feature, states, trigger y condition no empiezan por su palabra clave, que añade la plataforma.
+# El normalizador la quita si va seguida de un espacio (con la palabra sola el slot quedaría vacío).
+# Las de varias palabras van primero para que "en cuanto" gane a "en".
+LEADING_KW_SLOTS = ("feature", "states", "trigger", "condition")
+LEADING_KW = {
+    "es": re.compile(r"^(?:en cuanto|cuando|mientras|donde|si)\s+", re.IGNORECASE),
+    "en": re.compile(r"^(?:as soon as|as long as|when|while|where|if)\s+", re.IGNORECASE),
+}
 SUBJECT_PREPS = {"es": {"de", "del", "desde", "en", "para", "durante"},
                  "en": {"of", "from", "for", "in", "during"}}
 NEGATION = {"es": re.compile(r"^no\b", re.IGNORECASE), "en": re.compile(r"^not?\b", re.IGNORECASE)}
@@ -451,6 +460,13 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
             cleaned = [v if v in TBD else v.strip().rstrip(".,;:").rstrip() for v in values]
             if cleaned != values:
                 fix(e["id"], f"slot '{key}': espacios o puntuación final quitados")
+            if key in LEADING_KW_SLOTS:
+                stripped = [LEADING_KW[lang].sub("", v, count=1) for v in cleaned]
+                for before, after in zip(cleaned, stripped):
+                    if after != before:
+                        fix(e["id"], f"slot '{key}': palabra clave inicial «{before[:len(before) - len(after)].strip()}» quitada (R-h)")
+                cleaned = stripped
+            if cleaned != values:
                 s[key] = cleaned if isinstance(val, list) else cleaned[0]
         criteria = []
         for crit in r["acceptance_criteria"]:

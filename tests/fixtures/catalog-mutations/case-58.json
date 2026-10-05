@@ -11,7 +11,8 @@
         "DOC-01#F002",
         "DOC-01#F004",
         "DOC-01#F005",
-        "DOC-01#F007"
+        "DOC-01#F007",
+        "DOC-01#F099"
       ]
     },
     {
@@ -250,7 +251,9 @@
     {
       "id": "RF-006",
       "type": "RF",
-      "capability_ids": [],
+      "capability_ids": [
+        "CAP-005"
+      ],
       "source_trace": [
         {
           "fragment": "DOC-01#F009",

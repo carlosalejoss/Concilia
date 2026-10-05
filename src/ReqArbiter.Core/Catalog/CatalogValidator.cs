@@ -166,6 +166,16 @@ public static class CatalogValidator
     private static readonly Regex NumberRe = new(@"\d+(?:[.,]\d+)*");
     private static readonly string[] Tbd = ["[POR DEFINIR]", "[TBD]"];
 
+    // R-h: feature, states, trigger and condition do not start with their keyword, which the
+    // platform adds. The normalizer removes it when a space follows (a lone keyword would leave
+    // the slot empty). Multi-word keywords go first so that "en cuanto" wins.
+    private static readonly string[] LeadingKeywordSlots = ["feature", "states", "trigger", "condition"];
+    private static readonly Dictionary<string, Regex> LeadingKeyword = new()
+    {
+        ["es"] = new(@"^(?:en cuanto|cuando|mientras|donde|si)\s+", IgnoreCase),
+        ["en"] = new(@"^(?:as soon as|as long as|when|while|where|if)\s+", IgnoreCase),
+    };
+
     private static readonly Dictionary<string, HashSet<string>> SubjectPrepositions = new()
     {
         ["es"] = ["de", "del", "desde", "en", "para", "durante"],
@@ -368,21 +378,28 @@ public static class CatalogValidator
             {
                 if (key is "system" or "trigger_keyword" || s[key] is null)
                     continue;
+                List<string> values;
                 if (s[key] is JsonArray list)
-                {
-                    var values = list.Select(v => v!.GetValue<string>()).ToList();
-                    var cleaned = values.Select(CleanSlot).ToList();
-                    if (!cleaned.SequenceEqual(values))
-                    {
-                        Fix(e.Id, $"slot '{key}': espacios o puntuación final quitados");
-                        s[key] = new JsonArray(cleaned.Select(v => (JsonNode)JsonValue.Create(v)!).ToArray());
-                    }
-                }
-                else if (s[key] is JsonValue value && value.TryGetValue<string>(out var text) && CleanSlot(text) != text)
-                {
+                    values = list.Select(v => v!.GetValue<string>()).ToList();
+                else if (s[key] is JsonValue value && value.TryGetValue<string>(out var text))
+                    values = [text];
+                else
+                    continue;
+                var cleaned = values.Select(CleanSlot).ToList();
+                if (!cleaned.SequenceEqual(values))
                     Fix(e.Id, $"slot '{key}': espacios o puntuación final quitados");
-                    s[key] = CleanSlot(text);
+                if (LeadingKeywordSlots.Contains(key))
+                {
+                    var stripped = cleaned.Select(v => LeadingKeyword[lang].Replace(v, "", 1)).ToList();
+                    foreach (var (before, after) in cleaned.Zip(stripped))
+                        if (after != before)
+                            Fix(e.Id, $"slot '{key}': palabra clave inicial «{before[..(before.Length - after.Length)].Trim()}» quitada (R-h)");
+                    cleaned = stripped;
                 }
+                if (!cleaned.SequenceEqual(values))
+                    s[key] = s[key] is JsonArray
+                        ? new JsonArray(cleaned.Select(v => (JsonNode)JsonValue.Create(v)!).ToArray())
+                        : cleaned[0];
             }
             var criteria = new JsonArray();
             foreach (var crit in r["acceptance_criteria"]!.AsArray().Select(x => x!.GetValue<string>()))
