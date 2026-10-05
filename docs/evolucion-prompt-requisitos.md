@@ -305,6 +305,13 @@ Cambio de proceso, no solo de prompt. Propuesta en `docs/propuesta-catalogo-v2.m
 - **Informe nuevo, en lugar de N4:** las funcionalidades `functional`/`integration` sin ningún criterio `[ERROR]`. Es una lista, no preguntas.
 - Ambos ejemplos validan sin errores ni avisos; sus textos generados están en `catalogo_ejemplo_v2.enriquecido.json`. 75 mutaciones con paridad Python/C#: las comprobaciones de cada requisito de la v1.3 pasadas a los ejemplos v2, más una por cada comprobación nueva. Los fixtures v1.3 quedan congelados para el validador v1.3, que sigue usando la plataforma.
 
+**Unión de los lotes (`CatalogMergerV2`, solo en C#, como la de la v1.3):**
+
+- Las funcionalidades y los descartes vienen del inventario; los requisitos se renumeran por tipo entre lotes. No hace falta deduplicar requisitos: cada funcionalidad está en un solo lote.
+- Las preguntas `QI-` del inventario y las `Q-` de los lotes forman una sola lista. Las del mismo tipo con el mismo texto tras normalizar se fusionan (`FIX`), como red de seguridad: en la v1.4, unas 15 preguntas de LUNA eran iguales salvo el requisito. Se ordenan por tipo (contradicción, alcance, valor, ambigüedad, actor), no se recorta ninguna y todas se renumeran `Q-`.
+- Toda pregunta final lleva `related_capabilities` y `related_requirements`, con el enlace completado en los dos sentidos.
+- Las objeciones de los lotes se juntan, los términos de dominio repetidos se quitan y los veredictos se combinan.
+
 **Refactor previo en C#:** las comprobaciones de cada requisito, que no cambian entre la v1.3 y la v2, pasan a `RequirementChecks`, compartido por los dos validadores. Hasta el paso 38 conviven el validador v1.3 (el que usa la plataforma) y los v2.
 
 ### Resultados
