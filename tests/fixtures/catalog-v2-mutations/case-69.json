@@ -1,0 +1,50 @@
+{
+  "schema_version": "2.0",
+  "system": "el sistema ReservaSalas",
+  "language": "es",
+  "capability_objections": [],
+  "requirements": [
+    {
+      "id": "RF-001",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-004"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F011",
+          "quote": "Sería deseable que el administrador pudiera exportar el histórico de reservas a CSV"
+        }
+      ],
+      "obligation": "SHOULD",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "Sería deseable",
+      "decision_branch": "D3",
+      "notation": "MASTeR",
+      "ears_pattern": null,
+      "master_template": "functional",
+      "master_activity": "user_interaction",
+      "master_condition": "none",
+      "escalation_fallback": null,
+      "slots": {
+        "system": "el sistema ReservaSalas",
+        "condition": null,
+        "actor": "el administrador",
+        "process_verb": "exportar",
+        "object": "el histórico de reservas",
+        "details": "a CSV"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    }
+  ],
+  "open_questions": [],
+  "domain_terms": [],
+  "verdict": {
+    "status": "complete",
+    "issues": [],
+    "uncovered_capabilities": []
+  }
+}

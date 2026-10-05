@@ -1,32 +1,44 @@
 #!/usr/bin/env python3
 """
-Validador determinista del catálogo EARS/MASTeR v1.3 generado por el Modelo A o el Modelo B.
+Validador determinista del catálogo EARS/MASTeR v2 (fase 2) que escribe el Modelo A o el Modelo B para un
+lote de funcionalidades del inventario.
 
-Es la implementación de referencia: el port a C# debe dar los mismos resultados para los mismos
-ficheros (ver test_validador.py --exportar). La versión 1.2 está en el historial de git.
+Es la implementación de referencia: el port a C# (CatalogValidatorV2) debe dar los mismos resultados para
+los mismos ficheros (ver test_validador.py --exportar). La versión 1.3 está en el historial de git.
 
 Uso:
-    python validar_catalogo.py catalogo.json --sistema "el sistema X" --fragmentos fragmentos.json
-                               [--schema requirements_v1.3.schema.json] [--enriquecido salida.json]
+    python validar_catalogo.py catalogo.json --sistema "el sistema X" --inventario inventario.json
+                               --fragmentos fragmentos.json [--lote CAP-001,CAP-002]
+                               [--schema requirements_v2.schema.json] [--enriquecido salida.json]
 
---fragmentos   fichero de fragmentar.py con los fragmentos del lote (y de las dudas). Sin él no se
-               comprueban las citas, las cifras, la cobertura ni los términos de dominio.
+--inventario   inventario normalizado de la fase 1 (validar_inventario.py --normalizado).
+--fragmentos   fichero de fragmentar.py con todos los fragmentos (documentos y dudas). Los del lote son los
+               de sus funcionalidades, más las dudas. Sin él no se comprueban las citas, las cifras, C23 ni
+               los términos de dominio.
+--lote         ids de las funcionalidades del lote; sin él, todas las del inventario.
 --enriquecido  escribe el catálogo aceptado: normalizado, sin los elementos rechazados, renumerado y
                con el campo `text` de cada requisito. El texto lo genera siempre la plataforma.
 
 Qué hace, en orden:
 1. Esquema. Un fallo en la estructura raíz es un error del lote. Un fallo dentro de un requisito o de una
-   pregunta rechaza ese elemento; dentro de otro elemento (funcionalidad, descarte, término), se ignora
-   ese elemento con un aviso.
+   pregunta rechaza ese elemento; dentro de una objeción o un término, se ignora ese elemento con un aviso.
 2. Normalizador: corrige lo mecánico y lo anota como aviso FIX (puntuación final de los slots,
    palabra clave al principio de feature, states, trigger y condition, slots.system, etiquetas de los
-   criterios, citas con el fragmento equivocado o repetidas, vínculos en un solo sentido, referencias a
-   ids que no existen, descartes enteros de fragmentos que se citan).
-3. Comprobaciones por elemento. Un error rechaza el requisito o la pregunta; un aviso no hace nada.
-4. Renumeración por tipo (RF-001, RNF-001…, Q-001, CAP-001) del catálogo aceptado.
-5. Comprobaciones del lote: C10 (cobertura de fragmentos), C20 (funcionalidades sin requisito) y veredicto.
+   criterios, citas con el fragmento equivocado o repetidas, vínculos en un solo sentido, referencias a ids
+   que no existen, capability_ids que no son del lote, y capability_ids vacío en un lote de una sola
+   funcionalidad). Las objeciones mal formadas se ignoran con aviso.
+3. Comprobaciones por elemento. Un error rechaza el requisito o la pregunta; un aviso no hace nada. Además
+   de las de siempre: C21 (requisito sin funcionalidad), C24 (tipo que no admite el kind de su
+   funcionalidad) y C25 (requisito de una funcionalidad objetada).
+4. Renumeración por tipo (RF-001, RNF-001…, Q-001) del catálogo aceptado. Las CAP- y QI- del inventario no
+   cambian.
+5. Comprobaciones del lote: C20 (funcionalidad sin el requisito que exige su kind), C23 (fragmentos del lote
+   que no cita nadie) y veredicto.
 6. Decisión: el lote necesita reparación si hay errores del lote, si se rechaza más del 20 % de los
    requisitos o si hay algún C20. `repair_reasons` son las líneas que van al anexo de reparación.
+
+El informe incluye las objeciones válidas y las funcionalidades functional o integration sin ningún criterio
+[ERROR] (sustituye a las preguntas «¿qué pasa si falla?», N4).
 
 Los mensajes de un elemento empiezan por su id tal como lo escribió el modelo (el del fichero que se le
 devuelve en la reparación) y por el código de la regla: "RF-003 C6 …". Los del lote empiezan por LOTE.
@@ -50,7 +62,7 @@ except ImportError:  # pragma: no cover
 if not hasattr(jsonschema, "Draft202012Validator"):  # pragma: no cover
     sys.exit('jsonschema demasiado antiguo para el draft 2020-12: pip install "jsonschema>=4.18"')
 
-SCHEMA_FILE = "requirements_v1.3.schema.json"
+SCHEMA_FILE = "requirements_v2.schema.json"
 
 KW = {
     "es": {"WHEN": "CUANDO", "WHILE": "MIENTRAS", "IF": "SI", "THEN": "ENTONCES", "WHERE": "DONDE",
@@ -128,7 +140,12 @@ UMBRELLA_RE = {
 UMBRELLA_MIN_OPERATIONS = 5  # U7: un verbo paraguas solo con más de cuatro operaciones
 
 TYPES = ("RF", "RI", "RNF", "RA", "RT")
-FUNCTIONAL_TYPES = ("RF", "RI")  # los que explican una funcionalidad del inventario (C20, C21)
+# Por kind de la funcionalidad: los tipos que la cubren (C20) y los que admite (C24). La calidad exigida a una
+# función concreta es un RNF de esa función; la normativa impuesta es un RNF de una constraint.
+REQUIRED_TYPES = {"functional": ("RF", "RI"), "integration": ("RF", "RI"), "quality": ("RNF",),
+                  "constraint": ("RA", "RT", "RNF")}
+ALLOWED_TYPES = {"functional": ("RF", "RI", "RNF"), "integration": ("RF", "RI", "RNF"), "quality": ("RNF",),
+                 "constraint": ("RA", "RT", "RNF")}
 LABELS = ("OPERATION", "DATA", "RULE", "LIMIT", "MESSAGE", "ERROR")
 # Una etiqueta va entre corchetes ("[DATA]", "[data]:") o seguida de dos puntos ("DATA:"). Sin eso no es una
 # etiqueta: "Error messages are shown…" es un criterio sin etiqueta (C19), no un [ERROR].
@@ -136,7 +153,6 @@ _LABEL_WORDS = "|".join(LABELS)
 LABEL_RE = re.compile(rf"^\s*(?:\[\s*({_LABEL_WORDS})\s*\]\s*:?|({_LABEL_WORDS})\s*:)\s*", re.IGNORECASE)
 
 MAX_REJECTED_SHARE = 0.20   # aceptación parcial: más rechazos que esto -> reparación
-MAX_UNTREATED_SHARE = 0.10  # C10: más fragmentos sin tratar que esto -> error del lote
 
 QUOTE_MIN_WORDS = 3  # C6: una cita más corta solo vale si es el fragmento entero
 NUMBER_RE = re.compile(r"\d+(?:[.,]\d+)*")
@@ -168,14 +184,13 @@ CATEGORY = {"SCHEMA": "sintaxis", "C2": "sintaxis", "C14": "sintaxis",
             "C5": "redaccion", "C15": "redaccion", "C19": "redaccion", "C22": "redaccion",
             "C7": "decision", "C12": "decision",
             "C6": "trazabilidad", "C13": "trazabilidad", "C16": "trazabilidad",
-            "N3": "referencias", "C21": "referencias",
+            "N3": "referencias", "C21": "referencias", "C24": "referencias", "C25": "referencias",
             "N2": "fidelidad"}
 
 # Campos del catálogo que son listas de elementos; un error de esquema dentro de uno de ellos afecta solo
 # a ese elemento.
 ELEMENT_LISTS = ("requirements", "open_questions")
-OTHER_LISTS = {"capabilities": "CAP", "discarded_statements": "DISCARDED", "discarded_sections": "SECTION",
-               "domain_terms": "DOMAIN"}
+OTHER_LISTS = {"capability_objections": "OBJECTION", "domain_terms": "DOMAIN"}
 
 QUOTE_MAP = str.maketrans({"“": '"', "”": '"', "„": '"', "«": '"', "»": '"', "‘": "'", "’": "'",
                            "–": "-", "—": "-", " ": " "})
@@ -227,7 +242,7 @@ def section_key(section: str) -> str | None:
 
 
 def in_section(fragment_section: str, section: str) -> bool:
-    """El fragmento pertenece a la sección o a una de sus subsecciones (C10 con discarded_sections)."""
+    """El fragmento pertenece a la sección o a una de sus subsecciones."""
     if norm(fragment_section) == norm(section):
         return True
     fk, sk = section_key(fragment_section), section_key(section)
@@ -350,22 +365,28 @@ def vague_terms(text: str, lang: str, domain_terms: list[str], exempt: str | Non
     return found
 
 
+
 def lot_failure(errors: list[str]) -> dict:
     """Informe de un lote que no se puede usar: hay que repararlo."""
     return {"valid": False, "needs_repair": True, "repair_reasons": errors, "errors": errors, "rejected": [],
-            "warnings": [], "metrics": {}, "catalog": None, "texts": {}, "ids": {}}
+            "warnings": [], "metrics": {}, "catalog": None, "texts": {}, "ids": {}, "objections": [],
+            "capabilities_without_error": []}
 
 
-def check_text(raw: str, sistema: str, fragments: dict | None, schema: dict) -> dict:
+def check_text(raw: str, sistema: str, fragments: dict | None, schema: dict, inventory: dict,
+               lot: list[str] | None = None) -> dict:
     """Valida el contenido de output/catalogo.json tal cual (puede no ser JSON)."""
     try:
         cat = json.loads(raw)
     except json.JSONDecodeError as ex:
         return lot_failure([f"LOTE JSON no válido: {ex}"])
-    return check(cat, sistema, fragments, schema)
+    return check(cat, sistema, fragments, schema, inventory, lot)
 
 
-def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
+def check(cat, sistema: str, fragments: dict | None, schema: dict, inventory: dict,
+          lot: list[str] | None = None) -> dict:
+    """`inventory`: el inventario normalizado. `lot`: ids de las funcionalidades del lote (todas si es None).
+    `fragments`: todos los fragmentos; los del lote son los de sus funcionalidades, más las dudas."""
     warnings: list[str] = []
 
     # --- 1. Esquema, repartido por niveles ---------------------------------------------------------
@@ -406,7 +427,14 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
     valid_reqs = [e for e in reqs if not e["errors"]]
     valid_qs = [e for e in qs if not e["errors"]]
 
-    lot_frags = {fid: f for fid, f in (fragments or {}).items()}
+    # El lote: sus funcionalidades (del inventario) y sus fragmentos (los de esas funcionalidades y las dudas).
+    inv_caps = {cp["id"]: cp for cp in inventory["capabilities"]}
+    inv_qs = {q["id"]: q for q in inventory["open_questions"]}
+    lot_ids = list(lot) if lot is not None else list(inv_caps)
+    lot_caps = [inv_caps[x] for x in lot_ids]
+    lot_frag_ids = {f for cp in lot_caps for f in cp["fragments"]}
+    lot_frags = {fid: f for fid, f in (fragments or {}).items()
+                 if fid in lot_frag_ids or f["kind"] == "clarification"}
     doc_frag_ids = [fid for fid, f in lot_frags.items() if f["kind"] == "document"]
 
     # --- 2. Normalizador --------------------------------------------------------------------------
@@ -480,16 +508,25 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
     for e in valid_qs:
         normalize_traces(e)
 
-    # Funcionalidades: fragmentos que no están en el lote, fuera.
-    for cap_item in c["capabilities"]:
-        if fragments is not None:
-            outside = [f for f in cap_item["fragments"] if f not in lot_frags]
-            if outside:
-                fix(cap_item["id"], f"fragmentos fuera del lote quitados: {', '.join(outside)}")
-                cap_item["fragments"] = [f for f in cap_item["fragments"] if f in lot_frags]
+    # Objeciones: solo cuentan las de una funcionalidad del lote; una duplicate tiene que señalar otra
+    # funcionalidad del inventario. Las demás se ignoran con aviso.
+    objections, objected = [], set()
+    for i, o in enumerate(c["capability_objections"]):
+        problem = None
+        if o["capability_id"] not in lot_ids:
+            problem = f"la funcionalidad {o['capability_id']} no es del lote"
+        elif o["reason"] == "duplicate" and o["duplicate_of"] not in inv_caps:
+            problem = f"duplicate_of {o['duplicate_of']} no está en el inventario"
+        elif o["reason"] == "duplicate" and o["duplicate_of"] == o["capability_id"]:
+            problem = "duplicate_of es la misma funcionalidad"
+        if problem:
+            warnings.append(f"OBJECTION[{i}] OBJECTION {problem} (se ignora)")
+        else:
+            objections.append(o)
+            objected.add(o["capability_id"])
 
     # Vínculos (con los ids que escribió el modelo; ante ids repetidos, cuenta el primero).
-    req_by_id, q_by_id, cap_ids = {}, {}, set()
+    req_by_id, q_by_id = {}, {}
     for e in valid_reqs:
         if e["id"] in req_by_id:
             warnings.append(f"{e['id']} C9 id de requisito repetido; las referencias apuntan al primero")
@@ -498,10 +535,6 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
         if e["id"] in q_by_id:
             warnings.append(f"{e['id']} C9 id de pregunta repetido; las referencias apuntan a la primera")
         q_by_id.setdefault(e["id"], e)
-    for cap_item in c["capabilities"]:
-        if cap_item["id"] in cap_ids:
-            warnings.append(f"{cap_item['id']} C9 id de funcionalidad repetido")
-        cap_ids.add(cap_item["id"])
 
     def keep_known(owner: str, refs: list[str], known, what: str) -> list[str]:
         kept = [x for x in refs if x in known]
@@ -512,14 +545,25 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
 
     for e in valid_reqs:
         r = e["item"]
-        r["open_question_ids"] = keep_known(e["id"], r["open_question_ids"], q_by_id, "pregunta")
+        # Las preguntas del inventario (QI-) también valen: la duda ya está abierta.
+        r["open_question_ids"] = keep_known(e["id"], r["open_question_ids"], q_by_id.keys() | inv_qs.keys(),
+                                            "pregunta")
         r["derived_from"] = keep_known(e["id"], r["derived_from"], req_by_id, "requisito")
-        r["capability_ids"] = keep_known(e["id"], r["capability_ids"], cap_ids, "funcionalidad")
+        # C21: solo funcionalidades del lote; con una sola en el lote, un requisito sin ninguna es de ella.
+        outside = [x for x in r["capability_ids"] if x not in lot_ids]
+        if outside:
+            fix(e["id"], f"funcionalidades que no son del lote quitadas: {', '.join(outside)}")
+        r["capability_ids"] = list(dict.fromkeys(x for x in r["capability_ids"] if x in lot_ids))
+        if not r["capability_ids"] and len(lot_ids) == 1:
+            fix(e["id"], f"capability_ids completado con {lot_ids[0]}, única funcionalidad del lote")
+            r["capability_ids"] = [lot_ids[0]]
     for e in valid_qs:
         e["item"]["related_requirements"] = keep_known(e["id"], e["item"]["related_requirements"], req_by_id,
                                                        "requisito")
-    for e in valid_reqs:  # completar el sentido que falte
+    for e in valid_reqs:  # completar el sentido que falte (las QI- las completa la unión)
         for qid in e["item"]["open_question_ids"]:
+            if qid not in q_by_id:
+                continue
             related = q_by_id[qid]["item"]["related_requirements"]
             if e["id"] not in related:
                 related.append(e["id"])
@@ -531,39 +575,7 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
                 linked.append(e["id"])
                 fix(rid, f"vínculo con {e['id']} completado")
 
-    # Descartes enteros de fragmentos que se citan (§3: de un fragmento del que sale algo no se descarta
-    # todo). Cuentan las citas de los requisitos y preguntas que cumplen el esquema. El descarte entero
-    # (quote null) se quita. Una sección con algún fragmento citado se sustituye por descartes enteros de
-    # sus fragmentos no citados, con el motivo de la sección (sin repetir los que ya tienen un descarte).
-    cited = {t["fragment"] for e in valid_reqs + valid_qs for t in e["item"]["source_trace"]}
-    kept = []
-    for i, d in enumerate(c["discarded_statements"]):
-        if d["quote"] is None and d["fragment"] in cited:
-            fix(f"DISCARDED[{i}]", f"descarte entero de {d['fragment']} quitado: el fragmento se cita")
-        else:
-            kept.append(d)
-    c["discarded_statements"] = kept
-    if fragments is not None:
-        kept = []
-        for i, d in enumerate(c["discarded_sections"]):
-            inside = [fid for fid in doc_frag_ids if in_section(lot_frags[fid]["section"], d["section"])]
-            cited_inside = [fid for fid in inside if fid in cited]
-            if not cited_inside:
-                kept.append(d)
-                continue
-            already = {x["fragment"] for x in c["discarded_statements"]}
-            added = [fid for fid in inside if fid not in cited and fid not in already]
-            c["discarded_statements"] += [{"fragment": fid, "quote": None, "reason": d["reason"], "note": None}
-                                          for fid in added]
-            fix(f"SECTION[{i}]", f"sección '{d['section']}' sustituida por descartes enteros de "
-                                 f"{', '.join(added) or 'ningún fragmento'}: se citan {', '.join(cited_inside)}")
-        c["discarded_sections"] = kept
-
     # --- 3. Comprobaciones por elemento -------------------------------------------------------------
-    sections = c["discarded_sections"]
-
-    found = {"quotes": True, "figures": True, "fragments": True, "vague": True, "ears_shall": True, "tree": True,
-             "capabilities": True}
     trace_total, trace_ok = 0, 0
 
     def check_trace(t: dict) -> list[str]:
@@ -583,9 +595,10 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
                             f"«{t['quote']}»")
         else:
             trace_ok += 1
-        if problems:
-            found["quotes"] = False
         return problems
+
+    def question_type(qid: str) -> str | None:
+        return q_by_id[qid]["item"]["type"] if qid in q_by_id else inv_qs[qid]["type"]
 
     for e in valid_qs:
         for t in e["item"]["source_trace"]:
@@ -656,16 +669,11 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
             vague += [f"{v} en un criterio" for v in vague_terms(body, lang, domain_terms)]
         if vague:
             errs += list(dict.fromkeys(vague))
-            found["vague"] = False
         # C7 obligatoriedad
         if r["notation"] == "EARS" and r["obligation"] != "SHALL":
             errs.append("C7 EARS con obligación distinta de SHALL")
-            found["ears_shall"] = False
         # C12 árbol de decisión
-        tree = branch_errors(r)
-        if tree:
-            found["tree"] = False
-            errs += tree
+        errs += branch_errors(r)
         # C6 citas
         for t in r["source_trace"]:
             errs += check_trace(t)
@@ -686,7 +694,6 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
                 invented = sorted(numbers(val) - source_numbers)
                 if invented:
                     errs.append(f"N2 cifra {invented} de '{key}' no aparece en los fragmentos citados")
-                    found["figures"] = False
             # C16 origen (aviso)
             kinds = {f["kind"] for f in cited}
             if r["origin"] == "explicit" and "document" not in kinds:
@@ -695,13 +702,22 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
                 warns.append("C16 origin clarification sin ninguna duda resuelta citada")
         # N3 valor pendiente con su pregunta missing_value
         if r["master_template"] == "property" and s.get("value") in TBD:
-            if not any(q_by_id[q]["item"]["type"] == "missing_value" for q in r["open_question_ids"]):
+            if not any(question_type(q) == "missing_value" for q in r["open_question_ids"]):
                 errs.append("N3 valor pendiente sin pregunta missing_value asociada")
         # C22 verbo paraguas con menos de cinco [OPERATION]
         if verb_slot and UMBRELLA_RE[lang].match(verb_slot):
             operations = sum(1 for crit in r["acceptance_criteria"] if split_label(crit)[0] == "OPERATION")
             if operations < UMBRELLA_MIN_OPERATIONS:
                 warns.append(f"C22 verbo paraguas en '{verb_slot}' con {operations} criterios [OPERATION] (U7)")
+        # C21, C24 y C25: la funcionalidad del requisito
+        if not r["capability_ids"]:
+            warns.append("C21 requisito sin capability_ids")
+        for x in r["capability_ids"]:
+            kind = inv_caps[x]["kind"]
+            if r["type"] not in ALLOWED_TYPES[kind]:
+                warns.append(f"C24 el tipo {r['type']} no lo admite {x} ({kind}: {', '.join(ALLOWED_TYPES[kind])})")
+            if x in objected:
+                warns.append(f"C25 requisito de la funcionalidad objetada {x}")
 
     # --- 4. Rechazos y renumeración ----------------------------------------------------------------
     rejected = [{"id": e["id"], "element": "requirement", "errors": e["errors"]} for e in reqs if e["errors"]]
@@ -717,11 +733,12 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
         e["new_id"] = f"{e['item']['type']}-{counters[e['item']['type']]:03d}"
     for i, e in enumerate(accepted_qs, 1):
         e["new_id"] = f"Q-{i:03d}"
-    caps = [{"item": cp, "id": cp["id"], "new_id": f"CAP-{i:03d}"} for i, cp in enumerate(c["capabilities"], 1)]
-    new_req_ids, new_q_ids, new_cap_ids = {}, {}, {}
-    for entries, mapping in ((accepted_reqs, new_req_ids), (accepted_qs, new_q_ids), (caps, new_cap_ids)):
+    new_req_ids, new_q_ids = {}, {}
+    for entries, mapping in ((accepted_reqs, new_req_ids), (accepted_qs, new_q_ids)):
         for e in entries:
             mapping.setdefault(e["id"], e["new_id"])
+    # Las preguntas del inventario conservan su id.
+    q_mapping = {**{x: x for x in inv_qs}, **new_q_ids}
 
     def rewrite(owner: str, refs: list[str], mapping: dict, what: str) -> list[str]:
         out = []
@@ -736,9 +753,8 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
     for e in accepted_reqs:
         r = e["item"]
         r["id"] = e["new_id"]
-        r["open_question_ids"] = rewrite(e["id"], r["open_question_ids"], new_q_ids, "pregunta")
+        r["open_question_ids"] = rewrite(e["id"], r["open_question_ids"], q_mapping, "pregunta")
         r["derived_from"] = rewrite(e["id"], r["derived_from"], new_req_ids, "requisito")
-        r["capability_ids"] = [new_cap_ids[x] for x in r["capability_ids"]]
         final_reqs.append(r)
         texts[e["new_id"]] = texts_by_entry[id(e)]
     for e in accepted_qs:
@@ -746,83 +762,49 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
         e["item"]["related_requirements"] = rewrite(e["id"], e["item"]["related_requirements"], new_req_ids,
                                                     "requisito")
         final_qs.append(e["item"])
-    for e in caps:
-        e["item"]["id"] = e["new_id"]
-    renumbered = sum(e["id"] != e["new_id"] for e in accepted_reqs + accepted_qs + caps)
+    renumbered = sum(e["id"] != e["new_id"] for e in accepted_reqs + accepted_qs)
     if renumbered:
         warnings.append(f"LOTE FIX {renumbered} ids renumerados (por tipo, en orden de aparición)")
-    final_ids = {**new_req_ids, **new_q_ids, **new_cap_ids}
+    final_ids = {**new_req_ids, **new_q_ids}
 
     # --- 5. Comprobaciones del lote -----------------------------------------------------------------
     lot_errors, repair_reasons = [], []
-    # C21 y C20: funcionalidades del inventario
-    for e in accepted_reqs:
-        if e["item"]["type"] in FUNCTIONAL_TYPES and not e["item"]["capability_ids"]:
-            e["warnings"].append("C21 requisito funcional o de integración sin capability_ids")
     for e in accepted_qs:
         if not e["item"]["related_requirements"] and e["item"]["type"] != "scope":
             e["warnings"].append(f"C11 pregunta {e['item']['type']} sin requisitos relacionados")
-    covered = {x for r in final_reqs if r["type"] in FUNCTIONAL_TYPES for x in r["capability_ids"]}
-    for e in caps:
-        if e["new_id"] not in covered:
-            line = (f"{e['id']} C20 la funcionalidad «{e['item']['name']}» no tiene ningún "
-                    f"requisito RF o RI aceptado")
-            warnings.append(line)
-            repair_reasons.append(line)
-            found["capabilities"] = False
-
-    # Descartes: un fragmento que no está en el lote o una cita que no es literal no cuentan (aviso).
-    discard_frags = set()
-    for i, d in enumerate(c["discarded_statements"]):
-        if fragments is not None and d["fragment"] not in lot_frags:
-            warnings.append(f"DISCARDED[{i}] C6 fragmento inexistente {d['fragment']} (se ignora)")
+    # C20: cada funcionalidad del lote sin objeción tiene un requisito aceptado del tipo que exige su kind.
+    covered = set()
+    for cp in lot_caps:
+        if cp["id"] in objected:
             continue
-        if fragments is not None and d["quote"] is not None and not quote_in(d["quote"], lot_frags[d["fragment"]]["text"]):
-            warnings.append(f"DISCARDED[{i}] C6 cita no literal en {d['fragment']}: «{d['quote']}»")
-        discard_frags.add(d["fragment"])
-    section_frags = set()
-    for i, d in enumerate(sections):
-        inside = {fid for fid in doc_frag_ids if in_section(lot_frags[fid]["section"], d["section"])}
-        if fragments is not None and not inside:
-            warnings.append(f"SECTION[{i}] C10 la sección '{d['section']}' no tiene fragmentos en el lote (se ignora)")
-        section_frags |= inside
+        needed = REQUIRED_TYPES[cp["kind"]]
+        if any(cp["id"] in r["capability_ids"] and r["type"] in needed for r in final_reqs):
+            covered.add(cp["id"])
+            continue
+        line = (f"{cp['id']} C20 la funcionalidad «{cp['name']}» ({cp['kind']}) no tiene ningún requisito "
+                f"{' o '.join(needed)} aceptado")
+        warnings.append(line)
+        repair_reasons.append(line)
 
-    # C10: fragmentos tratados por lo que escribió el modelo (aceptado o rechazado: el rechazo ya se cuenta aparte)
-    if fragments is not None:
-        # Las citas de todos los requisitos y preguntas, también los rechazados por el esquema (si sus
-        # citas se pueden leer): el modelo trató esos fragmentos, y el rechazo ya cuenta por su lado.
-        treated = {t["fragment"] for e in reqs + qs
+    # C23: fragmentos del lote que no cita ningún requisito ni pregunta (también los rechazados: el modelo
+    # los trató). Mide la pérdida de detalle sin obligar a citarlo todo.
+    cited_frags = {t["fragment"] for e in reqs + qs
                    for t in (e["item"].get("source_trace") if isinstance(e["item"], dict) else None) or []
                    if isinstance(t, dict) and isinstance(t.get("fragment"), str)}
-        treated |= discard_frags | section_frags
-        unprocessed = set(c["verdict"]["unprocessed_fragments"])
-        untreated = [fid for fid in doc_frag_ids if fid not in treated]
-        if untreated:
-            found["fragments"] = False
-            line = f"C10 fragmentos sin tratar: {', '.join(untreated)}"
-            if len(untreated) > MAX_UNTREATED_SHARE * len(doc_frag_ids):
-                lot_errors.append(f"LOTE {line}")
-            else:
-                warnings.append(f"LOTE {line}")
-        if unprocessed:
-            warnings.append(f"LOTE C10 fragmentos declarados sin procesar: {', '.join(sorted(unprocessed))}")
+    if fragments is not None:
+        uncited = [fid for fid in doc_frag_ids if fid not in cited_frags]
+        if uncited:
+            warnings.append(f"LOTE C23 fragmentos del lote que no cita ningún requisito ni pregunta: "
+                            f"{', '.join(uncited)}")
 
     # Veredicto del catálogo
     v = c["verdict"]
     if v["status"] == "failed":
         lot_errors.append("LOTE VERDICT el catálogo declara status failed")
-    if v["status"] == "complete" and v["unprocessed_fragments"]:
-        warnings.append("LOTE VERDICT status complete con unprocessed_fragments no vacío")
-    if v["status"] == "partial" and not v["unprocessed_fragments"]:
-        warnings.append("LOTE VERDICT status partial sin unprocessed_fragments")
-    declared_vs_found = {
-        "quotes_are_literal": found["quotes"], "figures_from_source": found["figures"],
-        "all_fragments_accounted": found["fragments"], "all_capabilities_covered": found["capabilities"],
-        "no_vague_terms": found["vague"], "ears_only_shall": found["ears_shall"],
-        "decision_tree_consistent": found["tree"],
-    }
-    mismatches = [k for k, real_ok in declared_vs_found.items() if v["self_check"][k] and not real_ok]
-    warnings += [f"LOTE SELF_CHECK el modelo declara {k}=true y el validador encuentra fallos" for k in mismatches]
+    if v["status"] == "complete" and v["uncovered_capabilities"]:
+        warnings.append("LOTE VERDICT status complete con uncovered_capabilities no vacío")
+    if v["status"] == "partial" and not v["uncovered_capabilities"]:
+        warnings.append("LOTE VERDICT status partial sin uncovered_capabilities")
 
     # Avisos de cada elemento, con su id original, detrás de los del normalizador.
     for e in reqs + qs:
@@ -835,6 +817,13 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
         repair_reasons = [f"{x['id']} {err}" for x in rejected_reqs for err in x["errors"]] + repair_reasons
     repair_reasons = lot_errors + repair_reasons
 
+    # Informe que sustituye a N4: funcionalidades functional o integration sin ningún criterio [ERROR].
+    with_error = {x for r in final_reqs if any(split_label(crit)[0] == "ERROR" for crit in r["acceptance_criteria"])
+                  for x in r["capability_ids"]}
+    without_error = [cp["id"] for cp in lot_caps
+                     if cp["kind"] in ("functional", "integration") and cp["id"] not in objected
+                     and cp["id"] not in with_error]
+
     # --- Métricas -----------------------------------------------------------------------------------
     categories = [{CATEGORY.get(m.split()[0], "otros") for m in e["errors"] + e["warnings"]} for e in reqs]
 
@@ -845,8 +834,6 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
             return round((written - len(rejected_reqs)) / written, 3)
         return round(sum(category not in cats for cats in categories) / written, 3)
 
-    accepted_frags = ({t["fragment"] for r in final_reqs for t in r["source_trace"]}
-                      | {t["fragment"] for q in final_qs for t in q["source_trace"]} | discard_frags | section_frags)
     n = len(final_reqs)
     criteria = [split_label(crit)[0] for r in final_reqs for crit in r["acceptance_criteria"]]
     metrics = {
@@ -862,28 +849,30 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
         "fidelidad_cifras": share("fidelidad"),
         "requisitos_sin_errores": share(None),
         "citas_literales": f"{trace_ok}/{trace_total}" if fragments is not None else "no comprobado",
-        "cobertura_fragmentos": (f"{sum(fid in accepted_frags for fid in doc_frag_ids)}/{len(doc_frag_ids)}"
-                                 if fragments is not None else "no comprobado"),
+        "fragmentos_citados": (f"{sum(fid in cited_frags for fid in doc_frag_ids)}/{len(doc_frag_ids)}"
+                               if fragments is not None else "no comprobado"),
         "proporcion_master": round(sum(r["notation"] == "MASTeR" for r in final_reqs) / n, 3) if n else None,
         "ramas": {b: sum(r["decision_branch"] == b for r in final_reqs) for b in ("D1", "D2", "D3", "D4", "D5")},
         "preguntas_abiertas": len(final_qs),
         "terminos_dominio": len(domain_terms),
-        "funcionalidades": len(caps),
-        "cobertura_funcionalidades": f"{sum(e['new_id'] in covered for e in caps)}/{len(caps)}",
+        "funcionalidades": len(lot_caps),
+        "funcionalidades_objetadas": len(objected),
+        "cobertura_funcionalidades": f"{len(covered)}/{len(lot_caps) - len(objected)}",
+        "funcionalidades_sin_error": len(without_error),
         "criterios": len(criteria),
         "criterios_por_requisito": round(len(criteria) / n, 2) if n else None,
         "criterios_por_etiqueta": {**{t: criteria.count(t) for t in LABELS}, "sin_etiqueta": criteria.count(None)},
         "correcciones": sum(1 for w in warnings if len(w.split()) > 1 and w.split()[1] == "FIX"),
-        "autoverificacion_coincide": not mismatches,
     }
 
-    catalog = {**{k: c[k] for k in ("schema_version", "system", "language", "capabilities")},
-               "requirements": final_reqs, "open_questions": final_qs,
-               **{k: c[k] for k in ("discarded_statements", "discarded_sections", "domain_terms", "verdict")}}
+    catalog = {**{k: c[k] for k in ("schema_version", "system", "language")},
+               "capability_objections": objections, "requirements": final_reqs, "open_questions": final_qs,
+               **{k: c[k] for k in ("domain_terms", "verdict")}}
     valid = not lot_errors
     return {"valid": valid, "needs_repair": bool(repair_reasons), "repair_reasons": repair_reasons,
             "errors": lot_errors, "rejected": rejected, "warnings": warnings, "metrics": metrics,
-            "catalog": catalog if valid else None, "texts": texts if valid else {}, "ids": final_ids}
+            "catalog": catalog if valid else None, "texts": texts if valid else {}, "ids": final_ids,
+            "objections": objections, "capabilities_without_error": without_error}
 
 
 def load_fragments(path: str) -> dict:
@@ -910,13 +899,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("catalogo")
     ap.add_argument("--sistema", required=True)
+    ap.add_argument("--inventario", required=True)
     ap.add_argument("--fragmentos")
+    ap.add_argument("--lote")
     ap.add_argument("--schema", default=str(Path(__file__).with_name(SCHEMA_FILE)))
     ap.add_argument("--enriquecido")
     a = ap.parse_args()
     schema = json.loads(Path(a.schema).read_text(encoding="utf-8"))
+    inventory = json.loads(Path(a.inventario).read_text(encoding="utf-8"))
     fragments = load_fragments(a.fragmentos) if a.fragmentos else None
-    report = check_text(Path(a.catalogo).read_text(encoding="utf-8"), a.sistema, fragments, schema)
+    lot = a.lote.split(",") if a.lote else None
+    report = check_text(Path(a.catalogo).read_text(encoding="utf-8"), a.sistema, fragments, schema, inventory, lot)
     if a.enriquecido and report["catalog"] is not None:
         Path(a.enriquecido).write_text(
             json.dumps(enrich(report["catalog"], report["texts"]), ensure_ascii=False, indent=2) + "\n",

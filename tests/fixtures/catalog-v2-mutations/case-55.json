@@ -1,0 +1,393 @@
+{
+  "schema_version": "2.0",
+  "system": "el sistema ReservaSalas",
+  "language": "es",
+  "capability_objections": [],
+  "requirements": [
+    {
+      "id": "RF-001",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-001"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F002",
+          "quote": "El empleado puede reservar una sala indicando fecha, hora de inicio, hora de fin y número de asistentes"
+        },
+        {
+          "fragment": "DOC-01#F004",
+          "quote": "Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado"
+        },
+        {
+          "fragment": "DOC-01#F005",
+          "quote": "Mientras una sala esté en mantenimiento, no se podrá reservar"
+        },
+        {
+          "fragment": "DOC-01#F015",
+          "quote": "Permisos por rol:"
+        },
+        {
+          "fragment": "DOC-01#F016",
+          "quote": "el empleado puede reservar salas"
+        },
+        {
+          "fragment": "DOC-01#F017",
+          "quote": "el administrador puede reservar salas"
+        },
+        {
+          "fragment": "DOC-01#F021",
+          "quote": "el sistema permite reservar salas"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "ubiquitous",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_fallback": null,
+      "slots": {
+        "system": "el sistema ReservaSalas",
+        "feature": null,
+        "states": [],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "permitir al empleado y al administrador reservar una sala."
+      },
+      "acceptance_criteria": [
+        "[DATA] Al reservar se indica la fecha, la hora de inicio, la hora de fin y el número de asistentes.",
+        "[RULE] No se puede reservar una sala mientras esté en mantenimiento.",
+        "[ERROR] Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado."
+      ],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RF-002",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-001"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F003",
+          "quote": "Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "event_driven",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_fallback": null,
+      "slots": {
+        "system": "el sistema ReservaSalas",
+        "feature": null,
+        "states": [],
+        "trigger": "el empleado confirme una reserva",
+        "trigger_keyword": "WHEN",
+        "response": "enviar un correo de confirmación al empleado"
+      },
+      "acceptance_criteria": [
+        "[LIMIT] El correo de confirmación se envía en menos de 1 minuto desde la confirmación."
+      ],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RF-003",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-001"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F007",
+          "quote": "Mientras el modo festivo esté activado, cuando un empleado intente reservar una sala, el sistema mostrará un aviso de día festivo"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "complex",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_fallback": null,
+      "slots": {
+        "system": "el sistema ReservaSalas",
+        "feature": null,
+        "states": [
+          "el modo festivo esté activado"
+        ],
+        "trigger": "un empleado intente reservar una sala",
+        "trigger_keyword": "WHEN",
+        "response": "mostrar al empleado un aviso de día festivo"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RF-004",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-001"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F008",
+          "quote": "Si la reserva dura más de 4 horas y tiene más de 20 asistentes, deberá aprobarla el administrador"
+        },
+        {
+          "fragment": "DOC-01#F017",
+          "quote": "el administrador puede reservar salas y aprobar reservas"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "deberá",
+      "decision_branch": "D4",
+      "notation": "MASTeR",
+      "ears_pattern": null,
+      "master_template": "functional",
+      "master_activity": "autonomous",
+      "master_condition": "logic",
+      "escalation_fallback": null,
+      "slots": {
+        "system": "el sistema ReservaSalas",
+        "condition": "la reserva dura más de 4 horas y tiene más de 20 asistentes",
+        "actor": null,
+        "process_verb": "requerir",
+        "object": "la aprobación del administrador",
+        "details": null
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RF-005",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-002"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F006",
+          "quote": "Si la empresa contrata el módulo de catering, los empleados podrán añadir catering a la reserva"
+        },
+        {
+          "fragment": "DOC-01#F021",
+          "quote": "añadir catering a las reservas"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "optional_feature",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_fallback": null,
+      "slots": {
+        "system": "el sistema ReservaSalas",
+        "feature": "la empresa contrate el módulo de catering",
+        "states": [],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "permitir a los empleados añadir catering a una reserva"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RF-006",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-003"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F009",
+          "quote": "Mientras el empleado tenga una sesión iniciada y el calendario corporativo esté sincronizado, el sistema mostrará al empleado sus reservas del día"
+        },
+        {
+          "fragment": "DOC-01#F021",
+          "quote": "consultar las reservas del día"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "implicit",
+      "obligation_evidence": null,
+      "decision_branch": "D5",
+      "notation": "EARS",
+      "ears_pattern": "state_driven",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_fallback": null,
+      "slots": {
+        "system": "el sistema ReservaSalas",
+        "feature": null,
+        "states": [
+          "el empleado tenga una sesión iniciada",
+          "el calendario corporativo esté sincronizado"
+        ],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "mostrar al empleado sus reservas del día"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RF-007",
+      "type": "RF",
+      "capability_ids": [
+        "CAP-004"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F011",
+          "quote": "Sería deseable que el administrador pudiera exportar el histórico de reservas a CSV"
+        }
+      ],
+      "obligation": "SHOULD",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "Sería deseable",
+      "decision_branch": "D3",
+      "notation": "MASTeR",
+      "ears_pattern": null,
+      "master_template": "functional",
+      "master_activity": "user_interaction",
+      "master_condition": "none",
+      "escalation_fallback": null,
+      "slots": {
+        "system": "el sistema ReservaSalas",
+        "condition": null,
+        "actor": "el administrador",
+        "process_verb": "exportar",
+        "object": "el histórico de reservas",
+        "details": "a CSV"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    },
+    {
+      "id": "RNF-001",
+      "type": "RNF",
+      "capability_ids": [
+        "CAP-005"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F010",
+          "quote": "La aplicación debe ser rápida"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "debe",
+      "decision_branch": "D1",
+      "notation": "MASTeR",
+      "ears_pattern": null,
+      "master_template": "property",
+      "master_activity": null,
+      "master_condition": "none",
+      "escalation_fallback": null,
+      "slots": {
+        "condition": null,
+        "characteristic": "la rapidez",
+        "subject_matter": "del sistema ReservaSalas",
+        "qualifying_expression": null,
+        "value": "[POR DEFINIR]"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": [
+        "Q-001"
+      ]
+    },
+    {
+      "id": "RA-001",
+      "type": "RA",
+      "capability_ids": [
+        "CAP-006"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F012",
+          "quote": "La aplicación debe funcionar en Chrome y Edge"
+        }
+      ],
+      "obligation": "SHALL",
+      "obligation_basis": "explicit",
+      "obligation_evidence": "debe",
+      "decision_branch": "D2",
+      "notation": "EARS",
+      "ears_pattern": "ubiquitous",
+      "master_template": null,
+      "master_activity": null,
+      "master_condition": null,
+      "escalation_fallback": null,
+      "slots": {
+        "system": "el sistema ReservaSalas",
+        "feature": null,
+        "states": [],
+        "trigger": null,
+        "trigger_keyword": null,
+        "response": "funcionar en Chrome y Edge"
+      },
+      "acceptance_criteria": [],
+      "origin": "explicit",
+      "derived_from": [],
+      "open_question_ids": []
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "Q-001",
+      "type": "missing_value",
+      "question": "¿Con qué métrica y con qué valor se mide la rapidez del sistema ReservaSalas?",
+      "related_requirements": [
+        "RNF-001"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F010",
+          "quote": "La aplicación debe ser rápida"
+        }
+      ]
+    }
+  ],
+  "domain_terms": [],
+  "verdict": {
+    "status": "complete",
+    "issues": [],
+    "uncovered_capabilities": []
+  }
+}
