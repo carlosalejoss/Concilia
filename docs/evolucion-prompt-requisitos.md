@@ -261,7 +261,7 @@ Ejecución del 05-10-2026 con el documento técnico y funcional interno (608 fra
 
 ### Qué hay que mejorar
 
-La v1.4 confirma que el límite ya no está en las reglas del prompt sino en el proceso por lotes: un lote no puede evitar repetir lo que hacen otros lotes que no ve, ni las preguntas pueden tener un tope si cada lote abre las suyas. El autor fija como objetivo 70–100 requisitos y 15–25 preguntas por modelo para un documento de este tamaño. Se pasa a la v2, de arriba abajo: `docs/propuesta-catalogo-v2.md`.
+La v1.4 confirma que el límite ya no está en las reglas del prompt sino en el proceso por lotes: un lote no puede evitar repetir lo que hacen otros lotes que no ve, ni las preguntas pueden tener un tope si cada lote abre las suyas. El autor no fija un número de requisitos ni de preguntas: el catálogo tiene que estar completo, sin repeticiones y con solo lo que es requisito, y el tamaño sale del documento. Se pasa a la v2, de arriba abajo: `docs/propuesta-catalogo-v2.md`.
 
 Pendientes de la plataforma que siguen valiendo en la v2: validar el catálogo cuando el modelo se declara `bloqueada`, diagnosticar con datos por qué LUNA tarda más y pierde lotes, y un informe de métricas automático para no contar a mano.
 

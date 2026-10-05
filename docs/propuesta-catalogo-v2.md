@@ -12,7 +12,15 @@ La v1.4 se midió el 05-10-2026 con el documento técnico y funcional interno (6
 | Preguntas abiertas | 118 | 86 |
 | Lotes perdidos | 0 | 2 de 22 |
 
-Las cifras de forma son buenas: 100 % de citas literales y de fidelidad de cifras. El problema es el **tamaño**. Un catálogo de más de 200 requisitos y una lista de 100 preguntas no se pueden revisar ni contestar. Para un sistema de este tamaño, el autor fija como objetivo **70–100 requisitos y 15–25 preguntas** por modelo.
+Las cifras de forma son buenas: 100 % de citas literales y de fidelidad de cifras. El problema es el **tamaño**. Un catálogo de más de 200 requisitos y una lista de 100 preguntas no se pueden revisar ni contestar.
+
+**No se fija un número de requisitos ni de preguntas.** El tamaño tiene que salir del documento: todas las funcionalidades, cada una una sola vez, y solo lo que debe estar en un catálogo. Un sistema puede dar 50 requisitos y otro 150. Lo que se controla es que el catálogo cumpla tres condiciones:
+
+1. **Completo:** no falta ninguna funcionalidad del documento.
+2. **Sin repeticiones:** cada funcionalidad y cada comportamiento aparece una sola vez, aunque el documento lo describa en varios sitios.
+3. **Solo lo que es requisito:** nada de diseño interno, notas del proyecto ni detalles que pertenecen a otro requisito.
+
+Las preguntas siguen la misma lógica: solo las que de verdad hay que contestar para construir el sistema, cada una una sola vez.
 
 La causa no está en las reglas del prompt sino en el proceso, que va **de abajo arriba**:
 
@@ -47,12 +55,12 @@ El documento grande ocupa unos 25.000–30.000 tokens. Con unos 15.000 de contex
 - **Secciones y fragmentos descartados.** Con los motivos de la v1.3, que siguen valiendo: `context`, `design_detail`, `project_note`, etc.
 - **Preguntas de alcance y contradicciones globales.** Las que afectan a qué entra en el sistema.
 
-**Nivel de una funcionalidad:** lo que un usuario o un sistema externo reconocería como una función del producto (una pantalla, un proceso o una integración), como en la v1.4. Orientación para un sistema mediano: **30–50 funcionalidades**.
+**Nivel de una funcionalidad:** lo que un usuario o un sistema externo reconocería como una función del producto (una pantalla, un proceso o una integración), como en la v1.4. No se fija un número: salen las que tenga el documento, sin repetir ninguna aunque se describa en varios sitios.
 
 **Validación de la plataforma:**
 - **Ids:** existen, sin repetidos.
 - **Cobertura:** cada fragmento del documento está en alguna funcionalidad o descartado. Es el C10 trasladado a esta fase.
-- **Tamaño:** aviso si el inventario se sale de la orientación.
+- **Posibles repeticiones:** aviso cuando dos funcionalidades comparten muchos fragmentos o tienen nombres muy parecidos.
 
 La fase 1 admite **una reparación**, como hoy.
 
@@ -67,12 +75,12 @@ Cada lote recibe:
 
 ### Fase 2: requisitos por funcionalidad
 
-**Por cada funcionalidad, 1–3 requisitos:**
+**Los requisitos de cada funcionalidad.** Uno por cada comportamiento distinto, y no más:
 - su comportamiento principal;
-- solo las variantes que cambian el comportamiento de verdad, por condición o por estado;
+- las variantes que cambian el comportamiento de verdad, por condición o por estado;
 - los atributos de calidad que la fuente le exija.
 
-Con 30–50 funcionalidades salen los 70–100 requisitos del objetivo.
+Lo que no cambia el comportamiento no es un requisito aparte: otro actor que hace lo mismo, un campo más, un mensaje o un límite. Cuántos requisitos salgan depende de la funcionalidad, no de una cifra.
 
 **El detalle va en criterios etiquetados**, como en la v1.3:
 - los roles y permisos son criterios `[RULE]`, no un requisito por actor;
@@ -92,14 +100,14 @@ Se conservan:
 - la no invención;
 - la independencia de A y B.
 
-**Preguntas con presupuesto.** Solo las que **bloquean**: contradicción, alcance, valor sin el que no se puede construir, ambigüedad que cambia el comportamiento o actor que falta.
-- Como máximo **una por funcionalidad**; ante la duda, ninguna.
+**Solo las preguntas necesarias.** Las que **bloquean**: contradicción, alcance, valor sin el que no se puede construir, ambigüedad que cambia el comportamiento o actor que falta.
+- Una duda se pregunta **una sola vez**, aunque afecte a varios requisitos o a varias funcionalidades; ante la duda, ninguna.
 - **No se piden preguntas «¿qué pasa si falla?»** (`missing_error_handling`). La plataforma ya sabe qué funcionalidad no tiene ningún criterio `[ERROR]` y lo lista ella aparte, sin ocupar preguntas.
 
 ### Después: la plataforma une
 
 - **Unión de lotes:** como hoy, renumerando por tipo. No hace falta deduplicar entre lotes: cada funcionalidad está en uno solo.
-- **Tope global de preguntas:** si pasan de 25, se muestran primero por tipo: contradicción, alcance, valor, ambigüedad y actor. Las demás quedan en una lista secundaria.
+- **Orden de las preguntas:** se muestran por tipo (contradicción, alcance, valor, ambigüedad y actor), para contestar primero las que más cambian el catálogo. No se recorta ninguna.
 - **Funcionalidades sin requisito:** C20, como hoy, provoca la reparación del lote.
 
 ## Esquema (v2)
@@ -129,11 +137,10 @@ Dos esquemas en lugar de uno:
 
 - **Documentos:** el documento grande, ReservaSalas y 1 o 2 de PURE. Dos ejecuciones por configuración.
 - **Métricas:** las de `docs/evolucion-prompt-requisitos.md`, más estas:
-  - funcionalidades del inventario;
-  - requisitos por funcionalidad;
-  - requisitos duplicados (misma capacidad más de una vez);
-  - preguntas por tipo;
-  - cobertura frente a la lista de referencia.
+  - **completo:** funcionalidades de la lista de referencia hecha a mano que faltan en el inventario;
+  - **sin repeticiones:** requisitos y preguntas repetidos (mismo comportamiento o misma duda más de una vez);
+  - **solo lo que es requisito:** requisitos que deberían haberse descartado, revisados a mano en una muestra;
+  - funcionalidades del inventario, requisitos por funcionalidad y preguntas por tipo, como descripción, no como objetivo.
 - **Medición automática:** un informe de métricas generado por la plataforma, no contado a mano.
 
 ## Qué se pide como entrega
