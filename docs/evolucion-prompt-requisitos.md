@@ -11,8 +11,8 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1 | 28-09-2026 | Primer prompt EARS/MASTeR, respuesta en JSON | No | El validador dejaba pasar 16 tipos de error |
 | v1.1 | 29-09-2026 | Contrato con la plataforma: fragmentos, `Write`, veredicto, árbol de decisión | No | Base para ejecutar con modelos |
 | v1.2 | 29-09-2026 | Reglas más precisas (obligatoriedad, cifras, citas) y ejemplo en inglés | Sí | Perfecto en un documento pequeño; inservible en uno grande |
-| v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Pendiente | Pendiente |
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
+| v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 
 ## Cómo se mide
 
@@ -236,11 +236,34 @@ Cambios en la plataforma que acompañan a la v1.4 (validador de referencia en Py
 
 ### Resultados
 
-Pendiente.
+Ejecución del 05-10-2026 con el documento técnico y funcional interno (608 fragmentos, 22 lotes), SOL (A) y LUNA (B), una sola ejecución. Las cifras salen de la página del trabajo; las marcadas con ~ se contaron a mano y son aproximadas. Faltan los tokens, la duración y las reparaciones por lote.
+
+| | SOL v1.3 | SOL v1.4 | LUNA v1.3 | LUNA v1.4 |
+|---|---|---|---|---|
+| Lotes en el catálogo | 22 de 22 | 22 de 22 | 18 de 22 | 20 de 22 |
+| Requisitos | 456 | 255 | 284 | 214 |
+| Preguntas abiertas | — | 118 | — | 86 |
+| Preguntas «¿qué pasa si falla?» | 37 | ~55 | 77 | ~43 |
+| Requisitos de secciones de diseño técnico | 38 % | ~23 % | 17 % | ~23 % |
+| Requisitos de las secciones finales del proyecto | 20 % | ~13 % | 29 % | — |
+| Citas literales | — | 623/623 | — | 521/521 |
+| Cobertura de fragmentos | — | 607/608 | — | 548/552 (de sus lotes) |
+| Proporción MASTeR | — | 9 % | — | 11 % |
+| «SI si» en el texto | sí | no | sí | no |
+
+- **Volumen:** baja otra vez (−44 % SOL, −25 % LUNA), pero sigue muy lejos de lo que un usuario puede revisar.
+- **Duplicados:** una misma operación aparece hasta 6 y 7 veces por modelo, porque el documento la describe en el resumen, la matriz de permisos, la pantalla, el backend, la API y el anexo, y cada sitio cae en un lote distinto. LUNA, además, parte los permisos en un requisito por rol.
+- **Preguntas:** N4 por funcionalidad tiene efectos opuestos: LUNA baja y SOL sube. Unas 15 preguntas de LUNA son iguales palabra por palabra salvo el requisito.
+- **Observabilidad:** efecto parcial en SOL y nulo en LUNA. Siguen saliendo requisitos sobre cabeceras, cookies o nombres de permisos internos.
+- **Especificación frente a implementación:** LUNA aplica la regla de la v1.4: requisito con pregunta `contradiction`. SOL saca los mismos requisitos sin la pregunta.
+- **Correcciones nuevas:** ningún «SI si». La sustitución de secciones descartadas con fragmentos citados actúa 4 veces en SOL y 2 en LUNA.
+- **Lotes perdidos de LUNA:** el lote 1 escribió un catálogo y se declaró `bloqueada` («catálogo incompleto»); la plataforma no valida el catálogo en ese caso y lo pierde entero. El motivo del lote 19 está sin registrar.
 
 ### Qué hay que mejorar
 
-Pendiente de los resultados.
+La v1.4 confirma que el límite ya no está en las reglas del prompt sino en el proceso por lotes: un lote no puede evitar repetir lo que hacen otros lotes que no ve, ni las preguntas pueden tener un tope si cada lote abre las suyas. El autor fija como objetivo 70–100 requisitos y 15–25 preguntas por modelo para un documento de este tamaño. Se pasa a la v2, de arriba abajo: `docs/propuesta-catalogo-v2.md`.
+
+Pendientes de la plataforma que siguen valiendo en la v2: validar el catálogo cuando el modelo se declara `bloqueada`, diagnosticar con datos por qué LUNA tarda más y pierde lotes, y un informe de métricas automático para no contar a mano.
 
 ---
 
