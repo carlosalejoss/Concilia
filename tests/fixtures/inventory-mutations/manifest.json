@@ -1,0 +1,200 @@
+[
+  {
+    "file": "case-01.json",
+    "name": "no es JSON",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "lot",
+    "target": null,
+    "expected_code": "JSON"
+  },
+  {
+    "file": "case-02.json",
+    "name": "versión de esquema 1.3",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "lot",
+    "target": null,
+    "expected_code": "SCHEMA"
+  },
+  {
+    "file": "case-03.json",
+    "name": "fragmento sin tratar (C10, umbral 0)",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "lot",
+    "target": null,
+    "expected_code": "C10"
+  },
+  {
+    "file": "case-04.json",
+    "name": "fragmento sin tratar en inglés (C10)",
+    "example": "ejemplo_en",
+    "fragments": "fragmentos.json",
+    "kind": "lot",
+    "target": null,
+    "expected_code": "C10"
+  },
+  {
+    "file": "case-05.json",
+    "name": "id de funcionalidad repetido",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "lot",
+    "target": null,
+    "expected_code": "IDS"
+  },
+  {
+    "file": "case-06.json",
+    "name": "id de pregunta repetido",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "lot",
+    "target": null,
+    "expected_code": "IDS"
+  },
+  {
+    "file": "case-07.json",
+    "name": "el inventario declara status failed",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "lot",
+    "target": null,
+    "expected_code": "VERDICT"
+  },
+  {
+    "file": "case-08.json",
+    "name": "cita no literal en una pregunta",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "reject",
+    "target": "QI-001",
+    "expected_code": "C6"
+  },
+  {
+    "file": "case-09.json",
+    "name": "descarte que no cumple el esquema (se ignora)",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "warning",
+    "target": null,
+    "expected_code": "SCHEMA"
+  },
+  {
+    "file": "case-10.json",
+    "name": "quality con actores",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "warning",
+    "target": null,
+    "expected_code": "KIND"
+  },
+  {
+    "file": "case-11.json",
+    "name": "funcionalidad repetida por fragmentos",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "warning",
+    "target": null,
+    "expected_code": "REP"
+  },
+  {
+    "file": "case-12.json",
+    "name": "funcionalidad repetida por nombre",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "warning",
+    "target": null,
+    "expected_code": "REP"
+  },
+  {
+    "file": "case-13.json",
+    "name": "un resumen compartido por tres funcionalidades no cuenta para REP",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "accept",
+    "target": null,
+    "expected_code": null
+  },
+  {
+    "file": "case-14.json",
+    "name": "status partial sin unprocessed_fragments",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "warning",
+    "target": null,
+    "expected_code": "VERDICT"
+  },
+  {
+    "file": "case-15.json",
+    "name": "sección descartada que no existe",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "warning",
+    "target": null,
+    "expected_code": "C10"
+  },
+  {
+    "file": "case-16.json",
+    "name": "referencia a una funcionalidad inexistente",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-17.json",
+    "name": "fragmento inexistente en una funcionalidad",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-18.json",
+    "name": "descarte de un fragmento inexistente",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-19.json",
+    "name": "fragmento asignado y descartado: se quita el descarte",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-20.json",
+    "name": "sección descartada con fragmentos asignados: descartes de los demás",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-21.json",
+    "name": "cita de una pregunta en el fragmento equivocado",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-22.json",
+    "name": "ids con otro formato: se renumeran CAP- y QI-",
+    "example": "ejemplo",
+    "fragments": "fragmentos_v2.json",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  }
+]

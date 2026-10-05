@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Batería de mutaciones del validador v1.3.
+Batería de mutaciones de los validadores: el del catálogo v1.3 (validar_catalogo.py) y el del inventario v2
+(validar_inventario.py).
 
-Cada caso parte de un catálogo de ejemplo válido (`ejemplo/catalogo_ejemplo_v1.3.json`, en español, o
-`ejemplo_en/catalogo_ejemplo_v1.3.json`, en inglés), introduce un único cambio y comprueba cómo lo trata el
-validador, según su nivel:
+Cada caso parte de un ejemplo válido (`ejemplo/`, en español, o `ejemplo_en/`, en inglés), introduce un único
+cambio y comprueba cómo lo trata el validador, según su nivel:
 
 - reject:  el lote se acepta y el elemento indicado se rechaza con ese código.
 - lot:     error del lote con ese código (el lote no se puede usar y se repara).
@@ -13,12 +13,14 @@ validador, según su nivel:
 - accept:  el lote se acepta sin rechazos, sin reparación y sin avisos.
 - repair:  el lote se puede usar, pero necesita reparación por ese código (C20 o rechazos de más del 20 %).
 
-Algunos casos comprueban además el catálogo aceptado (ids renumerados, vínculos completados…).
+En el inventario, "lot" es un error del inventario entero (prefijo INVENTARIO), que siempre pide reparación.
+Algunos casos comprueban además el resultado (ids renumerados, vínculos completados…).
 
 Uso:
     python test_validador.py                   # ejecuta la batería; código 1 si algún caso falla
-    python test_validador.py --exportar DIR    # escribe cada caso como fixture (catálogo, nivel, código
-                                               # esperado, ejemplo y nombre del sistema) para el port a C#
+    python test_validador.py --exportar DIR    # escribe cada caso como fixture para el port a C#, en
+                                               # DIR/catalog-mutations y DIR/inventory-mutations
+                                               # (fichero, nivel, código esperado, ejemplo y sistema)
 """
 import argparse
 import copy
@@ -29,8 +31,10 @@ from pathlib import Path
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
 from validar_catalogo import SCHEMA_FILE, check_text, enrich, load_fragments  # noqa: E402
+import validar_inventario  # noqa: E402
 
 SCHEMA = json.loads((HERE / SCHEMA_FILE).read_text(encoding="utf-8"))
+INV_SCHEMA = json.loads((HERE / validar_inventario.SCHEMA_FILE).read_text(encoding="utf-8"))
 EXAMPLES = {
     "ejemplo": "el sistema ReservaSalas",
     "ejemplo_en": "the LibraryLoan system",
@@ -56,6 +60,93 @@ def cap(c, cid):
 
 def final_req(report, rid):
     return next(r for r in report["catalog"]["requirements"] if r["id"] == rid)
+
+
+# Inventario v2: el de cada ejemplo, con los fragmentos de todo su documento.
+INV_FILE = "inventario_ejemplo_v2.json"
+INV_FRAGMENTS_FILE = {ES: "fragmentos_v2.json", EN: "fragmentos.json"}
+INV_BASES = {name: json.loads((HERE / name / INV_FILE).read_text(encoding="utf-8")) for name in EXAMPLES}
+INV_FRAGMENTS = {name: load_fragments(str(HERE / name / INV_FRAGMENTS_FILE[name])) for name in EXAMPLES}
+
+
+def disc(c, fid):
+    return next(d for d in c["discarded_statements"] if d["fragment"] == fid)
+
+
+def new_cap(cid, name, kind, fragments, actors=()):
+    return {"id": cid, "name": name, "description": f"Funcionalidad de prueba {cid}.", "kind": kind,
+            "actors": list(actors), "fragments": fragments}
+
+
+def final_inv(report):
+    return report["inventory"]
+
+
+# Mismo formato que CASES, sobre el inventario.
+INVENTORY_CASES = [
+    # --- Errores del inventario (reparación) ---
+    (ES, "no es JSON", "lot", None, "JSON", lambda c: "{ esto no es JSON"),
+    (ES, "versión de esquema 1.3", "lot", None, "SCHEMA", lambda c: c.update(schema_version="1.3")),
+    (ES, "fragmento sin tratar (C10, umbral 0)", "lot", None, "C10",
+     lambda c: c["discarded_statements"].remove(disc(c, "DOC-01#F014"))),
+    (EN, "fragmento sin tratar en inglés (C10)", "lot", None, "C10",
+     lambda c: c["discarded_statements"].remove(disc(c, "DOC-01#F003"))),
+    (ES, "id de funcionalidad repetido", "lot", None, "IDS",
+     lambda c: cap(c, "CAP-002").update(id="CAP-001")),
+    (ES, "id de pregunta repetido", "lot", None, "IDS",
+     lambda c: c["open_questions"].append(copy.deepcopy(c["open_questions"][0]))),
+    (ES, "el inventario declara status failed", "lot", None, "VERDICT",
+     lambda c: c["verdict"].update(status="failed")),
+
+    # --- Rechazo de una pregunta ---
+    (ES, "cita no literal en una pregunta", "reject", "QI-001", "C6",
+     lambda c: c["open_questions"][0]["source_trace"][0].update(quote="una cita que no está en el documento")),
+
+    # --- Avisos ---
+    (ES, "descarte que no cumple el esquema (se ignora)", "warning", None, "SCHEMA",
+     lambda c: c["discarded_statements"].append({"fragment": "DOC-01#F001", "reason": "no_existe", "note": None})),
+    (ES, "quality con actores", "warning", None, "KIND",
+     lambda c: cap(c, "CAP-005").update(actors=["el empleado"])),
+    (ES, "funcionalidad repetida por fragmentos", "warning", None, "REP",
+     lambda c: c["capabilities"].append(new_cap("CAP-007", "contratar catering", "functional", ["DOC-01#F006"]))),
+    (ES, "funcionalidad repetida por nombre", "warning", None, "REP",
+     lambda c: c["capabilities"].append(new_cap("CAP-007", "reservar la sala", "functional", ["DOC-01#F013"]))),
+    (ES, "un resumen compartido por tres funcionalidades no cuenta para REP", "accept", None, None,
+     lambda c: c["capabilities"].append(new_cap("CAP-007", "anular una reserva", "functional",
+                                                ["DOC-01#F013", "DOC-01#F021"]))),
+    (ES, "status partial sin unprocessed_fragments", "warning", None, "VERDICT",
+     lambda c: c["verdict"].update(status="partial")),
+    (ES, "sección descartada que no existe", "warning", None, "C10",
+     lambda c: c["discarded_sections"].append({"section": "§9", "reason": "project_note"})),
+
+    # --- Correcciones del normalizador ---
+    (ES, "referencia a una funcionalidad inexistente", "fix", None, "FIX",
+     lambda c: c["open_questions"][0]["related_capabilities"].append("CAP-099"),
+     lambda r: final_inv(r)["open_questions"][0]["related_capabilities"] == []),
+    (ES, "fragmento inexistente en una funcionalidad", "fix", None, "FIX",
+     lambda c: cap(c, "CAP-004")["fragments"].append("DOC-01#F099"),
+     lambda r: final_inv(r)["capabilities"][3]["fragments"] == ["DOC-01#F011"]),
+    (ES, "descarte de un fragmento inexistente", "fix", None, "FIX",
+     lambda c: c["discarded_statements"].append({"fragment": "DOC-01#F099", "reason": "context", "note": None}),
+     lambda r: len(final_inv(r)["discarded_statements"]) == 2),
+    (ES, "fragmento asignado y descartado: se quita el descarte", "fix", None, "FIX",
+     lambda c: c["discarded_statements"].append({"fragment": "DOC-01#F002", "reason": "context", "note": None}),
+     lambda r: [d["fragment"] for d in final_inv(r)["discarded_statements"]] == ["DOC-01#F001", "DOC-01#F014"]),
+    (ES, "sección descartada con fragmentos asignados: descartes de los demás", "fix", None, "FIX",
+     lambda c: c["discarded_sections"].append({"section": "§3", "reason": "project_note"}),
+     lambda r: [s["section"] for s in final_inv(r)["discarded_sections"]] == ["§5", "§6"]
+     and final_inv(r)["discarded_statements"][-1] == {"fragment": "DOC-01#F013", "reason": "project_note",
+                                                     "note": None}),
+    (ES, "cita de una pregunta en el fragmento equivocado", "fix", None, "FIX",
+     lambda c: c["open_questions"][0]["source_trace"][0].update(fragment="DOC-01#F012"),
+     lambda r: final_inv(r)["open_questions"][0]["source_trace"][0]["fragment"] == "DOC-01#F013"),
+    (ES, "ids con otro formato: se renumeran CAP- y QI-", "fix", None, "FIX",
+     lambda c: (cap(c, "CAP-001").update(id="F1"), c["open_questions"][0].update(id="P1", related_capabilities=["F1"])),
+     lambda r: final_inv(r)["capabilities"][0]["id"] == "CAP-001"
+     and final_inv(r)["open_questions"][0]["id"] == "QI-001"
+     and final_inv(r)["open_questions"][0]["related_capabilities"] == ["CAP-001"]
+     and r["ids"]["F1"] == "CAP-001"),
+]
 
 
 # (ejemplo, nombre, nivel, elemento afectado o None, código esperado, mutación[, comprobación extra])
@@ -240,6 +331,13 @@ def run_case(example, mutate):
     return raw, check_text(raw, EXAMPLES[example], FRAGMENTS[example], SCHEMA)
 
 
+def run_inventory_case(example, mutate):
+    c = copy.deepcopy(INV_BASES[example])
+    result = mutate(c)
+    raw = result if isinstance(result, str) else json.dumps(c, ensure_ascii=False, indent=2)
+    return raw, validar_inventario.check_text(raw, INV_FRAGMENTS[example], INV_SCHEMA)
+
+
 def code_of(message):
     """'RF-001 C14 …' -> 'C14'; 'LOTE C10 …' -> 'C10'; 'LOTE JSON no válido' -> 'JSON'."""
     parts = message.split()
@@ -300,27 +398,49 @@ def main():
         failures += not ok
         print(f"{'OK    ' if ok else 'FALLO '} | base    | {example}: normalizar dos veces da lo mismo")
 
-    out_dir = Path(a.exportar) if a.exportar else None
-    if out_dir:
-        out_dir.mkdir(parents=True, exist_ok=True)
-    manifest = []
-    for i, (example, name, kind, target, code, mutate, *extra) in enumerate(CASES, 1):
+    for example in EXAMPLES:
         total += 1
-        raw, report = run_case(example, mutate)
-        ok = outcome_ok(kind, target, code, report) and all(check(report) for check in extra)
+        report = validar_inventario.check_text((HERE / example / INV_FILE).read_text(encoding="utf-8"),
+                                               INV_FRAGMENTS[example], INV_SCHEMA)
+        ok = report["valid"] and not report["needs_repair"] and not report["rejected"] and not report["warnings"]
         failures += not ok
-        label = f"{kind}:{code}" if code else kind
-        print(f"{'OK    ' if ok else 'FALLO '} | {label:<16} | {name}" + ("" if ok else
-              f"\n         lote {sorted(lot_codes(report))} · rechazos {[(x['id'], x['errors']) for x in report['rejected']]}"
-              f"\n         avisos {report['warnings']} · reparación {report['repair_reasons']}"))
+        print(f"{'OK    ' if ok else 'FALLO '} | base    | {example}: inventario válido y sin avisos"
+              + ("" if ok else f"  -> {report['errors'] + report['warnings']}"))
+        total += 1
+        again = validar_inventario.check(report["inventory"], INV_FRAGMENTS[example], INV_SCHEMA)
+        ok = again["inventory"] == report["inventory"] and not again["warnings"]
+        failures += not ok
+        print(f"{'OK    ' if ok else 'FALLO '} | base    | {example}: normalizar el inventario dos veces da lo mismo")
+
+    root = Path(a.exportar) if a.exportar else None
+    suites = [("catalog-mutations", CASES, run_case,
+               lambda example: {"sistema": EXAMPLES[example]}),
+              ("inventory-mutations", INVENTORY_CASES, run_inventory_case,
+               lambda example: {"fragments": INV_FRAGMENTS_FILE[example]})]
+    for folder, cases, run, fields in suites:
+        print(f"\n--- {folder}")
+        out_dir = root / folder if root else None
         if out_dir:
-            fname = f"case-{i:02d}.json"
-            (out_dir / fname).write_text(raw if raw.endswith("\n") else raw + "\n", encoding="utf-8", newline="\n")
-            manifest.append({"file": fname, "name": name, "example": example, "sistema": EXAMPLES[example],
-                             "kind": kind, "target": target, "expected_code": code})
-    if out_dir:
-        (out_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
-                                               encoding="utf-8", newline="\n")
+            out_dir.mkdir(parents=True, exist_ok=True)
+        manifest = []
+        for i, (example, name, kind, target, code, mutate, *extra) in enumerate(cases, 1):
+            total += 1
+            raw, report = run(example, mutate)
+            ok = outcome_ok(kind, target, code, report) and all(check(report) for check in extra)
+            failures += not ok
+            label = f"{kind}:{code}" if code else kind
+            print(f"{'OK    ' if ok else 'FALLO '} | {label:<16} | {name}" + ("" if ok else
+                  f"\n         lote {sorted(lot_codes(report))} · rechazos {[(x['id'], x['errors']) for x in report['rejected']]}"
+                  f"\n         avisos {report['warnings']} · reparación {report['repair_reasons']}"))
+            if out_dir:
+                fname = f"case-{i:02d}.json"
+                (out_dir / fname).write_text(raw if raw.endswith("\n") else raw + "\n", encoding="utf-8",
+                                             newline="\n")
+                manifest.append({"file": fname, "name": name, "example": example, **fields(example),
+                                 "kind": kind, "target": target, "expected_code": code})
+        if out_dir:
+            (out_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+                                                   encoding="utf-8", newline="\n")
     print(f"\n{total - failures}/{total} correctos")
     sys.exit(1 if failures else 0)
 

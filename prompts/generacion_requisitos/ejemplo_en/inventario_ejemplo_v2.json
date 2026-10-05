@@ -1,0 +1,78 @@
+{
+  "schema_version": "2.0",
+  "system": "the LibraryLoan system",
+  "language": "en",
+  "capabilities": [
+    {
+      "id": "CAP-001",
+      "name": "reserve a book that is on loan",
+      "description": "A member reserves a book that another member has on loan.",
+      "kind": "functional",
+      "actors": ["a member"],
+      "fragments": ["DOC-01#F004"]
+    },
+    {
+      "id": "CAP-002",
+      "name": "return a book",
+      "description": "When a member returns a book, the system updates the loan record.",
+      "kind": "functional",
+      "actors": ["a member", "the librarian"],
+      "fragments": ["DOC-01#F005", "DOC-01#F006"]
+    },
+    {
+      "id": "CAP-003",
+      "name": "register and deactivate members",
+      "description": "The librarian registers new members and deactivates members.",
+      "kind": "functional",
+      "actors": ["the librarian"],
+      "fragments": ["DOC-01#F007", "DOC-01#F008", "DOC-01#F009"]
+    },
+    {
+      "id": "CAP-004",
+      "name": "send reminder emails before the due date",
+      "description": "The system may send reminder emails to members before a loan is due.",
+      "kind": "functional",
+      "actors": [],
+      "fragments": ["DOC-01#F010"]
+    },
+    {
+      "id": "CAP-005",
+      "name": "subscribe to the Flexible Loan plan",
+      "description": "A member subscribes to the Flexible Loan plan.",
+      "kind": "functional",
+      "actors": ["a member"],
+      "fragments": ["DOC-01#F011"]
+    },
+    {
+      "id": "CAP-006",
+      "name": "response time of the search function",
+      "description": "The search function must respond within a stated time.",
+      "kind": "quality",
+      "actors": [],
+      "fragments": ["DOC-01#F013"]
+    }
+  ],
+  "discarded_statements": [
+    { "fragment": "DOC-01#F003", "reason": "heading", "note": null },
+    { "fragment": "DOC-01#F012", "reason": "heading", "note": null }
+  ],
+  "discarded_sections": [
+    { "section": "1.", "reason": "context" }
+  ],
+  "open_questions": [
+    {
+      "id": "QI-001",
+      "type": "scope",
+      "question": "Is the integration with the city card within the scope of this version?",
+      "related_capabilities": [],
+      "source_trace": [
+        { "fragment": "DOC-01#F014", "quote": "In a future release, the system will integrate with the city card" }
+      ]
+    }
+  ],
+  "verdict": {
+    "status": "complete",
+    "issues": [],
+    "unprocessed_fragments": []
+  }
+}
