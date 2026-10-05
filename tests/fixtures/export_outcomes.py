@@ -1,11 +1,14 @@
 # Writes, for each mutation fixture, the complete outcome that the Python
 # reference gives, in expected-outcomes.json next to the fixtures. The C# port
 # must give the same:
-# - catalog-mutations (validar_catalogo.py, CatalogValidatorTests): lot and
-#   repair decision, codes by level, rejected elements, the accepted catalog,
-#   the rendered texts, the id map and the metrics.
+# - catalog-v2-mutations (validar_catalogo.py, CatalogValidatorV2Tests): lot
+#   and repair decision, codes by level, rejected elements, the accepted
+#   catalog, the rendered texts, the id map, the metrics, the valid objections
+#   and the capabilities without an [ERROR] criterion.
 # - inventory-mutations (validar_inventario.py, InventoryValidatorTests): the
 #   same, with the normalized inventory instead of the catalog.
+# catalog-mutations (v1.3) is frozen: its reference is in git history, and its
+# outcomes are kept for the v1.3 validator until the platform runs the v2.
 #
 # Usage, from the repository root, after test_validador.py --exportar tests/fixtures:
 #   python tests/fixtures/export_outcomes.py prompts/generacion_requisitos tests/fixtures
@@ -37,9 +40,11 @@ def codes(r):
 
 
 def catalog_outcome(m, raw, schema):
-    fragments = validar_catalogo.load_fragments(str(ref / m["example"] / "fragmentos.json"))
-    r = validar_catalogo.check_text(raw, m["sistema"], fragments, schema)
-    return {**codes(r), "catalog": r["catalog"], "texts": r["texts"], "ids": r["ids"], "metrics": r["metrics"]}
+    fragments = validar_catalogo.load_fragments(str(ref / m["example"] / m["fragments"]))
+    inventory = json.loads((ref / m["example"] / m["inventory"]).read_text(encoding="utf-8"))
+    r = validar_catalogo.check_text(raw, m["sistema"], fragments, schema, inventory, m["lot"])
+    return {**codes(r), "catalog": r["catalog"], "texts": r["texts"], "ids": r["ids"], "metrics": r["metrics"],
+            "objections": r["objections"], "capabilities_without_error": r["capabilities_without_error"]}
 
 
 def inventory_outcome(m, raw, schema):
@@ -49,7 +54,7 @@ def inventory_outcome(m, raw, schema):
 
 
 SUITES = [
-    ("catalog-mutations", catalog_outcome, load_schema(validar_catalogo.SCHEMA_FILE)),
+    ("catalog-v2-mutations", catalog_outcome, load_schema(validar_catalogo.SCHEMA_FILE)),
     ("inventory-mutations", inventory_outcome, load_schema(validar_inventario.SCHEMA_FILE)),
 ]
 for folder, outcome, schema in SUITES:

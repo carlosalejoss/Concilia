@@ -291,6 +291,20 @@ Cambio de proceso, no solo de prompt. Propuesta en `docs/propuesta-catalogo-v2.m
 - **Renumeración** de `CAP-` y `QI-` en orden: desde aquí los ids son fijos.
 - Ambos ejemplos (ReservaSalas y LibraryLoan) validan sin errores ni avisos; 22 mutaciones con paridad Python/C#.
 
+**Validador de requisitos v2 (`validar_catalogo.py` en su sitio y `CatalogValidatorV2`):**
+
+- Recibe el inventario normalizado y las funcionalidades del lote; los fragmentos del lote son los de sus funcionalidades, más las dudas.
+- **Desaparecen** C10 (la cobertura es de la fase 1), SELF_CHECK, la métrica `autoverificacion_coincide` y las correcciones de descartes (pasan al inventario). `missing_error_handling` lo rechaza ya el esquema.
+- **C20 por kind (reparación):** cada funcionalidad del lote sin objeción necesita un requisito aceptado del tipo que exige su kind: `RF`/`RI` (functional, integration), `RNF` (quality), `RA`/`RT`/`RNF` (constraint). En la v1.3 solo contaban `RF`/`RI`, y saltaría en toda `quality` y `constraint`.
+- **C21 para todos los tipos (aviso):** requisito sin funcionalidad. El normalizador quita las funcionalidades que no son del lote y, en un lote de una sola funcionalidad, completa un `capability_ids` vacío (`FIX`).
+- **C23 (aviso nuevo):** fragmentos del lote que no cita ningún requisito ni pregunta. Mide la pérdida de detalle sin obligar a citarlo todo.
+- **C24 (aviso nuevo):** el tipo del requisito no lo admite el kind de su funcionalidad (`RNF` vale en las cuatro; `RF`/`RI` solo en functional e integration; `RA`/`RT` solo en constraint).
+- **Objeciones:** una de una funcionalidad que no es del lote, o un `duplicate_of` que no existe o es la misma, se ignora con aviso (`OBJECTION`). Una válida exime a su funcionalidad del C20; **C25 (aviso nuevo)** si aun así un requisito la cita.
+- **Preguntas del inventario:** una `QI-` vale en `open_question_ids` y conserva su id; el vínculo inverso lo completará la unión.
+- **VERDICT:** `partial` si y solo si `uncovered_capabilities` no está vacío.
+- **Informe nuevo, en lugar de N4:** las funcionalidades `functional`/`integration` sin ningún criterio `[ERROR]`. Es una lista, no preguntas.
+- Ambos ejemplos validan sin errores ni avisos; sus textos generados están en `catalogo_ejemplo_v2.enriquecido.json`. 75 mutaciones con paridad Python/C#: las comprobaciones de cada requisito de la v1.3 pasadas a los ejemplos v2, más una por cada comprobación nueva. Los fixtures v1.3 quedan congelados para el validador v1.3, que sigue usando la plataforma.
+
 **Refactor previo en C#:** las comprobaciones de cada requisito, que no cambian entre la v1.3 y la v2, pasan a `RequirementChecks`, compartido por los dos validadores. Hasta el paso 38 conviven el validador v1.3 (el que usa la plataforma) y los v2.
 
 ### Resultados
