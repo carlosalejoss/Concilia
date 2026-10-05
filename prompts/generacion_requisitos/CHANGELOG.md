@@ -1,5 +1,45 @@
 # Cambios del prompt de generación de requisitos
 
+## v1.4 (2026-10-05)
+
+Ajustes de la v1.3 tras su primera ejecución real (02-10-2026, SOL y LUNA, 22 lotes del documento técnico interno). La propuesta y la evidencia están en `docs/propuesta-prompt-v1.4.md` y `docs/evolucion-prompt-requisitos.md`. El prompt y el anexo se redactaron en el proyecto de Claude.
+
+Se conserva todo lo que funcionó en la v1.3: independencia, EARS y MASTeR con slots y render, tipos, criterios etiquetados, inventario y cobertura antes que detalle. **El esquema no cambia (1.3).** El prompt no crece: 32.217 bytes, frente a 32.203 de la v1.3.
+
+**Carpeta**
+- Nuevos `prompt_requisitos_v1.4.md` y `anexo_reparacion_v1.4.md`. Los ficheros v1.3 siguen en el historial de git.
+
+**Prompt**
+- §3, **observabilidad** (propuesta 1). Un requisito describe lo que un usuario, un responsable del negocio o un sistema externo integrado puede observar, usar o exigir.
+  - Un comportamiento interno de la implementación es `design_detail` aunque esté escrito como "el sistema hace…" (cabeceras HTTP, CORS, comprobaciones de salud, migraciones, registros, limitación de tasa, formato de errores…). Excepciones: lo que la fuente impone (`RT`/`RA`) y lo que exige como atributo de calidad (`RNF`, uno por atributo, no uno por mecanismo).
+  - Si el índice muestra que la sección describe cómo está construido el sistema, se parte de que es `design_detail`.
+  - Una API que usan sistemas externos es `RI`; la que solo usa el propio frontend, no.
+  - Evidencia: el 38 % de los requisitos de SOL y el 17 % de los de LUNA salían de las secciones de diseño técnico, casi todos comportamientos internos escritos como `RF`.
+- §3, **`project_note`** (propuesta 2, con el matiz que decidió el autor). Lo que habla del proyecto, su historia o su código es `project_note` aunque mencione funciones del sistema: decisiones pasadas, errores conocidos, deuda, riesgos, cómo modificar el sistema. Si el texto dice qué **debe** hacer el sistema y lo construido difiere, el requisito es lo que debe hacer, con una pregunta `contradiction`. Evidencia: el 20 % (SOL) y el 29 % (LUNA) de los requisitos salían de las secciones finales del documento.
+- §3, **descartes enteros** (propuesta 4). Un fragmento del que sale algún requisito, criterio o pregunta no se descarta entero. Una sección solo se descarta entera si no describe nada que el sistema haga y no se cita ninguno de sus fragmentos. Evidencia: C17 aparecía 27 veces en SOL y 67 en LUNA.
+- §5, **nivel del inventario** (propuesta 3). Una funcionalidad es lo que un usuario o un sistema externo reconocería como una función del producto (una pantalla, un proceso de negocio o una integración), y suele tener varios requisitos. No se crea una por requisito. U0 habla ahora de funcionalidades observables. El ejemplo de §11 tiene una funcionalidad cubierta por dos requisitos y citada por un `RNF`. Evidencia: 420 funcionalidades para 456 requisitos en SOL y 272 para 284 en LUNA; C20 provocó todas las reparaciones (4 en SOL y 12 en LUNA).
+- §6, **regla R-h** (propuesta 5). `feature`, `states`, `trigger` y `condition` no empiezan por su keyword (si, cuando, mientras, donde, en cuanto · if, when, while, where, as soon as, as long as). Evidencia: frases como «SI si la pantalla tiene menos de…».
+- §11, "No hagas esto" (propuesta 6) añade el modo verbal tras SI («SI el usuario esté autorizado»), junto al caso de R-h. No hay regla nueva: es R-f.
+- §8, **N4** (propuesta 7). Como máximo una pregunta `missing_error_handling` por funcionalidad del inventario, solo si incluye una operación que puede fallar y ninguno de sus requisitos tiene un criterio `[ERROR]`. Ante la duda, no se abre. Evidencia: en LUNA estas preguntas subieron de 66 a 77 con la v1.3.
+- §2 y §10, **una sola escritura** (propuesta 8). El catálogo se escribe con una sola llamada a Write, después de autoverificar, y no se relee ni se reescribe. Evidencia, medida en los registros de la ejecución del 02-10:
+  - el lote 16 de LUNA llamó a Write en sus 10 turnos, sin ningún error;
+  - 8 de los 27 intentos de LUNA escribieron el catálogo más de una vez, y el 36 % de lo que escribió acabó sobrescrito;
+  - en SOL fueron 2 de 26 intentos y un 6 %.
+- Recortes para que el prompt no crezca: tabla de tipos sin columna de ejemplos, §9 más breve, el orden de los slots solo en §6, ejemplo en inglés más corto, menos frases renderizadas en §11 y un fragmento menos en el ejemplo.
+
+**Anexo**
+- C20: si la entrada del inventario era un detalle o una variante de otra funcionalidad, se une a ella. Antes solo se contemplaba quitarla.
+- El catálogo corregido se escribe con una sola llamada a Write.
+
+**Sin cambios en el validador por el prompt.** Ninguna regla nueva necesita una comprobación automática. Quedan para Claude Code, según la propuesta:
+- normalizador: quitar la keyword repetida al principio de `condition`, `trigger`, `states` y `feature` (`FIX`), como red de seguridad de R-h;
+- validador: quitar el descarte entero de un fragmento citado (`FIX`) en lugar de solo avisar con C17;
+- validador: decidir si se comprueban los 200 caracteres de cada criterio;
+- runner: reintentar una vez un lote perdido por inactividad de la pasarela;
+- pasos 32 y 33.
+
+La plataforma debe cargar `prompt_requisitos_v1.4.md` y `anexo_reparacion_v1.4.md` y registrar la versión `req-1.4`.
+
 ## v1.3 (2026-10-02)
 
 Hito 6 (`docs/hito-6-catalogo-v1.3.md`), tras la primera ejecución grande del hito 5: 1.133 y 862 requisitos para un documento técnico, más de la mitad de secciones que no eran especificación, 13 y 17 de 22 lotes reparados, y entre el 46 % y el 72 % de la salida gastada en intentos fallidos. El prompt y el anexo los redactó el autor en el proyecto de Claude; esta entrada recoge también el esquema, el validador y el fragmentador.
