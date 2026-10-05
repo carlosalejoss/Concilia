@@ -1,0 +1,19 @@
+§1 El objetivo del proyecto es reducir los conflictos de uso de las salas.
+§2.1 El empleado puede reservar una sala indicando fecha, hora de inicio, hora de fin y número de asistentes. Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto.
+§2.2 Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado.
+§2.3 Mientras una sala esté en mantenimiento, no se podrá reservar.
+§2.4 Si la empresa contrata el módulo de catering, los empleados podrán añadir catering a la reserva.
+§2.5 Mientras el modo festivo esté activado, cuando un empleado intente reservar una sala, el sistema mostrará un aviso de día festivo.
+§2.6 Si la reserva dura más de 4 horas y tiene más de 20 asistentes, deberá aprobarla el administrador.
+§2.7 Mientras el empleado tenga una sesión iniciada y el calendario corporativo esté sincronizado, el sistema mostrará al empleado sus reservas del día.
+§3.1 La aplicación debe ser rápida.
+§3.2 Sería deseable que el administrador pudiera exportar el histórico de reservas a CSV.
+§3.3 La aplicación debe funcionar en Chrome y Edge.
+§3.4 En una versión futura, el sistema se integrará con Outlook.
+§3.5 El administrador revisará cada mes las reservas que no se hayan utilizado.
+§4 Permisos por rol:
+- el empleado puede reservar salas;
+- el administrador puede reservar salas y aprobar reservas.
+§5 El endpoint POST /api/reservas crea la reserva y comprueba que la sala está libre en esa franja. Las reservas se guardan en la tabla RESERVA_SALA con el campo estado.
+§6 La pantalla de reservas tiene un error conocido con las zonas horarias.
+§7 En resumen, el sistema permite reservar salas, añadir catering a las reservas y consultar las reservas del día.

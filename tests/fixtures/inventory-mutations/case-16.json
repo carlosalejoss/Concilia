@@ -1,0 +1,130 @@
+{
+  "schema_version": "2.0",
+  "system": "el sistema ReservaSalas",
+  "language": "es",
+  "capabilities": [
+    {
+      "id": "CAP-001",
+      "name": "reservar una sala",
+      "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+      "kind": "functional",
+      "actors": [
+        "el empleado",
+        "el administrador"
+      ],
+      "fragments": [
+        "DOC-01#F002",
+        "DOC-01#F003",
+        "DOC-01#F004",
+        "DOC-01#F005",
+        "DOC-01#F007",
+        "DOC-01#F008",
+        "DOC-01#F015",
+        "DOC-01#F016",
+        "DOC-01#F017",
+        "DOC-01#F021"
+      ]
+    },
+    {
+      "id": "CAP-002",
+      "name": "añadir catering a una reserva",
+      "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+      "kind": "functional",
+      "actors": [
+        "los empleados"
+      ],
+      "fragments": [
+        "DOC-01#F006",
+        "DOC-01#F021"
+      ]
+    },
+    {
+      "id": "CAP-003",
+      "name": "consultar las reservas del día",
+      "description": "El empleado ve sus reservas del día.",
+      "kind": "functional",
+      "actors": [
+        "el empleado"
+      ],
+      "fragments": [
+        "DOC-01#F009",
+        "DOC-01#F021"
+      ]
+    },
+    {
+      "id": "CAP-004",
+      "name": "exportar el histórico de reservas",
+      "description": "El administrador exporta el histórico de reservas a CSV.",
+      "kind": "functional",
+      "actors": [
+        "el administrador"
+      ],
+      "fragments": [
+        "DOC-01#F011"
+      ]
+    },
+    {
+      "id": "CAP-005",
+      "name": "rapidez de la aplicación",
+      "description": "La aplicación tiene que ser rápida.",
+      "kind": "quality",
+      "actors": [],
+      "fragments": [
+        "DOC-01#F010"
+      ]
+    },
+    {
+      "id": "CAP-006",
+      "name": "navegadores compatibles",
+      "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+      "kind": "constraint",
+      "actors": [],
+      "fragments": [
+        "DOC-01#F012"
+      ]
+    }
+  ],
+  "discarded_statements": [
+    {
+      "fragment": "DOC-01#F001",
+      "reason": "business_goal",
+      "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+    },
+    {
+      "fragment": "DOC-01#F014",
+      "reason": "human_activity",
+      "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+    }
+  ],
+  "discarded_sections": [
+    {
+      "section": "§5",
+      "reason": "design_detail"
+    },
+    {
+      "section": "§6",
+      "reason": "project_note"
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "QI-001",
+      "type": "scope",
+      "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+      "related_capabilities": [
+        "CAP-099"
+      ],
+      "source_trace": [
+        {
+          "fragment": "DOC-01#F013",
+          "quote": "En una versión futura, el sistema se integrará con Outlook"
+        }
+      ]
+    }
+  ],
+  "verdict": {
+    "status": "complete",
+    "issues": [],
+    "unprocessed_fragments": []
+  }
+}

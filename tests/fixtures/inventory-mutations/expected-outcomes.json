@@ -1,0 +1,2859 @@
+{
+  "case-01.json": {
+    "valid": false,
+    "needs_repair": true,
+    "lot": [
+      "JSON"
+    ],
+    "rejected": {},
+    "warnings": [],
+    "repair": [
+      "JSON"
+    ],
+    "inventory": null,
+    "ids": {},
+    "metrics": {}
+  },
+  "case-02.json": {
+    "valid": false,
+    "needs_repair": true,
+    "lot": [
+      "SCHEMA"
+    ],
+    "rejected": {},
+    "warnings": [],
+    "repair": [
+      "SCHEMA"
+    ],
+    "inventory": null,
+    "ids": {},
+    "metrics": {}
+  },
+  "case-03.json": {
+    "valid": false,
+    "needs_repair": true,
+    "lot": [
+      "C10"
+    ],
+    "rejected": {},
+    "warnings": [],
+    "repair": [
+      "C10"
+    ],
+    "inventory": null,
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 1,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-04.json": {
+    "valid": false,
+    "needs_repair": true,
+    "lot": [
+      "C10"
+    ],
+    "rejected": {},
+    "warnings": [],
+    "repair": [
+      "C10"
+    ],
+    "inventory": null,
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 5,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 0
+      },
+      "fragmentos_por_funcionalidad": 1.5,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 1,
+      "secciones_descartadas": 1,
+      "fragmentos_asignados": "9/14",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-05.json": {
+    "valid": false,
+    "needs_repair": true,
+    "lot": [
+      "IDS"
+    ],
+    "rejected": {},
+    "warnings": [],
+    "repair": [
+      "IDS"
+    ],
+    "inventory": null,
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-06.json": {
+    "valid": false,
+    "needs_repair": true,
+    "lot": [
+      "IDS"
+    ],
+    "rejected": {},
+    "warnings": [],
+    "repair": [
+      "IDS"
+    ],
+    "inventory": null,
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 2,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 2,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "2/2",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-07.json": {
+    "valid": false,
+    "needs_repair": true,
+    "lot": [
+      "VERDICT"
+    ],
+    "rejected": {},
+    "warnings": [],
+    "repair": [
+      "VERDICT"
+    ],
+    "inventory": null,
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-08.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {
+      "QI-001": [
+        "C6"
+      ]
+    },
+    "warnings": [],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 0,
+      "preguntas_rechazadas": 1,
+      "preguntas_por_tipo": {
+        "scope": 0,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "0/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-09.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "SCHEMA"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-10.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "KIND"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-11.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "REP"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        },
+        {
+          "id": "CAP-007",
+          "name": "contratar catering",
+          "description": "Funcionalidad de prueba CAP-007.",
+          "kind": "functional",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F006"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "CAP-007": "CAP-007",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 7,
+      "por_kind": {
+        "functional": 5,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.57,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 1,
+      "correcciones": 0
+    }
+  },
+  "case-12.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "REP"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        },
+        {
+          "id": "CAP-007",
+          "name": "reservar la sala",
+          "description": "Funcionalidad de prueba CAP-007.",
+          "kind": "functional",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F013"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "CAP-007": "CAP-007",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 7,
+      "por_kind": {
+        "functional": 5,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.57,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "16/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 1,
+      "correcciones": 0
+    }
+  },
+  "case-13.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        },
+        {
+          "id": "CAP-007",
+          "name": "anular una reserva",
+          "description": "Funcionalidad de prueba CAP-007.",
+          "kind": "functional",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F013",
+            "DOC-01#F021"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "CAP-007": "CAP-007",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 7,
+      "por_kind": {
+        "functional": 5,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.71,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "16/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-14.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "VERDICT"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "partial",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-15.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "C10"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        },
+        {
+          "section": "§9",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 3,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 0
+    }
+  },
+  "case-16.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "FIX"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 1
+    }
+  },
+  "case-17.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "FIX"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 1
+    }
+  },
+  "case-18.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "FIX"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 1
+    }
+  },
+  "case-19.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "FIX"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 1
+    }
+  },
+  "case-20.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "FIX"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        },
+        {
+          "fragment": "DOC-01#F013",
+          "reason": "project_note",
+          "note": null
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 3,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 1
+    }
+  },
+  "case-21.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "FIX"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "CAP-001": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "QI-001": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 1
+    }
+  },
+  "case-22.json": {
+    "valid": true,
+    "needs_repair": false,
+    "lot": [],
+    "rejected": {},
+    "warnings": [
+      "FIX"
+    ],
+    "repair": [],
+    "inventory": {
+      "schema_version": "2.0",
+      "system": "el sistema ReservaSalas",
+      "language": "es",
+      "capabilities": [
+        {
+          "id": "CAP-001",
+          "name": "reservar una sala",
+          "description": "El empleado o el administrador reserva una sala para una franja y un número de asistentes.",
+          "kind": "functional",
+          "actors": [
+            "el empleado",
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F002",
+            "DOC-01#F003",
+            "DOC-01#F004",
+            "DOC-01#F005",
+            "DOC-01#F007",
+            "DOC-01#F008",
+            "DOC-01#F015",
+            "DOC-01#F016",
+            "DOC-01#F017",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-002",
+          "name": "añadir catering a una reserva",
+          "description": "Si la empresa contrata el módulo de catering, los empleados añaden catering a sus reservas.",
+          "kind": "functional",
+          "actors": [
+            "los empleados"
+          ],
+          "fragments": [
+            "DOC-01#F006",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-003",
+          "name": "consultar las reservas del día",
+          "description": "El empleado ve sus reservas del día.",
+          "kind": "functional",
+          "actors": [
+            "el empleado"
+          ],
+          "fragments": [
+            "DOC-01#F009",
+            "DOC-01#F021"
+          ]
+        },
+        {
+          "id": "CAP-004",
+          "name": "exportar el histórico de reservas",
+          "description": "El administrador exporta el histórico de reservas a CSV.",
+          "kind": "functional",
+          "actors": [
+            "el administrador"
+          ],
+          "fragments": [
+            "DOC-01#F011"
+          ]
+        },
+        {
+          "id": "CAP-005",
+          "name": "rapidez de la aplicación",
+          "description": "La aplicación tiene que ser rápida.",
+          "kind": "quality",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F010"
+          ]
+        },
+        {
+          "id": "CAP-006",
+          "name": "navegadores compatibles",
+          "description": "La aplicación tiene que funcionar en Chrome y Edge.",
+          "kind": "constraint",
+          "actors": [],
+          "fragments": [
+            "DOC-01#F012"
+          ]
+        }
+      ],
+      "discarded_statements": [
+        {
+          "fragment": "DOC-01#F001",
+          "reason": "business_goal",
+          "note": "Objetivo de negocio no verificable como comportamiento del sistema."
+        },
+        {
+          "fragment": "DOC-01#F014",
+          "reason": "human_activity",
+          "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
+        }
+      ],
+      "discarded_sections": [
+        {
+          "section": "§5",
+          "reason": "design_detail"
+        },
+        {
+          "section": "§6",
+          "reason": "project_note"
+        }
+      ],
+      "open_questions": [
+        {
+          "id": "QI-001",
+          "type": "scope",
+          "question": "¿Entra la integración con Outlook en el alcance de esta versión?",
+          "related_capabilities": [
+            "CAP-001"
+          ],
+          "source_trace": [
+            {
+              "fragment": "DOC-01#F013",
+              "quote": "En una versión futura, el sistema se integrará con Outlook"
+            }
+          ]
+        }
+      ],
+      "verdict": {
+        "status": "complete",
+        "issues": [],
+        "unprocessed_fragments": []
+      }
+    },
+    "ids": {
+      "F1": "CAP-001",
+      "CAP-002": "CAP-002",
+      "CAP-003": "CAP-003",
+      "CAP-004": "CAP-004",
+      "CAP-005": "CAP-005",
+      "CAP-006": "CAP-006",
+      "P1": "QI-001"
+    },
+    "metrics": {
+      "funcionalidades": 6,
+      "por_kind": {
+        "functional": 4,
+        "integration": 0,
+        "quality": 1,
+        "constraint": 1
+      },
+      "fragmentos_por_funcionalidad": 2.83,
+      "preguntas": 1,
+      "preguntas_rechazadas": 0,
+      "preguntas_por_tipo": {
+        "scope": 1,
+        "contradiction": 0,
+        "ambiguity": 0,
+        "missing_actor": 0
+      },
+      "descartes": 2,
+      "secciones_descartadas": 2,
+      "fragmentos_asignados": "15/21",
+      "citas_literales": "1/1",
+      "posibles_repeticiones": 0,
+      "correcciones": 1
+    }
+  }
+}

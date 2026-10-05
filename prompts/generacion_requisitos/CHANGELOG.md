@@ -1,5 +1,144 @@
 # Cambios del prompt de generación de requisitos
 
+## v2 (2026-10-05)
+
+Cambio de proceso, no solo de prompt. La v1.4 (05-10-2026, documento técnico interno) dio 255 y 214 requisitos y 118 y 86 preguntas, con la misma operación repetida hasta 6 y 7 veces por modelo: el límite era el trabajo por lotes de secciones, en el que ningún lote ve a los demás. La v2 genera el catálogo **de arriba abajo**, en dos fases: primero un inventario global de funcionalidades con el documento entero y después los requisitos de cada funcionalidad, cada una en un solo lote. No se fija un número de requisitos ni de preguntas: el catálogo tiene que estar completo, sin repeticiones y con solo lo que es requisito. La propuesta está en `docs/propuesta-catalogo-v2.md` y la evidencia en `docs/evolucion-prompt-requisitos.md`. Los prompts, los anexos, los esquemas y los ejemplos se redactaron en el proyecto de Claude.
+
+**Carpeta**
+- Nuevos `prompt_inventario_v2.md`, `anexo_reparacion_inventario_v2.md`, `prompt_requisitos_v2.md`, `anexo_reparacion_requisitos_v2.md`, `inventory_v2.schema.json` y `requirements_v2.schema.json`.
+- `ejemplo/` (ReservaSalas, `es`): nuevos `fuentes_v2/DOC-01.txt` y `fragmentos_v2.json`, con los 14 fragmentos de la v1.3 idénticos y 7 más. Los nuevos son una matriz de permisos, una sección de backend, una de deuda técnica y un resumen, para que el ejemplo tenga una función descrita en varios sitios. También `inventario_ejemplo_v2.json` y `catalogo_ejemplo_v2.json`.
+- `ejemplo_en/` (LibraryLoan, `en`): `inventario_ejemplo_v2.json` y `catalogo_ejemplo_v2.json` sobre el `fragmentos.json` actual.
+- No cambian `fragmentos.json` ni los ejemplos v1.3, que usa `test_validador.py`. Los ficheros v1.4 se mantienen mientras la plataforma ejecute la v1.4.
+
+**Fase 1: prompt de inventario (nuevo)**
+- **Entradas:** el documento **entero** (todos los fragmentos), el índice, el glosario y las dudas resueltas. Estas dos no estaban en la propuesta. Sin las dudas, el inventario volvería a preguntar lo contestado en la fase de dudas iniciales.
+- **Nivel:** una funcionalidad es lo que un usuario o un sistema externo reconocería como una función del producto, como en la v1.4. No son funcionalidades propias, sino fragmentos de la suya:
+  - otro actor que hace lo mismo;
+  - un dato, un límite, un mensaje o un error;
+  - una variante por condición o estado;
+  - la calidad exigida a esa función;
+  - la misma función descrita en otra sección.
+- **Unión de repeticiones:** la misma función descrita en el resumen, los permisos, la pantalla, el backend, la API o un anexo es una sola, con todos sus fragmentos. Un fragmento puede pertenecer a varias funcionalidades.
+- **`kind`**, con `description` y `actors`:
+  - `functional` e `integration`: su `name` va en infinitivo;
+  - `quality`: un atributo de calidad del sistema en su conjunto, o de una función que no está en el inventario; una por atributo;
+  - `constraint`: arquitectura, entorno o tecnología impuestos, o normativa; una por tema;
+  - en `quality` y `constraint`, el `name` es un sustantivo y `actors` va vacío.
+  - La calidad exigida a una función concreta va en los fragmentos de esa función, no en una `quality`, para que no se escriba dos veces.
+- **Descartes:** aquí pasan los motivos de la v1.3, la observabilidad, `project_note` y el descarte por sección de la v1.4.
+  - Un descarte es siempre del fragmento **entero** (sin `quote`): la parte de un fragmento útil que explica cómo está hecho el sistema simplemente no se cita en la fase 2.
+  - Un fragmento técnico que solo repite algo ya asignado se descarta; si añade algo observable, se asigna.
+- **Preguntas, solo globales:** las que afectan al alcance o a más de una funcionalidad. Tipos `scope`, `contradiction`, `ambiguity` y `missing_actor` (la propuesta solo pedía las dos primeras). Ids `QI-…`. Ninguna pregunta sobre una sola funcionalidad ni "¿qué pasa si falla?".
+- **Salida:** `output/inventario.json`, con una sola escritura, y la línea de veredicto de siempre.
+- **Anexo:** C10 (fragmentos sin tratar, comprobando antes que no son una funcionalidad ya inventariada), IDS y C6.
+
+**Fase 2: prompt de requisitos (a partir de la v1.4)**
+- **Más corto:** 30.630 bytes, frente a 32.217 (−5 %).
+  - Pierde el inventario (§5), los descartes y `discarded_sections`, N4, la autoverificación y `self_check`.
+  - Gana las entradas nuevas, los tipos por `kind`, las objeciones y las reglas de preguntas.
+- **Entradas nuevas:**
+  - `{{INVENTARIO}}`: todas las funcionalidades, solo ids, `kind` y nombres, para no invadir las de otros lotes.
+  - `{{PREGUNTAS_INVENTARIO}}`.
+  - `{{FUNCIONALIDADES}}`: las del lote, con actores y descripción.
+  - En `{{DOCUMENTACION}}`, cada fragmento lleva el atributo `caps` con sus funcionalidades del lote.
+- **Tipos por `kind`:**
+  - `functional` e `integration` necesitan un `RF` o `RI` y admiten `RNF` para su calidad;
+  - `quality` necesita un `RNF`;
+  - `constraint` necesita un `RA`, `RT` o `RNF` de normativa.
+  - El mapeo de la propuesta no recogía la normativa (D2) ni la calidad de una función concreta.
+- **Unidad:** las reglas U se renumeran de U1 a U8.
+  - U0 desaparece: la cobertura la garantiza el inventario.
+  - **U2:** un requisito por comportamiento distinto, y no más (el principal, las variantes que cambian la respuesta y la calidad exigida).
+  - **U4 cambia respecto a la v1.4:** actores distintos que hacen lo mismo son **un** requisito. La respuesta nombra a los actores como la fuente y los permisos que difieren van en `[RULE]`. En la v1.4 eran requisitos distintos, y LUNA partía los permisos en un requisito por rol.
+  - Los errores siguen siendo `[ERROR]` (U7).
+- **Fragmentos compartidos:** de un fragmento que pertenece a varias funcionalidades solo se escribe lo que toca al lote.
+- **Objeciones** (`capability_objections`, `duplicate` | `not_a_requirement` | `future`): si el inventario se equivocó, la fase 2 lo declara en vez de forzar un requisito. No estaba en la propuesta. Sin esto, C20 obligaba a escribir algo para cada funcionalidad: el "sacar algo de cada trozo" de la v1.x, ahora por funcionalidad.
+- **Preguntas:**
+  - solo las que bloquean;
+  - una por duda;
+  - sin repetir las `QI-…` ni las dudas resueltas; un requisito puede enlazar una `QI-…` en `open_question_ids`;
+  - sin `missing_error_handling`;
+  - ante la duda, ninguna, salvo la `missing_value` obligatoria de N3.
+- **Se conserva:**
+  - EARS y MASTeR con slots y frase generada por la plataforma;
+  - el árbol D1–D5, R-a a R-h y la obligatoriedad;
+  - N1–N3 y N5–N7 (se mantienen los códigos; N4 se retira);
+  - las citas literales, los tipos y los criterios etiquetados;
+  - una sola escritura;
+  - la independencia: no se menciona al otro modelo ni al árbitro, y se habla de "el inventario" sin decir de dónde viene, para que valga igual si algún día el árbitro fusiona los inventarios.
+- **Anexo:** sin C10 ni edición del inventario. Ante un C20, se escribe el requisito o, si de verdad no lo hay, una objeción.
+
+**Esquemas 2.0**
+- `inventory_v2.schema.json`:
+  - `capabilities` (`id`, `name`, `description` ≤ 200, `kind`, `actors`, `fragments` con al menos uno);
+  - `discarded_statements` sin `quote`, `discarded_sections` y `open_questions` (`QI-…`, cuatro tipos, `related_capabilities`);
+  - `verdict` (`status`, `issues`, `unprocessed_fragments`).
+- `requirements_v2.schema.json`: el 1.3, con estos cambios:
+  - sin `capabilities`, `discarded_statements`, `discarded_sections` ni `verdict.self_check`;
+  - nuevo `capability_objections`; `duplicate_of` es obligatorio si y solo si `reason` es `duplicate`;
+  - pregunta sin `missing_error_handling`;
+  - `verdict.uncovered_capabilities` sustituye a `unprocessed_fragments`.
+- Como en la 1.3, `capability_ids` no lleva `minItems` en el esquema: un requisito sin funcionalidad es el aviso C21, no un rechazo.
+
+**Validador: comprobaciones nuevas o cambiadas.** Se cambian a la vez el validador de referencia en Python y su port en C#; `test_validador.py` necesita mutaciones para cada una.
+
+*Inventario (nuevo: `validar_inventario.py` y su port):*
+- **SCHEMA:** un fallo en la raíz es error del inventario y provoca la reparación. Un elemento que no cumple el esquema se ignora con aviso; sus fragmentos quedan sin tratar y los recoge C10.
+- **IDS (error del inventario):** `CAP-…` o `QI-…` repetidos. Las referencias de `related_capabilities` a ids inexistentes y los fragmentos que no existen se quitan (`FIX`).
+- **C10 de la fase 1 (error del inventario, umbral 0):** cada fragmento `DOC-…` está en una funcionalidad, en un descarte, en una sección descartada o en la cita de una pregunta. Cualquier fragmento sin tratar provoca la reparación, no a partir del 10 % como en la v1.x: en la v2, un fragmento sin asignar no llega a ningún lote. Lo que quede tras la reparación se lista en el informe. Las `DUDAS#…` no cuentan.
+- **C6:** citas de las preguntas (igual que hoy).
+- **Exclusividad (`FIX`, lógica de la v1.4):**
+  - un fragmento que está en una funcionalidad y en un descarte pierde el descarte;
+  - una sección descartada con algún fragmento asignado se sustituye por descartes enteros de sus demás fragmentos.
+- **REP (aviso):** posible repetición, cuando dos funcionalidades tienen un Jaccard de fragmentos ≥ 0,5 o nombres normalizados muy parecidos. No cuentan los fragmentos que comparten 3 funcionalidades o más (resúmenes, matrices). Los umbrales son iniciales y hay que calibrarlos.
+- **KIND (aviso):** `actors` no vacío en una `quality` o `constraint`.
+- **VERDICT:** `partial` si y solo si `unprocessed_fragments` no está vacío.
+- **Normalizador:** renumera `CAP-` y `QI-` en orden; desde aquí son fijos.
+
+*Requisitos (`validar_catalogo.py` pasa a la v2):*
+- **Entradas nuevas:** el inventario normalizado y los ids de las funcionalidades del lote (parámetros nuevos).
+- **C10 desaparece en esta fase:** la cobertura de fragmentos es de la fase 1.
+- **C23 (aviso nuevo):** un fragmento del lote que no cita ningún requisito ni pregunta. Mide la pérdida de detalle sin obligar a citarlo.
+- **C20 generalizado (reparación):** cada funcionalidad del lote sin objeción tiene al menos un requisito aceptado del tipo que exige su `kind`. Hoy solo cuenta `RF`/`RI` (`FUNCTIONAL_TYPES`), así que saltaría en toda `quality` y `constraint`. Los ejemplos v2, pasados por el validador v1.3, lo confirman: su único fallo es C20 en esas funcionalidades.
+- **C21 (aviso), ahora para todos los tipos.** El normalizador rellena `capability_ids` cuando el lote tiene una sola funcionalidad y quita las que no son del lote (`FIX`).
+- **C24 (aviso nuevo):** el tipo del requisito no lo admite el `kind` de su funcionalidad.
+- **Objeciones** (`OBJECTION[n]`):
+  - `capability_id` debe ser del lote, y `duplicate_of` debe existir en el inventario y ser distinto; si no, se ignora la objeción con aviso;
+  - **C25 (aviso nuevo):** un requisito vinculado a una funcionalidad objetada;
+  - las objeciones se listan en el informe.
+- **Referencias:** las `QI-…` del inventario son válidas en `open_question_ids`; el normalizador no las quita como ids desconocidos.
+- **Retirados:** `SELF_CHECK`, la métrica `autoverificacion_coincide` y las correcciones de descartes, que pasan al validador del inventario. `missing_error_handling` lo rechaza ya el esquema.
+- **VERDICT:** `partial` si y solo si `uncovered_capabilities` no está vacío.
+- **Informe nuevo, en sustitución de N4:** las funcionalidades `functional` e `integration` sin ningún criterio `[ERROR]` en sus requisitos aceptados. Es una lista, no preguntas.
+
+*Unión (`CatalogMerger`):*
+- No renumera `CAP-…`. El catálogo final incluye las funcionalidades y los descartes del inventario.
+- **Preguntas:** une las `QI-…` del inventario y las `Q-…` de los lotes, y renumera todas como `Q-…`.
+  - Fusiona las del mismo tipo con texto idéntico tras normalizar (`FIX`), una red de seguridad: en la v1.4, unas 15 preguntas de LUNA eran iguales salvo el requisito.
+  - Las ordena por tipo: `contradiction`, `scope`, `missing_value`, `ambiguity`, `missing_actor`. No se recorta ninguna.
+- Quita los `domain_terms` repetidos.
+
+**Plataforma (fuera del validador)**
+- **Runner:** una llamada de fase 1 por modelo, con `output/inventario.json` y una reparación. Hay que vigilar el tope de salida (64.000) y la inactividad en LUNA.
+- **Tamaño de la entrada:** las etiquetas `<f id=… sec=…>` añaden unos 7.000 tokens a los 25.000–30.000 del documento grande. Sigue cabiendo en 128.000.
+- **`LotPlanner`:** agrupa las funcionalidades por salida estimada; cada una va a un único lote. La estimación hay que calibrarla.
+- **`PromptBuilder` y `fragmentar.py`:**
+  - marcadores `{{INVENTARIO}}`, `{{PREGUNTAS_INVENTARIO}}`, `{{FUNCIONALIDADES}}` e `{{INVENTARIO_PREVIO}}`;
+  - atributo `caps` en el bloque de documentación de la fase 2.
+- **Versiones:** registrar `inv-2.0` y `req-2.0`.
+- **Pendientes de la v1.4 que siguen valiendo:**
+  - validar el catálogo o el inventario aunque el modelo se declare `bloqueada`;
+  - generar el informe de métricas automáticamente;
+  - diagnosticar por qué LUNA tarda más.
+
+**Comprobación de los ejemplos (05-10-2026)**
+- Los cuatro JSON cumplen sus esquemas v2.
+- C10 de la fase 1: 0 fragmentos sin tratar y ninguno asignado y descartado a la vez.
+- C23: ningún fragmento sin citar.
+- C20 generalizado: cubierto en los dos ejemplos.
+- Validador v1.3 sobre los catálogos convertidos al formato 1.3: 0 rechazos (C2, C5, C6, C7, C12, C15, N2, N3) y frases generadas correctas. El único aviso esperado es C20 en `quality`/`constraint`, por el cambio descrito arriba.
+- El objeto `RF-001` y la tabla de fragmentos de los prompts coinciden con los ficheros de ejemplo.
+
 ## v1.4 (2026-10-05)
 
 Ajustes de la v1.3 tras su primera ejecución real (02-10-2026, SOL y LUNA, 22 lotes del documento técnico interno). La propuesta y la evidencia están en `docs/propuesta-prompt-v1.4.md` y `docs/evolucion-prompt-requisitos.md`. El prompt y el anexo se redactaron en el proyecto de Claude.

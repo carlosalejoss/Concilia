@@ -13,6 +13,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.2 | 29-09-2026 | Reglas más precisas (obligatoriedad, cifras, citas) y ejemplo en inglés | Sí | Perfecto en un documento pequeño; inservible en uno grande |
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
+| v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
 
 ## Cómo se mide
 
@@ -264,6 +265,41 @@ Ejecución del 05-10-2026 con el documento técnico y funcional interno (608 fra
 La v1.4 confirma que el límite ya no está en las reglas del prompt sino en el proceso por lotes: un lote no puede evitar repetir lo que hacen otros lotes que no ve, ni las preguntas pueden tener un tope si cada lote abre las suyas. El autor no fija un número de requisitos ni de preguntas: el catálogo tiene que estar completo, sin repeticiones y con solo lo que es requisito, y el tamaño sale del documento. Se pasa a la v2, de arriba abajo: `docs/propuesta-catalogo-v2.md`.
 
 Pendientes de la plataforma que siguen valiendo en la v2: validar el catálogo cuando el modelo se declara `bloqueada`, diagnosticar con datos por qué LUNA tarda más y pierde lotes, y un informe de métricas automático para no contar a mano.
+
+## v2 (05-10-2026)
+
+Cambio de proceso, no solo de prompt. Propuesta en `docs/propuesta-catalogo-v2.md`; los prompts, los anexos, los esquemas 2.0 y los ejemplos los redactó el autor en el proyecto de Claude, y su detalle está en la entrada v2 de `prompts/generacion_requisitos/CHANGELOG.md`.
+
+### Qué hace
+
+- **Dos fases.** Fase 1: con el documento entero, cada modelo escribe un inventario de funcionalidades (`functional`, `integration`, `quality`, `constraint`), los descartes y las preguntas globales (`QI-`). Fase 2: los requisitos de cada funcionalidad, cada una en un solo lote, con el detalle en criterios etiquetados.
+- **Sin cifras objetivo.** El catálogo tiene que estar completo (ninguna funcionalidad sin requisito), sin repeticiones y con solo lo que es requisito; el tamaño sale del documento.
+- **Actores que hacen lo mismo son un requisito** (U4); los permisos que difieren van en `[RULE]`. En la v1.4 eran requisitos distintos.
+- **Objeciones:** si el inventario se equivocó, la fase 2 lo declara (`duplicate`, `not_a_requirement`, `future`) en vez de forzar un requisito.
+- **Preguntas:** solo las que bloquean, cada duda una vez, sin `missing_error_handling`. Las funcionalidades sin criterio `[ERROR]` las lista la plataforma.
+- **El prompt de requisitos es más corto:** 30.630 bytes frente a 32.217 (−5 %).
+
+**Validador del inventario (nuevo: `validar_inventario.py` y `InventoryValidator`):**
+
+- Un elemento que no cumple el esquema se ignora con aviso; un fallo en la raíz es error del inventario.
+- **IDS:** un `CAP-` o `QI-` repetido es error. Las referencias a funcionalidades y los fragmentos que no existen se quitan (`FIX`).
+- **C10 con umbral 0:** todo fragmento de documento tiene que estar en una funcionalidad, un descarte, una sección descartada o la cita de una pregunta. En la v1.x se toleraba hasta el 10 %; en la v2 un fragmento sin asignar no llega a ningún lote.
+- **C6:** las citas de las preguntas, como en la v1.x (rechazan la pregunta).
+- **Exclusividad (`FIX`):** un fragmento asignado a una funcionalidad pierde su descarte; una sección descartada con fragmentos asignados se sustituye por descartes de los demás. Es la lógica de la v1.4, ahora entre funcionalidades y descartes.
+- **REP (aviso):** posible repetición si dos funcionalidades tienen un Jaccard de fragmentos ≥ 0,5 (sin contar los fragmentos de 3 o más funcionalidades, como un resumen o una matriz de permisos) o de palabras del nombre ≥ 0,75 (en minúsculas, sin tildes, sin artículos ni preposiciones). Umbrales iniciales, pendientes de calibrar.
+- **KIND (aviso):** una `quality` o `constraint` con actores. **VERDICT:** `failed` es error; `partial` sin fragmentos sin procesar, o al revés, es aviso.
+- **Renumeración** de `CAP-` y `QI-` en orden: desde aquí los ids son fijos.
+- Ambos ejemplos (ReservaSalas y LibraryLoan) validan sin errores ni avisos; 22 mutaciones con paridad Python/C#.
+
+**Refactor previo en C#:** las comprobaciones de cada requisito, que no cambian entre la v1.3 y la v2, pasan a `RequirementChecks`, compartido por los dos validadores. Hasta el paso 38 conviven el validador v1.3 (el que usa la plataforma) y los v2.
+
+### Resultados
+
+Pendiente: la plataforma todavía ejecuta la v1.4.
+
+### Qué hay que mejorar
+
+Pendiente de los resultados.
 
 ---
 

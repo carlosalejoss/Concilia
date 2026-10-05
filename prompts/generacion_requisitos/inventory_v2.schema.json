@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tfg/inventory_v2.schema.json",
+  "title": "Inventario de funcionalidades v2 (fase 1, salida de Modelo A / Modelo B)",
+  "$comment": "Los ids y las referencias son cadenas libres: la plataforma renumera CAP- y QI-. La cobertura de fragmentos (C10), la exclusividad entre funcionalidades y descartes, los actores de quality/constraint y las posibles repeticiones los comprueba el validador, no el esquema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "system", "language", "capabilities", "discarded_statements",
+               "discarded_sections", "open_questions", "verdict"],
+  "properties": {
+    "schema_version": { "const": "2.0" },
+    "system": { "type": "string", "minLength": 1 },
+    "language": { "enum": ["es", "en"] },
+    "capabilities": { "type": "array", "items": { "$ref": "#/$defs/capability" } },
+    "discarded_statements": { "type": "array", "items": { "$ref": "#/$defs/discarded" } },
+    "discarded_sections": { "type": "array", "items": { "$ref": "#/$defs/discarded_section" } },
+    "open_questions": { "type": "array", "items": { "$ref": "#/$defs/open_question" } },
+    "verdict": { "$ref": "#/$defs/verdict" }
+  },
+  "$defs": {
+    "nullable_string": { "type": ["string", "null"], "minLength": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "fragment_id": { "type": "string", "pattern": "^(DOC-[A-Za-z0-9_-]+#F[0-9]{3,}|DUDAS#[A-Za-z0-9_-]+)$" },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fragment", "quote"],
+      "properties": {
+        "fragment": { "$ref": "#/$defs/fragment_id" },
+        "quote": { "type": "string", "minLength": 1, "maxLength": 300 }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "description", "kind", "actors", "fragments"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "kind": { "enum": ["functional", "integration", "quality", "constraint"] },
+        "actors": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "fragments": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/fragment_id" } }
+      }
+    },
+    "discarded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fragment", "reason", "note"],
+      "properties": {
+        "fragment": { "$ref": "#/$defs/fragment_id" },
+        "reason": { "enum": ["business_goal", "context", "heading", "out_of_scope", "other_system",
+                             "human_activity", "design_detail", "project_note"] },
+        "note": { "$ref": "#/$defs/nullable_string" }
+      }
+    },
+    "discarded_section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["section", "reason"],
+      "properties": {
+        "section": { "type": "string", "minLength": 1 },
+        "reason": { "enum": ["context", "heading", "out_of_scope", "design_detail", "project_note"] }
+      }
+    },
+    "open_question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "question", "related_capabilities", "source_trace"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["scope", "contradiction", "ambiguity", "missing_actor"] },
+        "question": { "type": "string", "minLength": 1 },
+        "related_capabilities": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+        "source_trace": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/trace" } }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "issues", "unprocessed_fragments"],
+      "properties": {
+        "status": { "enum": ["complete", "partial", "failed"] },
+        "issues": { "type": "array", "items": { "type": "string" } },
+        "unprocessed_fragments": { "type": "array", "items": { "$ref": "#/$defs/fragment_id" } }
+      }
+    }
+  }
+}
