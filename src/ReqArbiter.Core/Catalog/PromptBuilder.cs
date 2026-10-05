@@ -20,7 +20,7 @@ public record CatalogPromptInput(
 public static partial class PromptBuilder
 {
     // Stored with every run, together with the SHA-256 of the assembled prompt.
-    public const string Version = "req-1.3";
+    public const string Version = "req-1.4";
 
     public static string Template { get; } = ReadResource("prompt_requisitos.md");
     public static string RepairAnnexTemplate { get; } = ReadResource("anexo_reparacion.md");

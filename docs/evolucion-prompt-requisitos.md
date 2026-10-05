@@ -11,6 +11,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1 | 28-09-2026 | Primer prompt EARS/MASTeR, respuesta en JSON | No | El validador dejaba pasar 16 tipos de error |
 | v1.1 | 29-09-2026 | Contrato con la plataforma: fragmentos, `Write`, veredicto, árbol de decisión | No | Base para ejecutar con modelos |
 | v1.2 | 29-09-2026 | Reglas más precisas (obligatoriedad, cifras, citas) y ejemplo en inglés | Sí | Perfecto en un documento pequeño; inservible en uno grande |
+| v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Pendiente | Pendiente |
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 
 ## Cómo se mide
@@ -211,6 +212,29 @@ En los ejemplos de referencia, ReservaSalas pasa de 13 a 9 requisitos y LibraryL
    - Repetir la v1.3 y medir ReservaSalas y PURE (paso 34).
    - Los requisitos rechazados por lote no se ven desde la API (están en el `informe.json` de cada ejecución); la web del paso 33 debe mostrarlos para medirlos.
 10. **Comprobaciones pendientes:** los 200 caracteres de cada criterio no los comprueba ningún código.
+
+## v1.4 (05-10-2026)
+
+Ajustes de la v1.3 tras su primera ejecución real. Propuesta y evidencia en `docs/propuesta-prompt-v1.4.md`. El prompt y el anexo los redactó el autor en el proyecto de Claude. El esquema sigue en la 1.3 y el prompt no crece (32.217 bytes, frente a 32.203).
+
+### Qué hace
+
+- **Observabilidad (§3):** un requisito describe lo que un usuario, un responsable del negocio o un sistema externo integrado puede observar, usar o exigir. Un comportamiento interno de la implementación es `design_detail`, salvo que la fuente lo imponga (`RT`/`RA`) o lo exija como atributo de calidad (`RNF`, uno por atributo). Si el índice muestra que la sección describe cómo está construido el sistema, se parte de que es `design_detail`. Responde a la mejora 1 de la v1.3.
+- **`project_note` (§3):** lo que habla del proyecto, su historia o su código es nota del proyecto aunque mencione funciones del sistema. Si el texto dice qué debe hacer el sistema y lo construido difiere, el requisito es lo que debe hacer, con una pregunta `contradiction`. Responde a la mejora 2.
+- **Nivel del inventario (§5):** una funcionalidad es lo que un usuario o un sistema externo reconocería como una función del producto (una pantalla, un proceso o una integración), con varios requisitos. Responde a la mejora 3.
+- **Descartes enteros (§3):** un fragmento del que sale algo no se descarta entero; una sección solo se descarta entera si no se cita ninguno de sus fragmentos. Responde a la mejora 5.
+- **R-h (§6):** las condiciones no empiezan por su palabra clave. Responde a la mejora 6.
+- **N4 por funcionalidad (§8):** como máximo una pregunta "¿qué pasa si falla?" por funcionalidad del inventario, y ante la duda, ninguna. Responde a la mejora 7.
+- **Una sola escritura (§2 y §10):** el catálogo se escribe con una sola llamada a `Write`, después de autoverificar. Motivo: en la ejecución de la v1.3, 8 de los 27 intentos de LUNA escribieron el catálogo más de una vez (el 36 % de lo escrito acabó sobrescrito, y un lote agotó los 10 turnos así), y 2 de 26 en SOL (6 %).
+- **Anexo:** ante un C20, una entrada del inventario que solo era un detalle o una variante se une a otra funcionalidad.
+
+### Resultados
+
+Pendiente.
+
+### Qué hay que mejorar
+
+Pendiente de los resultados.
 
 ---
 

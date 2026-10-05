@@ -16,12 +16,12 @@ public class PromptBuilderTests
         Documentation: documentation);
 
     [Fact]
-    public void Template_is_the_embedded_v1_3_prompt()
+    public void Template_is_the_embedded_v1_4_prompt()
     {
-        var file = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts", "prompt_requisitos_v1.3.md"));
+        var file = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts", "prompt_requisitos_v1.4.md"));
 
         Assert.Equal(file, PromptBuilder.Template);
-        Assert.Equal("req-1.3", PromptBuilder.Version);
+        Assert.Equal("req-1.4", PromptBuilder.Version);
     }
 
     [Fact]

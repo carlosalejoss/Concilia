@@ -23,8 +23,8 @@ Instrucciones:
 - Conserva los ids existentes. Añade lo nuevo al final, con los siguientes ids libres de su tipo.
 - **C10:** procesa los fragmentos sin tratar con §2 a §8.
 - **Requisito rechazado:** corrígelo según su código. Si el cambio afecta a la rama del árbol de §6, actualiza todos los campos que dependen de ella (tipo, notación, plantilla, slots).
-- **C20:** escribe el `RF` o `RI` que cubre esa funcionalidad, con lo que diga la fuente. Si la entrada del inventario era un error (no es una funcionalidad del sistema, o es futura), quítala y explícalo en `verdict.issues`.
+- **C20:** escribe el `RF` o `RI` que cubre esa funcionalidad, con lo que diga la fuente. Si la entrada del inventario era un error, corrígela y explícalo en `verdict.issues`: quítala si no es una funcionalidad observable del sistema (§3) o es futura, y únela a otra si solo era un detalle o una variante de ella (§5).
 - **C5** sobre una palabra que forma parte del nombre de una entidad del dominio: declárala en `domain_terms` (N7), no reescribas la fuente. Si la palabra califica algo, aplica N3.
 - **N2:** copia la cifra tal como aparece en la fuente, o cita el fragmento que la contiene. Nunca elimines una cifra que sí está en la fuente.
 - Actualiza `verdict` (`self_check` e `issues`).
-- Escribe el catálogo **completo** corregido en `output/catalogo.json` con Write y termina con la línea de veredicto de §10.
+- Escribe el catálogo **completo** corregido en `output/catalogo.json` con **una sola llamada** a Write y termina con la línea de veredicto de §10.
