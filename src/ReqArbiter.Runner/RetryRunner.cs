@@ -18,6 +18,14 @@ public record AttemptReview(RunResult Result, string? RetryPrompt);
 // missing or invalid verdict is retried: an API error, a timeout or a
 // "bloqueada" verdict would not change by asking again. The catalog task adds
 // its own review (CatalogReview).
+//
+// Apart from those retries, an attempt lost by inactivity (HeartbeatLost: no
+// output at all during HeartbeatTimeout) is repeated ONCE per task with the
+// same prompt. In the v1.3 test, three lots of one model died at the same
+// moment with no output while other attempts of the same model finished: the
+// gateway, not the prompt, was the cause. The repetition is a new linked run,
+// but it is not a retry: it does not count for maxRetries and the review gets
+// the same attempt number again (so the repair annex keeps its numbering).
 public class RetryRunner(IRunnerProvider provider, int maxRetries = RetryRunner.DefaultMaxRetries)
 {
     public const int DefaultMaxRetries = 2;
@@ -43,14 +51,24 @@ public class RetryRunner(IRunnerProvider provider, int maxRetries = RetryRunner.
         var attempts = new List<RunAttempt>();
         var request = first;
         Guid? previousRunId = null;
+        var heartbeatRepeated = false;
 
         while (true)
         {
             var result = await provider.RunAsync(request, eventsFor(request), cancellationToken);
-            var decision = review(new RunAttempt(request, result, previousRunId), attempts.Count + 1);
+            var repeats = heartbeatRepeated ? 1 : 0;
+            var decision = review(new RunAttempt(request, result, previousRunId), attempts.Count + 1 - repeats);
             attempts.Add(new RunAttempt(request, decision.Result, previousRunId));
 
-            var retries = attempts.Count - 1;
+            if (result.Status == RunStatus.HeartbeatLost && !heartbeatRepeated)
+            {
+                heartbeatRepeated = true;
+                previousRunId = request.RunId;
+                request = NextAttempt(request, request.Prompt);
+                continue;
+            }
+
+            var retries = attempts.Count - 1 - (heartbeatRepeated ? 1 : 0);
             if (decision.RetryPrompt is null || retries >= MaxRetries)
             {
                 return attempts;
