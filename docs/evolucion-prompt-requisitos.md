@@ -232,6 +232,7 @@ Cambios en la plataforma que acompañan a la v1.4 (validador de referencia en Py
 
 - **Palabra clave inicial (red de seguridad de R-h):** el normalizador quita la palabra clave del principio de `feature`, `states`, `trigger` y `condition` (si, cuando, mientras, donde, en cuanto; if, when, while, where, as soon as, as long as), sin distinguir mayúsculas y solo si la sigue un espacio. Lo anota como `FIX`. Así ya no sale «SI si la reserva dura…».
 - **Descartes enteros de lo citado (red de seguridad de §3; sustituye al aviso C17):** el normalizador quita el descarte entero (`quote` null) de un fragmento que citan un requisito o una pregunta que cumplen el esquema. Una sección descartada con algún fragmento citado se sustituye por descartes enteros de sus fragmentos no citados, con el motivo de la sección. Las dos correcciones se anotan como `FIX` en `DISCARDED[i]` y `SECTION[i]`. El aviso C17 desaparece: lo que antes se contaba como C17 se mide ahora con esos `FIX`. El §9 del prompt v1.4 aún nombra C17 como aviso; para el modelo no cambia nada.
+- **Reintento por inactividad (runner):** un lote que termina sin ninguna salida durante el tiempo de inactividad (`HeartbeatLost`) se repite una vez con el mismo prompt. En la ejecución de la v1.3, tres lotes de LUNA murieron así a la vez, a los 15 minutos, mientras otros intentos de LUNA terminaban en 17 y 23 minutos: la causa era la pasarela, no el prompt. No cuenta como reparación.
 
 ### Resultados
 

@@ -25,6 +25,8 @@ public class RetryRunnerTests
     private static readonly RunResult NoVerdict = new() { Status = RunStatus.Failed, VerdictError = "No se ha encontrado ninguna línea." };
     private static readonly RunResult Blocked = new() { Status = RunStatus.Blocked, Verdict = new Verdict(VerdictState.Blocked, "x") };
     private static readonly RunResult ApiError = new() { Status = RunStatus.Failed, IsError = true, ErrorMessage = "403" };
+    private static readonly RunResult TimedOut = new() { Status = RunStatus.TimedOut };
+    private static readonly RunResult HeartbeatLost = new() { Status = RunStatus.HeartbeatLost };
 
     private static RunRequest FirstRequest(string root)
     {
@@ -88,7 +90,56 @@ public class RetryRunnerTests
         Assert.Single(attempts);
     }
 
-    public static TheoryData<RunResult> NotRetried => [Done, Blocked, ApiError];
+    public static TheoryData<RunResult> NotRetried => [Done, Blocked, ApiError, TimedOut];
+
+    [Fact]
+    public async Task A_heartbeat_loss_is_repeated_once_with_the_same_prompt()
+    {
+        using var temp = new TempDirectory();
+        var first = FirstRequest(temp.Path);
+
+        var attempts = await new RetryRunner(new ScriptedProvider(HeartbeatLost, Done)).RunAsync(
+            first, _ => _ => { }, CancellationToken.None);
+
+        Assert.Equal(2, attempts.Count);
+        Assert.Equal(RunStatus.HeartbeatLost, attempts[0].Result.Status);
+        Assert.Equal(first.RunId, attempts[1].PreviousRunId);
+        Assert.Equal(first.Prompt, attempts[1].Request.Prompt);
+        Assert.Equal(RunStatus.Done, attempts[1].Result.Status);
+    }
+
+    [Fact]
+    public async Task A_second_heartbeat_loss_is_not_repeated()
+    {
+        using var temp = new TempDirectory();
+
+        var attempts = await new RetryRunner(new ScriptedProvider(HeartbeatLost, NoVerdict, HeartbeatLost, Done)).RunAsync(
+            FirstRequest(temp.Path), _ => _ => { }, CancellationToken.None);
+
+        Assert.Equal(3, attempts.Count);
+        Assert.Equal(RunStatus.HeartbeatLost, attempts[^1].Result.Status);
+    }
+
+    [Fact]
+    public async Task The_heartbeat_repetition_does_not_count_as_a_retry()
+    {
+        using var temp = new TempDirectory();
+        var numbers = new List<int>();
+
+        var attempts = await new RetryRunner(new ScriptedProvider(HeartbeatLost, NoVerdict, Done), maxRetries: 1).RunAsync(
+            FirstRequest(temp.Path),
+            _ => _ => { },
+            (attempt, number) =>
+            {
+                numbers.Add(number);
+                return RetryRunner.ReviewVerdict(attempt);
+            },
+            CancellationToken.None);
+
+        Assert.Equal(3, attempts.Count);
+        Assert.Equal(RunStatus.Done, attempts[^1].Result.Status);
+        Assert.Equal([1, 1, 2], numbers);
+    }
 
     [Fact]
     public async Task Each_attempt_gets_its_own_event_stream()
