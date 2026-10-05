@@ -168,7 +168,7 @@
         "states": [],
         "trigger": null,
         "trigger_keyword": null,
-        "response": "no permitir a los empleados añadir catering"
+        "response": "permitir a los empleados añadir catering a una reserva"
       },
       "acceptance_criteria": [],
       "origin": "explicit",
@@ -205,7 +205,7 @@
         ],
         "trigger": "un empleado intente reservar una sala",
         "trigger_keyword": "WHEN",
-        "response": "mostrar al empleado un aviso si procede"
+        "response": "mostrar al empleado un aviso de día festivo"
       },
       "acceptance_criteria": [],
       "origin": "explicit",
@@ -250,9 +250,7 @@
     {
       "id": "RF-006",
       "type": "RF",
-      "capability_ids": [
-        "CAP-005"
-      ],
+      "capability_ids": [],
       "source_trace": [
         {
           "fragment": "DOC-01#F009",
