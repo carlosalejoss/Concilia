@@ -334,15 +334,6 @@
   },
   {
     "file": "case-38.json",
-    "name": "fragmento descartado entero y citado por un requisito",
-    "example": "ejemplo",
-    "sistema": "el sistema ReservaSalas",
-    "kind": "warning",
-    "target": "RF-002",
-    "expected_code": "C17"
-  },
-  {
-    "file": "case-39.json",
     "name": "criterio sin etiqueta",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -351,7 +342,7 @@
     "expected_code": "C19"
   },
   {
-    "file": "case-40.json",
+    "file": "case-39.json",
     "name": "criterio que empieza por una palabra que es etiqueta, sin corchetes",
     "example": "ejemplo_en",
     "sistema": "the LibraryLoan system",
@@ -360,7 +351,7 @@
     "expected_code": "C19"
   },
   {
-    "file": "case-41.json",
+    "file": "case-40.json",
     "name": "RF sin capability_ids (su funcionalidad la cubre otro)",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -369,7 +360,7 @@
     "expected_code": "C21"
   },
   {
-    "file": "case-42.json",
+    "file": "case-41.json",
     "name": "verbo paraguas sin criterios [OPERATION]",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -378,7 +369,7 @@
     "expected_code": "C22"
   },
   {
-    "file": "case-43.json",
+    "file": "case-42.json",
     "name": "pregunta de ambigüedad sin requisitos relacionados",
     "example": "ejemplo_en",
     "sistema": "the LibraryLoan system",
@@ -387,7 +378,7 @@
     "expected_code": "C11"
   },
   {
-    "file": "case-44.json",
+    "file": "case-43.json",
     "name": "un fragmento sin tratar (no llega al 10 %)",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -396,7 +387,7 @@
     "expected_code": "C10"
   },
   {
-    "file": "case-45.json",
+    "file": "case-44.json",
     "name": "autoverificación que no coincide con el validador",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -405,7 +396,7 @@
     "expected_code": "SELF_CHECK"
   },
   {
-    "file": "case-46.json",
+    "file": "case-45.json",
     "name": "status complete con fragmentos sin procesar",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -414,7 +405,7 @@
     "expected_code": "VERDICT"
   },
   {
-    "file": "case-47.json",
+    "file": "case-46.json",
     "name": "sección descartada que no está en el lote",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -423,7 +414,7 @@
     "expected_code": "C10"
   },
   {
-    "file": "case-48.json",
+    "file": "case-47.json",
     "name": "ids con otro formato: se renumeran por tipo",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -432,7 +423,7 @@
     "expected_code": "FIX"
   },
   {
-    "file": "case-49.json",
+    "file": "case-48.json",
     "name": "vínculo declarado en un solo sentido",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -441,7 +432,7 @@
     "expected_code": "FIX"
   },
   {
-    "file": "case-50.json",
+    "file": "case-49.json",
     "name": "slot terminado en punto",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -450,7 +441,7 @@
     "expected_code": "FIX"
   },
   {
-    "file": "case-51.json",
+    "file": "case-50.json",
     "name": "slots.system distinto del nombre del sistema",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -459,7 +450,7 @@
     "expected_code": "FIX"
   },
   {
-    "file": "case-52.json",
+    "file": "case-51.json",
     "name": "cita en el fragmento equivocado: se corrige el id",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -468,7 +459,7 @@
     "expected_code": "FIX"
   },
   {
-    "file": "case-53.json",
+    "file": "case-52.json",
     "name": "cita repetida",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -477,7 +468,7 @@
     "expected_code": "FIX"
   },
   {
-    "file": "case-54.json",
+    "file": "case-53.json",
     "name": "etiqueta de criterio en minúsculas y con dos puntos",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -486,7 +477,7 @@
     "expected_code": "FIX"
   },
   {
-    "file": "case-55.json",
+    "file": "case-54.json",
     "name": "referencia a una pregunta inexistente",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -495,7 +486,7 @@
     "expected_code": "FIX"
   },
   {
-    "file": "case-56.json",
+    "file": "case-55.json",
     "name": "condition que empieza por su palabra clave (R-h)",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -504,7 +495,7 @@
     "expected_code": "FIX"
   },
   {
-    "file": "case-57.json",
+    "file": "case-56.json",
     "name": "states y trigger que empiezan por su palabra clave (R-h)",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -513,8 +504,17 @@
     "expected_code": "FIX"
   },
   {
+    "file": "case-57.json",
+    "name": "fragmento descartado entero y citado por un requisito: se quita el descarte",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
     "file": "case-58.json",
-    "name": "funcionalidad con un fragmento fuera del lote",
+    "name": "sección descartada entera con fragmentos citados: descartes de los no citados",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
     "kind": "fix",
@@ -523,6 +523,15 @@
   },
   {
     "file": "case-59.json",
+    "name": "funcionalidad con un fragmento fuera del lote",
+    "example": "ejemplo",
+    "sistema": "el sistema ReservaSalas",
+    "kind": "fix",
+    "target": null,
+    "expected_code": "FIX"
+  },
+  {
+    "file": "case-60.json",
     "name": "cita con comillas de código y mayúsculas distintas",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -531,7 +540,7 @@
     "expected_code": null
   },
   {
-    "file": "case-60.json",
+    "file": "case-61.json",
     "name": "funcionalidad del inventario sin requisito (C20)",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -540,7 +549,7 @@
     "expected_code": "C20"
   },
   {
-    "file": "case-61.json",
+    "file": "case-62.json",
     "name": "funcionalidad cubierta solo por un RNF (C20)",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -549,7 +558,7 @@
     "expected_code": "C20"
   },
   {
-    "file": "case-62.json",
+    "file": "case-63.json",
     "name": "más del 20 % de los requisitos rechazados",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",
@@ -558,7 +567,7 @@
     "expected_code": "C15"
   },
   {
-    "file": "case-63.json",
+    "file": "case-64.json",
     "name": "un solo rechazo (11 %) no pide reparación",
     "example": "ejemplo",
     "sistema": "el sistema ReservaSalas",

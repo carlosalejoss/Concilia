@@ -168,7 +168,7 @@
         "states": [],
         "trigger": null,
         "trigger_keyword": null,
-        "response": "permitir a los empleados añadir catering a una reserva"
+        "response": "no permitir a los empleados añadir catering"
       },
       "acceptance_criteria": [],
       "origin": "explicit",

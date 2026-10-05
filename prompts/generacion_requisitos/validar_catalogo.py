@@ -19,8 +19,9 @@ Qué hace, en orden:
    pregunta rechaza ese elemento; dentro de otro elemento (funcionalidad, descarte, término), se ignora
    ese elemento con un aviso.
 2. Normalizador: corrige lo mecánico y lo anota como aviso FIX (puntuación final de los slots,
-   palabra clave al principio de feature, states, trigger y condition, slots.system, etiquetas de los criterios, citas con el fragmento equivocado o repetidas, vínculos en un
-   solo sentido, referencias a ids que no existen).
+   palabra clave al principio de feature, states, trigger y condition, slots.system, etiquetas de los
+   criterios, citas con el fragmento equivocado o repetidas, vínculos en un solo sentido, referencias a
+   ids que no existen, descartes enteros de fragmentos que se citan).
 3. Comprobaciones por elemento. Un error rechaza el requisito o la pregunta; un aviso no hace nada.
 4. Renumeración por tipo (RF-001, RNF-001…, Q-001, CAP-001) del catálogo aceptado.
 5. Comprobaciones del lote: C10 (cobertura de fragmentos), C20 (funcionalidades sin requisito) y veredicto.
@@ -166,7 +167,7 @@ EARS_SHAPE = {  # patrón -> (feature, states, trigger) presentes
 CATEGORY = {"SCHEMA": "sintaxis", "C2": "sintaxis", "C14": "sintaxis",
             "C5": "redaccion", "C15": "redaccion", "C19": "redaccion", "C22": "redaccion",
             "C7": "decision", "C12": "decision",
-            "C6": "trazabilidad", "C13": "trazabilidad", "C16": "trazabilidad", "C17": "trazabilidad",
+            "C6": "trazabilidad", "C13": "trazabilidad", "C16": "trazabilidad",
             "N3": "referencias", "C21": "referencias",
             "N2": "fidelidad"}
 
@@ -530,21 +531,43 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
                 linked.append(e["id"])
                 fix(rid, f"vínculo con {e['id']} completado")
 
-    # --- 3. Comprobaciones por elemento -------------------------------------------------------------
-    whole_discards = {d["fragment"] for d in c["discarded_statements"] if d["quote"] is None}
-    sections = c["discarded_sections"]
+    # Descartes enteros de fragmentos que se citan (§3: de un fragmento del que sale algo no se descarta
+    # todo). Cuentan las citas de los requisitos y preguntas que cumplen el esquema. El descarte entero
+    # (quote null) se quita. Una sección con algún fragmento citado se sustituye por descartes enteros de
+    # sus fragmentos no citados, con el motivo de la sección (sin repetir los que ya tienen un descarte).
+    cited = {t["fragment"] for e in valid_reqs + valid_qs for t in e["item"]["source_trace"]}
+    kept = []
+    for i, d in enumerate(c["discarded_statements"]):
+        if d["quote"] is None and d["fragment"] in cited:
+            fix(f"DISCARDED[{i}]", f"descarte entero de {d['fragment']} quitado: el fragmento se cita")
+        else:
+            kept.append(d)
+    c["discarded_statements"] = kept
+    if fragments is not None:
+        kept = []
+        for i, d in enumerate(c["discarded_sections"]):
+            inside = [fid for fid in doc_frag_ids if in_section(lot_frags[fid]["section"], d["section"])]
+            cited_inside = [fid for fid in inside if fid in cited]
+            if not cited_inside:
+                kept.append(d)
+                continue
+            already = {x["fragment"] for x in c["discarded_statements"]}
+            added = [fid for fid in inside if fid not in cited and fid not in already]
+            c["discarded_statements"] += [{"fragment": fid, "quote": None, "reason": d["reason"], "note": None}
+                                          for fid in added]
+            fix(f"SECTION[{i}]", f"sección '{d['section']}' sustituida por descartes enteros de "
+                                 f"{', '.join(added) or 'ningún fragmento'}: se citan {', '.join(cited_inside)}")
+        c["discarded_sections"] = kept
 
-    def discarded_whole(fid: str) -> bool:
-        frag = lot_frags.get(fid)
-        return fid in whole_discards or (frag is not None and any(in_section(frag["section"], d["section"])
-                                                                  for d in sections))
+    # --- 3. Comprobaciones por elemento -------------------------------------------------------------
+    sections = c["discarded_sections"]
 
     found = {"quotes": True, "figures": True, "fragments": True, "vague": True, "ears_shall": True, "tree": True,
              "capabilities": True}
     trace_total, trace_ok = 0, 0
 
     def check_trace(t: dict) -> list[str]:
-        """C6 (rechazo) y C17 (aviso) de una cita ya normalizada."""
+        """C6 (rechazo) de una cita ya normalizada."""
         nonlocal trace_total, trace_ok
         problems = []
         if fragments is None:
@@ -567,8 +590,6 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
     for e in valid_qs:
         for t in e["item"]["source_trace"]:
             e["errors"] += check_trace(t)
-            if discarded_whole(t["fragment"]):
-                e["warnings"].append(f"C17 cita {t['fragment']}, que está descartado entero")
 
     texts_by_entry = {}
     for e in valid_reqs:
@@ -645,11 +666,9 @@ def check(cat, sistema: str, fragments: dict | None, schema: dict) -> dict:
         if tree:
             found["tree"] = False
             errs += tree
-        # C6 citas y C17
+        # C6 citas
         for t in r["source_trace"]:
             errs += check_trace(t)
-            if discarded_whole(t["fragment"]):
-                warns.append(f"C17 cita {t['fragment']}, que está descartado entero")
         if fragments is not None:
             cited = [lot_frags[t["fragment"]] for t in r["source_trace"] if t["fragment"] in lot_frags]
             # C13 evidencia de obligatoriedad (aviso)

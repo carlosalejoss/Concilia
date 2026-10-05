@@ -231,6 +231,7 @@ Ajustes de la v1.3 tras su primera ejecución real. Propuesta y evidencia en `do
 Cambios en la plataforma que acompañan a la v1.4 (validador de referencia en Python y su port en C#):
 
 - **Palabra clave inicial (red de seguridad de R-h):** el normalizador quita la palabra clave del principio de `feature`, `states`, `trigger` y `condition` (si, cuando, mientras, donde, en cuanto; if, when, while, where, as soon as, as long as), sin distinguir mayúsculas y solo si la sigue un espacio. Lo anota como `FIX`. Así ya no sale «SI si la reserva dura…».
+- **Descartes enteros de lo citado (red de seguridad de §3; sustituye al aviso C17):** el normalizador quita el descarte entero (`quote` null) de un fragmento que citan un requisito o una pregunta que cumplen el esquema. Una sección descartada con algún fragmento citado se sustituye por descartes enteros de sus fragmentos no citados, con el motivo de la sección. Las dos correcciones se anotan como `FIX` en `DISCARDED[i]` y `SECTION[i]`. El aviso C17 desaparece: lo que antes se contaba como C17 se mide ahora con esos `FIX`. El §9 del prompt v1.4 aún nombra C17 como aviso; para el modelo no cambia nada.
 
 ### Resultados
 

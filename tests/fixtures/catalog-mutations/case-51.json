@@ -111,7 +111,7 @@
       ],
       "source_trace": [
         {
-          "fragment": "DOC-01#F003",
+          "fragment": "DOC-01#F012",
           "quote": "Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto"
         }
       ],
@@ -126,7 +126,7 @@
       "master_condition": null,
       "escalation_fallback": null,
       "slots": {
-        "system": "la aplicación",
+        "system": "el sistema ReservaSalas",
         "feature": null,
         "states": [],
         "trigger": "el empleado confirme una reserva",

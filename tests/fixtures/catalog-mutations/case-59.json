@@ -11,7 +11,8 @@
         "DOC-01#F002",
         "DOC-01#F004",
         "DOC-01#F005",
-        "DOC-01#F007"
+        "DOC-01#F007",
+        "DOC-01#F099"
       ]
     },
     {
@@ -112,7 +113,7 @@
       "source_trace": [
         {
           "fragment": "DOC-01#F003",
-          "quote": "al confirmar la `reserva`, el sistema envía un correo de confirmación"
+          "quote": "Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto"
         }
       ],
       "obligation": "SHALL",

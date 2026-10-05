@@ -74,6 +74,10 @@
         {
           "fragment": "DOC-01#F005",
           "quote": "Mientras una sala esté en mantenimiento, no se podrá reservar"
+        },
+        {
+          "fragment": "DOC-01#F002",
+          "quote": "El empleado puede reservar una sala indicando fecha, hora de inicio, hora de fin y número de asistentes"
         }
       ],
       "obligation": "SHALL",
@@ -111,7 +115,7 @@
       ],
       "source_trace": [
         {
-          "fragment": "DOC-01#F012",
+          "fragment": "DOC-01#F003",
           "quote": "Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto"
         }
       ],

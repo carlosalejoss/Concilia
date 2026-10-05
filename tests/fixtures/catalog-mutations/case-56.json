@@ -201,9 +201,9 @@
         "system": "el sistema ReservaSalas",
         "feature": null,
         "states": [
-          "el modo festivo esté activado"
+          "Mientras el modo festivo esté activado"
         ],
-        "trigger": "un empleado intente reservar una sala",
+        "trigger": "cuando un empleado intente reservar una sala",
         "trigger_keyword": "WHEN",
         "response": "mostrar al empleado un aviso de día festivo"
       },
@@ -236,7 +236,7 @@
       "escalation_fallback": null,
       "slots": {
         "system": "el sistema ReservaSalas",
-        "condition": "si la reserva dura más de 4 horas y tiene más de 20 asistentes",
+        "condition": "la reserva dura más de 4 horas y tiene más de 20 asistentes",
         "actor": null,
         "process_verb": "requerir",
         "object": "la aprobación del administrador",

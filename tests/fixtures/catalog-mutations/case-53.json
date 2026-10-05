@@ -74,10 +74,6 @@
         {
           "fragment": "DOC-01#F005",
           "quote": "Mientras una sala esté en mantenimiento, no se podrá reservar"
-        },
-        {
-          "fragment": "DOC-01#F002",
-          "quote": "El empleado puede reservar una sala indicando fecha, hora de inicio, hora de fin y número de asistentes"
         }
       ],
       "obligation": "SHALL",
@@ -99,7 +95,7 @@
         "response": "permitir al empleado reservar una sala"
       },
       "acceptance_criteria": [
-        "[DATA] El empleado indica la fecha, la hora de inicio, la hora de fin y el número de asistentes.",
+        "data: El empleado indica la fecha, la hora de inicio, la hora de fin y el número de asistentes.",
         "[RULE] No se puede reservar una sala mientras esté en mantenimiento.",
         "[ERROR] Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado."
       ],

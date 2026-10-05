@@ -4,7 +4,7 @@
   "language": "es",
   "capabilities": [
     {
-      "id": "CAP-001",
+      "id": "F-1",
       "name": "reservar una sala",
       "actor": "el empleado",
       "fragments": [
@@ -57,10 +57,10 @@
   ],
   "requirements": [
     {
-      "id": "RF-001",
+      "id": "REQ-1",
       "type": "RF",
       "capability_ids": [
-        "CAP-001"
+        "F-1"
       ],
       "source_trace": [
         {
@@ -179,7 +179,7 @@
       "id": "RF-004",
       "type": "RF",
       "capability_ids": [
-        "CAP-001"
+        "F-1"
       ],
       "source_trace": [
         {
@@ -430,12 +430,7 @@
       "note": "La fuente no dice que el sistema intervenga en la revisión mensual."
     }
   ],
-  "discarded_sections": [
-    {
-      "section": "§9",
-      "reason": "project_note"
-    }
-  ],
+  "discarded_sections": [],
   "domain_terms": [],
   "verdict": {
     "status": "complete",

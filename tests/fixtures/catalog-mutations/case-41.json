@@ -92,7 +92,7 @@
         "states": [],
         "trigger": null,
         "trigger_keyword": null,
-        "response": "permitir al empleado reservar una sala"
+        "response": "permitir al empleado gestionar sus reservas"
       },
       "acceptance_criteria": [
         "[DATA] El empleado indica la fecha, la hora de inicio, la hora de fin y el número de asistentes.",
@@ -178,7 +178,9 @@
     {
       "id": "RF-004",
       "type": "RF",
-      "capability_ids": [],
+      "capability_ids": [
+        "CAP-001"
+      ],
       "source_trace": [
         {
           "fragment": "DOC-01#F007",

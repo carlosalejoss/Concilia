@@ -286,9 +286,7 @@
     {
       "id": "RNF-001",
       "type": "RNF",
-      "capability_ids": [
-        "CAP-005"
-      ],
+      "capability_ids": [],
       "source_trace": [
         {
           "fragment": "DOC-01#F010",
