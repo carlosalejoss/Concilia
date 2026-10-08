@@ -4,17 +4,17 @@ Plataforma web (TFG) que genera catálogos de requisitos (EARS/MASTeR) y backlog
 
 ## Estado
 
-Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver `docs/hito-6-catalogo-v1.3.md`); sus pasos 32–34 los sustituye el hito 7 (catálogo v2, de arriba abajo), a la espera de los prompts v2 del autor. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
+Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver `docs/hito-6-catalogo-v1.3.md`); sus pasos 32–34 los sustituye el hito 7 (catálogo v2, de arriba abajo), a la espera de los prompts v2 del autor. Desde el 08-10-2026 el hito 7 queda aplazado: la prioridad es la iteración v0 (hitos 8 a 13), el flujo completo con prompts básicos. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
 
 ## Decisiones vigentes
 
 - Stack: React 19 + TypeScript + Vite + Tailwind; .NET 10 (ASP.NET Core y EF Core); PostgreSQL; todo en Docker.
 - Patrón: cada tarea se lanza a Modelo A y Modelo B en paralelo; un Árbitro compara, pregunta al usuario si hay discrepancias graves y fusiona. Se aplica a tres fases: dudas, catálogo de requisitos y backlog.
-- Modelos: solo a través de la pasarela LiteLLM de la empresa. Ids exactos: `SS - GPT-6-SOL` y `SS - GPT-6-LUNA` (llevan prefijo y espacios). El reparto de roles es configuración.
-- Runner: proceso hijo `claude -p`, con el prompt por entrada estándar, `--output-format stream-json --verbose` y veredicto final obligatorio (`VEREDICTO: {...}`). Proveedores: `LiteLlm` y `Fake`. No existe proveedor de suscripción personal ni debe crearse.
+- Modelos: solo a través de la pasarela LiteLLM de la empresa. Excepción desde el 08-10-2026: el mockup (ver «Iteración v0»). Ids exactos: `SS - GPT-6-SOL` y `SS - GPT-6-LUNA` (llevan prefijo y espacios). El reparto de roles es configuración.
+- Runner: proceso hijo `claude -p`, con el prompt por entrada estándar, `--output-format stream-json --verbose` y veredicto final obligatorio (`VEREDICTO: {...}`). Proveedores: `LiteLlm` y `Fake`. No existe proveedor de suscripción personal ni debe crearse. (Sustituida el 08-10-2026 por decisión del autor: el mockup usa el proveedor `ClaudeSubscription`; ver «Iteración v0».)
 - Notación: EARS por defecto; MASTeR para requisitos no funcionales o complejos y para expresar obligatoriedad (shall, should, may).
-- Árbitro: el emparejamiento por embeddings se calcula fuera del LLM; el LLM explica y fusiona. La pasarela no ofrece modelos de embeddings.
-- Backlog: épica → historia → tarea por defecto; falta decidir si "feature" es un nivel propio.
+- Árbitro: el emparejamiento por embeddings se calcula fuera del LLM; el LLM explica y fusiona. La pasarela no ofrece modelos de embeddings. En la iteración v0 (08-10-2026) el árbitro trabaja solo con el LLM; los embeddings llegan en un hito posterior.
+- Backlog: épica → historia → tarea por defecto; falta decidir si "feature" es un nivel propio. (Sustituida el 08-10-2026: épica → historia → criterios de aceptación en Gherkin → tarea, sin feature.)
 - Catálogo: el modelo escribe `output/catalogo.json` con Write y termina con `VEREDICTO:`; el texto de cada requisito lo genera la plataforma a partir de los slots (D-23).
 - La documentación se divide en fragmentos con id estable (`DOC-01#F001`) y en lotes que respetan el tope de salida (D-24). Un lote agrupa secciones completas, de uno o varios documentos.
 - Ejecución de un trabajo: A y B en paralelo y, dentro de cada modelo, hasta 5 lotes a la vez (`Catalog:MaxParallelLots`; con 1, un lote detrás de otro). Sustituye a la ejecución de los lotes en orden del hito 4.
@@ -33,10 +33,16 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
 - Los scripts de `prompts/generacion_requisitos/` son la referencia del fragmentador y del validador en C#.
 - Validación de JSON Schema en C#: LateApexEarlySpeed.Json.Schema (BSD-3-Clause). Se descarta JsonSchema.Net: sus binarios exigen una cuota de mantenimiento a empresas con ingresos.
 - Ventana de los modelos (confirmada por el team leader): 128k tokens de entrada y hasta 1M de salida. El runner pasa `CLAUDE_CODE_MAX_CONTEXT_TOKENS=128000`.
+- Iteración v0 (08-10-2026, autor; detalle en `docs/plan-de-construccion.md`):
+  - Flujo completo con prompts muy básicos (`prompts/v0/`, propuestos por Claude y revisados por el autor): proyecto → archivos → rondas de preguntas → catálogo → validación → backlog → validación → mockup.
+  - Preguntas, catálogo y backlog: A ‖ B → árbitro. Árbitro `SS - GPT-6-SOL` (`RUNNER_MODEL_ARBITER`), solo LLM, con las propuestas anónimas en orden aleatorio. Sin umbral numérico de discrepancia: el árbitro marca `discrepancia` y el usuario la revisa al validar.
+  - El catálogo exige al menos una ronda terminada y ninguna pregunta pendiente. Las fases siguientes solo ven la versión validada; la salida original del árbitro se congela en `data/jobs/{id}/` solo para métricas.
+  - Mockup: un solo modelo, Claude Code con Sonnet 5.5 (`MOCKUP_MODEL`) y el token de la suscripción del autor (`CLAUDE_CODE_OAUTH_TOKEN`, de `claude setup-token`), con el proveedor `ClaudeSubscription`. Solo para uso del autor; si la aplicación la usa más gente, se cambia a una clave de API o a un modelo de la pasarela. Salida: un `.html` autocontenido con datos de prueba ficticios.
+  - Sin lotes en v0: toda la documentación va en una llamada. El texto del requisito lo escribe el modelo (no D-23).
 
 ## Decisiones abiertas (no las cierres sin preguntar)
 
-Origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro y umbral de "discrepancia grave".
+Origen de los embeddings y umbral de "discrepancia grave" (para el hito del árbitro con embeddings). La jerarquía del backlog y el modelo del árbitro los cerró el autor el 08-10-2026.
 
 ## Runner y pasarela (verificado)
 
@@ -57,6 +63,7 @@ Origen de los embeddings, jerarquía del backlog, qué modelo hace de Árbitro y
 
 - Nunca escribas claves, tokens ni direcciones internas en código, documentación, tests ni mensajes de commit. Todo va por variables de entorno; el repo solo lleva `.env.example` con nombres y sin valores.
 - No leas ni imprimas `.env` ni variables de entorno con credenciales.
+- `CLAUDE_CODE_OAUTH_TOKEN` (token de la suscripción del autor) solo llega al proceso hijo del mockup. Nunca va a un hijo de la pasarela, a logs, eventos, la base de datos ni tests. El hijo del mockup nunca recibe `ANTHROPIC_BASE_URL` ni `ANTHROPIC_AUTH_TOKEN`: este último tiene prioridad sobre el token y desviaría el mockup a la pasarela.
 - Usa solo datos ficticios o públicos (por ejemplo, el ejemplo ReservaSalas y los datasets públicos). Nunca documentos reales de la empresa, salvo autorización expresa del autor.
 
 ## Reglas de seguridad para Claude Code
