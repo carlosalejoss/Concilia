@@ -10,6 +10,9 @@ using ReqArbiter.Core.Runner;
 
 namespace ReqArbiter.Api.Questions;
 
+public record AnswerRequest(string? Answer);
+public record DiscardRequest(string? Reason);
+
 public static class QuestionEndpoints
 {
     public static void MapQuestionEndpoints(this WebApplication app)
@@ -68,6 +71,37 @@ public static class QuestionEndpoints
             }
             return Results.Ok(await query.OrderBy(q => q.Code).ToListAsync());
         });
+
+        // Answer a question, or change its answer.
+        app.MapPut("/questions/{id:int}/answer", (int id, AnswerRequest body, AppDbContext db) =>
+            ApplyAsync(db, id, q => QuestionRules.Answer(q, body.Answer, DateTimeOffset.UtcNow)));
+
+        // Discard a question (not needed, out of scope…), with an optional reason.
+        app.MapPost("/questions/{id:int}/discard", (int id, DiscardRequest body, AppDbContext db) =>
+            ApplyAsync(db, id, q => QuestionRules.Discard(q, body.Reason, DateTimeOffset.UtcNow)));
+
+        // Back to pending.
+        app.MapPost("/questions/{id:int}/reopen", (int id, AppDbContext db) =>
+            ApplyAsync(db, id, q => QuestionRules.Reopen(q, DateTimeOffset.UtcNow)));
+    }
+
+    // Applies one action of QuestionRules and saves the question. The change it
+    // makes to the flow (QuestionChange.Change) will outdate the catalog, the
+    // backlog and the mockup once they exist (step 51).
+    private static async Task<IResult> ApplyAsync(AppDbContext db, int id, Func<Question, QuestionChange> action)
+    {
+        var question = await db.Questions.FindAsync(id);
+        if (question is null)
+        {
+            return Results.NotFound();
+        }
+        var change = action(question);
+        if (change.Error is not null)
+        {
+            return Results.ValidationProblem(new Dictionary<string, string[]> { ["question"] = [change.Error] });
+        }
+        await db.SaveChangesAsync();
+        return Results.Ok(question);
     }
 
     // Called by JobWorker when a round ends: its questions, renumbered after
