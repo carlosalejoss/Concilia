@@ -1,12 +1,25 @@
 import { useCallback, useEffect, useState } from 'react'
-import { errorMessage, formatDate, type JobView, type Project, type Run, type RunEvent } from './api.ts'
+import {
+  errorMessage,
+  formatDate,
+  isPhaseJob,
+  JOB_KIND_NAMES,
+  type JobView,
+  type PhaseResult,
+  type Project,
+  type Run,
+  type RunEvent,
+} from './api.ts'
 import CatalogView from './CatalogView.tsx'
 
-const SLOTS = ['A', 'B'] as const
+// A and B in every job; the arbiter (ARB) only in the v0 phases.
+const SLOTS = ['A', 'B', 'ARB'] as const
+const SLOT_NAMES: Record<string, string> = { A: 'A', B: 'B', ARB: 'Árbitro' }
 
 const stateColors: Record<string, string> = {
   Done: 'text-green-700',
   Blocked: 'text-amber-700',
+  Skipped: 'text-amber-700',
   Queued: 'text-gray-500',
   Running: 'text-blue-700',
 }
@@ -49,11 +62,13 @@ async function fetchJobs(projectId: number): Promise<JobView[]> {
   return response.json()
 }
 
-// Jobs of one project: a button that launches the catalog task to models A and
-// B at the same time, the list of jobs and the A/B view of the selected one.
-function Jobs({ project }: { project: Project }) {
+// The "Ejecuciones" tab: every job of the project (the v0 phases, A ‖ B →
+// arbiter, and the experimental catalog v1.4 by lots), with the live consoles
+// of the selected one. initialJobId selects a job when the tab opens (from
+// "Ver ejecución" in the steps page).
+function Jobs({ project, initialJobId }: { project: Project; initialJobId?: string | null }) {
   const [jobs, setJobs] = useState<JobView[]>([])
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(initialJobId ?? null)
   const [error, setError] = useState<string | null>(null)
   const [starting, setStarting] = useState(false)
 
@@ -103,16 +118,22 @@ function Jobs({ project }: { project: Project }) {
 
   return (
     <section className="mt-8">
-      <h2 className="text-xl font-semibold">Catálogos A/B</h2>
+      <h2 className="text-xl font-semibold">Ejecuciones</h2>
+      <p className="mt-1 text-sm text-gray-600">
+        Los trabajos del proyecto con sus consolas. Las fases del flujo se lanzan desde la pestaña «Pasos».
+      </p>
 
-      <button
-        type="button"
-        onClick={start}
-        disabled={starting}
-        className="mt-4 rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
-      >
-        Generar catálogo con A y B
-      </button>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={start}
+          disabled={starting}
+          className="rounded border border-gray-400 px-4 py-2 disabled:opacity-50"
+        >
+          Generar catálogo v1.4 (experimental)
+        </button>
+        <span className="text-sm text-gray-500">Por lotes, sin árbitro; se conserva para el hito 7.</span>
+      </div>
 
       {error && <p className="mt-2 text-red-700">{error}</p>}
 
@@ -120,9 +141,11 @@ function Jobs({ project }: { project: Project }) {
         <table className="mt-4 w-full text-left text-sm">
           <thead className="text-gray-500">
             <tr>
+              <th className="py-1">Trabajo</th>
               <th className="py-1">Creado</th>
               <th className="py-1">A</th>
               <th className="py-1">B</th>
+              <th className="py-1">Árbitro</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -132,6 +155,7 @@ function Jobs({ project }: { project: Project }) {
                 onClick={() => setSelectedId(view.job.id)}
                 className={`cursor-pointer hover:bg-gray-50 ${view.job.id === selectedId ? 'bg-blue-50' : ''}`}
               >
+                <td className="py-1">{JOB_KIND_NAMES[view.job.kind] ?? view.job.kind}</td>
                 <td className="py-1">{formatDate(view.job.createdAt)}</td>
                 {SLOTS.map((slot) => {
                   const summary = slotSummary(view, slot)
@@ -147,10 +171,25 @@ function Jobs({ project }: { project: Project }) {
         </table>
       )}
 
-      {/* Two columns side by side on wide screens, stacked on narrow ones. */}
-      {selected && (
+      {/* Columns side by side on wide screens, stacked on narrow ones. */}
+      {selected && isPhaseJob(selected.job) && (
+        <>
+          <JobResult key={`${selected.job.id}-${selected.runs.filter(isFinished).length}`} jobId={selected.job.id} finished={!selectedUnfinished} />
+          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+            {SLOTS.map((slot) => (
+              <PhaseSlotColumn
+                key={`${selected.job.id}-${slot}`}
+                slot={slot}
+                runs={selected.runs.filter((r) => r.slot === slot).sort((a, b) => a.attempt - b.attempt)}
+                onChange={reload}
+              />
+            ))}
+          </div>
+        </>
+      )}
+      {selected && !isPhaseJob(selected.job) && (
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {SLOTS.map((slot) => (
+          {SLOTS.filter((slot) => slot !== 'ARB').map((slot) => (
             <SlotColumn
               key={`${selected.job.id}-${slot}`}
               jobId={selected.job.id}
@@ -217,6 +256,60 @@ function SlotColumn({
           )
         })}
       </details>
+    </div>
+  )
+}
+
+// One slot of a v0 phase job: the live console of its run (a repair publishes
+// into the same stream) and the state of its last attempt. The arbiter waits
+// in the queue until A and B end; it is skipped when one of them failed.
+function PhaseSlotColumn({ slot, runs, onChange }: { slot: string; runs: Run[]; onChange: () => void }) {
+  const first = runs[0]
+  if (!first) return null
+  const last = runs[runs.length - 1]
+
+  return (
+    <div className="min-w-0">
+      <h3 className="font-semibold">
+        {SLOT_NAMES[slot]} · {first.model} <span className="font-normal text-gray-500">({first.provider})</span>
+      </h3>
+      {first.state === 'Queued' && (
+        <p className="mt-2 text-sm text-gray-500">{slot === 'ARB' ? 'Espera a que terminen A y B…' : 'En cola…'}</p>
+      )}
+      {first.state !== 'Queued' && first.state !== 'Skipped' && <RunConsole runId={first.id} onFinished={onChange} />}
+      {isFinished(last) && <RunResult run={last} />}
+    </div>
+  )
+}
+
+// The result of a v0 phase job: the output that counts and where it comes from.
+function JobResult({ jobId, finished }: { jobId: string; finished: boolean }) {
+  const [result, setResult] = useState<PhaseResult | null>(null)
+
+  useEffect(() => {
+    if (!finished) return
+    fetch(`/jobs/${jobId}/result`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then(setResult)
+      .catch(() => setResult(null))
+  }, [jobId, finished])
+
+  if (!result) return null
+  return (
+    <div className="mt-6 rounded border border-gray-200 p-3 text-sm">
+      {result.fuente === null ? (
+        <p className="font-semibold text-red-700">El trabajo falló: {result.mensaje}</p>
+      ) : (
+        <p className={`font-semibold ${result.verificacion_cruzada ? 'text-green-700' : 'text-amber-700'}`}>
+          Resultado: {result.verificacion_cruzada ? 'unión del árbitro' : `salida de ${result.fuente} sin verificación cruzada`}
+        </p>
+      )}
+      {result.salida !== null && (
+        <details className="mt-2">
+          <summary className="cursor-pointer">Ver la salida (JSON)</summary>
+          <pre className="mt-2 max-h-96 overflow-auto rounded bg-gray-50 p-2 text-xs">{JSON.stringify(result.salida, null, 2)}</pre>
+        </details>
+      )}
     </div>
   )
 }

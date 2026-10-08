@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import type { Project } from './api.ts'
-import ProjectFiles from './ProjectFiles.tsx'
 import Projects from './Projects.tsx'
 import Jobs from './Jobs.tsx'
 import ProjectSettings from './ProjectSettings.tsx'
+import ProjectSteps from './ProjectSteps.tsx'
+
+type Tab = 'steps' | 'runs'
 
 type HealthState =
   | { kind: 'loading' }
@@ -13,6 +15,20 @@ type HealthState =
 function App() {
   const [health, setHealth] = useState<HealthState>({ kind: 'loading' })
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [tab, setTab] = useState<Tab>('steps')
+  // The job to select when the "Ejecuciones" tab opens from "Ver ejecución".
+  const [jobToShow, setJobToShow] = useState<string | null>(null)
+
+  function selectProject(project: Project | null) {
+    setSelectedProject(project)
+    setTab('steps')
+    setJobToShow(null)
+  }
+
+  function showJob(jobId: string) {
+    setJobToShow(jobId)
+    setTab('runs')
+  }
 
   // Ask the API for its status once, when the page loads.
   useEffect(() => {
@@ -41,13 +57,36 @@ function App() {
           <span className="font-semibold text-red-700">sin conexión ({health.message})</span>
         )}
       </p>
-      <Projects selectedId={selectedProject?.id ?? null} onSelect={setSelectedProject} />
-      {/* key: a different project creates a new ProjectFiles with empty state. */}
+      <Projects selectedId={selectedProject?.id ?? null} onSelect={selectProject} />
+      {/* key: a different project creates new components with empty state. */}
       {selectedProject && (
         <ProjectSettings key={`settings-${selectedProject.id}`} project={selectedProject} onSaved={setSelectedProject} />
       )}
-      {selectedProject && <ProjectFiles key={selectedProject.id} project={selectedProject} />}
-      {selectedProject && <Jobs key={selectedProject.id} project={selectedProject} />}
+      {selectedProject && (
+        <nav className="mt-8 flex gap-2 border-b border-gray-200">
+          {(
+            [
+              ['steps', 'Pasos'],
+              ['runs', 'Ejecuciones'],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setTab(id)}
+              className={`-mb-px border-b-2 px-4 py-2 ${tab === id ? 'border-blue-600 font-semibold text-blue-700' : 'border-transparent text-gray-600'}`}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+      )}
+      {selectedProject && tab === 'steps' && (
+        <ProjectSteps key={`steps-${selectedProject.id}`} project={selectedProject} onShowJob={showJob} />
+      )}
+      {selectedProject && tab === 'runs' && (
+        <Jobs key={`runs-${selectedProject.id}-${jobToShow}`} project={selectedProject} initialJobId={jobToShow} />
+      )}
     </main>
   )
 }

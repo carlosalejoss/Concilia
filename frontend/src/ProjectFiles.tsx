@@ -4,6 +4,8 @@ import { ALLOWED_EXTENSIONS, MAX_BYTES, validateUpload } from './uploadRules.ts'
 
 type ProjectFilesProps = {
   project: Project
+  // Called after a file is uploaded (the state of the steps depends on the files).
+  onChange?: () => void
 }
 
 function formatSize(bytes: number): string {
@@ -15,7 +17,7 @@ function formatSize(bytes: number): string {
 // Detail of one project: a drop zone to upload files and the list of files.
 // App.tsx gives this component a new "key" for each project, so React creates
 // a fresh one (with empty state) whenever another project is selected.
-function ProjectFiles({ project }: ProjectFilesProps) {
+function ProjectFiles({ project, onChange }: ProjectFilesProps) {
   const [files, setFiles] = useState<ProjectFile[]>([])
   const [errors, setErrors] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
@@ -55,6 +57,7 @@ function ProjectFiles({ project }: ProjectFilesProps) {
         }
         const created: ProjectFile = await response.json()
         setFiles((current) => [created, ...current])
+        onChange?.()
       } catch (e: unknown) {
         setErrors((current) => [...current, `${file.name}: ${String(e)}`])
       }
