@@ -1,10 +1,18 @@
 using System.Text.Json.Nodes;
+using ReqArbiter.Core.Flow;
 using ReqArbiter.Core.Phases;
 
 namespace ReqArbiter.Core.Questions;
 
-// The rules of the questions phase (step 46): how the result of a round
-// becomes questions of the project.
+// The result of an action on a question: an error for the user, or the change
+// it makes to the flow (to mark the later steps as outdated).
+public record QuestionChange(string? Error, FlowChange? Change)
+{
+    public static QuestionChange Fail(string error) => new(error, null);
+}
+
+// The rules of the questions phase (step 46 and 47): how the result of a round
+// becomes questions of the project, and what can be done with each one.
 public static class QuestionRules
 {
     // Spanish names of the statuses, as the prompts see them.
@@ -53,6 +61,47 @@ public static class QuestionRules
     // pending ones too: they were already asked, and the next round must not
     // ask them again.
     public static PhaseQuestion ForPrompt(Question q) => new(q.Code, q.Text, StatusName(q.Status), q.Answer);
+
+    // Answers a pending question, or changes the answer of an answered one.
+    public static QuestionChange Answer(Question q, string? answer, DateTimeOffset now)
+    {
+        if (string.IsNullOrWhiteSpace(answer))
+            return QuestionChange.Fail("La respuesta no puede estar vacía.");
+        if (q.Status == QuestionStatus.Discarded)
+            return QuestionChange.Fail("La pregunta está descartada: reábrela antes de contestarla.");
+        q.Status = QuestionStatus.Answered;
+        q.Answer = answer.Trim();
+        q.DiscardReason = null;
+        q.UpdatedAt = now;
+        return new QuestionChange(null, FlowChange.AnswerChanged);
+    }
+
+    // Discards a question (not needed, out of scope…), with an optional reason.
+    // A discarded question has no answer.
+    public static QuestionChange Discard(Question q, string? reason, DateTimeOffset now)
+    {
+        if (q.Status == QuestionStatus.Discarded)
+            return QuestionChange.Fail("La pregunta ya está descartada.");
+        q.Status = QuestionStatus.Discarded;
+        q.Answer = null;
+        q.DiscardReason = string.IsNullOrWhiteSpace(reason) ? null : reason.Trim();
+        q.UpdatedAt = now;
+        return new QuestionChange(null, FlowChange.QuestionDiscarded);
+    }
+
+    // Takes an answered or discarded question back to pending. Removing an
+    // answer changes what the catalog is built on.
+    public static QuestionChange Reopen(Question q, DateTimeOffset now)
+    {
+        if (q.Status == QuestionStatus.Pending)
+            return QuestionChange.Fail("La pregunta ya está pendiente.");
+        var hadAnswer = q.Status == QuestionStatus.Answered;
+        q.Status = QuestionStatus.Pending;
+        q.Answer = null;
+        q.DiscardReason = null;
+        q.UpdatedAt = now;
+        return new QuestionChange(null, hadAnswer ? FlowChange.AnswerChanged : null);
+    }
 
     private static int Number(string code) =>
         int.TryParse(code.AsSpan(code.IndexOf('-') + 1), out var n) ? n : 0;
