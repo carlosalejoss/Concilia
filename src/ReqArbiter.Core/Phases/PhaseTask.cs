@@ -30,6 +30,7 @@ public record PhaseReview(PhaseValidation Validation, string? RepairPrompt)
 // runs of A, B and the arbiter in a job is step 43.
 public static class PhaseTask
 {
+    public const string PhaseFile = "input/fase.json"; // which phase and role (for FakeProvider and whoever reads the folder)
     public const string FragmentsFile = "input/fragmentos.json";
     public const string CatalogFile = "input/catalogo.json";
     public const string Proposal1File = "input/propuesta_1.json";
@@ -56,6 +57,7 @@ public static class PhaseTask
         if (budgetError is not null)
             return new PhaseRequest(null, budgetError);
 
+        Write(workDirectory, PhaseFile, JsonSerializer.Serialize(new { Kind = phase.Kind.ToString(), Role = phase.Role.ToString(), phase.OutputFile }, Json));
         Write(workDirectory, FragmentsFile, JsonSerializer.Serialize(new { input.SystemName, input.Language, Fragments = fragments }, Json));
         if (input.Catalog.Length > 0)
             Write(workDirectory, CatalogFile, input.Catalog);

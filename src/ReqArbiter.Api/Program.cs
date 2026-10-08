@@ -26,6 +26,7 @@ builder.Services.AddSingleton(builder.Configuration.GetSection("Catalog").Get<Ca
 builder.Services.AddSingleton<JobQueue>();
 builder.Services.AddSingleton<RunEventStore>();
 builder.Services.AddSingleton<RunExecutor>();
+builder.Services.AddSingleton<PhaseExecutor>();
 builder.Services.AddSingleton<JobRunner>();
 builder.Services.AddHostedService<JobWorker>();
 

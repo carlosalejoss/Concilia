@@ -12,10 +12,12 @@ public class RunnerOptions
     // "claude" in Linux and Docker; "claude.cmd" when the API runs on Windows.
     public string ClaudeExecutable { get; set; } = "claude";
 
-    // The two models that run every job in parallel. Which model plays each
-    // role is configuration (the arbiter, still undecided, is not set here).
+    // The two models that run every job in parallel, and the arbiter that joins
+    // their outputs in the v0 phases (RUNNER_MODEL_ARBITER). Which model plays
+    // each role is configuration.
     public string ModelA { get; set; } = "SS - GPT-6-SOL";
     public string ModelB { get; set; } = "SS - GPT-6-LUNA";
+    public string ModelArbiter { get; set; } = "SS - GPT-6-SOL";
 
     // Input window of the models, confirmed by the team leader.
     public int MaxContextTokens { get; set; } = 128_000;

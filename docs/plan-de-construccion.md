@@ -196,7 +196,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
   - validador por esquema (LateApexEarlySpeed), con comprobación de ids y referencias;
   - una reparación con la lista de errores;
   - toda la documentación en una sola llamada, comprobando `InputTokenBudget`.
-- [ ] 43. Ejecución A ‖ B → árbitro en `JobRunner`, con tests:
+- [x] 43. Ejecución A ‖ B → árbitro en `JobRunner`, con tests:
   - slots `A`, `B` y `ARB`, y orden aleatorio de las propuestas guardado en `plan.json`;
   - qué pasa si falla uno de los modelos o los dos;
   - `RUNNER_MODEL_ARBITER` en la configuración y en `.env.example`;

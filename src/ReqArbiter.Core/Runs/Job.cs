@@ -8,7 +8,8 @@ public class Job
 
     public int ProjectId { get; set; }
 
-    // Which task: only "summary" for now.
+    // Which task: "catalog" (v1.4, by lots) or a v0 phase: "questions",
+    // "catalog-v0" or "backlog" (PhasePlan.JobKind).
     public required string Kind { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }

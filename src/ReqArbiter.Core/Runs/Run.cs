@@ -1,6 +1,7 @@
 namespace ReqArbiter.Core.Runs;
 
-// Queued and Running come first; the rest mirror Core.Runner.RunStatus.
+// Queued and Running come first; the rest mirror Core.Runner.RunStatus, plus
+// Skipped: a run that was not launched (the arbiter, when A or B did not finish well).
 public enum RunState
 {
     Queued,
@@ -10,6 +11,7 @@ public enum RunState
     Failed,
     TimedOut,
     HeartbeatLost,
+    Skipped,
 }
 
 // One execution of a task with one model, as stored in the database.
@@ -20,7 +22,8 @@ public class Run
 
     public int ProjectId { get; set; }
 
-    // The job this run belongs to and its side in it: "A" or "B". Retries
+    // The job this run belongs to and its side in it: "A", "B" or "ARB" (the
+    // arbiter of a v0 phase). Retries
     // keep the slot of the run they repeat. Null for the single runs of
     // milestone 3, made before jobs existed.
     public Guid? JobId { get; set; }

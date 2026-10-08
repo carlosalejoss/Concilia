@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
+using ReqArbiter.Core.Phases;
 using ReqArbiter.Core.Runner;
 using ReqArbiter.Core.Runs;
 
@@ -76,6 +77,44 @@ public static class JobEndpoints
             return Results.Accepted($"/jobs/{job.Id}", new JobView(job, runs));
         });
 
+        // A round of questions (v0): A ‖ B → arbiter over all the documentation.
+        // Storing the questions of the round comes in step 46; for now the
+        // result stays in data/jobs/{id}/ (GET /jobs/{id}/result).
+        app.MapPost("/projects/{projectId:int}/question-rounds",
+            async (int projectId, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+        {
+            var project = await db.Projects.FindAsync(projectId);
+            if (project is null)
+            {
+                return Results.NotFound();
+            }
+
+            var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
+            var input = new PhaseInput { SystemName = project.SystemName, Language = project.Language };
+            var created = PhaseJobs.Create(project, documents, PhaseKind.Questions, input, [], options, provider.Name, Random.Shared);
+            if (created.Error is not null)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [created.Error] });
+            }
+
+            created.Plan!.Save(storage.JobFolder(created.Job!.Id));
+            db.Jobs.Add(created.Job);
+            db.Runs.AddRange(created.Runs);
+            await db.SaveChangesAsync();
+            queue.Enqueue(created.Job.Id);
+            return Results.Accepted($"/jobs/{created.Job.Id}", new JobView(created.Job, created.Runs));
+        });
+
+        // The result of a v0 phase job: which output counts (the arbiter's, or
+        // A's or B's without cross-check) and the output itself.
+        app.MapGet("/jobs/{jobId:guid}/result", (Guid jobId, FileStorage storage) =>
+        {
+            var path = Path.Combine(storage.JobFolder(jobId), PhaseJobResult.FileName);
+            return File.Exists(path)
+                ? Results.Text(File.ReadAllText(path), "application/json")
+                : Results.NotFound();
+        });
+
         app.MapGet("/projects/{projectId:int}/jobs", async (int projectId, AppDbContext db) =>
         {
             var jobs = await db.Jobs
@@ -111,7 +150,7 @@ public static class JobEndpoints
         {
             var job = await db.Jobs.FindAsync(jobId);
             var planPath = Path.Combine(storage.JobFolder(jobId), CatalogTask.PlanFile);
-            if (job is null || slot is not ("A" or "B") || !File.Exists(planPath))
+            if (job is null || job.Kind != CatalogTask.Kind || slot is not ("A" or "B") || !File.Exists(planPath))
             {
                 return Results.NotFound();
             }
