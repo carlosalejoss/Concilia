@@ -52,7 +52,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             run.Property(r => r.Model).HasMaxLength(100);
             run.Property(r => r.VerdictState).HasMaxLength(20);
             run.HasIndex(r => r.RetryOfRunId);
-            run.Property(r => r.Slot).HasMaxLength(1);
+            // "A", "B", "ARB" (arbiter) or "MOCK" (mockup).
+            run.Property(r => r.Slot).HasMaxLength(10);
 
             // Deleting a job also deletes its runs.
             run.HasOne<Job>()

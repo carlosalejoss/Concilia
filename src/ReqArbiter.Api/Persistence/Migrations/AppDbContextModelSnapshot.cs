@@ -197,8 +197,8 @@ namespace ReqArbiter.Api.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Slot")
-                        .HasMaxLength(1)
-                        .HasColumnType("character varying(1)");
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.Property<DateTimeOffset?>("StartedAt")
                         .HasColumnType("timestamp with time zone");
