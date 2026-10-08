@@ -14,6 +14,7 @@ export default defineConfig({
       '/projects': 'http://localhost:5292',
       '/runs': 'http://localhost:5292',
       '/jobs': 'http://localhost:5292',
+      '/questions': 'http://localhost:5292',
     },
   },
 })
