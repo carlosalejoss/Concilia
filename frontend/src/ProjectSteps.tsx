@@ -1,17 +1,7 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
-import {
-  errorMessage,
-  formatDate,
-  type FlowStep,
-  type FlowView,
-  type JobView,
-  type PhaseResult,
-  type Project,
-  type Run,
-  type StepState,
-  type StepStatus,
-} from './api.ts'
+import { errorMessage, type FlowStep, type FlowView, type Project, type StepState, type StepStatus } from './api.ts'
 import ProjectFiles from './ProjectFiles.tsx'
+import QuestionsPanel from './QuestionsPanel.tsx'
 
 const STEP_NAMES: Record<FlowStep, string> = {
   Documents: 'Documentos',
@@ -68,7 +58,7 @@ function ProjectSteps({ project, onShowJob }: { project: Project; onShowJob: (jo
   const [flow, setFlow] = useState<FlowView | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [launching, setLaunching] = useState<FlowStep | null>(null)
-  // Changes when a job is launched, so the list of rounds reloads.
+  // Changes each time the flow reloads, so the rounds and questions reload too.
   const [version, setVersion] = useState(0)
 
   const reload = useCallback(() => {
@@ -115,7 +105,7 @@ function ProjectSteps({ project, onShowJob }: { project: Project; onShowJob: (jo
 
   const bodies: Partial<Record<FlowStep, ReactNode>> = {
     Documents: <ProjectFiles project={project} onChange={reload} />,
-    Questions: <QuestionRounds project={project} version={version} onShowJob={onShowJob} />,
+    Questions: <QuestionsPanel project={project} version={version} onChange={reload} onShowJob={onShowJob} />,
   }
 
   return (
@@ -161,71 +151,6 @@ function ProjectSteps({ project, onShowJob }: { project: Project; onShowJob: (jo
         })}
       </ol>
     </section>
-  )
-}
-
-const SLOT_NAMES: Record<string, string> = { A: 'A', B: 'B', ARB: 'Árbitro' }
-
-function isFinished(run: Run): boolean {
-  return run.state !== 'Queued' && run.state !== 'Running'
-}
-
-// The question rounds of the project (jobs "questions"): the state of A, B and
-// the arbiter and, when it ends, which output counts. The questions themselves
-// are stored and answered from milestone 9 on.
-function QuestionRounds({ project, version, onShowJob }: { project: Project; version: number; onShowJob: (jobId: string) => void }) {
-  const [rounds, setRounds] = useState<JobView[]>([])
-
-  useEffect(() => {
-    fetchJson<JobView[]>(`/projects/${project.id}/jobs`)
-      .then((jobs) => setRounds(jobs.filter((j) => j.job.kind === 'questions')))
-      .catch(() => setRounds([]))
-  }, [project.id, version])
-
-  if (rounds.length === 0) return null
-
-  return (
-    <ul className="mt-3 space-y-2 text-sm">
-      {rounds.map((view, index) => {
-        // The state that counts in each slot is that of its last attempt.
-        const last = (slot: string) => view.runs.filter((r) => r.slot === slot).sort((a, b) => b.attempt - a.attempt)[0]
-        const finished = view.runs.every(isFinished)
-        return (
-          <li key={view.job.id} className="flex flex-wrap items-center gap-3">
-            <span className="font-semibold">Ronda {rounds.length - index}</span>
-            <span className="text-gray-500">{formatDate(view.job.createdAt)}</span>
-            {['A', 'B', 'ARB'].map((slot) => (
-              <span key={slot}>
-                {SLOT_NAMES[slot]}: {last(slot)?.state ?? '—'}
-              </span>
-            ))}
-            {finished && <RoundResult jobId={view.job.id} />}
-            <button type="button" onClick={() => onShowJob(view.job.id)} className="text-blue-700 underline">
-              Ver ejecución
-            </button>
-          </li>
-        )
-      })}
-    </ul>
-  )
-}
-
-function RoundResult({ jobId }: { jobId: string }) {
-  const [result, setResult] = useState<PhaseResult | null>(null)
-
-  useEffect(() => {
-    fetchJson<PhaseResult>(`/jobs/${jobId}/result`)
-      .then(setResult)
-      .catch(() => setResult(null))
-  }, [jobId])
-
-  if (!result) return null
-  if (result.fuente === null) return <span className="text-red-700">Falló: {result.mensaje}</span>
-  const questions = (result.salida as { preguntas?: unknown[] } | null)?.preguntas?.length ?? 0
-  return (
-    <span className={result.verificacion_cruzada ? 'text-green-700' : 'text-amber-700'}>
-      {questions} preguntas · {result.verificacion_cruzada ? 'unión del árbitro' : `solo ${result.fuente}, sin verificación cruzada`}
-    </span>
   )
 }
 
