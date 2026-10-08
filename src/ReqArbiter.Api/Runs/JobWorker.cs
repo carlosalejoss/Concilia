@@ -67,6 +67,10 @@ public class JobWorker(
             var phasePlan = PhasePlan.Load(storage.JobFolder(jobId));
             var result = await jobRunner.RunPhaseAsync(runs, phasePlan, MarkRunningAsync, SaveOutcomeAsync, cancellationToken);
             PhaseJobs.WriteResult(storage.JobFolder(jobId), result);
+            if (phasePlan.Kind == PhaseKind.Questions)
+            {
+                await Questions.QuestionEndpoints.StoreRoundAsync(db, jobId, job.ProjectId, phasePlan, result);
+            }
             job.FinishedAt = DateTimeOffset.UtcNow;
             await db.SaveChangesAsync(CancellationToken.None);
             return;

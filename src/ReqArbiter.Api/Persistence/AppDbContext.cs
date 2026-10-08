@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Core.Projects;
+using ReqArbiter.Core.Questions;
 using ReqArbiter.Core.Runs;
 
 namespace ReqArbiter.Api.Persistence;
@@ -14,6 +15,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Run> Runs => Set<Run>();
 
     public DbSet<Job> Jobs => Set<Job>();
+
+    public DbSet<Question> Questions => Set<Question>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -70,6 +73,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .OnDelete(DeleteBehavior.Cascade);
 
             job.Property(j => j.Kind).HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<Question>(question =>
+        {
+            question.HasOne<Project>()
+                .WithMany()
+                .HasForeignKey(q => q.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
+            // The round where it was asked.
+            question.HasOne<Job>()
+                .WithMany()
+                .HasForeignKey(q => q.JobId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // P-001… is unique within a project.
+            question.HasIndex(q => new { q.ProjectId, q.Code }).IsUnique();
+            question.Property(q => q.Code).HasMaxLength(20);
+            question.Property(q => q.Origin).HasMaxLength(10);
+            // Stored as text ("Pending", "Answered", "Discarded") so the table is readable.
+            question.Property(q => q.Status).HasConversion<string>().HasMaxLength(20);
         });
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
 using ReqArbiter.Api.Projects;
+using ReqArbiter.Api.Questions;
 using ReqArbiter.Api.Runs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +52,7 @@ app.MapProjectFileEndpoints();
 app.MapRunEndpoints();
 app.MapJobEndpoints();
 app.MapFlowEndpoints();
+app.MapQuestionEndpoints();
 
 app.Run();
 
