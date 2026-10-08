@@ -4,7 +4,7 @@ Plataforma web (TFG) que genera catálogos de requisitos (EARS/MASTeR) y backlog
 
 ## Estado
 
-Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver `docs/hito-6-catalogo-v1.3.md`); sus pasos 32–34 los sustituye el hito 7 (catálogo v2, de arriba abajo), a la espera de los prompts v2 del autor. Desde el 08-10-2026 el hito 7 queda aplazado: la prioridad es la iteración v0 (hitos 8 a 13), el flujo completo con prompts básicos. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
+Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver `docs/hito-6-catalogo-v1.3.md`); sus pasos 32–34 los sustituye el hito 7 (catálogo v2, de arriba abajo), a la espera de los prompts v2 del autor. Desde el 08-10-2026 el hito 7 queda aplazado: la prioridad es la iteración v0 (hitos 8 a 13), el flujo completo con prompts básicos. Hito 8 (base común del flujo v0) completado: tarea de fase genérica, A ‖ B → árbitro, estado del flujo y página por pasos; siguiente, el hito 9 (fase de preguntas). Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El nombre del proyecto es provisional.
 
 ## Decisiones vigentes
 

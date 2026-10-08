@@ -22,13 +22,17 @@ export type ProjectFile = {
   textStoredName: string | null // null: no text extracted for this type
 }
 
-export type RunState = 'Queued' | 'Running' | 'Done' | 'Blocked' | 'Failed' | 'TimedOut' | 'HeartbeatLost'
+// Skipped: a run that was not launched (the arbiter, when A or B did not end well).
+export type RunState = 'Queued' | 'Running' | 'Done' | 'Blocked' | 'Failed' | 'TimedOut' | 'HeartbeatLost' | 'Skipped'
+
+// A, B and, in the v0 phases, ARB (the arbiter).
+export type Slot = 'A' | 'B' | 'ARB'
 
 export type Run = {
   id: string
   projectId: number
   jobId: string | null
-  slot: 'A' | 'B' | null
+  slot: Slot | null
   lotNumber: number | null
   lotTotal: number | null
   promptVersion: string | null
@@ -54,10 +58,49 @@ export type Run = {
 export type Job = {
   id: string
   projectId: number
-  kind: string
+  kind: string // "catalog" (v1.4, experimental) or a v0 phase: "questions", "catalog-v0", "backlog"
   createdAt: string
   finishedAt: string | null
 }
+
+// The job kinds of the v0 phases (A ‖ B → arbiter).
+export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'backlog']
+
+export function isPhaseJob(job: Job): boolean {
+  return PHASE_JOB_KINDS.includes(job.kind)
+}
+
+export const JOB_KIND_NAMES: Record<string, string> = {
+  questions: 'Ronda de preguntas',
+  'catalog-v0': 'Catálogo',
+  backlog: 'Backlog',
+  mockup: 'Mockup',
+  catalog: 'Catálogo v1.4 (experimental)',
+}
+
+// GET /jobs/{id}/result: the output of a v0 phase job that counts, and where
+// it comes from (ARB, or A or B alone without cross-check; null if it failed).
+export type PhaseResult = {
+  fuente: Slot | null
+  verificacion_cruzada: boolean
+  mensaje: string
+  salida: unknown
+}
+
+// GET /projects/{id}/flow: the state of each step of the project.
+export type FlowStep = 'Documents' | 'Questions' | 'Catalog' | 'Backlog' | 'Mockup'
+export type StepState = 'Blocked' | 'Available' | 'InProgress' | 'Draft' | 'Validated'
+
+export type StepStatus = {
+  step: FlowStep
+  state: StepState
+  outdated: boolean
+  canLaunch: boolean
+  reason: string | null
+  detail: string | null
+}
+
+export type FlowView = { steps: StepStatus[] }
 
 // A job with all its runs: slot A and slot B, plus their retries.
 export type JobView = {
