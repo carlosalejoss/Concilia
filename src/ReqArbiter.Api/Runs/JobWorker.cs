@@ -2,13 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
 using ReqArbiter.Core.Catalog;
+using ReqArbiter.Core.Phases;
 using ReqArbiter.Core.Runner;
 using ReqArbiter.Core.Runs;
 
 namespace ReqArbiter.Api.Runs;
 
 // Executes the queued jobs in the background, one job at a time. Within a job,
-// JobRunner runs slots A and B in parallel and the lots of each slot in order.
+// JobRunner runs slots A and B in parallel (and, in a v0 phase, the arbiter
+// after them; in the catalog v1.4, the lots of each slot).
 public class JobWorker(
     JobQueue queue,
     IServiceScopeFactory scopes,
@@ -59,6 +61,17 @@ public class JobWorker(
             .OrderBy(r => r.Slot).ThenBy(r => r.LotNumber)
             .ToListAsync(cancellationToken);
 
+        // A v0 phase: A ‖ B → arbiter, and the result of the job in its folder.
+        if (PhasePlan.KindOfJob(job.Kind) is not null)
+        {
+            var phasePlan = PhasePlan.Load(storage.JobFolder(jobId));
+            var result = await jobRunner.RunPhaseAsync(runs, phasePlan, MarkRunningAsync, SaveOutcomeAsync, cancellationToken);
+            PhaseJobs.WriteResult(storage.JobFolder(jobId), result);
+            job.FinishedAt = DateTimeOffset.UtcNow;
+            await db.SaveChangesAsync(CancellationToken.None);
+            return;
+        }
+
         // Every run of the job reads the plan saved when the job was created.
         var plan = CatalogTask.LoadPlan(Path.Combine(storage.JobFolder(jobId), CatalogTask.PlanFile));
 
@@ -98,7 +111,13 @@ public class JobWorker(
                 return;
             }
 
-            if (outcome.Attempts is null)
+            if (outcome.SkipReason is not null)
+            {
+                run.State = RunState.Skipped;
+                run.FinishedAt = DateTimeOffset.UtcNow;
+                run.ErrorMessage = outcome.SkipReason;
+            }
+            else if (outcome.Attempts is null)
             {
                 logger.LogError(outcome.Error, "Run {RunId} failed unexpectedly", run.Id);
                 MarkFailed(run, "Error interno al ejecutar. Consulta el log de la API.");
@@ -126,8 +145,8 @@ public class JobWorker(
                         StartedAt = run.StartedAt,
                     };
                     Apply(target, attempts[i].Result);
-                    target.PromptVersion = PromptBuilder.Version;
-                    target.PromptSha256 = PromptBuilder.Sha256(attempts[i].Request.Prompt);
+                    target.PromptVersion = outcome.PromptVersion;
+                    target.PromptSha256 = attempts[i].Request.Prompt.Length > 0 ? PromptBuilder.Sha256(attempts[i].Request.Prompt) : null;
                     if (i > 0)
                     {
                         db.Runs.Add(target);

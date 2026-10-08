@@ -74,7 +74,7 @@ public static class CatalogReview
     // True when the process and the API worked and what failed, if anything, is
     // what the model wrote: its catalog, its verdict line, or a Write cut by
     // the output cap.
-    private static bool ModelAnswered(RunResult result) =>
+    internal static bool ModelAnswered(RunResult result) =>
         result.Status == RunStatus.Done
         || result.VerdictError is not null
         || result.Verdict?.State == VerdictState.Done // "hecho" but the file is missing

@@ -1,13 +1,16 @@
 using ReqArbiter.Core.Catalog;
+using ReqArbiter.Core.Phases;
 
 namespace ReqArbiter.Core.Runner;
 
 // A provider that calls no model: it emits a few fixed events, writes the
-// expected output files and answers "hecho". A catalog (output/catalogo.json,
-// with the lot's fragments in input/) gets a real one from FakeCatalog; any
-// other file, placeholder content. With simulateRepair, the first attempt of
-// each lot writes a catalog with an error, so the repair retry can be seen
-// working; the repair (its prompt carries the previous catalog) writes it right.
+// expected output files and answers "hecho". A run of a v0 phase (input/fase.json)
+// gets a valid output of its phase from FakePhaseOutput; a catalog v1.3
+// (output/catalogo.json, with the lot's fragments in input/) gets a real one
+// from FakeCatalog; any other file, placeholder content. With simulateRepair,
+// the first attempt of each run writes an invalid output, so the repair retry
+// can be seen working; the repair (its prompt carries the previous output)
+// writes it right.
 // Used in development without secrets and in tests.
 public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = false) : IRunnerProvider
 {
@@ -59,6 +62,12 @@ public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = fa
 
     private string Content(RunRequest request, string relativePath)
     {
+        if (FakePhaseOutput.IsPhaseRun(request.WorkDirectory))
+        {
+            var first = !request.Prompt.Contains(FakePhaseOutput.RepairMarker, StringComparison.Ordinal);
+            return FakePhaseOutput.For(request.WorkDirectory, broken: simulateRepair && first);
+        }
+
         var isCatalog = Path.GetFileName(relativePath) == "catalogo.json"
             && File.Exists(Path.Combine(request.WorkDirectory, FakeCatalog.FragmentsFile));
         if (!isCatalog)
