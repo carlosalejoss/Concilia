@@ -1,0 +1,132 @@
+{
+  "requisitos": [
+    {
+      "id": "RF-001",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "El sistema ReservaSalas DEBERÁ permitir al empleado reservar una sala indicando la fecha, la hora de inicio, la hora de fin y el número de asistentes.",
+      "fuentes": [
+        "DOC-01#F002",
+        "DOC-01#F099"
+      ],
+      "preguntas": []
+    },
+    {
+      "id": "RF-002",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "CUANDO el empleado confirme una reserva, el sistema ReservaSalas DEBERÁ enviarle un correo de confirmación en menos de 1 minuto.",
+      "fuentes": [
+        "DOC-01#F003"
+      ],
+      "preguntas": []
+    },
+    {
+      "id": "RF-003",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "SI la sala ya está reservada en la franja solicitada, ENTONCES el sistema ReservaSalas DEBERÁ rechazar la reserva e informar al empleado.",
+      "fuentes": [
+        "DOC-01#F004"
+      ],
+      "preguntas": []
+    },
+    {
+      "id": "RF-004",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "MIENTRAS una sala esté en mantenimiento, el sistema ReservaSalas DEBERÁ impedir su reserva.",
+      "fuentes": [
+        "DOC-01#F005"
+      ],
+      "preguntas": []
+    },
+    {
+      "id": "RF-005",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "DONDE se haya contratado el módulo de catering, el sistema ReservaSalas DEBERÁ permitir al empleado añadir catering a la reserva.",
+      "fuentes": [
+        "DOC-01#F006"
+      ],
+      "preguntas": []
+    },
+    {
+      "id": "RF-006",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "MIENTRAS el modo festivo esté activado, CUANDO un empleado intente reservar una sala, el sistema ReservaSalas DEBERÁ mostrar un aviso de día festivo.",
+      "fuentes": [
+        "DOC-01#F007"
+      ],
+      "preguntas": []
+    },
+    {
+      "id": "RF-007",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "CUANDO el empleado confirme una reserva de más de 4 horas y más de 20 asistentes, el sistema ReservaSalas DEBERÁ dejarla pendiente de aprobación del administrador y bloquear la sala en esa franja hasta que la apruebe o la rechace.",
+      "fuentes": [
+        "DOC-01#F008"
+      ],
+      "preguntas": [
+        "P-003"
+      ]
+    },
+    {
+      "id": "RF-008",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "MIENTRAS el empleado tenga una sesión iniciada y el calendario corporativo esté sincronizado, el sistema ReservaSalas DEBERÁ mostrar al empleado sus reservas del día.",
+      "fuentes": [
+        "DOC-01#F009"
+      ],
+      "preguntas": []
+    },
+    {
+      "id": "RF-009",
+      "tipo": "RF",
+      "notacion": "MASTeR",
+      "obligatoriedad": "should",
+      "texto": "El sistema ReservaSalas DEBERÍA PROPORCIONAR AL administrador LA CAPACIDAD DE exportar el histórico de reservas a CSV con la fecha, la sala, el empleado, la hora de inicio, la hora de fin y el número de asistentes.",
+      "fuentes": [
+        "DOC-01#F011"
+      ],
+      "preguntas": [
+        "P-004"
+      ]
+    },
+    {
+      "id": "RNF-001",
+      "tipo": "RNF",
+      "notacion": "MASTeR",
+      "obligatoriedad": "shall",
+      "texto": "El tiempo de respuesta de una búsqueda o de una reserva DEBERÁ SER menor que 2 s.",
+      "fuentes": [
+        "DOC-01#F010"
+      ],
+      "preguntas": [
+        "P-001"
+      ]
+    },
+    {
+      "id": "RT-001",
+      "tipo": "RT",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "El sistema ReservaSalas DEBERÁ funcionar en los navegadores Chrome y Edge.",
+      "fuentes": [
+        "DOC-01#F012"
+      ],
+      "preguntas": []
+    }
+  ]
+}

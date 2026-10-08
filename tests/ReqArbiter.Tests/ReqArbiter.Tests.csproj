@@ -25,6 +25,8 @@
     <!-- Examples of the reference scripts (prompts/), used to compare the C# port with Python. -->
     <None Include="..\..\prompts\generacion_requisitos\**\*.json;..\..\prompts\generacion_requisitos\**\*.txt;..\..\prompts\generacion_requisitos\**\*.md"
           LinkBase="prompts" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Example of the v0 prompts (validar_v0.py and test_v0.py use it too). -->
+    <None Include="..\..\prompts\v0\ejemplo\*.json" LinkBase="prompts-v0\ejemplo" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

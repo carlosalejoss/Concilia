@@ -25,8 +25,8 @@ public static partial class PromptBuilder
     public static string Template { get; } = ReadResource("prompt_requisitos.md");
     public static string RepairAnnexTemplate { get; } = ReadResource("anexo_reparacion.md");
 
-    // {{NAME}}: upper-case letters and underscores.
-    [GeneratedRegex(@"\{\{([A-Z_]+)\}\}")]
+    // {{NAME}}: upper-case letters, digits and underscores (PROPUESTA_1 in the v0 arbiters).
+    [GeneratedRegex(@"\{\{([A-Z0-9_]+)\}\}")]
     private static partial Regex PlaceholderRe();
 
     public static string Build(CatalogPromptInput input) => Fill(Template, new Dictionary<string, string>
@@ -59,7 +59,7 @@ public static partial class PromptBuilder
     // the inserted values are never scanned again. A document can contain
     // "{{...}}" and it must reach the model as it is. Unknown names are left
     // untouched.
-    private static string Fill(string template, IReadOnlyDictionary<string, string> values) =>
+    internal static string Fill(string template, IReadOnlyDictionary<string, string> values) =>
         PlaceholderRe().Replace(template, m => values.TryGetValue(m.Groups[1].Value, out var v) ? v : m.Value);
 
     internal static string ReadResource(string name)

@@ -1,0 +1,344 @@
+[
+  {
+    "file": "case-01.json",
+    "name": "ejemplo tal cual",
+    "base": "preguntas_propuesta_1",
+    "phase": "preguntas",
+    "arbiter": false,
+    "kind": "ok",
+    "code": null
+  },
+  {
+    "file": "case-02.json",
+    "name": "ejemplo tal cual",
+    "base": "preguntas_propuesta_2",
+    "phase": "preguntas",
+    "arbiter": false,
+    "kind": "ok",
+    "code": null
+  },
+  {
+    "file": "case-03.json",
+    "name": "ejemplo tal cual",
+    "base": "preguntas_arbitro",
+    "phase": "preguntas",
+    "arbiter": true,
+    "kind": "ok",
+    "code": null
+  },
+  {
+    "file": "case-04.json",
+    "name": "ejemplo tal cual",
+    "base": "catalogo_propuesta_1",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "ok",
+    "code": null
+  },
+  {
+    "file": "case-05.json",
+    "name": "ejemplo tal cual",
+    "base": "catalogo_propuesta_2",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "ok",
+    "code": null
+  },
+  {
+    "file": "case-06.json",
+    "name": "ejemplo tal cual",
+    "base": "catalogo_arbitro",
+    "phase": "catalogo",
+    "arbiter": true,
+    "kind": "ok",
+    "code": null
+  },
+  {
+    "file": "case-07.json",
+    "name": "ejemplo tal cual: RF-009 sin historia",
+    "base": "backlog_propuesta_1",
+    "phase": "backlog",
+    "arbiter": false,
+    "kind": "warning",
+    "code": "COB"
+  },
+  {
+    "file": "case-08.json",
+    "name": "ejemplo tal cual",
+    "base": "backlog_propuesta_2",
+    "phase": "backlog",
+    "arbiter": false,
+    "kind": "ok",
+    "code": null
+  },
+  {
+    "file": "case-09.json",
+    "name": "ejemplo tal cual",
+    "base": "backlog_arbitro",
+    "phase": "backlog",
+    "arbiter": true,
+    "kind": "ok",
+    "code": null
+  },
+  {
+    "file": "case-10.json",
+    "name": "falta el motivo",
+    "base": "preguntas_propuesta_1",
+    "phase": "preguntas",
+    "arbiter": false,
+    "kind": "error",
+    "code": "SCHEMA"
+  },
+  {
+    "file": "case-11.json",
+    "name": "id repetido",
+    "base": "preguntas_propuesta_1",
+    "phase": "preguntas",
+    "arbiter": false,
+    "kind": "error",
+    "code": "ID-DUP"
+  },
+  {
+    "file": "case-12.json",
+    "name": "ids no consecutivos",
+    "base": "preguntas_propuesta_1",
+    "phase": "preguntas",
+    "arbiter": false,
+    "kind": "error",
+    "code": "ID-SEQ"
+  },
+  {
+    "file": "case-13.json",
+    "name": "fragmento que no existe",
+    "base": "preguntas_propuesta_1",
+    "phase": "preguntas",
+    "arbiter": false,
+    "kind": "error",
+    "code": "REF-FRAG"
+  },
+  {
+    "file": "case-14.json",
+    "name": "árbitro: id que no existe en la propuesta",
+    "base": "preguntas_arbitro",
+    "phase": "preguntas",
+    "arbiter": true,
+    "kind": "error",
+    "code": "ARB-DE"
+  },
+  {
+    "file": "case-15.json",
+    "name": "árbitro: `de` sin ningún id",
+    "base": "preguntas_arbitro",
+    "phase": "preguntas",
+    "arbiter": true,
+    "kind": "error",
+    "code": "ARB-DE"
+  },
+  {
+    "file": "case-16.json",
+    "name": "árbitro: descarte de un id que no existe",
+    "base": "preguntas_arbitro",
+    "phase": "preguntas",
+    "arbiter": true,
+    "kind": "error",
+    "code": "ARB-DE"
+  },
+  {
+    "file": "case-17.json",
+    "name": "árbitro: una pregunta de una propuesta se pierde",
+    "base": "preguntas_arbitro",
+    "phase": "preguntas",
+    "arbiter": true,
+    "kind": "error",
+    "code": "ARB-FALTA"
+  },
+  {
+    "file": "case-18.json",
+    "name": "tipo desconocido",
+    "base": "catalogo_propuesta_1",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "error",
+    "code": "SCHEMA"
+  },
+  {
+    "file": "case-19.json",
+    "name": "el prefijo no coincide con el tipo",
+    "base": "catalogo_propuesta_1",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "error",
+    "code": "TIPO"
+  },
+  {
+    "file": "case-20.json",
+    "name": "EARS con should",
+    "base": "catalogo_propuesta_1",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "error",
+    "code": "EARS"
+  },
+  {
+    "file": "case-21.json",
+    "name": "requisito sin fuentes ni preguntas",
+    "base": "catalogo_propuesta_1",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "error",
+    "code": "SIN-ORIGEN"
+  },
+  {
+    "file": "case-22.json",
+    "name": "fragmento que no existe",
+    "base": "catalogo_propuesta_1",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "error",
+    "code": "REF-FRAG"
+  },
+  {
+    "file": "case-23.json",
+    "name": "pregunta descartada",
+    "base": "catalogo_propuesta_1",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "error",
+    "code": "REF-PREG"
+  },
+  {
+    "file": "case-24.json",
+    "name": "pregunta que no existe",
+    "base": "catalogo_propuesta_1",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "error",
+    "code": "REF-PREG"
+  },
+  {
+    "file": "case-25.json",
+    "name": "id repetido",
+    "base": "catalogo_propuesta_1",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "error",
+    "code": "ID-DUP"
+  },
+  {
+    "file": "case-26.json",
+    "name": "ids de un tipo no consecutivos",
+    "base": "catalogo_propuesta_1",
+    "phase": "catalogo",
+    "arbiter": false,
+    "kind": "error",
+    "code": "ID-SEQ"
+  },
+  {
+    "file": "case-27.json",
+    "name": "árbitro: id que no existe en la propuesta",
+    "base": "catalogo_arbitro",
+    "phase": "catalogo",
+    "arbiter": true,
+    "kind": "error",
+    "code": "ARB-DE"
+  },
+  {
+    "file": "case-28.json",
+    "name": "árbitro: un requisito de una propuesta se pierde",
+    "base": "catalogo_arbitro",
+    "phase": "catalogo",
+    "arbiter": true,
+    "kind": "error",
+    "code": "ARB-FALTA"
+  },
+  {
+    "file": "case-29.json",
+    "name": "árbitro: falta discrepancia",
+    "base": "catalogo_arbitro",
+    "phase": "catalogo",
+    "arbiter": true,
+    "kind": "error",
+    "code": "SCHEMA"
+  },
+  {
+    "file": "case-30.json",
+    "name": "historia sin criterios",
+    "base": "backlog_propuesta_2",
+    "phase": "backlog",
+    "arbiter": false,
+    "kind": "error",
+    "code": "SCHEMA"
+  },
+  {
+    "file": "case-31.json",
+    "name": "requisito que no existe en el catálogo",
+    "base": "backlog_propuesta_2",
+    "phase": "backlog",
+    "arbiter": false,
+    "kind": "error",
+    "code": "REF-REQ"
+  },
+  {
+    "file": "case-32.json",
+    "name": "historia repetida",
+    "base": "backlog_propuesta_2",
+    "phase": "backlog",
+    "arbiter": false,
+    "kind": "error",
+    "code": "ID-DUP"
+  },
+  {
+    "file": "case-33.json",
+    "name": "épicas no consecutivas",
+    "base": "backlog_propuesta_2",
+    "phase": "backlog",
+    "arbiter": false,
+    "kind": "error",
+    "code": "ID-SEQ"
+  },
+  {
+    "file": "case-34.json",
+    "name": "criterios no consecutivos",
+    "base": "backlog_propuesta_2",
+    "phase": "backlog",
+    "arbiter": false,
+    "kind": "error",
+    "code": "ID-SEQ"
+  },
+  {
+    "file": "case-35.json",
+    "name": "tareas no consecutivas",
+    "base": "backlog_propuesta_2",
+    "phase": "backlog",
+    "arbiter": false,
+    "kind": "error",
+    "code": "ID-SEQ"
+  },
+  {
+    "file": "case-36.json",
+    "name": "requisito funcional sin historia",
+    "base": "backlog_arbitro",
+    "phase": "backlog",
+    "arbiter": true,
+    "kind": "warning",
+    "code": "COB"
+  },
+  {
+    "file": "case-37.json",
+    "name": "árbitro: id que no existe en la propuesta",
+    "base": "backlog_arbitro",
+    "phase": "backlog",
+    "arbiter": true,
+    "kind": "error",
+    "code": "ARB-DE"
+  },
+  {
+    "file": "case-38.json",
+    "name": "árbitro: una historia de una propuesta se pierde",
+    "base": "backlog_arbitro",
+    "phase": "backlog",
+    "arbiter": true,
+    "kind": "error",
+    "code": "ARB-FALTA"
+  }
+]

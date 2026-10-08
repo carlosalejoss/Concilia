@@ -1,0 +1,36 @@
+{
+  "preguntas": [
+    {
+      "id": "P-001",
+      "pregunta": "¿Cuál es el tiempo de respuesta máximo aceptable de la aplicación?",
+      "motivo": "El requisito «la aplicación debe ser rápida» no se puede verificar sin una cifra.",
+      "fuentes": [
+        "DOC-01#F010"
+      ]
+    },
+    {
+      "id": "P-002",
+      "pregunta": "¿Qué datos de cada reserva debe incluir el fichero CSV del histórico?",
+      "motivo": "Sin la lista de datos no se puede escribir el requisito de exportación.",
+      "fuentes": [
+        "DOC-01#F011"
+      ]
+    },
+    {
+      "id": "P-003",
+      "pregunta": "¿La revisión mensual de las reservas no utilizadas la hace el administrador dentro de la aplicación?",
+      "motivo": "Decide si la revisión es una funcionalidad del sistema o una tarea fuera de él.",
+      "fuentes": [
+        "DOC-01#F014"
+      ]
+    },
+    {
+      "id": "P-004",
+      "pregunta": "¿En qué navegadores debe funcionar la aplicación?",
+      "motivo": "Hace falta para el requisito técnico de compatibilidad.",
+      "fuentes": [
+        "DOC-01#F012"
+      ]
+    }
+  ]
+}
