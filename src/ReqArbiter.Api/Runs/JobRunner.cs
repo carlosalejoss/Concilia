@@ -19,14 +19,6 @@ public record RunOutcome(
     public bool Succeeded => Attempts is { Count: > 0 } attempts && attempts[^1].Result.Status == RunStatus.Done;
 }
 
-// The result of a v0 phase job: the output that the next steps use, and where
-// it comes from ("ARB", or "A"/"B" when only that model finished well: no
-// cross-check). Source is null when the job failed (both models, or the arbiter).
-public record PhaseJobResult(string? Source, bool CrossChecked, string? Output, string Message)
-{
-    public const string FileName = "resultado-arbitro.json";
-}
-
 // Runs the runs of a job: the two slots (A and B) at the same time, and within
 // each slot up to CatalogOptions.MaxParallelLots lots at once (the lots are
 // independent: each one only sees its own fragments). Each run is independent:

@@ -77,34 +77,6 @@ public static class JobEndpoints
             return Results.Accepted($"/jobs/{job.Id}", new JobView(job, runs));
         });
 
-        // A round of questions (v0): A ‖ B → arbiter over all the documentation.
-        // Storing the questions of the round comes in step 46; for now the
-        // result stays in data/jobs/{id}/ (GET /jobs/{id}/result).
-        app.MapPost("/projects/{projectId:int}/question-rounds",
-            async (int projectId, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
-        {
-            var project = await db.Projects.FindAsync(projectId);
-            if (project is null)
-            {
-                return Results.NotFound();
-            }
-
-            var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
-            var input = new PhaseInput { SystemName = project.SystemName, Language = project.Language };
-            var created = PhaseJobs.Create(project, documents, PhaseKind.Questions, input, [], options, provider.Name, Random.Shared);
-            if (created.Error is not null)
-            {
-                return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [created.Error] });
-            }
-
-            created.Plan!.Save(storage.JobFolder(created.Job!.Id));
-            db.Jobs.Add(created.Job);
-            db.Runs.AddRange(created.Runs);
-            await db.SaveChangesAsync();
-            queue.Enqueue(created.Job.Id);
-            return Results.Accepted($"/jobs/{created.Job.Id}", new JobView(created.Job, created.Runs));
-        });
-
         // The result of a v0 phase job: which output counts (the arbiter's, or
         // A's or B's without cross-check) and the output itself.
         app.MapGet("/jobs/{jobId:guid}/result", (Guid jobId, FileStorage storage) =>
