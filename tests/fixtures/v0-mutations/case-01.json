@@ -1,0 +1,28 @@
+{
+  "preguntas": [
+    {
+      "id": "P-001",
+      "pregunta": "¿Qué tiempo máximo de respuesta se considera «rápido» para la aplicación, por ejemplo al buscar o reservar una sala?",
+      "motivo": "Sin una cifra no se puede escribir el requisito de rendimiento.",
+      "fuentes": [
+        "DOC-01#F010"
+      ]
+    },
+    {
+      "id": "P-002",
+      "pregunta": "¿La integración con Outlook entra en esta versión del sistema o queda para más adelante?",
+      "motivo": "Decide si hay que escribir un requisito de integración con Outlook.",
+      "fuentes": [
+        "DOC-01#F013"
+      ]
+    },
+    {
+      "id": "P-003",
+      "pregunta": "Mientras el administrador no aprueba una reserva de más de 4 horas y más de 20 asistentes, ¿la sala queda bloqueada para esa franja?",
+      "motivo": "Sin la respuesta no se puede escribir qué hace el sistema con una reserva pendiente de aprobación.",
+      "fuentes": [
+        "DOC-01#F008"
+      ]
+    }
+  ]
+}

@@ -346,7 +346,7 @@ No sigue a la v2: es un prompt aparte, mucho más simple, para la iteración v0 
 - **Notación reducida:** EARS (seis patrones) siempre con `shall`; MASTeR solo para cualidades medibles y para `should` y `may`. Sin árbol de decisión.
 - **Prioridades:** fidelidad, cobertura y sin repeticiones. Con el documento entero, la repetición entre lotes de la v1.x no puede darse.
 - **Árbitro:** une los dos catálogos por significado, dice de qué ids de cada propuesta sale cada requisito, marca las discrepancias que la fuente no resuelve para que las revise el cliente y lista los descartes con su motivo.
-- **Validación de la plataforma** (`prompts/v0/validar_v0.py`): esquema, ids, tipo, EARS solo con `shall`, referencias a fragmentos y respuestas y, en el árbitro, que ningún requisito de las propuestas se pierda sin motivo.
+- **Validación de la plataforma** (`prompts/v0/validar_v0.py`): esquema, ids, tipo, EARS solo con `shall`, referencias a fragmentos y respuestas y, en el árbitro, que ningún requisito de las propuestas se pierda sin motivo. Su port a C# (`PhaseValidator`, paso 42) da las mismas líneas en el mismo orden en los 38 casos de `prompts/v0/test_v0.py` (los nueve ejemplos y una mutación por código); solo se comparan resumidas las de esquema, porque las dos librerías las redactan distinto. Una salida con errores se repara una vez, con el prompt original y el anexo común (`anexo_reparacion.md`).
 - **Tamaño:** 5.808 bytes, frente a 32.217 de la v1.4.
 
 ### Resultados

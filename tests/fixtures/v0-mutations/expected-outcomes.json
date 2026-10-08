@@ -1,0 +1,219 @@
+{
+  "case-01.json": {
+    "errors": [],
+    "warnings": []
+  },
+  "case-02.json": {
+    "errors": [],
+    "warnings": []
+  },
+  "case-03.json": {
+    "errors": [],
+    "warnings": []
+  },
+  "case-04.json": {
+    "errors": [],
+    "warnings": []
+  },
+  "case-05.json": {
+    "errors": [],
+    "warnings": []
+  },
+  "case-06.json": {
+    "errors": [],
+    "warnings": []
+  },
+  "case-07.json": {
+    "errors": [],
+    "warnings": [
+      "RF-009 COB: el requisito no está en ninguna historia."
+    ]
+  },
+  "case-08.json": {
+    "errors": [],
+    "warnings": []
+  },
+  "case-09.json": {
+    "errors": [],
+    "warnings": []
+  },
+  "case-10.json": {
+    "errors": [
+      "SCHEMA"
+    ],
+    "warnings": []
+  },
+  "case-11.json": {
+    "errors": [
+      "P-001 ID-DUP: id repetido."
+    ],
+    "warnings": []
+  },
+  "case-12.json": {
+    "errors": [
+      "P ID-SEQ: los ids deben ir seguidos desde P-001; llegan P-001, P-002, P-099."
+    ],
+    "warnings": []
+  },
+  "case-13.json": {
+    "errors": [
+      "P-001 REF-FRAG: el fragmento DOC-01#F099 no existe."
+    ],
+    "warnings": []
+  },
+  "case-14.json": {
+    "errors": [
+      "P-001 ARB-DE: P-099 no existe en la propuesta 1."
+    ],
+    "warnings": []
+  },
+  "case-15.json": {
+    "errors": [
+      "P-001 ARB-DE: `de` no tiene ningún id; di de qué elementos de las propuestas sale.",
+      "P-001 ARB-FALTA: el elemento P-001 de la propuesta 1 no está en ningún `de` ni en `descartadas`.",
+      "P-001 ARB-FALTA: el elemento P-001 de la propuesta 2 no está en ningún `de` ni en `descartadas`."
+    ],
+    "warnings": []
+  },
+  "case-16.json": {
+    "errors": [
+      "DESCARTADAS ARB-DE: P-099 no existe en la propuesta 2.",
+      "P-004 ARB-FALTA: el elemento P-004 de la propuesta 2 no está en ningún `de` ni en `descartadas`."
+    ],
+    "warnings": []
+  },
+  "case-17.json": {
+    "errors": [
+      "P-004 ARB-FALTA: el elemento P-004 de la propuesta 2 no está en ningún `de` ni en `descartadas`."
+    ],
+    "warnings": []
+  },
+  "case-18.json": {
+    "errors": [
+      "SCHEMA"
+    ],
+    "warnings": []
+  },
+  "case-19.json": {
+    "errors": [
+      "RF-001 TIPO: el prefijo no coincide con el tipo RI.",
+      "RF ID-SEQ: los ids deben ir seguidos desde RF-001; llegan RF-002, RF-003, RF-004, RF-005, RF-006, RF-007, RF-008, RF-009.",
+      "RI ID-SEQ: los ids deben ir seguidos desde RI-001; llegan RF-001."
+    ],
+    "warnings": []
+  },
+  "case-20.json": {
+    "errors": [
+      "RF-001 EARS: un requisito EARS siempre es shall; para should usa MASTeR."
+    ],
+    "warnings": []
+  },
+  "case-21.json": {
+    "errors": [
+      "RF-001 SIN-ORIGEN: cita al menos un fragmento o una pregunta respondida."
+    ],
+    "warnings": []
+  },
+  "case-22.json": {
+    "errors": [
+      "RF-001 REF-FRAG: el fragmento DOC-01#F099 no existe."
+    ],
+    "warnings": []
+  },
+  "case-23.json": {
+    "errors": [
+      "RF-001 REF-PREG: la pregunta P-005 no existe o no está respondida."
+    ],
+    "warnings": []
+  },
+  "case-24.json": {
+    "errors": [
+      "RF-001 REF-PREG: la pregunta P-099 no existe o no está respondida."
+    ],
+    "warnings": []
+  },
+  "case-25.json": {
+    "errors": [
+      "RF-001 ID-DUP: id repetido."
+    ],
+    "warnings": []
+  },
+  "case-26.json": {
+    "errors": [
+      "RT ID-SEQ: los ids deben ir seguidos desde RT-001; llegan RT-002."
+    ],
+    "warnings": []
+  },
+  "case-27.json": {
+    "errors": [
+      "RF-001 ARB-DE: RF-099 no existe en la propuesta 2."
+    ],
+    "warnings": []
+  },
+  "case-28.json": {
+    "errors": [
+      "RF-011 ARB-FALTA: el elemento RF-011 de la propuesta 2 no está en ningún `de` ni en `descartados`."
+    ],
+    "warnings": []
+  },
+  "case-29.json": {
+    "errors": [
+      "SCHEMA"
+    ],
+    "warnings": []
+  },
+  "case-30.json": {
+    "errors": [
+      "SCHEMA"
+    ],
+    "warnings": []
+  },
+  "case-31.json": {
+    "errors": [
+      "HU-001 REF-REQ: el requisito RF-099 no existe en el catálogo."
+    ],
+    "warnings": []
+  },
+  "case-32.json": {
+    "errors": [
+      "HU-001 ID-DUP: id repetido."
+    ],
+    "warnings": []
+  },
+  "case-33.json": {
+    "errors": [
+      "EP ID-SEQ: los ids deben ir seguidos desde EP-01; llegan EP-01, EP-09."
+    ],
+    "warnings": []
+  },
+  "case-34.json": {
+    "errors": [
+      "CA ID-SEQ: los ids deben ir seguidos desde CA-001; llegan CA-001, CA-002, CA-003, CA-004, CA-005, CA-006, CA-007, CA-008, CA-099."
+    ],
+    "warnings": []
+  },
+  "case-35.json": {
+    "errors": [
+      "T ID-SEQ: los ids deben ir seguidos desde T-001; llegan T-001, T-002, T-003, T-004, T-005, T-006, T-007, T-008, T-009, T-010, T-099."
+    ],
+    "warnings": []
+  },
+  "case-36.json": {
+    "errors": [],
+    "warnings": [
+      "RF-004 COB: el requisito no está en ninguna historia."
+    ]
+  },
+  "case-37.json": {
+    "errors": [
+      "HU-001 ARB-DE: HU-099 no existe en la propuesta 1."
+    ],
+    "warnings": []
+  },
+  "case-38.json": {
+    "errors": [
+      "HU-007 ARB-FALTA: el elemento HU-007 de la propuesta 2 no está en ningún `de` ni en `descartadas`."
+    ],
+    "warnings": []
+  }
+}

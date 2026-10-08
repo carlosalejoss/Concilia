@@ -22,6 +22,10 @@
     <!-- Catalog v2 (validators only, until the platform runs it). -->
     <EmbeddedResource Include="..\..\prompts\generacion_requisitos\inventory_v2.schema.json" LogicalName="inventory.schema.json" />
     <EmbeddedResource Include="..\..\prompts\generacion_requisitos\requirements_v2.schema.json" LogicalName="requirements_v2.schema.json" />
+    <!-- Iteration v0 (step 42): the prompts, the repair annex and the schemas of every phase.
+         LogicalName keeps the folder: "v0/catalogo.md", "v0/esquemas/catalogo.schema.json". -->
+    <EmbeddedResource Include="..\..\prompts\v0\*.md" Exclude="..\..\prompts\v0\README.md;..\..\prompts\v0\CHANGELOG.md" LogicalName="v0/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\..\prompts\v0\esquemas\*.schema.json" LogicalName="v0/esquemas/%(Filename)%(Extension)" />
     <!-- The ReservaSalas example: FakeProvider answers it with its catalog. -->
     <EmbeddedResource Include="..\..\prompts\generacion_requisitos\ejemplo\fragmentos.json" LogicalName="ejemplo_fragmentos.json" />
     <EmbeddedResource Include="..\..\prompts\generacion_requisitos\ejemplo\catalogo_ejemplo_v1.3.json" LogicalName="ejemplo_catalogo.json" />

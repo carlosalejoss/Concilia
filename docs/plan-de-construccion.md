@@ -190,8 +190,8 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
 
 ## Hito 8: base común del flujo v0
 
-- [ ] 41. Prompts v0 y esquemas mínimos en `prompts/v0/` (propuesta de Claude): `preguntas.md`, `catalogo.md`, `backlog.md`, `arbitro_preguntas.md`, `arbitro_catalogo.md`, `arbitro_backlog.md`, `mockup.md` y un `*.schema.json` por fase. Cada prompt cabe en una página. Sección «v0» en `docs/evolucion-prompt-requisitos.md`. El autor los revisa y aprueba antes del paso 42.
-- [ ] 42. Tarea de fase genérica en Core, con tests con ReservaSalas:
+- [x] 41. Prompts v0 y esquemas mínimos en `prompts/v0/` (propuesta de Claude): `preguntas.md`, `catalogo.md`, `backlog.md`, `arbitro_preguntas.md`, `arbitro_catalogo.md`, `arbitro_backlog.md`, `mockup.md` y un `*.schema.json` por fase. Cada prompt cabe en una página. Sección «v0» en `docs/evolucion-prompt-requisitos.md`. El autor los revisa y aprueba antes del paso 42.
+- [x] 42. Tarea de fase genérica en Core, con tests con ReservaSalas:
   - montaje del prompt desde la plantilla (`{{...}}`), los archivos de `input/` y la salida esperada;
   - validador por esquema (LateApexEarlySpeed), con comprobación de ids y referencias;
   - una reparación con la lista de errores;

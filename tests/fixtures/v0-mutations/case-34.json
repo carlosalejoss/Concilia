@@ -1,0 +1,224 @@
+{
+  "epicas": [
+    {
+      "id": "EP-01",
+      "titulo": "Reservas",
+      "descripcion": "Todo lo relativo a reservar una sala.",
+      "historias": [
+        {
+          "id": "HU-001",
+          "titulo": "Nueva reserva",
+          "como": "empleado",
+          "quiero": "reservar una sala para una fecha y una franja con un número de asistentes",
+          "para": "usarla en una reunión",
+          "requisitos": [
+            "RF-001",
+            "RF-002",
+            "RF-003",
+            "RF-004",
+            "RNF-001"
+          ],
+          "criterios": [
+            {
+              "id": "CA-001",
+              "escenario": "Reserva correcta",
+              "dado": "una sala libre y fuera de mantenimiento",
+              "cuando": "el empleado confirma la reserva",
+              "entonces": "la reserva se guarda y llega un correo de confirmación en menos de 1 minuto"
+            },
+            {
+              "id": "CA-002",
+              "escenario": "Franja ocupada",
+              "dado": "una sala reservada en esa franja",
+              "cuando": "el empleado intenta reservarla",
+              "entonces": "se rechaza la reserva y se informa al empleado"
+            }
+          ],
+          "tareas": [
+            {
+              "id": "T-001",
+              "titulo": "Formulario de reserva"
+            },
+            {
+              "id": "T-002",
+              "titulo": "Lógica de reserva"
+            },
+            {
+              "id": "T-003",
+              "titulo": "Correo de confirmación"
+            }
+          ]
+        },
+        {
+          "id": "HU-002",
+          "titulo": "Catering",
+          "como": "empleado",
+          "quiero": "pedir catering con la reserva",
+          "para": "organizar la reunión completa",
+          "requisitos": [
+            "RF-005"
+          ],
+          "criterios": [
+            {
+              "id": "CA-003",
+              "escenario": "Con módulo de catering",
+              "dado": "el módulo de catering contratado",
+              "cuando": "el empleado reserva",
+              "entonces": "puede añadir catering"
+            }
+          ],
+          "tareas": [
+            {
+              "id": "T-004",
+              "titulo": "Opción de catering"
+            }
+          ]
+        },
+        {
+          "id": "HU-003",
+          "titulo": "Festivos",
+          "como": "empleado",
+          "quiero": "que se me avise si reservo en festivo",
+          "para": "no reservar por error",
+          "requisitos": [
+            "RF-006"
+          ],
+          "criterios": [
+            {
+              "id": "CA-004",
+              "escenario": "Modo festivo",
+              "dado": "el modo festivo activado",
+              "cuando": "el empleado intenta reservar",
+              "entonces": "aparece un aviso de día festivo"
+            }
+          ],
+          "tareas": [
+            {
+              "id": "T-005",
+              "titulo": "Aviso de festivo"
+            }
+          ]
+        },
+        {
+          "id": "HU-004",
+          "titulo": "Mis reservas de hoy",
+          "como": "empleado",
+          "quiero": "ver mis reservas del día",
+          "para": "saber dónde tengo reuniones hoy",
+          "requisitos": [
+            "RF-009"
+          ],
+          "criterios": [
+            {
+              "id": "CA-005",
+              "escenario": "Reservas del día",
+              "dado": "un empleado con sesión iniciada y el calendario corporativo sincronizado",
+              "cuando": "abre la aplicación",
+              "entonces": "ve sus reservas del día"
+            }
+          ],
+          "tareas": [
+            {
+              "id": "T-006",
+              "titulo": "Vista de reservas del día"
+            },
+            {
+              "id": "T-007",
+              "titulo": "Comprobación de la sincronización del calendario corporativo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EP-02",
+      "titulo": "Administración",
+      "descripcion": "Tareas del administrador.",
+      "historias": [
+        {
+          "id": "HU-005",
+          "titulo": "Gestionar reservas grandes",
+          "como": "administrador",
+          "quiero": "revisar y aprobar o rechazar las reservas de más de 4 horas y más de 20 asistentes",
+          "para": "controlar las reservas grandes",
+          "requisitos": [
+            "RF-007",
+            "RF-008"
+          ],
+          "criterios": [
+            {
+              "id": "CA-006",
+              "escenario": "Reserva grande",
+              "dado": "una reserva de más de 4 horas y más de 20 asistentes",
+              "cuando": "el empleado la confirma",
+              "entonces": "queda pendiente de aprobación y la sala bloqueada"
+            },
+            {
+              "id": "CA-007",
+              "escenario": "Decisión del administrador",
+              "dado": "una reserva pendiente",
+              "cuando": "el administrador la aprueba o la rechaza",
+              "entonces": "la reserva queda confirmada o anulada"
+            }
+          ],
+          "tareas": [
+            {
+              "id": "T-008",
+              "titulo": "Bandeja de reservas pendientes"
+            }
+          ]
+        },
+        {
+          "id": "HU-006",
+          "titulo": "Exportar a CSV",
+          "como": "administrador",
+          "quiero": "exportar el histórico de reservas a CSV",
+          "para": "tener un registro",
+          "requisitos": [
+            "RF-010"
+          ],
+          "criterios": [
+            {
+              "id": "CA-008",
+              "escenario": "Exportar",
+              "dado": "reservas en el histórico",
+              "cuando": "el administrador pulsa exportar",
+              "entonces": "se descarga un CSV con las reservas"
+            }
+          ],
+          "tareas": [
+            {
+              "id": "T-009",
+              "titulo": "Exportación CSV"
+            }
+          ]
+        },
+        {
+          "id": "HU-007",
+          "titulo": "Revisar reservas no utilizadas",
+          "como": "administrador",
+          "quiero": "ver cada mes las reservas que no se han utilizado",
+          "para": "detectar abusos",
+          "requisitos": [
+            "RF-001"
+          ],
+          "criterios": [
+            {
+              "id": "CA-099",
+              "escenario": "Revisión mensual",
+              "dado": "un mes con reservas no utilizadas",
+              "cuando": "el administrador abre la revisión",
+              "entonces": "ve las reservas no utilizadas"
+            }
+          ],
+          "tareas": [
+            {
+              "id": "T-010",
+              "titulo": "Informe de reservas no utilizadas"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
