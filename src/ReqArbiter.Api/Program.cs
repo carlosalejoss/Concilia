@@ -50,6 +50,7 @@ app.MapProjectEndpoints();
 app.MapProjectFileEndpoints();
 app.MapRunEndpoints();
 app.MapJobEndpoints();
+app.MapFlowEndpoints();
 
 app.Run();
 
