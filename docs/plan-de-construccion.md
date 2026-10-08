@@ -201,7 +201,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
   - qué pasa si falla uno de los modelos o los dos;
   - `RUNNER_MODEL_ARBITER` en la configuración y en `.env.example`;
   - `FakeProvider` escribe salidas válidas de cada fase, y su árbitro une las dos propuestas.
-- [ ] 44. Estado del flujo en Core (fases, condiciones de paso y desactualización), con un test por regla, y `GET /projects/{id}/flow`.
+- [x] 44. Estado del flujo en Core (fases, condiciones de paso y desactualización), con un test por regla, y `GET /projects/{id}/flow`.
 - [ ] 45. Web: página del proyecto por pasos (Documentos, Preguntas, Catálogo, Backlog y Mockup), con el estado de cada paso y los botones desactivados con su motivo. Las consolas actuales pasan a una pestaña «Ejecuciones», donde el catálogo v1.4 queda como «experimental».
 
 **Hecho cuando:** con `Fake`, la página muestra los cinco pasos y sus bloqueos, y un trabajo ejecuta A y B en paralelo y después el árbitro, con las tres consolas.
