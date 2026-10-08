@@ -1,0 +1,10 @@
+{"preguntas":[
+{"id":"P-001","pregunta":"¿Qué tiempo máximo de respuesta se considera «rápido» para la aplicación, por ejemplo al buscar o reservar una sala?","motivo":"Sin una cifra no se puede escribir el requisito de rendimiento.","fuentes":["DOC-01#F010"],"de":{"propuesta_1":["P-001"],"propuesta_2":["P-001"]},"explicacion":"Las dos piden la cifra de «rápida»; se queda la redacción de la propuesta 1, que da ejemplos de operaciones."},
+{"id":"P-002","pregunta":"¿La integración con Outlook entra en esta versión del sistema o queda para más adelante?","motivo":"Decide si hay que escribir un requisito de integración con Outlook.","fuentes":["DOC-01#F013"],"de":{"propuesta_1":["P-002"],"propuesta_2":[]},"explicacion":"Solo en la propuesta 1; es una duda de alcance que la documentación no resuelve."},
+{"id":"P-003","pregunta":"Mientras el administrador no aprueba una reserva de más de 4 horas y más de 20 asistentes, ¿la sala queda bloqueada para esa franja?","motivo":"Sin la respuesta no se puede escribir qué hace el sistema con una reserva pendiente de aprobación.","fuentes":["DOC-01#F008"],"de":{"propuesta_1":["P-003"],"propuesta_2":[]},"explicacion":"Solo en la propuesta 1; la documentación no dice qué pasa mientras la reserva espera la aprobación."},
+{"id":"P-004","pregunta":"¿Qué datos de cada reserva debe incluir el fichero CSV del histórico?","motivo":"Sin la lista de datos no se puede escribir el requisito de exportación.","fuentes":["DOC-01#F011"],"de":{"propuesta_1":[],"propuesta_2":["P-002"]},"explicacion":"Solo en la propuesta 2; falta un dato que el cliente debe decidir."},
+{"id":"P-005","pregunta":"¿La revisión mensual de las reservas no utilizadas la hace el administrador dentro de la aplicación?","motivo":"Decide si la revisión es una funcionalidad del sistema o una tarea fuera de él.","fuentes":["DOC-01#F014"],"de":{"propuesta_1":[],"propuesta_2":["P-003"]},"explicacion":"Solo en la propuesta 2; es una duda de alcance."}
+],
+"descartadas":[
+{"propuesta":2,"id":"P-004","motivo":"La documentación ya lo dice: Chrome y Edge (DOC-01#F012)."}
+]}

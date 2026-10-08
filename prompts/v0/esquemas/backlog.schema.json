@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tfg/v0/backlog.schema.json",
+  "title": "Backlog v0 (salida de Modelo A / Modelo B)",
+  "$comment": "Solo la estructura. Las reglas entre campos (ids únicos y consecutivos, referencias, `de` con algún id…) las comprueba la plataforma: ver validar_v0.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "epicas"
+  ],
+  "properties": {
+    "epicas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/epica"
+      }
+    }
+  },
+  "$defs": {
+    "epica": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "titulo",
+        "descripcion",
+        "historias"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^EP-[0-9]{2,}$"
+        },
+        "titulo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "descripcion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "historias": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/historia"
+          }
+        }
+      }
+    },
+    "historia": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "titulo",
+        "como",
+        "quiero",
+        "para",
+        "requisitos",
+        "criterios",
+        "tareas"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^HU-[0-9]{3,}$"
+        },
+        "titulo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "como": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quiero": {
+          "type": "string",
+          "minLength": 1
+        },
+        "para": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requisitos": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(RF|RNF|RA|RT|RI)-[0-9]{3,}$"
+          },
+          "minItems": 1
+        },
+        "criterios": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/criterio"
+          }
+        },
+        "tareas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/tarea"
+          }
+        }
+      }
+    },
+    "criterio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "escenario",
+        "dado",
+        "cuando",
+        "entonces"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^CA-[0-9]{3,}$"
+        },
+        "escenario": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dado": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cuando": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entonces": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "tarea": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "titulo"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^T-[0-9]{3,}$"
+        },
+        "titulo": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

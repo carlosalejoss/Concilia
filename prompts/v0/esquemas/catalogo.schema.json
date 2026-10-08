@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tfg/v0/catalogo.schema.json",
+  "title": "Catálogo de requisitos v0 (salida de Modelo A / Modelo B)",
+  "$comment": "Solo la estructura. Las reglas entre campos (ids únicos y consecutivos, referencias, `de` con algún id…) las comprueba la plataforma: ver validar_v0.py. También: prefijo del id igual al tipo, EARS solo con shall y al menos una fuente o una pregunta.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requisitos"
+  ],
+  "properties": {
+    "requisitos": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/requisito"
+      }
+    }
+  },
+  "$defs": {
+    "requisito": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "tipo",
+        "notacion",
+        "obligatoriedad",
+        "texto",
+        "fuentes",
+        "preguntas"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(RF|RNF|RA|RT|RI)-[0-9]{3,}$"
+        },
+        "tipo": {
+          "enum": [
+            "RF",
+            "RNF",
+            "RA",
+            "RT",
+            "RI"
+          ]
+        },
+        "notacion": {
+          "enum": [
+            "EARS",
+            "MASTeR"
+          ]
+        },
+        "obligatoriedad": {
+          "enum": [
+            "shall",
+            "should",
+            "may"
+          ]
+        },
+        "texto": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fuentes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^DOC-[0-9]{2,}#F[0-9]{3,}$"
+          }
+        },
+        "preguntas": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^P-[0-9]{3,}$"
+          }
+        }
+      }
+    }
+  }
+}
