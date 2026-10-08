@@ -1,0 +1,64 @@
+# Prompts v0
+
+Prompts muy básicos de la iteración v0 (D-65, D-73): sirven para tener el flujo completo funcionando de punta a punta. Después se mejoran fase a fase. Los propuso Claude el 08-10-2026 y los revisa el autor (paso 41 del plan).
+
+## Ficheros
+
+| Fase | Prompt | El modelo escribe | Esquema | Marcadores |
+|---|---|---|---|---|
+| Preguntas, A y B | `preguntas.md` | `output/preguntas.json` | `esquemas/preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `PREGUNTAS_PREVIAS`, `DOCUMENTACION` |
+| Preguntas, árbitro | `arbitro_preguntas.md` | `output/preguntas.json` | `esquemas/arbitro_preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `PREGUNTAS_PREVIAS`, `DOCUMENTACION`, `PROPUESTA_1`, `PROPUESTA_2` |
+| Catálogo, A y B | `catalogo.md` | `output/catalogo.json` | `esquemas/catalogo.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `DOCUMENTACION` |
+| Catálogo, árbitro | `arbitro_catalogo.md` | `output/catalogo.json` | `esquemas/arbitro_catalogo.schema.json` | los del catálogo, `PROPUESTA_1`, `PROPUESTA_2` |
+| Backlog, A y B | `backlog.md` | `output/backlog.json` | `esquemas/backlog.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `CATALOGO` |
+| Backlog, árbitro | `arbitro_backlog.md` | `output/backlog.json` | `esquemas/arbitro_backlog.schema.json` | los del backlog, `PROPUESTA_1`, `PROPUESTA_2` |
+| Mockup (Sonnet 5.5) | `mockup.md` | `output/mockup.html` | comprobaciones propias (abajo) | `NOMBRE_SISTEMA`, `IDIOMA`, `BACKLOG` |
+| Reparación, todas | `anexo_reparacion.md` | el mismo fichero | — | `INTENTO`, `FICHERO`, `SALIDA_PREVIA`, `ERRORES` |
+
+Todos los prompts terminan con la línea `VEREDICTO:` que ya lee `VerdictParser`, y piden una sola llamada a Write.
+
+## Lo que monta la plataforma
+
+Los valores se insertan en una sola pasada, como en `PromptBuilder.Fill`: un documento que contenga `{{…}}` llega al modelo tal cual.
+
+- `NOMBRE_SISTEMA`, `IDIOMA` y `GLOSARIO`: los ajustes del proyecto.
+- `DOCUMENTACION`: `Fragmenter.DocumentBlock` con **todos** los fragmentos, sin lotes: `<documento id="DOC-01" nombre="…"><f id="DOC-01#F001" sec="§1">…</f>…</documento>`.
+- `PREGUNTAS_PREVIAS`: todas las preguntas de rondas anteriores, respondidas y descartadas: `<pregunta id="P-003" estado="respondida"><texto>…</texto><respuesta>…</respuesta></pregunta>`. Una descartada va sin `<respuesta>`. Vacío en la primera ronda.
+- `RESPUESTAS`: solo las respondidas, `<pregunta id="P-003"><texto>…</texto><respuesta>…</respuesta></pregunta>`.
+- `CATALOGO`: el catálogo **validado**, con los campos de `catalogo.schema.json` (sin `de`, `discrepancia` ni `explicacion`).
+- `BACKLOG`: el backlog **validado**, con los campos de `backlog.schema.json`.
+- `PROPUESTA_1` y `PROPUESTA_2`: el JSON de A y de B tal como lo escribieron, en orden aleatorio. El reparto se guarda en `plan.json` del trabajo, y la plataforma traduce los `de` del árbitro a A y B.
+- Anexo de reparación: `FICHERO` es la ruta de salida de la fase, `SALIDA_PREVIA` el fichero del intento anterior y `ERRORES` una línea por error de las comprobaciones.
+
+## Comprobaciones
+
+Los esquemas solo describen la estructura. Las reglas entre campos están en `validar_v0.py`, la referencia en Python del validador en C# del paso 42. Cada error empieza por el elemento afectado y un código, y va tal cual al anexo de reparación:
+
+| Código | Qué comprueba | Fases |
+|---|---|---|
+| `SCHEMA` | El JSON cumple su esquema | todas |
+| `ID-DUP`, `ID-SEQ` | Ids únicos y consecutivos (por tipo en el catálogo) | todas |
+| `REF-FRAG` | Los fragmentos citados existen | preguntas, catálogo |
+| `TIPO`, `EARS`, `SIN-ORIGEN` | Prefijo igual al tipo; EARS solo con `shall`; al menos una fuente o una pregunta | catálogo |
+| `REF-PREG` | Las preguntas citadas existen y están respondidas | catálogo |
+| `REF-REQ` | Los requisitos citados existen en el catálogo validado | backlog |
+| `ARB-DE`, `ARB-FALTA` | Cada `de` tiene algún id y todos existen; cada elemento de cada propuesta acaba en un `de` o en los descartes | árbitros |
+| `COB` (aviso) | Requisitos `RF` o `RI` sin historia | backlog |
+
+Mockup (paso 60): el fichero existe, ocupa como mucho 1 MB, empieza por `<!doctype html>`, tiene `const DATOS`, no carga recursos externos (`src`, `href` o `url(` con `http://`, `https://` o `//`) y cada historia del backlog validado tiene su `data-hu`.
+
+`python validar_v0.py` valida los ejemplos. Necesita `jsonschema` 4 o superior (draft 2020-12).
+
+## Ejemplo
+
+`ejemplo/` usa ReservaSalas: `generacion_requisitos/ejemplo/fuentes/DOC-01.txt` y sus 14 fragmentos de `fragmentos.json`. Cada fase tiene dos propuestas y la salida del árbitro, con diferencias pensadas para ver cómo se une:
+
+- **Preguntas:** las dos piden la cifra de «rápida» (se unen). Cada una trae preguntas que la otra no tiene (se mantienen), y la 2 pregunta por los navegadores, que ya da la documentación (se descarta). `respuestas.json` contesta cuatro y descarta la de la revisión mensual.
+- **Catálogo:** los mismos requisitos con ids en otro orden. La 2 dice «o» donde la fuente dice «y» (gana la 1) e inventa un requisito con la revisión mensual (se descarta). La 1 no tiene el de aprobar o rechazar (se toma de la 2). En el día festivo hay una discrepancia real: la 2 impide reservar y la fuente no lo dice.
+- **Backlog:** la 2 junta en una historia lo que la 1 separa en dos. La 1 deja `RF-009` sin historia (aviso `COB`) y la 2 tiene una historia que no está en el catálogo (se descarta).
+
+## Qué no hace la v0
+
+Todo esto queda para las versiones siguientes: los slots y el texto generado por la plataforma (D-23), los lotes, el inventario de funcionalidades, los criterios etiquetados, las preguntas abiertas dentro del catálogo, los ejemplos dentro del prompt y la comparación por embeddings (D-68).
+
+Tamaño: los ocho ficheros suman unos 28 KB, menos que el prompt de requisitos v1.4 solo (32 KB).

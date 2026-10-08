@@ -1,0 +1,8 @@
+{"$comment":"Estado de las preguntas tras la ronda de preguntas_arbitro.json, tal como lo guarda la plataforma. Es la entrada {{RESPUESTAS}} del catálogo y del backlog (solo las respondidas).",
+"preguntas":[
+{"id":"P-001","pregunta":"¿Qué tiempo máximo de respuesta se considera «rápido» para la aplicación, por ejemplo al buscar o reservar una sala?","estado":"respondida","respuesta":"Cualquier búsqueda o reserva debe responder en menos de 2 segundos."},
+{"id":"P-002","pregunta":"¿La integración con Outlook entra en esta versión del sistema o queda para más adelante?","estado":"respondida","respuesta":"Queda fuera de esta versión."},
+{"id":"P-003","pregunta":"Mientras el administrador no aprueba una reserva de más de 4 horas y más de 20 asistentes, ¿la sala queda bloqueada para esa franja?","estado":"respondida","respuesta":"Sí. La reserva queda pendiente de aprobación y la sala bloqueada en esa franja hasta que el administrador la apruebe o la rechace."},
+{"id":"P-004","pregunta":"¿Qué datos de cada reserva debe incluir el fichero CSV del histórico?","estado":"respondida","respuesta":"Fecha, sala, empleado, hora de inicio, hora de fin y número de asistentes."},
+{"id":"P-005","pregunta":"¿La revisión mensual de las reservas no utilizadas la hace el administrador dentro de la aplicación?","estado":"descartada","respuesta":null}
+]}

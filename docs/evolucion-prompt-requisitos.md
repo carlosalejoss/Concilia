@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0 | 08-10-2026 | Prompt muy básico para tener el flujo completo (iteración v0): documento entero sin lotes, respuestas del cliente como entrada, frase EARS/MASTeR escrita por el modelo y árbitro que une A y B | Pendiente (paso 53) | Pendiente |
 
 ## Cómo se mide
 
@@ -332,3 +333,30 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0 (08-10-2026)
+
+No sigue a la v2: es un prompt aparte, mucho más simple, para la iteración v0 (D-65). El autor decidió tener el TFG completo de punta a punta (preguntas, catálogo, backlog y mockup) con prompts básicos antes de seguir mejorando este. La v2 queda aplazada, no descartada. Lo propuso Claude (D-73). Está en `prompts/v0/catalogo.md`, junto al prompt del árbitro (`arbitro_catalogo.md`), y el detalle está en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- **Entrada:** el documento entero, sin lotes ni índice, y las respuestas del cliente de la fase de preguntas, que prevalecen sobre la documentación. Ya no lleva dudas resueltas vacías: la fase de preguntas existe antes que el catálogo.
+- **Salida mínima:** por requisito, `id`, `tipo` (`RF`, `RNF`, `RA`, `RT`, `RI`), `notacion`, `obligatoriedad`, `texto`, `fuentes` (fragmentos) y `preguntas` (respuestas en que se apoya). Sin inventario, criterios, descartes, preguntas abiertas ni autoverificación.
+- **El modelo escribe la frase entera**, con las keywords en mayúsculas. Es un paso atrás respecto a D-23 (la plataforma generaba la frase a partir de los slots), aceptado para v0 (D-74).
+- **Notación reducida:** EARS (seis patrones) siempre con `shall`; MASTeR solo para cualidades medibles y para `should` y `may`. Sin árbol de decisión.
+- **Prioridades:** fidelidad, cobertura y sin repeticiones. Con el documento entero, la repetición entre lotes de la v1.x no puede darse.
+- **Árbitro:** une los dos catálogos por significado, dice de qué ids de cada propuesta sale cada requisito, marca las discrepancias que la fuente no resuelve para que las revise el cliente y lista los descartes con su motivo.
+- **Validación de la plataforma** (`prompts/v0/validar_v0.py`): esquema, ids, tipo, EARS solo con `shall`, referencias a fragmentos y respuestas y, en el árbitro, que ningún requisito de las propuestas se pierda sin motivo.
+- **Tamaño:** 5.808 bytes, frente a 32.217 de la v1.4.
+
+### Resultados
+
+Pendientes: se medirá en el paso 53 con ReservaSalas y en el paso 65 con un segundo documento público. El ejemplo de `prompts/v0/ejemplo/` valida sin errores.
+
+### Qué hay que mejorar
+
+Se sabe de antemano, porque se ha simplificado a propósito:
+
+- Sin inventario, la cobertura depende de cada modelo y del árbitro; el validador no puede comprobarla.
+- Sin citas literales ni slots, la fidelidad y la conformidad a las plantillas solo se revisan a mano.
+- Los términos vagos y las cifras inventadas no se detectan automáticamente.
