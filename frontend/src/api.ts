@@ -87,6 +87,26 @@ export type PhaseResult = {
   salida: unknown
 }
 
+// A question of the project (GET /projects/{id}/questions), from a round.
+export type QuestionStatus = 'Pending' | 'Answered' | 'Discarded'
+
+export type Question = {
+  id: number
+  projectId: number
+  jobId: string // the round where it was asked
+  code: string // P-001, numbered by project
+  text: string
+  reason: string // which requirement cannot be written without the answer
+  sources: string[]
+  origin: 'A' | 'B' | 'ambas'
+  arbiterNote: string | null
+  status: QuestionStatus
+  answer: string | null
+  discardReason: string | null
+  createdAt: string
+  updatedAt: string | null
+}
+
 // GET /projects/{id}/flow: the state of each step of the project.
 export type FlowStep = 'Documents' | 'Questions' | 'Catalog' | 'Backlog' | 'Mockup'
 export type StepState = 'Blocked' | 'Available' | 'InProgress' | 'Draft' | 'Validated'
