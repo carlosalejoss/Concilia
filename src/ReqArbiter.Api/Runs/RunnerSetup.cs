@@ -44,10 +44,6 @@ public class RunnerOptions
     // parts has no hard limit, but past this size the model runs out of turns
     // or time, or compacts so often that it loses too much.
     public int MaxDocumentationTokens { get; set; } = 300_000;
-
-    // Above this size the web warns that the documentation does not fit in
-    // the window at once: it is read by parts and may be compacted.
-    public const int LargeDocumentationTokens = 80_000;
 }
 
 // "Mockup" section of the configuration (in Docker: Mockup__Provider, etc.):
