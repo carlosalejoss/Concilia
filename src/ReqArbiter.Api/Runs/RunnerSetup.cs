@@ -61,7 +61,11 @@ public class MockupOptions
     // The whole .html goes in one Write call, so it needs room.
     public int MaxOutputTokens { get; set; } = 64_000;
 
-    public TimeSpan TotalTimeout { get; set; } = TimeSpan.FromMinutes(15);
+    // The whole .html comes in one answer, and Claude Code writes no line
+    // while the model writes it: with 37 stories a real run passed the first
+    // limit of 15 minutes (09-10-2026). Raised to 30 without output and 45 in all.
+    public TimeSpan HeartbeatTimeout { get; set; } = TimeSpan.FromMinutes(30);
+    public TimeSpan TotalTimeout { get; set; } = TimeSpan.FromMinutes(45);
 
     // The backlog is read by parts too.
     public int MaxTurns { get; set; } = 30;

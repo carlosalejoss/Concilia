@@ -141,6 +141,7 @@ public static class FakePhaseOutput
         JsonObject Joined(JsonObject element)
         {
             var copy = element.DeepClone().AsObject();
+            copy["id"] = ProposalIds.Bare(element["id"]!.GetValue<string>()); // the joined element has its own id, without prefix
             var pair = position < others.Count ? new JsonArray(others[position]["id"]!.GetValue<string>()) : new JsonArray();
             position++;
             copy["de"] = new JsonObject { ["propuesta_1"] = new JsonArray(element["id"]!.GetValue<string>()), ["propuesta_2"] = pair };

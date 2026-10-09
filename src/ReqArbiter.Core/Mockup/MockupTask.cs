@@ -39,8 +39,8 @@ public record MockupPlan(string SystemName, string Language, string Backlog, IRe
 public record MockupRunOptions
 {
     public int MaxOutputTokens { get; init; } = 64_000;
-    public TimeSpan HeartbeatTimeout { get; init; } = TimeSpan.FromMinutes(15);
-    public TimeSpan TotalTimeout { get; init; } = TimeSpan.FromMinutes(15);
+    public TimeSpan HeartbeatTimeout { get; init; } = TimeSpan.FromMinutes(30);
+    public TimeSpan TotalTimeout { get; init; } = TimeSpan.FromMinutes(45);
     public int MaxTurns { get; init; } = 30;
 }
 

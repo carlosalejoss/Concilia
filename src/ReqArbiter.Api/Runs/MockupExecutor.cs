@@ -23,6 +23,7 @@ public class MockupExecutor(
         var request = MockupTask.BuildRequest(plan, run.Id, run.Model, storage.RunFolder(run.Id), new MockupRunOptions
         {
             MaxOutputTokens = options.MaxOutputTokens,
+            HeartbeatTimeout = options.HeartbeatTimeout,
             TotalTimeout = options.TotalTimeout,
             MaxTurns = options.MaxTurns,
         });

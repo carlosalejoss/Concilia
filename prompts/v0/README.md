@@ -46,7 +46,7 @@ Los esquemas solo describen la estructura. Las reglas entre campos están en `va
 | `TIPO`, `EARS`, `SIN-ORIGEN` | Prefijo igual al tipo; EARS solo con `shall`; al menos una fuente o una pregunta | catálogo |
 | `REF-PREG` | Las preguntas citadas existen y están respondidas | catálogo |
 | `REF-REQ` | Los requisitos citados existen en el catálogo validado | backlog |
-| `ARB-DE`, `ARB-FALTA` | Cada `de` tiene algún id y todos existen; cada elemento de cada propuesta acaba en un `de` o en los descartes | árbitros |
+| `ARB-DE`, `ARB-FALTA` | Cada `de` tiene algún id y todos existen; cada elemento de cada propuesta acaba en un `de` o en los descartes. Desde la v0.3 el árbitro escribe los ids con el número de su propuesta (`1:P-003`); la plataforma los quita antes de validar, y uno con el número de la otra propuesta es un `ARB-DE` | árbitros |
 | `COB` (aviso) | Requisitos `RF` o `RI` sin historia | backlog |
 | `LECTURA` | El modelo leyó todas las líneas de los ficheros que tiene que leer enteros, sumando los intentos del run (lo mira la plataforma en las llamadas a `Read`, no está en `validar_v0.py`) | todas, también el mockup |
 | `REF-PREG`, `ID-DUP`, `FALTA` | Una sugerencia por cada pregunta pendiente, sin repetir ni sugerir para otras | sugerencias |

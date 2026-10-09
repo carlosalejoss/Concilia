@@ -1,5 +1,13 @@
 # Cambios de los prompts v0
 
+## v0.3, ids con el número de su propuesta para el árbitro (2026-10-09)
+
+Aprobado por el autor tras tres rondas con documento B en las que el árbitro, en su primer intento, citó en una propuesta ids que eran de la otra.
+
+- En `input/propuesta_1.json` y `input/propuesta_2.json`, el id de cada elemento que el árbitro compara (pregunta, requisito o historia) lleva delante el número de su propuesta: `1:P-003`, `2:RF-001`. Los ids que apuntan a otra cosa (las respuestas que cita un requisito, los requisitos de una historia) no cambian.
+- Los tres prompts de árbitro piden copiar los ids así en `de` y en los descartes, y escribir sin prefijo los ids de la salida unida. El ejemplo de salida muestra los prefijos.
+- La plataforma quita el prefijo de cada propuesta antes de validar y guarda la salida sin prefijos, así que los esquemas, `validar_v0.py` y el resto del flujo no cambian. Un id con el prefijo de la otra propuesta es un error `ARB-DE` con un mensaje claro.
+
 ## v0.2, llamadas a Read exactas (2026-10-09)
 
 Tras la primera comparación con un documento real (ver `docs/evolucion-prompt-requisitos.md`). Aprobado por el autor.
