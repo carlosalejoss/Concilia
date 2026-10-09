@@ -111,7 +111,7 @@ public class RunnerPiecesTests
         Assert.False(environment.ContainsKey("ANTHROPIC_BASE_URL"));
         Assert.False(environment.ContainsKey("ANTHROPIC_API_KEY"));
         Assert.False(environment.ContainsKey("LITELLM_API_KEY"));
-        // Claude Code knows the Claude models: their window is not overridden.
+        // The 128k of the gateway does not apply: Claude Code keeps its own window.
         Assert.False(environment.ContainsKey("CLAUDE_CODE_MAX_CONTEXT_TOKENS"));
         Assert.Equal("64000", environment["CLAUDE_CODE_MAX_OUTPUT_TOKENS"]);
     }
