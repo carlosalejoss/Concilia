@@ -4,6 +4,7 @@ import ProjectFiles from './ProjectFiles.tsx'
 import QuestionsPanel from './QuestionsPanel.tsx'
 import CatalogEditor from './CatalogEditor.tsx'
 import BacklogEditor from './BacklogEditor.tsx'
+import MockupViewer from './MockupViewer.tsx'
 
 const STEP_NAMES: Record<FlowStep, string> = {
   Documents: 'Documentos',
@@ -38,13 +39,12 @@ function stateName(step: StepStatus): string {
   return STATE_NAMES[step.state]
 }
 
-// The launch button of each step, and the steps whose job does not exist yet
-// (they arrive in later milestones of the v0 iteration).
-const LAUNCH: Partial<Record<FlowStep, { label: string; url: (projectId: number) => string | null; notYet?: string }>> = {
+// The launch button of each step.
+const LAUNCH: Partial<Record<FlowStep, { label: string; url: (projectId: number) => string }>> = {
   Questions: { label: 'Lanzar una ronda de preguntas', url: (id) => `/projects/${id}/question-rounds` },
   Catalog: { label: 'Generar el catálogo', url: (id) => `/projects/${id}/catalog-jobs` },
   Backlog: { label: 'Generar el backlog', url: (id) => `/projects/${id}/backlog-jobs` },
-  Mockup: { label: 'Generar el mockup', url: () => null, notYet: 'Llega en el hito 12.' },
+  Mockup: { label: 'Generar el mockup', url: (id) => `/projects/${id}/mockup-jobs` },
 }
 
 async function fetchJson<T>(url: string): Promise<T> {
@@ -110,6 +110,7 @@ function ProjectSteps({ project, onShowJob }: { project: Project; onShowJob: (jo
     Questions: <QuestionsPanel project={project} version={version} onChange={reload} onShowJob={onShowJob} />,
     Catalog: <CatalogEditor project={project} version={version} onChange={reload} />,
     Backlog: <BacklogEditor project={project} version={version} onChange={reload} />,
+    Mockup: <MockupViewer project={project} version={version} onShowJob={onShowJob} />,
   }
 
   return (
@@ -120,7 +121,7 @@ function ProjectSteps({ project, onShowJob }: { project: Project; onShowJob: (jo
           const launchInfo = LAUNCH[step.step]
           const url = launchInfo?.url(project.id) ?? null
           const disabled = !step.canLaunch || url === null || launching !== null
-          const why = !step.canLaunch ? step.reason : url === null ? launchInfo?.notYet : null
+          const why = !step.canLaunch ? step.reason : null
           return (
             <li key={step.step} className="rounded border border-gray-200 p-4">
               <div className="flex flex-wrap items-center gap-3">

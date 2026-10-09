@@ -264,7 +264,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
   - Validación: el archivo existe, no supera el tamaño máximo, no tiene recursos externos (`src` o `href` con `http`) y todas las historias tienen su `data-hu`. Una reparación.
   - El Fake escribe una plantilla con las historias del backlog.
   - Se copia en `data/projects/{id}/mockup/`. Tests.
-- [ ] 61. Web: el mockup se ve en un iframe con `sandbox="allow-scripts"`, con botón para descargar el `.html` y aviso cuando está desactualizado.
+- [x] 61. Web: el mockup se ve en un iframe con `sandbox="allow-scripts"`, con botón para descargar el `.html` y aviso cuando está desactualizado.
 - [ ] 62. Prueba real con Sonnet 5.5: el `.html` descargado se abre con doble clic, sin servidor ni conexión.
 
 **Hecho cuando:** el `.html` descargado se abre en el navegador sin conexión, muestra datos de prueba y cubre todas las historias del backlog validado.
