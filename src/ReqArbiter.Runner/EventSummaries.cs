@@ -21,6 +21,8 @@ public static class EventSummaries
         // Only "api_retry" is a retry; other system lines (e.g. a tool call
         // denied with "permission_denied") are warnings.
         SystemEvent { Subtype: "api_retry" } retry => new RunEvent(RunEventKind.ApiRetry, $"Reintento de la API: {Truncate(retry.RawJson, MaxToolTextLength)}"),
+        SystemEvent { Subtype: ClaudeCliRunner.CompactBoundary } compact => new RunEvent(RunEventKind.Warning,
+            $"Claude Code compactó el contexto (resumió lo anterior para seguir; puede perderse detalle): {Truncate(compact.RawJson, MaxToolTextLength)}"),
         SystemEvent system => new RunEvent(RunEventKind.Warning, $"Aviso del sistema ({system.Subtype}): {Truncate(system.RawJson, MaxToolTextLength)}"),
         InvalidLineEvent invalid => new RunEvent(RunEventKind.Warning, $"Línea no JSON: {Truncate(invalid.Line, MaxToolTextLength)}"),
         _ => null, // result (reported at the end) and unknown types

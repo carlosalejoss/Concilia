@@ -38,4 +38,11 @@ public record RunRequest
 
     // Estimated input tokens above which the run is not launched.
     public int InputTokenBudget { get; init; } = 80_000;
+
+    // Whether the files in input/ count towards InputTokenBudget along with
+    // the prompt. True when the model reads them whole (catalog v1.x). The v0
+    // phases and the mockup set it to false: the model reads them by parts
+    // with Read, so they need not fit at once, and the platform limits the
+    // documentation when the job is created instead.
+    public bool InputFilesInBudget { get; init; } = true;
 }
