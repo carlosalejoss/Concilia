@@ -1,0 +1,40 @@
+{
+  "sugerencias": [
+    {
+      "pregunta": "P-002",
+      "respuesta": "No: la integración con Outlook queda para una versión futura del sistema.",
+      "base": "documentacion",
+      "fuentes": [
+        "DOC-01#F013"
+      ],
+      "explicacion": "La documentación dice que el sistema se integrará con Outlook «en una versión futura»."
+    },
+    {
+      "pregunta": "P-003",
+      "respuesta": "Proponemos que sí: la reserva queda pendiente de aprobación y la sala bloqueada en esa franja hasta que el administrador la apruebe o la rechace.",
+      "base": "suposicion",
+      "fuentes": [
+        "DOC-01#F008"
+      ],
+      "explicacion": "La documentación pide la aprobación del administrador, pero no dice qué pasa con la sala mientras tanto; bloquearla evita reservas dobles."
+    },
+    {
+      "pregunta": "P-004",
+      "respuesta": "Lo habitual es incluir, por reserva, la sala, el empleado, la fecha, la hora de inicio, la hora de fin y el número de asistentes.",
+      "base": "suposicion",
+      "fuentes": [
+        "DOC-01#F011"
+      ],
+      "explicacion": "La documentación pide exportar el histórico a CSV sin decir qué campos; se proponen los datos que el empleado indica al reservar."
+    },
+    {
+      "pregunta": "P-001",
+      "respuesta": "No: la integración con Outlook queda para una versión futura del sistema.",
+      "base": "documentacion",
+      "fuentes": [
+        "DOC-01#F013"
+      ],
+      "explicacion": "La documentación dice que el sistema se integrará con Outlook «en una versión futura»."
+    }
+  ]
+}

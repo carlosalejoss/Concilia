@@ -25,8 +25,9 @@ export type ProjectFile = {
 // Skipped: a run that was not launched (the arbiter, when A or B did not end well).
 export type RunState = 'Queued' | 'Running' | 'Done' | 'Blocked' | 'Failed' | 'TimedOut' | 'HeartbeatLost' | 'Skipped'
 
-// A, B and, in the v0 phases, ARB (the arbiter).
-export type Slot = 'A' | 'B' | 'ARB'
+// A, B and, in the v0 phases, ARB (the arbiter); SUG is the only run of the
+// answer suggestions.
+export type Slot = 'A' | 'B' | 'ARB' | 'SUG'
 
 export type Run = {
   id: string
@@ -58,13 +59,15 @@ export type Run = {
 export type Job = {
   id: string
   projectId: number
-  kind: string // "catalog" (v1.4, experimental) or a v0 phase: "questions", "catalog-v0", "backlog"
+  kind: string // "catalog" (v1.4, experimental) or a v0 phase: "questions", "catalog-v0", "backlog", "answer-suggestions"
   createdAt: string
   finishedAt: string | null
 }
 
-// The job kinds of the v0 phases (A ‖ B → arbiter).
-export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'backlog']
+// The job kinds of the v0 phases (A ‖ B → arbiter, or a single run for the
+// answer suggestions).
+export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'backlog', 'answer-suggestions']
+export const SUGGESTIONS_KIND = 'answer-suggestions'
 
 export function isPhaseJob(job: Job): boolean {
   return PHASE_JOB_KINDS.includes(job.kind)
@@ -74,6 +77,7 @@ export const JOB_KIND_NAMES: Record<string, string> = {
   questions: 'Ronda de preguntas',
   'catalog-v0': 'Catálogo',
   backlog: 'Backlog',
+  'answer-suggestions': 'Sugerencias de respuesta',
   mockup: 'Mockup',
   catalog: 'Catálogo v1.4 (experimental)',
 }
@@ -102,6 +106,13 @@ export type Question = {
   arbiterNote: string | null
   status: QuestionStatus
   answer: string | null
+  answerOrigin: 'usuario' | 'ia' | 'ia-editada' | null // who wrote the answer
+  // The last answer suggested by the AI (not an answer until the user saves it).
+  suggestedAnswer: string | null
+  suggestionBasis: 'documentacion' | 'suposicion' | null
+  suggestionSources: string[]
+  suggestionNote: string | null
+  suggestedAt: string | null
   discardReason: string | null
   createdAt: string
   updatedAt: string | null

@@ -26,12 +26,15 @@ from pathlib import Path
 
 AQUI = Path(__file__).parent
 sys.path.insert(0, str(AQUI))
-from validar_v0 import cargar, validar_backlog, validar_catalogo, validar_preguntas  # noqa: E402
+from validar_v0 import (cargar, validar_backlog, validar_catalogo, validar_preguntas,  # noqa: E402
+                        validar_sugerencias)
 
 EJ = AQUI / "ejemplo"
 FRAGMENTOS = {f["id"] for f in cargar(AQUI.parent / "generacion_requisitos" / "ejemplo" / "fragmentos.json")["fragments"]}
 RESPONDIDAS = {p["id"] for p in cargar(EJ / "respuestas.json")["preguntas"] if p["estado"] == "respondida"}
 CATALOGO = cargar(EJ / "catalogo_arbitro.json")
+# Las sugerencias del ejemplo son para estas preguntas, como si siguieran pendientes.
+PENDIENTES = ["P-002", "P-003", "P-004"]
 
 
 def par(fase):
@@ -44,6 +47,8 @@ def validar(fase, arbitro, datos):
         return validar_preguntas(datos, FRAGMENTOS, propuestas)
     if fase == "catalogo":
         return validar_catalogo(datos, FRAGMENTOS, RESPONDIDAS, propuestas)
+    if fase == "sugerencias":
+        return validar_sugerencias(datos, FRAGMENTOS, PENDIENTES)
     return validar_backlog(datos, CATALOGO, propuestas)
 
 
@@ -139,6 +144,23 @@ CASOS = [
      lambda d: d["epicas"][0]["historias"][0]["de"]["propuesta_1"].append("HU-099")),
     ("backlog_arbitro", "árbitro: una historia de una propuesta se pierde", "error", "ARB-FALTA",
      lambda d: d["descartadas"].clear()),
+
+    # --- Sugerencias de respuesta (una por pregunta pendiente: P-002, P-003 y P-004) ---
+    ("sugerencias", "ejemplo tal cual", "ok", None, nada),
+    ("sugerencias", "base desconocida", "error", "SCHEMA",
+     lambda d: d["sugerencias"][0].update(base="intuicion")),
+    ("sugerencias", "sugerencia para una pregunta que no está pendiente", "error", "REF-PREG",
+     lambda d: d["sugerencias"].append({**d["sugerencias"][0], "pregunta": "P-001"})),
+    ("sugerencias", "dos sugerencias para la misma pregunta", "error", "ID-DUP",
+     lambda d: d["sugerencias"].append(dict(d["sugerencias"][0]))),
+    ("sugerencias", "una pregunta pendiente sin sugerencia", "error", "FALTA",
+     lambda d: d["sugerencias"].pop()),
+    ("sugerencias", "basada en la documentación sin fragmentos", "error", "SIN-ORIGEN",
+     lambda d: d["sugerencias"][0].update(fuentes=[])),
+    ("sugerencias", "fragmento que no existe", "error", "REF-FRAG",
+     lambda d: d["sugerencias"][1]["fuentes"].append("DOC-01#F099")),
+    ("sugerencias", "una suposición sin fragmentos es válida", "ok", None,
+     lambda d: d["sugerencias"][1].update(fuentes=[])),
 ]
 
 
@@ -164,7 +186,7 @@ def main():
         salida.mkdir(parents=True, exist_ok=True)
     manifiesto, esperados, fallos = [], {}, 0
     for i, (base, nombre, nivel, cod, mutar) in enumerate(CASOS, 1):
-        fase, rol = base.split("_", 1)
+        fase, _, rol = base.partition("_")
         arbitro = rol == "arbitro"
         datos = copy.deepcopy(cargar(EJ / f"{base}.json"))
         datos.pop("$comment", None)

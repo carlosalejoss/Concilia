@@ -36,6 +36,7 @@ services:
       Runner__ModelA: "${RUNNER_MODEL_A:-SS - GPT-6-SOL}"
       Runner__ModelB: "${RUNNER_MODEL_B:-SS - GPT-6-LUNA}"
       Runner__ModelArbiter: "${RUNNER_MODEL_ARBITER:-SS - GPT-6-SOL}"
+      Runner__ModelSuggestions: "${RUNNER_MODEL_SUGGESTIONS:-SS - GPT-6-SOL}"
       # Fake only: "true" makes the first attempt of each lot invalid, to see a repair.
       Runner__SimulateRepair: ${RUNNER_SIMULATE_REPAIR:-false}
       # Output cap per model response, passed to Claude Code (default 64000).

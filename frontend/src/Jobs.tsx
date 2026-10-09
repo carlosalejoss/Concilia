@@ -4,6 +4,7 @@ import {
   formatDate,
   isPhaseJob,
   JOB_KIND_NAMES,
+  SUGGESTIONS_KIND,
   type JobView,
   type PhaseResult,
   type Project,
@@ -12,9 +13,14 @@ import {
 } from './api.ts'
 import CatalogView from './CatalogView.tsx'
 
-// A and B in every job; the arbiter (ARB) only in the v0 phases.
+// A and B in every job; the arbiter (ARB) only in the v0 phases. The answer
+// suggestions have a single run (SUG).
 const SLOTS = ['A', 'B', 'ARB'] as const
-const SLOT_NAMES: Record<string, string> = { A: 'A', B: 'B', ARB: 'Árbitro' }
+const SLOT_NAMES: Record<string, string> = { A: 'A', B: 'B', ARB: 'Árbitro', SUG: 'Sugerencias' }
+
+function slotsOf(view: JobView): string[] {
+  return view.job.kind === SUGGESTIONS_KIND ? ['SUG'] : [...SLOTS]
+}
 
 const stateColors: Record<string, string> = {
   Done: 'text-green-700',
@@ -157,11 +163,16 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
               >
                 <td className="py-1">{JOB_KIND_NAMES[view.job.kind] ?? view.job.kind}</td>
                 <td className="py-1">{formatDate(view.job.createdAt)}</td>
-                {SLOTS.map((slot) => {
+                {slotsOf(view).map((slot) => {
                   const summary = slotSummary(view, slot)
+                  // A single-run job fills the three columns: it has no A, B or arbiter.
                   return (
-                    <td key={slot} className={`py-1 font-semibold ${stateColors[summary.state] ?? 'text-red-700'}`}>
-                      {summary.text}
+                    <td
+                      key={slot}
+                      colSpan={slot === 'SUG' ? 3 : 1}
+                      className={`py-1 font-semibold ${stateColors[summary.state] ?? 'text-red-700'}`}
+                    >
+                      {slot === 'SUG' ? `Un solo modelo: ${summary.text}` : summary.text}
                     </td>
                   )
                 })}
@@ -176,7 +187,7 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
         <>
           <JobResult key={`${selected.job.id}-${selected.runs.filter(isFinished).length}`} jobId={selected.job.id} finished={!selectedUnfinished} />
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {SLOTS.map((slot) => (
+            {slotsOf(selected).map((slot) => (
               <PhaseSlotColumn
                 key={`${selected.job.id}-${slot}`}
                 slot={slot}
@@ -301,7 +312,12 @@ function JobResult({ jobId, finished }: { jobId: string; finished: boolean }) {
         <p className="font-semibold text-red-700">El trabajo falló: {result.mensaje}</p>
       ) : (
         <p className={`font-semibold ${result.verificacion_cruzada ? 'text-green-700' : 'text-amber-700'}`}>
-          Resultado: {result.verificacion_cruzada ? 'unión del árbitro' : `salida de ${result.fuente} sin verificación cruzada`}
+          Resultado:{' '}
+          {result.verificacion_cruzada
+            ? 'unión del árbitro'
+            : result.fuente === 'SUG'
+              ? 'salida de un solo modelo (sugerencias de respuesta, sin verificación cruzada)'
+              : `salida de ${result.fuente} sin verificación cruzada`}
         </p>
       )}
       {result.salida !== null && (

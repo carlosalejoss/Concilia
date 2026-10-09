@@ -86,6 +86,22 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
             : new PhaseJobResult(null, false, null, "El árbitro no terminó con una salida válida. El trabajo falla; se puede lanzar de nuevo.");
     }
 
+    // A job of a single run (the suggestions of answers, slot SUG): its output
+    // is the result, without cross-check.
+    public async Task<PhaseJobResult> RunSingleAsync(
+        Run run,
+        PhasePlan plan,
+        Func<Run, Task> onRunStarting,
+        Func<RunOutcome, Task> onRunFinished,
+        CancellationToken cancellationToken)
+    {
+        var phases = phaseExecutor ?? throw new InvalidOperationException("JobRunner without PhaseExecutor");
+        var outcome = await RunOneAsync(run, () => phases.ExecuteAsync(run, plan, null, cancellationToken), onRunStarting, onRunFinished, cancellationToken);
+        return outcome.Succeeded
+            ? new PhaseJobResult(run.Slot, false, File.ReadAllText(PhaseExecutor.OutputPath(outcome.Attempts![^1], plan.Kind)), "Salida de un solo modelo.")
+            : new PhaseJobResult(null, false, null, "El modelo no terminó con una salida válida; se puede pedir de nuevo.");
+    }
+
     // One run of a phase job: like RunLotAsync, without lots.
     private static async Task<RunOutcome> RunOneAsync(
         Run run,

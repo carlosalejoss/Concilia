@@ -1,5 +1,12 @@
 # Cambios de los prompts v0
 
+## v0, sugerencias de respuesta (2026-10-09)
+
+Propuesto por Claude a petición del autor y pendiente de su revisión.
+
+- Prompt nuevo `sugerir_respuestas.md`: para las preguntas pendientes, un solo modelo propone una respuesta, dice si se basa en la documentación o es una suposición, cita los fragmentos y explica en qué se basa. Nunca contesta por el cliente: la plataforma solo guarda la sugerencia, y la respuesta es la que el usuario guarda.
+- Esquema `esquemas/sugerencias.schema.json` y comprobaciones en `validar_v0.py` (código nuevo `FALTA`: pregunta pendiente sin sugerencia). Ejemplo en `ejemplo/sugerencias.json` y ocho casos nuevos en `test_v0.py` (46 en total).
+
 ## v0 (2026-10-08)
 
 Primera versión, propuesta por Claude para la iteración v0 (D-65 a D-74) y pendiente de revisión del autor (paso 41).

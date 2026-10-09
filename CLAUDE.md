@@ -39,6 +39,7 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
   - El catálogo exige al menos una ronda terminada y ninguna pregunta pendiente. Las fases siguientes solo ven la versión validada; la salida original del árbitro se congela en `data/jobs/{id}/` solo para métricas.
   - Mockup: un solo modelo, Claude Code con Sonnet 5.5 (`MOCKUP_MODEL`) y el token de la suscripción del autor (`CLAUDE_CODE_OAUTH_TOKEN`, de `claude setup-token`), con el proveedor `ClaudeSubscription`. Solo para uso del autor; si la aplicación la usa más gente, se cambia a una clave de API o a un modelo de la pasarela. Salida: un `.html` autocontenido con datos de prueba ficticios.
   - Sin lotes en v0: toda la documentación va en una llamada. El texto del requisito lo escribe el modelo (no D-23).
+  - Sugerencias de respuesta (09-10-2026, autor): la IA propone la respuesta de las preguntas pendientes (una o todas las de una ronda) con un solo modelo, sin árbitro (`RUNNER_MODEL_SUGGESTIONS`, SOL por defecto). Rellena el cuadro, pero solo cuenta lo que el usuario guarda; la respuesta registra su origen (`usuario`, `ia`, `ia-editada`).
 
 ## Decisiones abiertas (no las cierres sin preguntar)
 

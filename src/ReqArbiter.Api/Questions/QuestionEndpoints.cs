@@ -11,7 +11,8 @@ using ReqArbiter.Core.Runner;
 
 namespace ReqArbiter.Api.Questions;
 
-public record AnswerRequest(string? Answer);
+// FromSuggestion: the user started from the AI's suggestion (to record the origin of the answer).
+public record AnswerRequest(string? Answer, bool FromSuggestion = false);
 public record DiscardRequest(string? Reason);
 
 public static class QuestionEndpoints
@@ -116,6 +117,37 @@ public static class QuestionEndpoints
             return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
         });
 
+        // Suggested answers for all the pending questions of a round. Nothing is
+        // answered: each question keeps the suggestion for the user to use, edit
+        // or ignore (StoreSuggestionsAsync, when the job ends).
+        app.MapPost("/question-rounds/{jobId:guid}/suggestions",
+            async (Guid jobId, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+        {
+            var round = await db.Jobs.FindAsync(jobId);
+            if (round is null || round.Kind != PhasePlan.JobKind(PhaseKind.Questions))
+            {
+                return Results.NotFound();
+            }
+            var pending = await db.Questions
+                .Where(q => q.JobId == jobId && q.Status == QuestionStatus.Pending)
+                .OrderBy(q => q.Code)
+                .ToListAsync();
+            return await SuggestAsync(db, queue, provider, options, storage, round.ProjectId, pending);
+        });
+
+        // The suggested answer for one pending question.
+        app.MapPost("/questions/{id:int}/suggestion",
+            async (int id, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+        {
+            var question = await db.Questions.FindAsync(id);
+            if (question is null)
+            {
+                return Results.NotFound();
+            }
+            var pending = question.Status == QuestionStatus.Pending ? [question] : new List<Question>();
+            return await SuggestAsync(db, queue, provider, options, storage, question.ProjectId, pending);
+        });
+
         // All the questions of the project, by code (optionally only one status: ?status=Pending).
         app.MapGet("/projects/{projectId:int}/questions", async (int projectId, QuestionStatus? status, AppDbContext db) =>
         {
@@ -133,7 +165,7 @@ public static class QuestionEndpoints
 
         // Answer a question, or change its answer.
         app.MapPut("/questions/{id:int}/answer", (int id, AnswerRequest body, AppDbContext db) =>
-            ApplyAsync(db, id, q => QuestionRules.Answer(q, body.Answer, DateTimeOffset.UtcNow)));
+            ApplyAsync(db, id, q => QuestionRules.Answer(q, body.Answer, DateTimeOffset.UtcNow, body.FromSuggestion)));
 
         // Discard a question (not needed, out of scope…), with an optional reason.
         app.MapPost("/questions/{id:int}/discard", (int id, DiscardRequest body, AppDbContext db) =>
@@ -165,6 +197,61 @@ public static class QuestionEndpoints
         }
         await db.SaveChangesAsync();
         return Results.Ok(question);
+    }
+
+    // Called by JobWorker when a suggestions job ends: each pending question
+    // keeps its suggested answer (nothing is answered).
+    public static async Task StoreSuggestionsAsync(AppDbContext db, int projectId, PhaseJobResult result)
+    {
+        if (result.Output is null)
+        {
+            return;
+        }
+        var questions = await db.Questions.Where(q => q.ProjectId == projectId).ToListAsync();
+        QuestionRules.ApplySuggestions(questions, result.Output, DateTimeOffset.UtcNow);
+        await db.SaveChangesAsync();
+    }
+
+    // A suggestions job: one model, a single run (RUNNER_MODEL_SUGGESTIONS),
+    // with all the documentation, the answers so far and the pending questions
+    // to answer. One at a time per project.
+    private static async Task<IResult> SuggestAsync(AppDbContext db, JobQueue queue, IRunnerProvider provider,
+        RunnerOptions options, FileStorage storage, int projectId, List<Question> pending)
+    {
+        if (pending.Count == 0)
+        {
+            return Results.ValidationProblem(new Dictionary<string, string[]> { ["questions"] = ["No hay preguntas pendientes para sugerir."] });
+        }
+        if (await SuggestionsRunningAsync(db, projectId))
+        {
+            return Results.ValidationProblem(new Dictionary<string, string[]> { ["questions"] = ["Ya se están generando sugerencias: espera a que terminen."] });
+        }
+
+        var project = (await db.Projects.FindAsync(projectId))!;
+        var answered = await db.Questions
+            .Where(q => q.ProjectId == projectId && q.Status == QuestionStatus.Answered)
+            .OrderBy(q => q.Code)
+            .ToListAsync();
+        var input = new PhaseInput
+        {
+            SystemName = project.SystemName,
+            Language = project.Language,
+            Answers = PhasePrompt.AnswersBlock(answered.Select(QuestionRules.ForPrompt)),
+            PendingQuestions = PhasePrompt.PendingQuestionsBlock(pending.Select(q => (q.Code, q.Text, q.Reason))),
+        };
+        var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
+        var created = PhaseJobs.Create(project, documents, PhaseKind.Suggestions, input, answered.Select(q => q.Code).ToList(),
+            options, provider.Name, Random.Shared, pending.Select(q => q.Code).ToList());
+        return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
+    }
+
+    // A suggestions job of the project still has a run queued or running.
+    private static async Task<bool> SuggestionsRunningAsync(AppDbContext db, int projectId)
+    {
+        var kind = PhasePlan.JobKind(PhaseKind.Suggestions);
+        var jobs = db.Jobs.Where(j => j.ProjectId == projectId && j.Kind == kind).Select(j => j.Id);
+        return await db.Runs.AnyAsync(r => r.JobId != null && jobs.Contains(r.JobId.Value)
+                                           && (r.State == Core.Runs.RunState.Queued || r.State == Core.Runs.RunState.Running));
     }
 
     // Called by JobWorker when a round ends: its questions, renumbered after

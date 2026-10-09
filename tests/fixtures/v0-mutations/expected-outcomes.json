@@ -215,5 +215,49 @@
       "HU-007 ARB-FALTA: el elemento HU-007 de la propuesta 2 no está en ningún `de` ni en `descartadas`."
     ],
     "warnings": []
+  },
+  "case-39.json": {
+    "errors": [],
+    "warnings": []
+  },
+  "case-40.json": {
+    "errors": [
+      "SCHEMA"
+    ],
+    "warnings": []
+  },
+  "case-41.json": {
+    "errors": [
+      "P-001 REF-PREG: la pregunta P-001 no está entre las pendientes."
+    ],
+    "warnings": []
+  },
+  "case-42.json": {
+    "errors": [
+      "P-002 ID-DUP: hay más de una sugerencia para la pregunta."
+    ],
+    "warnings": []
+  },
+  "case-43.json": {
+    "errors": [
+      "P-004 FALTA: no hay sugerencia para la pregunta."
+    ],
+    "warnings": []
+  },
+  "case-44.json": {
+    "errors": [
+      "P-002 SIN-ORIGEN: una sugerencia basada en la documentación cita al menos un fragmento."
+    ],
+    "warnings": []
+  },
+  "case-45.json": {
+    "errors": [
+      "P-003 REF-FRAG: el fragmento DOC-01#F099 no existe."
+    ],
+    "warnings": []
+  },
+  "case-46.json": {
+    "errors": [],
+    "warnings": []
   }
 }

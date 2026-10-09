@@ -94,6 +94,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             question.HasIndex(q => new { q.ProjectId, q.Code }).IsUnique();
             question.Property(q => q.Code).HasMaxLength(20);
             question.Property(q => q.Origin).HasMaxLength(10);
+            question.Property(q => q.AnswerOrigin).HasMaxLength(20);
+            question.Property(q => q.SuggestionBasis).HasMaxLength(20);
             // Stored as text ("Pending", "Answered", "Discarded") so the table is readable.
             question.Property(q => q.Status).HasConversion<string>().HasMaxLength(20);
         });

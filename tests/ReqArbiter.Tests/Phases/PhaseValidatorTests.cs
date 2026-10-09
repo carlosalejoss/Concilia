@@ -18,8 +18,9 @@ public class PhaseValidatorTests
     private static string Mutation(string file) => Path.Combine(AppContext.BaseDirectory, "fixtures", "v0-mutations", file);
 
     // The context of test_v0.py: the ReservaSalas fragments, the answered
-    // questions of respuestas.json, the arbiter's catalog (for the backlog) and
-    // the two proposals of the phase (for the arbiter).
+    // questions of respuestas.json, the arbiter's catalog (for the backlog), the
+    // two proposals of the phase (for the arbiter) and the questions the example
+    // suggestions answer, as if they were pending.
     private static PhaseContext ContextFor(string phase)
     {
         var fragments = JsonNode.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts", "ejemplo", "fragmentos.json")))!
@@ -31,13 +32,20 @@ public class PhaseValidatorTests
             FragmentIds = fragments,
             AnsweredQuestionIds = answered,
             Catalog = File.ReadAllText(Example("catalogo_arbitro.json")),
-            Proposal1 = File.ReadAllText(Example($"{phase}_propuesta_1.json")),
-            Proposal2 = File.ReadAllText(Example($"{phase}_propuesta_2.json")),
+            Proposal1 = phase == "sugerencias" ? null : File.ReadAllText(Example($"{phase}_propuesta_1.json")),
+            Proposal2 = phase == "sugerencias" ? null : File.ReadAllText(Example($"{phase}_propuesta_2.json")),
+            PendingQuestionIds = ["P-002", "P-003", "P-004"],
         };
     }
 
     private static PhaseDefinition DefinitionFor(string phase, bool arbiter) => PhaseDefinition.For(
-        phase switch { "preguntas" => PhaseKind.Questions, "catalogo" => PhaseKind.Catalog, _ => PhaseKind.Backlog },
+        phase switch
+        {
+            "preguntas" => PhaseKind.Questions,
+            "catalogo" => PhaseKind.Catalog,
+            "sugerencias" => PhaseKind.Suggestions,
+            _ => PhaseKind.Backlog,
+        },
         arbiter ? PhaseRole.Arbiter : PhaseRole.Proposal);
 
     // Same as resumir() in test_v0.py.
@@ -62,9 +70,9 @@ public class PhaseValidatorTests
     }
 
     [Fact]
-    public void Manifest_has_the_38_cases_of_the_reference()
+    public void Manifest_has_the_46_cases_of_the_reference()
     {
-        Assert.Equal(38, LoadManifest().Count);
+        Assert.Equal(46, LoadManifest().Count);
     }
 
     [Theory]

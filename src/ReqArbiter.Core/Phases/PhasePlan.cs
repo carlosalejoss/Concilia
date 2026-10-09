@@ -28,8 +28,12 @@ public record PhasePlan(
         PhaseKind.Questions => "questions",
         PhaseKind.Catalog => "catalog-v0",
         PhaseKind.Backlog => "backlog",
+        PhaseKind.Suggestions => "answer-suggestions",
         _ => throw new ArgumentOutOfRangeException(nameof(kind)),
     };
+
+    // Suggestions: the pending questions to answer, in order.
+    public IReadOnlyList<string> PendingQuestionIds { get; init; } = [];
 
     public static PhaseKind? KindOfJob(string jobKind) =>
         Enum.GetValues<PhaseKind>().Cast<PhaseKind?>().FirstOrDefault(k => JobKind(k!.Value) == jobKind);
@@ -43,6 +47,7 @@ public record PhasePlan(
         FragmentIds = Fragments.Select(f => f.Id).ToHashSet(),
         AnsweredQuestionIds = AnsweredQuestionIds.ToHashSet(),
         Catalog = Input.Catalog.Length > 0 ? Input.Catalog : null,
+        PendingQuestionIds = PendingQuestionIds,
         Proposal1 = proposal1,
         Proposal2 = proposal2,
     };

@@ -167,6 +167,10 @@ namespace ReqArbiter.Api.Persistence.Migrations
                     b.Property<string>("Answer")
                         .HasColumnType("text");
 
+                    b.Property<string>("AnswerOrigin")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
                     b.Property<string>("ArbiterNote")
                         .HasColumnType("text");
 
@@ -204,6 +208,23 @@ namespace ReqArbiter.Api.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
+
+                    b.Property<string>("SuggestedAnswer")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("SuggestedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SuggestionBasis")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("SuggestionNote")
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<List<string>>("SuggestionSources")
+                        .IsRequired()
+                        .HasColumnType("text[]");
 
                     b.Property<string>("Text")
                         .IsRequired()

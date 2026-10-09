@@ -12,6 +12,7 @@ Prompts muy básicos de la iteración v0 (D-65, D-73): sirven para tener el fluj
 | Catálogo, árbitro | `arbitro_catalogo.md` | `output/catalogo.json` | `esquemas/arbitro_catalogo.schema.json` | los del catálogo, `PROPUESTA_1`, `PROPUESTA_2` |
 | Backlog, A y B | `backlog.md` | `output/backlog.json` | `esquemas/backlog.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `CATALOGO` |
 | Backlog, árbitro | `arbitro_backlog.md` | `output/backlog.json` | `esquemas/arbitro_backlog.schema.json` | los del backlog, `PROPUESTA_1`, `PROPUESTA_2` |
+| Sugerencias de respuesta (un modelo) | `sugerir_respuestas.md` | `output/sugerencias.json` | `esquemas/sugerencias.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `PREGUNTAS`, `DOCUMENTACION` |
 | Mockup (Sonnet 5.5) | `mockup.md` | `output/mockup.html` | comprobaciones propias (abajo) | `NOMBRE_SISTEMA`, `IDIOMA`, `BACKLOG` |
 | Reparación, todas | `anexo_reparacion.md` | el mismo fichero | — | `INTENTO`, `FICHERO`, `SALIDA_PREVIA`, `ERRORES` |
 
@@ -25,6 +26,7 @@ Los valores se insertan en una sola pasada, como en `PromptBuilder.Fill`: un doc
 - `DOCUMENTACION`: `Fragmenter.DocumentBlock` con **todos** los fragmentos, sin lotes: `<documento id="DOC-01" nombre="…"><f id="DOC-01#F001" sec="§1">…</f>…</documento>`.
 - `PREGUNTAS_PREVIAS`: todas las preguntas de rondas anteriores, respondidas y descartadas: `<pregunta id="P-003" estado="respondida"><texto>…</texto><respuesta>…</respuesta></pregunta>`. Una descartada va sin `<respuesta>`. Vacío en la primera ronda.
 - `RESPUESTAS`: solo las respondidas, `<pregunta id="P-003"><texto>…</texto><respuesta>…</respuesta></pregunta>`.
+- `PREGUNTAS`: las preguntas pendientes para las que se piden sugerencias, `<pregunta id="P-007"><texto>…</texto><motivo>…</motivo></pregunta>`.
 - `CATALOGO`: el catálogo **validado**, con los campos de `catalogo.schema.json` (sin `de`, `discrepancia` ni `explicacion`).
 - `BACKLOG`: el backlog **validado**, con los campos de `backlog.schema.json`.
 - `PROPUESTA_1` y `PROPUESTA_2`: el JSON de A y de B tal como lo escribieron, en orden aleatorio. El reparto se guarda en `plan.json` del trabajo, y la plataforma traduce los `de` del árbitro a A y B.
@@ -44,6 +46,8 @@ Los esquemas solo describen la estructura. Las reglas entre campos están en `va
 | `REF-REQ` | Los requisitos citados existen en el catálogo validado | backlog |
 | `ARB-DE`, `ARB-FALTA` | Cada `de` tiene algún id y todos existen; cada elemento de cada propuesta acaba en un `de` o en los descartes | árbitros |
 | `COB` (aviso) | Requisitos `RF` o `RI` sin historia | backlog |
+| `REF-PREG`, `ID-DUP`, `FALTA` | Una sugerencia por cada pregunta pendiente, sin repetir ni sugerir para otras | sugerencias |
+| `SIN-ORIGEN`, `REF-FRAG` | Una sugerencia `documentacion` cita al menos un fragmento, y todos existen | sugerencias |
 
 Mockup (paso 60): el fichero existe, ocupa como mucho 1 MB, empieza por `<!doctype html>`, tiene `const DATOS`, no carga recursos externos (`src`, `href` o `url(` con `http://`, `https://` o `//`) y cada historia del backlog validado tiene su `data-hu`.
 
@@ -55,6 +59,7 @@ Mockup (paso 60): el fichero existe, ocupa como mucho 1 MB, empieza por `<!docty
 
 - **Preguntas:** las dos piden la cifra de «rápida» (se unen). Cada una trae preguntas que la otra no tiene (se mantienen), y la 2 pregunta por los navegadores, que ya da la documentación (se descarta). `respuestas.json` contesta cuatro y descarta la de la revisión mensual.
 - **Catálogo:** los mismos requisitos con ids en otro orden. La 2 dice «o» donde la fuente dice «y» (gana la 1) e inventa un requisito con la revisión mensual (se descarta). La 1 no tiene el de aprobar o rechazar (se toma de la 2). En el día festivo hay una discrepancia real: la 2 impide reservar y la fuente no lo dice.
+- **Sugerencias:** `sugerencias.json` sugiere respuesta para P-002 (la da la documentación, F013) y para P-003 y P-004 (suposiciones, con los fragmentos relacionados). `test_v0.py` las valida como si esas tres estuvieran pendientes.
 - **Backlog:** la 2 junta en una historia lo que la 1 separa en dos. La 1 deja `RF-009` sin historia (aviso `COB`) y la 2 tiene una historia que no está en el catálogo (se descarta).
 
 ## Qué no hace la v0
