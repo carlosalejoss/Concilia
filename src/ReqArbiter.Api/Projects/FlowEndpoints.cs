@@ -2,6 +2,7 @@ using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
+using ReqArbiter.Core.Deliverables;
 using ReqArbiter.Core.Flow;
 using ReqArbiter.Core.Phases;
 using ReqArbiter.Core.Questions;
@@ -25,8 +26,7 @@ public static class FlowEndpoints
 
     public static void MapFlowEndpoints(this WebApplication app)
     {
-        // The state of each step of the project (ProjectFlow). The deliverables
-        // (catalog, backlog, mockup) come in step 51: until then they count as none.
+        // The state of each step of the project (ProjectFlow).
         app.MapGet("/projects/{projectId:int}/flow", async (int projectId, AppDbContext db, FileStorage storage) =>
             await db.Projects.AnyAsync(p => p.Id == projectId)
                 ? Results.Ok(new FlowView(ProjectFlow.Compute(await ReadFactsAsync(db, storage, projectId))))
@@ -51,6 +51,8 @@ public static class FlowEndpoints
         // A round counts as finished when its job left a result (from the arbiter, or from A or B alone).
         var rounds = jobs.Count(j => j.Kind == "questions" && !busy.Contains(j.Id) && HasResult(storage.JobFolder(j.Id)));
         var statuses = await db.Questions.Where(q => q.ProjectId == projectId).Select(q => q.Status).ToListAsync();
+        var deliverables = await db.Deliverables.Where(d => d.ProjectId == projectId).ToListAsync();
+        DeliverableFacts? Of(DeliverableKind kind) => DeliverableRules.Facts(deliverables.SingleOrDefault(d => d.Kind == kind));
 
         return new FlowFacts
         {
@@ -58,6 +60,9 @@ public static class FlowEndpoints
             FinishedQuestionRounds = rounds,
             PendingQuestions = statuses.Count(s => s == QuestionStatus.Pending),
             AnsweredQuestions = statuses.Count(s => s == QuestionStatus.Answered),
+            Catalog = Of(DeliverableKind.Catalog),
+            Backlog = Of(DeliverableKind.Backlog),
+            Mockup = Of(DeliverableKind.Mockup),
             Running = running,
         };
     }
