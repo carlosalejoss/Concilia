@@ -206,6 +206,39 @@ public class ClaudeCliRunnerTests
         Assert.All(events, e => Assert.DoesNotContain(FakeGateway.AuthToken, e.Text));
     }
 
+    // The real process with the subscription: FakeClaude saves the environment
+    // it received, and the token never shows in what the runner reports.
+    [Fact]
+    public async Task A_subscription_run_gets_the_token_and_no_gateway_variables()
+    {
+        using var temp = new TempDirectory();
+        var token = FakeSubscription.OAuthToken;
+        var request = Request(temp.Path, Directive("tools-sol.jsonl", stderr: [$"token {token}"], writeFiles: [Output]), Output);
+        var events = new List<RunEvent>();
+
+        var result = await new ClaudeSubscriptionProvider(ExecutablePath, FakeSubscription).RunAsync(request, events.Add, CancellationToken.None);
+
+        Assert.Equal(RunStatus.Done, result.Status);
+        var environment = Received(new ReqArbiter.Runner.Execution.RunFolders(temp.Path)).GetProperty("environment");
+        Assert.Equal(token, environment.GetProperty("CLAUDE_CODE_OAUTH_TOKEN").GetString());
+        Assert.False(environment.TryGetProperty("ANTHROPIC_AUTH_TOKEN", out _));
+        Assert.False(environment.TryGetProperty("ANTHROPIC_BASE_URL", out _));
+        Assert.Equal("token ***", result.Warnings[0]);
+        Assert.All(events, e => Assert.DoesNotContain(token, e.Text));
+    }
+
+    [Fact]
+    public async Task A_gateway_run_never_gets_the_subscription_token()
+    {
+        using var temp = new TempDirectory();
+
+        await Run(Request(temp.Path, Directive("tools-sol.jsonl", writeFiles: [Output]), Output));
+
+        var environment = Received(new ReqArbiter.Runner.Execution.RunFolders(temp.Path)).GetProperty("environment");
+        Assert.False(environment.TryGetProperty("CLAUDE_CODE_OAUTH_TOKEN", out _));
+        Assert.Equal(FakeGateway.AuthToken, environment.GetProperty("ANTHROPIC_AUTH_TOKEN").GetString());
+    }
+
     [Fact]
     public async Task Over_budget_input_is_refused_without_launching()
     {

@@ -6,16 +6,17 @@ using ReqArbiter.Runner.StreamJson;
 
 namespace ReqArbiter.Runner;
 
-// Runs one attempt of "claude -p" against a gateway: checks the input budget,
+// Runs one attempt of "claude -p" with one way of reaching the model (the
+// gateway or the subscription, see IModelAccess): checks the input budget,
 // prepares the run folder and the environment, launches the process, parses
 // its output and evaluates the result. It does not retry (see RetryRunner).
-public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunnerProvider
+public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerProvider
 {
     public string Name => "ClaudeCli";
 
     public async Task<RunResult> RunAsync(RunRequest request, Action<RunEvent> onEvent, CancellationToken cancellationToken)
     {
-        var redactor = SecretRedactor.ForGateway(gateway);
+        var redactor = access.Redactor();
         onEvent(new RunEvent(RunEventKind.Started, $"Ejecución {request.RunId} con {request.ModelId}"));
 
         // Refuse before launching anything if the input is too big. The input is
@@ -37,7 +38,7 @@ public class ClaudeCliRunner(string executable, GatewaySettings gateway) : IRunn
             executable,
             ClaudeArguments.Build(request),
             folders.Root,
-            ChildEnvironment.Build(gateway, folders, request.MaxContextTokens, request.MaxOutputTokens, Environment.GetEnvironmentVariables()),
+            ChildEnvironment.Build(access, folders, request.MaxContextTokens, request.MaxOutputTokens, Environment.GetEnvironmentVariables()),
             request.Prompt,
             request.HeartbeatTimeout,
             request.TotalTimeout);

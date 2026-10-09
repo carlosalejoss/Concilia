@@ -1,8 +1,9 @@
 namespace ReqArbiter.Core.Runner;
 
 // Runs one task with one model. Implementations: FakeProvider (fixed answer,
-// for development and tests) and LiteLlmProvider (claude -p against the
-// company's LiteLLM gateway). There is no personal-subscription provider.
+// for development and tests), LiteLlmProvider (claude -p against the
+// company's LiteLLM gateway) and ClaudeSubscriptionProvider (claude -p with
+// the author's subscription; only the mockup, decision of 08-10-2026).
 public interface IRunnerProvider
 {
     string Name { get; }

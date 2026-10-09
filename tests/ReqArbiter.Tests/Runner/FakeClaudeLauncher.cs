@@ -9,6 +9,7 @@ public static class FakeClaudeLauncher
 {
     // Fake values only: no real key or address ever appears in tests.
     public static readonly GatewaySettings FakeGateway = new("https://gateway.invalid:4000", "fake-token-123456");
+    public static readonly SubscriptionSettings FakeSubscription = new("fake-oauth-token-abcdef");
 
     public static string ExecutablePath =>
         Path.Combine(AppContext.BaseDirectory, OperatingSystem.IsWindows() ? "FakeClaude.exe" : "FakeClaude");

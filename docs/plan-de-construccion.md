@@ -254,7 +254,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
   - el autor genera el token con `claude setup-token` y lo guarda en `.env` como `CLAUDE_CODE_OAUTH_TOKEN`;
   - `claude -p --model claude-sonnet-5-5` con ese token, con y sin `Write`, y con `CLAUDE_CONFIG_DIR` vacío;
   - se confirma el id del modelo con Claude Code 2.1.283 y se anota en `docs/`, sin el token.
-- [ ] 59. Proveedor `ClaudeSubscription` en `ReqArbiter.Runner`:
+- [x] 59. Proveedor `ClaudeSubscription` en `ReqArbiter.Runner` (el acceso al modelo es una interfaz, `IModelAccess`, con la pasarela y la suscripción como implementaciones; la suscripción solo se admite en el rol del mockup):
   - entorno explícito solo con `CLAUDE_CODE_OAUTH_TOKEN`;
   - el token se oculta en `SecretRedactor`;
   - `.env.example` con `CLAUDE_CODE_OAUTH_TOKEN`, `MOCKUP_PROVIDER` y `MOCKUP_MODEL`, sin valores;
