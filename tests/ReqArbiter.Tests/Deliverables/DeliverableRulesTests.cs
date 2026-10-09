@@ -119,6 +119,22 @@ public class DeliverableRulesTests
     }
 
     [Fact]
+    public void A_backlog_follows_the_same_rules_and_outdates_the_mockup()
+    {
+        var (backlog, generated) = DeliverableRules.Generated(null, 1, DeliverableKind.Backlog, Guid.NewGuid(), "{\"epicas\":[]}", Now);
+        var mockup = DeliverableRules.Generated(null, 1, DeliverableKind.Mockup, Guid.NewGuid(), "", Now).Deliverable;
+
+        Assert.Equal(FlowChange.BacklogGenerated, generated);
+        Assert.Equal(FlowChange.BacklogValidated, DeliverableRules.Validate(backlog, Clean, Now).Change);
+        Assert.False(DeliverableRules.Save(backlog, "{}", Now).Done);
+        Assert.Equal(FlowChange.BacklogReopened, DeliverableRules.Reopen(backlog, Now).Change);
+
+        DeliverableRules.MarkOutdated([backlog, mockup], FlowChange.BacklogReopened);
+        Assert.False(backlog.Outdated);
+        Assert.True(mockup.Outdated);
+    }
+
+    [Fact]
     public void The_flow_sees_whether_it_is_validated_and_outdated()
     {
         var d = NewCatalog();
