@@ -62,8 +62,8 @@ public static class DocumentationFile
 public record InputFile(string Path, string Content, bool Required);
 
 // The reading plan the prompt carries ({{LECTURA}}): for each file, its size
-// and the line ranges to read with Read, each small enough for one call
-// (Read refuses a call of more than about 25,000 tokens).
+// and the Read calls (offset and limit) that read it, each small enough for
+// one call (Read refuses a call of more than about 25,000 tokens).
 public static class ReadingPlan
 {
     public const int MaxCharsPerRead = 40_000; // about 11,000 tokens
@@ -97,9 +97,15 @@ public static class ReadingPlan
     {
         var lines = Runner.ReadCoverage.LineCount(f.Content);
         return f.Required
-            ? $"- `{f.Path}` ({lines} líneas), entero, en estos tramos: {Runner.ReadCoverage.Describe(Ranges(f.Content))}."
+            ? $"- `{f.Path}` ({lines} líneas), entero, con estas llamadas a Read: {Calls(f.Content)}."
             : $"- `{f.Path}` ({lines} líneas), solo para consultar lo que necesites: no hace falta leerlo entero.";
     }));
+
+    // The exact arguments of each Read call: "`offset` 1, `limit` 242; `offset` 243, `limit` 203".
+    // v0.2: with ranges of lines ("1–242") LUNA counted from 0 and never read
+    // the last line (first comparison, 09-10-2026).
+    public static string Calls(string content) =>
+        string.Join("; ", Ranges(content).Select(r => $"`offset` {r.From}, `limit` {r.To - r.From + 1}"));
 
     // A JSON input (a proposal, the catalog, the backlog) indented, one value
     // per line: the model's output may come in a single line, which Read would

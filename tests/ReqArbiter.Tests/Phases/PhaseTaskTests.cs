@@ -74,7 +74,7 @@ public class PhaseTaskTests
         Assert.Equal("=== DOC-01 · DOC-01.txt ===", lines[0]);
         Assert.Equal(Fragments.Select(f => f.Id), lines.Skip(1).Select(l => l[1..l.IndexOfAny([' ', ']'])]));
         // The prompt has the reading plan, not the documentation.
-        Assert.Contains($"- `input/documentacion.txt` ({lines.Length} líneas), entero, en estos tramos: 1–{lines.Length}.", result.Request!.Prompt);
+        Assert.Contains($"- `input/documentacion.txt` ({lines.Length} líneas), entero, con estas llamadas a Read: `offset` 1, `limit` {lines.Length}.", result.Request!.Prompt);
         Assert.DoesNotContain(Fragments[1].Text, result.Request.Prompt);
         Assert.Equal([DocumentationFile.Path], result.RequiredReads);
         Assert.Equal(["Read", "Write"], result.Request.AllowedTools);
@@ -109,6 +109,8 @@ public class PhaseTaskTests
         Assert.All(ranges.Zip(ranges.Skip(1)), pair => Assert.Equal(pair.First.To + 1, pair.Second.From));
         var lines = content.Split('\n');
         Assert.All(ranges, r => Assert.True(lines[(r.From - 1)..r.To].Sum(l => l.Length + 1) <= ReadingPlan.MaxCharsPerRead));
+        // In the prompt, as the arguments of each call.
+        Assert.StartsWith($"`offset` 1, `limit` {ranges[0].To}; `offset` {ranges[1].From}, `limit` {ranges[1].To - ranges[1].From + 1}", ReadingPlan.Calls(content));
     }
 
     [Fact]

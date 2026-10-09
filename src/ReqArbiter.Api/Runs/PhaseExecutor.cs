@@ -12,7 +12,8 @@ namespace ReqArbiter.Api.Runs;
 public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileStorage storage, RunnerOptions runnerOptions, CatalogOptions catalogOptions)
 {
     // v0.1 (09-10-2026): the inputs are read by parts from input/ (milestone 12b).
-    public const string PromptVersion = "v0.1";
+    // v0.2 (09-10-2026): the reading plan gives the exact offset and limit of each Read call.
+    public const string PromptVersion = "v0.2";
     public const int MaxRepairs = 1;
 
     // proposals: the outputs of the two slots in the order of the plan (only for the arbiter).
