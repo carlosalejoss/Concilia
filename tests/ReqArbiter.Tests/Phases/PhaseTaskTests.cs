@@ -159,6 +159,66 @@ public class PhaseTaskTests
         Assert.Empty(PhaseTask.UnreadErrors(temp.Path, request.RequiredReads!, [new(DocumentationFile.Path, 1, total, true)]));
     }
 
+    // Prompts v0.3: the arbiter sees "1:" and "2:" before the ids it compares,
+    // and the platform removes them from its output before checking it.
+    [Fact]
+    public void The_arbiter_sees_the_ids_with_the_number_of_their_proposal()
+    {
+        var proposal = File.ReadAllText(Example("catalogo_propuesta_1.json"));
+
+        var prefixed = JsonNode.Parse(ProposalIds.Prefix(PhaseKind.Catalog, proposal, 2))!;
+
+        var requirements = prefixed["requisitos"]!.AsArray();
+        Assert.All(requirements, r => Assert.StartsWith("2:R", r!["id"]!.GetValue<string>()));
+        // The answers a requirement cites point elsewhere: they keep their form.
+        Assert.All(requirements.SelectMany(r => r!["preguntas"]!.AsArray()), q => Assert.StartsWith("P-", q!.GetValue<string>()));
+        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(proposal), JsonNode.Parse(ProposalIds.Unprefix(PhaseKind.Catalog, prefixed.ToJsonString()))));
+    }
+
+    [Fact]
+    public void In_a_backlog_only_the_stories_get_the_prefix()
+    {
+        var prefixed = JsonNode.Parse(ProposalIds.Prefix(PhaseKind.Backlog, File.ReadAllText(Example("backlog_propuesta_1.json")), 1))!;
+
+        var epic = prefixed["epicas"]![0]!;
+        Assert.StartsWith("EP-", epic["id"]!.GetValue<string>());
+        Assert.StartsWith("1:HU-", epic["historias"]![0]!["id"]!.GetValue<string>());
+        Assert.StartsWith("CA-", epic["historias"]![0]!["criterios"]![0]!["id"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void The_prefix_of_its_own_proposal_is_removed_and_a_wrong_one_is_reported()
+    {
+        var phase = PhaseDefinition.For(PhaseKind.Questions, PhaseRole.Arbiter);
+        var output = File.ReadAllText(Example("preguntas_arbitro.json"));
+        var withPrefixes = JsonNode.Parse(output)!;
+        foreach (var q in withPrefixes["preguntas"]!.AsArray())
+            for (var n = 1; n <= 2; n++)
+            {
+                var ids = q!["de"]![$"propuesta_{n}"]!.AsArray();
+                for (var i = 0; i < ids.Count; i++)
+                    ids[i] = $"{n}:{ids[i]!.GetValue<string>()}";
+            }
+        foreach (var d in withPrefixes["descartadas"]!.AsArray())
+            d!["id"] = $"{d["propuesta"]!.GetValue<int>()}:{d["id"]!.GetValue<string>()}";
+        var context = Context() with
+        {
+            Proposal1 = File.ReadAllText(Example("preguntas_propuesta_1.json")),
+            Proposal2 = File.ReadAllText(Example("preguntas_propuesta_2.json")),
+        };
+
+        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(output), JsonNode.Parse(ProposalIds.Strip(withPrefixes.ToJsonString()))));
+        Assert.True(PhaseTask.Review(phase, withPrefixes.ToJsonString(), context, "PROMPT", 1).Valid);
+
+        // An id of proposal 1 cited in propuesta_2 keeps its "1:", so it does not exist there.
+        var mixed = withPrefixes.DeepClone();
+        var first = mixed["preguntas"]![0]!["de"]!;
+        var moved = first["propuesta_1"]![0]!.GetValue<string>();
+        first["propuesta_2"]!.AsArray().Add(moved);
+        var review = PhaseTask.Review(phase, mixed.ToJsonString(), context, "PROMPT", 1);
+        Assert.Equal($"P-001 ARB-DE: {moved} está en `de.propuesta_2`, pero es un id de la propuesta 1.", review.Validation.Errors[0]);
+    }
+
     [Fact]
     public void A_document_with_placeholders_reaches_the_model_as_it_is()
     {

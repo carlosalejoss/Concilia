@@ -14,7 +14,8 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.2 | 09-10-2026 | La v0.1 con los argumentos exactos de cada llamada a `Read` (`offset` y `limit`) en lugar de rangos de líneas | Pendiente | Pendiente |
+| v0.3 | 09-10-2026 | El árbitro ve los ids de cada propuesta con su número delante (`1:P-003`, `2:RF-001`); la plataforma los quita antes de validar | Pendiente | Pendiente |
+| v0.2 | 09-10-2026 | La v0.1 con los argumentos exactos de cada llamada a `Read` (`offset` y `limit`) en lugar de rangos de líneas | Sí (documento B, una ronda, 09-10-2026) | A y B leen exactamente los tramos y LUNA ya no repara; el árbitro vuelve a confundir los ids de las propuestas (tercera vez de tres) |
 | v0.1 | 09-10-2026 | Lectura por partes (team leader): la documentación va a `input/documentacion.txt` y el modelo la lee con `Read` en los tramos que da la plataforma, que comprueba que no queda ninguna línea sin leer | Sí (documento B, una ronda, 09-10-2026) | Funciona y lee todo, pero con un documento que cabe entero cuesta un 50 % más de tokens y de tiempo que la v0 y añade dos reparaciones: LUNA cuenta las líneas desde 0 y se deja la última, y el árbitro confundió los ids de las propuestas |
 | v0 | 08-10-2026 | Prompt muy básico para tener el flujo completo (iteración v0): documento entero sin lotes, respuestas del cliente como entrada, frase EARS/MASTeR escrita por el modelo y árbitro que une A y B | Sí (ReservaSalas, 09-10-2026; documento B, 09-10-2026) | Flujo completo en unos 5 minutos de modelo, todo válido a la primera; 25 requisitos (13 en la v1.2), porque las 11 respuestas eran suposiciones de la IA aceptadas sin cambios y añadieron funcionalidad que el documento no tiene |
 
@@ -336,6 +337,24 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
 
+## v0.3 (09-10-2026)
+
+Aprobado por el autor tras el tercer fallo del árbitro con los ids de las propuestas. Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- **Ids con el número de su propuesta.** En los ficheros que lee el árbitro, cada pregunta, requisito o historia lleva su id con el número de su propuesta delante (`1:P-003`, `2:RF-001`), y el árbitro los copia así en `de` y en los descartes. El id dice de qué propuesta sale, así que ya no puede ponerlo en la otra sin que se note.
+- **La plataforma deshace el cambio.** Quita a cada id el prefijo de su propia propuesta antes de validar y guarda la salida sin prefijos: esquemas, validador y flujo no cambian. Un id con el prefijo de la otra propuesta es un error `ARB-DE` que lo dice tal cual, para que la reparación sepa qué corregir.
+- **No toca el orden de lectura.** El *position bias* que preocupaba al autor (que el árbitro prefiera la primera propuesta que lee) sigue neutralizado por el orden aleatorio de las propuestas.
+
+### Resultados
+
+Pendientes: una ronda de preguntas y un catálogo con el documento B, para ver si el árbitro acierta a la primera.
+
+### Qué hay que mejorar
+
+Pendiente de medir.
+
 ## v0.2 (09-10-2026)
 
 Primer cambio que sale de la comparación de la v0.1 con un documento real, aprobado por el autor. Detalle en `prompts/v0/CHANGELOG.md`.
@@ -349,7 +368,18 @@ Primer cambio que sale de la comparación de la v0.1 con un documento real, apro
 
 ### Resultados
 
-Pendientes: repetir la ronda del documento B y comprobar que LUNA ya no necesita la reparación por `LECTURA`.
+Una ronda de preguntas con el documento B (09-10-2026, proyecto nuevo):
+
+| Run | Tokens entrada / salida | Turnos | Tiempo |
+|---|---|---|---|
+| A (SOL) | 131.222 / 11.999 | 5 | 108 s |
+| B (LUNA) | 85.314 / 21.361 | 5, sin reparación | 161 s |
+| Árbitro (SOL) | 169.859 / 19.308 | 13 + 4 (una reparación) | 128 s |
+| Total | 386.395 / 52.668 | | |
+
+- **El cambio funciona.** A y B piden exactamente `offset` 1, 243 y 446 con sus `limit`, y LUNA lee las 613 líneas a la primera.
+- **El árbitro vuelve a confundirse** en su primer intento: cita `P-017` en la propuesta 2, que no lo tiene (28 errores `ARB-DE` y `ARB-FALTA`). Es la tercera vez de tres con la lectura por partes (preguntas v0.1, catálogo v0.1 y preguntas v0.2), y ninguna con la v0. Ya no parece variación del modelo: lo provoca leer las dos propuestas desde ficheros con los mismos ids. Lleva a la v0.3.
+- 34 preguntas (4 de ambas, 18 solo de la 1, 12 solo de la 2).
 
 ### Qué hay que mejorar
 

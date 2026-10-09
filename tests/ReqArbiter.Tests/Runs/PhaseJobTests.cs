@@ -184,15 +184,19 @@ public class PhaseJobTests
         var arbiter = setup.Outcome("ARB").Attempts![0].Request.WorkDirectory;
         var first = created.Plan!.ProposalOrder[0];
         var firstOutput = PhaseExecutor.OutputPath(setup.Outcome(first).Attempts![^1], kind);
-        // (indented, so Read does not cut a long line: the same JSON).
-        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(File.ReadAllText(firstOutput)),
-                                        JsonNode.Parse(File.ReadAllText(Path.Combine(arbiter, PhaseTask.Proposal1File)))));
+        // (indented, so Read does not cut a long line, and with "1:" before
+        // each id, so the arbiter cannot mix the proposals: the same JSON otherwise).
+        var proposal1 = File.ReadAllText(Path.Combine(arbiter, PhaseTask.Proposal1File));
+        Assert.Contains("\"id\": \"1:", proposal1);
+        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(File.ReadAllText(firstOutput)), JsonNode.Parse(ProposalIds.Unprefix(kind, proposal1))));
         // Every run read its input by parts (FakeProvider reads every file of input/).
         Assert.All(setup.Finished, o => Assert.NotEmpty(o.Attempts![^1].Result.Reads));
 
-        // The result is the arbiter's output, and it is valid for the arbiter's schema.
-        var context = created.Plan.Context(File.ReadAllText(Path.Combine(arbiter, PhaseTask.Proposal1File)),
-                                           File.ReadAllText(Path.Combine(arbiter, PhaseTask.Proposal2File)));
+        // The result is the arbiter's output, kept without the prefixes, and
+        // it is valid for the arbiter's schema.
+        Assert.DoesNotContain("\"1:", result.Output);
+        var context = created.Plan.Context(ProposalIds.Unprefix(kind, proposal1),
+                                           ProposalIds.Unprefix(kind, File.ReadAllText(Path.Combine(arbiter, PhaseTask.Proposal2File))));
         Assert.True(PhaseValidator.Validate(PhaseDefinition.For(kind, PhaseRole.Arbiter), result.Output!, context).Valid);
     }
 

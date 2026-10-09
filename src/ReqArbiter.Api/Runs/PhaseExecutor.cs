@@ -13,7 +13,8 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
 {
     // v0.1 (09-10-2026): the inputs are read by parts from input/ (milestone 12b).
     // v0.2 (09-10-2026): the reading plan gives the exact offset and limit of each Read call.
-    public const string PromptVersion = "v0.2";
+    // v0.3 (09-10-2026): the arbiter sees the ids of each proposal with its number ("1:P-003").
+    public const string PromptVersion = "v0.3";
     public const int MaxRepairs = 1;
 
     // proposals: the outputs of the two slots in the order of the plan (only for the arbiter).
@@ -52,7 +53,8 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
                 reads.AddRange(attempt.Result.Reads);
                 return Review(attempt, phase.OutputFile,
                     (output, unread) => PhaseTask.Review(phase, output, context, original, attemptsSoFar, unread),
-                    built.RequiredReads!, reads);
+                    built.RequiredReads!, reads,
+                    phase.IsArbiter ? ProposalIds.Strip : null);
             },
             cancellationToken);
     }
@@ -69,9 +71,11 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // reviewOutput gets the output (null if the model did not write it) and
     // the errors of the lines it left unread; requiredReads are the files it
     // must read entirely, and reads those it read in every attempt so far.
+    // keepAs: how a valid output is kept in its file (the arbiter's, without
+    // the proposal prefixes), so the rest of the flow reads it as before.
     internal static AttemptReview Review(
         RunAttempt attempt, string outputFile, Func<string?, IReadOnlyList<string>, PhaseReview> reviewOutput,
-        IReadOnlyList<string> requiredReads, IReadOnlyList<FileRead> reads)
+        IReadOnlyList<string> requiredReads, IReadOnlyList<FileRead> reads, Func<string, string>? keepAs = null)
     {
         var result = attempt.Result;
         if (!CatalogReview.ModelAnswered(result))
@@ -82,6 +86,8 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
         var review = reviewOutput(output, PhaseTask.UnreadErrors(attempt.Request.WorkDirectory, requiredReads, reads));
         if (review.Valid)
         {
+            if (keepAs is not null && output is not null)
+                File.WriteAllText(path, keepAs(output));
             var notes = new List<string>();
             if (result.Compactions > 0)
                 notes.Add($"Claude Code compactó el contexto {result.Compactions} {(result.Compactions == 1 ? "vez" : "veces")}: puede haberse perdido detalle");

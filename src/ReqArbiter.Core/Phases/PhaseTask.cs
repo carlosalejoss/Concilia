@@ -61,8 +61,9 @@ public static class PhaseTask
             files.Add(new InputFile(DocumentationFile.Path, input.Documentation, Required: !phase.IsArbiter));
         if (phase.IsArbiter)
         {
-            files.Add(new InputFile(Proposal1File, ReadingPlan.Indented(input.Proposal1), Required: true));
-            files.Add(new InputFile(Proposal2File, ReadingPlan.Indented(input.Proposal2), Required: true));
+            // With "1:" and "2:" before the ids, so the arbiter cannot mix them (ProposalIds).
+            files.Add(new InputFile(Proposal1File, ProposalIds.Prefix(phase.Kind, input.Proposal1, 1), Required: true));
+            files.Add(new InputFile(Proposal2File, ProposalIds.Prefix(phase.Kind, input.Proposal2, 2), Required: true));
         }
         return files;
     }
@@ -134,10 +135,12 @@ public static class PhaseTask
         PhaseDefinition phase, string? output, PhaseContext context, string originalPrompt, int attempt,
         IReadOnlyList<string>? extraErrors = null)
     {
+        // The arbiter's ids come with the prefix of their proposal: checked without it.
         var checkedOutput = output is null
             ? new PhaseValidation([$"{phase.OutputFile} FICHERO: no se ha escrito el fichero."], [])
-            : PhaseValidator.Validate(phase, output, context);
-        var validation = new PhaseValidation([.. checkedOutput.Errors, .. extraErrors ?? []], checkedOutput.Warnings);
+            : PhaseValidator.Validate(phase, phase.IsArbiter ? ProposalIds.Strip(output) : output, context);
+        var wrongPrefixes = phase.IsArbiter && output is not null ? ProposalIds.WrongPrefixes(output) : [];
+        var validation = new PhaseValidation([.. wrongPrefixes, .. checkedOutput.Errors, .. extraErrors ?? []], checkedOutput.Warnings);
         var repair = validation.Valid
             ? null
             : PhasePrompt.Repair(originalPrompt, attempt, phase.OutputFile, output ?? "", validation.Errors);
@@ -150,13 +153,15 @@ public static class PhaseTask
         var fragments = JsonDocument.Parse(File.ReadAllText(Path.Combine(workDirectory, FragmentsFile)))
             .RootElement.GetProperty("fragments").EnumerateArray()
             .Select(f => f.GetProperty("id").GetString()!).ToHashSet();
+        var kind = Enum.Parse<PhaseKind>(JsonDocument.Parse(File.ReadAllText(Path.Combine(workDirectory, PhaseFile))).RootElement.GetProperty("kind").GetString()!);
+        string? Proposal(string file) => ReadIfExists(workDirectory, file) is { } p ? ProposalIds.Unprefix(kind, p) : null;
         return new PhaseContext
         {
             FragmentIds = fragments,
             AnsweredQuestionIds = answeredQuestionIds,
             Catalog = ReadIfExists(workDirectory, CatalogFile),
-            Proposal1 = ReadIfExists(workDirectory, Proposal1File),
-            Proposal2 = ReadIfExists(workDirectory, Proposal2File),
+            Proposal1 = Proposal(Proposal1File),
+            Proposal2 = Proposal(Proposal2File),
             PendingQuestionIds = ReadIfExists(workDirectory, PendingFile) is { } pending
                 ? JsonSerializer.Deserialize<List<string>>(pending)!
                 : [],
