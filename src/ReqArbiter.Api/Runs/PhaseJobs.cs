@@ -43,7 +43,8 @@ public static class PhaseJobs
     // which also carries the proposals, is checked when it runs).
     public static NewPhaseJob Create(
         Project project, IReadOnlyList<CatalogDocument> documents, PhaseKind kind, PhaseInput input,
-        IReadOnlyList<string> answeredQuestionIds, RunnerOptions options, string providerName, Random random)
+        IReadOnlyList<string> answeredQuestionIds, RunnerOptions options, string providerName, Random random,
+        IReadOnlyList<string>? pendingQuestionIds = null)
     {
         if (documents.Count == 0)
             return new NewPhaseJob(null, [], null, "El proyecto no tiene archivos con texto. Sube algún .txt, .md, .docx o .pdf.");
@@ -63,7 +64,10 @@ public static class PhaseJobs
 
         var now = DateTimeOffset.UtcNow;
         var job = new Job { Id = Guid.NewGuid(), ProjectId = project.Id, Kind = PhasePlan.JobKind(kind), CreatedAt = now };
-        var plan = new PhasePlan(kind, fullInput, fragments, answeredQuestionIds, PhasePlan.RandomOrder(random));
+        var plan = new PhasePlan(kind, fullInput, fragments, answeredQuestionIds, PhasePlan.RandomOrder(random))
+        {
+            PendingQuestionIds = pendingQuestionIds ?? [],
+        };
         Run NewRun(string slot, string model) => new()
         {
             Id = Guid.NewGuid(),
@@ -76,7 +80,11 @@ public static class PhaseJobs
             CreatedAt = now,
             PromptVersion = PhaseExecutor.PromptVersion,
         };
-        return new NewPhaseJob(job, [NewRun("A", options.ModelA), NewRun("B", options.ModelB), NewRun("ARB", options.ModelArbiter)], plan, null);
+        // The suggestions of answers are a single run (SUG), without arbiter.
+        IReadOnlyList<Run> runs = kind == PhaseKind.Suggestions
+            ? [NewRun("SUG", options.ModelSuggestions)]
+            : [NewRun("A", options.ModelA), NewRun("B", options.ModelB), NewRun("ARB", options.ModelArbiter)];
+        return new NewPhaseJob(job, runs, plan, null);
     }
 
     // Stores a new job (its plan, the job and its three runs) and queues it.

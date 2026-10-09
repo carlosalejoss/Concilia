@@ -63,7 +63,9 @@ public static class QuestionRules
     public static PhaseQuestion ForPrompt(Question q) => new(q.Code, q.Text, StatusName(q.Status), q.Answer);
 
     // Answers a pending question, or changes the answer of an answered one.
-    public static QuestionChange Answer(Question q, string? answer, DateTimeOffset now)
+    // fromSuggestion: the user started from the AI's suggestion; the origin is
+    // "ia" if it is saved as it was and "ia-editada" if the user changed it.
+    public static QuestionChange Answer(Question q, string? answer, DateTimeOffset now, bool fromSuggestion = false)
     {
         if (string.IsNullOrWhiteSpace(answer))
             return QuestionChange.Fail("La respuesta no puede estar vacía.");
@@ -71,9 +73,29 @@ public static class QuestionRules
             return QuestionChange.Fail("La pregunta está descartada: reábrela antes de contestarla.");
         q.Status = QuestionStatus.Answered;
         q.Answer = answer.Trim();
+        q.AnswerOrigin = !fromSuggestion || q.SuggestedAnswer is null ? "usuario"
+            : q.Answer == q.SuggestedAnswer.Trim() ? "ia" : "ia-editada";
         q.DiscardReason = null;
         q.UpdatedAt = now;
         return new QuestionChange(null, FlowChange.AnswerChanged);
+    }
+
+    // The suggestions of the AI (output/sugerencias.json) on the pending
+    // questions of the project, by code. Nothing is answered: each question
+    // only keeps its last suggestion for the user to use, edit or ignore.
+    public static void ApplySuggestions(IEnumerable<Question> questions, string output, DateTimeOffset now)
+    {
+        var byCode = questions.Where(q => q.Status == QuestionStatus.Pending).ToDictionary(q => q.Code);
+        foreach (var s in JsonNode.Parse(output)!["sugerencias"]!.AsArray().Select(x => x!.AsObject()))
+        {
+            if (!byCode.TryGetValue(s["pregunta"]!.GetValue<string>(), out var q))
+                continue; // answered or discarded meanwhile: the suggestion is no longer needed
+            q.SuggestedAnswer = s["respuesta"]!.GetValue<string>();
+            q.SuggestionBasis = s["base"]!.GetValue<string>();
+            q.SuggestionSources = s["fuentes"]!.AsArray().Select(f => f!.GetValue<string>()).ToList();
+            q.SuggestionNote = s["explicacion"]!.GetValue<string>();
+            q.SuggestedAt = now;
+        }
     }
 
     // Discards a question (not needed, out of scope…), with an optional reason.
@@ -84,6 +106,7 @@ public static class QuestionRules
             return QuestionChange.Fail("La pregunta ya está descartada.");
         q.Status = QuestionStatus.Discarded;
         q.Answer = null;
+        q.AnswerOrigin = null;
         q.DiscardReason = string.IsNullOrWhiteSpace(reason) ? null : reason.Trim();
         q.UpdatedAt = now;
         return new QuestionChange(null, FlowChange.QuestionDiscarded);
@@ -98,6 +121,7 @@ public static class QuestionRules
         var hadAnswer = q.Status == QuestionStatus.Answered;
         q.Status = QuestionStatus.Pending;
         q.Answer = null;
+        q.AnswerOrigin = null;
         q.DiscardReason = null;
         q.UpdatedAt = now;
         return new QuestionChange(null, hadAnswer ? FlowChange.AnswerChanged : null);

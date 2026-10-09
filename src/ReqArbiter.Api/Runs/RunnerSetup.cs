@@ -19,6 +19,11 @@ public class RunnerOptions
     public string ModelB { get; set; } = "SS - GPT-6-LUNA";
     public string ModelArbiter { get; set; } = "SS - GPT-6-SOL";
 
+    // The model that suggests answers to the pending questions of a round
+    // (RUNNER_MODEL_SUGGESTIONS). SOL by default: in the measurements it is the
+    // faster model and the one that loses fewer runs.
+    public string ModelSuggestions { get; set; } = "SS - GPT-6-SOL";
+
     // Input window of the models, confirmed by the team leader.
     public int MaxContextTokens { get; set; } = 128_000;
 

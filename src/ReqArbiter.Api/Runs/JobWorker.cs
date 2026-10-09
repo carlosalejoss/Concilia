@@ -65,9 +65,15 @@ public class JobWorker(
         if (PhasePlan.KindOfJob(job.Kind) is not null)
         {
             var phasePlan = PhasePlan.Load(storage.JobFolder(jobId));
-            var result = await jobRunner.RunPhaseAsync(runs, phasePlan, MarkRunningAsync, SaveOutcomeAsync, cancellationToken);
+            var result = phasePlan.Kind == PhaseKind.Suggestions
+                ? await jobRunner.RunSingleAsync(runs.Single(), phasePlan, MarkRunningAsync, SaveOutcomeAsync, cancellationToken)
+                : await jobRunner.RunPhaseAsync(runs, phasePlan, MarkRunningAsync, SaveOutcomeAsync, cancellationToken);
             PhaseJobs.WriteResult(storage.JobFolder(jobId), result);
-            if (phasePlan.Kind == PhaseKind.Questions)
+            if (phasePlan.Kind == PhaseKind.Suggestions)
+            {
+                await Questions.QuestionEndpoints.StoreSuggestionsAsync(db, job.ProjectId, result);
+            }
+            else if (phasePlan.Kind == PhaseKind.Questions)
             {
                 await Questions.QuestionEndpoints.StoreRoundAsync(db, jobId, job.ProjectId, phasePlan, result);
             }

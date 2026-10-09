@@ -133,6 +133,8 @@ Decidida por el autor el 08-10-2026. Objetivo: que el proceso entero funcione de
 | Regenerar una fase sustituye su borrador. Si cambia algo anterior, las fases siguientes quedan «desactualizadas»: es un aviso, no se borra nada, y se pueden regenerar. | Propuesta de Claude, aprobada por el autor |
 | Si solo uno de los dos modelos termina bien, no se llama al árbitro: su salida pasa como resultado con el aviso «sin verificación cruzada». Si fallan los dos, el trabajo falla. | Propuesta de Claude, aprobada por el autor |
 | El mockup se muestra en un iframe `sandbox="allow-scripts"`, sin acceso al origen de la aplicación, y se puede descargar. | Propuesta de Claude, aprobada por el autor |
+| (09-10-2026) La IA puede sugerir la respuesta de las preguntas pendientes, una a una o todas las de una ronda. La sugerencia rellena el cuadro de respuesta y no se guarda nada hasta que el usuario la guarda, tal cual o editada. Dice en qué se basa (documentación, con los fragmentos, o suposición) y la respuesta guarda su origen: `usuario`, `ia` o `ia-editada`. | Autor |
+| (09-10-2026) Las sugerencias las da un solo modelo, sin árbitro: `SS - GPT-6-SOL`, configurable (`RUNNER_MODEL_SUGGESTIONS`). No son un paso del flujo ni desactualizan nada. | Autor (un modelo, el más conveniente); SOL, propuesta de Claude |
 
 ### Estado de cada fase
 
@@ -180,6 +182,7 @@ Desactualización:
 | A | `LiteLlm` | `SS - GPT-6-SOL` | `RUNNER_MODEL_A` |
 | B | `LiteLlm` | `SS - GPT-6-LUNA` | `RUNNER_MODEL_B` |
 | Árbitro | `LiteLlm` | `SS - GPT-6-SOL` | `RUNNER_MODEL_ARBITER` |
+| Sugerencias de respuesta | `LiteLlm` | `SS - GPT-6-SOL` | `RUNNER_MODEL_SUGGESTIONS` |
 | Mockup | `ClaudeSubscription` | `claude-sonnet-5-5` | `MOCKUP_PROVIDER`, `MOCKUP_MODEL`, `CLAUDE_CODE_OAUTH_TOKEN` |
 
 Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
@@ -212,6 +215,12 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
 - [x] 47. Endpoints para responder, editar la respuesta, descartar (con motivo opcional) y reabrir una pregunta, con tests. Las respuestas son la información del proyecto que reciben el catálogo y el backlog.
 - [x] 48. Web: rondas con sus preguntas y filtro de pendientes. Se puede contestar o descartar, y se ven el origen (A, B o ambas) y la explicación del árbitro. Un contador de pendientes muestra por qué el catálogo está bloqueado.
 - [ ] 49. Prueba real con ReservaSalas (SOL, LUNA y árbitro SOL) y dos rondas: tokens, tiempos y preguntas repetidas entre rondas.
+- [x] 49b. Sugerencias de respuesta con IA (añadido el 09-10-2026, a petición del autor):
+  - prompt `prompts/v0/sugerir_respuestas.md`, con su esquema, sus comprobaciones y su ejemplo (el autor lo revisa);
+  - trabajo `answer-suggestions` con un solo run (`SUG`, `RUNNER_MODEL_SUGGESTIONS`): `POST /question-rounds/{id}/suggestions` (todas las pendientes de la ronda) y `POST /questions/{id}/suggestion` (una); uno a la vez por proyecto;
+  - al terminar, cada pregunta pendiente guarda su sugerencia (texto, base, fuentes y explicación) sin cambiar de estado;
+  - al guardar la respuesta, `fromSuggestion` deja el origen `ia` (sin cambios) o `ia-editada`; si no, `usuario`;
+  - web: botón «Sugerir con IA» por ronda y por pregunta; la sugerencia abre el cuadro de respuesta relleno, con su base, fuentes y explicación; la respuesta muestra su origen.
 
 **Hecho cuando:** se lanzan dos rondas, la segunda no repite lo ya preguntado, y las respuestas y los descartes siguen ahí tras reiniciar los contenedores.
 

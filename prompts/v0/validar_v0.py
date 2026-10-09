@@ -16,6 +16,7 @@ afectado y un código:
   REF-REQ    requisito que no existe en el catálogo
   ARB-DE     el árbitro cita un id que no existe en esa propuesta, o un `de` sin ningún id
   ARB-FALTA  un elemento de una propuesta no acaba ni en `de` ni en los descartes
+  FALTA      una pregunta pendiente sin su sugerencia de respuesta
   COB        (aviso) requisito RF o RI sin ninguna historia
 
 Uso: python validar_v0.py   (valida los ejemplos de ejemplo/)
@@ -159,6 +160,30 @@ def validar_backlog(datos, catalogo, propuestas=None):
     return errores, avisos
 
 
+def validar_sugerencias(datos, fragmentos, pendientes):
+    """Respuestas sugeridas por la IA: una por cada pregunta pendiente (`pendientes`, en orden), sin
+    repetir ni sugerir para otras, con fragmentos que existen; si se basa en la documentación, cita al
+    menos uno."""
+    errores = errores_de_esquema(datos, "sugerencias.schema.json")
+    if errores:
+        return errores, []
+    vistas = set()
+    for s in datos["sugerencias"]:
+        p = s["pregunta"]
+        if p not in pendientes:
+            errores.append(f"{p} REF-PREG: la pregunta {p} no está entre las pendientes.")
+        if p in vistas:
+            errores.append(f"{p} ID-DUP: hay más de una sugerencia para la pregunta.")
+        vistas.add(p)
+        if s["base"] == "documentacion" and not s["fuentes"]:
+            errores.append(f"{p} SIN-ORIGEN: una sugerencia basada en la documentación cita al menos un fragmento.")
+        errores += errores_de_fragmentos(p, s["fuentes"], fragmentos)
+    for p in pendientes:
+        if p not in vistas:
+            errores.append(f"{p} FALTA: no hay sugerencia para la pregunta.")
+    return errores, []
+
+
 # --- Ejemplos -----------------------------------------------------------
 
 def main():
@@ -180,6 +205,8 @@ def main():
         ("backlog_propuesta_1", validar_backlog(cargar(ej / "backlog_propuesta_1.json"), catalogo)),
         ("backlog_propuesta_2", validar_backlog(cargar(ej / "backlog_propuesta_2.json"), catalogo)),
         ("backlog_arbitro", validar_backlog(cargar(ej / "backlog_arbitro.json"), catalogo, par("backlog"))),
+        # Las sugerencias del ejemplo son para P-002, P-003 y P-004, como si siguieran pendientes.
+        ("sugerencias", validar_sugerencias(cargar(ej / "sugerencias.json"), fragmentos, ["P-002", "P-003", "P-004"])),
     ]
     fallos = 0
     for nombre, (errores, avisos) in casos:

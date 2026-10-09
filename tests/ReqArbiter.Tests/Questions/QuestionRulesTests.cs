@@ -168,4 +168,58 @@ public class QuestionRulesTests
         });
         Assert.NotNull(QuestionRules.Reopen(answered, Now).Error);
     }
+
+    // AI answer suggestions (09-10-2026): they are kept on the pending
+    // questions, never answer them, and the answer records where it came from.
+
+    [Fact]
+    public void Suggestions_are_kept_only_on_the_pending_questions()
+    {
+        var answered = Pending("P-002");
+        QuestionRules.Answer(answered, "Ya contestada", Now);
+        var pending3 = Pending("P-003");
+        var pending4 = Pending("P-004");
+
+        QuestionRules.ApplySuggestions([answered, pending3, pending4], Example("sugerencias.json"), Now);
+
+        Assert.Null(answered.SuggestedAnswer);
+        Assert.Equal("Ya contestada", answered.Answer);
+        Assert.All([pending3, pending4], q =>
+        {
+            Assert.Equal(QuestionStatus.Pending, q.Status);
+            Assert.Null(q.Answer);
+            Assert.Equal("suposicion", q.SuggestionBasis);
+            Assert.Equal(Now, q.SuggestedAt);
+        });
+        Assert.StartsWith("Proponemos que sí", pending3.SuggestedAnswer);
+        Assert.Equal(["DOC-01#F008"], pending3.SuggestionSources);
+        Assert.Contains("aprobación del administrador", pending3.SuggestionNote);
+    }
+
+    [Fact]
+    public void The_answer_records_whether_it_is_the_users_the_ais_or_the_ais_edited()
+    {
+        Question Suggested() => new()
+        {
+            Code = "P-001", Text = "¿?", Reason = "", Origin = "A", Status = QuestionStatus.Pending, SuggestedAnswer = "Sí, 30 minutos.",
+        };
+        var asIs = Suggested();
+        var edited = Suggested();
+        var own = Suggested();
+        var withoutSuggestion = Pending();
+
+        QuestionRules.Answer(asIs, "  Sí, 30 minutos. ", Now, fromSuggestion: true);
+        QuestionRules.Answer(edited, "Sí, 45 minutos.", Now, fromSuggestion: true);
+        QuestionRules.Answer(own, "No.", Now);
+        QuestionRules.Answer(withoutSuggestion, "No.", Now, fromSuggestion: true);
+
+        Assert.Equal("ia", asIs.AnswerOrigin);
+        Assert.Equal("ia-editada", edited.AnswerOrigin);
+        Assert.Equal("usuario", own.AnswerOrigin);
+        Assert.Equal("usuario", withoutSuggestion.AnswerOrigin);
+
+        QuestionRules.Reopen(edited, Now);
+        Assert.Null(edited.AnswerOrigin);
+        Assert.Equal("Sí, 30 minutos.", edited.SuggestedAnswer); // the suggestion stays for the next answer
+    }
 }

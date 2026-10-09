@@ -20,6 +20,7 @@ public record PhaseInput
     public string Backlog { get; init; } = "";           // the validated backlog (mockup)
     public string Proposal1 { get; init; } = "";         // arbiter: the two proposals, in random order
     public string Proposal2 { get; init; } = "";
+    public string PendingQuestions { get; init; } = "";  // suggestions: PhasePrompt.PendingQuestionsBlock
 }
 
 // Builds the prompts of the v0 phases from their templates.
@@ -43,6 +44,7 @@ public static class PhasePrompt
         ["BACKLOG"] = input.Backlog,
         ["PROPUESTA_1"] = input.Proposal1,
         ["PROPUESTA_2"] = input.Proposal2,
+        ["PREGUNTAS"] = input.PendingQuestions,
     });
 
     // The repair is the ORIGINAL prompt plus the annex with the previous output
@@ -65,6 +67,12 @@ public static class PhasePrompt
             $"<pregunta id=\"{q.Id}\" estado=\"{q.Status}\"><texto>{Fragmenter.SafeText(q.Text)}</texto>"
             + (q.Status == "respondida" ? $"<respuesta>{Fragmenter.SafeText(q.Answer ?? "")}</respuesta>" : "")
             + "</pregunta>"));
+
+    // {{PREGUNTAS}} of the suggestions: the pending questions with the reason
+    // they were asked. <pregunta id="P-007"><texto>…</texto><motivo>…</motivo></pregunta>
+    public static string PendingQuestionsBlock(IEnumerable<(string Id, string Text, string Reason)> questions) =>
+        string.Join("\n", questions.Select(q =>
+            $"<pregunta id=\"{q.Id}\"><texto>{Fragmenter.SafeText(q.Text)}</texto><motivo>{Fragmenter.SafeText(q.Reason)}</motivo></pregunta>"));
 
     // {{RESPUESTAS}}: only the answered questions.
     // <pregunta id="P-003"><texto>…</texto><respuesta>…</respuesta></pregunta>

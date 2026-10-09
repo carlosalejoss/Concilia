@@ -27,7 +27,8 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
             HeartbeatTimeout = catalogOptions.HeartbeatTimeout,
             TotalTimeout = catalogOptions.TotalTimeout,
         };
-        var built = PhaseTask.BuildRequest(phase, input, plan.Fragments, run.Id, run.Model, storage.RunFolder(run.Id), options);
+        var built = PhaseTask.BuildRequest(phase, input, plan.Fragments, run.Id, run.Model, storage.RunFolder(run.Id), options,
+            plan.Kind == PhaseKind.Suggestions ? plan.PendingQuestionIds : null);
         if (built.Request is null)
         {
             // The input does not fit: the run fails at once, without calling the model.

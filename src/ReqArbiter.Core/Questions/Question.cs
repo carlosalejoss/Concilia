@@ -35,6 +35,19 @@ public class Question
 
     public string? Answer { get; set; }
 
+    // Who wrote the answer: "usuario", "ia" (the suggestion accepted as it was)
+    // or "ia-editada" (the suggestion edited by the user).
+    public string? AnswerOrigin { get; set; }
+
+    // The last answer suggested by the AI (not an answer until the user saves
+    // it): its text, whether it comes from the documentation or is a guess
+    // ("documentacion" or "suposicion"), the fragments it cites and why.
+    public string? SuggestedAnswer { get; set; }
+    public string? SuggestionBasis { get; set; }
+    public List<string> SuggestionSources { get; set; } = [];
+    public string? SuggestionNote { get; set; }
+    public DateTimeOffset? SuggestedAt { get; set; }
+
     // Optional: why it was discarded (unnecessary, out of scope…).
     public string? DiscardReason { get; set; }
 

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tfg/v0/sugerencias.schema.json",
+  "title": "Respuestas sugeridas por la IA para las preguntas pendientes de una ronda",
+  "$comment": "Solo la estructura. Las reglas entre campos (una sugerencia por pregunta pendiente, fragmentos que existen, base documentacion con fuentes…) las comprueba la plataforma: ver validar_v0.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sugerencias"
+  ],
+  "properties": {
+    "sugerencias": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pregunta",
+          "respuesta",
+          "base",
+          "fuentes",
+          "explicacion"
+        ],
+        "properties": {
+          "pregunta": {
+            "type": "string",
+            "pattern": "^P-[0-9]{3,}$"
+          },
+          "respuesta": {
+            "type": "string",
+            "minLength": 1
+          },
+          "base": {
+            "enum": [
+              "documentacion",
+              "suposicion"
+            ]
+          },
+          "fuentes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^DOC-[0-9]{2,}#F[0-9]{3,}$"
+            }
+          },
+          "explicacion": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

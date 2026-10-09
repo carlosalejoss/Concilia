@@ -46,9 +46,10 @@ public class PhaseJobTests
         public List<RunOutcome> Finished { get; } = [];
         public List<string> Order { get; } = []; // "start A", "end A"...
 
-        public NewPhaseJob Create(PhaseKind kind, PhaseInput? input = null, IReadOnlyList<string>? answered = null) =>
+        public NewPhaseJob Create(PhaseKind kind, PhaseInput? input = null, IReadOnlyList<string>? answered = null,
+                                  IReadOnlyList<string>? pending = null) =>
             PhaseJobs.Create(Project, Documents(), kind, input ?? new PhaseInput { SystemName = "", Language = "" },
-                             answered ?? [], new RunnerOptions(), "Fake", new Random(7));
+                             answered ?? [], new RunnerOptions(), "Fake", new Random(7), pending);
 
         public async Task<PhaseJobResult> RunAsync(NewPhaseJob created)
         {
@@ -213,5 +214,44 @@ public class PhaseJobTests
         Assert.Equal("B", saved["fuente"]!.GetValue<string>());
         Assert.False(saved["verificacion_cruzada"]!.GetValue<bool>());
         Assert.Empty(saved["salida"]!["preguntas"]!.AsArray());
+    }
+
+    [Fact]
+    public async Task The_suggestions_are_a_single_run_over_the_pending_questions()
+    {
+        using var setup = new Setup(new FakeProvider());
+        var input = new PhaseInput
+        {
+            SystemName = "", Language = "",
+            PendingQuestions = PhasePrompt.PendingQuestionsBlock([("P-002", "¿Outlook?", "RI"), ("P-004", "¿Campos del CSV?", "RF")]),
+        };
+        var created = setup.Create(PhaseKind.Suggestions, input, pending: ["P-002", "P-004"]);
+
+        Assert.Equal("answer-suggestions", created.Job!.Kind);
+        var run = Assert.Single(created.Runs);
+        Assert.Equal(("SUG", "SS - GPT-6-SOL"), (run.Slot, run.Model));
+
+        created.Plan!.Save(setup.Storage.JobFolder(created.Job.Id));
+        var result = await setup.Runner.RunSingleAsync(run, PhasePlan.Load(setup.Storage.JobFolder(created.Job.Id)),
+            _ => Task.CompletedTask, _ => Task.CompletedTask, CancellationToken.None);
+
+        Assert.Equal("SUG", result.Source);
+        Assert.False(result.CrossChecked);
+        var suggested = JsonNode.Parse(result.Output!)!["sugerencias"]!.AsArray().Select(s => s!["pregunta"]!.GetValue<string>());
+        Assert.Equal(["P-002", "P-004"], suggested);
+    }
+
+    [Fact]
+    public async Task If_the_suggestions_model_fails_there_is_no_output()
+    {
+        using var setup = new Setup(new FailingModels("SS - GPT-6-SOL"));
+        var created = setup.Create(PhaseKind.Suggestions, pending: ["P-002"]);
+        created.Plan!.Save(setup.Storage.JobFolder(created.Job!.Id));
+
+        var result = await setup.Runner.RunSingleAsync(created.Runs[0], PhasePlan.Load(setup.Storage.JobFolder(created.Job.Id)),
+            _ => Task.CompletedTask, _ => Task.CompletedTask, CancellationToken.None);
+
+        Assert.Null(result.Source);
+        Assert.Null(result.Output);
     }
 }

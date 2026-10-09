@@ -13,6 +13,7 @@ public record PhaseContext
 {
     public IReadOnlySet<string> FragmentIds { get; init; } = new HashSet<string>();
     public IReadOnlySet<string> AnsweredQuestionIds { get; init; } = new HashSet<string>();
+    public IReadOnlyList<string> PendingQuestionIds { get; init; } = []; // suggestions, in order
     public string? Catalog { get; init; }
     public string? Proposal1 { get; init; }
     public string? Proposal2 { get; init; }
@@ -40,6 +41,7 @@ public record PhaseValidation(IReadOnlyList<string> Errors, IReadOnlyList<string
 //   REF-REQ     requirement that does not exist in the catalog
 //   ARB-DE      the arbiter cites an id that is not in that proposal, or a `de` without ids
 //   ARB-FALTA   an element of a proposal is neither in a `de` nor in the discards
+//   FALTA       a pending question without its suggested answer
 //   COB         (warning) RF or RI requirement without any story
 public static class PhaseValidator
 {
@@ -67,6 +69,7 @@ public static class PhaseValidator
             PhaseKind.Questions => ValidateQuestions(phase, data, context, proposals),
             PhaseKind.Catalog => ValidateCatalog(phase, data, context, proposals),
             PhaseKind.Backlog => ValidateBacklog(phase, data, context, proposals),
+            PhaseKind.Suggestions => ValidateSuggestions(phase, data, context),
             _ => throw new ArgumentOutOfRangeException(nameof(phase)),
         };
     }
@@ -147,6 +150,31 @@ public static class PhaseValidator
         if (proposals is var (p1, p2))
             errors.AddRange(ArbiterErrors(stories, (Ids(StoriesOf(p1)), Ids(StoriesOf(p2))), Items(data!, "descartadas"), "descartadas"));
         return new PhaseValidation(errors, warnings);
+    }
+
+    // Suggested answers: one for each pending question (in order), without
+    // repeating or suggesting for other questions, with fragments that exist;
+    // one based on the documentation cites at least one fragment.
+    private static PhaseValidation ValidateSuggestions(PhaseDefinition phase, JsonNode? data, PhaseContext context)
+    {
+        var errors = SchemaErrorsOf(phase, data);
+        if (errors.Count > 0)
+            return new PhaseValidation(errors, []);
+        var seen = new HashSet<string>();
+        foreach (var s in Items(data!, "sugerencias"))
+        {
+            var p = Str(s, "pregunta")!;
+            if (!context.PendingQuestionIds.Contains(p))
+                errors.Add($"{p} REF-PREG: la pregunta {p} no está entre las pendientes.");
+            if (!seen.Add(p))
+                errors.Add($"{p} ID-DUP: hay más de una sugerencia para la pregunta.");
+            var sources = StrList(s, "fuentes");
+            if (Str(s, "base") == "documentacion" && sources.Count == 0)
+                errors.Add($"{p} SIN-ORIGEN: una sugerencia basada en la documentación cita al menos un fragmento.");
+            errors.AddRange(FragmentErrors(p, sources, context.FragmentIds));
+        }
+        errors.AddRange(context.PendingQuestionIds.Where(p => !seen.Contains(p)).Select(p => $"{p} FALTA: no hay sugerencia para la pregunta."));
+        return new PhaseValidation(errors, []);
     }
 
     // --- Shared checks -----------------------------------------------------

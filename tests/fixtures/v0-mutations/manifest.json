@@ -340,5 +340,77 @@
     "arbiter": true,
     "kind": "error",
     "code": "ARB-FALTA"
+  },
+  {
+    "file": "case-39.json",
+    "name": "ejemplo tal cual",
+    "base": "sugerencias",
+    "phase": "sugerencias",
+    "arbiter": false,
+    "kind": "ok",
+    "code": null
+  },
+  {
+    "file": "case-40.json",
+    "name": "base desconocida",
+    "base": "sugerencias",
+    "phase": "sugerencias",
+    "arbiter": false,
+    "kind": "error",
+    "code": "SCHEMA"
+  },
+  {
+    "file": "case-41.json",
+    "name": "sugerencia para una pregunta que no está pendiente",
+    "base": "sugerencias",
+    "phase": "sugerencias",
+    "arbiter": false,
+    "kind": "error",
+    "code": "REF-PREG"
+  },
+  {
+    "file": "case-42.json",
+    "name": "dos sugerencias para la misma pregunta",
+    "base": "sugerencias",
+    "phase": "sugerencias",
+    "arbiter": false,
+    "kind": "error",
+    "code": "ID-DUP"
+  },
+  {
+    "file": "case-43.json",
+    "name": "una pregunta pendiente sin sugerencia",
+    "base": "sugerencias",
+    "phase": "sugerencias",
+    "arbiter": false,
+    "kind": "error",
+    "code": "FALTA"
+  },
+  {
+    "file": "case-44.json",
+    "name": "basada en la documentación sin fragmentos",
+    "base": "sugerencias",
+    "phase": "sugerencias",
+    "arbiter": false,
+    "kind": "error",
+    "code": "SIN-ORIGEN"
+  },
+  {
+    "file": "case-45.json",
+    "name": "fragmento que no existe",
+    "base": "sugerencias",
+    "phase": "sugerencias",
+    "arbiter": false,
+    "kind": "error",
+    "code": "REF-FRAG"
+  },
+  {
+    "file": "case-46.json",
+    "name": "una suposición sin fragmentos es válida",
+    "base": "sugerencias",
+    "phase": "sugerencias",
+    "arbiter": false,
+    "kind": "ok",
+    "code": null
   }
 ]

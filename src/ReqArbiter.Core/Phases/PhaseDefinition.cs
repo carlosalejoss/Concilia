@@ -1,7 +1,9 @@
 namespace ReqArbiter.Core.Phases;
 
-// The phases of the v0 flow that run A ‖ B → arbiter (the mockup has its own task).
-public enum PhaseKind { Questions, Catalog, Backlog }
+// The phases of the v0 flow that run A ‖ B → arbiter (the mockup has its own
+// task), and Suggestions: the answers that one model suggests for the pending
+// questions of a round (a single run, without arbiter).
+public enum PhaseKind { Questions, Catalog, Backlog, Suggestions }
 
 // Model A and model B write a proposal; the arbiter joins the two.
 public enum PhaseRole { Proposal, Arbiter }
@@ -14,6 +16,8 @@ public record PhaseDefinition(PhaseKind Kind, PhaseRole Role, string PromptResou
 
     public static PhaseDefinition For(PhaseKind kind, PhaseRole role)
     {
+        if (kind == PhaseKind.Suggestions)
+            return new PhaseDefinition(kind, PhaseRole.Proposal, "v0/sugerir_respuestas.md", "v0/esquemas/sugerencias.schema.json", "output/sugerencias.json");
         var name = kind switch
         {
             PhaseKind.Questions => "preguntas",

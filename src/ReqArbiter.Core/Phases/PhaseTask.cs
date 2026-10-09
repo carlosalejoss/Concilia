@@ -35,6 +35,7 @@ public static class PhaseTask
     public const string CatalogFile = "input/catalogo.json";
     public const string Proposal1File = "input/propuesta_1.json";
     public const string Proposal2File = "input/propuesta_2.json";
+    public const string PendingFile = "input/pendientes.json";
 
     private static readonly JsonSerializerOptions Json = new()
     {
@@ -48,9 +49,11 @@ public static class PhaseTask
     // output), and input/ keeps copies for the validator and FakeProvider: the
     // fragments and, when the phase uses them, the validated catalog and the
     // two proposals.
+    // pendingQuestionIds: the questions of a suggestions run (input/pendientes.json).
     public static PhaseRequest BuildRequest(
         PhaseDefinition phase, PhaseInput input, IReadOnlyList<Fragment> fragments,
-        Guid runId, string modelId, string workDirectory, PhaseOptions options)
+        Guid runId, string modelId, string workDirectory, PhaseOptions options,
+        IReadOnlyList<string>? pendingQuestionIds = null)
     {
         var prompt = PhasePrompt.Build(phase, input);
         var budgetError = InputBudget.Check(prompt, options.InputTokenBudget);
@@ -61,6 +64,8 @@ public static class PhaseTask
         Write(workDirectory, FragmentsFile, JsonSerializer.Serialize(new { input.SystemName, input.Language, Fragments = fragments }, Json));
         if (input.Catalog.Length > 0)
             Write(workDirectory, CatalogFile, input.Catalog);
+        if (pendingQuestionIds is not null)
+            Write(workDirectory, PendingFile, JsonSerializer.Serialize(pendingQuestionIds, Json));
         if (phase.IsArbiter)
         {
             Write(workDirectory, Proposal1File, input.Proposal1);
@@ -110,6 +115,9 @@ public static class PhaseTask
             Catalog = ReadIfExists(workDirectory, CatalogFile),
             Proposal1 = ReadIfExists(workDirectory, Proposal1File),
             Proposal2 = ReadIfExists(workDirectory, Proposal2File),
+            PendingQuestionIds = ReadIfExists(workDirectory, PendingFile) is { } pending
+                ? JsonSerializer.Deserialize<List<string>>(pending)!
+                : [],
         };
     }
 

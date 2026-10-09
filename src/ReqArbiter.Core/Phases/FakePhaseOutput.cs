@@ -46,6 +46,19 @@ public static class FakePhaseOutput
             .ToList();
         switch (kind)
         {
+            case PhaseKind.Suggestions:
+                var pending = JsonSerializer.Deserialize<List<string>>(Read(workDirectory, PhaseTask.PendingFile))!;
+                return new JsonObject
+                {
+                    ["sugerencias"] = Array(pending.Select(p => new JsonObject
+                    {
+                        ["pregunta"] = p,
+                        ["respuesta"] = $"Respuesta simulada para {p}: revísala antes de guardarla.",
+                        ["base"] = "suposicion",
+                        ["fuentes"] = new JsonArray(),
+                        ["explicacion"] = Note,
+                    })),
+                };
             case PhaseKind.Questions:
                 return new JsonObject
                 {
