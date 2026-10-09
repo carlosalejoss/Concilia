@@ -20,16 +20,13 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
         onEvent(new RunEvent(RunEventKind.Started, $"Ejecución {request.RunId} con {request.ModelId}"));
 
         // Refuse before launching anything if the input is too big. The input is
-        // the prompt plus, if the model has the Read tool, the files in input/.
-        // Without Read (the v0 phases and the mockup: their prompt carries the
-        // whole input) the files in input/ are copies for the platform (the
-        // validator, FakeProvider) that the model cannot open, so they do not
-        // count: counting them refused a real round whose prompt fitted.
+        // the prompt plus, when the request says so, the files in input/. The
+        // v0 phases and the mockup leave them out: the model reads them by
+        // parts (see RunRequest.InputFilesInBudget).
         // File sizes in bytes stand in for characters: for UTF-8 text that
         // slightly overestimates, which is the safe side.
         var inputFolder = Path.Combine(request.WorkDirectory, "input");
-        var modelReadsFiles = request.AllowedTools.Contains("Read");
-        var inputFilesSize = modelReadsFiles && Directory.Exists(inputFolder)
+        var inputFilesSize = request.InputFilesInBudget && Directory.Exists(inputFolder)
             ? Directory.EnumerateFiles(inputFolder, "*", SearchOption.AllDirectories).Sum(f => new FileInfo(f).Length)
             : 0;
         var budgetError = InputBudget.Check(request.Prompt.Length + inputFilesSize, request.InputTokenBudget);
@@ -56,11 +53,30 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
         using var stop = new CancellationTokenSource();
         string? stopReason = null;
 
+        // The Read calls waiting for their result (by tool call id), those
+        // already answered, and the context compactions.
+        var pendingReads = new Dictionary<string, FileRead>();
+        var reads = new List<FileRead>();
+        var compactions = 0;
+
         void OnLine(string rawLine)
         {
             // Redact first: everything derived from the line is then safe.
             foreach (var streamEvent in StreamJsonParser.ParseLine(redactor.Redact(rawLine)))
             {
+                switch (streamEvent)
+                {
+                    case ToolUseEvent { Name: "Read" } read when ReadOf(read.Input, folders.Root) is { } fileRead:
+                        pendingReads[read.ToolUseId] = fileRead;
+                        break;
+                    case ToolResultEvent answered when pendingReads.Remove(answered.ToolUseId, out var fileRead):
+                        reads.Add(fileRead with { Succeeded = !answered.IsError });
+                        break;
+                    case SystemEvent { Subtype: CompactBoundary }:
+                        compactions++;
+                        break;
+                }
+
                 switch (streamEvent)
                 {
                     case InitEvent init:
@@ -122,7 +138,39 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
                 $"(salida máxima por defecto {model.MaxOutputTokens}; el runner pide {request.MaxOutputTokens})"));
         }
 
-        return Finish(onEvent, RunEvaluator.Evaluate(outcome, result, request, warnings, stopReason) with { ClaudeCodeVersion = claudeCodeVersion });
+        return Finish(onEvent, RunEvaluator.Evaluate(outcome, result, request, warnings, stopReason) with
+        {
+            ClaudeCodeVersion = claudeCodeVersion,
+            Reads = reads,
+            Compactions = compactions,
+        });
+    }
+
+    // The "system" line Claude Code writes when it compacts the context.
+    public const string CompactBoundary = "compact_boundary";
+
+    // The arguments of a Read call: {"file_path": "...", "offset": 10, "limit": 200}.
+    // The path is made relative to the run folder when it is inside it, so
+    // reads of repairs (each in its own folder) compare with each other.
+    public static FileRead? ReadOf(string input, string root)
+    {
+        try
+        {
+            using var json = System.Text.Json.JsonDocument.Parse(input);
+            var args = json.RootElement;
+            if (!args.TryGetProperty("file_path", out var pathElement) || pathElement.GetString() is not { } path)
+                return null;
+            int? Number(string name) => args.TryGetProperty(name, out var n) && n.TryGetInt32(out var value) ? value : null;
+
+            var relative = Path.IsPathRooted(path) ? Path.GetRelativePath(root, path) : path;
+            if (relative.StartsWith("..", StringComparison.Ordinal) || Path.IsPathRooted(relative))
+                relative = path; // outside the run folder: kept as it came
+            return new FileRead(relative.Replace('\\', '/'), Number("offset") ?? 1, Number("limit"), false);
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return null; // arguments that cannot be read: not counted as a read
+        }
     }
 
     public const string TruncatedToolCall =

@@ -269,6 +269,30 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
 
 **Hecho cuando:** el `.html` descargado se abre en el navegador sin conexión, muestra datos de prueba y cubre todas las historias del backlog validado.
 
+## Hito 12b: lectura de la documentación por partes
+
+Propuesta del team leader, aprobada por el autor el 09-10-2026. Va antes del hito 13. Sustituye la decisión v0 «sin lotes: toda la documentación en una sola llamada; si no cabe, error»: la plataforma deja los archivos en `input/` y el modelo los lee por partes con `Read`, como Claude Code en local. No hay lotes: cada run sigue viendo toda la documentación.
+
+| Decisión (09-10-2026) | Origen |
+|---|---|
+| El modelo lee los archivos por partes con `Read`; el prompt ya no lleva la documentación. | Team leader, aprobada por el autor |
+| En todas las fases: preguntas, sugerencias, catálogo, backlog, los tres árbitros y el mockup. | Autor |
+| Van a archivo la documentación, el catálogo validado, el backlog validado y las dos propuestas del árbitro; lo pequeño (glosario, respuestas, preguntas previas y pendientes) sigue en el prompt. | Autor (propuesta de Claude) |
+| Un solo `input/documentacion.txt`, un fragmento por línea (`[DOC-01#F007 §2.5] texto`); un fragmento de más de 1.500 caracteres sigue en líneas `[DOC-01#F007 sigue]`, porque `Read` corta las líneas de más de 2.000. | Autor (propuesta de Claude) |
+| La plataforma comprueba en los eventos del run qué líneas leyó el modelo; si falta alguna de los archivos obligatorios, es un error que pide la reparación con las líneas que faltan. | Autor (propuesta de Claude) |
+| Si Claude Code compacta el contexto, se permite y queda como aviso en el run. | Autor (propuesta de Claude) |
+| La documentación ya no se rechaza por el presupuesto de 80.000 tokens: este solo se aplica al prompt. La web avisa por encima de unos 80.000 tokens y hay un tope total configurable (300.000 por defecto) que se comprueba al lanzar la fase. | Autor (propuesta de Claude) |
+| Hasta 30 turnos por run (antes 10), configurable; el tiempo máximo no cambia. | Autor (propuesta de Claude) |
+| No se conserva el modo «todo en el prompt» como opción: la medida de partida (paso 67) queda como referencia. | Autor |
+
+- [ ] 67. Medida de partida (el autor): la ronda de preguntas con el documento grande, todo en el prompt, con la corrección del presupuesto (commit `7410b24`).
+- [x] 68. Runner: registra las llamadas a `Read` (archivo, líneas, si fue bien) y las compactaciones de contexto; `ReadCoverage` dice qué líneas quedan sin leer; una petición puede dejar `input/` fuera del presupuesto (`InputFilesInBudget`). Tests con un fixture sintético.
+- [ ] 69. Fases y mockup con lectura por partes: `input/documentacion.txt`, `Read` y `Write`, 30 turnos, comprobación de lectura completa con reparación, tope total de documentación y prompts v0.1 (redactados por Claude, revisados por el autor). Tests con `Fake`.
+- [ ] 70. Web: tamaño estimado de la documentación en el paso «Documentos» y aviso por encima de 80.000 tokens.
+- [ ] 71. Prueba real con el documento grande: la misma ronda que en el paso 67, y comparación (tokens, tiempo, turnos, compactaciones, lectura completa y preguntas).
+
+**Hecho cuando:** la ronda del documento grande termina, cada modelo ha leído todas sus líneas, y la comparación con el paso 67 está en `docs/evolucion-prompt-requisitos.md`.
+
 ## Hito 13: flujo completo de punta a punta
 
 - [ ] 63. Desactualización completa en la API y en la web: cualquier fase se puede lanzar de nuevo y las siguientes muestran el aviso. Test del flujo completo con `Fake`, de crear el proyecto al mockup.

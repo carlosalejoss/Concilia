@@ -32,4 +32,5 @@ Derivados de `tools-sol.jsonl` cambiando solo lo indicado.
 | `synthetic-bloqueada.jsonl` | Veredicto `bloqueada` con motivo. |
 | `synthetic-cortada.jsonl` | Salida cortada tras el `tool_result` del Write: no hay texto final ni evento `result`. |
 | `synthetic-write-cortado.jsonl` | Un `Write` cuyos argumentos no se pueden leer (`__unparsedToolInput`) y el error que Claude Code devuelve al modelo, como en la primera prueba real del catálogo con LUNA (hito 5): la respuesta agotó el tope de salida a mitad del `Write`. No hay evento `result`. |
+| `synthetic-lectura-por-partes.jsonl` | Dos `Read` de `/work/input/documentacion.txt` con `offset` y `limit` (líneas 1–2, bien; líneas 3–4, con error) y una línea `system` con subtipo `compact_boundary` antes del `Write`. **La forma de la línea de compactación es una suposición** (la del SDK de Claude Code); no hay captura real.
 | `synthetic-reintento-api.jsonl` | Añade una línea `system` con subtipo `api_retry` tras `init`. **La forma de esa línea es una suposición**: no hay captura real de un reintento. |

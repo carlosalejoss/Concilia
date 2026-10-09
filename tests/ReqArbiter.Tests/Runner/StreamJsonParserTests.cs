@@ -204,7 +204,7 @@ public class StreamJsonParserTests
     public void Every_line_of_every_fixture_is_valid_json()
     {
         var files = Directory.GetFiles(Path.GetDirectoryName(Fixtures.StreamJsonPath("x"))!, "*.jsonl");
-        Assert.Equal(10, files.Length);
+        Assert.Equal(11, files.Length);
 
         foreach (var file in files)
         {

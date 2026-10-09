@@ -55,6 +55,14 @@ public record RunResult
     // know which version produced each result.
     public string? ClaudeCodeVersion { get; init; }
 
+    // The Read calls of the model, in order: which lines of which files it
+    // read (see ReadCoverage).
+    public IReadOnlyList<FileRead> Reads { get; init; } = [];
+
+    // How many times Claude Code compacted the context (it summarizes what
+    // came before when the window fills up): detail may have been lost.
+    public int Compactions { get; init; }
+
     // total_cost_usd is deliberately not here: Claude Code computes it for a
     // model it does not know, so the value is not reliable.
 }
