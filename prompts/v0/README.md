@@ -4,32 +4,34 @@ Prompts muy básicos de la iteración v0 (D-65, D-73): sirven para tener el fluj
 
 ## Ficheros
 
-| Fase | Prompt | El modelo escribe | Esquema | Marcadores |
-|---|---|---|---|---|
-| Preguntas, A y B | `preguntas.md` | `output/preguntas.json` | `esquemas/preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `PREGUNTAS_PREVIAS`, `DOCUMENTACION` |
-| Preguntas, árbitro | `arbitro_preguntas.md` | `output/preguntas.json` | `esquemas/arbitro_preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `PREGUNTAS_PREVIAS`, `DOCUMENTACION`, `PROPUESTA_1`, `PROPUESTA_2` |
-| Catálogo, A y B | `catalogo.md` | `output/catalogo.json` | `esquemas/catalogo.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `DOCUMENTACION` |
-| Catálogo, árbitro | `arbitro_catalogo.md` | `output/catalogo.json` | `esquemas/arbitro_catalogo.schema.json` | los del catálogo, `PROPUESTA_1`, `PROPUESTA_2` |
-| Backlog, A y B | `backlog.md` | `output/backlog.json` | `esquemas/backlog.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `CATALOGO` |
-| Backlog, árbitro | `arbitro_backlog.md` | `output/backlog.json` | `esquemas/arbitro_backlog.schema.json` | los del backlog, `PROPUESTA_1`, `PROPUESTA_2` |
-| Sugerencias de respuesta (un modelo) | `sugerir_respuestas.md` | `output/sugerencias.json` | `esquemas/sugerencias.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `PREGUNTAS`, `DOCUMENTACION` |
-| Mockup (Sonnet 5.5) | `mockup.md` | `output/mockup.html` | comprobaciones propias (abajo) | `NOMBRE_SISTEMA`, `IDIOMA`, `BACKLOG` |
-| Reparación, todas | `anexo_reparacion.md` | el mismo fichero | — | `INTENTO`, `FICHERO`, `SALIDA_PREVIA`, `ERRORES` |
+| Fase | Prompt | Lee de `input/` (entero · si lo necesita) | El modelo escribe | Esquema | Marcadores |
+|---|---|---|---|---|---|
+| Preguntas, A y B | `preguntas.md` | `documentacion.txt` | `output/preguntas.json` | `esquemas/preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `PREGUNTAS_PREVIAS`, `LECTURA` |
+| Preguntas, árbitro | `arbitro_preguntas.md` | `propuesta_1.json`, `propuesta_2.json` · `documentacion.txt` | `output/preguntas.json` | `esquemas/arbitro_preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `PREGUNTAS_PREVIAS`, `LECTURA` |
+| Catálogo, A y B | `catalogo.md` | `documentacion.txt` | `output/catalogo.json` | `esquemas/catalogo.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `LECTURA` |
+| Catálogo, árbitro | `arbitro_catalogo.md` | `propuesta_1.json`, `propuesta_2.json` · `documentacion.txt` | `output/catalogo.json` | `esquemas/arbitro_catalogo.schema.json` | los del catálogo |
+| Backlog, A y B | `backlog.md` | `catalogo.json` | `output/backlog.json` | `esquemas/backlog.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `LECTURA` |
+| Backlog, árbitro | `arbitro_backlog.md` | `catalogo.json`, `propuesta_1.json`, `propuesta_2.json` | `output/backlog.json` | `esquemas/arbitro_backlog.schema.json` | los del backlog |
+| Sugerencias de respuesta (un modelo) | `sugerir_respuestas.md` | `documentacion.txt` | `output/sugerencias.json` | `esquemas/sugerencias.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `PREGUNTAS`, `LECTURA` |
+| Mockup (Sonnet 5.5) | `mockup.md` | `backlog.json` | `output/mockup.html` | comprobaciones propias (abajo) | `NOMBRE_SISTEMA`, `IDIOMA`, `LECTURA` |
+| Reparación, todas | `anexo_reparacion.md` | — | el mismo fichero | — | `INTENTO`, `FICHERO`, `SALIDA_PREVIA`, `ERRORES` |
 
-Todos los prompts terminan con la línea `VEREDICTO:` que ya lee `VerdictParser`, y piden una sola llamada a Write.
+Todos los prompts terminan con la línea `VEREDICTO:` que ya lee `VerdictParser`, y piden una sola llamada a Write. Desde la v0.1 (09-10-2026) el modelo tiene `Read` y `Write`: lee por partes los ficheros grandes de `input/` y escribe su salida.
 
 ## Lo que monta la plataforma
 
 Los valores se insertan en una sola pasada, como en `PromptBuilder.Fill`: un documento que contenga `{{…}}` llega al modelo tal cual.
 
 - `NOMBRE_SISTEMA`, `IDIOMA` y `GLOSARIO`: los ajustes del proyecto.
-- `DOCUMENTACION`: `Fragmenter.DocumentBlock` con **todos** los fragmentos, sin lotes: `<documento id="DOC-01" nombre="…"><f id="DOC-01#F001" sec="§1">…</f>…</documento>`.
+- `input/documentacion.txt` (`DocumentationFile`): **todos** los fragmentos, sin lotes, uno por línea: `[DOC-01#F001 §1] texto`. Una línea `=== DOC-01 · nombre ===` abre cada documento, y un fragmento de más de 1.500 caracteres sigue en líneas `[DOC-01#F001 sigue] …`, porque `Read` corta las líneas de más de 2.000.
 - `PREGUNTAS_PREVIAS`: todas las preguntas de rondas anteriores, respondidas y descartadas: `<pregunta id="P-003" estado="respondida"><texto>…</texto><respuesta>…</respuesta></pregunta>`. Una descartada va sin `<respuesta>`. Vacío en la primera ronda.
 - `RESPUESTAS`: solo las respondidas, `<pregunta id="P-003"><texto>…</texto><respuesta>…</respuesta></pregunta>`.
 - `PREGUNTAS`: las preguntas pendientes para las que se piden sugerencias, `<pregunta id="P-007"><texto>…</texto><motivo>…</motivo></pregunta>`.
-- `CATALOGO`: el catálogo **validado**, con los campos de `catalogo.schema.json` (sin `de`, `discrepancia` ni `explicacion`).
-- `BACKLOG`: el backlog **validado**, con los campos de `backlog.schema.json`.
-- `PROPUESTA_1` y `PROPUESTA_2`: el JSON de A y de B tal como lo escribieron, en orden aleatorio. El reparto se guarda en `plan.json` del trabajo, y la plataforma traduce los `de` del árbitro a A y B.
+- `input/catalogo.json`: el catálogo **validado**, con los campos de `catalogo.schema.json` (sin `de`, `discrepancia` ni `explicacion`).
+- `input/backlog.json`: el backlog **validado**, con los campos de `backlog.schema.json`.
+- `input/propuesta_1.json` e `input/propuesta_2.json`: el JSON de A y de B, en orden aleatorio. El reparto se guarda en `plan.json` del trabajo, y la plataforma traduce los `de` del árbitro a A y B.
+- Los ficheros JSON van indentados, un valor por línea, para que `Read` no corte ninguna línea larga.
+- `LECTURA` (`ReadingPlan.Block`): qué ficheros de `input/` lee el modelo y cómo. De los que tiene que leer enteros da el número de líneas y los tramos, de unos 40.000 caracteres o 1.000 líneas como mucho, para que cada uno quepa en una llamada a `Read`. Los demás, solo para consultar.
 - Anexo de reparación: `FICHERO` es la ruta de salida de la fase, `SALIDA_PREVIA` el fichero del intento anterior y `ERRORES` una línea por error de las comprobaciones.
 
 ## Comprobaciones
@@ -46,6 +48,7 @@ Los esquemas solo describen la estructura. Las reglas entre campos están en `va
 | `REF-REQ` | Los requisitos citados existen en el catálogo validado | backlog |
 | `ARB-DE`, `ARB-FALTA` | Cada `de` tiene algún id y todos existen; cada elemento de cada propuesta acaba en un `de` o en los descartes | árbitros |
 | `COB` (aviso) | Requisitos `RF` o `RI` sin historia | backlog |
+| `LECTURA` | El modelo leyó todas las líneas de los ficheros que tiene que leer enteros, sumando los intentos del run (lo mira la plataforma en las llamadas a `Read`, no está en `validar_v0.py`) | todas, también el mockup |
 | `REF-PREG`, `ID-DUP`, `FALTA` | Una sugerencia por cada pregunta pendiente, sin repetir ni sugerir para otras | sugerencias |
 | `SIN-ORIGEN`, `REF-FRAG` | Una sugerencia `documentacion` cita al menos un fragmento, y todos existen | sugerencias |
 

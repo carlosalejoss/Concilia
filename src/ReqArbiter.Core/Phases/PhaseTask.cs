@@ -13,10 +13,14 @@ public record PhaseOptions
     public int MaxOutputTokens { get; init; } = 64_000;
     public TimeSpan HeartbeatTimeout { get; init; } = TimeSpan.FromMinutes(15);
     public TimeSpan TotalTimeout { get; init; } = TimeSpan.FromMinutes(30);
+
+    // Reading by parts takes one turn per range, so more than the default 10.
+    public int MaxTurns { get; init; } = 30;
 }
 
-// The request of one run, or why it cannot be launched (the input does not fit).
-public record PhaseRequest(RunRequest? Request, string? Error);
+// The request of one run, or why it cannot be launched (the prompt does not
+// fit). RequiredReads: the files of input/ the model must read entirely.
+public record PhaseRequest(RunRequest? Request, string? Error, IReadOnlyList<string>? RequiredReads = null);
 
 // After an attempt: is the output valid, its errors and warnings and, when it
 // is not valid, the prompt of the repair.
@@ -44,33 +48,49 @@ public static class PhaseTask
         WriteIndented = true,
     };
 
+    // The files of input/ the model reads by parts (decision of 09-10-2026):
+    // A and B read the documentation entirely (the backlog, the validated
+    // catalog instead); the arbiter reads the two proposals entirely and may
+    // consult the documentation or, in the backlog, must read the catalog.
+    public static IReadOnlyList<InputFile> InputFilesOf(PhaseDefinition phase, PhaseInput input)
+    {
+        var files = new List<InputFile>();
+        if (phase.Kind == PhaseKind.Backlog)
+            files.Add(new InputFile(CatalogFile, ReadingPlan.Indented(input.Catalog), Required: true));
+        else
+            files.Add(new InputFile(DocumentationFile.Path, input.Documentation, Required: !phase.IsArbiter));
+        if (phase.IsArbiter)
+        {
+            files.Add(new InputFile(Proposal1File, ReadingPlan.Indented(input.Proposal1), Required: true));
+            files.Add(new InputFile(Proposal2File, ReadingPlan.Indented(input.Proposal2), Required: true));
+        }
+        return files;
+    }
+
     // Builds the prompt and checks it fits in InputTokenBudget BEFORE writing
-    // anything. The prompt carries the whole input (the model only writes its
-    // output), and input/ keeps copies for the validator and FakeProvider: the
-    // fragments and, when the phase uses them, the validated catalog and the
-    // two proposals.
+    // anything. The prompt carries the small inputs and the reading plan; the
+    // big ones go to input/ and the model reads them by parts with Read, so
+    // they do not count in the budget (the documentation is limited when the
+    // job is created). input/ also keeps copies for the validator and
+    // FakeProvider: the phase and the fragments.
     // pendingQuestionIds: the questions of a suggestions run (input/pendientes.json).
     public static PhaseRequest BuildRequest(
         PhaseDefinition phase, PhaseInput input, IReadOnlyList<Fragment> fragments,
         Guid runId, string modelId, string workDirectory, PhaseOptions options,
         IReadOnlyList<string>? pendingQuestionIds = null)
     {
-        var prompt = PhasePrompt.Build(phase, input);
+        var files = InputFilesOf(phase, input);
+        var prompt = PhasePrompt.Build(phase, input with { Reading = ReadingPlan.Block(files) });
         var budgetError = InputBudget.Check(prompt, options.InputTokenBudget);
         if (budgetError is not null)
             return new PhaseRequest(null, budgetError);
 
         Write(workDirectory, PhaseFile, JsonSerializer.Serialize(new { Kind = phase.Kind.ToString(), Role = phase.Role.ToString(), phase.OutputFile }, Json));
         Write(workDirectory, FragmentsFile, JsonSerializer.Serialize(new { input.SystemName, input.Language, Fragments = fragments }, Json));
-        if (input.Catalog.Length > 0)
-            Write(workDirectory, CatalogFile, input.Catalog);
         if (pendingQuestionIds is not null)
             Write(workDirectory, PendingFile, JsonSerializer.Serialize(pendingQuestionIds, Json));
-        if (phase.IsArbiter)
-        {
-            Write(workDirectory, Proposal1File, input.Proposal1);
-            Write(workDirectory, Proposal2File, input.Proposal2);
-        }
+        foreach (var file in files)
+            Write(workDirectory, file.Path, file.Content);
 
         return new PhaseRequest(new RunRequest
         {
@@ -79,23 +99,45 @@ public static class PhaseTask
             Prompt = prompt,
             WorkDirectory = workDirectory,
             ExpectedOutputFiles = [phase.OutputFile],
-            AllowedTools = ["Write"],
+            AllowedTools = ["Read", "Write"],
+            MaxTurns = options.MaxTurns,
             HeartbeatTimeout = options.HeartbeatTimeout,
             TotalTimeout = options.TotalTimeout,
             MaxContextTokens = options.MaxContextTokens,
             MaxOutputTokens = options.MaxOutputTokens,
             InputTokenBudget = options.InputTokenBudget,
-        }, null);
+            InputFilesInBudget = false,
+        }, null, files.Where(f => f.Required).Select(f => f.Path).ToList());
+    }
+
+    // One error per required file the model did not read entirely, with the
+    // lines it is missing (reads: those of every attempt of the run so far).
+    public static IReadOnlyList<string> UnreadErrors(string workDirectory, IEnumerable<string> requiredReads, IEnumerable<FileRead> reads)
+    {
+        var errors = new List<string>();
+        foreach (var path in requiredReads)
+        {
+            var full = Path.Combine(workDirectory, path);
+            var lines = File.Exists(full) ? ReadCoverage.LineCount(File.ReadAllText(full)) : 0;
+            var missing = ReadCoverage.Missing(path, lines, reads);
+            if (missing.Count > 0)
+                errors.Add($"{path} LECTURA: no has leído las líneas {ReadCoverage.Describe(missing)} (de {lines}). " +
+                           "Léelas con Read (offset y limit) y corrige la salida si cambia algo.");
+        }
+        return errors;
     }
 
     // Validates the output of an attempt (null if the model did not write it).
     // attempt: the number of the repair it may ask for (1 after the first attempt).
+    // extraErrors: errors found outside the output (the lines left unread).
     public static PhaseReview Review(
-        PhaseDefinition phase, string? output, PhaseContext context, string originalPrompt, int attempt)
+        PhaseDefinition phase, string? output, PhaseContext context, string originalPrompt, int attempt,
+        IReadOnlyList<string>? extraErrors = null)
     {
-        var validation = output is null
+        var checkedOutput = output is null
             ? new PhaseValidation([$"{phase.OutputFile} FICHERO: no se ha escrito el fichero."], [])
             : PhaseValidator.Validate(phase, output, context);
+        var validation = new PhaseValidation([.. checkedOutput.Errors, .. extraErrors ?? []], checkedOutput.Warnings);
         var repair = validation.Valid
             ? null
             : PhasePrompt.Repair(originalPrompt, attempt, phase.OutputFile, output ?? "", validation.Errors);

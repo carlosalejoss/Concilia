@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.1 | 09-10-2026 | Lectura por partes (team leader): la documentación va a `input/documentacion.txt` y el modelo la lee con `Read` en los tramos que da la plataforma, que comprueba que no queda ninguna línea sin leer | Pendiente (paso 71) | Pendiente |
 | v0 | 08-10-2026 | Prompt muy básico para tener el flujo completo (iteración v0): documento entero sin lotes, respuestas del cliente como entrada, frase EARS/MASTeR escrita por el modelo y árbitro que une A y B | Sí (ReservaSalas, 09-10-2026) | Flujo completo en unos 5 minutos de modelo, todo válido a la primera; 25 requisitos (13 en la v1.2), porque las 11 respuestas eran suposiciones de la IA aceptadas sin cambios y añadieron funcionalidad que el documento no tiene |
 
 ## Cómo se mide
@@ -333,6 +334,29 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.1 (09-10-2026)
+
+Propuesta del team leader y aprobada por el autor, después de que un documento más grande no cupiera en la ventana. Es la v0 con otra forma de recibir la entrada. Las reglas del catálogo no cambian. Detalle en `prompts/v0/CHANGELOG.md` y en el hito 12b de `docs/plan-de-construccion.md`.
+
+### Qué hace
+
+- **La documentación no va en el prompt.** Va a `input/documentacion.txt`, un fragmento por línea (`[DOC-01#F007 §2.5] texto`), y el modelo la lee por partes con `Read`, como Claude Code en local. Si la ventana se llena, Claude Code compacta el contexto (resume lo leído) y sigue.
+- **La plataforma marca los tramos.** El prompt lleva el número de líneas y los tramos que hay que leer, de unos 40.000 caracteres como mucho, para que cada uno quepa en una llamada a `Read`.
+- **Lectura comprobada.** La plataforma registra cada llamada a `Read` y, si queda alguna línea sin leer, pide la reparación con las líneas que faltan (código `LECTURA`). Las compactaciones quedan como aviso en el run.
+- **Límites.** Ya no hay rechazo por el presupuesto de 80.000 tokens, que ahora solo se aplica al prompt. Hay un tope de documentación de 300.000 tokens estimados por proyecto y hasta 30 turnos por run.
+
+### Resultados
+
+Pendientes: paso 67 (medida de partida con la v0, todo en el prompt) y paso 71 (la misma ronda con la v0.1, para compararlas en tokens, tiempo, turnos, compactaciones, lectura completa y preguntas).
+
+### Qué hay que mejorar
+
+Se sabe de antemano:
+
+- Leer por partes no hace infinita la ventana. Por encima de unos 100.000 tokens habrá compactaciones, y con cada una puede perderse detalle (cifras, ids de fragmentos) de lo leído antes.
+- Cada tramo es un turno, y en cada turno se reenvía el contexto acumulado, aunque casi todo va en caché. El consumo de tokens crece con el tamaño del documento más deprisa que en la v0.
+- Para corpus muy grandes la salida no es leer más, sino dividir el trabajo: por documento o por funcionalidad, como proponía la v2.
 
 ## v0 (08-10-2026)
 

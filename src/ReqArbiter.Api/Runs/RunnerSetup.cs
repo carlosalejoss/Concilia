@@ -34,6 +34,20 @@ public class RunnerOptions
     // Output cap per response. The models accept up to 1M; Claude Code
     // assumes 32k unless told otherwise (see RunRequest.MaxOutputTokens).
     public int MaxOutputTokens { get; set; } = 64_000;
+
+    // The v0 phases read the documentation by parts (09-10-2026): one turn
+    // per range, so up to 30 turns per run (RUNNER_PHASE_MAX_TURNS).
+    public int PhaseMaxTurns { get; set; } = 30;
+
+    // Estimated tokens of all the documentation of a project above which a
+    // phase is not launched (RUNNER_MAX_DOCUMENTATION_TOKENS). Reading by
+    // parts has no hard limit, but past this size the model runs out of turns
+    // or time, or compacts so often that it loses too much.
+    public int MaxDocumentationTokens { get; set; } = 300_000;
+
+    // Above this size the web warns that the documentation does not fit in
+    // the window at once: it is read by parts and may be compacted.
+    public const int LargeDocumentationTokens = 80_000;
 }
 
 // "Mockup" section of the configuration (in Docker: Mockup__Provider, etc.):
@@ -52,6 +66,9 @@ public class MockupOptions
     public int MaxOutputTokens { get; set; } = 64_000;
 
     public TimeSpan TotalTimeout { get; set; } = TimeSpan.FromMinutes(15);
+
+    // The backlog is read by parts too.
+    public int MaxTurns { get; set; } = 30;
 }
 
 public static class RunnerSetup

@@ -35,6 +35,19 @@ public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = fa
         await Step(new RunEvent(RunEventKind.Started, $"Ejecución {request.RunId} (proveedor Fake)"));
         await Step(new RunEvent(RunEventKind.ModelInfo, $"Modelo {request.ModelId} (simulado)"));
 
+        // Like a model that reads by parts, but in one call per file: every
+        // file of input/ entirely, so the reading check passes.
+        var reads = new List<FileRead>();
+        if (request.AllowedTools.Contains("Read") && Directory.Exists(Path.Combine(request.WorkDirectory, "input")))
+        {
+            foreach (var file in Directory.GetFiles(Path.Combine(request.WorkDirectory, "input")).Order(StringComparer.Ordinal))
+            {
+                var relative = "input/" + Path.GetFileName(file);
+                await Step(new RunEvent(RunEventKind.ToolUse, $"Read {relative}"));
+                reads.Add(new FileRead(relative, 1, Math.Max(1, ReadCoverage.LineCount(await File.ReadAllTextAsync(file, cancellationToken))), true));
+            }
+        }
+
         foreach (var relativePath in request.ExpectedOutputFiles)
         {
             var path = RunPaths.ResolveInside(request.WorkDirectory, relativePath);
@@ -59,6 +72,7 @@ public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = fa
             TerminalReason = "completed",
             IsError = false,
             Usage = new TokenUsage(0, 0),
+            Reads = reads,
         };
     }
 
