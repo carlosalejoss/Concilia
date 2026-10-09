@@ -1,19 +1,12 @@
 import type { CatalogContent, CatalogRequirement, Project } from './api.ts'
 import DeliverableBar from './DeliverableBar.tsx'
+import ListInput from './ListInput.tsx'
 import { useDeliverable } from './useDeliverable.ts'
 
 const TYPES = ['RF', 'RNF', 'RA', 'RT', 'RI'] as const
 const NOTATIONS = ['EARS', 'MASTeR'] as const
 const OBLIGATIONS = ['shall', 'should', 'may'] as const
 const ORIGIN_NAMES: Record<string, string> = { A: 'Solo A', B: 'Solo B', ambas: 'A y B', usuario: 'Usuario' }
-
-// A list typed by the user as "DOC-01#F002, DOC-01#F004" -> ["DOC-01#F002", "DOC-01#F004"].
-function splitList(text: string): string[] {
-  return text
-    .split(',')
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0)
-}
 
 // The catalog step (milestone 10): the working copy as an editable table. The
 // user edits text, type, notation, obligation and sources, adds and deletes
@@ -184,32 +177,6 @@ function RequirementRow({
         </tr>
       )}
     </>
-  )
-}
-
-// A comma-separated list edited as text; it becomes a list when the field loses focus.
-function ListInput({
-  values,
-  onChange,
-  disabled,
-  className,
-}: {
-  values: string[]
-  onChange: (values: string[]) => void
-  disabled: boolean
-  className: string
-}) {
-  return (
-    <input
-      disabled={disabled}
-      defaultValue={values.join(', ')}
-      key={values.join(',')}
-      onBlur={(e) => {
-        const next = splitList(e.target.value)
-        if (next.join(',') !== values.join(',')) onChange(next)
-      }}
-      className={className}
-    />
   )
 }
 
