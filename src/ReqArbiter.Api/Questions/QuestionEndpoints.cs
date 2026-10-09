@@ -44,17 +44,40 @@ public static class QuestionEndpoints
             };
             var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
             var created = PhaseJobs.Create(project, documents, PhaseKind.Questions, input, [], options, provider.Name, Random.Shared);
-            if (created.Error is not null)
+            return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
+        });
+
+        // The catalog v0: A ‖ B → arbiter over all the documentation and the
+        // answered questions. Only when the step is available: at least one
+        // finished round and no pending question.
+        app.MapPost("/projects/{projectId:int}/catalog-jobs",
+            async (int projectId, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+        {
+            var project = await db.Projects.FindAsync(projectId);
+            if (project is null)
             {
-                return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [created.Error] });
+                return Results.NotFound();
             }
 
-            created.Plan!.Save(storage.JobFolder(created.Job!.Id));
-            db.Jobs.Add(created.Job);
-            db.Runs.AddRange(created.Runs);
-            await db.SaveChangesAsync();
-            queue.Enqueue(created.Job.Id);
-            return Results.Accepted($"/jobs/{created.Job.Id}", new JobView(created.Job, created.Runs));
+            var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Catalog);
+            if (!step.CanLaunch)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [step.Reason!] });
+            }
+
+            var answered = await db.Questions
+                .Where(q => q.ProjectId == projectId && q.Status == QuestionStatus.Answered)
+                .OrderBy(q => q.Code)
+                .ToListAsync();
+            var input = new PhaseInput
+            {
+                SystemName = project.SystemName,
+                Language = project.Language,
+                Answers = PhasePrompt.AnswersBlock(answered.Select(QuestionRules.ForPrompt)),
+            };
+            var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
+            var created = PhaseJobs.Create(project, documents, PhaseKind.Catalog, input, answered.Select(q => q.Code).ToList(), options, provider.Name, Random.Shared);
+            return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
         });
 
         // All the questions of the project, by code (optionally only one status: ?status=Pending).
