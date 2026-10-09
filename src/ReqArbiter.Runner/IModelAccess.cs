@@ -13,9 +13,12 @@ public interface IModelAccess
     // (see ChildEnvironment).
     IReadOnlyDictionary<string, string> ChildVariables { get; }
 
-    // Claude Code does not know the gateway models, so it is told their
-    // context window (CLAUDE_CODE_MAX_CONTEXT_TOKENS). It knows the Claude
-    // models of the subscription, so it is not told theirs.
+    // The gateway models have a 128k window (confirmed by the team leader),
+    // below the 200k Claude Code assumes for a model it does not recognize,
+    // so it is told (CLAUDE_CODE_MAX_CONTEXT_TOKENS). The subscription is not
+    // limited by the gateway: Claude Code keeps its own value. (Claude Code
+    // 2.1.283 does not recognize claude-sonnet-5-5 either and assumes 200k;
+    // smoke test of 09-10-2026.)
     bool TellsContextWindow { get; }
 
     SecretRedactor Redactor();

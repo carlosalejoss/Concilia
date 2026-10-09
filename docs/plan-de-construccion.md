@@ -250,7 +250,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
 
 ## Hito 12: mockup
 
-- [ ] 58. Prueba de humo fuera de la aplicación:
+- [x] 58. Prueba de humo fuera de la aplicación (09-10-2026, resultados en «Runner y pasarela (verificado)» de `CLAUDE.md`):
   - el autor genera el token con `claude setup-token` y lo guarda en `.env` como `CLAUDE_CODE_OAUTH_TOKEN`;
   - `claude -p --model claude-sonnet-5-5` con ese token, con y sin `Write`, y con `CLAUDE_CONFIG_DIR` vacío;
   - se confirma el id del modelo con Claude Code 2.1.283 y se anota en `docs/`, sin el token.
