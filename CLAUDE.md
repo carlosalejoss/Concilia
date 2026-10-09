@@ -75,6 +75,7 @@ Origen de los embeddings y umbral de "discrepancia grave" (para el hito del árb
 - No leas ni imprimas `.env` ni variables de entorno con credenciales.
 - `CLAUDE_CODE_OAUTH_TOKEN` (token de la suscripción del autor) solo llega al proceso hijo del mockup. Nunca va a un hijo de la pasarela, a logs, eventos, la base de datos ni tests. El hijo del mockup nunca recibe `ANTHROPIC_BASE_URL` ni `ANTHROPIC_AUTH_TOKEN`: este último tiene prioridad sobre el token y desviaría el mockup a la pasarela.
 - Usa solo datos ficticios o públicos (por ejemplo, el ejemplo ReservaSalas y los datasets públicos). Nunca documentos reales de la empresa, salvo autorización expresa del autor.
+- Autorización del autor (09-10-2026): el documento técnico-funcional interno que se subió como «documento B» puede usarse para desarrollar y probar el proyecto. En `docs/` y en la memoria sigue apareciendo anonimizado, solo con cifras agregadas, sin nombres ni contenido.
 
 ## Reglas de seguridad para Claude Code
 

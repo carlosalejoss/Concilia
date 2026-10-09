@@ -1,5 +1,12 @@
 # Cambios de los prompts v0
 
+## v0.2, llamadas a Read exactas (2026-10-09)
+
+Tras la primera comparación con un documento real (ver `docs/evolucion-prompt-requisitos.md`). Aprobado por el autor.
+
+- `{{LECTURA}}` ya no da rangos de líneas («1–242») sino los argumentos exactos de cada llamada a `Read` («`offset` 1, `limit` 242; `offset` 243, `limit` 203»). Con rangos, LUNA contaba las líneas desde 0 y nunca leía la última, lo que obligaba a una reparación.
+- La sección `# LECTURA` de todos los prompts pide hacer exactamente esas llamadas y recuerda que la primera línea es la 1.
+
 ## v0.1, lectura por partes (2026-10-09)
 
 Propuesta del team leader y aprobada por el autor (hito 12b del plan). Redactada por Claude y pendiente de revisión del autor.

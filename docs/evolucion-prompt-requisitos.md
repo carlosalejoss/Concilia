@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.2 | 09-10-2026 | La v0.1 con los argumentos exactos de cada llamada a `Read` (`offset` y `limit`) en lugar de rangos de líneas | Pendiente | Pendiente |
 | v0.1 | 09-10-2026 | Lectura por partes (team leader): la documentación va a `input/documentacion.txt` y el modelo la lee con `Read` en los tramos que da la plataforma, que comprueba que no queda ninguna línea sin leer | Sí (documento B, una ronda, 09-10-2026) | Funciona y lee todo, pero con un documento que cabe entero cuesta un 50 % más de tokens y de tiempo que la v0 y añade dos reparaciones: LUNA cuenta las líneas desde 0 y se deja la última, y el árbitro confundió los ids de las propuestas |
 | v0 | 08-10-2026 | Prompt muy básico para tener el flujo completo (iteración v0): documento entero sin lotes, respuestas del cliente como entrada, frase EARS/MASTeR escrita por el modelo y árbitro que une A y B | Sí (ReservaSalas, 09-10-2026; documento B, 09-10-2026) | Flujo completo en unos 5 minutos de modelo, todo válido a la primera; 25 requisitos (13 en la v1.2), porque las 11 respuestas eran suposiciones de la IA aceptadas sin cambios y añadieron funcionalidad que el documento no tiene |
 
@@ -334,6 +335,26 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.2 (09-10-2026)
+
+Primer cambio que sale de la comparación de la v0.1 con un documento real, aprobado por el autor. Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- El plan de lectura (`{{LECTURA}}`) da los argumentos exactos de cada llamada a `Read`, en lugar de rangos de líneas, y el prompt pide hacer exactamente esas llamadas, recordando que la primera línea es la 1.
+- No cambia nada más. Se descartaron, de momento, dos propuestas:
+  - que el árbitro lea una propuesta entera antes que la otra: no hay pruebas de que ayude, y el orden ya se sortea en cada trabajo;
+  - elegir entre todo en el prompt y lectura por partes según el tamaño: recupera los dos caminos que el autor descartó.
+
+### Resultados
+
+Pendientes: repetir la ronda del documento B y comprobar que LUNA ya no necesita la reparación por `LECTURA`.
+
+### Qué hay que mejorar
+
+- Si el árbitro sigue confundiendo los ids de las dos propuestas, habrá que separarlas mejor.
+- El *position bias* (preferir la primera opción que se lee) solo se neutraliza en el conjunto de ejecuciones, gracias al orden aleatorio. Quitarlo en cada run exige llamar dos veces al árbitro con el orden cambiado, a doble coste: queda como trabajo futuro.
 
 ## v0.1 (09-10-2026)
 

@@ -29,7 +29,7 @@ Los ficheros de `input/` no van en este mensaje: léelos con Read, por partes, a
 
 {{LECTURA}}
 
-- Una llamada a Read por tramo, con `offset` (la primera línea del tramo) y `limit` (cuántas líneas). Si una llamada falla por tamaño, divide ese tramo en dos.
+- Haz exactamente esas llamadas a Read, con esos `offset` y `limit`: la primera línea de cada fichero es la 1, no la 0. Si una llamada falla por tamaño, divide ese tramo en dos.
 - No te saltes ningún tramo de un fichero que hay que leer entero: la plataforma comprueba qué líneas has leído y, si falta alguna, te pide repetir.
 - Lee solo los ficheros de esta lista.
 

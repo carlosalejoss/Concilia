@@ -31,7 +31,7 @@ Los valores se insertan en una sola pasada, como en `PromptBuilder.Fill`: un doc
 - `input/backlog.json`: el backlog **validado**, con los campos de `backlog.schema.json`.
 - `input/propuesta_1.json` e `input/propuesta_2.json`: el JSON de A y de B, en orden aleatorio. El reparto se guarda en `plan.json` del trabajo, y la plataforma traduce los `de` del árbitro a A y B.
 - Los ficheros JSON van indentados, un valor por línea, para que `Read` no corte ninguna línea larga.
-- `LECTURA` (`ReadingPlan.Block`): qué ficheros de `input/` lee el modelo y cómo. De los que tiene que leer enteros da el número de líneas y los tramos, de unos 40.000 caracteres o 1.000 líneas como mucho, para que cada uno quepa en una llamada a `Read`. Los demás, solo para consultar.
+- `LECTURA` (`ReadingPlan.Block`): qué ficheros de `input/` lee el modelo y cómo. De los que tiene que leer enteros da el número de líneas y los argumentos exactos de cada llamada a `Read` (`offset` y `limit`, desde la línea 1). Cada tramo tiene como mucho unos 40.000 caracteres o 1.000 líneas, para que quepa en una llamada. Los demás, solo para consultar.
 - Anexo de reparación: `FICHERO` es la ruta de salida de la fase, `SALIDA_PREVIA` el fichero del intento anterior y `ERRORES` una línea por error de las comprobaciones.
 
 ## Comprobaciones
