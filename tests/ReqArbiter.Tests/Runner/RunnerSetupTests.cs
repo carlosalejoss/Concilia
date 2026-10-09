@@ -13,11 +13,60 @@ public class RunnerSetupTests
     private const string FakeUrl = "https://gateway.invalid:4000";
     private const string FakeKey = "fake-token-123456";
 
+    private const string FakeOAuthToken = "fake-oauth-token-abcdef";
+
     private static IRunnerProvider Resolve(Dictionary<string, string?> settings)
     {
         var configuration = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
         var services = new ServiceCollection().AddRunnerProvider(configuration).BuildServiceProvider();
         return services.GetRequiredService<IRunnerProvider>();
+    }
+
+    private static IRunnerProvider ResolveMockup(Dictionary<string, string?> settings)
+    {
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
+        var services = new ServiceCollection().AddRunnerProvider(configuration).BuildServiceProvider();
+        return services.GetRequiredKeyedService<IRunnerProvider>(RunnerSetup.MockupKey);
+    }
+
+    [Fact]
+    public void The_mockup_is_fake_by_default_and_needs_no_token()
+    {
+        Assert.IsType<FakeProvider>(ResolveMockup([]));
+    }
+
+    [Fact]
+    public void The_mockup_uses_the_subscription_when_configured_and_the_analysis_roles_do_not_change()
+    {
+        Dictionary<string, string?> settings = new()
+        {
+            ["Mockup:Provider"] = "ClaudeSubscription",
+            ["CLAUDE_CODE_OAUTH_TOKEN"] = FakeOAuthToken,
+        };
+
+        Assert.Equal("ClaudeSubscription", ResolveMockup(settings).Name);
+        Assert.IsType<FakeProvider>(Resolve(settings));
+    }
+
+    [Fact]
+    public void The_subscription_without_token_fails_at_startup_naming_the_variable()
+    {
+        var error = Assert.Throws<InvalidOperationException>(() => ResolveMockup(new() { ["Mockup:Provider"] = "ClaudeSubscription" }));
+
+        Assert.Contains("CLAUDE_CODE_OAUTH_TOKEN", error.Message);
+    }
+
+    [Fact]
+    public void The_subscription_is_not_allowed_for_the_analysis_roles()
+    {
+        var error = Assert.Throws<InvalidOperationException>(() => Resolve(new()
+        {
+            ["Runner:Provider"] = "ClaudeSubscription",
+            ["CLAUDE_CODE_OAUTH_TOKEN"] = FakeOAuthToken,
+        }));
+
+        Assert.Contains("Fake y LiteLlm", error.Message);
+        Assert.DoesNotContain(FakeOAuthToken, error.Message);
     }
 
     [Fact]

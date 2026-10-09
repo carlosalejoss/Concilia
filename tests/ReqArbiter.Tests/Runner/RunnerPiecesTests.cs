@@ -73,6 +73,58 @@ public class RunnerPiecesTests
         Assert.Equal("64000", environment["CLAUDE_CODE_MAX_OUTPUT_TOKENS"]);
     }
 
+    // Parent environment with every credential at once: the API process has
+    // the gateway variables and the subscription token side by side.
+    private static IDictionary ParentWithAllCredentials() => new Hashtable
+    {
+        ["PATH"] = "/usr/bin",
+        ["ANTHROPIC_API_KEY"] = "clave-personal-del-usuario",
+        ["ANTHROPIC_BASE_URL"] = "https://otra-direccion.invalid",
+        ["ANTHROPIC_AUTH_TOKEN"] = "otra-clave",
+        ["CLAUDE_CODE_OAUTH_TOKEN"] = "token-de-la-suscripcion",
+        ["LITELLM_API_KEY"] = "clave-de-la-pasarela",
+    };
+
+    [Fact]
+    public void A_gateway_child_never_receives_the_subscription_token()
+    {
+        using var temp = new TempDirectory();
+
+        var environment = ChildEnvironment.Build(Gateway, RunFolders.Create(temp.Path), 128_000, 64_000, ParentWithAllCredentials());
+
+        Assert.False(environment.ContainsKey("CLAUDE_CODE_OAUTH_TOKEN"));
+        Assert.False(environment.ContainsKey("LITELLM_API_KEY"));
+        Assert.Equal(Gateway.AuthToken, environment["ANTHROPIC_AUTH_TOKEN"]);
+    }
+
+    [Fact]
+    public void A_subscription_child_receives_only_its_token()
+    {
+        using var temp = new TempDirectory();
+        var subscription = FakeClaudeLauncher.FakeSubscription;
+
+        var environment = ChildEnvironment.Build(subscription, RunFolders.Create(temp.Path), 128_000, 64_000, ParentWithAllCredentials());
+
+        Assert.Equal(subscription.OAuthToken, environment["CLAUDE_CODE_OAUTH_TOKEN"]);
+        // ANTHROPIC_AUTH_TOKEN would win over the token and send the mockup to the gateway.
+        Assert.False(environment.ContainsKey("ANTHROPIC_AUTH_TOKEN"));
+        Assert.False(environment.ContainsKey("ANTHROPIC_BASE_URL"));
+        Assert.False(environment.ContainsKey("ANTHROPIC_API_KEY"));
+        Assert.False(environment.ContainsKey("LITELLM_API_KEY"));
+        // Claude Code knows the Claude models: their window is not overridden.
+        Assert.False(environment.ContainsKey("CLAUDE_CODE_MAX_CONTEXT_TOKENS"));
+        Assert.Equal("64000", environment["CLAUDE_CODE_MAX_OUTPUT_TOKENS"]);
+    }
+
+    [Fact]
+    public void Subscription_settings_hide_the_token()
+    {
+        var subscription = FakeClaudeLauncher.FakeSubscription;
+
+        Assert.DoesNotContain(subscription.OAuthToken, subscription.ToString());
+        Assert.Equal("usando ***", subscription.Redactor().Redact($"usando {subscription.OAuthToken}"));
+    }
+
     [Fact]
     public void Run_folders_are_created_inside_the_work_directory()
     {

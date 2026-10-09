@@ -36,17 +36,50 @@ public class RunnerOptions
     public int MaxOutputTokens { get; set; } = 64_000;
 }
 
+// "Mockup" section of the configuration (in Docker: Mockup__Provider, etc.):
+// the mockup is a role of its own, with one model and its own provider.
+public class MockupOptions
+{
+    // "Fake" (default: no model, no secrets), "ClaudeSubscription" (the
+    // author's subscription, CLAUDE_CODE_OAUTH_TOKEN) or "LiteLlm" (a gateway
+    // model, if the application is ever used by more people). MOCKUP_PROVIDER.
+    public string Provider { get; set; } = "Fake";
+
+    // MOCKUP_MODEL. Claude Code knows this model, unlike the gateway ones.
+    public string Model { get; set; } = "claude-sonnet-5-5";
+
+    // The whole .html goes in one Write call, so it needs room.
+    public int MaxOutputTokens { get; set; } = 64_000;
+
+    public TimeSpan TotalTimeout { get; set; } = TimeSpan.FromMinutes(15);
+}
+
 public static class RunnerSetup
 {
-    // Registers the IRunnerProvider chosen in the configuration. With LiteLlm
-    // and missing variables it throws here, so the API fails at start-up with
-    // a clear message instead of failing later on the first run.
+    // The key of the mockup provider in the services ([FromKeyedServices]).
+    public const string MockupKey = "mockup";
+
+    // Registers the IRunnerProvider of each role chosen in the configuration:
+    // the default one (A, B, arbiter, suggestions) and the mockup one (keyed
+    // "mockup"). With missing variables it throws here, so the API fails at
+    // start-up with a clear message instead of failing later on the first run.
     public static IServiceCollection AddRunnerProvider(this IServiceCollection services, IConfiguration configuration)
     {
         var options = configuration.GetSection("Runner").Get<RunnerOptions>() ?? new RunnerOptions();
         services.AddSingleton(options);
+        var mockup = configuration.GetSection("Mockup").Get<MockupOptions>() ?? new MockupOptions();
+        services.AddSingleton(mockup);
 
-        IRunnerProvider provider = options.Provider.ToLowerInvariant() switch
+        services.AddSingleton(CreateProvider("Runner", options.Provider, options, configuration, allowSubscription: false));
+        services.AddKeyedSingleton(MockupKey, CreateProvider("Mockup", mockup.Provider, options, configuration, allowSubscription: true));
+        return services;
+    }
+
+    // The subscription is only allowed for the mockup: it is the author's own
+    // account (decision of 08-10-2026), never for the analysis roles.
+    private static IRunnerProvider CreateProvider(
+        string section, string name, RunnerOptions options, IConfiguration configuration, bool allowSubscription) =>
+        name.ToLowerInvariant() switch
         {
             // The small delay lets the web show the fake events arriving one by one.
             "fake" => new FakeProvider(stepDelay: TimeSpan.FromMilliseconds(300), simulateRepair: options.SimulateRepair),
@@ -55,11 +88,11 @@ public static class RunnerSetup
                 LiteLlmProvider.SettingsFrom(
                     configuration[LiteLlmProvider.BaseUrlVariable],
                     configuration[LiteLlmProvider.ApiKeyVariable])),
+            "claudesubscription" when allowSubscription => new ClaudeSubscriptionProvider(
+                options.ClaudeExecutable,
+                ClaudeSubscriptionProvider.SettingsFrom(configuration[SubscriptionSettings.TokenVariable])),
             _ => throw new InvalidOperationException(
-                $"Runner:Provider desconocido: \"{options.Provider}\". Los valores válidos son Fake y LiteLlm."),
+                $"{section}:Provider desconocido: \"{name}\". Los valores válidos son " +
+                (allowSubscription ? "Fake, ClaudeSubscription y LiteLlm." : "Fake y LiteLlm.")),
         };
-
-        services.AddSingleton(provider);
-        return services;
-    }
 }

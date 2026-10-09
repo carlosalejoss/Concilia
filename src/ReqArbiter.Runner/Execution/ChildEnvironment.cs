@@ -6,7 +6,9 @@ namespace ReqArbiter.Runner.Execution;
 // Builds the environment of the claude process from scratch. Nothing is
 // inherited except a short list of variables the operating system needs to
 // start a program; in particular ANTHROPIC_API_KEY and any user credentials
-// never reach the child.
+// never reach the child. The access variables are those of one IModelAccess:
+// a gateway child never gets the subscription token, and a subscription
+// child never gets the gateway key or address.
 public static class ChildEnvironment
 {
     // Copied from the parent only if present. PATH finds node/claude; the
@@ -15,7 +17,7 @@ public static class ChildEnvironment
         ["PATH", "PATHEXT", "SystemRoot", "WINDIR", "ComSpec", "TEMP", "TMP"];
 
     public static Dictionary<string, string> Build(
-        GatewaySettings gateway,
+        IModelAccess access,
         RunFolders folders,
         int maxContextTokens,
         int maxOutputTokens,
@@ -40,10 +42,15 @@ public static class ChildEnvironment
         environment["USERPROFILE"] = folders.Home;
 
         environment["CLAUDE_CONFIG_DIR"] = folders.ClaudeConfig;
-        environment["CLAUDE_CODE_MAX_CONTEXT_TOKENS"] = maxContextTokens.ToString(CultureInfo.InvariantCulture);
+        if (access.TellsContextWindow)
+        {
+            environment["CLAUDE_CODE_MAX_CONTEXT_TOKENS"] = maxContextTokens.ToString(CultureInfo.InvariantCulture);
+        }
         environment["CLAUDE_CODE_MAX_OUTPUT_TOKENS"] = maxOutputTokens.ToString(CultureInfo.InvariantCulture);
-        environment["ANTHROPIC_BASE_URL"] = gateway.BaseUrl;
-        environment["ANTHROPIC_AUTH_TOKEN"] = gateway.AuthToken;
+        foreach (var (name, value) in access.ChildVariables)
+        {
+            environment[name] = value;
+        }
 
         return environment;
     }

@@ -44,6 +44,11 @@ services:
       # Only the api service receives the gateway variables.
       LITELLM_BASE_URL: ${LITELLM_BASE_URL:-}
       LITELLM_API_KEY: ${LITELLM_API_KEY:-}
+      # Mockup: Fake (default), ClaudeSubscription (needs CLAUDE_CODE_OAUTH_TOKEN) or LiteLlm.
+      Mockup__Provider: ${MOCKUP_PROVIDER:-Fake}
+      Mockup__Model: ${MOCKUP_MODEL:-claude-sonnet-5-5}
+      # The author's subscription token: it only reaches the mockup child process.
+      CLAUDE_CODE_OAUTH_TOKEN: ${CLAUDE_CODE_OAUTH_TOKEN:-}
     volumes:
       # Uploaded files go to the data/ folder of the repository (ignored by git),
       # so they can be inspected from the host.
