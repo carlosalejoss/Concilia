@@ -41,6 +41,7 @@ public record MockupRunOptions
     public int MaxOutputTokens { get; init; } = 64_000;
     public TimeSpan HeartbeatTimeout { get; init; } = TimeSpan.FromMinutes(15);
     public TimeSpan TotalTimeout { get; init; } = TimeSpan.FromMinutes(15);
+    public int MaxTurns { get; init; } = 30;
 }
 
 // The task of the mockup (step 60): one model writes a self-contained .html
@@ -50,7 +51,10 @@ public static class MockupTask
 {
     public const string PromptResource = "v0/mockup.md";
     public const string OutputFile = "output/mockup.html";
-    public const string BacklogFile = "input/backlog.json"; // a copy for FakeProvider and whoever reads the folder
+    public const string BacklogFile = "input/backlog.json"; // read by parts by the model (and by FakeProvider)
+
+    // The model must read the whole backlog (the platform checks it).
+    public static readonly IReadOnlyList<string> RequiredReads = [BacklogFile];
 
     // The limit the prompt gives (1 MB).
     public const int MaxBytes = 1024 * 1024;
@@ -59,18 +63,22 @@ public static class MockupTask
     // not too big; otherwise the errors alone must do.
     public const int MaxPreviousOutputChars = 200_000;
 
+    // The backlog goes to input/backlog.json, indented, and the model reads it
+    // by parts ({{LECTURA}}), as in the phases.
+    private static InputFile BacklogInput(MockupPlan plan) => new(BacklogFile, ReadingPlan.Indented(plan.Backlog), Required: true);
+
     public static string Prompt(MockupPlan plan) => PromptBuilder.Fill(PromptBuilder.ReadResource(PromptResource), new Dictionary<string, string>
     {
         ["NOMBRE_SISTEMA"] = plan.SystemName,
         ["IDIOMA"] = plan.Language,
-        ["BACKLOG"] = plan.Backlog,
+        ["LECTURA"] = ReadingPlan.Block([BacklogInput(plan)]),
     });
 
     public static RunRequest BuildRequest(MockupPlan plan, Guid runId, string modelId, string workDirectory, MockupRunOptions options)
     {
         var path = Path.Combine(workDirectory, BacklogFile);
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        File.WriteAllText(path, plan.Backlog);
+        File.WriteAllText(path, BacklogInput(plan).Content);
         return new RunRequest
         {
             RunId = runId,
@@ -78,10 +86,12 @@ public static class MockupTask
             Prompt = Prompt(plan),
             WorkDirectory = workDirectory,
             ExpectedOutputFiles = [OutputFile],
-            AllowedTools = ["Write"],
+            AllowedTools = ["Read", "Write"],
+            MaxTurns = options.MaxTurns,
             HeartbeatTimeout = options.HeartbeatTimeout,
             TotalTimeout = options.TotalTimeout,
             MaxOutputTokens = options.MaxOutputTokens,
+            InputFilesInBudget = false,
         };
     }
 
@@ -129,9 +139,12 @@ public static class MockupTask
     }
 
     // The review of an attempt: valid, or the repair prompt with the errors.
-    public static PhaseReview Review(string? html, IReadOnlyList<string> storyIds, string originalPrompt, int attempt)
+    // extraErrors: errors found outside the .html (the lines left unread).
+    public static PhaseReview Review(string? html, IReadOnlyList<string> storyIds, string originalPrompt, int attempt,
+        IReadOnlyList<string>? extraErrors = null)
     {
-        var validation = Validate(html, storyIds);
+        var checkedHtml = Validate(html, storyIds);
+        var validation = new PhaseValidation([.. checkedHtml.Errors, .. extraErrors ?? []], checkedHtml.Warnings);
         if (validation.Valid)
             return new PhaseReview(validation, null);
         var previous = html is null ? ""

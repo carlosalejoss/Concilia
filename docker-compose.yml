@@ -41,6 +41,10 @@ services:
       Runner__SimulateRepair: ${RUNNER_SIMULATE_REPAIR:-false}
       # Output cap per model response, passed to Claude Code (default 64000).
       Runner__MaxOutputTokens: ${RUNNER_MAX_OUTPUT_TOKENS:-64000}
+      # The v0 phases read the documentation by parts: turns per run, and the
+      # largest documentation (estimated tokens) a phase accepts.
+      Runner__PhaseMaxTurns: ${RUNNER_PHASE_MAX_TURNS:-30}
+      Runner__MaxDocumentationTokens: ${RUNNER_MAX_DOCUMENTATION_TOKENS:-300000}
       # Only the api service receives the gateway variables.
       LITELLM_BASE_URL: ${LITELLM_BASE_URL:-}
       LITELLM_API_KEY: ${LITELLM_API_KEY:-}

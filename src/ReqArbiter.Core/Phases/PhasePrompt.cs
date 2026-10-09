@@ -13,7 +13,7 @@ public record PhaseInput
     public required string SystemName { get; init; } // with article: "el sistema ReservaSalas"
     public required string Language { get; init; }   // "es" or "en"
     public string Glossary { get; init; } = "";
-    public string Documentation { get; init; } = ""; // Fragmenter.DocumentBlock with ALL the fragments (no lots in v0)
+    public string Documentation { get; init; } = ""; // DocumentationFile with ALL the fragments (input/documentacion.txt)
     public string PreviousQuestions { get; init; } = ""; // PhasePrompt.PreviousQuestionsBlock
     public string Answers { get; init; } = "";           // PhasePrompt.AnswersBlock
     public string Catalog { get; init; } = "";           // the validated catalog (backlog phase)
@@ -21,6 +21,7 @@ public record PhaseInput
     public string Proposal1 { get; init; } = "";         // arbiter: the two proposals, in random order
     public string Proposal2 { get; init; } = "";
     public string PendingQuestions { get; init; } = "";  // suggestions: PhasePrompt.PendingQuestionsBlock
+    public string Reading { get; init; } = "";           // ReadingPlan.Block of the files of input/ (set by PhaseTask)
 }
 
 // Builds the prompts of the v0 phases from their templates.
@@ -30,21 +31,19 @@ public static class PhasePrompt
 
     public static string RepairAnnexTemplate { get; } = PromptBuilder.ReadResource("v0/anexo_reparacion.md");
 
-    // One pass over the template, as in PromptBuilder: a document that
-    // contains "{{...}}" reaches the model as it is.
+    // One pass over the template, as in PromptBuilder: a text that contains
+    // "{{...}}" reaches the model as it is. The documentation, the catalog,
+    // the backlog and the proposals are not here: they go to input/ and the
+    // model reads them by parts ({{LECTURA}} says which and how).
     public static string Build(PhaseDefinition phase, PhaseInput input) => PromptBuilder.Fill(Template(phase), new Dictionary<string, string>
     {
         ["NOMBRE_SISTEMA"] = input.SystemName,
         ["IDIOMA"] = input.Language,
         ["GLOSARIO"] = input.Glossary,
-        ["DOCUMENTACION"] = input.Documentation,
         ["PREGUNTAS_PREVIAS"] = input.PreviousQuestions,
         ["RESPUESTAS"] = input.Answers,
-        ["CATALOGO"] = input.Catalog,
-        ["BACKLOG"] = input.Backlog,
-        ["PROPUESTA_1"] = input.Proposal1,
-        ["PROPUESTA_2"] = input.Proposal2,
         ["PREGUNTAS"] = input.PendingQuestions,
+        ["LECTURA"] = input.Reading,
     });
 
     // The repair is the ORIGINAL prompt plus the annex with the previous output

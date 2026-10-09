@@ -78,6 +78,36 @@ public class PhaseJobTests
                 : _fake.RunAsync(request, onEvent, cancellationToken);
     }
 
+    // Like FakeProvider, but the first attempt of every run reports no reads,
+    // as a model that wrote its output without reading its input.
+    private sealed class SkipsReadingFirst : IRunnerProvider
+    {
+        private readonly FakeProvider _fake = new();
+        public string Name => "Test";
+
+        public async Task<RunResult> RunAsync(RunRequest request, Action<RunEvent> onEvent, CancellationToken cancellationToken)
+        {
+            var result = await _fake.RunAsync(request, onEvent, cancellationToken);
+            return request.Prompt.Contains(FakePhaseOutput.RepairMarker) ? result : result with { Reads = [] };
+        }
+    }
+
+    [Fact]
+    public async Task A_run_that_left_lines_unread_is_repaired()
+    {
+        using var setup = new Setup(new SkipsReadingFirst());
+
+        var result = await setup.RunAsync(setup.Create(PhaseKind.Questions));
+
+        Assert.Equal("ARB", result.Source);
+        foreach (var slot in new[] { "A", "B", "ARB" })
+        {
+            var attempts = setup.Outcome(slot).Attempts!;
+            Assert.Equal([RunStatus.Failed, RunStatus.Done], attempts.Select(a => a.Result.Status));
+            Assert.Contains("LECTURA: no has leído las líneas", attempts[0].Result.ErrorMessage);
+        }
+    }
+
     [Fact]
     public void A_job_has_three_runs_and_a_plan_with_a_random_order()
     {
@@ -120,11 +150,16 @@ public class PhaseJobTests
         var setup = new Setup(new FakeProvider());
 
         var empty = PhaseJobs.Create(Project, [], PhaseKind.Questions, new PhaseInput { SystemName = "", Language = "" }, [], new RunnerOptions(), "Fake", new Random(1));
-        var huge = PhaseJobs.Create(Project, [new CatalogDocument("DOC-01", "enorme.txt", string.Concat(Enumerable.Repeat("Una frase de relleno para el documento. ", 10_000)))],
-                                    PhaseKind.Questions, new PhaseInput { SystemName = "", Language = "" }, [], new RunnerOptions(), "Fake", new Random(1));
+        // About 120,000 tokens: read by parts it is fine with the default
+        // limit (300,000), and refused with a lower one.
+        var document = new CatalogDocument("DOC-01", "enorme.txt", string.Concat(Enumerable.Repeat("Una frase de relleno para el documento. ", 10_000)));
+        var fits = PhaseJobs.Create(Project, [document], PhaseKind.Questions, new PhaseInput { SystemName = "", Language = "" }, [], new RunnerOptions(), "Fake", new Random(1));
+        var huge = PhaseJobs.Create(Project, [document], PhaseKind.Questions, new PhaseInput { SystemName = "", Language = "" }, [],
+                                    new RunnerOptions { MaxDocumentationTokens = 50_000 }, "Fake", new Random(1));
 
         Assert.Contains("no tiene archivos con texto", empty.Error);
-        Assert.Contains("demasiado grande", huge.Error);
+        Assert.Null(fits.Error);
+        Assert.Contains("La documentación del proyecto es demasiado grande", huge.Error);
         Assert.Null(huge.Job);
     }
 
@@ -149,7 +184,11 @@ public class PhaseJobTests
         var arbiter = setup.Outcome("ARB").Attempts![0].Request.WorkDirectory;
         var first = created.Plan!.ProposalOrder[0];
         var firstOutput = PhaseExecutor.OutputPath(setup.Outcome(first).Attempts![^1], kind);
-        Assert.Equal(File.ReadAllText(firstOutput), File.ReadAllText(Path.Combine(arbiter, PhaseTask.Proposal1File)));
+        // (indented, so Read does not cut a long line: the same JSON).
+        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(File.ReadAllText(firstOutput)),
+                                        JsonNode.Parse(File.ReadAllText(Path.Combine(arbiter, PhaseTask.Proposal1File)))));
+        // Every run read its input by parts (FakeProvider reads every file of input/).
+        Assert.All(setup.Finished, o => Assert.NotEmpty(o.Attempts![^1].Result.Reads));
 
         // The result is the arbiter's output, and it is valid for the arbiter's schema.
         var context = created.Plan.Context(File.ReadAllText(Path.Combine(arbiter, PhaseTask.Proposal1File)),

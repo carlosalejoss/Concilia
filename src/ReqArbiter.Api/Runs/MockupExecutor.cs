@@ -24,15 +24,22 @@ public class MockupExecutor(
         {
             MaxOutputTokens = options.MaxOutputTokens,
             TotalTimeout = options.TotalTimeout,
+            MaxTurns = options.MaxTurns,
         });
         var original = request.Prompt;
+        var reads = new List<FileRead>();
         return await new RetryRunner(provider, MaxRepairs).RunAsync(
             request,
             attempt => runEvent => events.Publish(
                 run.Id,
                 attempt.RunId == run.Id ? runEvent : runEvent with { Text = $"[reintento] {runEvent.Text}" }),
-            (attempt, attemptsSoFar) => PhaseExecutor.Review(
-                attempt, MockupTask.OutputFile, html => MockupTask.Review(html, plan.StoryIds, original, attemptsSoFar)),
+            (attempt, attemptsSoFar) =>
+            {
+                reads.AddRange(attempt.Result.Reads);
+                return PhaseExecutor.Review(attempt, MockupTask.OutputFile,
+                    (html, unread) => MockupTask.Review(html, plan.StoryIds, original, attemptsSoFar, unread),
+                    MockupTask.RequiredReads, reads);
+            },
             cancellationToken);
     }
 

@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting.Internal;
 using ReqArbiter.Api.Files;
@@ -38,13 +39,20 @@ public class MockupTaskTests
     }
 
     [Fact]
-    public void The_prompt_carries_the_backlog_and_the_project_settings()
+    public void The_backlog_goes_to_a_file_the_model_reads_entirely()
     {
-        var prompt = MockupTask.Prompt(Plan);
+        using var temp = new TempDirectory();
 
-        Assert.Contains("<backlog>" + Backlog + "</backlog>", prompt);
-        Assert.Contains("<nombre_sistema>el sistema ReservaSalas</nombre_sistema>", prompt);
-        Assert.DoesNotContain("{{", prompt);
+        var request = MockupTask.BuildRequest(Plan, Guid.NewGuid(), "claude-sonnet-5-5", temp.Path, new MockupRunOptions());
+
+        Assert.Contains("<nombre_sistema>el sistema ReservaSalas</nombre_sistema>", request.Prompt);
+        Assert.Contains("- `input/backlog.json` (", request.Prompt);
+        var firstTitle = JsonNode.Parse(Backlog)!["epicas"]![0]!["historias"]![0]!["titulo"]!.GetValue<string>();
+        Assert.DoesNotContain(firstTitle, request.Prompt);
+        Assert.DoesNotContain("{{", request.Prompt);
+        Assert.Equal(["Read", "Write"], request.AllowedTools);
+        Assert.False(request.InputFilesInBudget);
+        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(Backlog), JsonNode.Parse(File.ReadAllText(Path.Combine(temp.Path, MockupTask.BacklogFile)))));
     }
 
     [Fact]

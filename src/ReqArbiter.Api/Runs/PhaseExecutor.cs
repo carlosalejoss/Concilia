@@ -11,7 +11,8 @@ namespace ReqArbiter.Api.Runs;
 // RetryRunner (one repair) and reviews each attempt with PhaseTask.Review.
 public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileStorage storage, RunnerOptions runnerOptions, CatalogOptions catalogOptions)
 {
-    public const string PromptVersion = "v0";
+    // v0.1 (09-10-2026): the inputs are read by parts from input/ (milestone 12b).
+    public const string PromptVersion = "v0.1";
     public const int MaxRepairs = 1;
 
     // proposals: the outputs of the two slots in the order of the plan (only for the arbiter).
@@ -26,6 +27,7 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
             MaxOutputTokens = runnerOptions.MaxOutputTokens,
             HeartbeatTimeout = catalogOptions.HeartbeatTimeout,
             TotalTimeout = catalogOptions.TotalTimeout,
+            MaxTurns = runnerOptions.PhaseMaxTurns,
         };
         var built = PhaseTask.BuildRequest(phase, input, plan.Fragments, run.Id, run.Model, storage.RunFolder(run.Id), options,
             plan.Kind == PhaseKind.Suggestions ? plan.PendingQuestionIds : null);
@@ -38,12 +40,19 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
 
         var context = plan.Context(input.Proposal1.Length > 0 ? input.Proposal1 : null, input.Proposal2.Length > 0 ? input.Proposal2 : null);
         var original = built.Request.Prompt;
+        var reads = new List<FileRead>(); // of every attempt: a repair only has to read what was missing
         return await new RetryRunner(provider, MaxRepairs).RunAsync(
             built.Request,
             attempt => runEvent => events.Publish(
                 run.Id,
                 attempt.RunId == run.Id ? runEvent : runEvent with { Text = $"[reintento] {runEvent.Text}" }),
-            (attempt, attemptsSoFar) => Review(phase, attempt, context, original, attemptsSoFar),
+            (attempt, attemptsSoFar) =>
+            {
+                reads.AddRange(attempt.Result.Reads);
+                return Review(attempt, phase.OutputFile,
+                    (output, unread) => PhaseTask.Review(phase, output, context, original, attemptsSoFar, unread),
+                    built.RequiredReads!, reads);
+            },
             cancellationToken);
     }
 
@@ -55,12 +64,13 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // repeated); an invalid one makes it Failed and asks for the repair. Runs
     // where the model did not get to answer (API error, timeout, blocked) are
     // not repaired: asking again would not change it.
-    internal static AttemptReview Review(PhaseDefinition phase, RunAttempt attempt, PhaseContext context, string originalPrompt, int attemptsSoFar) =>
-        Review(attempt, phase.OutputFile, output => PhaseTask.Review(phase, output, context, originalPrompt, attemptsSoFar));
-
-    // The same for any output file and its checks (also the mockup's):
-    // review gets the output (null if the model did not write it).
-    internal static AttemptReview Review(RunAttempt attempt, string outputFile, Func<string?, PhaseReview> reviewOutput)
+    // For any output file and its checks (the phases and the mockup).
+    // reviewOutput gets the output (null if the model did not write it) and
+    // the errors of the lines it left unread; requiredReads are the files it
+    // must read entirely, and reads those it read in every attempt so far.
+    internal static AttemptReview Review(
+        RunAttempt attempt, string outputFile, Func<string?, IReadOnlyList<string>, PhaseReview> reviewOutput,
+        IReadOnlyList<string> requiredReads, IReadOnlyList<FileRead> reads)
     {
         var result = attempt.Result;
         if (!CatalogReview.ModelAnswered(result))
@@ -68,10 +78,12 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
 
         var path = Path.Combine(attempt.Request.WorkDirectory, outputFile);
         var output = File.Exists(path) ? File.ReadAllText(path) : null;
-        var review = reviewOutput(output);
+        var review = reviewOutput(output, PhaseTask.UnreadErrors(attempt.Request.WorkDirectory, requiredReads, reads));
         if (review.Valid)
         {
             var notes = new List<string>();
+            if (result.Compactions > 0)
+                notes.Add($"Claude Code compactó el contexto {result.Compactions} {(result.Compactions == 1 ? "vez" : "veces")}: puede haberse perdido detalle");
             if (result.VerdictError is { } verdictError)
                 notes.Add($"Veredicto no válido ({verdictError}); se acepta la salida");
             if (review.Validation.Warnings.Count > 0)

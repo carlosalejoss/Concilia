@@ -38,7 +38,12 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
   - Preguntas, catálogo y backlog: A ‖ B → árbitro. Árbitro `SS - GPT-6-SOL` (`RUNNER_MODEL_ARBITER`), solo LLM, con las propuestas anónimas en orden aleatorio. Sin umbral numérico de discrepancia: el árbitro marca `discrepancia` y el usuario la revisa al validar.
   - El catálogo exige al menos una ronda terminada y ninguna pregunta pendiente. Las fases siguientes solo ven la versión validada; la salida original del árbitro se congela en `data/jobs/{id}/` solo para métricas.
   - Mockup: rol con su propio proveedor (`MOCKUP_PROVIDER`: `Fake` por defecto, `ClaudeSubscription` o `LiteLlm`); la suscripción solo se admite en este rol. Un solo modelo, Claude Code con Sonnet 5.5 (`MOCKUP_MODEL`) y el token de la suscripción del autor (`CLAUDE_CODE_OAUTH_TOKEN`, de `claude setup-token`), con el proveedor `ClaudeSubscription`. Solo para uso del autor; si la aplicación la usa más gente, se cambia a una clave de API o a un modelo de la pasarela. Salida: un `.html` autocontenido con datos de prueba ficticios.
-  - Sin lotes en v0: toda la documentación va en una llamada. El texto del requisito lo escribe el modelo (no D-23).
+  - Sin lotes en v0: toda la documentación va en una llamada. El texto del requisito lo escribe el modelo (no D-23). (Sustituida el 09-10-2026, propuesta del team leader aprobada por el autor: sigue sin haber lotes, pero la documentación ya no va en el prompt; ver la línea siguiente.)
+  - Lectura por partes (09-10-2026, hito 12b; prompts v0.1):
+    - La documentación (`input/documentacion.txt`, un fragmento por línea), el catálogo y el backlog validados y las propuestas del árbitro van a `input/`, y el modelo los lee por partes con `Read` en los tramos que da `{{LECTURA}}`.
+    - La plataforma comprueba en los eventos del run que no queda ninguna línea sin leer; si queda, pide la reparación (código `LECTURA`). Las compactaciones de contexto se permiten y quedan como aviso.
+    - Límites: 80.000 tokens solo para el prompt, tope de documentación de 300.000 tokens estimados (`RUNNER_MAX_DOCUMENTATION_TOKENS`), aviso en la web por encima de 80.000 y 30 turnos por run (`RUNNER_PHASE_MAX_TURNS`).
+    - No se conserva el modo «todo en el prompt».
   - Sugerencias de respuesta (09-10-2026, autor): la IA propone la respuesta de las preguntas pendientes (una o todas las de una ronda) con un solo modelo, sin árbitro (`RUNNER_MODEL_SUGGESTIONS`, SOL por defecto). Rellena el cuadro, pero solo cuenta lo que el usuario guarda; la respuesta registra su origen (`usuario`, `ia`, `ia-editada`).
 
 ## Decisiones abiertas (no las cierres sin preguntar)

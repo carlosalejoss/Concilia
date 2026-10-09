@@ -39,8 +39,9 @@ public static class PhaseJobs
     // input: the parts of the phase input that depend on the earlier phases
     // (previous questions, answers, validated catalog); the documentation and
     // the project settings are filled here. The prompt of A and B must fit in
-    // the input budget: if it does not, the job is not created (the arbiter's,
-    // which also carries the proposals, is checked when it runs).
+    // the input budget, and the documentation (read by parts from input/) must
+    // not pass RunnerOptions.MaxDocumentationTokens: if not, the job is not
+    // created.
     public static NewPhaseJob Create(
         Project project, IReadOnlyList<CatalogDocument> documents, PhaseKind kind, PhaseInput input,
         IReadOnlyList<string> answeredQuestionIds, RunnerOptions options, string providerName, Random random,
@@ -55,8 +56,13 @@ public static class PhaseJobs
             SystemName = project.SystemName,
             Language = project.Language,
             Glossary = project.Glossary ?? "",
-            Documentation = Fragmenter.DocumentBlock(fragments, documents.ToDictionary(d => d.Id, d => d.Name)),
+            Documentation = DocumentationFile.Build(fragments, documents.ToDictionary(d => d.Id, d => d.Name)),
         };
+        var documentationTokens = InputBudget.EstimateTokens(fullInput.Documentation);
+        if (documentationTokens > options.MaxDocumentationTokens)
+            return new NewPhaseJob(null, [], null,
+                $"La documentación del proyecto es demasiado grande: unos {documentationTokens:N0} tokens estimados, y el máximo es " +
+                $"{options.MaxDocumentationTokens:N0}. Quita archivos o deja solo las partes que describen el sistema.");
         var prompt = PhasePrompt.Build(PhaseDefinition.For(kind, PhaseRole.Proposal), fullInput);
         var budgetError = InputBudget.Check(prompt, new PhaseOptions().InputTokenBudget);
         if (budgetError is not null)
