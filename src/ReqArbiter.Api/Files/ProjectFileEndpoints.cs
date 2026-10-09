@@ -124,6 +124,8 @@ public static class ProjectFileEndpoints
                 TextStoredName = textStoredName,
             };
             db.ProjectFiles.Add(record);
+            // A new file outdates the catalog, the backlog and the mockup, if they exist.
+            await Deliverables.DeliverableEndpoints.ApplyChangeAsync(db, projectId, Core.Flow.FlowChange.FileAdded);
             await db.SaveChangesAsync();
 
             return Results.Created($"/projects/{projectId}/files/{record.Id}", record);

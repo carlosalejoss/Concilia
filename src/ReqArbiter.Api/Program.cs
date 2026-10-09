@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using ReqArbiter.Api.Deliverables;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
 using ReqArbiter.Api.Projects;
@@ -53,6 +54,7 @@ app.MapRunEndpoints();
 app.MapJobEndpoints();
 app.MapFlowEndpoints();
 app.MapQuestionEndpoints();
+app.MapDeliverableEndpoints();
 
 app.Run();
 

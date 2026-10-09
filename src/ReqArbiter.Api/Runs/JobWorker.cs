@@ -71,6 +71,10 @@ public class JobWorker(
             {
                 await Questions.QuestionEndpoints.StoreRoundAsync(db, jobId, job.ProjectId, phasePlan, result);
             }
+            else
+            {
+                await Deliverables.DeliverableEndpoints.StoreResultAsync(db, jobId, job.ProjectId, phasePlan, result);
+            }
             job.FinishedAt = DateTimeOffset.UtcNow;
             await db.SaveChangesAsync(CancellationToken.None);
             return;

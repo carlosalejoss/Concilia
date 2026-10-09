@@ -109,8 +109,8 @@ public static class QuestionEndpoints
     }
 
     // Applies one action of QuestionRules and saves the question. The change it
-    // makes to the flow (QuestionChange.Change) will outdate the catalog, the
-    // backlog and the mockup once they exist (step 51).
+    // makes to the flow (QuestionChange.Change) outdates the catalog, the
+    // backlog and the mockup, if they exist.
     private static async Task<IResult> ApplyAsync(AppDbContext db, int id, Func<Question, QuestionChange> action)
     {
         var question = await db.Questions.FindAsync(id);
@@ -122,6 +122,10 @@ public static class QuestionEndpoints
         if (change.Error is not null)
         {
             return Results.ValidationProblem(new Dictionary<string, string[]> { ["question"] = [change.Error] });
+        }
+        if (change.Change is { } flowChange)
+        {
+            await Deliverables.DeliverableEndpoints.ApplyChangeAsync(db, question.ProjectId, flowChange);
         }
         await db.SaveChangesAsync();
         return Results.Ok(question);

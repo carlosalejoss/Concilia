@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ReqArbiter.Core.Deliverables;
 using ReqArbiter.Core.Projects;
 using ReqArbiter.Core.Questions;
 using ReqArbiter.Core.Runs;
@@ -17,6 +18,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Job> Jobs => Set<Job>();
 
     public DbSet<Question> Questions => Set<Question>();
+
+    public DbSet<Deliverable> Deliverables => Set<Deliverable>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -93,6 +96,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             question.Property(q => q.Origin).HasMaxLength(10);
             // Stored as text ("Pending", "Answered", "Discarded") so the table is readable.
             question.Property(q => q.Status).HasConversion<string>().HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<Deliverable>(deliverable =>
+        {
+            deliverable.HasOne<Project>()
+                .WithMany()
+                .HasForeignKey(d => d.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
+            // The job that generated it.
+            deliverable.HasOne<Job>()
+                .WithMany()
+                .HasForeignKey(d => d.JobId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One current deliverable per kind and project.
+            deliverable.HasIndex(d => new { d.ProjectId, d.Kind }).IsUnique();
+            // Stored as text ("Catalog", "Draft"...) so the table is readable.
+            deliverable.Property(d => d.Kind).HasConversion<string>().HasMaxLength(20);
+            deliverable.Property(d => d.Status).HasConversion<string>().HasMaxLength(20);
         });
     }
 }
