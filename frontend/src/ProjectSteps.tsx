@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { errorMessage, type FlowStep, type FlowView, type Project, type StepState, type StepStatus } from './api.ts'
 import ProjectFiles from './ProjectFiles.tsx'
 import QuestionsPanel from './QuestionsPanel.tsx'
+import CatalogEditor from './CatalogEditor.tsx'
 
 const STEP_NAMES: Record<FlowStep, string> = {
   Documents: 'Documentos',
@@ -40,7 +41,7 @@ function stateName(step: StepStatus): string {
 // (they arrive in later milestones of the v0 iteration).
 const LAUNCH: Partial<Record<FlowStep, { label: string; url: (projectId: number) => string | null; notYet?: string }>> = {
   Questions: { label: 'Lanzar una ronda de preguntas', url: (id) => `/projects/${id}/question-rounds` },
-  Catalog: { label: 'Generar el catálogo', url: () => null, notYet: 'Llega en el hito 10.' },
+  Catalog: { label: 'Generar el catálogo', url: (id) => `/projects/${id}/catalog-jobs` },
   Backlog: { label: 'Generar el backlog', url: () => null, notYet: 'Llega en el hito 11.' },
   Mockup: { label: 'Generar el mockup', url: () => null, notYet: 'Llega en el hito 12.' },
 }
@@ -106,6 +107,7 @@ function ProjectSteps({ project, onShowJob }: { project: Project; onShowJob: (jo
   const bodies: Partial<Record<FlowStep, ReactNode>> = {
     Documents: <ProjectFiles project={project} onChange={reload} />,
     Questions: <QuestionsPanel project={project} version={version} onChange={reload} onShowJob={onShowJob} />,
+    Catalog: <CatalogEditor project={project} version={version} onChange={reload} />,
   }
 
   return (

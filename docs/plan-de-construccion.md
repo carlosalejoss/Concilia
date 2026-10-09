@@ -222,7 +222,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
   - al terminar el trabajo, el original del árbitro se congela y se crea la copia de trabajo en borrador;
   - endpoints para obtenerla, guardar cambios (que sustituyen lo anterior), validar y reabrir;
   - validar exige que el esquema sea correcto y que todas las discrepancias estén revisadas.
-- [ ] 52. Web: tabla editable del catálogo.
+- [x] 52. Web: tabla editable del catálogo.
   - Se editan texto, tipo, notación, obligatoriedad y fuentes, y se pueden añadir y borrar requisitos.
   - Las discrepancias aparecen destacadas, con la explicación del árbitro y una casilla «revisada».
   - Un catálogo validado es de solo lectura. «Reabrir» lo devuelve a borrador y desactualiza el backlog y el mockup.

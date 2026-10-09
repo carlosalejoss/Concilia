@@ -107,6 +107,53 @@ export type Question = {
   updatedAt: string | null
 }
 
+// A catalog or backlog of the project (GET /projects/{id}/deliverables/{kind}):
+// the working copy, its errors (what keeps it from being validated) and warnings.
+export type Deliverable<T> = {
+  id: number
+  kind: 'Catalog' | 'Backlog' | 'Mockup'
+  status: 'Draft' | 'Validated'
+  outdated: boolean
+  jobId: string
+  content: T
+  errors: string[]
+  warnings: string[]
+  createdAt: string
+  updatedAt: string | null
+  validatedAt: string | null
+}
+
+// One requirement of the catalog v0 working copy (prompts/v0/esquemas/catalogo.schema.json
+// plus the fields of the platform: origen, discrepancia, explicacion, revisada).
+export type CatalogRequirement = {
+  id: string
+  tipo: 'RF' | 'RNF' | 'RA' | 'RT' | 'RI'
+  notacion: 'EARS' | 'MASTeR'
+  obligatoriedad: 'shall' | 'should' | 'may'
+  texto: string
+  fuentes: string[]
+  preguntas: string[]
+  origen?: string
+  discrepancia?: boolean
+  explicacion?: string
+  revisada?: boolean
+}
+
+export type CatalogContent = { requisitos: CatalogRequirement[] }
+
+// Every message of an ASP.NET Core "problem details" response (validation can
+// give many), or the HTTP status.
+export async function errorMessages(response: Response): Promise<string[]> {
+  try {
+    const problem: { errors?: Record<string, string[]> } = await response.json()
+    const all = Object.values(problem.errors ?? {}).flat()
+    if (all.length > 0) return all
+  } catch {
+    // The body was not JSON; use the status below.
+  }
+  return [`HTTP ${response.status}`]
+}
+
 // GET /projects/{id}/flow: the state of each step of the project.
 export type FlowStep = 'Documents' | 'Questions' | 'Catalog' | 'Backlog' | 'Mockup'
 export type StepState = 'Blocked' | 'Available' | 'InProgress' | 'Draft' | 'Validated'
