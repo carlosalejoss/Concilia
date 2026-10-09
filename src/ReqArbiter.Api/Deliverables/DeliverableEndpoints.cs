@@ -99,12 +99,12 @@ public static class DeliverableEndpoints
     // the working copy becomes the current draft, and the later steps outdated.
     public static async Task StoreResultAsync(AppDbContext db, Guid jobId, int projectId, PhasePlan plan, PhaseJobResult result)
     {
-        if (result.Source is null || plan.Kind != PhaseKind.Catalog)
+        if (result.Source is null)
         {
             return;
         }
-        var kind = DeliverableKind.Catalog;
-        var content = CatalogDraft.FromResult(result, plan);
+        var kind = plan.Kind == PhaseKind.Catalog ? DeliverableKind.Catalog : DeliverableKind.Backlog;
+        var content = kind == DeliverableKind.Catalog ? CatalogDraft.FromResult(result, plan) : BacklogDraft.FromResult(result, plan);
         var current = await db.Deliverables.SingleOrDefaultAsync(d => d.ProjectId == projectId && d.Kind == kind);
         var (deliverable, change) = DeliverableRules.Generated(current, projectId, kind, jobId, content, DateTimeOffset.UtcNow);
         if (current is null)
@@ -141,13 +141,23 @@ public static class DeliverableEndpoints
             .Select(q => q.Code)
             .ToListAsync();
         var context = plan.Context() with { AnsweredQuestionIds = answered.ToHashSet() };
-        return d.Kind == DeliverableKind.Catalog ? CatalogDraft.Check(d.Content, context) : throw NotYet(d.Kind);
+        return d.Kind switch
+        {
+            DeliverableKind.Catalog => CatalogDraft.Check(d.Content, context),
+            // The backlog is checked against the validated catalog it was generated from (in the plan).
+            DeliverableKind.Backlog => BacklogDraft.Check(d.Content, context),
+            _ => throw NotYet(d.Kind),
+        };
     }
 
-    private static string Normalize(DeliverableKind kind, string content) =>
-        kind == DeliverableKind.Catalog ? CatalogDraft.Normalize(content) : throw NotYet(kind);
+    private static string Normalize(DeliverableKind kind, string content) => kind switch
+    {
+        DeliverableKind.Catalog => CatalogDraft.Normalize(content),
+        DeliverableKind.Backlog => BacklogDraft.Normalize(content),
+        _ => throw NotYet(kind),
+    };
 
-    // The backlog arrives in step 55 and the mockup in milestone 12.
+    // The mockup is not edited here: it arrives in milestone 12, with its own checks.
     private static NotSupportedException NotYet(DeliverableKind kind) => new($"{kind}: todavía no.");
 
     private static async Task<DeliverableView> ViewAsync(AppDbContext db, FileStorage storage, Deliverable d)
