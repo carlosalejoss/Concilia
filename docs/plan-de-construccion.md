@@ -214,7 +214,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
 - [x] 46. Tabla `Questions` y su migración. `POST /projects/{id}/question-rounds` lanza el trabajo `questions`. Cuando termina el árbitro, la plataforma renumera las preguntas (`P-001`… por proyecto) y las guarda como pendientes, con su origen y la nota del árbitro.
 - [x] 47. Endpoints para responder, editar la respuesta, descartar (con motivo opcional) y reabrir una pregunta, con tests. Las respuestas son la información del proyecto que reciben el catálogo y el backlog.
 - [x] 48. Web: rondas con sus preguntas y filtro de pendientes. Se puede contestar o descartar, y se ven el origen (A, B o ambas) y la explicación del árbitro. Un contador de pendientes muestra por qué el catálogo está bloqueado.
-- [ ] 49. Prueba real con ReservaSalas (SOL, LUNA y árbitro SOL) y dos rondas: tokens, tiempos y preguntas repetidas entre rondas.
+- [ ] 49. Prueba real con ReservaSalas (SOL, LUNA y árbitro SOL) y dos rondas: tokens, tiempos y preguntas repetidas entre rondas. (09-10-2026: hecha la primera ronda, con sus tokens y tiempos en `docs/evolucion-prompt-requisitos.md`; falta la segunda.)
 - [x] 49b. Sugerencias de respuesta con IA (añadido el 09-10-2026, a petición del autor):
   - prompt `prompts/v0/sugerir_respuestas.md`, con su esquema, sus comprobaciones y su ejemplo (el autor lo revisa);
   - trabajo `answer-suggestions` con un solo run (`SUG`, `RUNNER_MODEL_SUGGESTIONS`): `POST /question-rounds/{id}/suggestions` (todas las pendientes de la ronda) y `POST /questions/{id}/suggestion` (una); uno a la vez por proyecto;
@@ -235,7 +235,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
   - Se editan texto, tipo, notación, obligatoriedad y fuentes, y se pueden añadir y borrar requisitos.
   - Las discrepancias aparecen destacadas, con la explicación del árbitro y una casilla «revisada».
   - Un catálogo validado es de solo lectura. «Reabrir» lo devuelve a borrador y desactualiza el backlog y el mockup.
-- [ ] 53. Prueba real con ReservaSalas: generar, editar y validar. Resultados en la sección v0 de `docs/evolucion-prompt-requisitos.md`.
+- [ ] 53. Prueba real con ReservaSalas: generar, editar y validar. Resultados en la sección v0 de `docs/evolucion-prompt-requisitos.md`. (09-10-2026: generado y validado, con resultados; falta editarlo.)
 
 **Hecho cuando:** tras validar un catálogo editado y recargar, solo se ve la versión editada, y el original del árbitro sigue en `data/jobs/{id}/`.
 
@@ -244,7 +244,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
 - [x] 54. Trabajo `backlog` desde el catálogo validado: A ‖ B → árbitro. Se validan el esquema, que los ids sean únicos y que las referencias apunten a requisitos que existen. Si un requisito funcional se queda sin historia, la plataforma avisa. Las tareas solo se validan en su forma y se revisan a mano en la prueba, porque son el eslabón más débil según la investigación.
 - [x] 55. El backlog se guarda en `Deliverables` (tipo `backlog`), con el original congelado y los mismos endpoints de guardar, validar y reabrir. Tests.
 - [x] 56. Web: árbol editable Épica → Historia → Criterios → Tareas, con los requisitos de cada historia, la cobertura de requisitos, las discrepancias y el botón de validar.
-- [ ] 57. Prueba real con ReservaSalas.
+- [x] 57. Prueba real con ReservaSalas (09-10-2026: válido a la primera, 16 historias que cubren los 22 requisitos funcionales; resultados en `docs/evolucion-prompt-requisitos.md`).
 
 **Hecho cuando:** el backlog validado tiene todas sus historias trazadas a requisitos del catálogo validado, y la plataforma avisa de los requisitos funcionales sin historia.
 
