@@ -217,7 +217,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
 
 ## Hito 10: catálogo v0 y su validación
 
-- [ ] 50. Trabajo `catalog-v0`, solo si la fase está disponible. A ‖ B → árbitro, con origen, explicación y discrepancias. La plataforma renumera por tipo.
+- [x] 50. Trabajo `catalog-v0`, solo si la fase está disponible. A ‖ B → árbitro, con origen, explicación y discrepancias. La plataforma renumera por tipo.
 - [ ] 51. Tabla `Deliverables` y su migración, con tests:
   - al terminar el trabajo, el original del árbitro se congela y se crea la copia de trabajo en borrador;
   - endpoints para obtenerla, guardar cambios (que sustituyen lo anterior), validar y reabrir;

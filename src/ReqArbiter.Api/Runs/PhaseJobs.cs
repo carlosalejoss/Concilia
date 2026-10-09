@@ -79,6 +79,22 @@ public static class PhaseJobs
         return new NewPhaseJob(job, [NewRun("A", options.ModelA), NewRun("B", options.ModelB), NewRun("ARB", options.ModelArbiter)], plan, null);
     }
 
+    // Stores a new job (its plan, the job and its three runs) and queues it.
+    // Answers 202 with the job, or 400 with the reason it cannot be created.
+    public static async Task<IResult> EnqueueAsync(AppDbContext db, JobQueue queue, FileStorage storage, NewPhaseJob created)
+    {
+        if (created.Error is not null)
+        {
+            return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [created.Error] });
+        }
+        created.Plan!.Save(storage.JobFolder(created.Job!.Id));
+        db.Jobs.Add(created.Job);
+        db.Runs.AddRange(created.Runs);
+        await db.SaveChangesAsync();
+        queue.Enqueue(created.Job.Id);
+        return Results.Accepted($"/jobs/{created.Job.Id}", new JobView(created.Job, created.Runs));
+    }
+
     // data/jobs/{id}/resultado-arbitro.json: the result of the job, frozen.
     // The next steps (questions, catalog, backlog) take it from here.
     public static void WriteResult(string jobFolder, PhaseJobResult result)
