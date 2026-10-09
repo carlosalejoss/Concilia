@@ -24,6 +24,21 @@ public class ProjectFlowTests
         Assert.Equal("2 archivos con texto", Step(new FlowFacts { TextFiles = 2 }, FlowStep.Documents).Detail);
     }
 
+    // Reading by parts (09-10-2026): the size of the documentation, a warning
+    // when it does not fit in the window at once, and another over the limit.
+    [Fact]
+    public void The_documents_step_warns_about_big_documentation()
+    {
+        var small = Step(new FlowFacts { TextFiles = 1, DocumentationTokens = 2_000, MaxDocumentationTokens = 300_000 }, FlowStep.Documents);
+        var big = Step(new FlowFacts { TextFiles = 3, DocumentationTokens = 95_000, MaxDocumentationTokens = 300_000 }, FlowStep.Documents);
+        var tooBig = Step(new FlowFacts { TextFiles = 9, DocumentationTokens = 400_000, MaxDocumentationTokens = 300_000 }, FlowStep.Documents);
+
+        Assert.StartsWith("1 archivo con texto · unos ", small.Detail);
+        Assert.Null(small.Warning);
+        Assert.StartsWith("La documentación no cabe de una vez", big.Warning);
+        Assert.StartsWith("La documentación supera el máximo", tooBig.Warning);
+    }
+
     [Fact]
     public void Questions_need_a_file_with_text()
     {

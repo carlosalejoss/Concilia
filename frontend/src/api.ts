@@ -201,6 +201,7 @@ export type StepStatus = {
   canLaunch: boolean
   reason: string | null
   detail: string | null
+  warning: string | null // e.g. documentation too big to read at once
 }
 
 export type FlowView = { steps: StepStatus[] }

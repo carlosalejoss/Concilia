@@ -23,11 +23,21 @@ public record FlowFacts
     public DeliverableFacts? Backlog { get; init; }
     public DeliverableFacts? Mockup { get; init; }
     public IReadOnlySet<FlowStep> Running { get; init; } = new HashSet<FlowStep>();
+
+    // Estimated tokens of the text of every file, and the most a phase
+    // accepts (RunnerOptions.MaxDocumentationTokens), for the size warning.
+    public long DocumentationTokens { get; init; }
+    public long MaxDocumentationTokens { get; init; } = long.MaxValue;
 }
 
 // The state of one step: can it be launched now (generate or, for the
 // questions, a new round), and if not, why. Detail is a short summary for the page.
-public record StepStatus(FlowStep Step, StepState State, bool Outdated, bool CanLaunch, string? Reason, string? Detail);
+public record StepStatus(FlowStep Step, StepState State, bool Outdated, bool CanLaunch, string? Reason, string? Detail)
+{
+    // Something the user should know before going on (the documents step:
+    // documentation too big to read at once, or over the limit).
+    public string? Warning { get; init; }
+}
 
 // Something that changes what the later steps were built on.
 public enum FlowChange
@@ -71,9 +81,28 @@ public static class ProjectFlow
         _ => [],
     };
 
-    private static StepStatus Documents(FlowFacts f) =>
-        new(FlowStep.Documents, f.TextFiles > 0 ? StepState.Draft : StepState.Available, false, true, null,
-            f.TextFiles == 1 ? "1 archivo con texto" : $"{f.TextFiles} archivos con texto");
+    // Above this size the documentation does not fit in the window at once
+    // (128k, with some 20k taken by Claude Code): it is read by parts and
+    // Claude Code may compact the context (decision of 09-10-2026).
+    public const long LargeDocumentationTokens = 80_000;
+
+    private static StepStatus Documents(FlowFacts f)
+    {
+        var detail = f.TextFiles == 1 ? "1 archivo con texto" : $"{f.TextFiles} archivos con texto";
+        if (f.DocumentationTokens > 0)
+            detail += $" · unos {f.DocumentationTokens:N0} tokens";
+        string? warning = null;
+        if (f.DocumentationTokens > f.MaxDocumentationTokens)
+            warning = $"La documentación supera el máximo de {f.MaxDocumentationTokens:N0} tokens: las fases no se podrán lanzar. " +
+                      "Quita archivos o deja solo las partes que describen el sistema.";
+        else if (f.DocumentationTokens > LargeDocumentationTokens)
+            warning = "La documentación no cabe de una vez en la ventana del modelo: se leerá por partes y Claude Code puede " +
+                      "compactar el contexto (resumir lo leído), con riesgo de perder detalle. Cuanto más pequeña, mejor.";
+        return new StepStatus(FlowStep.Documents, f.TextFiles > 0 ? StepState.Draft : StepState.Available, false, true, null, detail)
+        {
+            Warning = warning,
+        };
+    }
 
     private static StepStatus Questions(FlowFacts f)
     {

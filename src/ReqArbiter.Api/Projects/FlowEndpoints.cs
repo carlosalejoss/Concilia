@@ -2,10 +2,12 @@ using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
+using ReqArbiter.Api.Runs;
 using ReqArbiter.Core.Deliverables;
 using ReqArbiter.Core.Flow;
 using ReqArbiter.Core.Phases;
 using ReqArbiter.Core.Questions;
+using ReqArbiter.Core.Runner;
 using ReqArbiter.Core.Runs;
 
 namespace ReqArbiter.Api.Projects;
@@ -27,16 +29,27 @@ public static class FlowEndpoints
     public static void MapFlowEndpoints(this WebApplication app)
     {
         // The state of each step of the project (ProjectFlow).
-        app.MapGet("/projects/{projectId:int}/flow", async (int projectId, AppDbContext db, FileStorage storage) =>
+        // The documents step also says the size of the documentation, against the limit of the phases.
+        app.MapGet("/projects/{projectId:int}/flow", async (int projectId, AppDbContext db, FileStorage storage, RunnerOptions options) =>
             await db.Projects.AnyAsync(p => p.Id == projectId)
-                ? Results.Ok(new FlowView(ProjectFlow.Compute(await ReadFactsAsync(db, storage, projectId))))
+                ? Results.Ok(new FlowView(ProjectFlow.Compute(
+                    await ReadFactsAsync(db, storage, projectId) with { MaxDocumentationTokens = options.MaxDocumentationTokens })))
                 : Results.NotFound());
     }
 
     // What the flow of a project depends on, read from the database and the job folders.
     public static async Task<FlowFacts> ReadFactsAsync(AppDbContext db, FileStorage storage, int projectId)
     {
-        var textFiles = await db.ProjectFiles.CountAsync(f => f.ProjectId == projectId && f.TextStoredName != null);
+        var textNames = await db.ProjectFiles
+            .Where(f => f.ProjectId == projectId && f.TextStoredName != null)
+            .Select(f => f.TextStoredName!)
+            .ToListAsync();
+        // The size of the extracted text in bytes stands in for characters
+        // (a slight overestimate with accents): enough for a warning.
+        var textBytes = textNames
+            .Select(name => new FileInfo(Path.Combine(storage.ProjectFolder(projectId), name)))
+            .Where(file => file.Exists)
+            .Sum(file => file.Length);
         var jobs = await db.Jobs.Where(j => j.ProjectId == projectId).ToListAsync();
         var jobIds = jobs.Select(j => j.Id).ToList();
         // A job is in progress while some run of it is queued or running
@@ -56,7 +69,8 @@ public static class FlowEndpoints
 
         return new FlowFacts
         {
-            TextFiles = textFiles,
+            TextFiles = textNames.Count,
+            DocumentationTokens = InputBudget.EstimateTokens(textBytes),
             FinishedQuestionRounds = rounds,
             PendingQuestions = statuses.Count(s => s == QuestionStatus.Pending),
             AnsweredQuestions = statuses.Count(s => s == QuestionStatus.Answered),

@@ -136,6 +136,7 @@ function ProjectSteps({ project, onShowJob }: { project: Project; onShowJob: (jo
                 )}
                 {step.detail && <span className="text-sm text-gray-500">{step.detail}</span>}
               </div>
+              {step.warning && <p className="mt-2 rounded bg-amber-50 p-2 text-sm text-amber-800">{step.warning}</p>}
               {launchInfo && (
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   <button
