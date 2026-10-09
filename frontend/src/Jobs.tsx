@@ -16,10 +16,14 @@ import CatalogView from './CatalogView.tsx'
 // A and B in every job; the arbiter (ARB) only in the v0 phases. The answer
 // suggestions have a single run (SUG).
 const SLOTS = ['A', 'B', 'ARB'] as const
-const SLOT_NAMES: Record<string, string> = { A: 'A', B: 'B', ARB: 'Árbitro', SUG: 'Sugerencias' }
+const SLOT_NAMES: Record<string, string> = { A: 'A', B: 'B', ARB: 'Árbitro', SUG: 'Sugerencias', MOCK: 'Mockup' }
+
+// The single-run jobs: the answer suggestions and the mockup.
+const SINGLE_SLOT: Record<string, string> = { [SUGGESTIONS_KIND]: 'SUG', mockup: 'MOCK' }
 
 function slotsOf(view: JobView): string[] {
-  return view.job.kind === SUGGESTIONS_KIND ? ['SUG'] : [...SLOTS]
+  const single = SINGLE_SLOT[view.job.kind]
+  return single ? [single] : [...SLOTS]
 }
 
 const stateColors: Record<string, string> = {
@@ -163,16 +167,16 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
               >
                 <td className="py-1">{JOB_KIND_NAMES[view.job.kind] ?? view.job.kind}</td>
                 <td className="py-1">{formatDate(view.job.createdAt)}</td>
-                {slotsOf(view).map((slot) => {
+                {slotsOf(view).map((slot, _, slots) => {
                   const summary = slotSummary(view, slot)
                   // A single-run job fills the three columns: it has no A, B or arbiter.
                   return (
                     <td
                       key={slot}
-                      colSpan={slot === 'SUG' ? 3 : 1}
+                      colSpan={slots.length === 1 ? 3 : 1}
                       className={`py-1 font-semibold ${stateColors[summary.state] ?? 'text-red-700'}`}
                     >
-                      {slot === 'SUG' ? `Un solo modelo: ${summary.text}` : summary.text}
+                      {slots.length === 1 ? `Un solo modelo: ${summary.text}` : summary.text}
                     </td>
                   )
                 })}
@@ -317,7 +321,9 @@ function JobResult({ jobId, finished }: { jobId: string; finished: boolean }) {
             ? 'unión del árbitro'
             : result.fuente === 'SUG'
               ? 'salida de un solo modelo (sugerencias de respuesta, sin verificación cruzada)'
-              : `salida de ${result.fuente} sin verificación cruzada`}
+              : result.fuente === 'MOCK'
+                ? `${result.mensaje} Se ve en el paso «Mockup» del proyecto.`
+                : `salida de ${result.fuente} sin verificación cruzada`}
         </p>
       )}
       {result.salida !== null && (

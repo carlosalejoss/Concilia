@@ -26,8 +26,8 @@ export type ProjectFile = {
 export type RunState = 'Queued' | 'Running' | 'Done' | 'Blocked' | 'Failed' | 'TimedOut' | 'HeartbeatLost' | 'Skipped'
 
 // A, B and, in the v0 phases, ARB (the arbiter); SUG is the only run of the
-// answer suggestions.
-export type Slot = 'A' | 'B' | 'ARB' | 'SUG'
+// answer suggestions, and MOCK that of the mockup.
+export type Slot = 'A' | 'B' | 'ARB' | 'SUG' | 'MOCK'
 
 export type Run = {
   id: string
@@ -64,9 +64,9 @@ export type Job = {
   finishedAt: string | null
 }
 
-// The job kinds of the v0 phases (A ‖ B → arbiter, or a single run for the
-// answer suggestions).
-export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'backlog', 'answer-suggestions']
+// The job kinds of the v0 flow (A ‖ B → arbiter, or a single run for the
+// answer suggestions and the mockup).
+export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'backlog', 'answer-suggestions', 'mockup']
 export const SUGGESTIONS_KIND = 'answer-suggestions'
 
 export function isPhaseJob(job: Job): boolean {
