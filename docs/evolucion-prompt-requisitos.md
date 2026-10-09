@@ -14,8 +14,8 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.1 | 09-10-2026 | Lectura por partes (team leader): la documentación va a `input/documentacion.txt` y el modelo la lee con `Read` en los tramos que da la plataforma, que comprueba que no queda ninguna línea sin leer | Pendiente (paso 71) | Pendiente |
-| v0 | 08-10-2026 | Prompt muy básico para tener el flujo completo (iteración v0): documento entero sin lotes, respuestas del cliente como entrada, frase EARS/MASTeR escrita por el modelo y árbitro que une A y B | Sí (ReservaSalas, 09-10-2026) | Flujo completo en unos 5 minutos de modelo, todo válido a la primera; 25 requisitos (13 en la v1.2), porque las 11 respuestas eran suposiciones de la IA aceptadas sin cambios y añadieron funcionalidad que el documento no tiene |
+| v0.1 | 09-10-2026 | Lectura por partes (team leader): la documentación va a `input/documentacion.txt` y el modelo la lee con `Read` en los tramos que da la plataforma, que comprueba que no queda ninguna línea sin leer | Sí (documento B, una ronda, 09-10-2026) | Funciona y lee todo, pero con un documento que cabe entero cuesta un 50 % más de tokens y de tiempo que la v0 y añade dos reparaciones: LUNA cuenta las líneas desde 0 y se deja la última, y el árbitro confundió los ids de las propuestas |
+| v0 | 08-10-2026 | Prompt muy básico para tener el flujo completo (iteración v0): documento entero sin lotes, respuestas del cliente como entrada, frase EARS/MASTeR escrita por el modelo y árbitro que une A y B | Sí (ReservaSalas, 09-10-2026; documento B, 09-10-2026) | Flujo completo en unos 5 minutos de modelo, todo válido a la primera; 25 requisitos (13 en la v1.2), porque las 11 respuestas eran suposiciones de la IA aceptadas sin cambios y añadieron funcionalidad que el documento no tiene |
 
 ## Cómo se mide
 
@@ -348,7 +348,27 @@ Propuesta del team leader y aprobada por el autor, después de que un documento 
 
 ### Resultados
 
-Pendientes: paso 67 (medida de partida con la v0, todo en el prompt) y paso 71 (la misma ronda con la v0.1, para compararlas en tokens, tiempo, turnos, compactaciones, lectura completa y preguntas).
+Primera comparación (09-10-2026): una ronda de preguntas con el documento B, en un proyecto nuevo para cada versión. A = SOL, B = LUNA y árbitro = SOL. El documento B es técnico-funcional, interno y anonimizado (solo cifras agregadas): 613 líneas en `input/documentacion.txt`, unos 27.000 tokens estimados. Cabe entero en la ventana. La ronda falló al principio por el error que contaba dos veces el documento (commit `7410b24`), no por su tamaño.
+
+Las cifras de cada run suman todos sus intentos. El tiempo es el del run entero.
+
+| | v0 (todo en el prompt, paso 67) | v0.1 (lectura por partes, paso 71) |
+|---|---|---|
+| A (SOL): tokens entrada / salida, turnos, tiempo | 87.483 / 9.988, 2 turnos, 79 s | 130.916 / 12.410, 5 turnos, 101 s |
+| B (LUNA) | 85.851 / 15.873, 2 turnos, 116 s | 101.559 / 11.468, 5 + 4 turnos (una reparación por `LECTURA`), 94 s |
+| Árbitro (SOL) | 99.056 / 7.705, 2 turnos, 52 s | 175.457 / 26.447, 8 + 7 turnos (una reparación por ids inventados), 156 s |
+| Total de la ronda | 272.390 / 33.566 tokens, unos 2 min 50 s | 407.932 / 50.325 tokens (+50 %), unos 4 min 20 s |
+| Lectura | — | A, todo a la primera; B, todo menos la última línea (repara); árbitro, las dos propuestas enteras y la mitad de la documentación como consulta |
+| Compactaciones | — | Ninguna |
+| Preguntas (de ambas · solo 1 · solo 2) | 28 (12 · 15 · 1) | 23 (4 · 15 · 4) |
+
+Lo que muestra:
+
+- **La lectura por partes funciona.** Los modelos siguen los tramos del prompt con `offset` y `limit`, y la comprobación de lectura detecta lo que se queda sin leer.
+- **Con un documento que cabe, solo cuesta.** Cada tramo es un turno más, y en cada turno se reenvía el contexto acumulado: A gasta un 50 % más de entrada que en la v0 sin leer nada distinto. La ventaja (que no haya tope) solo aparece por encima de unos 80.000–100.000 tokens, y este documento no llega.
+- **LUNA cuenta las líneas desde 0.** Pide `offset` 0, 242 y 445 donde el prompt decía los tramos 1–242, 243–445 y 446–613, así que nunca lee la última línea y hace falta una reparación (barata: 17.485 tokens). Lo provoca dar los tramos como rangos de líneas: el modelo los traduce a `offset` a su manera.
+- **El árbitro confundió las propuestas en el primer intento.** Citó en `de` ids que no existían en la propuesta 2 (28 errores `ARB-DE` y `ARB-FALTA`); la reparación lo corrigió. En la v0 no pasó. Con una sola ronda no se puede saber si lo causa leer las propuestas desde dos ficheros, con los resultados de `Read` intercalados, o si es variación del modelo.
+- **Las preguntas cambian entre versiones,** como cambian entre dos ejecuciones de la misma versión. La diferencia (28 frente a 23) no se puede atribuir a la lectura por partes con una sola ronda.
 
 ### Qué hay que mejorar
 
@@ -357,6 +377,12 @@ Se sabe de antemano:
 - Leer por partes no hace infinita la ventana. Por encima de unos 100.000 tokens habrá compactaciones, y con cada una puede perderse detalle (cifras, ids de fragmentos) de lo leído antes.
 - Cada tramo es un turno, y en cada turno se reenvía el contexto acumulado, aunque casi todo va en caché. El consumo de tokens crece con el tamaño del documento más deprisa que en la v0.
 - Para corpus muy grandes la salida no es leer más, sino dividir el trabajo: por documento o por funcionalidad, como proponía la v2.
+
+Tras la primera comparación (09-10-2026):
+
+- **Dar los tramos como `offset` y `limit` exactos** («`offset` 1, `limit` 242; `offset` 243, `limit` 203…») en lugar de rangos de líneas, para que ningún modelo los traduzca a su manera. Evitaría la reparación de LUNA.
+- **Separar mejor las dos propuestas para el árbitro,** por ejemplo pidiéndole que lea una entera antes de la otra. Hay que comprobarlo con más rondas.
+- **Elegir por tamaño.** Meter el documento en el prompt cuando cabe holgadamente y leer por partes solo cuando no cabe. Ahorraría el 50 % en los documentos pequeños, pero vuelve a tener dos caminos, que el autor descartó (punto 11). Queda anotado para decidirlo con más medidas.
 
 ## v0 (08-10-2026)
 
