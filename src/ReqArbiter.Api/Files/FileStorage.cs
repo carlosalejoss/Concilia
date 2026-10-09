@@ -13,6 +13,10 @@ public class FileStorage(IConfiguration configuration, IHostEnvironment environm
     public string ProjectFolder(int projectId) =>
         Path.Combine(RootPath, "projects", projectId.ToString());
 
+    // The current mockup of a project: {RootPath}/projects/{projectId}/mockup/mockup.html.
+    public string MockupFile(int projectId) =>
+        Path.Combine(ProjectFolder(projectId), "mockup", "mockup.html");
+
     // Folder of a job (A/B over the same input): {RootPath}/jobs/{jobId}/, with its plan.
     public string JobFolder(Guid jobId) =>
         Path.Combine(RootPath, "jobs", jobId.ToString());

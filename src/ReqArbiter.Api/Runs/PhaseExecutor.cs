@@ -55,15 +55,20 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // repeated); an invalid one makes it Failed and asks for the repair. Runs
     // where the model did not get to answer (API error, timeout, blocked) are
     // not repaired: asking again would not change it.
-    internal static AttemptReview Review(PhaseDefinition phase, RunAttempt attempt, PhaseContext context, string originalPrompt, int attemptsSoFar)
+    internal static AttemptReview Review(PhaseDefinition phase, RunAttempt attempt, PhaseContext context, string originalPrompt, int attemptsSoFar) =>
+        Review(attempt, phase.OutputFile, output => PhaseTask.Review(phase, output, context, originalPrompt, attemptsSoFar));
+
+    // The same for any output file and its checks (also the mockup's):
+    // review gets the output (null if the model did not write it).
+    internal static AttemptReview Review(RunAttempt attempt, string outputFile, Func<string?, PhaseReview> reviewOutput)
     {
         var result = attempt.Result;
         if (!CatalogReview.ModelAnswered(result))
             return new AttemptReview(result, null);
 
-        var path = Path.Combine(attempt.Request.WorkDirectory, phase.OutputFile);
+        var path = Path.Combine(attempt.Request.WorkDirectory, outputFile);
         var output = File.Exists(path) ? File.ReadAllText(path) : null;
-        var review = PhaseTask.Review(phase, output, context, originalPrompt, attemptsSoFar);
+        var review = reviewOutput(output);
         if (review.Valid)
         {
             var notes = new List<string>();

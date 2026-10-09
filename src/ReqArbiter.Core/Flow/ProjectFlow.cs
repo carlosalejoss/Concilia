@@ -41,6 +41,7 @@ public enum FlowChange
     BacklogGenerated,
     BacklogReopened,
     BacklogValidated,
+    MockupGenerated,    // outdates nothing: it is the last step
 }
 
 // The rules of the v0 flow (docs/plan-de-construccion.md, "Estado de cada

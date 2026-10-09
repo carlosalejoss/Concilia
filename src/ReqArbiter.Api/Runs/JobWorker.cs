@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
 using ReqArbiter.Core.Catalog;
+using ReqArbiter.Core.Mockup;
 using ReqArbiter.Core.Phases;
 using ReqArbiter.Core.Runner;
 using ReqArbiter.Core.Runs;
@@ -60,6 +61,17 @@ public class JobWorker(
             .Where(r => r.JobId == jobId && r.State == RunState.Queued)
             .OrderBy(r => r.Slot).ThenBy(r => r.LotNumber)
             .ToListAsync(cancellationToken);
+
+        // The mockup: one run, and the .html copied to the project.
+        if (job.Kind == Deliverables.MockupEndpoints.JobKind)
+        {
+            var mockupPlan = MockupPlan.Load(storage.JobFolder(jobId));
+            var outcome = await jobRunner.RunMockupAsync(runs.Single(), mockupPlan, MarkRunningAsync, SaveOutcomeAsync, cancellationToken);
+            await Deliverables.MockupEndpoints.StoreResultAsync(db, storage, job, mockupPlan, outcome);
+            job.FinishedAt = DateTimeOffset.UtcNow;
+            await db.SaveChangesAsync(CancellationToken.None);
+            return;
+        }
 
         // A v0 phase: A ‖ B → arbiter, and the result of the job in its folder.
         if (PhasePlan.KindOfJob(job.Kind) is not null)

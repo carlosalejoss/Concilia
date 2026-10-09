@@ -49,7 +49,7 @@ Los esquemas solo describen la estructura. Las reglas entre campos están en `va
 | `REF-PREG`, `ID-DUP`, `FALTA` | Una sugerencia por cada pregunta pendiente, sin repetir ni sugerir para otras | sugerencias |
 | `SIN-ORIGEN`, `REF-FRAG` | Una sugerencia `documentacion` cita al menos un fragmento, y todos existen | sugerencias |
 
-Mockup (paso 60): el fichero existe, ocupa como mucho 1 MB, empieza por `<!doctype html>`, tiene `const DATOS`, no carga recursos externos (`src`, `href` o `url(` con `http://`, `https://` o `//`) y cada historia del backlog validado tiene su `data-hu`.
+Mockup (paso 60, `MockupTask.Validate` en C#, sin referencia en Python): el fichero existe (`FICHERO`), ocupa como mucho 1 MB (`TAMANO`), empieza por `<!doctype html>` (`DOCTYPE`), tiene `const DATOS` (`DATOS`), no carga recursos externos (`EXTERNO`: `src`, `href`, `url(` o `@import` con `http://`, `https://` o `//`) y cada historia del backlog validado tiene su `data-hu` (`HU`). Una vista de una historia que no está en el backlog es un aviso (`HU-EXTRA`). En la reparación, el `.html` anterior solo se devuelve al modelo si ocupa menos de 200.000 caracteres.
 
 `python validar_v0.py` valida los ejemplos. Necesita `jsonschema` 4 o superior (draft 2020-12).
 

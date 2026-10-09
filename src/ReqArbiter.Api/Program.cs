@@ -29,6 +29,7 @@ builder.Services.AddSingleton<JobQueue>();
 builder.Services.AddSingleton<RunEventStore>();
 builder.Services.AddSingleton<RunExecutor>();
 builder.Services.AddSingleton<PhaseExecutor>();
+builder.Services.AddSingleton<MockupExecutor>();
 builder.Services.AddSingleton<JobRunner>();
 builder.Services.AddHostedService<JobWorker>();
 
@@ -55,6 +56,7 @@ app.MapJobEndpoints();
 app.MapFlowEndpoints();
 app.MapQuestionEndpoints();
 app.MapDeliverableEndpoints();
+app.MapMockupEndpoints();
 
 app.Run();
 

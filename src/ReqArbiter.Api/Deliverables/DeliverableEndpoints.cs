@@ -38,6 +38,10 @@ public static class DeliverableEndpoints
             {
                 return Results.NotFound();
             }
+            if (d.Kind == DeliverableKind.Mockup)
+            {
+                return Problem(MockupIsNotEdited);
+            }
             string content;
             try
             {
@@ -65,6 +69,10 @@ public static class DeliverableEndpoints
             {
                 return Results.NotFound();
             }
+            if (d.Kind == DeliverableKind.Mockup)
+            {
+                return Problem(MockupIsNotEdited);
+            }
             var change = DeliverableRules.Validate(d, await CheckAsync(db, storage, d), DateTimeOffset.UtcNow);
             if (!change.Done)
             {
@@ -83,6 +91,10 @@ public static class DeliverableEndpoints
             if (d is null)
             {
                 return Results.NotFound();
+            }
+            if (d.Kind == DeliverableKind.Mockup)
+            {
+                return Problem(MockupIsNotEdited);
             }
             var change = DeliverableRules.Reopen(d, DateTimeOffset.UtcNow);
             if (!change.Done)
@@ -157,12 +169,17 @@ public static class DeliverableEndpoints
         _ => throw NotYet(kind),
     };
 
-    // The mockup is not edited here: it arrives in milestone 12, with its own checks.
-    private static NotSupportedException NotYet(DeliverableKind kind) => new($"{kind}: todavía no.");
+    // The mockup is a view of the analysis: it is not edited or validated, it
+    // is generated again (MockupEndpoints).
+    private const string MockupIsNotEdited = "El mockup no se edita ni se valida: se genera de nuevo desde el backlog validado.";
+
+    private static NotSupportedException NotYet(DeliverableKind kind) => new($"{kind}: no tiene comprobaciones de borrador.");
 
     private static async Task<DeliverableView> ViewAsync(AppDbContext db, FileStorage storage, Deliverable d)
     {
-        var check = d.Status == DeliverableStatus.Draft ? await CheckAsync(db, storage, d) : new PhaseValidation([], []);
+        var check = d.Status == DeliverableStatus.Draft && d.Kind != DeliverableKind.Mockup
+            ? await CheckAsync(db, storage, d)
+            : new PhaseValidation([], []);
         return new DeliverableView(d.Id, d.Kind, d.Status, d.Outdated, d.JobId, JsonNode.Parse(d.Content)!,
             check.Errors, check.Warnings, d.CreatedAt, d.UpdatedAt, d.ValidatedAt);
     }

@@ -1,11 +1,13 @@
 using ReqArbiter.Core.Catalog;
+using ReqArbiter.Core.Mockup;
 using ReqArbiter.Core.Phases;
 
 namespace ReqArbiter.Core.Runner;
 
 // A provider that calls no model: it emits a few fixed events, writes the
 // expected output files and answers "hecho". A run of a v0 phase (input/fase.json)
-// gets a valid output of its phase from FakePhaseOutput; a catalog v1.3
+// gets a valid output of its phase from FakePhaseOutput, a mockup run a plain
+// .html with a view per story from FakeMockup; a catalog v1.3
 // (output/catalogo.json, with the lot's fragments in input/) gets a real one
 // from FakeCatalog; any other file, placeholder content. With simulateRepair,
 // the first attempt of each run writes an invalid output, so the repair retry
@@ -62,6 +64,11 @@ public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = fa
 
     private string Content(RunRequest request, string relativePath)
     {
+        if (relativePath == MockupTask.OutputFile)
+        {
+            var first = !request.Prompt.Contains(FakePhaseOutput.RepairMarker, StringComparison.Ordinal);
+            return FakeMockup.For(request.WorkDirectory, broken: simulateRepair && first);
+        }
         if (FakePhaseOutput.IsPhaseRun(request.WorkDirectory))
         {
             var first = !request.Prompt.Contains(FakePhaseOutput.RepairMarker, StringComparison.Ordinal);

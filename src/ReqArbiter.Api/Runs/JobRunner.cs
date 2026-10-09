@@ -1,4 +1,5 @@
 using ReqArbiter.Core.Catalog;
+using ReqArbiter.Core.Mockup;
 using ReqArbiter.Core.Phases;
 using ReqArbiter.Core.Runner;
 using ReqArbiter.Core.Runs;
@@ -31,8 +32,20 @@ public record RunOutcome(
 // of the plan. If only one ends well, the arbiter is not called and that output
 // is the result, "sin verificación cruzada"; if neither does, the job fails
 // (decisions of the v0 iteration, docs/plan-de-construccion.md).
-public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecutor? phaseExecutor = null)
+public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecutor? phaseExecutor = null, MockupExecutor? mockupExecutor = null)
 {
+    // A mockup job: its single run (MOCK), with one repair.
+    public async Task<RunOutcome> RunMockupAsync(
+        Run run,
+        MockupPlan plan,
+        Func<Run, Task> onRunStarting,
+        Func<RunOutcome, Task> onRunFinished,
+        CancellationToken cancellationToken)
+    {
+        var mockups = mockupExecutor ?? throw new InvalidOperationException("JobRunner without MockupExecutor");
+        return await RunOneAsync(run, () => mockups.ExecuteAsync(run, plan, cancellationToken), onRunStarting, onRunFinished, cancellationToken);
+    }
+
     public async Task RunAsync(
         IReadOnlyList<Run> runs,
         JobContext context,
