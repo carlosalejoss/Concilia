@@ -141,6 +141,31 @@ export type CatalogRequirement = {
 
 export type CatalogContent = { requisitos: CatalogRequirement[] }
 
+// The backlog v0 working copy (prompts/v0/esquemas/backlog.schema.json): Épica →
+// Historia → Criterios (Gherkin) and Tareas. Each story also has the fields of
+// the platform, as the requirements of the catalog.
+export type Criterion = { id: string; escenario: string; dado: string; cuando: string; entonces: string }
+export type Task = { id: string; titulo: string }
+
+export type Story = {
+  id: string
+  titulo: string
+  como: string
+  quiero: string
+  para: string
+  requisitos: string[]
+  criterios: Criterion[]
+  tareas: Task[]
+  origen?: string
+  discrepancia?: boolean
+  explicacion?: string
+  revisada?: boolean
+}
+
+export type Epic = { id: string; titulo: string; descripcion: string; historias: Story[] }
+
+export type BacklogContent = { epicas: Epic[] }
+
 // Every message of an ASP.NET Core "problem details" response (validation can
 // give many), or the HTTP status.
 export async function errorMessages(response: Response): Promise<string[]> {

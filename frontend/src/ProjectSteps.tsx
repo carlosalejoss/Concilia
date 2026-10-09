@@ -3,6 +3,7 @@ import { errorMessage, type FlowStep, type FlowView, type Project, type StepStat
 import ProjectFiles from './ProjectFiles.tsx'
 import QuestionsPanel from './QuestionsPanel.tsx'
 import CatalogEditor from './CatalogEditor.tsx'
+import BacklogEditor from './BacklogEditor.tsx'
 
 const STEP_NAMES: Record<FlowStep, string> = {
   Documents: 'Documentos',
@@ -42,7 +43,7 @@ function stateName(step: StepStatus): string {
 const LAUNCH: Partial<Record<FlowStep, { label: string; url: (projectId: number) => string | null; notYet?: string }>> = {
   Questions: { label: 'Lanzar una ronda de preguntas', url: (id) => `/projects/${id}/question-rounds` },
   Catalog: { label: 'Generar el catálogo', url: (id) => `/projects/${id}/catalog-jobs` },
-  Backlog: { label: 'Generar el backlog', url: () => null, notYet: 'Llega en el hito 11.' },
+  Backlog: { label: 'Generar el backlog', url: (id) => `/projects/${id}/backlog-jobs` },
   Mockup: { label: 'Generar el mockup', url: () => null, notYet: 'Llega en el hito 12.' },
 }
 
@@ -108,6 +109,7 @@ function ProjectSteps({ project, onShowJob }: { project: Project; onShowJob: (jo
     Documents: <ProjectFiles project={project} onChange={reload} />,
     Questions: <QuestionsPanel project={project} version={version} onChange={reload} onShowJob={onShowJob} />,
     Catalog: <CatalogEditor project={project} version={version} onChange={reload} />,
+    Backlog: <BacklogEditor project={project} version={version} onChange={reload} />,
   }
 
   return (
