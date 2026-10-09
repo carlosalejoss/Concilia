@@ -20,11 +20,16 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
         onEvent(new RunEvent(RunEventKind.Started, $"Ejecución {request.RunId} con {request.ModelId}"));
 
         // Refuse before launching anything if the input is too big. The input is
-        // the prompt plus the files in input/, which the model reads with Read.
+        // the prompt plus, if the model has the Read tool, the files in input/.
+        // Without Read (the v0 phases and the mockup: their prompt carries the
+        // whole input) the files in input/ are copies for the platform (the
+        // validator, FakeProvider) that the model cannot open, so they do not
+        // count: counting them refused a real round whose prompt fitted.
         // File sizes in bytes stand in for characters: for UTF-8 text that
         // slightly overestimates, which is the safe side.
         var inputFolder = Path.Combine(request.WorkDirectory, "input");
-        var inputFilesSize = Directory.Exists(inputFolder)
+        var modelReadsFiles = request.AllowedTools.Contains("Read");
+        var inputFilesSize = modelReadsFiles && Directory.Exists(inputFolder)
             ? Directory.EnumerateFiles(inputFolder, "*", SearchOption.AllDirectories).Sum(f => new FileInfo(f).Length)
             : 0;
         var budgetError = InputBudget.Check(request.Prompt.Length + inputFilesSize, request.InputTokenBudget);
