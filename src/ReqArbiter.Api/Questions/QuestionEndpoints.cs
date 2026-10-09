@@ -3,6 +3,7 @@ using ReqArbiter.Api.Files;
 using ReqArbiter.Api.Persistence;
 using ReqArbiter.Api.Projects;
 using ReqArbiter.Api.Runs;
+using ReqArbiter.Core.Deliverables;
 using ReqArbiter.Core.Flow;
 using ReqArbiter.Core.Phases;
 using ReqArbiter.Core.Questions;
@@ -77,6 +78,41 @@ public static class QuestionEndpoints
             };
             var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
             var created = PhaseJobs.Create(project, documents, PhaseKind.Catalog, input, answered.Select(q => q.Code).ToList(), options, provider.Name, Random.Shared);
+            return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
+        });
+
+        // The backlog v0: A ‖ B → arbiter from the validated catalog (only the
+        // fields of its schema) and the answered questions. Only when the
+        // catalog is validated.
+        app.MapPost("/projects/{projectId:int}/backlog-jobs",
+            async (int projectId, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+        {
+            var project = await db.Projects.FindAsync(projectId);
+            if (project is null)
+            {
+                return Results.NotFound();
+            }
+
+            var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Backlog);
+            if (!step.CanLaunch)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [step.Reason!] });
+            }
+
+            var catalog = await Deliverables.DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Catalog);
+            var answered = await db.Questions
+                .Where(q => q.ProjectId == projectId && q.Status == QuestionStatus.Answered)
+                .OrderBy(q => q.Code)
+                .ToListAsync();
+            var input = new PhaseInput
+            {
+                SystemName = project.SystemName,
+                Language = project.Language,
+                Answers = PhasePrompt.AnswersBlock(answered.Select(QuestionRules.ForPrompt)),
+                Catalog = CatalogDraft.ForNextPhase(catalog!.Content),
+            };
+            var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
+            var created = PhaseJobs.Create(project, documents, PhaseKind.Backlog, input, answered.Select(q => q.Code).ToList(), options, provider.Name, Random.Shared);
             return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
         });
 
