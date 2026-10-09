@@ -14,7 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0 | 08-10-2026 | Prompt muy básico para tener el flujo completo (iteración v0): documento entero sin lotes, respuestas del cliente como entrada, frase EARS/MASTeR escrita por el modelo y árbitro que une A y B | Pendiente (paso 53) | Pendiente |
+| v0 | 08-10-2026 | Prompt muy básico para tener el flujo completo (iteración v0): documento entero sin lotes, respuestas del cliente como entrada, frase EARS/MASTeR escrita por el modelo y árbitro que une A y B | Sí (ReservaSalas, 09-10-2026) | Flujo completo en unos 5 minutos de modelo, todo válido a la primera; 25 requisitos (13 en la v1.2), porque las 11 respuestas eran suposiciones de la IA aceptadas sin cambios y añadieron funcionalidad que el documento no tiene |
 
 ## Cómo se mide
 
@@ -351,7 +351,39 @@ No sigue a la v2: es un prompt aparte, mucho más simple, para la iteración v0 
 
 ### Resultados
 
-Pendientes: se medirá en el paso 53 con ReservaSalas y en el paso 65 con un segundo documento público. El ejemplo de `prompts/v0/ejemplo/` valida sin errores.
+El ejemplo de `prompts/v0/ejemplo/` valida sin errores. Queda la medida del paso 65, con un segundo documento público.
+
+**Primera ejecución completa (09-10-2026).** Documento: `DOC-01.txt` de ReservaSalas (14 fragmentos). A = SOL, B = LUNA, árbitro = SOL; sugerencias de respuesta = SOL. Una sola ronda de preguntas. Cifras del registro de cada run en la plataforma:
+
+| Fase | Run | Tokens entrada / salida | Duración |
+|---|---|---|---|
+| Preguntas | A (SOL) | 6.971 / 3.691 | 31 s |
+| | B (LUNA) | 6.808 / 6.348 | 45 s |
+| | Árbitro (SOL) | 11.776 / 2.572 | 23 s |
+| Sugerencias de respuesta | SOL | 9.128 / 4.089 | 30 s |
+| Catálogo | A (SOL) | 12.781 / 9.371 | 58 s |
+| | B (LUNA) | 12.603 / 10.959 | 69 s |
+| | Árbitro (SOL) | 24.284 / 6.574 | 36 s |
+| Backlog | A (SOL) | 19.207 / 10.068 | 66 s |
+| | B (LUNA) | 18.229 / 8.898 | 53 s |
+| | Árbitro (SOL) | 40.903 / 9.698 | 51 s |
+| **Total** | 10 runs | **162.690 / 72.268** | **unos 5 min y 20 s de modelo** |
+
+- **Fiabilidad:** los 10 runs terminan `Done` al primer intento, en 2 turnos, sin reparaciones ni avisos del validador.
+- **Preguntas:** 11, todas pendientes de una cifra o de una decisión que el documento no da. 10 vienen de las dos propuestas y 1 solo de A; el árbitro no descarta ninguna.
+- **Respuestas:** las 11 son sugerencias de la IA (todas `suposicion`) aceptadas sin cambios (origen `ia`).
+- **Catálogo:** 25 requisitos (21 `RF`, 2 `RNF`, 1 `RI` y 1 `RT`). Los 25 salen de las dos propuestas, sin discrepancias ni descartes. 24 se apoyan en alguna respuesta y 5 no citan ningún fragmento (`RF-003`, `RF-014`, `RF-015`, `RF-017`, `RF-020`). Se validó 78 s después de generarse y sin cambios.
+- **Backlog:** 6 épicas, 16 historias, 34 criterios y 41 tareas. Las 16 historias salen de las dos propuestas, sin discrepancias ni descartes. Cubren los 22 requisitos funcionales (`RF` y `RI`), y los `RNF` aparecen como criterios de las historias afectadas. Se validó 2 s después de generarse y sin cambios.
+
+**Lo que muestra.** Hito 5 con la v1.2 y el mismo documento: 13 requisitos. Aquí, 25. Lo que falta en el documento lo rellenaron las suposiciones de la IA, y al aceptarlas sin revisar se convirtieron en requisitos con la misma fuerza que los del cliente:
+
+- **Funcionalidad nueva.** `RF-003` (consultar la disponibilidad) sale de la sugerencia de P-008, que hablaba del tiempo de respuesta de esa consulta; el documento no la menciona. Con P-011, una nota de proyecto («el administrador revisará cada mes las reservas que no se hayan utilizado», F014) se convirtió en un registro de llegada (`RF-020`) y un informe mensual (`RF-021`).
+- **Cifras inventadas.** Los 2 s, los 3 s y los 100 usuarios simultáneos de `RNF-001` y `RNF-002`.
+- **Alcance ampliado.** La exportación CSV, «deseable» en la fuente (F011), pasa a `shall`, porque la sugerencia de P-009 propuso incluirla en esta versión.
+
+La trazabilidad sí funciona: cada requisito cita las preguntas en que se apoya y cada respuesta guarda su origen `ia`. Pero ni el catálogo ni el editor lo hacen visible.
+
+Esta ejecución no mide la revisión humana (nada se editó) ni la repetición de preguntas entre rondas (hubo una sola ronda).
 
 ### Qué hay que mejorar
 
@@ -360,3 +392,13 @@ Se sabe de antemano, porque se ha simplificado a propósito:
 - Sin inventario, la cobertura depende de cada modelo y del árbitro; el validador no puede comprobarla.
 - Sin citas literales ni slots, la fidelidad y la conformidad a las plantillas solo se revisan a mano.
 - Los términos vagos y las cifras inventadas no se detectan automáticamente.
+
+Tras la primera ejecución completa (09-10-2026):
+
+- **Sugerencias de respuesta.** El prompt pide «lo más habitual y prudente», pero la IA propuso funcionalidad nueva (consulta de disponibilidad, registro de llegada) y amplió el alcance (CSV en esta versión). Habría que pedirle la respuesta mínima que resuelve la duda, sin funciones que el documento no menciona, y la opción conservadora en las preguntas de alcance.
+- **Origen de las respuestas en el catálogo.** El catálogo trata igual una respuesta del cliente que una suposición de la IA aceptada sin cambios. Opciones: que el editor marque los requisitos que se apoyan en respuestas `ia`, o que el prompt reciba el origen de cada respuesta. Decide el autor.
+- **El árbitro no aportó nada medible en este documento:** 100 % de elementos de las dos propuestas, ninguna discrepancia y ningún descarte. Con un documento tan pequeño y respuestas tan concretas, A y B convergen. Hay que comprobarlo con el documento del paso 65.
+- **Detalles de forma:**
+  - el nombre del sistema se repite en cada requisito tal como está en el proyecto («el sistema ReservaSalasHito911.v2»): conviene un nombre de producto;
+  - la compatibilidad con navegadores sale como `RT`, aunque es más bien un `RNF` de portabilidad;
+  - algunos criterios técnicos son tautológicos (CA-028: «el sistema se sincroniza… queda sincronizado»).
