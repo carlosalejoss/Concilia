@@ -252,6 +252,22 @@ public class ClaudeCliRunnerTests
         Assert.False(File.Exists(Path.Combine(temp.Path, "fake-received.json")));
     }
 
+    // The v0 phases: the prompt carries the whole input and the model only has
+    // Write, so the copies in input/ (fragmentos.json repeats the documentation)
+    // must not count twice. A real round with a bigger document failed so.
+    [Fact]
+    public async Task Input_files_do_not_count_when_the_model_cannot_read_them()
+    {
+        using var temp = new TempDirectory();
+        Directory.CreateDirectory(Path.Combine(temp.Path, "input"));
+        File.WriteAllText(Path.Combine(temp.Path, "input", "grande.txt"), new string('a', 350_000));
+        var request = Request(temp.Path, Directive("tools-sol.jsonl", writeFiles: [Output]), Output) with { AllowedTools = ["Write"] };
+
+        var (result, _) = await Run(request);
+
+        Assert.Equal(RunStatus.Done, result.Status);
+    }
+
     [Fact]
     public async Task Input_files_count_towards_the_budget()
     {
