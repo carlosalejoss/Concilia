@@ -260,7 +260,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
   - `.env.example` con `CLAUDE_CODE_OAUTH_TOKEN`, `MOCKUP_PROVIDER` y `MOCKUP_MODEL`, sin valores;
   - el proveedor se elige por rol en la configuración;
   - tests con FakeClaude: el hijo de la pasarela nunca recibe el token, y el del mockup nunca recibe la clave ni la dirección de la pasarela.
-- [ ] 60. Trabajo `mockup`: un solo run (`MOCK`) a partir del backlog validado, que escribe `output/mockup.html`.
+- [x] 60. Trabajo `mockup`: un solo run (`MOCK`) a partir del backlog validado, que escribe `output/mockup.html` (`POST /projects/{id}/mockup-jobs`; el `.html` vigente se sirve en `GET /projects/{id}/mockup`, con `?download=true` para descargarlo y una cabecera CSP `sandbox` que le impide usar la red o la aplicación aunque se abra fuera del iframe). El mockup no se edita ni se valida: se genera de nuevo.
   - Validación: el archivo existe, no supera el tamaño máximo, no tiene recursos externos (`src` o `href` con `http`) y todas las historias tienen su `data-hu`. Una reparación.
   - El Fake escribe una plantilla con las historias del backlog.
   - Se copia en `data/projects/{id}/mockup/`. Tests.

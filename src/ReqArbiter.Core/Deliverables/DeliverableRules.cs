@@ -35,7 +35,12 @@ public static class DeliverableRules
         d.Outdated = false;
         d.ValidatedAt = null;
         d.UpdatedAt = current is null ? null : now;
-        return (d, kind == DeliverableKind.Catalog ? FlowChange.CatalogGenerated : FlowChange.BacklogGenerated);
+        return (d, kind switch
+        {
+            DeliverableKind.Catalog => FlowChange.CatalogGenerated,
+            DeliverableKind.Backlog => FlowChange.BacklogGenerated,
+            _ => FlowChange.MockupGenerated,
+        });
     }
 
     // The user's changes replace the content. A validated one is read-only.
