@@ -5,8 +5,14 @@ using static ReqArbiter.Tests.Runner.FakeClaudeLauncher;
 
 namespace ReqArbiter.Tests.Runner;
 
+// The timing tests measure real seconds: they run alone, not in parallel
+// with the rest of the suite, so the load of other tests cannot delay them.
+[CollectionDefinition(nameof(TimingTests), DisableParallelization = true)]
+public class TimingTests;
+
 // Launches the real FakeClaude executable: tests the process handling
 // (arguments, environment, stdin, stdout, stderr, timeouts) without Claude Code.
+[Collection(nameof(TimingTests))]
 public class ClaudeProcessTests
 {
     private static RunRequest Request(string workDirectory) => new()
@@ -137,14 +143,17 @@ public class ClaudeProcessTests
         var folders = RunFolders.Create(temp.Path);
         var lines = new List<string>();
 
-        // One line every 300 ms (9 lines, ~2.7 s): the 1 s heartbeat never
-        // expires, but the 1.2 s total time does.
+        // One line every 500 ms (9 lines, 8 waits: ~4 s): the 3 s heartbeat
+        // never expires, but the 3.5 s total time does, always before the
+        // ninth line. The heartbeat leaves room for the start of FakeClaude,
+        // which under load (all tests in parallel) took more than 1 s and made
+        // the old timings (1 s and 1.2 s) fail now and then.
         var outcome = await Run(
             Launch(
                 folders,
-                Directive(fixture: "tools-luna.jsonl", lineDelayMs: 300),
-                heartbeat: TimeSpan.FromSeconds(1),
-                total: TimeSpan.FromMilliseconds(1200)),
+                Directive(fixture: "tools-luna.jsonl", lineDelayMs: 500),
+                heartbeat: TimeSpan.FromSeconds(3),
+                total: TimeSpan.FromMilliseconds(3500)),
             lines);
 
         Assert.Equal(ProcessEnd.TimedOut, outcome.End);
