@@ -24,4 +24,16 @@ public class FileStorage(IConfiguration configuration, IHostEnvironment environm
     // Work folder of a model run: {RootPath}/runs/{runId}/ (see RunFolders).
     public string RunFolder(Guid runId) =>
         Path.Combine(RootPath, "runs", runId.ToString());
+
+    // Deletes everything a project left on disk: its folder (files, extracted
+    // texts and mockup) and the folders of its jobs and runs. A folder that
+    // is not there is skipped.
+    public void DeleteProjectData(int projectId, IEnumerable<Guid> jobIds, IEnumerable<Guid> runIds)
+    {
+        var folders = new[] { ProjectFolder(projectId) }
+            .Concat(jobIds.Select(JobFolder))
+            .Concat(runIds.Select(RunFolder));
+        foreach (var folder in folders.Where(Directory.Exists))
+            Directory.Delete(folder, recursive: true);
+    }
 }
