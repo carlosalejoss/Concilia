@@ -115,9 +115,10 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved }: ProjectW
   const header = (
     <header className="flex flex-wrap items-center gap-3">
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-xl font-semibold tracking-tight">{project.name}</h1>
-        <p className="truncate text-sm text-muted">
-          {project.systemName} · {project.language === 'es' ? 'Español' : 'Inglés'}
+        <h1 className="truncate text-2xl font-semibold tracking-tight">{project.name}</h1>
+        <p className="mt-0.5 flex items-center gap-2 text-sm text-muted">
+          <span className="truncate">{project.systemName}</span>
+          <Badge>{project.language === 'es' ? 'Español' : 'Inglés'}</Badge>
         </p>
       </div>
       {running.length > 0 && (
@@ -166,15 +167,15 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved }: ProjectW
       <>
         <StepBar steps={flow.steps} current={stepId} onSelect={(s) => navigate({ kind: 'step', projectId: project.id, step: s })} />
 
-        <section className="space-y-4 rounded-xl border border-line bg-surface p-5 shadow-sm">
-          <div className="flex flex-wrap items-start gap-3">
+        <section className="space-y-4">
+          <div className="flex flex-wrap items-start gap-3 border-b border-line pb-4">
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-lg font-semibold">{STEP_NAMES[stepId]}</h2>
+                <h2 className="text-xl font-semibold">{STEP_NAMES[stepId]}</h2>
                 <Badge tone={STEP_TONE[step.state]}>{stateName(step)}</Badge>
                 {step.detail && <span className="text-sm text-muted">{step.detail}</span>}
               </div>
-              <p className="mt-1 text-sm text-muted">{info.description}</p>
+              <p className="mt-1 max-w-prose text-sm text-muted">{info.description}</p>
             </div>
             {info.launch && (
               <Button
@@ -201,7 +202,7 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved }: ProjectW
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-5 px-6 py-6">
+    <div className="mx-auto max-w-6xl space-y-6 px-8 py-7">
       {header}
       {content}
       <Drawer open={settingsOpen} title="Ajustes del proyecto" onClose={closeSettings}>

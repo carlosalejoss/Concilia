@@ -20,7 +20,7 @@ function Collapsible({ persistKey, title, meta, actions, defaultOpen = false, ch
   const [open, setOpen] = usePersistentState(`reqarbiter.open.${persistKey}`, defaultOpen)
 
   return (
-    <section className="rounded-lg border border-line bg-surface">
+    <section className="rounded border border-line bg-surface">
       <div className="flex items-center gap-2 px-3 py-2">
         <button
           type="button"

@@ -319,6 +319,7 @@ Decidido por el autor el 13-10-2026. La web era una sola página larga en la que
 | Iconos con `lucide-react`. | Autor |
 | Modo claro y oscuro, con colores definidos como variables (`index.css`). | Autor |
 | Un kit de componentes común (`src/ui/`): botón, etiqueta de estado, aviso, sección plegable, panel lateral y estado vacío. Lo que el usuario pliega o despliega se recuerda en el navegador. | Propuesta de Claude, aprobada por el autor |
+| Plan de diseño (skill `frontend-design`): papel gris verdoso y tinta, un solo acento (el verde de validación), azul pizarra para el modelo A y ciruela para el B. IBM Plex Sans en la interfaz y Source Serif 4 para el contenido que escriben los modelos; las fuentes van empaquetadas (`@fontsource`) para que funcione sin conexión. Jerarquía con espacio y líneas finas en lugar de tarjetas, sin etiquetas en mayúsculas. El elemento distintivo es la marca de procedencia (`Provenance`): una barra en dos mitades, A y B, junto a cada pregunta, requisito e historia, partida en rojo si hay discrepancia. | Propuesta de Claude, aprobada por el autor |
 
 - [x] 72. Estructura y kit: barra lateral, cabecera del proyecto (estado de la API, ajustes, trabajo en curso, modo claro u oscuro), barra de pasos con un solo paso visible, URLs y componentes comunes. El contenido de cada paso se reutiliza tal cual.
 - [ ] 73. Documentos y Preguntas: tabla compacta de archivos con zona para arrastrar; rondas en acordeón, filtros, una línea por pregunta que se despliega para responder, y «Sugerir con IA» en la barra de la ronda.

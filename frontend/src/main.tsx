@@ -1,5 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+// The two typefaces of the design, bundled (no CDN: the web works offline).
+import '@fontsource/ibm-plex-sans/400.css'
+import '@fontsource/ibm-plex-sans/500.css'
+import '@fontsource/ibm-plex-sans/600.css'
+import '@fontsource/source-serif-4/400.css'
+import '@fontsource/source-serif-4/600.css'
 import './index.css'
 import App from './App.tsx'
 

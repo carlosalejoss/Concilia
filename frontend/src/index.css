@@ -4,62 +4,75 @@
    the system setting, so the user can choose. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* The colors of the interface as variables (milestone 14). Components use
-   these names (bg-surface, text-muted, border-line…) instead of fixed grays,
-   and .dark redefines them, so both modes come from the same classes. */
+/* The design of the interface (milestone 14, design plan of 13-10-2026):
+   - Grey-green paper and ink, not the usual cream or pure grey.
+   - One accent, the green of validation: validating is what the tool is for.
+   - Model A slate blue and model B plum, used only to mark where each
+     element comes from (Provenance).
+   - IBM Plex Sans for the interface; Source Serif 4 for the content the
+     models write (requirements, questions, stories), read like a spec.
+   Components use these names (bg-surface, text-muted, border-line…) and
+   .dark redefines them, so both modes come from the same classes. */
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
 
-  --color-canvas: #f6f7f9; /* page background */
-  --color-surface: #ffffff; /* cards and panels */
-  --color-sunken: #f0f2f5; /* sidebar, table headers, inputs at rest */
-  --color-line: #e2e5ea; /* borders */
-  --color-fg: #18202e; /* main text */
-  --color-muted: #5b6475; /* secondary text */
-  --color-faint: #8b93a3; /* hints and placeholders */
+  --color-canvas: #f4f6f5; /* paper: page background */
+  --color-surface: #ffffff; /* repeated items, panels */
+  --color-sunken: #e9eeec; /* sidebar, table headers */
+  --color-line: #d8e0dd; /* hairlines and borders */
+  --color-fg: #1c2421; /* ink */
+  --color-muted: #5c6a65; /* graphite: secondary text */
+  --color-faint: #8a9692; /* hints and placeholders */
 
-  --color-accent: #4f46e5; /* the one accent color */
-  --color-accent-hover: #4338ca;
-  --color-accent-fg: #ffffff; /* text on the accent */
-  --color-accent-soft: #eef0ff; /* selected items, soft highlights */
+  --color-accent: #0e6e5c; /* validation green */
+  --color-accent-hover: #0a5a4b;
+  --color-accent-fg: #ffffff;
+  --color-accent-soft: #e2f0ec;
+
+  --color-model-a: #2f5da8; /* slate blue */
+  --color-model-b: #8a4c9c; /* plum */
 
   /* States, always with the same meaning. */
-  --color-ok: #15803d;
-  --color-ok-soft: #e8f6ed;
-  --color-warn: #b45309;
-  --color-warn-soft: #fdf3e2;
-  --color-danger: #b91c1c;
-  --color-danger-soft: #fdecec;
-  --color-info: #1d4ed8;
-  --color-info-soft: #e9effd;
-  --color-stale: #c2410c; /* outdated */
-  --color-stale-soft: #fdeee4;
+  --color-ok: #0e6e5c;
+  --color-ok-soft: #e2f0ec;
+  --color-warn: #9a5b06;
+  --color-warn-soft: #fbf0dc;
+  --color-danger: #b42318;
+  --color-danger-soft: #fbe9e7;
+  --color-info: #2f5da8;
+  --color-info-soft: #e7eef8;
+  --color-stale: #b5470b;
+  --color-stale-soft: #fbeadf;
 }
 
 .dark {
-  --color-canvas: #0e1117;
-  --color-surface: #161a22;
-  --color-sunken: #1b2029;
-  --color-line: #2a303b;
-  --color-fg: #e5e8ee;
-  --color-muted: #a1a9b7;
-  --color-faint: #6f7888;
+  --color-canvas: #121816;
+  --color-surface: #18201d;
+  --color-sunken: #1d2622;
+  --color-line: #2c3833;
+  --color-fg: #e3e9e6;
+  --color-muted: #9daaa4;
+  --color-faint: #6e7c76;
 
-  --color-accent: #818cf8;
-  --color-accent-hover: #a5b4fc;
-  --color-accent-fg: #0e1117;
-  --color-accent-soft: #23234a;
+  --color-accent: #4fc1a6;
+  --color-accent-hover: #7bd5bf;
+  --color-accent-fg: #0b1311;
+  --color-accent-soft: #16302a;
 
-  --color-ok: #4ade80;
-  --color-ok-soft: #14291c;
-  --color-warn: #fbbf24;
-  --color-warn-soft: #2e2410;
-  --color-danger: #f87171;
-  --color-danger-soft: #331617;
-  --color-info: #93c5fd;
-  --color-info-soft: #172338;
-  --color-stale: #fb923c;
-  --color-stale-soft: #33200f;
+  --color-model-a: #7ea2e6;
+  --color-model-b: #c895d6;
+
+  --color-ok: #4fc1a6;
+  --color-ok-soft: #16302a;
+  --color-warn: #f0b75e;
+  --color-warn-soft: #2f2412;
+  --color-danger: #f28b82;
+  --color-danger-soft: #3a1a17;
+  --color-info: #7ea2e6;
+  --color-info-soft: #18243a;
+  --color-stale: #f39a5f;
+  --color-stale-soft: #352013;
 
   color-scheme: dark;
 }
@@ -67,4 +80,14 @@
 body {
   background: var(--color-canvas);
   color: var(--color-fg);
+  font-variant-numeric: tabular-nums; /* ids and counts line up */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

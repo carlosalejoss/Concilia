@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { FolderKanban, Moon, Plus, Sun } from 'lucide-react'
+import { Moon, Plus, Sun } from 'lucide-react'
 import { formatDate, type Project } from './api.ts'
 import Button from './ui/Button.tsx'
 import type { Theme } from './hooks/useTheme.ts'
@@ -40,14 +40,17 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col border-r border-line bg-sunken">
       <div className="flex items-center gap-2 px-4 py-4">
-        <span className="grid size-7 place-items-center rounded-md bg-accent text-accent-fg">
-          <FolderKanban className="size-4" aria-hidden />
-        </span>
+        {/* The mark: two sources (model A and model B) that meet in one validated line. */}
+        <svg viewBox="0 0 24 24" className="size-6" aria-hidden fill="none" strokeWidth="2.5" strokeLinecap="round">
+          <path d="M3 5 C 9 5, 9 12, 13 12" className="stroke-model-a" />
+          <path d="M3 19 C 9 19, 9 12, 13 12" className="stroke-model-b" />
+          <path d="M13 12 H 21" className="stroke-accent" />
+        </svg>
         <span className="font-semibold tracking-tight">ReqArbiter</span>
       </div>
 
       <div className="flex items-center justify-between px-4 pt-2 pb-1">
-        <span className="text-xs font-semibold tracking-wide text-faint uppercase">Proyectos</span>
+        <span className="text-sm font-medium text-muted">Proyectos</span>
         <Button variant="ghost" size="sm" icon={Plus} onClick={() => setCreating(!creating)} aria-label="Nuevo proyecto" title="Nuevo proyecto" />
       </div>
 
@@ -59,7 +62,7 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
             onChange={(e) => setName(e.target.value)}
             placeholder="Nombre del proyecto"
             maxLength={200}
-            className="w-full rounded-md border border-line bg-surface px-2.5 py-1.5 text-sm placeholder:text-faint focus:outline-2 focus:outline-accent"
+            className="w-full rounded border border-line bg-surface px-2.5 py-1.5 text-sm placeholder:text-faint focus:outline-2 focus:outline-accent"
           />
           <div className="flex gap-2">
             <Button type="submit" variant="primary" size="sm" disabled={saving || name.trim() === ''}>
@@ -83,7 +86,7 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
               type="button"
               onClick={() => onSelect(project.id)}
               aria-current={selected ? 'page' : undefined}
-              className={`block w-full rounded-md px-2.5 py-1.5 text-left text-sm transition-colors ${
+              className={`block w-full rounded px-2.5 py-1.5 text-left text-sm transition-colors ${
                 selected ? 'bg-accent-soft font-medium text-accent' : 'text-fg hover:bg-surface'
               }`}
             >

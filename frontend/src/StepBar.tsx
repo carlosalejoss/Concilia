@@ -20,7 +20,7 @@ function isDone(step: StepStatus): boolean {
 // highlighted and any of them can be opened.
 function StepBar({ steps, current, onSelect }: { steps: StepStatus[]; current: FlowStep; onSelect: (step: FlowStep) => void }) {
   return (
-    <ol className="flex items-stretch gap-1 overflow-x-auto rounded-xl border border-line bg-surface p-1.5">
+    <ol className="flex items-stretch overflow-x-auto border-b border-line">
       {steps.map((step, index) => {
         const look = STATE_LOOK[step.state]
         const Icon = isDone(step) ? CheckCircle2 : look.icon
@@ -32,8 +32,8 @@ function StepBar({ steps, current, onSelect }: { steps: StepStatus[]; current: F
               type="button"
               onClick={() => onSelect(step.step)}
               aria-current={selected ? 'step' : undefined}
-              className={`flex h-full w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left transition-colors ${
-                selected ? 'bg-accent-soft' : 'hover:bg-sunken'
+              className={`-mb-px flex h-full w-full items-center gap-2.5 border-b-2 px-3 py-2.5 text-left transition-colors ${
+                selected ? 'border-accent' : 'border-transparent hover:border-line'
               }`}
             >
               <Icon className={`size-5 shrink-0 ${color} ${step.state === 'InProgress' ? 'animate-spin' : ''}`} aria-hidden />
