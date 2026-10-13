@@ -306,6 +306,28 @@ Propuesta del team leader, aprobada por el autor el 09-10-2026. Va antes del hit
 
 **Hecho cuando:** partiendo de un `docker compose up` limpio, un usuario crea un proyecto, sube un documento, hace al menos una ronda de preguntas, valida el catálogo y el backlog y abre el mockup en el navegador, todo desde la web.
 
+## Hito 14: interfaz limpia y organizada
+
+Decidido por el autor el 13-10-2026. La web era una sola página larga en la que todo estaba apilado y abierto: proyectos, configuración, los cinco pasos con todo su contenido y las ejecuciones en otra pestaña. El objetivo es una web limpia en la que cada funcionalidad se vea clara y se pueda organizar, plegar y desplegar.
+
+| Decisión (13-10-2026) | Origen |
+|---|---|
+| Barra lateral con los proyectos; la configuración del proyecto pasa a un panel lateral. | Autor |
+| Un paso cada vez, con una barra de pasos que muestra el estado de todos. | Autor |
+| Las ejecuciones de cada paso se ven dentro del paso («Actividad»); la vista técnica de ejecuciones se mantiene aparte. | Autor |
+| URLs por proyecto y paso (`#/proyectos/27/catalogo`), sin dependencias, para seguir en el mismo sitio al recargar. | Autor |
+| Iconos con `lucide-react`. | Autor |
+| Modo claro y oscuro, con colores definidos como variables (`index.css`). | Autor |
+| Un kit de componentes común (`src/ui/`): botón, etiqueta de estado, aviso, sección plegable, panel lateral y estado vacío. Lo que el usuario pliega o despliega se recuerda en el navegador. | Propuesta de Claude, aprobada por el autor |
+
+- [x] 72. Estructura y kit: barra lateral, cabecera del proyecto (estado de la API, ajustes, trabajo en curso, modo claro u oscuro), barra de pasos con un solo paso visible, URLs y componentes comunes. El contenido de cada paso se reutiliza tal cual.
+- [ ] 73. Documentos y Preguntas: tabla compacta de archivos con zona para arrastrar; rondas en acordeón, filtros, una línea por pregunta que se despliega para responder, y «Sugerir con IA» en la barra de la ronda.
+- [ ] 74. Catálogo: agrupado por tipo en grupos plegables, búsqueda y filtros, filas de solo lectura que se despliegan para editar, y barra fija con Guardar y Validar.
+- [ ] 75. Backlog: árbol plegable épica → historia → criterios y tareas, «Desplegar todo» y «Plegar todo», filtros y tarjeta de cobertura.
+- [ ] 76. Mockup y Actividad: visor a ancho completo con su barra; panel «Actividad de este paso» con sus trabajos y la consola, y la vista técnica de ejecuciones con el mismo estilo.
+
+**Hecho cuando:** con un proyecto real (documento B), cada paso cabe en pantalla plegado, se puede desplegar lo que se necesita, la URL lleva al mismo sitio al recargar y el modo oscuro se ve bien en todos los pasos.
+
 ## Después
 
 Por este orden:

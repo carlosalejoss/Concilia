@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { errorMessage, type Project } from './api.ts'
+import Button from './ui/Button.tsx'
 
 type ProjectSettingsProps = {
   project: Project
@@ -38,11 +39,12 @@ function ProjectSettings({ project, onSaved }: ProjectSettingsProps) {
     }
   }
 
+  const field = 'w-full rounded-md border border-line bg-surface px-3 py-2 text-sm placeholder:text-faint focus:outline-2 focus:outline-accent'
   return (
-    <section className="mt-8">
-      <h2 className="text-xl font-semibold">Configuración del catálogo</h2>
-      <form onSubmit={handleSubmit} className="mt-4 grid gap-3 md:grid-cols-[12rem_1fr]">
-        <label htmlFor="systemName" className="pt-2">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <p className="text-sm text-muted">Lo que reciben los prompts de todas las fases.</p>
+      <div className="space-y-1.5">
+        <label htmlFor="systemName" className="text-sm font-medium">
           Nombre del sistema
         </label>
         <input
@@ -51,41 +53,40 @@ function ProjectSettings({ project, onSaved }: ProjectSettingsProps) {
           onChange={(e) => setSystemName(e.target.value)}
           placeholder='Con artículo: "el sistema ReservaSalas"'
           maxLength={200}
-          className="rounded border border-gray-300 px-3 py-2"
+          className={field}
         />
+        <p className="text-xs text-faint">Es el sujeto de cada requisito, tal cual.</p>
+      </div>
 
-        <label htmlFor="language" className="pt-2">
-          Idioma del catálogo
+      <div className="space-y-1.5">
+        <label htmlFor="language" className="text-sm font-medium">
+          Idioma
         </label>
         <select
           id="language"
           value={language}
           onChange={(e) => setLanguage(e.target.value as Project['language'])}
-          className="w-40 rounded border border-gray-300 px-3 py-2"
+          className={field}
         >
           <option value="es">Español (es)</option>
           <option value="en">Inglés (en)</option>
         </select>
+      </div>
 
-        <label htmlFor="glossary" className="pt-2">
-          Glosario (opcional)
+      <div className="space-y-1.5">
+        <label htmlFor="glossary" className="text-sm font-medium">
+          Glosario <span className="font-normal text-faint">(opcional)</span>
         </label>
-        <textarea
-          id="glossary"
-          value={glossary}
-          onChange={(e) => setGlossary(e.target.value)}
-          rows={3}
-          className="rounded border border-gray-300 px-3 py-2"
-        />
+        <textarea id="glossary" value={glossary} onChange={(e) => setGlossary(e.target.value)} rows={5} className={field} />
+      </div>
 
-        <div className="md:col-start-2">
-          <button type="submit" disabled={saving} className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50">
-            Guardar
-          </button>
-          {message && <span className={`ml-3 ${message.ok ? 'text-green-700' : 'text-red-700'}`}>{message.text}</span>}
-        </div>
-      </form>
-    </section>
+      <div className="flex items-center gap-3">
+        <Button type="submit" variant="primary" disabled={saving}>
+          Guardar
+        </Button>
+        {message && <span className={`text-sm ${message.ok ? 'text-ok' : 'text-danger'}`}>{message.text}</span>}
+      </div>
+    </form>
   )
 }
 
