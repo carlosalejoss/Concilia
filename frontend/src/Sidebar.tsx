@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Moon, PanelLeftClose, PanelLeftOpen, Plus, Search, Sun, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Moon, Plus, Search, Sun, X } from 'lucide-react'
 import { formatDay, searchable, type Project } from './api.ts'
 import Logo from './ui/Logo.tsx'
 import Button from './ui/Button.tsx'
@@ -96,7 +96,7 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
           <Button
             variant="ghost"
             size="sm"
-            icon={PanelLeftClose}
+            icon={ChevronLeft}
             onClick={onToggleCollapsed}
             aria-label="Minimizar la barra lateral"
             title="Minimizar la barra lateral"
@@ -107,7 +107,7 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
 
       {collapsed ? (
         <div className="flex flex-1 flex-col items-center gap-1 pb-3">
-          <Button variant="ghost" size="sm" icon={PanelLeftOpen} onClick={onToggleCollapsed} aria-label="Desplegar la barra lateral" title="Desplegar la barra lateral" />
+          <Button variant="ghost" size="sm" icon={ChevronRight} onClick={onToggleCollapsed} aria-label="Desplegar la barra lateral" title="Desplegar la barra lateral" />
           <Button
             variant="ghost"
             size="sm"
