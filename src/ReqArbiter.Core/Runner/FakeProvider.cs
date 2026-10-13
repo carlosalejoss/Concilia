@@ -78,10 +78,10 @@ public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = fa
 
     private string Content(RunRequest request, string relativePath)
     {
-        if (relativePath == MockupTask.OutputFile)
+        if (relativePath == MockupTask.BaseFile)
         {
             var first = !request.Prompt.Contains(FakePhaseOutput.RepairMarker, StringComparison.Ordinal);
-            return FakeMockup.For(request.WorkDirectory, broken: simulateRepair && first);
+            return FakeMockup.WriteParts(request.WorkDirectory, broken: simulateRepair && first);
         }
         if (FakePhaseOutput.IsPhaseRun(request.WorkDirectory))
         {

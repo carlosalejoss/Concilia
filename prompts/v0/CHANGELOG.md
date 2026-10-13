@@ -1,5 +1,15 @@
 # Cambios de los prompts v0
 
+## v0.4, mockup por partes (2026-10-13)
+
+Aprobado por el autor después de que el mockup de un backlog de 53 historias no cupiera en 64.000 tokens de salida: Sonnet razonaba unos 30.000 tokens y el `.html` entero iba en un solo `Write`.
+
+- `mockup.md` pide el prototipo en varios ficheros, cada uno con su propio `Write`: una base (`output/mockup/base.html`, con el CSS, el menú, `const DATOS`, las funciones comunes y una línea `<!-- VISTAS -->`) y un fichero por épica (`output/mockup/EP-01.html`…) con solo los `<section data-hu>` de sus historias.
+- Marcador nuevo `{{FICHEROS}}`: la lista de los ficheros de las épicas, en orden, con las historias de cada uno.
+- La plataforma junta los ficheros en `output/mockup.html` (`MockupTask.Assemble`) y lo comprueba como antes. Códigos nuevos: `FICHERO` (falta la base o una épica), `BASE` (la base no tiene `<!-- VISTAS -->`) y `FRAGMENTO` (una épica que es un documento entero).
+- En una reparación, los ficheros del intento anterior siguen en `output/mockup/`: el modelo reescribe solo los que tienen errores.
+- Los demás prompts no cambian.
+
 ## v0.3, ids con el número de su propuesta para el árbitro (2026-10-09)
 
 Aprobado por el autor tras tres rondas con documento B en las que el árbitro, en su primer intento, citó en una propuesta ids que eran de la otra.

@@ -67,8 +67,9 @@ public class MockupOptions
     public TimeSpan HeartbeatTimeout { get; set; } = TimeSpan.FromMinutes(30);
     public TimeSpan TotalTimeout { get; set; } = TimeSpan.FromMinutes(45);
 
-    // The backlog is read by parts too.
-    public int MaxTurns { get; set; } = 30;
+    // The backlog is read by parts, and the page is written by parts: the
+    // reads, the base, one Write per epic and the verdict.
+    public int MaxTurns { get; set; } = 40;
 }
 
 public static class RunnerSetup

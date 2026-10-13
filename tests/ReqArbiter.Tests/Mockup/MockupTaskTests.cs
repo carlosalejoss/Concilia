@@ -99,27 +99,85 @@ public class MockupTaskTests
     }
 
     [Fact]
-    public void The_repair_sends_the_errors_and_leaves_out_a_previous_page_too_big()
+    public void The_repair_sends_the_errors_and_keeps_the_parts()
     {
-        var small = MockupTask.Review(Valid().Replace("const DATOS", "let datos"), Plan.StoryIds, "PROMPT", 1);
-        var big = MockupTask.Review("<html>" + new string('x', MockupTask.MaxPreviousOutputChars), Plan.StoryIds, "PROMPT", 1);
+        var review = MockupTask.Review(Valid().Replace("const DATOS", "let datos"), Plan.StoryIds, "PROMPT", 1);
 
-        Assert.StartsWith("PROMPT", small.RepairPrompt);
-        Assert.Contains("let datos", small.RepairPrompt);
-        Assert.Contains("DATOS: falta", small.RepairPrompt);
-        Assert.Contains("No se incluye", big.RepairPrompt);
-        Assert.DoesNotContain(new string('x', 1000), big.RepairPrompt);
+        Assert.StartsWith("PROMPT", review.RepairPrompt);
+        Assert.Contains("DATOS: falta", review.RepairPrompt);
+        Assert.Contains("Tus ficheros siguen en `output/mockup/`", review.RepairPrompt);
+    }
+
+    // Prompts v0.4: the page is written by parts and the platform joins them.
+    private static string WriteBase(string folder, string body = MockupTask.Placeholder)
+    {
+        Directory.CreateDirectory(Path.Combine(folder, MockupTask.PartsFolder));
+        var page = $"<!doctype html><html><head><script>const DATOS = {{}};</script></head><body>{body}</body></html>";
+        File.WriteAllText(Path.Combine(folder, MockupTask.BaseFile), page);
+        return page;
+    }
+
+    private static void WriteEpic(string folder, string epicId, IEnumerable<string> storyIds, string extra = "") =>
+        File.WriteAllText(Path.Combine(folder, MockupTask.EpicFile(epicId)),
+            string.Concat(storyIds.Select(id => $"<section data-hu=\"{id}\"></section>")) + extra);
+
+    [Fact]
+    public void The_parts_are_joined_in_the_order_of_the_backlog()
+    {
+        using var temp = new TempDirectory();
+        WriteBase(temp.Path);
+        var epics = MockupTask.Epics(Backlog);
+        foreach (var (id, stories) in epics.Reverse())
+            WriteEpic(temp.Path, id, stories);
+
+        var errors = MockupTask.Assemble(temp.Path, Plan);
+
+        Assert.Empty(errors);
+        var html = File.ReadAllText(Path.Combine(temp.Path, MockupTask.OutputFile));
+        Assert.True(MockupTask.Validate(html, Plan.StoryIds).Valid);
+        Assert.DoesNotContain(MockupTask.Placeholder, html);
+        Assert.True(html.IndexOf($"<!-- {epics[0].Id} -->") < html.IndexOf($"<!-- {epics[^1].Id} -->"));
+        // The prompt lists the file of each epic with its stories.
+        Assert.Contains($"`{MockupTask.EpicFile(epics[0].Id)}`: {string.Join(", ", epics[0].StoryIds)}", MockupTask.Prompt(Plan));
     }
 
     [Fact]
-    public void The_fake_page_is_valid_and_escapes_the_texts()
+    public void Each_problem_of_the_parts_has_its_code()
+    {
+        using var temp = new TempDirectory();
+        var epics = MockupTask.Epics(Backlog);
+
+        Assert.Equal(["output/mockup/base.html FICHERO: no se ha escrito la base del prototipo."], MockupTask.Assemble(temp.Path, Plan));
+
+        WriteBase(temp.Path, body: "sin la línea");
+        WriteEpic(temp.Path, epics[0].Id, epics[0].StoryIds, extra: "<html><body></body></html>");
+        var errors = MockupTask.Assemble(temp.Path, Plan);
+
+        Assert.Contains(errors, e => e.StartsWith("output/mockup/base.html BASE:"));
+        Assert.Contains(errors, e => e.StartsWith($"{epics[0].Id} FRAGMENTO:"));
+        Assert.Contains($"{epics[^1].Id} FICHERO: falta output/mockup/{epics[^1].Id}.html con las vistas de sus historias.", errors);
+    }
+
+    [Fact]
+    public void Without_a_base_only_the_errors_of_the_parts_are_reported()
+    {
+        var review = MockupTask.Review(null, Plan.StoryIds, "PROMPT", 1, ["output/mockup/base.html FICHERO: no se ha escrito la base del prototipo."]);
+
+        Assert.Equal(["output/mockup/base.html FICHERO: no se ha escrito la base del prototipo."], review.Validation.Errors);
+    }
+
+    [Fact]
+    public void The_fake_parts_join_into_a_valid_page_that_escapes_the_texts()
     {
         using var temp = new TempDirectory();
         var withTags = Backlog.Replace("\"titulo\": \"", "\"titulo\": \"<b>");
-        MockupTask.BuildRequest(MockupPlan.From("s", "es", withTags), Guid.NewGuid(), "m", temp.Path, new MockupRunOptions());
+        var plan = MockupPlan.From("s", "es", withTags);
+        MockupTask.BuildRequest(plan, Guid.NewGuid(), "m", temp.Path, new MockupRunOptions());
 
-        var html = FakeMockup.For(temp.Path, broken: false);
+        File.WriteAllText(Path.Combine(temp.Path, MockupTask.BaseFile), FakeMockup.WriteParts(temp.Path, broken: false));
+        Assert.Empty(MockupTask.Assemble(temp.Path, plan));
 
+        var html = File.ReadAllText(Path.Combine(temp.Path, MockupTask.OutputFile));
         Assert.True(MockupTask.Validate(html, Plan.StoryIds).Valid);
         Assert.Contains("&lt;b&gt;", html);
         Assert.DoesNotContain("<b>", html);
@@ -140,7 +198,8 @@ public class MockupTaskTests
     }
 
     // The job without the database: one run with FakeProvider, which leaves
-    // out the last view in its first attempt, so the repair completes it.
+    // out the file of the last epic in its first attempt, so the repair
+    // writes it (the other parts are carried to the repair's folder).
     [Fact]
     public async Task A_mockup_job_runs_once_and_is_repaired_once()
     {
@@ -161,8 +220,10 @@ public class MockupTaskTests
         Assert.True(outcome.Succeeded);
         var attempts = outcome.Attempts!;
         Assert.Equal([RunStatus.Failed, RunStatus.Done], attempts.Select(a => a.Result.Status));
-        Assert.Contains($"{Plan.StoryIds[^1]} HU:", attempts[0].Result.ErrorMessage);
+        var lastEpic = MockupTask.Epics(Backlog)[^1].Id;
+        Assert.Contains($"{lastEpic} FICHERO: falta", attempts[0].Result.ErrorMessage);
         Assert.Equal("claude-sonnet-5-5", attempts[0].Request.ModelId);
+        Assert.Equal(["input", MockupTask.PartsFolder], attempts[0].Request.CarriedFolders);
         var html = File.ReadAllText(MockupExecutor.OutputPath(attempts[^1]));
         Assert.True(MockupTask.Validate(html, Plan.StoryIds).Valid);
     }

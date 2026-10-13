@@ -20,6 +20,10 @@ public static class EventSummaries
             (result.IsError ? "Error: " : "") + Truncate(result.Content, MaxToolTextLength)),
         // Only "api_retry" is a retry; other system lines (e.g. a tool call
         // denied with "permission_denied") are warnings.
+        // Claude Code reports every few tokens of reasoning (seen with Sonnet
+        // 5.5: hundreds of lines in a mockup run). It is not a warning and it
+        // says nothing the console needs; the line still counts as activity.
+        SystemEvent { Subtype: "thinking_tokens" } => null,
         SystemEvent { Subtype: "api_retry" } retry => new RunEvent(RunEventKind.ApiRetry, $"Reintento de la API: {Truncate(retry.RawJson, MaxToolTextLength)}"),
         SystemEvent { Subtype: ClaudeCliRunner.CompactBoundary } compact => new RunEvent(RunEventKind.Warning,
             $"Claude Code compactó el contexto (resumió lo anterior para seguir; puede perderse detalle): {Truncate(compact.RawJson, MaxToolTextLength)}"),

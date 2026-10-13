@@ -41,16 +41,27 @@ public record MockupRunOptions
     public int MaxOutputTokens { get; init; } = 64_000;
     public TimeSpan HeartbeatTimeout { get; init; } = TimeSpan.FromMinutes(30);
     public TimeSpan TotalTimeout { get; init; } = TimeSpan.FromMinutes(45);
-    public int MaxTurns { get; init; } = 30;
+    public int MaxTurns { get; init; } = 40; // reads, the base, one Write per epic and the verdict
 }
 
 // The task of the mockup (step 60): one model writes a self-contained .html
 // from the validated backlog (prompts/v0/mockup.md). The platform checks it
 // (Validate) and asks for one repair with the list of errors, like the phases.
+//
+// Since prompts v0.4 (13-10-2026) the model writes it by parts: a base
+// (output/mockup/base.html) with a <!-- VISTAS --> line, and one file per
+// epic with the views of its stories. With 53 stories, the whole page in one
+// answer did not fit in 64,000 output tokens. The platform joins the parts
+// (Assemble) into output/mockup.html and checks that file as before.
 public static class MockupTask
 {
     public const string PromptResource = "v0/mockup.md";
-    public const string OutputFile = "output/mockup.html";
+    public const string OutputFile = "output/mockup.html"; // joined by the platform
+    public const string PartsFolder = "output/mockup";
+    public const string BaseFile = "output/mockup/base.html";
+    public const string Placeholder = "<!-- VISTAS -->";
+
+    public static string EpicFile(string epicId) => $"{PartsFolder}/{epicId}.html";
     public const string BacklogFile = "input/backlog.json"; // read by parts by the model (and by FakeProvider)
 
     // The model must read the whole backlog (the platform checks it).
@@ -58,10 +69,6 @@ public static class MockupTask
 
     // The limit the prompt gives (1 MB).
     public const int MaxBytes = 1024 * 1024;
-
-    // In the repair the previous .html goes back to the model only if it is
-    // not too big; otherwise the errors alone must do.
-    public const int MaxPreviousOutputChars = 200_000;
 
     // The backlog goes to input/backlog.json, indented, and the model reads it
     // by parts ({{LECTURA}}), as in the phases.
@@ -72,7 +79,54 @@ public static class MockupTask
         ["NOMBRE_SISTEMA"] = plan.SystemName,
         ["IDIOMA"] = plan.Language,
         ["LECTURA"] = ReadingPlan.Block([BacklogInput(plan)]),
+        ["FICHEROS"] = string.Join("\n", Epics(plan.Backlog).Select(e =>
+            $"   - `{EpicFile(e.Id)}`: {string.Join(", ", e.StoryIds)}")),
     });
+
+    // The epics of a backlog with the ids of their stories, in order.
+    public static IReadOnlyList<(string Id, IReadOnlyList<string> StoryIds)> Epics(string backlog) =>
+        (JsonNode.Parse(backlog)!["epicas"] as JsonArray ?? [])
+            .Select(e => (e!["id"]!.GetValue<string>(),
+                          (IReadOnlyList<string>)(e["historias"] as JsonArray ?? []).Select(h => h!["id"]!.GetValue<string>()).ToList()))
+            .ToList();
+
+    private static readonly Regex DocumentTag = new(@"<\s*(?:!doctype|html|head|body)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    // Joins the parts the model wrote into output/mockup.html: the base with
+    // the files of the epics, in the order of the backlog, in place of
+    // <!-- VISTAS -->. Returns what is wrong with the parts (a missing file,
+    // a base without the line, an epic file that is a whole document); what
+    // can be joined is still joined, so the checks of the page also run.
+    public static IReadOnlyList<string> Assemble(string workDirectory, MockupPlan plan)
+    {
+        var errors = new List<string>();
+        var basePath = Path.Combine(workDirectory, BaseFile);
+        if (!File.Exists(basePath))
+            return [$"{BaseFile} FICHERO: no se ha escrito la base del prototipo."];
+
+        var page = File.ReadAllText(basePath);
+        if (!page.Contains(Placeholder, StringComparison.Ordinal))
+            errors.Add($"{BaseFile} BASE: falta la línea {Placeholder} donde van las vistas de las épicas.");
+
+        var views = new StringBuilder();
+        foreach (var (epicId, _) in Epics(plan.Backlog))
+        {
+            var file = EpicFile(epicId);
+            var path = Path.Combine(workDirectory, file);
+            if (!File.Exists(path))
+            {
+                errors.Add($"{epicId} FICHERO: falta {file} con las vistas de sus historias.");
+                continue;
+            }
+            var part = File.ReadAllText(path);
+            if (DocumentTag.IsMatch(part))
+                errors.Add($"{epicId} FRAGMENTO: {file} solo lleva los <section data-hu> de sus historias (y su <script>), sin <!doctype>, <html>, <head> ni <body>.");
+            views.Append($"<!-- {epicId} -->\n").Append(part.Trim()).Append('\n');
+        }
+
+        File.WriteAllText(Path.Combine(workDirectory, OutputFile), page.Replace(Placeholder, views.ToString()));
+        return errors;
+    }
 
     public static RunRequest BuildRequest(MockupPlan plan, Guid runId, string modelId, string workDirectory, MockupRunOptions options)
     {
@@ -85,7 +139,8 @@ public static class MockupTask
             ModelId = modelId,
             Prompt = Prompt(plan),
             WorkDirectory = workDirectory,
-            ExpectedOutputFiles = [OutputFile],
+            ExpectedOutputFiles = [BaseFile],
+            CarriedFolders = ["input", PartsFolder],
             AllowedTools = ["Read", "Write"],
             MaxTurns = options.MaxTurns,
             HeartbeatTimeout = options.HeartbeatTimeout,
@@ -143,13 +198,16 @@ public static class MockupTask
     public static PhaseReview Review(string? html, IReadOnlyList<string> storyIds, string originalPrompt, int attempt,
         IReadOnlyList<string>? extraErrors = null)
     {
-        var checkedHtml = Validate(html, storyIds);
-        var validation = new PhaseValidation([.. checkedHtml.Errors, .. extraErrors ?? []], checkedHtml.Warnings);
+        // Without a page (no base), the errors of the parts say why; the
+        // "page not written" one would only repeat it.
+        var checkedHtml = html is null && extraErrors is { Count: > 0 } ? new PhaseValidation([], []) : Validate(html, storyIds);
+        // The errors of the parts first: they explain those of the page.
+        var validation = new PhaseValidation([.. extraErrors ?? [], .. checkedHtml.Errors], checkedHtml.Warnings);
         if (validation.Valid)
             return new PhaseReview(validation, null);
-        var previous = html is null ? ""
-            : html.Length <= MaxPreviousOutputChars ? html
-            : $"(No se incluye: ocupa {html.Length:N0} caracteres. Escríbelo de nuevo completo corrigiendo los errores.)";
-        return new PhaseReview(validation, PhasePrompt.Repair(originalPrompt, attempt, OutputFile, previous, validation.Errors));
+        // The parts stay in the folder of the repair (RunRequest.CarriedFolders):
+        // it only has to rewrite those with errors.
+        const string previous = "Tus ficheros siguen en `output/mockup/`. Reescribe solo los que señalan los errores, y léelos con Read si lo necesitas.";
+        return new PhaseReview(validation, PhasePrompt.Repair(originalPrompt, attempt, PartsFolder + "/", previous, validation.Errors));
     }
 }

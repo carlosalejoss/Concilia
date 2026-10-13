@@ -13,7 +13,7 @@ Prompts muy básicos de la iteración v0 (D-65, D-73): sirven para tener el fluj
 | Backlog, A y B | `backlog.md` | `catalogo.json` | `output/backlog.json` | `esquemas/backlog.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `LECTURA` |
 | Backlog, árbitro | `arbitro_backlog.md` | `catalogo.json`, `propuesta_1.json`, `propuesta_2.json` | `output/backlog.json` | `esquemas/arbitro_backlog.schema.json` | los del backlog |
 | Sugerencias de respuesta (un modelo) | `sugerir_respuestas.md` | `documentacion.txt` | `output/sugerencias.json` | `esquemas/sugerencias.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `PREGUNTAS`, `LECTURA` |
-| Mockup (Sonnet 5.5) | `mockup.md` | `backlog.json` | `output/mockup.html` | comprobaciones propias (abajo) | `NOMBRE_SISTEMA`, `IDIOMA`, `LECTURA` |
+| Mockup (Sonnet 5.5) | `mockup.md` | `backlog.json` | `output/mockup/base.html` y un fichero por épica, que la plataforma junta en `output/mockup.html` | comprobaciones propias (abajo) | `NOMBRE_SISTEMA`, `IDIOMA`, `LECTURA`, `FICHEROS` |
 | Reparación, todas | `anexo_reparacion.md` | — | el mismo fichero | — | `INTENTO`, `FICHERO`, `SALIDA_PREVIA`, `ERRORES` |
 
 Todos los prompts terminan con la línea `VEREDICTO:` que ya lee `VerdictParser`, y piden una sola llamada a Write. Desde la v0.1 (09-10-2026) el modelo tiene `Read` y `Write`: lee por partes los ficheros grandes de `input/` y escribe su salida.
@@ -52,7 +52,7 @@ Los esquemas solo describen la estructura. Las reglas entre campos están en `va
 | `REF-PREG`, `ID-DUP`, `FALTA` | Una sugerencia por cada pregunta pendiente, sin repetir ni sugerir para otras | sugerencias |
 | `SIN-ORIGEN`, `REF-FRAG` | Una sugerencia `documentacion` cita al menos un fragmento, y todos existen | sugerencias |
 
-Mockup (paso 60, `MockupTask.Validate` en C#, sin referencia en Python): el fichero existe (`FICHERO`), ocupa como mucho 1 MB (`TAMANO`), empieza por `<!doctype html>` (`DOCTYPE`), tiene `const DATOS` (`DATOS`), no carga recursos externos (`EXTERNO`: `src`, `href`, `url(` o `@import` con `http://`, `https://` o `//`) y cada historia del backlog validado tiene su `data-hu` (`HU`). Una vista de una historia que no está en el backlog es un aviso (`HU-EXTRA`). En la reparación, el `.html` anterior solo se devuelve al modelo si ocupa menos de 200.000 caracteres.
+Mockup (paso 60, `MockupTask.Validate` en C#, sin referencia en Python). Desde la v0.4, antes de comprobar la página, la plataforma junta las partes: falta la base o el fichero de una épica (`FICHERO`), la base no tiene la línea `<!-- VISTAS -->` (`BASE`) o el fichero de una épica es un documento entero (`FRAGMENTO`). Después, sobre la página juntada: el fichero existe (`FICHERO`), ocupa como mucho 1 MB (`TAMANO`), empieza por `<!doctype html>` (`DOCTYPE`), tiene `const DATOS` (`DATOS`), no carga recursos externos (`EXTERNO`: `src`, `href`, `url(` o `@import` con `http://`, `https://` o `//`) y cada historia del backlog validado tiene su `data-hu` (`HU`). Una vista de una historia que no está en el backlog es un aviso (`HU-EXTRA`). En la reparación, el `.html` anterior solo se devuelve al modelo si ocupa menos de 200.000 caracteres.
 
 `python validar_v0.py` valida los ejemplos. Necesita `jsonschema` 4 o superior (draft 2020-12).
 
