@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ChevronRight, MessageSquareText, Search, Sparkles } from 'lucide-react'
+import { CheckCircle2, ChevronRight, CircleDot, MessageSquareText, MinusCircle, Search, Sparkles, Terminal, type LucideIcon } from 'lucide-react'
 import {
   errorMessage,
-  formatDate,
+  formatDay,
   SUGGESTIONS_KIND,
   type JobView,
   type PhaseResult,
@@ -30,10 +30,12 @@ const BASIS: Record<string, { label: string; tone: Tone }> = {
   suposicion: { label: 'Suposición: confírmala con el cliente', tone: 'warn' },
 }
 
-const STATUS: Record<QuestionStatus, { label: string; tone: Tone }> = {
-  Pending: { label: 'Pendiente', tone: 'warn' },
-  Answered: { label: 'Respondida', tone: 'ok' },
-  Discarded: { label: 'Descartada', tone: 'neutral' },
+// The status of a question as a small icon on its line (a label on every
+// line weighed too much), with its name for screen readers and on hover.
+const STATUS: Record<QuestionStatus, { label: string; icon: LucideIcon; color: string }> = {
+  Pending: { label: 'Pendiente', icon: CircleDot, color: 'text-warn' },
+  Answered: { label: 'Respondida', icon: CheckCircle2, color: 'text-ok' },
+  Discarded: { label: 'Descartada', icon: MinusCircle, color: 'text-faint' },
 }
 
 type Filter = 'all' | QuestionStatus
@@ -216,8 +218,9 @@ function QuestionsPanel({
               title={`Ronda ${rounds.length - index}`}
               meta={
                 <>
-                  <span className="text-sm text-muted">{formatDate(view.job.createdAt)}</span>
-                  <Badge>{ofRound.length === 1 ? '1 pregunta' : `${ofRound.length} preguntas`}</Badge>
+                  <span className="text-sm text-muted">
+                    {ofRound.length === 1 ? '1 pregunta' : `${ofRound.length} preguntas`}, {formatDay(view.job.createdAt)}
+                  </span>
                   {pendingOfRound > 0 && <Badge tone="warn">{pendingOfRound} pendientes</Badge>}
                   {finished ? <RoundResult jobId={view.job.id} /> : <Badge tone="info">En curso</Badge>}
                 </>
@@ -235,9 +238,7 @@ function QuestionsPanel({
                       Sugerir respuestas
                     </Button>
                   )}
-                  <Button variant="ghost" size="sm" onClick={() => onShowJob(view.job.id)}>
-                    Ver ejecución
-                  </Button>
+                  <Button variant="ghost" size="sm" icon={Terminal} onClick={() => onShowJob(view.job.id)} aria-label="Ver la ejecución" title="Ver la ejecución" />
                 </>
               }
             >
@@ -282,8 +283,9 @@ function RoundResult({ jobId }: { jobId: string }) {
   }, [jobId])
 
   if (!result) return null
+  // The usual case (the arbiter joined both proposals) says nothing; only the exceptions show.
   if (result.fuente === null) return <Badge tone="danger">Falló</Badge>
-  return result.verificacion_cruzada ? <Badge tone="ok">Unión del árbitro</Badge> : <Badge tone="warn">Solo {result.fuente}, sin verificación</Badge>
+  return result.verificacion_cruzada ? null : <Badge tone="warn">Solo {result.fuente}, sin verificación</Badge>
 }
 
 type Act = (url: string, method: string, body?: unknown) => Promise<boolean>
@@ -312,6 +314,7 @@ function QuestionItem({
   const [fromSuggestion, setFromSuggestion] = useState(suggestion !== null)
   const [reason, setReason] = useState('')
   const status = STATUS[q.status]
+  const [showNote, setShowNote] = useState(false)
 
   async function submit() {
     const ok =
@@ -343,29 +346,35 @@ function QuestionItem({
         <span className={`min-w-0 flex-1 font-serif ${open ? '' : 'line-clamp-1'} ${q.status === 'Discarded' ? 'text-muted line-through decoration-faint' : ''}`}>
           {q.text}
         </span>
-        <Badge tone={status.tone}>{status.label}</Badge>
+        <status.icon className={`mt-1 size-4 shrink-0 ${status.color}`} aria-label={status.label} />
+        <span className="sr-only">{status.label}</span>
       </button>
 
       {open && (
         <div className="space-y-3 pb-4 pl-[4.75rem]">
-          <dl className="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[8rem_1fr]">
-            <dt className="text-muted">Para qué</dt>
-            <dd>{q.reason}</dd>
-            <dt className="text-muted">Fuentes</dt>
-            <dd className="text-muted">{q.sources.join(', ') || 'Ninguna'}</dd>
-            {q.arbiterNote && (
-              <>
-                <dt className="text-muted">Nota del árbitro</dt>
-                <dd className="text-muted">{q.arbiterNote}</dd>
-              </>
-            )}
+          {/* The context of the question, small: it helps to answer but is not the answer. */}
+          <div className="space-y-0.5 text-xs text-muted">
+            <p>
+              <span className="font-medium">Para qué:</span> {q.reason}
+            </p>
+            <p>
+              <span className="font-medium">Fuentes:</span> {q.sources.join(', ') || 'ninguna'}
+              {q.arbiterNote && (
+                <>
+                  {' '}
+                  <button type="button" onClick={() => setShowNote(!showNote)} aria-expanded={showNote} className="ml-1 underline decoration-faint underline-offset-2 hover:text-fg">
+                    {showNote ? 'Ocultar la nota del árbitro' : 'Nota del árbitro'}
+                  </button>
+                </>
+              )}
+            </p>
+            {showNote && q.arbiterNote && <p className="max-w-prose pt-1">{q.arbiterNote}</p>}
             {q.status === 'Discarded' && q.discardReason && (
-              <>
-                <dt className="text-muted">Motivo del descarte</dt>
-                <dd>{q.discardReason}</dd>
-              </>
+              <p>
+                <span className="font-medium">Motivo del descarte:</span> {q.discardReason}
+              </p>
             )}
-          </dl>
+          </div>
 
           {q.status === 'Answered' && mode === 'view' && (
             <div className="border-l-2 border-ok pl-3">
@@ -463,18 +472,26 @@ function QuestionItem({
 
 // The AI's suggestion and what it is based on: the documentation (with the
 // fragments it cites) or a guess the user should confirm with the client.
+// Folded by default: one line with its basis, that opens to show the
+// suggested text, the fragments it cites and why.
 function SuggestionBox({ question: q }: { question: Question }) {
+  const [open, setOpen] = useState(false)
   const basis = q.suggestionBasis ? BASIS[q.suggestionBasis] : null
   return (
-    <div className="rounded bg-sunken px-3 py-2.5 text-sm">
-      <div className="flex flex-wrap items-center gap-2">
-        <Sparkles className="size-4 text-accent" aria-hidden />
-        <span className="font-medium">Sugerencia de la IA</span>
+    <div className="text-sm">
+      <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} className="flex flex-wrap items-center gap-2 text-left text-muted hover:text-fg">
+        <ChevronRight className={`size-3.5 transition-transform ${open ? 'rotate-90' : ''}`} aria-hidden />
+        <Sparkles className="size-3.5 text-accent" aria-hidden />
+        <span>Sugerencia de la IA</span>
         {basis && <Badge tone={basis.tone}>{basis.label}</Badge>}
-        {q.suggestionSources.length > 0 && <span className="text-xs text-muted">{q.suggestionSources.join(', ')}</span>}
-      </div>
-      <p className="mt-1.5 font-serif">{q.suggestedAnswer}</p>
-      {q.suggestionNote && <p className="mt-1 text-xs text-muted">En qué se basa: {q.suggestionNote}</p>}
+      </button>
+      {open && (
+        <div className="mt-2 rounded bg-sunken px-3 py-2.5">
+          <p className="font-serif">{q.suggestedAnswer}</p>
+          {q.suggestionNote && <p className="mt-1.5 text-xs text-muted">En qué se basa: {q.suggestionNote}</p>}
+          {q.suggestionSources.length > 0 && <p className="mt-1 text-xs text-muted">Fuentes: {q.suggestionSources.join(', ')}</p>}
+        </div>
+      )}
     </div>
   )
 }

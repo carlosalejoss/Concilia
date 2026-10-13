@@ -1,9 +1,11 @@
 import { useEffect, useState, type DragEvent } from 'react'
-import { ChevronRight, FileText, Upload } from 'lucide-react'
+import { BookOpen, FileText, Upload } from 'lucide-react'
 import { errorMessage, formatDate, type Project, type ProjectFile } from './api.ts'
 import { ALLOWED_EXTENSIONS, MAX_BYTES, validateUpload } from './uploadRules.ts'
 import Banner from './ui/Banner.tsx'
 import Badge from './ui/Badge.tsx'
+import Drawer from './ui/Drawer.tsx'
+import DocumentText from './DocumentText.tsx'
 
 type ProjectFilesProps = {
   project: Project
@@ -29,8 +31,8 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
   const [errors, setErrors] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
   const [dragging, setDragging] = useState(false)
-  // The extracted text of each file opened, by id (loaded when it opens).
-  const [texts, setTexts] = useState<Record<number, string>>({})
+  // The file whose extracted text is open in the reader, with its text.
+  const [reading, setReading] = useState<{ file: ProjectFile; text: string } | null>(null)
 
   useEffect(() => {
     fetch(`/projects/${project.id}/files`)
@@ -73,26 +75,25 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
     setUploading(false)
   }
 
-  async function toggleText(file: ProjectFile) {
-    if (file.id in texts) {
-      setTexts((current) => {
-        const rest = { ...current }
-        delete rest[file.id]
-        return rest
-      })
-      return
-    }
+  async function openText(file: ProjectFile) {
     try {
       const response = await fetch(`/projects/${project.id}/files/${file.id}/text`)
       if (!response.ok) {
         setErrors([`${file.fileName}: ${await errorMessage(response)}`])
         return
       }
-      const text = await response.text()
-      setTexts((current) => ({ ...current, [file.id]: text }))
+      setReading({ file, text: await response.text() })
     } catch (e: unknown) {
       setErrors([`${file.fileName}: ${String(e)}`])
     }
+  }
+
+  // Size of the text as the models see it: words, lines and estimated tokens
+  // (3.5 characters per token, as the platform estimates it).
+  function textStats(text: string): string {
+    const words = text.split(/\s+/).filter(Boolean).length
+    const lines = text.split(/\r?\n/).filter((l) => l.trim() !== '').length
+    return `${words.toLocaleString('es-ES')} palabras, ${lines.toLocaleString('es-ES')} líneas, unos ${Math.ceil(text.length / 3.5).toLocaleString('es-ES')} tokens`
   }
 
   function handleDrop(event: DragEvent) {
@@ -146,8 +147,6 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
       {files.length > 0 && (
         <ul className="divide-y divide-line rounded border border-line bg-surface">
           {files.map((file) => {
-            const open = file.id in texts
-            const text = texts[file.id]
             return (
               <li key={file.id}>
                 <div className="flex items-center gap-3 px-3 py-2.5">
@@ -161,33 +160,39 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
                   {file.textStoredName ? (
                     <button
                       type="button"
-                      onClick={() => toggleText(file)}
-                      aria-expanded={open}
-                      className="flex items-center gap-1 rounded px-1.5 py-1 text-sm text-accent hover:bg-accent-soft"
+                      onClick={() => openText(file)}
+                      className="flex items-center gap-1.5 rounded px-2 py-1 text-sm text-accent hover:bg-accent-soft"
                     >
-                      <ChevronRight className={`size-4 transition-transform ${open ? 'rotate-90' : ''}`} aria-hidden />
-                      Texto
+                      <BookOpen className="size-4" aria-hidden />
+                      Leer
                     </button>
                   ) : (
                     <span className="w-16 text-right text-xs text-faint">Sin texto</span>
                   )}
                 </div>
-                {open &&
-                  (text.trim() === '' ? (
-                    <p className="border-t border-line px-10 py-3 text-sm text-muted">
-                      No se ha encontrado texto. Si es un PDF escaneado, sus páginas son imágenes y no se puede extraer texto sin OCR.
-                    </p>
-                  ) : (
-                    // The text as the models read it; whitespace-pre-wrap keeps the line breaks.
-                    <pre className="max-h-96 overflow-auto border-t border-line bg-canvas px-10 py-3 font-serif text-sm leading-relaxed whitespace-pre-wrap">
-                      {text}
-                    </pre>
-                  ))}
               </li>
             )
           })}
         </ul>
       )}
+
+      {/* The extracted text, the one the models read, in a wide reader. */}
+      <Drawer
+        open={reading !== null}
+        wide
+        title={reading?.file.fileName ?? ''}
+        subtitle={reading && reading.text.trim() !== '' ? `Texto extraído: ${textStats(reading.text)}` : undefined}
+        onClose={() => setReading(null)}
+      >
+        {reading &&
+          (reading.text.trim() === '' ? (
+            <p className="text-sm text-muted">
+              No se ha encontrado texto. Si es un PDF escaneado, sus páginas son imágenes y no se puede extraer texto sin OCR.
+            </p>
+          ) : (
+            <DocumentText text={reading.text} />
+          ))}
+      </Drawer>
     </div>
   )
 }
