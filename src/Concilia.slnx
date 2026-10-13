@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="../tests/FakeClaude/FakeClaude.csproj" />
+  <Project Path="../tests/Concilia.Tests/Concilia.Tests.csproj" />
+  <Project Path="Concilia.Api/Concilia.Api.csproj" />
+  <Project Path="Concilia.Core/Concilia.Core.csproj" />
+  <Project Path="Concilia.Runner/Concilia.Runner.csproj" />
+</Solution>

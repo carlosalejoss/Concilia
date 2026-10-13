@@ -42,7 +42,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
   const [search, setSearch] = useState('')
   const [onlyPending, setOnlyPending] = useState(false)
   // Open epics ("0") and stories ("0.3"), by position.
-  const [openKeys, setOpenKeys] = usePersistentState<string[]>(`reqarbiter.open.p${project.id}.backlog`, ['0'])
+  const [openKeys, setOpenKeys] = usePersistentState<string[]>(`concilia.open.p${project.id}.backlog`, ['0'])
 
   useEffect(() => {
     fetch(`/projects/${project.id}/deliverables/catalog`)
@@ -211,7 +211,7 @@ function Coverage({
   storiesOf: (id: string) => string[]
   projectId: number
 }) {
-  const [open, setOpen] = usePersistentState(`reqarbiter.open.p${projectId}.backlog.cobertura`, false)
+  const [open, setOpen] = usePersistentState(`concilia.open.p${projectId}.backlog.cobertura`, false)
   const covered = functional.length - uncovered.length
   const ordered = [...uncovered, ...functional.filter((r) => !uncovered.includes(r))]
   return (

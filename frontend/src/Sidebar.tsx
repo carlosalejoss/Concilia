@@ -86,11 +86,11 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
           type="button"
           onClick={onHome}
           title="Ir al inicio"
-          aria-label="ReqArbiter: ir al inicio"
+          aria-label="Concilia: ir al inicio"
           className="flex min-w-0 items-center gap-2 rounded focus-visible:outline-2 focus-visible:outline-accent"
         >
           <Logo className="size-6 shrink-0" />
-          <span className={`font-semibold tracking-tight whitespace-nowrap transition-opacity duration-200 ${collapsed ? 'opacity-0' : ''}`}>ReqArbiter</span>
+          <span className={`font-semibold tracking-tight whitespace-nowrap transition-opacity duration-200 ${collapsed ? 'opacity-0' : ''}`}>Concilia</span>
         </button>
         {!collapsed && (
           <Button

@@ -1,4 +1,4 @@
-// Same rules as the API (src/ReqArbiter.Core/Files/UploadRules.cs); keep both
+// Same rules as the API (src/Concilia.Core/Files/UploadRules.cs); keep both
 // in sync. The API always checks them again: this copy only lets the web warn
 // before sending the file.
 

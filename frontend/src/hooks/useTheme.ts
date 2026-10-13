@@ -7,7 +7,7 @@ export type Theme = 'light' | 'dark'
 // the class before React starts, so the page does not flash light first.
 export function useTheme() {
   const [theme, setTheme] = usePersistentState<Theme>(
-    'reqarbiter.theme',
+    'concilia.theme',
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
   )
 

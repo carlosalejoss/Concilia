@@ -16,7 +16,7 @@ function App() {
   const [projects, setProjects] = useState<Project[]>([])
   const [route, navigate] = useHashRoute()
   const [theme, toggleTheme] = useTheme()
-  const [collapsed, setCollapsed] = usePersistentState('reqarbiter.sidebar.collapsed', false)
+  const [collapsed, setCollapsed] = usePersistentState('concilia.sidebar.collapsed', false)
 
   // Ask the API for its status and the projects once, when the page loads.
   useEffect(() => {
@@ -86,7 +86,7 @@ function App() {
           <div className="flex min-h-full items-center justify-center px-6 py-16">
             <div className="w-full max-w-lg text-center">
               <Logo className="mx-auto size-16" />
-              <h1 className="mt-5 text-4xl font-semibold tracking-tight">ReqArbiter</h1>
+              <h1 className="mt-5 text-4xl font-semibold tracking-tight">Concilia</h1>
               <p className="mx-auto mt-3 max-w-md text-muted">
                 Requisitos y backlog a partir de la documentación de un sistema. Dos modelos trabajan cada fase por separado y un árbitro une
                 lo que proponen.

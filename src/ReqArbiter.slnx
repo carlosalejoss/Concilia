@@ -1,7 +1,0 @@
-<Solution>
-  <Project Path="../tests/FakeClaude/FakeClaude.csproj" />
-  <Project Path="../tests/ReqArbiter.Tests/ReqArbiter.Tests.csproj" />
-  <Project Path="ReqArbiter.Api/ReqArbiter.Api.csproj" />
-  <Project Path="ReqArbiter.Core/ReqArbiter.Core.csproj" />
-  <Project Path="ReqArbiter.Runner/ReqArbiter.Runner.csproj" />
-</Solution>

@@ -1,4 +1,4 @@
-# ReqArbiter
+# Concilia
 
 > Nombre provisional del proyecto.
 
@@ -12,7 +12,7 @@ Proyecto en fase inicial: todavía no hay código de la aplicación. Este README
 
 ## La idea
 
-Un modelo de IA por sí solo puede olvidar información, inventar o contradecirse, y no hay una forma barata de saberlo. ReqArbiter reduce ese riesgo repitiendo cada tarea con dos modelos independientes y comparando ambas salidas: lo que coincide da más confianza, y las discrepancias se detectan, se preguntan al usuario si son graves y se resuelven antes de fusionar.
+Un modelo de IA por sí solo puede olvidar información, inventar o contradecirse, y no hay una forma barata de saberlo. Concilia reduce ese riesgo repitiendo cada tarea con dos modelos independientes y comparando ambas salidas: lo que coincide da más confianza, y las discrepancias se detectan, se preguntan al usuario si son graves y se resuelven antes de fusionar.
 
 La hipótesis del TFG es que este patrón mejora la fiabilidad frente a usar un único modelo. Se evaluará con métricas automáticas (precisión, recall y F1 sobre enlaces de trazabilidad, y cobertura por similitud) y, si procede, con validación humana apoyada en una guía de anotación.
 
@@ -70,7 +70,7 @@ La comparación entre notaciones se apoya en [Großer et al., 2024](https://link
 Se creará de forma incremental, según lo necesite cada hito.
 
 ```
-reqarbiter/
+concilia/
 ├── docs/          # decisiones de arquitectura, investigación, diseño y memoria
 ├── prompts/       # prompts versionados por fase
 ├── src/           # solución .NET: API, dominio, runner y árbitro
@@ -109,9 +109,9 @@ Los datos se guardan en el volumen `db-data` y sobreviven a `docker compose down
 
 Con .NET 10 y Node 24 instalados:
 
-- API: `dotnet run --project src/ReqArbiter.Api --launch-profile http` (escucha en <http://localhost:5292>).
+- API: `dotnet run --project src/Concilia.Api --launch-profile http` (escucha en <http://localhost:5292>).
 - Web: `npm install` y `npm run dev` dentro de `frontend/` (<http://localhost:5173>; reenvía las llamadas a la API).
-- Tests: `dotnet test src/ReqArbiter.slnx`.
+- Tests: `dotnet test src/Concilia.slnx`.
 
 La API necesita una base de datos PostgreSQL en la cadena de conexión `ConnectionStrings__Default`; el endpoint `/health` funciona sin ella.
 
