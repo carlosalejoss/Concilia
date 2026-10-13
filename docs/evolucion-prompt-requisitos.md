@@ -14,7 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.4 | 13-10-2026 | Mockup por partes: una base y un fichero por épica, que la plataforma junta; el resto de prompts no cambia | Pendiente | Pendiente |
+| v0.4 | 13-10-2026 | Mockup por partes: una base y un fichero por épica, que la plataforma junta; el resto de prompts no cambia | Sí (documento B, 53 historias, 13-10-2026) | El mockup se genera (166 KB, las 53 historias) en 23 min, pero gasta 1,49 M de entrada y 204.000 de salida, el 43 % del límite de 5 h de la suscripción, y al autor no le convence el resultado |
 | v0.3 | 09-10-2026 | El árbitro ve los ids de cada propuesta con su número delante (`1:P-003`, `2:RF-001`); la plataforma los quita antes de validar | Sí (documento B, flujo completo, 13-10-2026) | Los tres árbitros aciertan a la primera, sin reparación; el catálogo y el backlog del árbitro compactan el contexto una vez; el mockup de 53 historias no cabe en 64.000 tokens de salida |
 | v0.2 | 09-10-2026 | La v0.1 con los argumentos exactos de cada llamada a `Read` (`offset` y `limit`) en lugar de rangos de líneas | Sí (documento B, una ronda, 09-10-2026) | A y B leen exactamente los tramos y LUNA ya no repara; el árbitro vuelve a confundir los ids de las propuestas (tercera vez de tres) |
 | v0.1 | 09-10-2026 | Lectura por partes (team leader): la documentación va a `input/documentacion.txt` y el modelo la lee con `Read` en los tramos que da la plataforma, que comprueba que no queda ninguna línea sin leer | Sí (documento B, una ronda, 09-10-2026) | Funciona y lee todo, pero con un documento que cabe entero cuesta un 50 % más de tokens y de tiempo que la v0 y añade dos reparaciones: LUNA cuenta las líneas desde 0 y se deja la última, y el árbitro confundió los ids de las propuestas |
@@ -351,11 +351,24 @@ Solo cambia el prompt del mockup, aprobado por el autor tras el fallo del mockup
 
 ### Resultados
 
-Pendientes: el mockup del backlog de 53 historias del documento B.
+Backlog validado del documento B: 9 épicas y 53 historias. Sonnet 5.5 con la suscripción del autor (13-10-2026).
+
+| Intento | Resultado | Tiempo | Turnos | Tokens entrada / salida |
+|---|---|---|---|---|
+| 1 (v0.4) | Falla: límite de sesión de la suscripción (429), con la base y 3 épicas escritas | 21 min | 14 | 748.341 / 184.645 |
+| 2 (v0.4) | **Generado**: 166 KB, las 53 historias, 1 compactación | 23 min | 20 | 1.489.928 / 203.848 |
+
+- **Escribir por partes funciona:** la base y una escritura por épica, sin pasar de 64.000 tokens en ninguna respuesta.
+- **Pero cuesta mucho.** Cada épica ocupa unos 20.000–40.000 tokens de salida contando el razonamiento, porque el prompt pide una interfaz usable con la interacción de cada criterio. El contexto se llena y se compacta, y el mockup consumió el 43 % del límite de 5 horas de la suscripción del autor. El primer intento lo agotó.
+- **Al autor no le convence el resultado,** aunque lo da por bueno de momento.
+- Hubo un aviso falso (`HU-EXTRA` con `${h[0]}`): el validador tomaba por vista un `data-hu` construido en JavaScript. Corregido.
 
 ### Qué hay que mejorar
 
-Pendiente de medir.
+- **Calidad y coste del mockup,** que el autor deja para más adelante. Hay dos opciones:
+  - **Vistas más sencillas:** la pantalla de cada historia con sus elementos y sus mensajes como estados visibles, e interacción solo donde un criterio pide un rechazo o un aviso.
+  - **Un run por épica,** sin compactación y repitiendo solo las épicas que fallen.
+- La consola sigue mostrando como aviso las líneas `status` de la compactación.
 
 ## v0.3 (09-10-2026)
 

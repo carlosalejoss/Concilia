@@ -184,7 +184,11 @@ public static class MockupTask
         foreach (var match in External.Matches(html).Select(m => m.Value).Distinct().Take(5))
             errors.Add($"{OutputFile} EXTERNO: carga un recurso externo ({match.Trim()}…); todo debe ir dentro del fichero.");
 
-        var views = StoryView.Matches(html).Select(m => m.Groups[1].Value).ToHashSet();
+        // A value built in JavaScript (data-hu="${h[0]}" in a template) is not
+        // a view: a real mockup gave that false warning (13-10-2026).
+        var views = StoryView.Matches(html).Select(m => m.Groups[1].Value)
+            .Where(v => !v.Contains('$') && !v.Contains('{'))
+            .ToHashSet();
         foreach (var id in storyIds.Where(id => !views.Contains(id)))
             errors.Add($"{id} HU: ninguna vista lleva data-hu=\"{id}\".");
         var warnings = views.Where(v => !storyIds.Contains(v)).Order()

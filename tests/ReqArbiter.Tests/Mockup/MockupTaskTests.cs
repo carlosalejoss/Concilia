@@ -92,9 +92,10 @@ public class MockupTaskTests
     [Fact]
     public void A_view_of_a_story_that_is_not_in_the_backlog_is_a_warning()
     {
-        var result = MockupTask.Validate(Valid("<section data-hu=\"HU-999\"></section>"), Plan.StoryIds);
+        var result = MockupTask.Validate(Valid("<section data-hu=\"HU-999\"></section><script>const t = `<div data-hu=\"${h[0]}\">`;</script>"), Plan.StoryIds);
 
         Assert.True(result.Valid);
+        // The one built in JavaScript is not a view.
         Assert.Equal(["HU-999 HU-EXTRA: hay una vista para una historia que no está en el backlog."], result.Warnings);
     }
 
