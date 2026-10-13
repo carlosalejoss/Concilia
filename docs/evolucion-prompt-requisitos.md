@@ -14,7 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.3 | 09-10-2026 | El árbitro ve los ids de cada propuesta con su número delante (`1:P-003`, `2:RF-001`); la plataforma los quita antes de validar | Pendiente | Pendiente |
+| v0.3 | 09-10-2026 | El árbitro ve los ids de cada propuesta con su número delante (`1:P-003`, `2:RF-001`); la plataforma los quita antes de validar | Sí (documento B, flujo completo, 13-10-2026) | Los tres árbitros aciertan a la primera, sin reparación; el catálogo y el backlog del árbitro compactan el contexto una vez; el mockup de 53 historias no cabe en 64.000 tokens de salida |
 | v0.2 | 09-10-2026 | La v0.1 con los argumentos exactos de cada llamada a `Read` (`offset` y `limit`) en lugar de rangos de líneas | Sí (documento B, una ronda, 09-10-2026) | A y B leen exactamente los tramos y LUNA ya no repara; el árbitro vuelve a confundir los ids de las propuestas (tercera vez de tres) |
 | v0.1 | 09-10-2026 | Lectura por partes (team leader): la documentación va a `input/documentacion.txt` y el modelo la lee con `Read` en los tramos que da la plataforma, que comprueba que no queda ninguna línea sin leer | Sí (documento B, una ronda, 09-10-2026) | Funciona y lee todo, pero con un documento que cabe entero cuesta un 50 % más de tokens y de tiempo que la v0 y añade dos reparaciones: LUNA cuenta las líneas desde 0 y se deja la última, y el árbitro confundió los ids de las propuestas |
 | v0 | 08-10-2026 | Prompt muy básico para tener el flujo completo (iteración v0): documento entero sin lotes, respuestas del cliente como entrada, frase EARS/MASTeR escrita por el modelo y árbitro que une A y B | Sí (ReservaSalas, 09-10-2026; documento B, 09-10-2026) | Flujo completo en unos 5 minutos de modelo, todo válido a la primera; 25 requisitos (13 en la v1.2), porque las 11 respuestas eran suposiciones de la IA aceptadas sin cambios y añadieron funcionalidad que el documento no tiene |
@@ -349,11 +349,28 @@ Aprobado por el autor tras el tercer fallo del árbitro con los ids de las propu
 
 ### Resultados
 
-Pendientes: una ronda de preguntas y un catálogo con el documento B, para ver si el árbitro acierta a la primera.
+Flujo completo con el documento B (13-10-2026, proyecto nuevo): preguntas, sugerencias de respuesta (todas aceptadas sin cambios), catálogo, backlog y mockup. A = SOL, B = LUNA, árbitro = SOL; mockup con Sonnet 5.5.
+
+| Fase | A (SOL) | B (LUNA) | Árbitro (SOL) | Resultado |
+|---|---|---|---|---|
+| Preguntas | 132.358 / 11.061, 5 turnos | 84.504 / 8.659, 5 turnos | 91.548 / 8.755, 11 turnos | 35 preguntas (8 de ambas, 26 solo de la 1, 1 solo de la 2) |
+| Sugerencias (SOL) | | | | 148.823 / 11.840, 5 turnos; 35 sugerencias |
+| Catálogo | 167.722 / 22.179, 5 turnos | 109.511 / 27.113, 5 turnos | 563.544 / 33.312, 15 turnos, 1 compactación | 178 requisitos (152 de ambas, 23 solo de la 1, 3 solo de la 2), sin descartes ni discrepancias |
+| Backlog | 135.601 / 25.559, 5 turnos | 81.738 / 18.648, 5 turnos | 406.428 / 30.615, 11 turnos, 1 compactación | 9 épicas, 53 historias y 148 criterios, todas de ambas |
+| Mockup (Sonnet 5.5) | | | | Falla: 220.862 / 256.408 tokens, 7 turnos, 32 min |
+
+Tokens de entrada / salida de cada run.
+
+- **Los ids con prefijo funcionan.** Los tres árbitros terminan a la primera, sin reparación y sin ningún `ARB-DE`. Antes había fallado tres veces de tres.
+- **El árbitro es ahora el run más caro.** En el catálogo lee dos propuestas de unos 90 requisitos y consulta la documentación: 563.544 tokens de entrada en 15 turnos, con una compactación. En el backlog, 406.428, también con una compactación, y su línea de veredicto no llegó (se aceptó la salida, que era válida).
+- **El catálogo crece mucho:** 178 requisitos frente a los 100 del proyecto anterior con el mismo documento. Las 35 respuestas eran sugerencias de la IA aceptadas sin cambios, el efecto que ya se vio con ReservaSalas.
+- **El mockup no cabe.** Con 53 historias, Sonnet piensa unos 30.000 tokens antes de escribir y el `.html` entero no entra en 64.000 tokens de salida. Claude Code corta cada respuesta y la ejecución acaba en «Claude's response exceeded the 64000 output token maximum». Además, Claude Code emite una línea `thinking_tokens` cada pocos tokens de razonamiento, y la consola del run la mostraba como aviso, cientos de veces.
 
 ### Qué hay que mejorar
 
-Pendiente de medir.
+- **El mockup tiene que escribirse por partes**, como ya se previó en el paso 62: un fichero por épica, que la plataforma junta en un solo `.html`.
+- **Las líneas `thinking_tokens` no son avisos.** La consola no debería mostrarlas una a una.
+- **El coste del árbitro con proyectos grandes.** Si crece más, puede leer la documentación solo en las partes que citan las propuestas, en lugar de consultarla libremente.
 
 ## v0.2 (09-10-2026)
 
