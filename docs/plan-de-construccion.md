@@ -265,7 +265,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
   - El Fake escribe una plantilla con las historias del backlog.
   - Se copia en `data/projects/{id}/mockup/`. Tests.
 - [x] 61. Web: el mockup se ve en un iframe con `sandbox="allow-scripts"`, con botón para descargar el `.html` y aviso cuando está desactualizado.
-- [ ] 62. Prueba real con Sonnet 5.5 (09-10-2026: el primer intento, con el backlog de 37 historias del documento B, agotó los 15 minutos sin terminar la respuesta, porque el `.html` entero va en un solo `Write`; los límites del mockup pasan a 30 minutos sin salida y 45 en total, por decisión del autor; si la salida no cabe en 64.000 tokens, se dividirá el mockup en varios ficheros): el `.html` descargado se abre con doble clic, sin servidor ni conexión.
+- [ ] 62. Prueba real con Sonnet 5.5 (09-10-2026: el primer intento, con el backlog de 37 historias del documento B, agotó los 15 minutos sin terminar la respuesta, porque el `.html` entero va en un solo `Write`; los límites del mockup pasan a 30 minutos sin salida y 45 en total, por decisión del autor. 13-10-2026: con 53 historias, la respuesta pasó de 64.000 tokens de salida; el autor aprueba escribir el mockup por partes, una base y un fichero por épica, que la plataforma junta, en los prompts v0.4): el `.html` descargado se abre con doble clic, sin servidor ni conexión.
 
 **Hecho cuando:** el `.html` descargado se abre en el navegador sin conexión, muestra datos de prueba y cubre todas las historias del backlog validado.
 

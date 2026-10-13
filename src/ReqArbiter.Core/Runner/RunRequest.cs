@@ -45,4 +45,9 @@ public record RunRequest
     // with Read, so they need not fit at once, and the platform limits the
     // documentation when the job is created instead.
     public bool InputFilesInBudget { get; init; } = true;
+
+    // Folders of the run copied to the folder of the next attempt (a repair).
+    // input/ always; the mockup adds output/mockup/, so a repair only rewrites
+    // the parts with errors.
+    public IReadOnlyList<string> CarriedFolders { get; init; } = ["input"];
 }

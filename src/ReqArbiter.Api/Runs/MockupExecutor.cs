@@ -37,8 +37,10 @@ public class MockupExecutor(
             (attempt, attemptsSoFar) =>
             {
                 reads.AddRange(attempt.Result.Reads);
+                // The model wrote the page by parts: the platform joins them first.
+                var parts = MockupTask.Assemble(attempt.Request.WorkDirectory, plan);
                 return PhaseExecutor.Review(attempt, MockupTask.OutputFile,
-                    (html, unread) => MockupTask.Review(html, plan.StoryIds, original, attemptsSoFar, unread),
+                    (html, unread) => MockupTask.Review(html, plan.StoryIds, original, attemptsSoFar, [.. parts, .. unread]),
                     MockupTask.RequiredReads, reads);
             },
             cancellationToken);

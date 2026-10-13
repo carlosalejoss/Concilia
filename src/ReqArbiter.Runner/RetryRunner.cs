@@ -85,17 +85,21 @@ public class RetryRunner(IRunnerProvider provider, int maxRetries = RetryRunner.
         attempt.Result.VerdictError is { } error ? attempt.Request.Prompt + RetryNote(error) : null);
 
     // The retry gets a new id and a sibling folder (data/runs/{newId}/) with a
-    // copy of the previous input/ folder, and the prompt the review chose.
+    // copy of the folders the request carries (input/, and output/mockup/ in
+    // the mockup), and the prompt the review chose.
     private static RunRequest NextAttempt(RunRequest previous, string prompt)
     {
         var runId = Guid.NewGuid();
         var parent = Path.GetDirectoryName(Path.GetFullPath(previous.WorkDirectory))!;
         var workDirectory = Path.Combine(parent, runId.ToString());
 
-        var previousInput = Path.Combine(previous.WorkDirectory, "input");
-        if (Directory.Exists(previousInput))
+        foreach (var folder in previous.CarriedFolders)
         {
-            CopyDirectory(previousInput, Path.Combine(workDirectory, "input"));
+            var source = Path.Combine(previous.WorkDirectory, folder);
+            if (Directory.Exists(source))
+            {
+                CopyDirectory(source, Path.Combine(workDirectory, folder));
+            }
         }
 
         return previous with

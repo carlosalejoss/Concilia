@@ -65,6 +65,26 @@ public class RetryRunnerTests
         Assert.True(File.Exists(Path.Combine(retry.WorkDirectory, "input", "doc.md")));
     }
 
+    // The mockup carries output/mockup/ too, so a repair only rewrites the
+    // parts with errors; other tasks carry only input/.
+    [Fact]
+    public async Task A_retry_gets_a_copy_of_the_folders_the_request_carries()
+    {
+        using var temp = new TempDirectory();
+        var provider = new ScriptedProvider(NoVerdict, Done);
+        var first = FirstRequest(temp.Path) with { CarriedFolders = ["input", "output/mockup"] };
+        Directory.CreateDirectory(Path.Combine(first.WorkDirectory, "output", "mockup"));
+        File.WriteAllText(Path.Combine(first.WorkDirectory, "output", "mockup", "EP-01.html"), "<section></section>");
+        File.WriteAllText(Path.Combine(first.WorkDirectory, "output", "otro.json"), "{}");
+
+        var attempts = await new RetryRunner(provider).RunAsync(first, _ => _ => { }, CancellationToken.None);
+
+        var retry = attempts[1].Request.WorkDirectory;
+        Assert.True(File.Exists(Path.Combine(retry, "input", "doc.md")));
+        Assert.True(File.Exists(Path.Combine(retry, "output", "mockup", "EP-01.html")));
+        Assert.False(File.Exists(Path.Combine(retry, "output", "otro.json")));
+    }
+
     [Fact]
     public async Task Stops_after_two_retries()
     {

@@ -46,6 +46,15 @@ public class RunnerPiecesTests
         Assert.Equal(RunEventKind.ApiRetry, retryEvent?.Kind);
     }
 
+    // Claude Code reports the reasoning every few tokens; the console does not show it.
+    [Fact]
+    public void Thinking_token_lines_are_not_shown()
+    {
+        const string thinking = """{"type":"system","subtype":"thinking_tokens","estimated_tokens":150,"estimated_tokens_delta":100}""";
+
+        Assert.Null(EventSummaries.From(ReqArbiter.Runner.StreamJson.StreamJsonParser.ParseLine(thinking).Single()));
+    }
+
     [Fact]
     public void Environment_is_built_explicitly_without_user_credentials()
     {

@@ -45,7 +45,7 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
     - Límites: 80.000 tokens solo para el prompt, tope de documentación de 300.000 tokens estimados (`RUNNER_MAX_DOCUMENTATION_TOKENS`), aviso en la web por encima de 80.000 y 30 turnos por run (`RUNNER_PHASE_MAX_TURNS`).
     - No se conserva el modo «todo en el prompt».
     - Prompts v0.2 y v0.3 (09-10-2026, autor): el plan de lectura da el `offset` y el `limit` exactos de cada llamada a `Read`, y el árbitro ve los ids de cada propuesta con su número delante (`1:P-003`); la plataforma los quita antes de validar.
-  - Mockup: 30 minutos sin salida y 45 en total (antes 15), porque el `.html` entero llega en una sola respuesta (09-10-2026, autor).
+  - Mockup: 30 minutos sin salida y 45 en total (antes 15), porque el `.html` entero llega en una sola respuesta (09-10-2026, autor). (Ampliada el 13-10-2026, autor; prompts v0.4: el modelo escribe el mockup por partes, `output/mockup/base.html` con `<!-- VISTAS -->` y un fichero por épica; la plataforma los junta en `output/mockup.html` y una reparación conserva las partes ya escritas. Hasta 40 turnos.)
   - Sugerencias de respuesta (09-10-2026, autor): la IA propone la respuesta de las preguntas pendientes (una o todas las de una ronda) con un solo modelo, sin árbitro (`RUNNER_MODEL_SUGGESTIONS`, SOL por defecto). Rellena el cuadro, pero solo cuenta lo que el usuario guarda; la respuesta registra su origen (`usuario`, `ia`, `ia-editada`).
 
 ## Decisiones abiertas (no las cierres sin preguntar)
