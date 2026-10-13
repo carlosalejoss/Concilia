@@ -20,7 +20,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 
 ## Hito 1: esqueleto que arranca en Docker (completado)
 
-- [x] 6. Solución .NET con `ReqArbiter.Api`, `ReqArbiter.Core` y un proyecto de tests. Endpoint `GET /health`.
+- [x] 6. Solución .NET con `Concilia.Api`, `Concilia.Core` y un proyecto de tests. Endpoint `GET /health`.
 - [x] 7. Frontend con Vite, React 19, TypeScript y Tailwind, con una página que muestra el estado de `/health`.
 - [x] 8. Dockerfile de la API y del frontend, y `docker-compose.yml` con `db`, `api` y `web`. `.env.example` con `LITELLM_BASE_URL` y `LITELLM_API_KEY` (solo nombres, sin valores).
 - [x] 9. EF Core y el proveedor de la base de datos elegida, con una primera migración de la tabla `Projects`.
@@ -42,7 +42,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 ## Hito 3: primera llamada a un modelo desde la web (completado)
 
 - [x] 16. En `Core`, contrato del runner: `IRunnerProvider`, `RunRequest` y `RunResult` (con veredicto). Primero `FakeProvider`, que devuelve un JSON fijo.
-- [x] 17. Proyecto `ReqArbiter.Runner` y parser de stream-json, probado con las salidas grabadas en la prueba de humo del hito 0 (saneadas antes de copiarlas al repositorio).
+- [x] 17. Proyecto `Concilia.Runner` y parser de stream-json, probado con las salidas grabadas en la prueba de humo del hito 0 (saneadas antes de copiarlas al repositorio).
 - [x] 18. Lanzamiento del proceso con carpeta de trabajo, lectura línea a línea de stdout, lectura de stderr por separado (el aviso `unrecognized_model` no es un fallo), latido y tiempo máximo.
 - [x] 19. Lectura del veredicto final en el campo `result`, con reintento si falta o es inválido.
 - [x] 20. `LiteLlmProvider`: `claude -p` real contra la pasarela, con entorno construido de forma explícita, `CLAUDE_CONFIG_DIR` propio por ejecución y `--allowedTools`. Node y Claude Code en la imagen de la API.
@@ -254,7 +254,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
   - el autor genera el token con `claude setup-token` y lo guarda en `.env` como `CLAUDE_CODE_OAUTH_TOKEN`;
   - `claude -p --model claude-sonnet-5-5` con ese token, con y sin `Write`, y con `CLAUDE_CONFIG_DIR` vacío;
   - se confirma el id del modelo con Claude Code 2.1.283 y se anota en `docs/`, sin el token.
-- [x] 59. Proveedor `ClaudeSubscription` en `ReqArbiter.Runner` (el acceso al modelo es una interfaz, `IModelAccess`, con la pasarela y la suscripción como implementaciones; la suscripción solo se admite en el rol del mockup):
+- [x] 59. Proveedor `ClaudeSubscription` en `Concilia.Runner` (el acceso al modelo es una interfaz, `IModelAccess`, con la pasarela y la suscripción como implementaciones; la suscripción solo se admite en el rol del mockup):
   - entorno explícito solo con `CLAUDE_CODE_OAUTH_TOKEN`;
   - el token se oculta en `SecretRedactor`;
   - `.env.example` con `CLAUDE_CODE_OAUTH_TOKEN`, `MOCKUP_PROVIDER` y `MOCKUP_MODEL`, sin valores;

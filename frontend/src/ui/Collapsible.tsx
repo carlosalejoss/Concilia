@@ -17,7 +17,7 @@ type CollapsibleProps = {
 // A section that folds: a header that opens and closes it, and its content.
 // Each one remembers its state, so the view is the same when the user comes back.
 function Collapsible({ persistKey, title, meta, actions, defaultOpen = false, children }: CollapsibleProps) {
-  const [open, setOpen] = usePersistentState(`reqarbiter.open.${persistKey}`, defaultOpen)
+  const [open, setOpen] = usePersistentState(`concilia.open.${persistKey}`, defaultOpen)
 
   return (
     <section className="rounded border border-line bg-surface">

@@ -2,10 +2,18 @@
 # Usage: copy .env.example to .env, fill in the values and run `docker compose up --build`.
 # The web is then available at http://localhost:8080.
 
+# The name of the Compose project, fixed: it names the containers and the
+# volume with the data (reqarbiter_db-data). Without it, Compose takes the name
+# of the folder, and renaming the folder would start with an empty database.
+# It keeps the name the project had before it was called Concilia (13-10-2026).
+name: reqarbiter
+
 services:
   db:
     image: postgres:18-alpine
     environment:
+      # Database and user keep the first name of the project (ReqArbiter):
+      # renaming them would leave the existing data behind.
       POSTGRES_DB: reqarbiter
       POSTGRES_USER: reqarbiter
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
@@ -24,8 +32,8 @@ services:
       # The context is the repository root, so the build sees src/ and prompts/.
       # .dockerignore keeps .env, data/ and the rest out of it.
       context: .
-      dockerfile: src/ReqArbiter.Api/Dockerfile
-    image: reqarbiter-api
+      dockerfile: src/Concilia.Api/Dockerfile
+    image: concilia-api
     environment:
       ConnectionStrings__Default: Host=db;Database=reqarbiter;Username=reqarbiter;Password=${POSTGRES_PASSWORD}
       Database__MigrateOnStartup: "true"
@@ -63,7 +71,7 @@ services:
 
   web:
     build: ./frontend
-    image: reqarbiter-web
+    image: concilia-web
     ports:
       - "8080:80"
     depends_on:

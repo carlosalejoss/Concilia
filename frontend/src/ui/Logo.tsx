@@ -1,4 +1,4 @@
-// The mark of ReqArbiter: two sources (model A in slate blue and model B in
+// The mark of Concilia: two sources (model A in slate blue and model B in
 // plum) that meet in one validated line (green). Used in the sidebar and,
 // larger, on the home page.
 function Logo({ className = 'size-6' }: { className?: string }) {
