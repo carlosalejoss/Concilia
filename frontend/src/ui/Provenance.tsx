@@ -10,6 +10,7 @@ const LABELS: Record<string, string> = {
   A: 'Sale solo del modelo A',
   B: 'Sale solo del modelo B',
   ambas: 'Sale de los dos modelos',
+  usuario: 'Añadido por el usuario',
 }
 
 function Provenance({ origin, discrepancy = false }: { origin: Origin; discrepancy?: boolean }) {
