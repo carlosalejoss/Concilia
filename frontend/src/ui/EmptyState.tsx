@@ -5,7 +5,7 @@ import type { LucideIcon } from 'lucide-react'
 // if there is one, the action that fills it.
 function EmptyState({ icon: Icon, title, children, action }: { icon: LucideIcon; title: string; children?: ReactNode; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center rounded-lg border border-dashed border-line px-6 py-12 text-center">
+    <div className="flex flex-col items-center rounded border border-dashed border-line px-6 py-12 text-center">
       <Icon className="size-8 text-faint" aria-hidden />
       <p className="mt-3 font-medium">{title}</p>
       {children && <p className="mt-1 max-w-md text-sm text-muted">{children}</p>}

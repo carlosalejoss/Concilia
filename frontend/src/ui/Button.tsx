@@ -5,8 +5,8 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
 type Size = 'sm' | 'md'
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-accent text-accent-fg hover:bg-accent-hover shadow-sm',
-  secondary: 'border border-line bg-surface text-fg hover:bg-sunken shadow-sm',
+  primary: 'bg-accent text-accent-fg hover:bg-accent-hover',
+  secondary: 'border border-line bg-surface text-fg hover:bg-sunken',
   ghost: 'text-muted hover:bg-sunken hover:text-fg',
   danger: 'border border-line bg-surface text-danger hover:bg-danger-soft',
 }
@@ -29,7 +29,7 @@ function Button({ variant = 'secondary', size = 'md', icon: Icon, children, clas
   return (
     <button
       type={type}
-      className={`inline-flex shrink-0 items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
       {...rest}
     >
       {Icon && <Icon className="size-4" aria-hidden />}
