@@ -29,8 +29,8 @@ function Metrics({ metrics }: { metrics: CatalogMetrics }) {
   return (
     <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
       {items.map(([name, value]) => (
-        <div key={name} className="flex justify-between gap-2 border-b border-gray-100">
-          <dt className="text-gray-600">{name}</dt>
+        <div key={name} className="flex justify-between gap-2 border-b border-line">
+          <dt className="text-muted">{name}</dt>
           <dd className="font-semibold">{value}</dd>
         </div>
       ))}
@@ -65,40 +65,40 @@ function CatalogView({ jobId, slot, version }: { jobId: string; slot: string; ve
     }
   }, [jobId, slot, version])
 
-  if (error) return <p className="mt-2 text-sm text-red-700">{error}</p>
-  if (!data) return <p className="mt-2 text-sm text-gray-500">Cargando catálogo…</p>
+  if (error) return <p className="mt-2 text-sm text-danger">{error}</p>
+  if (!data) return <p className="mt-2 text-sm text-muted">Cargando catálogo…</p>
 
   const { report, catalog } = data
   return (
     <div className="mt-2">
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-muted">
         Lotes en el catálogo: {data.includedLots.length} de {data.lotTotal}
         {data.pendingLots.length > 0 && <> · En curso: {data.pendingLots.length}</>}
-        {data.failedLots.length > 0 && <span className="text-red-700"> · Fallidos: {data.failedLots.join(', ')}</span>}
+        {data.failedLots.length > 0 && <span className="text-danger"> · Fallidos: {data.failedLots.join(', ')}</span>}
       </p>
 
       {!report || !catalog ? (
-        <p className="mt-2 text-sm text-gray-500">Aún no ha terminado ningún lote.</p>
+        <p className="mt-2 text-sm text-muted">Aún no ha terminado ningún lote.</p>
       ) : (
         <>
           <p className="mt-2 text-sm">
             Validador:{' '}
-            <span className={`font-semibold ${report.valid ? 'text-green-700' : 'text-red-700'}`}>
+            <span className={`font-semibold ${report.valid ? 'text-ok' : 'text-danger'}`}>
               {report.valid ? 'válido' : `no válido (${report.errors.length} errores)`}
             </span>
             {report.warnings.length > 0 && <> · {report.warnings.length} avisos</>}
           </p>
           {(report.errors.length > 0 || report.warnings.length > 0) && (
             <details className="mt-1 text-xs">
-              <summary className="cursor-pointer text-gray-600">Errores y avisos</summary>
+              <summary className="cursor-pointer text-muted">Errores y avisos</summary>
               <ul className="mt-1 list-disc pl-5">
                 {report.errors.map((e) => (
-                  <li key={e} className="text-red-700">
+                  <li key={e} className="text-danger">
                     {e}
                   </li>
                 ))}
                 {report.warnings.map((w) => (
-                  <li key={w} className="text-amber-700">
+                  <li key={w} className="text-warn">
                     {w}
                   </li>
                 ))}
@@ -110,7 +110,7 @@ function CatalogView({ jobId, slot, version }: { jobId: string; slot: string; ve
           <h4 className="mt-4 font-semibold">Requisitos ({catalog.requirements.length})</h4>
           <div className="overflow-x-auto">
             <table className="mt-1 w-full text-left text-sm">
-              <thead className="text-gray-500">
+              <thead className="text-muted">
                 <tr>
                   <th className="py-1 pr-2">Id</th>
                   <th className="py-1 pr-2">Notación</th>
@@ -119,13 +119,13 @@ function CatalogView({ jobId, slot, version }: { jobId: string; slot: string; ve
                   <th className="py-1">Fuente</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 align-top">
+              <tbody className="divide-y divide-line align-top">
                 {catalog.requirements.map((r) => (
                   <tr key={r.id} title={traceTooltip(r.source_trace)}>
                     <td className="py-1 pr-2 font-mono whitespace-nowrap">{r.id}</td>
                     <td className="py-1 pr-2">
                       {r.notation}
-                      <span className="block text-xs text-gray-500">{r.ears_pattern ?? r.master_template}</span>
+                      <span className="block text-xs text-muted">{r.ears_pattern ?? r.master_template}</span>
                     </td>
                     <td className="py-1 pr-2">{r.obligation}</td>
                     <td className="py-1 pr-2">{r.text}</td>
@@ -148,14 +148,14 @@ function CatalogView({ jobId, slot, version }: { jobId: string; slot: string; ve
               <li key={q.id} title={traceTooltip(q.source_trace)}>
                 <span className="font-mono">{q.id}</span> {q.question}
                 {q.related_requirements.length > 0 && (
-                  <span className="text-gray-500"> ({q.related_requirements.join(', ')})</span>
+                  <span className="text-muted"> ({q.related_requirements.join(', ')})</span>
                 )}
               </li>
             ))}
           </ul>
 
           {catalog.discarded_statements.length > 0 && (
-            <p className="mt-3 text-xs text-gray-500">Fragmentos descartados: {catalog.discarded_statements.length}</p>
+            <p className="mt-3 text-xs text-muted">Fragmentos descartados: {catalog.discarded_statements.length}</p>
           )}
         </>
       )}
