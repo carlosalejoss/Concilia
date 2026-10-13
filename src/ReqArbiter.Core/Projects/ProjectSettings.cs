@@ -13,6 +13,12 @@ public static class ProjectSettings
     public static string DefaultSystemName(string projectName, string language = "es") =>
         language == "en" ? $"the {projectName} system" : $"el sistema {projectName}";
 
+    // Deleting a project asks the user to type its name (13-10-2026): the
+    // deletion cannot be undone, so it must not happen with one click. The
+    // name is compared as it is, after trimming the spaces around it.
+    public static bool ConfirmsDeletion(string projectName, string? typed) =>
+        typed is not null && typed.Trim() == projectName;
+
     // Error for the project name, or null if it is valid (expected already trimmed).
     public static string? ValidateName(string? name) =>
         string.IsNullOrEmpty(name) ? "El nombre es obligatorio."

@@ -69,6 +69,10 @@ function App() {
             route={route}
             navigate={navigate}
             onProjectSaved={(saved) => setProjects((current) => current.map((p) => (p.id === saved.id ? saved : p)))}
+            onProjectDeleted={() => {
+              setProjects((current) => current.filter((p) => p.id !== project.id))
+              navigate({ kind: 'home' })
+            }}
           />
         ) : (
           <div className="mx-auto max-w-xl px-6 py-24">

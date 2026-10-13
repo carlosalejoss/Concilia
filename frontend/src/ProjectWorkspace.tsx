@@ -12,6 +12,7 @@ import MockupViewer from './MockupViewer.tsx'
 import Jobs from './Jobs.tsx'
 import StepActivity from './StepActivity.tsx'
 import ProjectSettings from './ProjectSettings.tsx'
+import DeleteProject from './DeleteProject.tsx'
 import Badge from './ui/Badge.tsx'
 import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
@@ -59,11 +60,12 @@ type ProjectWorkspaceProps = {
   route: Extract<Route, { kind: 'step' | 'runs' }>
   navigate: (route: Route) => void
   onProjectSaved: (project: Project) => void
+  onProjectDeleted: () => void
 }
 
 // One project: its header (name, work in progress, runs and settings), the
 // bar of steps and the step open in the URL; or the technical view of the runs.
-function ProjectWorkspace({ project, route, navigate, onProjectSaved }: ProjectWorkspaceProps) {
+function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectDeleted }: ProjectWorkspaceProps) {
   const [flow, setFlow] = useState<FlowView | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [launching, setLaunching] = useState(false)
@@ -210,6 +212,7 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved }: ProjectW
       {content}
       <Drawer open={settingsOpen} title="Ajustes del proyecto" onClose={closeSettings}>
         <ProjectSettings project={project} onSaved={onProjectSaved} />
+        <DeleteProject project={project} onDeleted={onProjectDeleted} />
       </Drawer>
     </div>
   )
