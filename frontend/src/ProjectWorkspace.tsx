@@ -10,6 +10,7 @@ import CatalogEditor from './CatalogEditor.tsx'
 import BacklogEditor from './BacklogEditor.tsx'
 import MockupViewer from './MockupViewer.tsx'
 import Jobs from './Jobs.tsx'
+import StepActivity from './StepActivity.tsx'
 import ProjectSettings from './ProjectSettings.tsx'
 import Badge from './ui/Badge.tsx'
 import Banner from './ui/Banner.tsx'
@@ -196,6 +197,8 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved }: ProjectW
           {error && <Banner tone="danger">{error}</Banner>}
 
           <div>{bodies[stepId]}</div>
+
+          <StepActivity project={project} step={stepId} version={version} onShowJob={showJob} />
         </section>
       </>
     )

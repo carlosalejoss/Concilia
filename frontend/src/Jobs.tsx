@@ -1,70 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
-import {
-  errorMessage,
-  formatDate,
-  isPhaseJob,
-  JOB_KIND_NAMES,
-  SUGGESTIONS_KIND,
-  type JobView,
-  type PhaseResult,
-  type Project,
-  type Run,
-  type RunEvent,
-} from './api.ts'
+import { FlaskConical, Terminal } from 'lucide-react'
+import { errorMessage, formatDate, isPhaseJob, JOB_KIND_NAMES, type JobView, type PhaseResult, type Project, type Run, type RunEvent } from './api.ts'
 import CatalogView from './CatalogView.tsx'
-
-// A and B in every job; the arbiter (ARB) only in the v0 phases. The answer
-// suggestions have a single run (SUG).
-const SLOTS = ['A', 'B', 'ARB'] as const
-const SLOT_NAMES: Record<string, string> = { A: 'A', B: 'B', ARB: 'Árbitro', SUG: 'Sugerencias', MOCK: 'Mockup' }
-
-// The single-run jobs: the answer suggestions and the mockup.
-const SINGLE_SLOT: Record<string, string> = { [SUGGESTIONS_KIND]: 'SUG', mockup: 'MOCK' }
-
-function slotsOf(view: JobView): string[] {
-  const single = SINGLE_SLOT[view.job.kind]
-  return single ? [single] : [...SLOTS]
-}
-
-const stateColors: Record<string, string> = {
-  Done: 'text-green-700',
-  Blocked: 'text-amber-700',
-  Skipped: 'text-amber-700',
-  Queued: 'text-gray-500',
-  Running: 'text-blue-700',
-}
-
-function isFinished(run: Run): boolean {
-  return run.state !== 'Queued' && run.state !== 'Running'
-}
-
-// The lots of one slot, each with its runs in attempt order (the first run,
-// then its retries).
-function lotsOfSlot(view: JobView, slot: string): Run[][] {
-  const byLot = new Map<number, Run[]>()
-  for (const run of view.runs.filter((r) => r.slot === slot)) {
-    const lot = run.lotNumber ?? 1
-    byLot.set(lot, [...(byLot.get(lot) ?? []), run])
-  }
-  return [...byLot.entries()]
-    .sort(([a], [b]) => a - b)
-    .map(([, runs]) => runs.sort((a, b) => a.attempt - b.attempt))
-}
-
-// One line for the list: the state that counts is the last attempt of each lot.
-function slotSummary(view: JobView, slot: string): { text: string; state: string } {
-  const finals = lotsOfSlot(view, slot).map((runs) => runs[runs.length - 1])
-  if (finals.length === 0) return { text: '—', state: '' }
-  const done = finals.filter((r) => r.state === 'Done').length
-  const lots = finals.length > 1 ? ` (${done}/${finals.length} lotes)` : ''
-  if (finals.some((r) => !isFinished(r))) {
-    const running = finals.some((r) => r.state === 'Running')
-    return { text: (running ? 'Running' : 'Queued') + lots, state: running ? 'Running' : 'Queued' }
-  }
-  if (done === finals.length) return { text: 'Done' + lots, state: 'Done' }
-  const failed = finals.find((r) => r.state !== 'Done')!
-  return { text: failed.state + lots, state: failed.state }
-}
+import { isFinished, lotsOfSlot, RUN_STATE_NAMES, RUN_STATE_TONES, SLOT_NAMES, SLOTS, slotsOf, slotSummary } from './jobs.ts'
+import Badge from './ui/Badge.tsx'
+import Banner from './ui/Banner.tsx'
+import Button from './ui/Button.tsx'
+import Collapsible from './ui/Collapsible.tsx'
+import EmptyState from './ui/EmptyState.tsx'
 
 async function fetchJobs(projectId: number): Promise<JobView[]> {
   const response = await fetch(`/projects/${projectId}/jobs`)
@@ -72,10 +15,27 @@ async function fetchJobs(projectId: number): Promise<JobView[]> {
   return response.json()
 }
 
-// The "Ejecuciones" tab: every job of the project (the v0 phases, A ‖ B →
-// arbiter, and the experimental catalog v1.4 by lots), with the live consoles
-// of the selected one. initialJobId selects a job when the tab opens (from
-// "Ver ejecución" in the steps page).
+// The state of each slot of a job, as small labels ("A Hecho", "Árbitro En curso").
+export function SlotStates({ view }: { view: JobView }) {
+  return (
+    <span className="flex flex-wrap gap-1">
+      {slotsOf(view).map((slot) => {
+        const { state, lots } = slotSummary(view, slot)
+        return (
+          <Badge key={slot} tone={state ? RUN_STATE_TONES[state] : 'neutral'}>
+            {SLOT_NAMES[slot]} {state ? RUN_STATE_NAMES[state].toLowerCase() : '—'}
+            {lots}
+          </Badge>
+        )
+      })}
+    </span>
+  )
+}
+
+// The technical view of the runs: every job of the project (the v0 phases,
+// A ‖ B → arbiter or a single model, and the experimental catalog v1.4 by
+// lots) and, for the selected one, its result and the live console of each
+// run. initialJobId selects a job when the view opens (from "Ver ejecución").
 function Jobs({ project, initialJobId }: { project: Project; initialJobId?: string | null }) {
   const [jobs, setJobs] = useState<JobView[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(initialJobId ?? null)
@@ -127,70 +87,47 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
   }, [selectedUnfinished, reload])
 
   return (
-    <section className="mt-8">
-      <h2 className="text-xl font-semibold">Ejecuciones</h2>
-      <p className="mt-1 text-sm text-gray-600">
-        Los trabajos del proyecto con sus consolas. Las fases del flujo se lanzan desde la pestaña «Pasos».
-      </p>
-
-      <div className="mt-4 flex flex-wrap items-center gap-3">
-        <button
-          type="button"
-          onClick={start}
-          disabled={starting}
-          className="rounded border border-gray-400 px-4 py-2 disabled:opacity-50"
-        >
-          Generar catálogo v1.4 (experimental)
-        </button>
-        <span className="text-sm text-gray-500">Por lotes, sin árbitro; se conserva para el hito 7.</span>
+    <section className="space-y-5">
+      <div>
+        <h2 className="text-xl font-semibold">Ejecuciones</h2>
+        <p className="mt-1 max-w-prose text-sm text-muted">
+          Todos los trabajos del proyecto, con sus consolas, tokens y errores. Las fases se lanzan desde los pasos del proyecto.
+        </p>
       </div>
 
-      {error && <p className="mt-2 text-red-700">{error}</p>}
+      {error && <Banner tone="danger">{error}</Banner>}
 
-      {jobs.length > 0 && (
-        <table className="mt-4 w-full text-left text-sm">
-          <thead className="text-gray-500">
-            <tr>
-              <th className="py-1">Trabajo</th>
-              <th className="py-1">Creado</th>
-              <th className="py-1">A</th>
-              <th className="py-1">B</th>
-              <th className="py-1">Árbitro</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {jobs.map((view) => (
-              <tr
-                key={view.job.id}
-                onClick={() => setSelectedId(view.job.id)}
-                className={`cursor-pointer hover:bg-gray-50 ${view.job.id === selectedId ? 'bg-blue-50' : ''}`}
-              >
-                <td className="py-1">{JOB_KIND_NAMES[view.job.kind] ?? view.job.kind}</td>
-                <td className="py-1">{formatDate(view.job.createdAt)}</td>
-                {slotsOf(view).map((slot, _, slots) => {
-                  const summary = slotSummary(view, slot)
-                  // A single-run job fills the three columns: it has no A, B or arbiter.
-                  return (
-                    <td
-                      key={slot}
-                      colSpan={slots.length === 1 ? 3 : 1}
-                      className={`py-1 font-semibold ${stateColors[summary.state] ?? 'text-red-700'}`}
-                    >
-                      {slots.length === 1 ? `Un solo modelo: ${summary.text}` : summary.text}
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {jobs.length === 0 ? (
+        <EmptyState icon={Terminal} title="Todavía no hay ejecuciones">
+          Aparecen aquí en cuanto lanzas una fase desde los pasos.
+        </EmptyState>
+      ) : (
+        <ul className="divide-y divide-line rounded border border-line bg-surface">
+          {jobs.map((view) => {
+            const selectedRow = view.job.id === selectedId
+            return (
+              <li key={view.job.id}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedId(selectedRow ? null : view.job.id)}
+                  aria-expanded={selectedRow}
+                  className={`flex w-full flex-wrap items-center gap-x-4 gap-y-1 px-3 py-2.5 text-left transition-colors ${selectedRow ? 'bg-accent-soft' : 'hover:bg-sunken'}`}
+                >
+                  <span className={`w-52 font-medium ${selectedRow ? 'text-accent' : ''}`}>{JOB_KIND_NAMES[view.job.kind] ?? view.job.kind}</span>
+                  <span className="w-36 text-sm text-muted">{formatDate(view.job.createdAt)}</span>
+                  <SlotStates view={view} />
+                </button>
+              </li>
+            )
+          })}
+        </ul>
       )}
 
-      {/* Columns side by side on wide screens, stacked on narrow ones. */}
       {selected && isPhaseJob(selected.job) && (
-        <>
+        <div className="space-y-4">
           <JobResult key={`${selected.job.id}-${selected.runs.filter(isFinished).length}`} jobId={selected.job.id} finished={!selectedUnfinished} />
-          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {/* Columns side by side on wide screens, stacked on narrow ones. */}
+          <div className={`grid grid-cols-1 gap-5 ${slotsOf(selected).length > 1 ? 'lg:grid-cols-3' : ''}`}>
             {slotsOf(selected).map((slot) => (
               <PhaseSlotColumn
                 key={`${selected.job.id}-${slot}`}
@@ -200,78 +137,69 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
               />
             ))}
           </div>
-        </>
+        </div>
       )}
       {selected && !isPhaseJob(selected.job) && (
-        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {SLOTS.filter((slot) => slot !== 'ARB').map((slot) => (
-            <SlotColumn
-              key={`${selected.job.id}-${slot}`}
-              jobId={selected.job.id}
-              slot={slot}
-              lots={lotsOfSlot(selected, slot)}
-              onChange={reload}
-            />
+            <SlotColumn key={`${selected.job.id}-${slot}`} jobId={selected.job.id} slot={slot} lots={lotsOfSlot(selected, slot)} onChange={reload} />
           ))}
         </div>
       )}
+
+      <Collapsible persistKey={`p${project.id}.ejecuciones.v14`} title="Catálogo v1.4 por lotes" meta={<Badge>Experimental</Badge>}>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button icon={FlaskConical} onClick={start} disabled={starting}>
+            Generar el catálogo v1.4
+          </Button>
+          <span className="text-sm text-muted">Por lotes y sin árbitro. Se conserva para el hito 7 y no forma parte del flujo.</span>
+        </div>
+      </Collapsible>
     </section>
   )
 }
 
-// One side of a job: the merged catalog of its finished lots and, below, for
-// each lot the live console of its run (retries included, they publish into
-// the same stream) and the state of its last attempt.
-function SlotColumn({
-  jobId,
-  slot,
-  lots,
-  onChange,
-}: {
-  jobId: string
-  slot: string
-  lots: Run[][]
-  onChange: () => void
-}) {
+// One side of a job of the catalog v1.4: the merged catalog of its finished
+// lots and, for each lot, the live console of its run (retries included, they
+// publish into the same stream) and the state of its last attempt.
+function SlotColumn({ jobId, slot, lots, onChange }: { jobId: string; slot: string; lots: Run[][]; onChange: () => void }) {
   const first = lots[0]?.[0]
-  if (!first) {
-    return null
-  }
+  if (!first) return null
 
   // Changes each time a run of this slot finishes: the catalog is fetched again.
   const finishedRuns = lots.flat().filter(isFinished).length
 
   return (
-    <div className="min-w-0">
-      <h3 className="font-semibold">
-        {slot} · {first.model} <span className="font-normal text-gray-500">({first.provider})</span>
-      </h3>
+    <div className="min-w-0 space-y-3">
+      <SlotHeader slot={slot} run={first} />
       <CatalogView jobId={jobId} slot={slot} version={finishedRuns} />
-
-      <details open className="mt-4">
-        <summary className="cursor-pointer font-semibold">Ejecución por lotes</summary>
-        {lots.map((runs) => {
-          const lotRun = runs[0]
-          const last = runs[runs.length - 1]
-          return (
-            <div key={lotRun.id} className="mt-3">
-              {(lotRun.lotTotal ?? 1) > 1 && (
-                <p className="text-sm font-semibold text-gray-600">
-                  Lote {lotRun.lotNumber} de {lotRun.lotTotal}
-                </p>
-              )}
-              {/* Queued lots have nothing to show yet: their console opens when they start. */}
-              {lotRun.state !== 'Queued' ? (
-                <RunConsole runId={lotRun.id} onFinished={onChange} />
-              ) : (
-                <p className="text-sm text-gray-500">En cola…</p>
-              )}
-              {isFinished(last) && <RunResult run={last} />}
-            </div>
-          )
-        })}
-      </details>
+      {lots.map((runs) => {
+        const lotRun = runs[0]
+        const last = runs[runs.length - 1]
+        return (
+          <div key={lotRun.id} className="space-y-2">
+            {(lotRun.lotTotal ?? 1) > 1 && (
+              <p className="text-sm font-medium text-muted">
+                Lote {lotRun.lotNumber} de {lotRun.lotTotal}
+              </p>
+            )}
+            {/* Queued lots have nothing to show yet: their console opens when they start. */}
+            {lotRun.state !== 'Queued' ? <RunConsole runId={lotRun.id} onFinished={onChange} /> : <p className="text-sm text-muted">En cola…</p>}
+            {isFinished(last) && <RunResult run={last} />}
+          </div>
+        )
+      })}
     </div>
+  )
+}
+
+function SlotHeader({ slot, run }: { slot: string; run: Run }) {
+  return (
+    <h3 className="flex flex-wrap items-baseline gap-x-2">
+      <span className="font-semibold">{SLOT_NAMES[slot]}</span>
+      <span className="text-sm text-muted">{run.model}</span>
+      <span className="text-xs text-faint">{run.provider}</span>
+    </h3>
   )
 }
 
@@ -284,13 +212,9 @@ function PhaseSlotColumn({ slot, runs, onChange }: { slot: string; runs: Run[]; 
   const last = runs[runs.length - 1]
 
   return (
-    <div className="min-w-0">
-      <h3 className="font-semibold">
-        {SLOT_NAMES[slot]} · {first.model} <span className="font-normal text-gray-500">({first.provider})</span>
-      </h3>
-      {first.state === 'Queued' && (
-        <p className="mt-2 text-sm text-gray-500">{slot === 'ARB' ? 'Espera a que terminen A y B…' : 'En cola…'}</p>
-      )}
+    <div className="min-w-0 space-y-2">
+      <SlotHeader slot={slot} run={first} />
+      {first.state === 'Queued' && <p className="text-sm text-muted">{slot === 'ARB' ? 'Espera a que terminen A y B…' : 'En cola…'}</p>}
       {first.state !== 'Queued' && first.state !== 'Skipped' && <RunConsole runId={first.id} onFinished={onChange} />}
       {isFinished(last) && <RunResult run={last} />}
     </div>
@@ -310,33 +234,31 @@ function JobResult({ jobId, finished }: { jobId: string; finished: boolean }) {
   }, [jobId, finished])
 
   if (!result) return null
+  const text =
+    result.fuente === null
+      ? `El trabajo falló: ${result.mensaje}`
+      : result.verificacion_cruzada
+        ? 'Resultado: la unión del árbitro.'
+        : result.fuente === 'SUG'
+          ? 'Resultado: la salida de un solo modelo (sugerencias de respuesta), sin verificación cruzada.'
+          : result.fuente === 'MOCK'
+            ? `${result.mensaje} Se ve en el paso «Mockup».`
+            : `Resultado: la salida de ${result.fuente}, sin verificación cruzada.`
   return (
-    <div className="mt-6 rounded border border-gray-200 p-3 text-sm">
-      {result.fuente === null ? (
-        <p className="font-semibold text-red-700">El trabajo falló: {result.mensaje}</p>
-      ) : (
-        <p className={`font-semibold ${result.verificacion_cruzada ? 'text-green-700' : 'text-amber-700'}`}>
-          Resultado:{' '}
-          {result.verificacion_cruzada
-            ? 'unión del árbitro'
-            : result.fuente === 'SUG'
-              ? 'salida de un solo modelo (sugerencias de respuesta, sin verificación cruzada)'
-              : result.fuente === 'MOCK'
-                ? `${result.mensaje} Se ve en el paso «Mockup» del proyecto.`
-                : `salida de ${result.fuente} sin verificación cruzada`}
-        </p>
-      )}
+    <div className="space-y-2">
+      <Banner tone={result.fuente === null ? 'danger' : result.verificacion_cruzada || result.fuente === 'MOCK' ? 'ok' : 'warn'}>{text}</Banner>
       {result.salida !== null && (
-        <details className="mt-2">
-          <summary className="cursor-pointer">Ver la salida (JSON)</summary>
-          <pre className="mt-2 max-h-96 overflow-auto rounded bg-gray-50 p-2 text-xs">{JSON.stringify(result.salida, null, 2)}</pre>
+        <details className="text-sm">
+          <summary className="cursor-pointer text-muted hover:text-fg">Ver la salida en JSON</summary>
+          <pre className="mt-2 max-h-96 overflow-auto rounded border border-line bg-sunken p-3 text-xs">{JSON.stringify(result.salida, null, 2)}</pre>
         </details>
       )}
     </div>
   )
 }
 
-// Live console of one run through Server-Sent Events.
+// Live console of one run through Server-Sent Events. A terminal look in both
+// modes: it is the raw output of Claude Code.
 function RunConsole({ runId, onFinished }: { runId: string; onFinished: () => void }) {
   const [events, setEvents] = useState<RunEvent[]>([])
 
@@ -361,38 +283,39 @@ function RunConsole({ runId, onFinished }: { runId: string; onFinished: () => vo
   }, [runId, onFinished])
 
   return (
-    <div className="mt-2 max-h-80 overflow-auto rounded border border-gray-200 bg-gray-900 p-3 font-mono text-xs text-gray-100">
-      {events.length === 0 && <p className="text-gray-400">Esperando eventos…</p>}
+    <div className="max-h-80 overflow-auto rounded bg-[#101614] p-3 font-mono text-xs leading-relaxed text-[#d7e0dc]">
+      {events.length === 0 && <p className="text-[#7d8b86]">Esperando eventos…</p>}
       {events.map((runEvent) => (
-        <p key={runEvent.index} className="whitespace-pre-wrap break-words">
-          <span className="text-gray-400">[{runEvent.kind}]</span> {runEvent.text}
+        <p key={runEvent.index} className="break-words whitespace-pre-wrap">
+          <span className="text-[#7d8b86]">[{runEvent.kind}]</span> {runEvent.text}
         </p>
       ))}
     </div>
   )
 }
 
-// Final state of a run. Its catalog is part of the merged one (CatalogView).
+// Final state of a run: state, attempt, verdict, turns, tokens, versions and,
+// if any, the reason or the error.
 function RunResult({ run }: { run: Run }) {
   return (
-    <div className="mt-2 text-sm">
-      <p>
-        Estado: <span className={`font-semibold ${stateColors[run.state] ?? 'text-red-700'}`}>{run.state}</span>
-        {run.attempt > 1 && <> · Intento {run.attempt}</>}
-        {run.verdictState && <> · Veredicto: {run.verdictState}</>}
-        {run.numTurns !== null && <> · Turnos: {run.numTurns}</>}
+    <div className="space-y-1 text-sm">
+      <p className="flex flex-wrap items-center gap-1.5">
+        <Badge tone={RUN_STATE_TONES[run.state]}>{RUN_STATE_NAMES[run.state]}</Badge>
+        {run.attempt > 1 && <Badge>Intento {run.attempt}</Badge>}
+        {run.verdictState && <Badge>Veredicto {run.verdictState}</Badge>}
+        {run.numTurns !== null && <Badge>{run.numTurns} turnos</Badge>}
       </p>
       {run.inputTokens !== null && (
-        <p className="text-gray-500">
-          Tokens: {run.inputTokens} de entrada, {run.outputTokens} de salida
+        <p className="text-muted">
+          {run.inputTokens.toLocaleString('es-ES')} tokens de entrada, {run.outputTokens?.toLocaleString('es-ES')} de salida
         </p>
       )}
-      <p className="text-gray-500">
+      <p className="text-xs text-faint">
         Prompt {run.promptVersion ?? '—'}
-        {run.claudeCodeVersion && <> · Claude Code {run.claudeCodeVersion}</>}
+        {run.claudeCodeVersion && `, Claude Code ${run.claudeCodeVersion}`}
       </p>
-      {run.verdictReason && <p className="mt-1 text-amber-700">Motivo: {run.verdictReason}</p>}
-      {run.errorMessage && <p className="mt-1 text-red-700">{run.errorMessage}</p>}
+      {run.verdictReason && <p className="text-warn">Motivo: {run.verdictReason}</p>}
+      {run.errorMessage && <p className="text-danger">{run.errorMessage}</p>}
     </div>
   )
 }
