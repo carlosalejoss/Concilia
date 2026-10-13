@@ -76,7 +76,7 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
 
   return (
     <aside
-      className={`flex h-full shrink-0 flex-col overflow-hidden border-r border-line bg-sunken transition-[width] duration-300 ease-in-out ${
+      className={`flex h-full shrink-0 flex-col overflow-hidden border-r border-line bg-sidebar transition-[width] duration-300 ease-in-out ${
         collapsed ? 'w-14' : 'w-64'
       }`}
     >
@@ -202,7 +202,7 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
             </form>
           )}
 
-          <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 pb-3">
+          <nav className="scrollbar-none flex-1 space-y-0.5 overflow-y-auto px-2 pb-3">
             {projects.length === 0 && <p className="px-2 py-2 text-sm text-faint">Todavía no hay proyectos.</p>}
             {projects.length > 0 && shown.length === 0 && <p className="px-2 py-2 text-sm text-faint">Ningún proyecto se llama así.</p>}
             {shown.map((project) => {
