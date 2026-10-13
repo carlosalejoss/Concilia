@@ -82,7 +82,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
           </ul>
         </details>
       )}
-      <DeliverableBar state={state} name="Backlog" />
+      <DeliverableBar state={state} name="Backlog" summary="" />
 
       <div className="mt-3 space-y-4">
         {epics.map((epic, index) => (

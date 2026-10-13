@@ -1,65 +1,80 @@
+import { CheckCircle2, Lock, RotateCcw, Save, ShieldCheck, Undo2 } from 'lucide-react'
 import type { useDeliverable } from './useDeliverable.ts'
+import Banner from './ui/Banner.tsx'
+import Button from './ui/Button.tsx'
+import { formatDate } from './api.ts'
 
-// The bar of a deliverable: its state, the buttons and what keeps it from
-// being validated (or why an action failed).
-function DeliverableBar<T>({
-  state,
-  name,
-}: {
-  state: ReturnType<typeof useDeliverable<T>>
-  name: string
-}) {
+// The bar of a catalog or backlog, fixed at the top while scrolling: its
+// state, the buttons to save, undo, validate or reopen it, and below it what
+// keeps it from being validated (or why an action failed) and the warnings.
+function DeliverableBar<T>({ state, name, summary }: { state: ReturnType<typeof useDeliverable<T>>; name: string; summary: string }) {
   const { deliverable: d, dirty, busy, messages, save, validate, reopen, discard } = state
   if (!d) return null
   const validated = d.status === 'Validated'
   const shown = messages.length > 0 ? messages : validated ? [] : d.errors
 
   return (
-    <div className="mt-3 space-y-2 text-sm">
+    <div className="sticky top-0 z-10 -mx-8 space-y-2 border-b border-line bg-canvas/95 px-8 py-3 backdrop-blur">
       <div className="flex flex-wrap items-center gap-2">
+        <span className="mr-auto flex items-center gap-2 text-sm">
+          {validated ? (
+            <>
+              <Lock className="size-4 text-ok" aria-hidden />
+              <span>
+                <span className="font-medium text-ok">{name} validado</span>
+                {d.validatedAt && <span className="text-muted"> el {formatDate(d.validatedAt)}. Solo lectura.</span>}
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="text-muted">{summary}</span>
+              {dirty && <span className="font-medium text-warn">Cambios sin guardar</span>}
+            </>
+          )}
+        </span>
         {validated ? (
-          <>
-            <span className="font-semibold text-green-700">
-              {name} validado{d.validatedAt && ` el ${new Date(d.validatedAt).toLocaleString('es-ES')}`}: solo lectura.
-            </span>
-            <button type="button" disabled={busy} onClick={reopen} className="rounded border border-gray-400 px-3 py-1 disabled:opacity-50">
-              Reabrir
-            </button>
-          </>
+          <Button icon={RotateCcw} disabled={busy} onClick={reopen}>
+            Reabrir
+          </Button>
         ) : (
           <>
-            <button type="button" disabled={busy || !dirty} onClick={save} className="rounded border border-gray-400 px-3 py-1 disabled:opacity-50">
+            <Button variant="ghost" icon={Undo2} disabled={busy || !dirty} onClick={discard}>
+              Deshacer
+            </Button>
+            <Button icon={Save} disabled={busy || !dirty} onClick={save}>
               Guardar cambios
-            </button>
-            <button type="button" disabled={busy || !dirty} onClick={discard} className="rounded border border-gray-400 px-3 py-1 disabled:opacity-50">
-              Deshacer cambios
-            </button>
-            <button type="button" disabled={busy} onClick={validate} className="rounded bg-green-700 px-3 py-1 text-white disabled:opacity-50">
-              Validar
-            </button>
-            {dirty && <span className="text-amber-700">Hay cambios sin guardar.</span>}
+            </Button>
+            <Button variant="primary" icon={ShieldCheck} disabled={busy} onClick={validate}>
+              Validar el {name.toLowerCase()}
+            </Button>
           </>
         )}
       </div>
       {shown.length > 0 && (
-        <div className="rounded border border-red-200 bg-red-50 p-2 text-red-800">
-          <p className="font-semibold">{messages.length > 0 ? 'No se ha podido:' : 'Antes de validar hay que corregir:'}</p>
-          <ul className="list-disc pl-5">
+        <Banner tone="danger">
+          <p className="font-medium">{messages.length > 0 ? 'No se ha podido hacer:' : 'Antes de validar hay que corregir:'}</p>
+          <ul className="mt-1 max-h-32 list-disc overflow-y-auto pl-5">
             {shown.map((m, i) => (
               <li key={i}>{m}</li>
             ))}
           </ul>
-        </div>
+        </Banner>
       )}
       {!validated && d.warnings.length > 0 && (
-        <div className="rounded border border-amber-200 bg-amber-50 p-2 text-amber-800">
-          <p className="font-semibold">Avisos (no impiden validar):</p>
-          <ul className="list-disc pl-5">
+        <Banner tone="warn">
+          <p className="font-medium">Avisos que no impiden validar:</p>
+          <ul className="mt-1 max-h-32 list-disc overflow-y-auto pl-5">
             {d.warnings.map((m, i) => (
               <li key={i}>{m}</li>
             ))}
           </ul>
-        </div>
+        </Banner>
+      )}
+      {!validated && shown.length === 0 && d.warnings.length === 0 && !dirty && (
+        <p className="flex items-center gap-1.5 text-xs text-ok">
+          <CheckCircle2 className="size-3.5" aria-hidden />
+          Listo para validar.
+        </p>
       )}
     </div>
   )

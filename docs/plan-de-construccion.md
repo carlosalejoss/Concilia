@@ -323,7 +323,7 @@ Decidido por el autor el 13-10-2026. La web era una sola página larga en la que
 
 - [x] 72. Estructura y kit: barra lateral, cabecera del proyecto (estado de la API, ajustes, trabajo en curso, modo claro u oscuro), barra de pasos con un solo paso visible, URLs y componentes comunes. El contenido de cada paso se reutiliza tal cual.
 - [x] 73. Documentos y Preguntas: tabla compacta de archivos con zona para arrastrar; rondas en acordeón, filtros, una línea por pregunta que se despliega para responder, y «Sugerir con IA» en la barra de la ronda.
-- [ ] 74. Catálogo: agrupado por tipo en grupos plegables, búsqueda y filtros, filas de solo lectura que se despliegan para editar, y barra fija con Guardar y Validar.
+- [x] 74. Catálogo: agrupado por tipo en grupos plegables, búsqueda y filtros, filas de solo lectura que se despliegan para editar, y barra fija con Guardar y Validar.
 - [ ] 75. Backlog: árbol plegable épica → historia → criterios y tareas, «Desplegar todo» y «Plegar todo», filtros y tarjeta de cobertura.
 - [ ] 76. Mockup y Actividad: visor a ancho completo con su barra; panel «Actividad de este paso» con sus trabajos y la consola, y la vista técnica de ejecuciones con el mismo estilo.
 
