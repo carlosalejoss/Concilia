@@ -1,6 +1,9 @@
 import { useEffect, useState, type DragEvent } from 'react'
+import { ChevronRight, FileText, Upload } from 'lucide-react'
 import { errorMessage, formatDate, type Project, type ProjectFile } from './api.ts'
 import { ALLOWED_EXTENSIONS, MAX_BYTES, validateUpload } from './uploadRules.ts'
+import Banner from './ui/Banner.tsx'
+import Badge from './ui/Badge.tsx'
 
 type ProjectFilesProps = {
   project: Project
@@ -14,15 +17,20 @@ function formatSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-// Detail of one project: a drop zone to upload files and the list of files.
-// App.tsx gives this component a new "key" for each project, so React creates
-// a fresh one (with empty state) whenever another project is selected.
+function extensionOf(name: string): string {
+  const dot = name.lastIndexOf('.')
+  return dot >= 0 ? name.slice(dot + 1).toUpperCase() : ''
+}
+
+// The documents step: a zone to drop files (or click to choose them) and the
+// list of files; each one with text opens to show what was extracted from it.
 function ProjectFiles({ project, onChange }: ProjectFilesProps) {
   const [files, setFiles] = useState<ProjectFile[]>([])
   const [errors, setErrors] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
   const [dragging, setDragging] = useState(false)
-  const [shown, setShown] = useState<{ file: ProjectFile; text: string } | null>(null)
+  // The extracted text of each file opened, by id (loaded when it opens).
+  const [texts, setTexts] = useState<Record<number, string>>({})
 
   useEffect(() => {
     fetch(`/projects/${project.id}/files`)
@@ -65,15 +73,23 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
     setUploading(false)
   }
 
-  async function showText(file: ProjectFile) {
-    setErrors([])
+  async function toggleText(file: ProjectFile) {
+    if (file.id in texts) {
+      setTexts((current) => {
+        const rest = { ...current }
+        delete rest[file.id]
+        return rest
+      })
+      return
+    }
     try {
       const response = await fetch(`/projects/${project.id}/files/${file.id}/text`)
       if (!response.ok) {
         setErrors([`${file.fileName}: ${await errorMessage(response)}`])
         return
       }
-      setShown({ file, text: await response.text() })
+      const text = await response.text()
+      setTexts((current) => ({ ...current, [file.id]: text }))
     } catch (e: unknown) {
       setErrors([`${file.fileName}: ${String(e)}`])
     }
@@ -87,11 +103,9 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
   }
 
   return (
-    <section className="mt-8">
-      <h2 className="text-xl font-semibold">Archivos de «{project.name}»</h2>
-
+    <div className="space-y-4">
       {/* The <label> wraps a hidden file input, so clicking the zone also opens
-          the file picker. */}
+          the file picker. Smaller once there are files. */}
       <label
         onDragOver={(e) => {
           e.preventDefault() // Needed so the browser allows dropping here.
@@ -99,13 +113,16 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
-        className={`mt-4 block cursor-pointer rounded border-2 border-dashed p-8 text-center ${
-          dragging ? 'border-blue-600 bg-blue-50' : 'border-gray-300'
-        }`}
+        className={`flex cursor-pointer items-center gap-3 rounded border border-dashed px-4 transition-colors ${
+          files.length === 0 ? 'flex-col py-10 text-center' : 'py-3'
+        } ${dragging ? 'border-accent bg-accent-soft' : 'border-line hover:border-faint'}`}
       >
-        {uploading ? 'Subiendo…' : 'Arrastra archivos aquí o haz clic para elegirlos'}
-        <span className="mt-1 block text-sm text-gray-500">
-          {ALLOWED_EXTENSIONS.join(', ')} · máximo {MAX_BYTES / (1024 * 1024)} MB por archivo
+        <Upload className={`shrink-0 text-faint ${files.length === 0 ? 'size-7' : 'size-4'}`} aria-hidden />
+        <span className="text-sm">
+          <span className="font-medium">{uploading ? 'Subiendo…' : 'Arrastra los archivos aquí o elígelos'}</span>
+          <span className="block text-muted">
+            {ALLOWED_EXTENSIONS.join(', ')}, hasta {MAX_BYTES / (1024 * 1024)} MB cada uno
+          </span>
         </span>
         <input
           type="file"
@@ -121,69 +138,57 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
       </label>
 
       {errors.map((error) => (
-        <p key={error} className="mt-2 text-red-700">
+        <Banner key={error} tone="danger">
           {error}
-        </p>
+        </Banner>
       ))}
 
-      {files.length === 0 ? (
-        <p className="mt-4 text-gray-500">Este proyecto todavía no tiene archivos.</p>
-      ) : (
-        <table className="mt-4 w-full text-left text-sm">
-          <thead className="text-gray-500">
-            <tr>
-              <th className="py-1">Nombre</th>
-              <th className="py-1">Tipo</th>
-              <th className="py-1 text-right">Tamaño</th>
-              <th className="py-1 text-right">Subido</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {files.map((file) => (
-              <tr key={file.id}>
-                {/* The SHA-256 hash is shown as a tooltip on hover. Files with
-                    extracted text can be clicked to show it. */}
-                <td className="py-1" title={`SHA-256: ${file.sha256}`}>
+      {files.length > 0 && (
+        <ul className="divide-y divide-line rounded border border-line bg-surface">
+          {files.map((file) => {
+            const open = file.id in texts
+            const text = texts[file.id]
+            return (
+              <li key={file.id}>
+                <div className="flex items-center gap-3 px-3 py-2.5">
+                  <FileText className="size-4 shrink-0 text-faint" aria-hidden />
+                  <span className="min-w-0 flex-1 truncate font-medium" title={`SHA-256: ${file.sha256}`}>
+                    {file.fileName}
+                  </span>
+                  <Badge>{extensionOf(file.fileName)}</Badge>
+                  <span className="w-20 text-right text-sm text-muted">{formatSize(file.sizeBytes)}</span>
+                  <span className="hidden w-36 text-right text-sm text-muted sm:block">{formatDate(file.uploadedAt)}</span>
                   {file.textStoredName ? (
                     <button
                       type="button"
-                      onClick={() => showText(file)}
-                      className={`text-left text-blue-700 underline ${
-                        shown?.file.id === file.id ? 'font-semibold' : ''
-                      }`}
+                      onClick={() => toggleText(file)}
+                      aria-expanded={open}
+                      className="flex items-center gap-1 rounded px-1.5 py-1 text-sm text-accent hover:bg-accent-soft"
                     >
-                      {file.fileName}
+                      <ChevronRight className={`size-4 transition-transform ${open ? 'rotate-90' : ''}`} aria-hidden />
+                      Texto
                     </button>
                   ) : (
-                    file.fileName
+                    <span className="w-16 text-right text-xs text-faint">Sin texto</span>
                   )}
-                </td>
-                <td className="py-1 text-gray-500">{file.contentType}</td>
-                <td className="py-1 text-right">{formatSize(file.sizeBytes)}</td>
-                <td className="py-1 text-right text-gray-500">{formatDate(file.uploadedAt)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+                {open &&
+                  (text.trim() === '' ? (
+                    <p className="border-t border-line px-10 py-3 text-sm text-muted">
+                      No se ha encontrado texto. Si es un PDF escaneado, sus páginas son imágenes y no se puede extraer texto sin OCR.
+                    </p>
+                  ) : (
+                    // The text as the models read it; whitespace-pre-wrap keeps the line breaks.
+                    <pre className="max-h-96 overflow-auto border-t border-line bg-canvas px-10 py-3 font-serif text-sm leading-relaxed whitespace-pre-wrap">
+                      {text}
+                    </pre>
+                  ))}
+              </li>
+            )
+          })}
+        </ul>
       )}
-
-      {shown && (
-        <div className="mt-6">
-          <h3 className="font-semibold">Texto extraído de «{shown.file.fileName}»</h3>
-          {shown.text.trim() === '' ? (
-            <p className="mt-2 text-gray-500">
-              No se ha encontrado texto. Si es un PDF escaneado, sus páginas son imágenes y no se
-              puede extraer texto sin OCR.
-            </p>
-          ) : (
-            // <pre> keeps the line breaks; whitespace-pre-wrap wraps long lines.
-            <pre className="mt-2 max-h-96 overflow-auto whitespace-pre-wrap rounded border border-gray-200 bg-gray-50 p-3 text-sm">
-              {shown.text}
-            </pre>
-          )}
-        </div>
-      )}
-    </section>
+    </div>
   )
 }
 
