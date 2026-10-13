@@ -7,6 +7,7 @@ import EmptyState from './ui/EmptyState.tsx'
 import Logo from './ui/Logo.tsx'
 import { useHashRoute } from './hooks/useHashRoute.ts'
 import { useTheme } from './hooks/useTheme.ts'
+import { usePersistentState } from './hooks/usePersistentState.ts'
 
 // The layout (milestone 14): the projects on the left and, on the right, the
 // project open in the URL (#/proyectos/27/catalogo), one step at a time.
@@ -15,6 +16,7 @@ function App() {
   const [projects, setProjects] = useState<Project[]>([])
   const [route, navigate] = useHashRoute()
   const [theme, toggleTheme] = useTheme()
+  const [collapsed, setCollapsed] = usePersistentState('reqarbiter.sidebar.collapsed', false)
 
   // Ask the API for its status and the projects once, when the page loads.
   useEffect(() => {
@@ -60,6 +62,9 @@ function App() {
         health={health}
         theme={theme}
         onToggleTheme={toggleTheme}
+        collapsed={collapsed}
+        onToggleCollapsed={() => setCollapsed(!collapsed)}
+        onHome={() => navigate({ kind: 'home' })}
       />
       <main className="min-w-0 flex-1 overflow-y-auto">
         {project && route.kind !== 'home' ? (

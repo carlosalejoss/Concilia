@@ -4,7 +4,7 @@ import type { FlowStep, StepState, StepStatus } from './api.ts'
 export const STEP_NAMES: Record<FlowStep, string> = {
   Documents: 'Documentos',
   Questions: 'Preguntas',
-  Catalog: 'Catálogo',
+  Catalog: 'Requisitos',
   Backlog: 'Backlog',
   Mockup: 'Mockup',
 }
