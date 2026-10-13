@@ -19,7 +19,8 @@
 
   --color-canvas: #f4f6f5; /* paper: page background */
   --color-surface: #ffffff; /* repeated items, panels */
-  --color-sunken: #e9eeec; /* sidebar, table headers */
+  --color-sunken: #e9eeec; /* table headers, quiet areas */
+  --color-sidebar: #e1e8e5; /* the sidebar, a step darker than the page */
   --color-line: #d8e0dd; /* hairlines and borders */
   --color-fg: #1c2421; /* ink */
   --color-muted: #5c6a65; /* graphite: secondary text */
@@ -50,6 +51,7 @@
   --color-canvas: #121816;
   --color-surface: #18201d;
   --color-sunken: #1d2622;
+  --color-sidebar: #0c110f;
   --color-line: #2c3833;
   --color-fg: #e3e9e6;
   --color-muted: #9daaa4;
@@ -90,4 +92,12 @@ body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Scrolls without showing the scroll bar (the list of projects). */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
