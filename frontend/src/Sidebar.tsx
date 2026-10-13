@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
-import { Moon, Plus, Sun } from 'lucide-react'
-import { formatDate, type Project } from './api.ts'
+import { Moon, Plus, Search, Sun, X } from 'lucide-react'
+import { formatDay, searchable, type Project } from './api.ts'
+import Logo from './ui/Logo.tsx'
 import Button from './ui/Button.tsx'
 import type { Theme } from './hooks/useTheme.ts'
 
@@ -24,6 +25,17 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
   const [name, setName] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  // The search opens below the header with the magnifier; closing it clears it.
+  const [searching, setSearching] = useState(false)
+  const [query, setQuery] = useState('')
+
+  function closeSearch() {
+    setSearching(false)
+    setQuery('')
+  }
+
+  const needle = searchable(query.trim())
+  const shown = needle === '' ? projects : projects.filter((p) => searchable(p.name).includes(needle))
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault() // Stop the browser from reloading the page.
@@ -40,19 +52,48 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
   return (
     <aside className="flex h-full w-64 shrink-0 flex-col border-r border-line bg-sunken">
       <div className="flex items-center gap-2 px-4 py-4">
-        {/* The mark: two sources (model A and model B) that meet in one validated line. */}
-        <svg viewBox="0 0 24 24" className="size-6" aria-hidden fill="none" strokeWidth="2.5" strokeLinecap="round">
-          <path d="M3 5 C 9 5, 9 12, 13 12" className="stroke-model-a" />
-          <path d="M3 19 C 9 19, 9 12, 13 12" className="stroke-model-b" />
-          <path d="M13 12 H 21" className="stroke-accent" />
-        </svg>
+        <Logo />
         <span className="font-semibold tracking-tight">ReqArbiter</span>
       </div>
 
       <div className="flex items-center justify-between px-4 pt-2 pb-1">
         <span className="text-sm font-medium text-muted">Proyectos</span>
-        <Button variant="ghost" size="sm" icon={Plus} onClick={() => setCreating(!creating)} aria-label="Nuevo proyecto" title="Nuevo proyecto" />
+        <span className="flex">
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={Search}
+            onClick={() => (searching ? closeSearch() : setSearching(true))}
+            aria-label="Buscar proyectos"
+            aria-expanded={searching}
+            title="Buscar proyectos"
+            className={searching ? 'bg-surface text-fg' : ''}
+          />
+          <Button variant="ghost" size="sm" icon={Plus} onClick={() => setCreating(!creating)} aria-label="Nuevo proyecto" title="Nuevo proyecto" />
+        </span>
       </div>
+
+      {searching && (
+        <div className="px-3 pb-2">
+          <label className="flex items-center gap-2 rounded border border-line bg-surface px-2.5 py-1.5 text-sm focus-within:outline-2 focus-within:outline-accent">
+            <Search className="size-4 shrink-0 text-faint" aria-hidden />
+            <input
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Escape' && closeSearch()}
+              placeholder="Buscar por nombre"
+              aria-label="Buscar proyectos por nombre"
+              className="w-full min-w-0 bg-transparent placeholder:text-faint focus:outline-none"
+            />
+            {query !== '' && (
+              <button type="button" onClick={() => setQuery('')} aria-label="Borrar la búsqueda" className="text-faint hover:text-fg">
+                <X className="size-4" aria-hidden />
+              </button>
+            )}
+          </label>
+        </div>
+      )}
 
       {creating && (
         <form onSubmit={handleSubmit} className="space-y-2 px-3 pb-2">
@@ -78,7 +119,8 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
 
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 pb-3">
         {projects.length === 0 && <p className="px-2 py-2 text-sm text-faint">Todavía no hay proyectos.</p>}
-        {projects.map((project) => {
+        {projects.length > 0 && shown.length === 0 && <p className="px-2 py-2 text-sm text-faint">Ningún proyecto se llama así.</p>}
+        {shown.map((project) => {
           const selected = project.id === selectedId
           return (
             <button
@@ -91,7 +133,7 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
               }`}
             >
               <span className="block truncate">{project.name}</span>
-              <span className="block text-xs text-faint">{formatDate(project.createdAt)}</span>
+              <span className="block text-xs text-faint">{formatDay(project.createdAt)}</span>
             </button>
           )
         })}
