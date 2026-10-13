@@ -5,6 +5,15 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ReqArbiter</title>
+    <script>
+      // The chosen theme before React starts, so the page does not flash
+      // light in dark mode (useTheme keeps it up to date afterwards).
+      try {
+        const saved = JSON.parse(localStorage.getItem('reqarbiter.theme'))
+        const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (dark) document.documentElement.classList.add('dark')
+      } catch {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

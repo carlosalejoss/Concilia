@@ -1,93 +1,86 @@
-import { useEffect, useState } from 'react'
-import type { Project } from './api.ts'
-import Projects from './Projects.tsx'
-import Jobs from './Jobs.tsx'
-import ProjectSettings from './ProjectSettings.tsx'
-import ProjectSteps from './ProjectSteps.tsx'
+import { useCallback, useEffect, useState } from 'react'
+import { FolderOpen } from 'lucide-react'
+import { errorMessage, type Project } from './api.ts'
+import Sidebar, { type HealthState } from './Sidebar.tsx'
+import ProjectWorkspace from './ProjectWorkspace.tsx'
+import EmptyState from './ui/EmptyState.tsx'
+import { useHashRoute } from './hooks/useHashRoute.ts'
+import { useTheme } from './hooks/useTheme.ts'
 
-type Tab = 'steps' | 'runs'
-
-type HealthState =
-  | { kind: 'loading' }
-  | { kind: 'ok'; status: string }
-  | { kind: 'error'; message: string }
-
+// The layout (milestone 14): the projects on the left and, on the right, the
+// project open in the URL (#/proyectos/27/catalogo), one step at a time.
 function App() {
   const [health, setHealth] = useState<HealthState>({ kind: 'loading' })
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const [tab, setTab] = useState<Tab>('steps')
-  // The job to select when the "Ejecuciones" tab opens from "Ver ejecución".
-  const [jobToShow, setJobToShow] = useState<string | null>(null)
+  const [projects, setProjects] = useState<Project[]>([])
+  const [route, navigate] = useHashRoute()
+  const [theme, toggleTheme] = useTheme()
 
-  function selectProject(project: Project | null) {
-    setSelectedProject(project)
-    setTab('steps')
-    setJobToShow(null)
-  }
-
-  function showJob(jobId: string) {
-    setJobToShow(jobId)
-    setTab('runs')
-  }
-
-  // Ask the API for its status once, when the page loads.
+  // Ask the API for its status and the projects once, when the page loads.
   useEffect(() => {
     fetch('/health')
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`)
-        }
-        const body: { status: string } = await response.json()
-        setHealth({ kind: 'ok', status: body.status })
-      })
-      .catch((error: unknown) => {
-        const message = error instanceof Error ? error.message : String(error)
-        setHealth({ kind: 'error', message })
-      })
+      .then((response) => setHealth(response.ok ? { kind: 'ok' } : { kind: 'error', message: `HTTP ${response.status}` }))
+      .catch((e: unknown) => setHealth({ kind: 'error', message: String(e) }))
+    fetch('/projects')
+      .then(async (response) => (response.ok ? setProjects(await response.json()) : null))
+      .catch(() => setProjects([]))
   }, [])
 
+  const createProject = useCallback(
+    async (name: string): Promise<string | null> => {
+      try {
+        const response = await fetch('/projects', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name }),
+        })
+        if (!response.ok) return await errorMessage(response)
+        // The list is newest first; the new project opens straight away.
+        const created: Project = await response.json()
+        setProjects((current) => [created, ...current])
+        navigate({ kind: 'step', projectId: created.id, step: null })
+        return null
+      } catch (e: unknown) {
+        return String(e)
+      }
+    },
+    [navigate],
+  )
+
+  const projectId = route.kind === 'home' ? null : route.projectId
+  const project = projects.find((p) => p.id === projectId) ?? null
+
   return (
-    <main className="mx-auto max-w-6xl p-8 font-sans">
-      <h1 className="text-2xl font-bold">ReqArbiter</h1>
-      <p className="mt-4">
-        Estado de la API:{' '}
-        {health.kind === 'loading' && <span className="text-gray-500">comprobando…</span>}
-        {health.kind === 'ok' && <span className="font-semibold text-green-700">{health.status}</span>}
-        {health.kind === 'error' && (
-          <span className="font-semibold text-red-700">sin conexión ({health.message})</span>
+    <div className="flex h-screen overflow-hidden bg-canvas font-sans text-fg antialiased">
+      <Sidebar
+        projects={projects}
+        selectedId={projectId}
+        onSelect={(id) => navigate({ kind: 'step', projectId: id, step: null })}
+        onCreate={createProject}
+        health={health}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+      <main className="min-w-0 flex-1 overflow-y-auto">
+        {project && route.kind !== 'home' ? (
+          // key: another project starts with empty state.
+          <ProjectWorkspace
+            key={project.id}
+            project={project}
+            route={route}
+            navigate={navigate}
+            onProjectSaved={(saved) => setProjects((current) => current.map((p) => (p.id === saved.id ? saved : p)))}
+          />
+        ) : (
+          <div className="mx-auto max-w-xl px-6 py-24">
+            <EmptyState icon={FolderOpen} title={projects.length === 0 ? 'Crea tu primer proyecto' : 'Elige un proyecto'}>
+              {projects.length === 0
+                ? 'Pulsa «+» en la barra lateral, ponle un nombre y sube la documentación del sistema.'
+                : 'Ábrelo en la barra lateral para ver sus pasos: documentos, preguntas, catálogo, backlog y mockup.'}
+            </EmptyState>
+          </div>
         )}
-      </p>
-      <Projects selectedId={selectedProject?.id ?? null} onSelect={selectProject} />
-      {/* key: a different project creates new components with empty state. */}
-      {selectedProject && (
-        <ProjectSettings key={`settings-${selectedProject.id}`} project={selectedProject} onSaved={setSelectedProject} />
-      )}
-      {selectedProject && (
-        <nav className="mt-8 flex gap-2 border-b border-gray-200">
-          {(
-            [
-              ['steps', 'Pasos'],
-              ['runs', 'Ejecuciones'],
-            ] as const
-          ).map(([id, label]) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => setTab(id)}
-              className={`-mb-px border-b-2 px-4 py-2 ${tab === id ? 'border-blue-600 font-semibold text-blue-700' : 'border-transparent text-gray-600'}`}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
-      )}
-      {selectedProject && tab === 'steps' && (
-        <ProjectSteps key={`steps-${selectedProject.id}`} project={selectedProject} onShowJob={showJob} />
-      )}
-      {selectedProject && tab === 'runs' && (
-        <Jobs key={`runs-${selectedProject.id}-${jobToShow}`} project={selectedProject} initialJobId={jobToShow} />
-      )}
-    </main>
+      </main>
+    </div>
   )
 }
 
