@@ -4,6 +4,7 @@ import { errorMessage, type Project } from './api.ts'
 import Sidebar, { type HealthState } from './Sidebar.tsx'
 import ProjectWorkspace from './ProjectWorkspace.tsx'
 import EmptyState from './ui/EmptyState.tsx'
+import Logo from './ui/Logo.tsx'
 import { useHashRoute } from './hooks/useHashRoute.ts'
 import { useTheme } from './hooks/useTheme.ts'
 
@@ -75,12 +76,24 @@ function App() {
             }}
           />
         ) : (
-          <div className="mx-auto max-w-xl px-6 py-24">
-            <EmptyState icon={FolderOpen} title={projects.length === 0 ? 'Crea tu primer proyecto' : 'Elige un proyecto'}>
-              {projects.length === 0
-                ? 'Pulsa «+» en la barra lateral, ponle un nombre y sube la documentación del sistema.'
-                : 'Ábrelo en la barra lateral para ver sus pasos: documentos, preguntas, catálogo, backlog y mockup.'}
-            </EmptyState>
+          // Home: the mark and the name, what the tool does, and what to do
+          // next, centred in the page.
+          <div className="flex min-h-full items-center justify-center px-6 py-16">
+            <div className="w-full max-w-lg text-center">
+              <Logo className="mx-auto size-16" />
+              <h1 className="mt-5 text-4xl font-semibold tracking-tight">ReqArbiter</h1>
+              <p className="mx-auto mt-3 max-w-md text-muted">
+                Requisitos y backlog a partir de la documentación de un sistema. Dos modelos trabajan cada fase por separado y un árbitro une
+                lo que proponen.
+              </p>
+              <div className="mt-10">
+                <EmptyState icon={FolderOpen} title={projects.length === 0 ? 'Crea tu primer proyecto' : 'Elige un proyecto'}>
+                  {projects.length === 0
+                    ? 'Pulsa «+» en la barra lateral, ponle un nombre y sube la documentación del sistema.'
+                    : 'Ábrelo en la barra lateral para ver sus pasos: documentos, preguntas, catálogo, backlog y mockup.'}
+                </EmptyState>
+              </div>
+            </div>
           </div>
         )}
       </main>

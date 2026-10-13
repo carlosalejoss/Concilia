@@ -313,3 +313,13 @@ export async function errorMessage(response: Response): Promise<string> {
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleString('es-ES')
 }
+
+// The day only ("13/10/2026"), where the time adds nothing (the projects list).
+export function formatDay(iso: string): string {
+  return new Date(iso).toLocaleDateString('es-ES')
+}
+
+// Text for searching: lower case and without accents, so "catalogo" finds "Catálogo".
+export function searchable(text: string): string {
+  return text.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
+}
