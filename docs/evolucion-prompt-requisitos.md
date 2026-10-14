@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.5 | 14-10-2026 | Referencia de estilo del mockup: un `.zip` con un mockup del cliente; el modelo lee sus `.html` y `.css` y la plataforma incrusta sus imágenes y fuentes; el resto de prompts no cambia | Pendiente | Pendiente |
 | v0.4 | 13-10-2026 | Mockup por partes: una base y un fichero por épica, que la plataforma junta; el resto de prompts no cambia | Sí (documento B, 53 historias, 13-10-2026) | El mockup se genera (166 KB, las 53 historias) en 23 min, pero gasta 1,49 M de entrada y 204.000 de salida, el 43 % del límite de 5 h de la suscripción, y al autor no le convence el resultado |
 | v0.3 | 09-10-2026 | El árbitro ve los ids de cada propuesta con su número delante (`1:P-003`, `2:RF-001`); la plataforma los quita antes de validar | Sí (documento B, flujo completo, 13-10-2026) | Los tres árbitros aciertan a la primera, sin reparación; el catálogo y el backlog del árbitro compactan el contexto una vez; el mockup de 53 historias no cabe en 64.000 tokens de salida |
 | v0.2 | 09-10-2026 | La v0.1 con los argumentos exactos de cada llamada a `Read` (`offset` y `limit`) en lugar de rangos de líneas | Sí (documento B, una ronda, 09-10-2026) | A y B leen exactamente los tramos y LUNA ya no repara; el árbitro vuelve a confundir los ids de las propuestas (tercera vez de tres) |
@@ -337,6 +338,24 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.5 (14-10-2026)
+
+Solo cambia el prompt del mockup, por decisión del autor: si el cliente ya tiene un mockup, el nuestro debe seguir su estilo. Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- **Referencia de estilo.** El mockup del cliente se sube como `.zip` en Documentos, marcado como «estilo». Solo lo usa el mockup.
+- **El modelo saca el estilo.** Recibe las páginas y hojas de estilo en `input/estilo/` y las consulta con `Read` sin tener que leerlas enteras. La plataforma no resume colores ni fuentes (decisión del autor).
+- **Imágenes y fuentes incrustadas.** El modelo las usa por su ruta y la plataforma las mete en el `.html` como `data:`, así que el mockup sigue siendo un único fichero sin recursos externos. Una ruta desconocida da el error `ESTILO`.
+
+### Resultados
+
+Pendiente de probarlo con un modelo y un mockup de referencia.
+
+### Qué hay que mejorar
+
+Pendiente de la primera prueba. Siguen abiertos la calidad y el coste del mockup de la v0.4.
 
 ## v0.4 (13-10-2026)
 

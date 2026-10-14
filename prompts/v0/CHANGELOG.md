@@ -1,5 +1,16 @@
 # Cambios de los prompts v0
 
+## v0.5, referencia de estilo del mockup (2026-10-14)
+
+Decidido por el autor: si el cliente tiene ya un mockup, el nuestro debe seguir su estilo.
+
+- El mockup del cliente se sube en Documentos como `.zip` y queda marcado como «estilo». No es documentación: no lo leen las fases, solo el mockup, y al subirlo solo se desactualiza el mockup.
+- Al crear el trabajo de mockup, la plataforma descomprime cada `.zip` en la carpeta del trabajo (`estilo/{nombre}/`) con sus `.html`, `.css`, imágenes y fuentes. Deja fuera los scripts y lo que no sea estilo, las rutas que salen de la carpeta, `__MACOSX` y los ficheros ocultos. Las hojas de estilo minificadas llevan un salto de línea tras cada regla, para que `Read` no las corte.
+- `mockup.md` tiene una sección nueva, §5 ESTILO (`{{ESTILO}}`), y el cierre pasa a §6. Con referencia, lista sus páginas y hojas de estilo para leer con `Read` (no enteras; hasta 120.000 caracteres) y las imágenes y fuentes que puede usar por su ruta (`input/estilo/…`; hasta 512 KB cada una y 4 MB en total). Pide que el prototipo parezca de la misma aplicación sin copiar sus textos ni pantallas. Sin referencia, pide un diseño sobrio y legible, como antes.
+- El modelo saca el estilo de los ficheros él solo: la plataforma no resume colores ni fuentes.
+- Al juntar las partes, la plataforma mete esas imágenes y fuentes en el `.html` como `data:`. Una ruta de `input/estilo/` que no está en la lista es un error nuevo, `ESTILO`, que va a la reparación. Las imágenes y fuentes incrustadas no cuentan para el límite de 1 MB.
+- Los demás prompts no cambian.
+
 ## v0.4, mockup por partes (2026-10-13)
 
 Aprobado por el autor después de que el mockup de un backlog de 53 historias no cupiera en 64.000 tokens de salida: Sonnet razonaba unos 30.000 tokens y el `.html` entero iba en un solo `Write`.

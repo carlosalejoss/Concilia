@@ -7,7 +7,14 @@ export const MAX_BYTES = 10 * 1024 * 1024 // 10 MB
 export const ALLOWED_EXTENSIONS = [
   '.txt', '.md', '.pdf', '.docx', '.xlsx', '.csv', '.pptx', '.html', '.htm',
   '.eml', '.msg', '.vtt', '.srt', '.json', '.yaml', '.yml', '.xml',
+  '.zip', // only as the style reference of the mockup
 ]
+
+// A .zip is not documentation: it is a mockup of the client whose style our
+// mockup follows (StyleReference in the API).
+export function isStyleFile(name: string): boolean {
+  return name.toLowerCase().endsWith('.zip')
+}
 
 // Returns an error message for the user, or null if the file is valid.
 export function validateUpload(file: File): string | null {

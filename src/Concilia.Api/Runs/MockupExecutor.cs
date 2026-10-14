@@ -26,7 +26,7 @@ public class MockupExecutor(
             HeartbeatTimeout = options.HeartbeatTimeout,
             TotalTimeout = options.TotalTimeout,
             MaxTurns = options.MaxTurns,
-        });
+        }, run.JobId is { } jobId ? Deliverables.MockupEndpoints.StyleFolder(storage, jobId) : null);
         var original = request.Prompt;
         var reads = new List<FileRead>();
         return await new RetryRunner(provider, MaxRepairs).RunAsync(

@@ -342,7 +342,7 @@ Pedido por el autor el 14-10-2026: además de `.txt`, `.md`, `.docx` y `.pdf`, l
 | Un `.zip` no es documentación: serán mockups existentes del cliente cuyo estilo debe seguir nuestro mockup. Es otra funcionalidad, que se diseña aparte. | Autor |
 
 - [x] 77. Convertidores (`SpreadsheetText`, `SlidesText`, `HtmlText`, `EmailText`, `TranscriptText`), reglas de subida en la API y en la web, y tests con documentos construidos en memoria. Un `.msg` no se puede construir en un test: solo se prueba que uno dañado da error.
-- [ ] 78. Referencia de estilo para el mockup a partir de un `.zip` con un mockup del cliente. Pendiente de que el autor apruebe el diseño.
+- [x] 78. Referencia de estilo para el mockup a partir de un `.zip` con un mockup del cliente (prompts v0.5; detalle en `prompts/v0/CHANGELOG.md`). Decisiones del autor (14-10-2026): el `.zip` se sube en Documentos, marcado como «estilo»; el modelo recibe solo los ficheros y saca el estilo él solo; las imágenes de la referencia entran en el mockup (la plataforma las incrusta). Falta probarlo con un modelo.
 
 ## Después
 

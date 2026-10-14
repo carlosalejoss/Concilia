@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { Download, ExternalLink, Maximize2, MonitorSmartphone } from 'lucide-react'
-import { formatDate, type Deliverable, type JobView, type PhaseResult, type Project } from './api.ts'
+import { Download, ExternalLink, Maximize2, MonitorSmartphone, Palette } from 'lucide-react'
+import { formatDate, type Deliverable, type JobView, type PhaseResult, type Project, type ProjectFile } from './api.ts'
+import { isStyleFile } from './uploadRules.ts'
 import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
 import EmptyState from './ui/EmptyState.tsx'
@@ -18,8 +19,15 @@ function MockupViewer({ project, version, onShowJob }: { project: Project; versi
   const [mockup, setMockup] = useState<Deliverable<MockupSummary> | null>(null)
   const [failedJob, setFailedJob] = useState<{ id: string; message: string } | null>(null)
   const frame = useRef<HTMLIFrameElement>(null)
+  // The .zip files of the project: the style the next mockup will follow.
+  const [styles, setStyles] = useState<string[]>([])
 
   useEffect(() => {
+    fetch(`/projects/${project.id}/files`)
+      .then((response) => (response.ok ? (response.json() as Promise<ProjectFile[]>) : []))
+      .then((files) => setStyles(files.filter((f) => isStyleFile(f.fileName)).map((f) => f.fileName)))
+      .catch(() => setStyles([]))
+
     fetch(`/projects/${project.id}/deliverables/mockup`)
       .then((response) => (response.ok ? response.json() : null))
       .then(setMockup)
@@ -43,6 +51,12 @@ function MockupViewer({ project, version, onShowJob }: { project: Project; versi
 
   return (
     <div className="space-y-3">
+      <p className="flex items-start gap-2 text-sm text-muted">
+        <Palette className="mt-0.5 size-4 shrink-0 text-faint" aria-hidden />
+        {styles.length > 0
+          ? `Sigue el estilo de ${styles.join(', ')}: sus colores, fuentes, componentes e imágenes.`
+          : 'Sin referencia de estilo. Si el cliente tiene un mockup, súbelo como .zip en Documentos y el mockup seguirá su estilo.'}
+      </p>
       {failedJob && (
         <Banner
           tone="danger"

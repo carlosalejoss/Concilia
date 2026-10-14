@@ -10,6 +10,7 @@ public static class UploadRules
     [
         ".txt", ".md", ".pdf", ".docx", ".xlsx", ".csv", ".pptx", ".html", ".htm",
         ".eml", ".msg", ".vtt", ".srt", ".json", ".yaml", ".yml", ".xml",
+        ".zip", // only as the style reference of the mockup (StyleReference)
     ];
 
     // Returns an error message for the user, or null if the file is valid.

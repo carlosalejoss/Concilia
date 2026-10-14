@@ -43,6 +43,7 @@ public record StepStatus(FlowStep Step, StepState State, bool Outdated, bool Can
 public enum FlowChange
 {
     FileAdded,
+    StyleAdded,         // a style reference for the mockup (.zip): only the mockup changes
     AnswerChanged,      // a new answer, or an answer edited
     QuestionDiscarded,
     CatalogGenerated,   // a new draft replaces the catalog
@@ -76,7 +77,7 @@ public static class ProjectFlow
             [FlowStep.Catalog, FlowStep.Backlog, FlowStep.Mockup],
         FlowChange.CatalogGenerated or FlowChange.CatalogReopened or FlowChange.CatalogValidated =>
             [FlowStep.Backlog, FlowStep.Mockup],
-        FlowChange.BacklogGenerated or FlowChange.BacklogReopened or FlowChange.BacklogValidated =>
+        FlowChange.BacklogGenerated or FlowChange.BacklogReopened or FlowChange.BacklogValidated or FlowChange.StyleAdded =>
             [FlowStep.Mockup],
         _ => [],
     };
