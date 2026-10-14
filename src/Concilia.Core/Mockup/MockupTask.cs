@@ -74,8 +74,13 @@ public static class MockupTask
     // by parts ({{LECTURA}}), as in the phases.
     private static InputFile BacklogInput(MockupPlan plan) => new(BacklogFile, ReadingPlan.Indented(plan.Backlog), Required: true);
 
-    public static string Prompt(MockupPlan plan) => PromptBuilder.Fill(PromptBuilder.ReadResource(PromptResource), new Dictionary<string, string>
+    // What §5 of the prompt says when the project has no style reference.
+    public const string NoStyle = "No hay referencia de estilo: haz un diseño sobrio y legible.";
+
+    // style: what the prompt says about the style reference (StyleReference.Describe), or null.
+    public static string Prompt(MockupPlan plan, string? style = null) => PromptBuilder.Fill(PromptBuilder.ReadResource(PromptResource), new Dictionary<string, string>
     {
+        ["ESTILO"] = style ?? NoStyle,
         ["NOMBRE_SISTEMA"] = plan.SystemName,
         ["IDIOMA"] = plan.Language,
         ["LECTURA"] = ReadingPlan.Block([BacklogInput(plan)]),
@@ -124,20 +129,29 @@ public static class MockupTask
             views.Append($"<!-- {epicId} -->\n").Append(part.Trim()).Append('\n');
         }
 
-        File.WriteAllText(Path.Combine(workDirectory, OutputFile), page.Replace(Placeholder, views.ToString()));
+        // The images and fonts of the style reference go inside the page.
+        var (html, missing) = StyleReference.Inline(workDirectory, page.Replace(Placeholder, views.ToString()));
+        errors.AddRange(missing.Select(path =>
+            $"{path} ESTILO: no está en la lista de imágenes y fuentes de la referencia de estilo (§5); usa solo esas rutas."));
+        File.WriteAllText(Path.Combine(workDirectory, OutputFile), html);
         return errors;
     }
 
-    public static RunRequest BuildRequest(MockupPlan plan, Guid runId, string modelId, string workDirectory, MockupRunOptions options)
+    // styleFolder: the style reference of the job, already unpacked (see
+    // MockupEndpoints), or null. It is copied to input/estilo/.
+    public static RunRequest BuildRequest(MockupPlan plan, Guid runId, string modelId, string workDirectory, MockupRunOptions options,
+        string? styleFolder = null)
     {
         var path = Path.Combine(workDirectory, BacklogFile);
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         File.WriteAllText(path, BacklogInput(plan).Content);
+        if (styleFolder is not null && Directory.Exists(styleFolder))
+            CopyFolder(styleFolder, Path.Combine(workDirectory, StyleReference.Folder));
         return new RunRequest
         {
             RunId = runId,
             ModelId = modelId,
-            Prompt = Prompt(plan),
+            Prompt = Prompt(plan, StyleReference.Describe(workDirectory)),
             WorkDirectory = workDirectory,
             ExpectedOutputFiles = [BaseFile],
             CarriedFolders = ["input", PartsFolder],
@@ -148,6 +162,16 @@ public static class MockupTask
             MaxOutputTokens = options.MaxOutputTokens,
             InputFilesInBudget = false,
         };
+    }
+
+    private static void CopyFolder(string from, string to)
+    {
+        foreach (var file in Directory.GetFiles(from, "*", SearchOption.AllDirectories))
+        {
+            var target = Path.Combine(to, Path.GetRelativePath(from, file));
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            File.Copy(file, target, overwrite: true);
+        }
     }
 
     // The ids of the stories of a backlog, in order.
@@ -163,6 +187,9 @@ public static class MockupTask
         """(?:\b(?:src|href)\s*=\s*["']?|url\(\s*["']?|@import\s+["']?)\s*(?:https?:)?//""",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+    // The content of a data: URI ("data:image/png;base64,iVBOR…").
+    private static readonly Regex DataUri = new(@"data:[\w.+/-]+;base64,[A-Za-z0-9+/=]+", RegexOptions.Compiled);
+
     private static readonly Regex StoryView = new("""data-hu\s*=\s*["']([^"']+)["']""", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     // The checks of prompts/v0/README.md. Errors start with the element and a
@@ -174,9 +201,11 @@ public static class MockupTask
             return new PhaseValidation([$"{OutputFile} FICHERO: no se ha escrito el fichero."], []);
 
         var errors = new List<string>();
-        var bytes = Encoding.UTF8.GetByteCount(html);
+        // The images and fonts that go inside as data: URIs (those of the style
+        // reference) do not count towards the limit.
+        var bytes = Encoding.UTF8.GetByteCount(DataUri.Replace(html, "data:"));
         if (bytes > MaxBytes)
-            errors.Add($"{OutputFile} TAMANO: ocupa {bytes:N0} bytes; el máximo es {MaxBytes:N0} (1 MB).");
+            errors.Add($"{OutputFile} TAMANO: ocupa {bytes:N0} bytes sin contar las imágenes y fuentes incrustadas; el máximo es {MaxBytes:N0} (1 MB).");
         if (!html.TrimStart('﻿', ' ', '\t', '\r', '\n').StartsWith("<!doctype html", StringComparison.OrdinalIgnoreCase))
             errors.Add($"{OutputFile} DOCTYPE: no empieza por <!doctype html>.");
         if (!html.Contains("const DATOS", StringComparison.Ordinal))

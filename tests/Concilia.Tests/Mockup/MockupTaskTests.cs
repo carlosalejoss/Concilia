@@ -18,6 +18,8 @@ public class MockupTaskTests
 {
     private static string Example(string file) => File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts-v0", "ejemplo", file));
 
+    public static string ExampleBacklog() => Example("backlog_arbitro.json");
+
     // The validated backlog as the mockup receives it.
     private static readonly string Backlog = BacklogDraft.ForNextPhase(Example("backlog_arbitro.json"));
 
@@ -140,6 +142,25 @@ public class MockupTaskTests
         Assert.True(html.IndexOf($"<!-- {epics[0].Id} -->") < html.IndexOf($"<!-- {epics[^1].Id} -->"));
         // The prompt lists the file of each epic with its stories.
         Assert.Contains($"`{MockupTask.EpicFile(epics[0].Id)}`: {string.Join(", ", epics[0].StoryIds)}", MockupTask.Prompt(Plan));
+    }
+
+    [Fact]
+    public void An_image_of_the_style_reference_goes_inside_and_does_not_count_for_the_size()
+    {
+        using var temp = new TempDirectory();
+        var image = Path.Combine(temp.Path, StyleReference.Folder, "cliente", "fondo.png");
+        Directory.CreateDirectory(Path.GetDirectoryName(image)!);
+        File.WriteAllBytes(image, new byte[400 * 1024]);
+        WriteBase(temp.Path, body: $"<img src=\"input/estilo/cliente/fondo.png\"><img src='input/estilo/cliente/fondo.png'>{MockupTask.Placeholder}");
+        foreach (var (id, stories) in MockupTask.Epics(Backlog))
+            WriteEpic(temp.Path, id, stories);
+
+        Assert.Empty(MockupTask.Assemble(temp.Path, Plan));
+
+        var html = File.ReadAllText(Path.Combine(temp.Path, MockupTask.OutputFile));
+        Assert.True(html.Length > MockupTask.MaxBytes);
+        Assert.DoesNotContain("input/estilo", html);
+        Assert.True(MockupTask.Validate(html, Plan.StoryIds).Valid);
     }
 
     [Fact]

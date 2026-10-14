@@ -63,6 +63,7 @@ public static class MockupEndpoints
                 PromptVersion = PhaseExecutor.PromptVersion,
             };
             plan.Save(storage.JobFolder(job.Id));
+            await SaveStyleAsync(db, storage, projectId, job.Id);
             db.Jobs.Add(job);
             db.Runs.Add(run);
             await db.SaveChangesAsync();
@@ -84,6 +85,26 @@ public static class MockupEndpoints
             return Results.File(path, "text/html; charset=utf-8", download == true ? $"mockup-proyecto-{projectId}.html" : null);
         });
     }
+
+    // The style references of the project (its .zip files), unpacked into the
+    // job's folder (estilo/, one folder per .zip): the job keeps the ones
+    // there were when it was created, as it keeps its backlog in the plan.
+    private static async Task SaveStyleAsync(AppDbContext db, FileStorage storage, int projectId, Guid jobId)
+    {
+        var files = (await db.ProjectFiles.Where(f => f.ProjectId == projectId).OrderBy(f => f.UploadedAt).ToListAsync())
+            .Where(f => StyleReference.IsStyleFile(f.FileName));
+        var used = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var file in files)
+        {
+            var name = StyleReference.FolderName(file.FileName);
+            if (!used.Add(name))
+                name = $"{name}-{file.Id}";
+            var zip = await File.ReadAllBytesAsync(Path.Combine(storage.ProjectFolder(projectId), file.StoredName));
+            StyleReference.Extract(zip, StyleFolder(storage, jobId), name);
+        }
+    }
+
+    public static string StyleFolder(FileStorage storage, Guid jobId) => Path.Combine(storage.JobFolder(jobId), "estilo");
 
     // Called by JobWorker when the mockup run ends. A valid .html is copied to
     // the project (data/projects/{id}/mockup/mockup.html) and becomes the

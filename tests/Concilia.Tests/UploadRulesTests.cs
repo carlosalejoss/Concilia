@@ -12,6 +12,7 @@ public class UploadRulesTests
     [InlineData("salas.xlsx")]
     [InlineData("reunion.vtt")]
     [InlineData("correo.msg")]
+    [InlineData("mockup-cliente.zip")]
     [InlineData("REQUISITOS.PDF")]
     public void Allowed_types_are_valid(string fileName)
     {
@@ -20,7 +21,7 @@ public class UploadRulesTests
 
     [Theory]
     [InlineData("programa.exe")]
-    [InlineData("mockup.zip")]
+    [InlineData("comprimido.rar")]
     [InlineData("antiguo.doc")]
     [InlineData("sin_extension")]
     public void Other_types_are_rejected(string fileName)

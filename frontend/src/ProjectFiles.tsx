@@ -1,7 +1,7 @@
 import { useEffect, useState, type DragEvent } from 'react'
-import { BookOpen, FileText, Upload } from 'lucide-react'
+import { BookOpen, FileText, Palette, Upload } from 'lucide-react'
 import { errorMessage, formatDate, type Project, type ProjectFile } from './api.ts'
-import { ALLOWED_EXTENSIONS, MAX_BYTES, validateUpload } from './uploadRules.ts'
+import { ALLOWED_EXTENSIONS, MAX_BYTES, isStyleFile, validateUpload } from './uploadRules.ts'
 import Banner from './ui/Banner.tsx'
 import Badge from './ui/Badge.tsx'
 import Drawer from './ui/Drawer.tsx'
@@ -122,8 +122,9 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
         <span className="text-sm">
           <span className="font-medium">{uploading ? 'Subiendo…' : 'Arrastra los archivos aquí o elígelos'}</span>
           <span className="block text-muted">
-            {ALLOWED_EXTENSIONS.join(' ')}, hasta {MAX_BYTES / (1024 * 1024)} MB cada uno
+            {ALLOWED_EXTENSIONS.filter((e) => !isStyleFile(e)).join(' ')}, hasta {MAX_BYTES / (1024 * 1024)} MB cada uno
           </span>
+          <span className="block text-muted">.zip con un mockup del cliente: se usa como referencia de estilo del mockup</span>
         </span>
         <input
           type="file"
@@ -147,13 +148,20 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
       {files.length > 0 && (
         <ul className="divide-y divide-line rounded border border-line bg-surface">
           {files.map((file) => {
+            const style = isStyleFile(file.fileName)
+            const Icon = style ? Palette : FileText
             return (
               <li key={file.id}>
                 <div className="flex items-center gap-3 px-3 py-2.5">
-                  <FileText className="size-4 shrink-0 text-faint" aria-hidden />
+                  <Icon className="size-4 shrink-0 text-faint" aria-hidden />
                   <span className="min-w-0 flex-1 truncate font-medium" title={`SHA-256: ${file.sha256}`}>
                     {file.fileName}
                   </span>
+                  {style && (
+                    <span title="No es documentación: solo lo usa el mockup, que copia su estilo (colores, fuentes, componentes e imágenes).">
+                      <Badge tone="info">Estilo</Badge>
+                    </span>
+                  )}
                   <Badge>{extensionOf(file.fileName)}</Badge>
                   <span className="w-20 text-right text-sm text-muted">{formatSize(file.sizeBytes)}</span>
                   <span className="hidden w-36 text-right text-sm text-muted sm:block">{formatDate(file.uploadedAt)}</span>
@@ -167,7 +175,7 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
                       Leer
                     </button>
                   ) : (
-                    <span className="w-16 text-right text-xs text-faint">Sin texto</span>
+                    <span className="w-16 text-right text-xs text-faint">{style ? 'Mockup' : 'Sin texto'}</span>
                   )}
                 </div>
               </li>

@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Persistence;
 using Concilia.Core.Files;
+using Concilia.Core.Mockup;
 using Concilia.Core.Projects;
 
 namespace Concilia.Api.Files;
@@ -82,6 +83,18 @@ public static class ProjectFileEndpoints
             }
             var sha256 = Convert.ToHexStringLower(SHA256.HashData(content));
 
+            // A .zip is not documentation but the style reference of the
+            // mockup (StyleReference): it has no text, and it must be a .zip
+            // with pages or stylesheets.
+            var isStyle = StyleReference.IsStyleFile(fileName);
+            if (isStyle && StyleReference.Validate(content) is { } zipError)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["file"] = [zipError],
+                });
+            }
+
             // A damaged PDF or DOCX is rejected here, and nothing is stored.
             string? text;
             try
@@ -124,8 +137,10 @@ public static class ProjectFileEndpoints
                 TextStoredName = textStoredName,
             };
             db.ProjectFiles.Add(record);
-            // A new file outdates the catalog, the backlog and the mockup, if they exist.
-            await Deliverables.DeliverableEndpoints.ApplyChangeAsync(db, projectId, Core.Flow.FlowChange.FileAdded);
+            // A new document outdates the catalog, the backlog and the mockup, if
+            // they exist; a style reference, only the mockup.
+            await Deliverables.DeliverableEndpoints.ApplyChangeAsync(db, projectId,
+                isStyle ? Core.Flow.FlowChange.StyleAdded : Core.Flow.FlowChange.FileAdded);
             await db.SaveChangesAsync();
 
             return Results.Created($"/projects/{projectId}/files/{record.Id}", record);

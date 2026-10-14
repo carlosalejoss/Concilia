@@ -152,7 +152,8 @@ public class ProjectFlowTests
     [InlineData(FlowChange.BacklogGenerated)]
     [InlineData(FlowChange.BacklogReopened)]
     [InlineData(FlowChange.BacklogValidated)]
-    public void A_change_in_the_backlog_outdates_the_mockup(FlowChange change)
+    [InlineData(FlowChange.StyleAdded)]
+    public void A_change_in_the_backlog_or_the_style_outdates_the_mockup(FlowChange change)
     {
         Assert.Equal([FlowStep.Mockup], ProjectFlow.OutdatedBy(change));
     }

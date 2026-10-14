@@ -15,7 +15,7 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // v0.2 (09-10-2026): the reading plan gives the exact offset and limit of each Read call.
     // v0.3 (09-10-2026): the arbiter sees the ids of each proposal with its number ("1:P-003").
     // v0.4 (13-10-2026): the mockup is written by parts, a base and one file per epic.
-    public const string PromptVersion = "v0.4";
+    public const string PromptVersion = "v0.5";
     public const int MaxRepairs = 1;
 
     // proposals: the outputs of the two slots in the order of the plan (only for the arbiter).
