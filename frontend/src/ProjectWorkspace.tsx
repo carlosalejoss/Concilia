@@ -19,7 +19,9 @@ import Button from './ui/Button.tsx'
 import Drawer from './ui/Drawer.tsx'
 
 // What each step does, and the button that launches its job.
-const STEP_INFO: Record<FlowStep, { description: string; launch?: { label: string; url: (projectId: number) => string } }> = {
+type LaunchOptions = { mockupStyle: boolean }
+
+const STEP_INFO: Record<FlowStep, { description: string; launch?: { label: string; url: (projectId: number, options: LaunchOptions) => string } }> = {
   Documents: {
     description: 'La documentación del sistema: documentos, hojas de cálculo, presentaciones, correos, transcripciones de reuniones… Los modelos la leen por partes.',
   },
@@ -37,7 +39,8 @@ const STEP_INFO: Record<FlowStep, { description: string; launch?: { label: strin
   },
   Mockup: {
     description: 'Un prototipo navegable del backlog validado, en un único .html con datos de prueba.',
-    launch: { label: 'Generar el mockup', url: (id) => `/projects/${id}/mockup-jobs` },
+    // Without the style reference when the user chooses a design from scratch.
+    launch: { label: 'Generar el mockup', url: (id, options) => `/projects/${id}/mockup-jobs${options.mockupStyle ? '' : '?estilo=false'}` },
   },
 }
 
@@ -50,7 +53,8 @@ const STEP_TONE: Record<StepStatus['state'], 'neutral' | 'accent' | 'info' | 'wa
 }
 
 // The step to open when the URL does not say: the first one still to do
-// (available or in progress) or, if all are done, the last one.
+// (available or in progress) or, if all are done, the last one. It is chosen
+// once, when the project opens (see firstStep).
 function currentStep(steps: StepStatus[]): FlowStep {
   return (steps.find((s) => s.state === 'Available' || s.state === 'InProgress') ?? steps[steps.length - 1]).step
 }
@@ -72,12 +76,20 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
   const [settingsOpen, setSettingsOpen] = useState(false)
   // Changes each time the flow reloads, so the content of the step reloads too.
   const [version, setVersion] = useState(0)
+  // The step shown when the URL does not name one, fixed when the flow first
+  // loads. It does not move by itself when a file is added or a phase ends
+  // (decision of 14-10-2026): the user goes on to the next step when they want.
+  const [firstStep, setFirstStep] = useState<FlowStep | null>(null)
+  // Mockup: follow the style reference (.zip) or design from scratch.
+  const [mockupStyle, setMockupStyle] = useState(true)
 
   const reload = useCallback(() => {
     fetch(`/projects/${project.id}/flow`)
       .then(async (response) => {
         if (!response.ok) throw new Error(await errorMessage(response))
-        setFlow(await response.json())
+        const loaded: FlowView = await response.json()
+        setFlow(loaded)
+        setFirstStep((step) => step ?? currentStep(loaded.steps))
         setVersion((v) => v + 1)
       })
       .catch((e: unknown) => setError(String(e)))
@@ -156,7 +168,7 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
   } else if (!flow) {
     content = <p className="text-muted">{error ?? 'Cargando los pasos…'}</p>
   } else {
-    const stepId = route.step ?? currentStep(flow.steps)
+    const stepId = route.step ?? firstStep ?? currentStep(flow.steps)
     const step = flow.steps.find((s) => s.step === stepId)!
     const info = STEP_INFO[stepId]
     const bodies: Record<FlowStep, ReactNode> = {
@@ -164,7 +176,7 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
       Questions: <QuestionsPanel project={project} version={version} onChange={reload} onShowJob={showJob} />,
       Catalog: <CatalogEditor project={project} version={version} onChange={reload} />,
       Backlog: <BacklogEditor project={project} version={version} onChange={reload} />,
-      Mockup: <MockupViewer project={project} version={version} onShowJob={showJob} />,
+      Mockup: <MockupViewer project={project} version={version} onShowJob={showJob} useStyle={mockupStyle} onUseStyleChange={setMockupStyle} />,
     }
     content = (
       <>
@@ -186,7 +198,7 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
                 icon={launching ? Loader2 : Play}
                 disabled={!step.canLaunch || launching}
                 title={step.canLaunch ? undefined : (step.reason ?? undefined)}
-                onClick={() => launch(info.launch!.url(project.id))}
+                onClick={() => launch(info.launch!.url(project.id, { mockupStyle }))}
               >
                 {info.launch.label}
               </Button>
