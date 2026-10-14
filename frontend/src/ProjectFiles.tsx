@@ -5,7 +5,7 @@ import { ALLOWED_EXTENSIONS, MAX_BYTES, validateUpload } from './uploadRules.ts'
 import Banner from './ui/Banner.tsx'
 import Badge from './ui/Badge.tsx'
 import Drawer from './ui/Drawer.tsx'
-import DocumentText from './DocumentText.tsx'
+import FilePreview from './FilePreview.tsx'
 
 type ProjectFilesProps = {
   project: Project
@@ -190,7 +190,7 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
               No se ha encontrado texto. Si es un PDF escaneado, sus páginas son imágenes y no se puede extraer texto sin OCR.
             </p>
           ) : (
-            <DocumentText text={reading.text} />
+            <FilePreview fileName={reading.file.fileName} text={reading.text} />
           ))}
       </Drawer>
     </div>
