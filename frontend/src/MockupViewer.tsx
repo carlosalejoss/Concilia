@@ -15,7 +15,16 @@ type MockupSummary = { historias: number; bytes: number; avisos: string[] }
 // outdated or the last attempt to generate it failed. The page runs its own
 // scripts but, without allow-same-origin, it cannot reach the application or
 // its data; the server adds a CSP that also cuts it off from the network.
-function MockupViewer({ project, version, onShowJob }: { project: Project; version: number; onShowJob: (jobId: string) => void }) {
+type MockupViewerProps = {
+  project: Project
+  version: number
+  onShowJob: (jobId: string) => void
+  // Whether the next mockup follows the style reference, when there is one.
+  useStyle: boolean
+  onUseStyleChange: (useStyle: boolean) => void
+}
+
+function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange }: MockupViewerProps) {
   const [mockup, setMockup] = useState<Deliverable<MockupSummary> | null>(null)
   const [failedJob, setFailedJob] = useState<{ id: string; message: string } | null>(null)
   const frame = useRef<HTMLIFrameElement>(null)
@@ -51,12 +60,25 @@ function MockupViewer({ project, version, onShowJob }: { project: Project; versi
 
   return (
     <div className="space-y-3">
-      <p className="flex items-start gap-2 text-sm text-muted">
-        <Palette className="mt-0.5 size-4 shrink-0 text-faint" aria-hidden />
-        {styles.length > 0
-          ? `Sigue el estilo de ${styles.join(', ')}: sus colores, fuentes, componentes e imágenes.`
-          : 'Sin referencia de estilo. Si el cliente tiene un mockup, súbelo como .zip en Documentos y el mockup seguirá su estilo.'}
-      </p>
+      {styles.length > 0 ? (
+        <fieldset className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+          <legend className="sr-only">Diseño del próximo mockup</legend>
+          <Palette className="size-4 shrink-0 text-faint" aria-hidden />
+          <label className="flex items-center gap-1.5">
+            <input type="radio" name="mockup-style" checked={useStyle} onChange={() => onUseStyleChange(true)} className="accent-accent" />
+            Con el estilo de {styles.join(', ')}
+          </label>
+          <label className="flex items-center gap-1.5">
+            <input type="radio" name="mockup-style" checked={!useStyle} onChange={() => onUseStyleChange(false)} className="accent-accent" />
+            Nuevo, desde cero
+          </label>
+        </fieldset>
+      ) : (
+        <p className="flex items-start gap-2 text-sm text-muted">
+          <Palette className="mt-0.5 size-4 shrink-0 text-faint" aria-hidden />
+          Sin referencia de estilo. Si el cliente tiene un mockup, súbelo como .zip en Documentos y podrás elegir seguir su estilo.
+        </p>
+      )}
       {failedJob && (
         <Banner
           tone="danger"

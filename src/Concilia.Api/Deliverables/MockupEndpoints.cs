@@ -31,8 +31,9 @@ public static class MockupEndpoints
     {
         // A mockup job: a single run (MOCK) with the mockup provider and model,
         // only when the step is available (the backlog is validated).
+        // ?estilo=false: a design from scratch, without the style reference.
         app.MapPost("/projects/{projectId:int}/mockup-jobs",
-            async (int projectId, AppDbContext db, JobQueue queue, FileStorage storage, MockupOptions options,
+            async (int projectId, bool? estilo, AppDbContext db, JobQueue queue, FileStorage storage, MockupOptions options,
                    [FromKeyedServices(RunnerSetup.MockupKey)] IRunnerProvider provider) =>
         {
             var project = await db.Projects.FindAsync(projectId);
@@ -63,7 +64,8 @@ public static class MockupEndpoints
                 PromptVersion = PhaseExecutor.PromptVersion,
             };
             plan.Save(storage.JobFolder(job.Id));
-            await SaveStyleAsync(db, storage, projectId, job.Id);
+            if (estilo != false)
+                await SaveStyleAsync(db, storage, projectId, job.Id);
             db.Jobs.Add(job);
             db.Runs.Add(run);
             await db.SaveChangesAsync();
