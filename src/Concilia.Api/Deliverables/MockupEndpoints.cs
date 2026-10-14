@@ -62,6 +62,9 @@ public static class MockupEndpoints
                 State = RunState.Queued,
                 CreatedAt = now,
                 PromptVersion = PhaseExecutor.PromptVersion,
+                // The design, first of the steps: the screens and the integration
+                // are added when the design says how many screens there are.
+                LotNumber = 1,
             };
             plan.Save(storage.JobFolder(job.Id));
             if (estilo != false)
@@ -106,7 +109,7 @@ public static class MockupEndpoints
         }
     }
 
-    public static string StyleFolder(FileStorage storage, Guid jobId) => Path.Combine(storage.JobFolder(jobId), "estilo");
+    public static string StyleFolder(FileStorage storage, Guid jobId) => MockupTask.JobStyleFolder(storage.JobFolder(jobId));
 
     // Called by JobWorker when the mockup run ends. A valid .html is copied to
     // the project (data/projects/{id}/mockup/mockup.html) and becomes the
@@ -117,7 +120,7 @@ public static class MockupEndpoints
         if (!outcome.Succeeded)
         {
             PhaseJobs.WriteResult(storage.JobFolder(job.Id), new PhaseJobResult(null, false, null,
-                "El modelo no terminó con un mockup válido; se puede generar de nuevo."));
+                (outcome.SkipReason ?? "El modelo no terminó un paso del mockup con una salida válida.") + " Se puede generar de nuevo."));
             return;
         }
 
@@ -127,15 +130,17 @@ public static class MockupEndpoints
         Directory.CreateDirectory(Path.GetDirectoryName(target)!);
         await File.WriteAllTextAsync(target, html);
 
+        var map = MockupMap.Load(await File.ReadAllTextAsync(Path.Combine(MockupTask.JobPrototypeFolder(storage.JobFolder(job.Id)), "mapa.json")), plan.StoryIds);
         var check = MockupTask.Validate(html, plan.StoryIds);
         var summary = new JsonObject
         {
             ["historias"] = plan.StoryIds.Count,
+            ["pantallas"] = map.Screens.Count,
             ["bytes"] = new FileInfo(target).Length,
             ["avisos"] = new JsonArray(check.Warnings.Select(w => (JsonNode)w).ToArray()),
         };
         PhaseJobs.WriteResult(storage.JobFolder(job.Id), new PhaseJobResult(Slot, false, summary.ToJsonString(),
-            $"Mockup generado con las {plan.StoryIds.Count} historias del backlog validado."));
+            $"Mockup generado: {map.Screens.Count} pantallas con las {plan.StoryIds.Count} historias del backlog validado."));
 
         var current = await DeliverableEndpoints.CurrentAsync(db, job.ProjectId, DeliverableKind.Mockup);
         var (deliverable, change) = DeliverableRules.Generated(current, job.ProjectId, DeliverableKind.Mockup, job.Id, summary.ToJsonString(), DateTimeOffset.UtcNow);

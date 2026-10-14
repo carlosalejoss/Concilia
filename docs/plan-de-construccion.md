@@ -344,6 +344,21 @@ Pedido por el autor el 14-10-2026: además de `.txt`, `.md`, `.docx` y `.pdf`, l
 - [x] 77. Convertidores (`SpreadsheetText`, `SlidesText`, `HtmlText`, `EmailText`, `TranscriptText`), reglas de subida en la API y en la web, y tests con documentos construidos en memoria. Un `.msg` no se puede construir en un test: solo se prueba que uno dañado da error.
 - [x] 78. Referencia de estilo para el mockup a partir de un `.zip` con un mockup del cliente (prompts v0.5; detalle en `prompts/v0/CHANGELOG.md`). Decisiones del autor (14-10-2026): el `.zip` se sube en Documentos, marcado como «estilo»; el modelo recibe solo los ficheros y saca el estilo él solo; las imágenes de la referencia entran en el mockup (la plataforma las incrusta). Falta probarlo con un modelo.
 
+## Hito 16: el mockup como una sola aplicación
+
+Pedido por el autor el 14-10-2026, para probar el mockup con `SS - GPT-6-SOL`.
+
+| Decisión (14-10-2026) | Origen |
+|---|---|
+| Un único prototipo que reúne todas las historias en las pantallas de la aplicación real, en lugar de una vista por historia. | Autor |
+| Se construye con muchas llamadas: varias ejecuciones del mismo trabajo (diseño, una por pantalla y una revisión del conjunto) y no una sesión larga. | Propuesta de Claude, elegida por el autor |
+| Modelo: `SS - GPT-6-SOL` por la pasarela (`MOCKUP_PROVIDER=LiteLlm`, `MOCKUP_MODEL`). La versión 6.1, si existe, se pone en `MOCKUP_MODEL` sin tocar código. | Autor |
+| Con una referencia de estilo subida, el usuario elige al generar si el mockup la sigue o se hace desde cero. | Autor |
+| Al terminar una fase la web se queda en su paso; no avanza sola al siguiente. | Autor |
+
+- [x] 79. Prompts v0.6 (`mockup_diseno.md`, `mockup_pantalla.md`, `mockup_integracion.md`), `MockupMap`, `MockupTask` por pasos, orquestación en `JobRunner` (las pantallas y la revisión se crean cuando el diseño dice cuántas pantallas hay), pasos en la web y tests con `Fake`.
+- [ ] 80. Prueba real con `SS - GPT-6-SOL` y ReservaSalas; resultados en `docs/evolucion-prompt-requisitos.md` (v0.6).
+
 ## Después
 
 Por este orden:

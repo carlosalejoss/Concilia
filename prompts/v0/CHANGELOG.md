@@ -1,5 +1,18 @@
 # Cambios de los prompts v0
 
+## v0.6, el mockup como una sola aplicación, construida por pasos (2026-10-14)
+
+Pedido por el autor: un único prototipo que reúna todas las funcionalidades del backlog, construido poco a poco con muchas llamadas, para probarlo con `SS - GPT-6-SOL` (128k de contexto). Hasta la v0.5 era una vista por historia, agrupadas por épica, en una sola ejecución.
+
+- `mockup.md` desaparece. En su lugar hay tres prompts, y cada uno es una ejecución distinta del mismo trabajo:
+  1. `mockup_diseno.md`: con el backlog, el mapa de pantallas (`output/prototipo/mapa.json`: las pantallas que tendría la aplicación real, en el orden del menú, con la descripción y las historias de cada una) y el armazón (`output/prototipo/app.html`: CSS, cabecera, menú, `const DATOS`, funciones comunes como `mostrarPantalla` y la línea `<!-- PANTALLAS -->`).
+  2. `mockup_pantalla.md`, una ejecución por pantalla (hasta 3 a la vez): con el mapa, el armazón y solo sus historias, escribe `output/prototipo/pantallas/P01.html`, un `<section data-pantalla="P01">` que resuelve sus historias juntas. Cada historia tiene un elemento con `data-hu`, que admite varios ids (`data-hu="HU-004 HU-007"`).
+  3. `mockup_integracion.md`: lee una copia de todo el prototipo y corrige con Edit lo que no encaja entre pantallas (navegación, datos, nombres repetidos, aspecto). Es la única ejecución con Edit.
+- La plataforma guarda en la carpeta del trabajo lo que acepta de cada paso, y cada paso parte de ahí. Al final junta el armazón y las pantallas en `output/mockup.html` y lo comprueba como antes, más la comprobación de que cada pantalla del mapa está en la página.
+- Si falla una pantalla (tras su reparación), la revisión del conjunto no se lanza y el trabajo falla.
+- Cada paso tiene sus comprobaciones y una reparación, con los códigos nuevos `MAPA`, `MAPA-ID`, `MAPA-TITULO`, `MAPA-HU` y `PANTALLA`.
+- Los demás prompts no cambian.
+
 ## v0.5, referencia de estilo del mockup (2026-10-14)
 
 Decidido por el autor: si el cliente tiene ya un mockup, el nuestro debe seguir su estilo.

@@ -4,49 +4,40 @@ using System.Text.Json.Nodes;
 
 namespace Concilia.Core.Mockup;
 
-// What FakeProvider writes in a mockup run (prompts v0.4: by parts): a base
-// with a menu by epic and the <!-- VISTAS --> line, and one file per epic with
-// a view per story of the backlog in input/backlog.json. Once joined by
-// MockupTask.Assemble it passes MockupTask.Validate, so the mockup step can be
-// tried without a model.
+// What FakeProvider writes in each run of a mockup job (prompts v0.6): in the
+// design, a map with one screen per epic and a shell; in each screen, a
+// section with a block per story; the integration changes nothing. Joined by
+// MockupTask.Assemble, the page passes MockupTask.Validate, so the mockup step
+// can be tried without a model.
 public static class FakeMockup
 {
-    // Writes the file of each epic in output/mockup/ and returns the base,
-    // which FakeProvider writes as the expected output. broken: the first
-    // attempt with simulateRepair leaves out the file of the last epic, so the
-    // repair can be seen working.
-    public static string WriteParts(string workDirectory, bool broken)
+    // The map: one screen per epic of input/backlog.json, with its stories.
+    public static string Map(string workDirectory)
     {
         var backlog = JsonNode.Parse(File.ReadAllText(Path.Combine(workDirectory, MockupTask.BacklogFile)))!;
-        var epics = (backlog["epicas"] as JsonArray ?? []).Select(e => e!).ToList();
-        Directory.CreateDirectory(Path.Combine(workDirectory, MockupTask.PartsFolder));
-
-        var menu = new StringBuilder();
-        for (var i = 0; i < epics.Count; i++)
+        var screens = new JsonArray();
+        var number = 0;
+        foreach (var epic in backlog["epicas"] as JsonArray ?? [])
         {
-            var epic = epics[i];
-            var epicId = epic["id"]!.GetValue<string>();
-            menu.Append($"<li><strong>{Text(epic["titulo"])}</strong><ul>");
-            var views = new StringBuilder();
-            foreach (var story in Stories(epic))
+            number++;
+            screens.Add(new JsonObject
             {
-                var id = story["id"]!.GetValue<string>();
-                menu.Append($"<li><a href=\"#{id}\" onclick=\"mostrar('{id}')\">{Text(story["titulo"])}</a></li>");
-                views.Append($"""
-                    <section data-hu="{id}" id="{id}" hidden>
-                      <p class="hu">{id} · {Text(story["titulo"])}</p>
-                      <h2>{Text(story["quiero"])}</h2>
-                      <p>Como {Text(story["como"])}, para {Text(story["para"])}.</p>
-                      <p class="nota">Vista simulada por FakeProvider; ningún modelo ha intervenido.</p>
-                    </section>
-
-                    """);
-            }
-            menu.Append("</ul></li>");
-            if (!(broken && i == epics.Count - 1))
-                File.WriteAllText(Path.Combine(workDirectory, MockupTask.EpicFile(epicId)), views.ToString());
+                ["id"] = $"P{number:00}",
+                ["titulo"] = epic!["titulo"]!.GetValue<string>(),
+                ["descripcion"] = "Pantalla simulada por FakeProvider.",
+                ["historias"] = new JsonArray((epic["historias"] as JsonArray ?? [])
+                    .Select(h => (JsonNode)h!["id"]!.GetValue<string>()).ToArray()),
+            });
         }
+        return new JsonObject { ["pantallas"] = screens }.ToJsonString();
+    }
 
+    // The shell: a menu with a link per screen of the map it just wrote.
+    public static string App(string workDirectory)
+    {
+        var map = JsonNode.Parse(Map(workDirectory))!;
+        var menu = string.Concat((map["pantallas"] as JsonArray ?? []).Select(s =>
+            $"<li><a href=\"#{s!["id"]}\" onclick=\"mostrarPantalla('{s["id"]}')\">{Text(s["titulo"])}</a></li>"));
         return $$"""
             <!doctype html>
             <html lang="es">
@@ -63,8 +54,8 @@ public static class FakeMockup
             </style>
             <script>
             const DATOS = { usuarios: [{ nombre: "Ana Prueba" }, { nombre: "Luis Ejemplo" }] };
-            function mostrar(id) {
-              document.querySelectorAll("section[data-hu]").forEach(s => { s.hidden = s.dataset.hu !== id; });
+            function mostrarPantalla(id) {
+              document.querySelectorAll("section[data-pantalla]").forEach(s => { s.hidden = s.dataset.pantalla !== id; });
             }
             </script>
             </head>
@@ -74,15 +65,39 @@ public static class FakeMockup
             {{MockupTask.Placeholder}}
             </main>
             <script>
-            const primera = document.querySelector("section[data-hu]");
-            if (primera) mostrar(primera.dataset.hu);
+            const primera = document.querySelector("section[data-pantalla]");
+            if (primera) mostrarPantalla(primera.dataset.pantalla);
             </script>
             </body>
             </html>
             """;
     }
 
-    private static IEnumerable<JsonNode> Stories(JsonNode epic) => (epic["historias"] as JsonArray ?? []).Select(h => h!);
+    // A screen: a block per story of input/historias.json. broken: the first
+    // attempt with simulateRepair leaves out the mark of the last story, so
+    // the repair can be seen working.
+    public static string Screen(string workDirectory, string screenId, bool broken)
+    {
+        var stories = (JsonNode.Parse(File.ReadAllText(Path.Combine(workDirectory, MockupTask.StoriesInput)))!["historias"] as JsonArray ?? [])
+            .Select(h => h!).ToList();
+        var html = new StringBuilder($"<section data-pantalla=\"{screenId}\" hidden>\n");
+        for (var i = 0; i < stories.Count; i++)
+        {
+            var story = stories[i];
+            var id = story["id"]!.GetValue<string>();
+            var mark = broken && i == stories.Count - 1 ? "" : $" data-hu=\"{id}\"";
+            html.Append($"""
+                  <article{mark}>
+                    <p class="hu">{id} · {Text(story["titulo"])}</p>
+                    <h2>{Text(story["quiero"])}</h2>
+                    <p>Como {Text(story["como"])}, para {Text(story["para"])}.</p>
+                  </article>
+
+                """);
+        }
+        html.Append("  <p class=\"nota\">Pantalla simulada por FakeProvider; ningún modelo ha intervenido.</p>\n</section>\n");
+        return html.ToString();
+    }
 
     private static string Text(JsonNode? node) => WebUtility.HtmlEncode(node?.GetValue<string>() ?? "");
 }

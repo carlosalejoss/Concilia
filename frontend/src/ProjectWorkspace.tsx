@@ -38,7 +38,7 @@ const STEP_INFO: Record<FlowStep, { description: string; launch?: { label: strin
     launch: { label: 'Generar el backlog', url: (id) => `/projects/${id}/backlog-jobs` },
   },
   Mockup: {
-    description: 'Un prototipo navegable del backlog validado, en un único .html con datos de prueba.',
+    description: 'Un prototipo navegable del backlog validado: una sola aplicación que se construye por pasos (diseño, cada pantalla y una revisión del conjunto), en un único .html con datos de prueba.',
     // Without the style reference when the user chooses a design from scratch.
     launch: { label: 'Generar el mockup', url: (id, options) => `/projects/${id}/mockup-jobs${options.mockupStyle ? '' : '?estilo=false'}` },
   },

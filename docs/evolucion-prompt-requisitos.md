@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.6 | 14-10-2026 | El mockup es una sola aplicación construida por pasos: diseño (mapa de pantallas y armazón), una ejecución por pantalla y una revisión del conjunto; pensado para `SS - GPT-6-SOL` | Pendiente | Pendiente |
 | v0.5 | 14-10-2026 | Referencia de estilo del mockup: un `.zip` con un mockup del cliente; el modelo lee sus `.html` y `.css` y la plataforma incrusta sus imágenes y fuentes; el resto de prompts no cambia | Pendiente | Pendiente |
 | v0.4 | 13-10-2026 | Mockup por partes: una base y un fichero por épica, que la plataforma junta; el resto de prompts no cambia | Sí (documento B, 53 historias, 13-10-2026) | El mockup se genera (166 KB, las 53 historias) en 23 min, pero gasta 1,49 M de entrada y 204.000 de salida, el 43 % del límite de 5 h de la suscripción, y al autor no le convence el resultado |
 | v0.3 | 09-10-2026 | El árbitro ve los ids de cada propuesta con su número delante (`1:P-003`, `2:RF-001`); la plataforma los quita antes de validar | Sí (documento B, flujo completo, 13-10-2026) | Los tres árbitros aciertan a la primera, sin reparación; el catálogo y el backlog del árbitro compactan el contexto una vez; el mockup de 53 historias no cabe en 64.000 tokens de salida |
@@ -338,6 +339,25 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.6 (14-10-2026)
+
+Solo cambia el mockup, por decisión del autor: un único prototipo que reúna todas las funcionalidades, construido poco a poco con muchas llamadas y no en una sola ejecución. Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- **Una aplicación, no un catálogo de historias.** El diseño decide las pantallas que tendría el sistema real y reparte en ellas todas las historias. Una pantalla reúne lo que el usuario hace en el mismo sitio, como listar, crear, modificar y cancelar.
+- **Construido por pasos.** Primero el diseño (mapa y armazón), después una ejecución por pantalla sobre el armazón (hasta 3 a la vez) y al final una revisión del conjunto que corrige con Edit lo que no encaje. La web muestra cada paso con su consola («Pantalla 3 de 7»).
+- **Contexto pequeño en cada paso.** Cada ejecución lee solo lo que necesita: el diseño, el backlog; cada pantalla, el mapa, el armazón y sus historias. Así cabe en los 128k de `SS - GPT-6-SOL` sin compactar, frente a 1,49 M de entrada y una compactación del mockup v0.4 en una sola sesión.
+- **Comprobaciones en cada paso:** el mapa cubre todas las historias, cada pantalla marca las suyas con `data-hu` y la página juntada tiene todas las pantallas e historias.
+
+### Resultados
+
+Pendiente de la primera prueba con `SS - GPT-6-SOL`.
+
+### Qué hay que mejorar
+
+Pendiente de la primera prueba.
 
 ## v0.5 (14-10-2026)
 

@@ -58,18 +58,22 @@ public class MockupOptions
     // MOCKUP_MODEL. Claude Code knows this model, unlike the gateway ones.
     public string Model { get; set; } = "claude-sonnet-5-5";
 
-    // The whole .html goes in one Write call, so it needs room.
+    // Limits of EACH run of a mockup job (the design, each screen and the
+    // integration; prompts v0.6). A whole file goes in one Write call, so it
+    // needs room.
     public int MaxOutputTokens { get; set; } = 64_000;
 
-    // The whole .html comes in one answer, and Claude Code writes no line
-    // while the model writes it: with 37 stories a real run passed the first
-    // limit of 15 minutes (09-10-2026). Raised to 30 without output and 45 in all.
+    // Claude Code writes no line while the model writes a file: with 37
+    // stories in a single page a real run passed the first limit of 15
+    // minutes (09-10-2026). Raised to 30 without output and 45 in all.
     public TimeSpan HeartbeatTimeout { get; set; } = TimeSpan.FromMinutes(30);
     public TimeSpan TotalTimeout { get; set; } = TimeSpan.FromMinutes(45);
 
-    // The backlog is read by parts, and the page is written by parts: the
-    // reads, the base, one Write per epic and the verdict.
+    // The reads by parts, the writes, the edits of the integration and the verdict.
     public int MaxTurns { get; set; } = 40;
+
+    // How many screens are built at the same time.
+    public int MaxParallelScreens { get; set; } = 3;
 }
 
 public static class RunnerSetup

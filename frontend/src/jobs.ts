@@ -63,13 +63,24 @@ export function lotsOfSlot(view: JobView, slot: string): Run[][] {
     .map(([, runs]) => runs.sort((a, b) => a.attempt - b.attempt))
 }
 
+// The name of each run of a mockup job (prompts v0.6), a "lot" of the slot
+// MOCK: the design, each screen and the review of the whole.
+export function mockupStepName(run: Run): string {
+  const total = run.lotTotal ?? 0
+  const lot = run.lotNumber ?? 1
+  if (lot === 1) return 'Diseño: mapa de pantallas y armazón'
+  if (total > 0 && lot === total) return 'Revisión del conjunto'
+  return `Pantalla ${lot - 1} de ${total - 2}`
+}
+
 // The state of a slot: that of the last attempt of each lot (the worst one
-// if they differ), with "n/m lotes" when there are lots.
+// if they differ), with "n/m lotes" when there are lots ("n/m pasos" in the mockup).
 export function slotSummary(view: JobView, slot: string): { state: RunState | null; lots: string } {
   const finals = lotsOfSlot(view, slot).map((runs) => runs[runs.length - 1])
   if (finals.length === 0) return { state: null, lots: '' }
   const done = finals.filter((r) => r.state === 'Done').length
-  const lots = finals.length > 1 ? ` ${done}/${finals.length} lotes` : ''
+  const total = Math.max(finals.length, finals[0].lotTotal ?? 0)
+  const lots = total > 1 ? ` ${done}/${total} ${slot === 'MOCK' ? 'pasos' : 'lotes'}` : ''
   if (finals.some((r) => !isFinished(r))) return { state: finals.some((r) => r.state === 'Running') ? 'Running' : 'Queued', lots }
   if (done === finals.length) return { state: 'Done', lots }
   return { state: finals.find((r) => r.state !== 'Done')!.state, lots }
