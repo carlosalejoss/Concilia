@@ -45,6 +45,7 @@ public record PhasePlan(
     public PhaseContext Context(string? proposal1 = null, string? proposal2 = null) => new()
     {
         FragmentIds = Fragments.Select(f => f.Id).ToHashSet(),
+        FragmentAtLine = DocumentationFile.FragmentAtLine(Input.Documentation),
         AnsweredQuestionIds = AnsweredQuestionIds.ToHashSet(),
         Catalog = Input.Catalog.Length > 0 ? Input.Catalog : null,
         PendingQuestionIds = PendingQuestionIds,

@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.7 | 14-10-2026 | El árbitro consulta la documentación por tramos y lee las propuestas con un elemento por línea; un fragmento no es un número de línea (`REF-FRAG` dice qué fragmento hay en esa línea); sin la salida de un solo modelo como resultado | Pendiente | Pendiente |
 | v0.6 | 14-10-2026 | El mockup es una sola aplicación construida por pasos: diseño (mapa de pantallas y armazón), una ejecución por pantalla y una revisión del conjunto; pensado para `SS - GPT-6-SOL` | Pendiente | Pendiente |
 | v0.5 | 14-10-2026 | Referencia de estilo del mockup: un `.zip` con un mockup del cliente; el modelo lee sus `.html` y `.css` y la plataforma incrusta sus imágenes y fuentes; el resto de prompts no cambia | Pendiente | Pendiente |
 | v0.4 | 13-10-2026 | Mockup por partes: una base y un fichero por épica, que la plataforma junta; el resto de prompts no cambia | Sí (documento B, 53 historias, 13-10-2026) | El mockup se genera (166 KB, las 53 historias) en 23 min, pero gasta 1,49 M de entrada y 204.000 de salida, el 43 % del límite de 5 h de la suscripción, y al autor no le convence el resultado |
@@ -339,6 +340,37 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.7 (14-10-2026)
+
+Corrige dos fallos de la primera prueba real con un proyecto grande («documento C», un proyecto de prueba del autor: 8 documentos, entre ellos hojas de cálculo, y unos 40.000 tokens de documentación; `SS - GPT-6-SOL` y `SS - GPT-6-LUNA`, prompts v0.5, 14-10-2026). Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué pasó con la v0.5
+
+| Trabajo de catálogo | A (SOL) | B (LUNA) | Árbitro (SOL) |
+|---|---|---|---|
+| 1 | Válido: 136.236 / 21.134 tokens, 6 turnos | Válido tras reparar (esquema): 167.733 / 14.830 | **Falla: agota los 30 turnos**. Compacta seis veces y vuelve a leerlo todo después de cada una: 1.591.624 / 9.469 tokens |
+| 2 | Válido: 229 requisitos | Falla dos veces: `REF-FRAG` (`DOC-06#F830`) | No se lanza; el resultado fue la salida de A sola |
+| 3 | Válido: 233.791 / 26.764 | Falla dos veces: `REF-FRAG` (131 errores, `DOC-06#F552`…) | No se lanza; otra vez la salida de A sola |
+
+- **El árbitro no cabe en la ventana.** Cada propuesta ocupa unas 2.000–2.900 líneas de JSON con sangría (unos 230 requisitos y 91.000 caracteres), y SOL lee además toda la documentación, aunque es opcional. Cada compactación le hace perder lo leído y empezar de nuevo, incluso desde el `offset` 0.
+- **LUNA cita números de línea como fragmentos:** `DOC-06#F830` es la línea 830 de `input/documentacion.txt`, donde está `DOC-06#F537`; `DOC-02#F250` es la línea 250, donde está `DOC-02#F021`. La reparación, que solo decía «no existe», no lo corrigió.
+
+### Qué hace
+
+- **Propuestas con un elemento por línea:** un requisito por línea en lugar de un valor por línea con sangría, alrededor de una quinta parte menos.
+- **La documentación del árbitro se consulta por tramos,** con la línea en la que empieza cada documento, en lugar de leerla entera.
+- **Un fragmento no es un número de línea:** lo dicen los prompts y, si pasa, el error `REF-FRAG` dice qué fragmento hay en esa línea.
+- **Sin la salida de un solo modelo:** si A o B fallan, el trabajo falla (decisión del autor).
+
+### Resultados
+
+Pendiente de repetir el catálogo del mismo proyecto.
+
+### Qué hay que mejorar
+
+- Si el árbitro sigue sin caber con propuestas aún más grandes, hará falta un árbitro por partes (por tipo de requisito o por documento).
+- Parar una ejecución que compacta varias veces seguidas, en lugar de dejar que agote los turnos (cada compactación cuesta casi 100.000 tokens).
 
 ## v0.6 (14-10-2026)
 

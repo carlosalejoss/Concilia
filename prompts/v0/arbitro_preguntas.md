@@ -15,7 +15,7 @@ Compara las propuestas 1 y 2, escribe la lista unida en `output/preguntas.json` 
 ```
 
 - `preguntas_previas`: lo mismo que recibieron los analistas (las preguntas de rondas anteriores).
-- `input/documentacion.txt`: la documentación que leyeron los analistas, un fragmento por línea (`[DOC-01#F007 §2.5] texto`). Consúltala cuando necesites comprobar algo.
+- `input/documentacion.txt`: la documentación que leyeron los analistas, un fragmento por línea (`[DOC-01#F007 §2.5] texto`). **No la leas entera:** consulta solo los tramos que necesites para comprobar algo (LECTURA dice en qué línea empieza cada documento). El id de un fragmento es el que va entre corchetes, no el número de línea que muestra Read.
 - `input/propuesta_1.json` e `input/propuesta_2.json`: las dos propuestas.
 - Cada propuesta es `{"preguntas":[{"id","pregunta","motivo","fuentes"}]}`. En los ficheros, el id de cada pregunta lleva delante el número de su propuesta (`1:P-001` en la 1, `2:P-001` en la 2): así no se confunden, aunque el mismo id exista en las dos.
 - No sabes quién escribió cada propuesta y su orden es aleatorio: júzgalas solo por su contenido.

@@ -148,7 +148,7 @@ public static class ProposalIds
         foreach (var element in Elements(kind, root))
             if (element["id"] is JsonValue v && v.TryGetValue<string>(out var id))
                 element["id"] = map(id);
-        return root.ToJsonString(Indented) + "\n";
+        return ReadingPlan.OnePerLine(root.ToJsonString());
     }
 
     // The elements the arbiter compares: those its `de` cites.
