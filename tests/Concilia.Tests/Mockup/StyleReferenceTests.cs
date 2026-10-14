@@ -105,7 +105,8 @@ public class StyleReferenceTests
         using var temp = new TempDirectory();
         var plan = MockupPlan.From("s", "es", BacklogDraft.ForNextPhase(MockupTaskTests.ExampleBacklog()));
 
-        var request = MockupTask.BuildRequest(plan, Guid.NewGuid(), "m", temp.Path, new MockupRunOptions());
+        var request = MockupTask.BuildRequest(plan, new MockupStep(MockupStage.Design), Path.Combine(temp.Path, "job"), Guid.NewGuid(), "m",
+            temp.Path, new MockupRunOptions()).Request;
 
         Assert.Null(StyleReference.Describe(temp.Path));
         Assert.Contains(MockupTask.NoStyle, request.Prompt);
@@ -115,12 +116,12 @@ public class StyleReferenceTests
     public void The_prompt_lists_the_files_of_the_reference_and_the_images_it_may_use()
     {
         using var temp = new TempDirectory();
-        var job = Path.Combine(temp.Path, "estilo");
-        StyleReference.Extract(ClientMockup(), job, "cliente");
+        var job = Path.Combine(temp.Path, "job");
+        StyleReference.Extract(ClientMockup(), MockupTask.JobStyleFolder(job), "cliente");
         var work = Path.Combine(temp.Path, "run");
         var plan = MockupPlan.From("s", "es", BacklogDraft.ForNextPhase(MockupTaskTests.ExampleBacklog()));
 
-        var request = MockupTask.BuildRequest(plan, Guid.NewGuid(), "m", work, new MockupRunOptions(), job);
+        var request = MockupTask.BuildRequest(plan, new MockupStep(MockupStage.Design), job, Guid.NewGuid(), "m", work, new MockupRunOptions()).Request;
 
         Assert.True(File.Exists(Path.Combine(work, "input", "estilo", "cliente", "css", "app.css")));
         Assert.Contains("- `input/estilo/cliente/index.html` (1 líneas)", request.Prompt);

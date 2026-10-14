@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { FlaskConical, Terminal } from 'lucide-react'
 import { errorMessage, formatDate, isPhaseJob, JOB_KIND_NAMES, type JobView, type PhaseResult, type Project, type Run, type RunEvent } from './api.ts'
 import CatalogView from './CatalogView.tsx'
-import { isFinished, lotsOfSlot, RUN_STATE_NAMES, RUN_STATE_TONES, SLOT_NAMES, SLOTS, slotsOf, slotSummary } from './jobs.ts'
+import { isFinished, lotsOfSlot, mockupStepName, RUN_STATE_NAMES, RUN_STATE_TONES, SLOT_NAMES, SLOTS, slotsOf, slotSummary } from './jobs.ts'
 import Badge from './ui/Badge.tsx'
 import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
@@ -128,14 +128,18 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
           <JobResult key={`${selected.job.id}-${selected.runs.filter(isFinished).length}`} jobId={selected.job.id} finished={!selectedUnfinished} />
           {/* Columns side by side on wide screens, stacked on narrow ones. */}
           <div className={`grid grid-cols-1 gap-5 ${slotsOf(selected).length > 1 ? 'lg:grid-cols-3' : ''}`}>
-            {slotsOf(selected).map((slot) => (
-              <PhaseSlotColumn
-                key={`${selected.job.id}-${slot}`}
-                slot={slot}
-                runs={selected.runs.filter((r) => r.slot === slot).sort((a, b) => a.attempt - b.attempt)}
-                onChange={reload}
-              />
-            ))}
+            {slotsOf(selected).map((slot) =>
+              slot === 'MOCK' ? (
+                <MockupSteps key={`${selected.job.id}-${slot}`} steps={lotsOfSlot(selected, slot)} onChange={reload} />
+              ) : (
+                <PhaseSlotColumn
+                  key={`${selected.job.id}-${slot}`}
+                  slot={slot}
+                  runs={selected.runs.filter((r) => r.slot === slot).sort((a, b) => a.attempt - b.attempt)}
+                  onChange={reload}
+                />
+              ),
+            )}
           </div>
         </div>
       )}
@@ -217,6 +221,39 @@ function PhaseSlotColumn({ slot, runs, onChange }: { slot: string; runs: Run[]; 
       {first.state === 'Queued' && <p className="text-sm text-muted">{slot === 'ARB' ? 'Espera a que terminen A y B…' : 'En cola…'}</p>}
       {first.state !== 'Queued' && first.state !== 'Skipped' && <RunConsole runId={first.id} onFinished={onChange} />}
       {isFinished(last) && <RunResult run={last} />}
+    </div>
+  )
+}
+
+// A mockup job (prompts v0.6): its steps in order (the design, each screen
+// and the review of the whole), each one folded with its console and its
+// result. The one in progress opens by itself.
+function MockupSteps({ steps, onChange }: { steps: Run[][]; onChange: () => void }) {
+  const first = steps[0]?.[0]
+  if (!first) return null
+  const total = first.lotTotal ?? 0
+
+  return (
+    <div className="min-w-0 space-y-2">
+      <SlotHeader slot="MOCK" run={first} />
+      {total === 0 && <p className="text-sm text-muted">Las pantallas se conocerán cuando termine el diseño.</p>}
+      {steps.map((runs) => {
+        const run = runs[0]
+        const last = runs[runs.length - 1]
+        return (
+          <details key={run.id} open={last.state === 'Running'} className="rounded border border-line bg-surface">
+            <summary className="flex cursor-pointer flex-wrap items-center gap-2 px-3 py-2 text-sm">
+              <span className="font-medium">{mockupStepName(run)}</span>
+              <Badge tone={RUN_STATE_TONES[last.state]}>{RUN_STATE_NAMES[last.state]}</Badge>
+            </summary>
+            <div className="space-y-2 border-t border-line px-3 py-3">
+              {run.state === 'Queued' && <p className="text-sm text-muted">En cola…</p>}
+              {run.state !== 'Queued' && run.state !== 'Skipped' && <RunConsole runId={run.id} onFinished={onChange} />}
+              {isFinished(last) && <RunResult run={last} />}
+            </div>
+          </details>
+        )
+      })}
     </div>
   )
 }

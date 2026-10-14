@@ -6,8 +6,8 @@ namespace Concilia.Core.Runner;
 
 // A provider that calls no model: it emits a few fixed events, writes the
 // expected output files and answers "hecho". A run of a v0 phase (input/fase.json)
-// gets a valid output of its phase from FakePhaseOutput, a mockup run a plain
-// .html with a view per story from FakeMockup; a catalog v1.3
+// gets a valid output of its phase from FakePhaseOutput, each mockup run its
+// part of the prototype from FakeMockup; a catalog v1.3
 // (output/catalogo.json, with the lot's fragments in input/) gets a real one
 // from FakeCatalog; any other file, placeholder content. With simulateRepair,
 // the first attempt of each run writes an invalid output, so the repair retry
@@ -40,9 +40,10 @@ public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = fa
         var reads = new List<FileRead>();
         if (request.AllowedTools.Contains("Read") && Directory.Exists(Path.Combine(request.WorkDirectory, "input")))
         {
-            foreach (var file in Directory.GetFiles(Path.Combine(request.WorkDirectory, "input")).Order(StringComparer.Ordinal))
+            // Also the files in subfolders (the copy of the prototype the mockup integration reads).
+            foreach (var file in Directory.GetFiles(Path.Combine(request.WorkDirectory, "input"), "*", SearchOption.AllDirectories).Order(StringComparer.Ordinal))
             {
-                var relative = "input/" + Path.GetFileName(file);
+                var relative = Path.GetRelativePath(request.WorkDirectory, file).Replace('\\', '/');
                 await Step(new RunEvent(RunEventKind.ToolUse, $"Read {relative}"));
                 reads.Add(new FileRead(relative, 1, Math.Max(1, ReadCoverage.LineCount(await File.ReadAllTextAsync(file, cancellationToken))), true));
             }
@@ -78,10 +79,14 @@ public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = fa
 
     private string Content(RunRequest request, string relativePath)
     {
-        if (relativePath == MockupTask.BaseFile)
+        if (relativePath == MockupTask.MapFile)
+            return FakeMockup.Map(request.WorkDirectory);
+        if (relativePath == MockupTask.AppFile)
+            return FakeMockup.App(request.WorkDirectory);
+        if (relativePath.StartsWith(MockupTask.PrototypeFolder + "/pantallas/", StringComparison.Ordinal))
         {
             var first = !request.Prompt.Contains(FakePhaseOutput.RepairMarker, StringComparison.Ordinal);
-            return FakeMockup.WriteParts(request.WorkDirectory, broken: simulateRepair && first);
+            return FakeMockup.Screen(request.WorkDirectory, Path.GetFileNameWithoutExtension(relativePath), broken: simulateRepair && first);
         }
         if (FakePhaseOutput.IsPhaseRun(request.WorkDirectory))
         {

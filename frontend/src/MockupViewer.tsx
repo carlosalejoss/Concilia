@@ -8,7 +8,7 @@ import EmptyState from './ui/EmptyState.tsx'
 
 // What the platform keeps about the current mockup (the .html itself is served
 // apart, in GET /projects/{id}/mockup).
-type MockupSummary = { historias: number; bytes: number; avisos: string[] }
+type MockupSummary = { historias: number; pantallas?: number; bytes: number; avisos: string[] }
 
 // The mockup step: the current .html at full width in a sandboxed iframe,
 // with its bar (download, open alone, full screen), and a notice when it is
@@ -93,7 +93,7 @@ function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange 
       )}
       {!mockup ? (
         <EmptyState icon={MonitorSmartphone} title="Todavía no hay mockup">
-          Con el backlog validado, genera un prototipo navegable: una vista por historia, con datos de prueba, en un único .html.
+          Con el backlog validado, genera un prototipo navegable: una sola aplicación, con sus pantallas, que reúne todas las historias con datos de prueba, en un único .html.
         </EmptyState>
       ) : (
         <>
@@ -110,6 +110,7 @@ function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange 
           <div className="overflow-hidden rounded border border-line">
             <div className="flex flex-wrap items-center gap-2 border-b border-line bg-sunken px-3 py-2">
               <span className="mr-auto text-sm text-muted">
+                {mockup.content.pantallas ? `${mockup.content.pantallas} pantallas, ` : ''}
                 {mockup.content.historias} historias, {Math.round(mockup.content.bytes / 1024)} KB. Generado el {formatDate(mockup.updatedAt ?? mockup.createdAt)}.
               </span>
               <Button variant="ghost" size="sm" icon={Maximize2} onClick={() => frame.current?.requestFullscreen()}>
