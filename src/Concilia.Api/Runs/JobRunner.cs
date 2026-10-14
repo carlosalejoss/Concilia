@@ -29,9 +29,10 @@ public record RunOutcome(
 //
 // A v0 phase job (RunPhaseAsync) runs A and B at the same time and, when both
 // end with a valid output, the arbiter with the two outputs in the random order
-// of the plan. If only one ends well, the arbiter is not called and that output
-// is the result, "sin verificación cruzada"; if neither does, the job fails
-// (decisions of the v0 iteration, docs/plan-de-construccion.md).
+// of the plan. If only one ends well, or neither, the arbiter is not called
+// and the job fails: the output of a single model has no cross-check and is
+// not the result (decision of 14-10-2026; until then it was, "sin
+// verificación cruzada").
 public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecutor? phaseExecutor = null, MockupExecutor? mockupExecutor = null)
 {
     // A mockup job (prompts v0.6): the design (its first run, already
@@ -134,15 +135,16 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
         string OutputOf(string slot) =>
             File.ReadAllText(PhaseExecutor.OutputPath(outcomes.Single(o => o.Run.Slot == slot).Attempts![^1], plan.Kind));
 
+        // Without both outputs there is no cross-check, and the output of a
+        // single model is not accepted as the result (decision of the author,
+        // 14-10-2026): the job fails and can be launched again.
         if (succeeded.Count < 2)
         {
             var reason = succeeded.Count == 1
-                ? $"No se llama al árbitro: solo {succeeded[0]} terminó con una salida válida. Su salida es el resultado, sin verificación cruzada."
-                : "No se llama al árbitro: ni A ni B terminaron con una salida válida. El trabajo falla.";
+                ? $"No se llama al árbitro: solo {succeeded[0]} terminó con una salida válida, y sin las dos propuestas no hay verificación cruzada. El trabajo falla; se puede lanzar de nuevo."
+                : "No se llama al árbitro: ni A ni B terminaron con una salida válida. El trabajo falla; se puede lanzar de nuevo.";
             await onRunFinished(new RunOutcome(arbiter, null, null, PhaseExecutor.PromptVersion, reason));
-            return succeeded.Count == 1
-                ? new PhaseJobResult(succeeded[0], false, OutputOf(succeeded[0]), reason)
-                : new PhaseJobResult(null, false, null, reason);
+            return new PhaseJobResult(null, false, null, reason);
         }
 
         // The arbiter, with the two outputs as "Propuesta 1" and "Propuesta 2" in the order of the plan.

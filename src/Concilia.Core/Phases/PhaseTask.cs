@@ -56,7 +56,7 @@ public static class PhaseTask
     {
         var files = new List<InputFile>();
         if (phase.Kind == PhaseKind.Backlog)
-            files.Add(new InputFile(CatalogFile, ReadingPlan.Indented(input.Catalog), Required: true));
+            files.Add(new InputFile(CatalogFile, ReadingPlan.OnePerLine(input.Catalog), Required: true));
         else
             files.Add(new InputFile(DocumentationFile.Path, input.Documentation, Required: !phase.IsArbiter));
         if (phase.IsArbiter)
@@ -158,6 +158,7 @@ public static class PhaseTask
         return new PhaseContext
         {
             FragmentIds = fragments,
+            FragmentAtLine = DocumentationFile.FragmentAtLine(ReadIfExists(workDirectory, DocumentationFile.Path) ?? ""),
             AnsweredQuestionIds = answeredQuestionIds,
             Catalog = ReadIfExists(workDirectory, CatalogFile),
             Proposal1 = Proposal(Proposal1File),

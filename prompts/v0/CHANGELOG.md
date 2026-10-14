@@ -1,5 +1,18 @@
 # Cambios de los prompts v0
 
+## v0.7, el árbitro no se queda sin contexto y los fragmentos no son números de línea (2026-10-14)
+
+Tras una prueba real del autor con un proyecto de 8 documentos (unos 40.000 tokens) y propuestas de unos 230 requisitos:
+- **El árbitro del catálogo no cabía en 128k.** Leía las dos propuestas (con sangría, unas 2.000–2.900 líneas cada una) y además toda la documentación, aunque era opcional. Compactó el contexto seis veces, volvió a leerlo todo después de cada una y agotó los 30 turnos (1,6 M tokens de entrada).
+- **LUNA citaba números de línea como fragmentos** (`DOC-06#F830` por la línea 830, donde está `DOC-06#F537`), en tres trabajos seguidos y también en su reparación.
+
+Cambios:
+- Las propuestas que lee el árbitro y el catálogo que lee el backlog van con **un elemento por línea** (`ReadingPlan.OnePerLine`): cada requisito, pregunta o historia en una línea compacta. Lo que no cabe en 1.800 caracteres se abre un nivel más, para que `Read` no corte ninguna línea. Ocupan alrededor de una quinta parte menos.
+- `arbitro_catalogo.md` y `arbitro_preguntas.md`: la documentación no se lee entera; se consultan solo los tramos necesarios. El plan de lectura de un fichero para consultar dice ahora «no lo leas entero» y, en la documentación, en qué línea empieza cada documento.
+- `catalogo.md`, `preguntas.md`, `sugerir_respuestas.md` y los árbitros: el id de un fragmento es el que va entre corchetes, no el número de línea que muestra `Read`.
+- El error `REF-FRAG` de un fragmento que no existe, cuando su número es una línea del fichero, dice qué fragmento hay en esa línea, para que la reparación lo corrija.
+- Plataforma (no es del prompt): si solo uno de los dos modelos termina con una salida válida, el trabajo falla en lugar de dar esa salida como resultado sin verificación cruzada (decisión del autor).
+
 ## v0.6, el mockup como una sola aplicación, construida por pasos (2026-10-14)
 
 Pedido por el autor: un único prototipo que reúna todas las funcionalidades del backlog, construido poco a poco con muchas llamadas, para probarlo con `SS - GPT-6-SOL` (128k de contexto). Hasta la v0.5 era una vista por historia, agrupadas por épica, en una sola ejecución.

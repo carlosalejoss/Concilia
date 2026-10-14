@@ -16,7 +16,7 @@ Compara las propuestas 1 y 2, escribe el catálogo unido en `output/catalogo.jso
 ```
 
 - `respuestas`: lo mismo que recibieron los ingenieros. Una respuesta del cliente prevalece sobre la documentación.
-- `input/documentacion.txt`: la documentación que leyeron los ingenieros, un fragmento por línea (`[DOC-01#F007 §2.5] texto`). Consúltala cuando necesites comprobar qué dice la fuente.
+- `input/documentacion.txt`: la documentación que leyeron los ingenieros, un fragmento por línea (`[DOC-01#F007 §2.5] texto`). **No la leas entera:** consulta solo los tramos que necesites para comprobar qué dice la fuente en una discrepancia (LECTURA dice en qué línea empieza cada documento). Las dos propuestas ya ocupan buena parte de tu contexto. El id de un fragmento es el que va entre corchetes, no el número de línea que muestra Read.
 - `input/propuesta_1.json` e `input/propuesta_2.json`: las dos propuestas.
 - Cada propuesta es `{"requisitos":[{"id","tipo","notacion","obligatoriedad","texto","fuentes","preguntas"}]}`. En los ficheros, el id de cada requisito lleva delante el número de su propuesta (`1:RF-001` en la 1, `2:RF-001` en la 2): así no se confunden, aunque el mismo id exista en las dos.
 - No sabes quién escribió cada propuesta y su orden es aleatorio: júzgalas solo por su contenido.

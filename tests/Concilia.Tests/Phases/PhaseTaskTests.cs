@@ -125,6 +125,54 @@ public class PhaseTaskTests
         Assert.Equal("no es JSON", ReadingPlan.Indented("no es JSON"));
     }
 
+    [Fact]
+    public void A_proposal_goes_with_one_element_per_line_and_no_line_is_too_long()
+    {
+        var proposal = File.ReadAllText(Example("catalogo_propuesta_1.json"));
+        var requirements = JsonNode.Parse(proposal)!["requisitos"]!.AsArray().Count;
+
+        var text = ReadingPlan.OnePerLine(proposal);
+
+        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(proposal), JsonNode.Parse(text)));
+        Assert.True(text.Length < ReadingPlan.Indented(proposal).Length);
+        Assert.Equal(requirements, text.Split('\n').Count(l => l.StartsWith("{\"id\":\"", StringComparison.Ordinal)));
+        Assert.Equal("no es JSON", ReadingPlan.OnePerLine("no es JSON"));
+
+        // What does not fit in a line opens one more level.
+        var big = new JsonObject { ["a"] = new JsonArray(Enumerable.Range(0, 3).Select(_ => (JsonNode)new string('x', 1_000)).ToArray()) };
+        var lines = ReadingPlan.OnePerLine(big.ToJsonString()).Split('\n');
+        Assert.All(lines, l => Assert.True(l.Length <= ReadingPlan.MaxLineChars));
+        Assert.True(JsonNode.DeepEquals(big, JsonNode.Parse(string.Join("\n", lines))));
+    }
+
+    [Fact]
+    public void Documentation_to_consult_says_where_each_document_starts()
+    {
+        var documentation = "=== DOC-01 · a.txt ===\n[DOC-01#F001] uno\n=== DOC-02 · b.xlsx ===\n[DOC-02#F001] dos\n";
+
+        var block = ReadingPlan.Block([new InputFile(DocumentationFile.Path, documentation, Required: false)]);
+
+        Assert.Equal("- `input/documentacion.txt` (4 líneas), solo para consultar lo que necesites: no lo leas entero. "
+                     + "Dónde empieza cada documento: DOC-01 en la línea 1; DOC-02 en la línea 3.", block);
+    }
+
+    // A real run cited the line 830 of the documentation as DOC-06#F830.
+    [Fact]
+    public void A_fragment_that_is_a_line_number_says_which_fragment_is_on_that_line()
+    {
+        var phase = PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Proposal);
+        var documentation = DocumentationFile.Build(Fragments, new Dictionary<string, string>());
+        var lines = DocumentationFile.FragmentAtLine(documentation);
+        var line = lines.Keys.Max();
+        var cited = $"DOC-01#F{line:000}";
+        Assert.DoesNotContain(cited, Fragments.Select(f => f.Id)); // a line number, not a fragment
+        var output = File.ReadAllText(Example("catalogo_propuesta_1.json")).Replace("\"DOC-01#F002\"", $"\"{cited}\"");
+
+        var review = PhaseTask.Review(phase, output, Context() with { FragmentAtLine = lines }, "PROMPT", 1);
+
+        Assert.Contains(review.Validation.Errors, e => e.Contains($"REF-FRAG: el fragmento {cited} no existe. La línea {line} de input/documentacion.txt es {lines[line]}:"));
+    }
+
     // A and B read their input entirely; the arbiter, the two proposals (and
     // the catalog in the backlog), and may only consult the documentation.
     [Theory]

@@ -12,6 +12,9 @@ namespace Concilia.Core.Phases;
 public record PhaseContext
 {
     public IReadOnlySet<string> FragmentIds { get; init; } = new HashSet<string>();
+    // The fragment of each line of input/documentacion.txt, to tell a model
+    // that cites a line number as a fragment (DocumentationFile.FragmentAtLine).
+    public IReadOnlyDictionary<int, string> FragmentAtLine { get; init; } = new Dictionary<int, string>();
     public IReadOnlySet<string> AnsweredQuestionIds { get; init; } = new HashSet<string>();
     public IReadOnlyList<string> PendingQuestionIds { get; init; } = []; // suggestions, in order
     public string? Catalog { get; init; }
@@ -84,7 +87,7 @@ public static class PhaseValidator
         var questions = Items(data!, "preguntas");
         errors.AddRange(IdErrors(questions.Select(q => Str(q, "id")!).ToList(), "P", 3));
         foreach (var q in questions)
-            errors.AddRange(FragmentErrors(Str(q, "id")!, StrList(q, "fuentes"), context.FragmentIds));
+            errors.AddRange(FragmentErrors(Str(q, "id")!, StrList(q, "fuentes"), context));
         if (proposals is var (p1, p2))
             errors.AddRange(ArbiterErrors(questions, (Ids(Items(p1, "preguntas")), Ids(Items(p2, "preguntas"))), Items(data!, "descartadas"), "descartadas"));
         return new PhaseValidation(errors, []);
@@ -108,7 +111,7 @@ public static class PhaseValidator
             var questions = StrList(r, "preguntas");
             if (sources.Count == 0 && questions.Count == 0)
                 errors.Add($"{id} SIN-ORIGEN: cita al menos un fragmento o una pregunta respondida.");
-            errors.AddRange(FragmentErrors(id, sources, context.FragmentIds));
+            errors.AddRange(FragmentErrors(id, sources, context));
             foreach (var p in questions.Where(p => !context.AnsweredQuestionIds.Contains(p)))
                 errors.Add($"{id} REF-PREG: la pregunta {p} no existe o no está respondida.");
         }
@@ -171,7 +174,7 @@ public static class PhaseValidator
             var sources = StrList(s, "fuentes");
             if (Str(s, "base") == "documentacion" && sources.Count == 0)
                 errors.Add($"{p} SIN-ORIGEN: una sugerencia basada en la documentación cita al menos un fragmento.");
-            errors.AddRange(FragmentErrors(p, sources, context.FragmentIds));
+            errors.AddRange(FragmentErrors(p, sources, context));
         }
         errors.AddRange(context.PendingQuestionIds.Where(p => !seen.Contains(p)).Select(p => $"{p} FALTA: no hay sugerencia para la pregunta."));
         return new PhaseValidation(errors, []);
@@ -195,8 +198,20 @@ public static class PhaseValidator
         return errors;
     }
 
-    private static IEnumerable<string> FragmentErrors(string element, List<string> sources, IReadOnlySet<string> fragments) =>
-        sources.Where(f => !fragments.Contains(f)).Select(f => $"{element} REF-FRAG: el fragmento {f} no existe.");
+    private static IEnumerable<string> FragmentErrors(string element, List<string> sources, PhaseContext context) =>
+        sources.Where(f => !context.FragmentIds.Contains(f)).Select(f => $"{element} REF-FRAG: el fragmento {f} no existe.{LineHint(f, context)}");
+
+    // LUNA cited line numbers as fragments (DOC-06#F830 for the line 830 of
+    // input/documentacion.txt, where DOC-06#F537 is; 14-10-2026, three times
+    // in a row, also in its repair). When the number of a fragment that does
+    // not exist is a line of the file, the error says which fragment is there.
+    private static string LineHint(string fragment, PhaseContext context)
+    {
+        var hash = fragment.IndexOf("#F", StringComparison.Ordinal);
+        if (hash < 0 || !int.TryParse(fragment[(hash + 2)..], out var line) || !context.FragmentAtLine.TryGetValue(line, out var atLine))
+            return "";
+        return $" La línea {line} de {DocumentationFile.Path} es {atLine}: el id de un fragmento es el que va entre corchetes al principio de la línea, no el número de línea que muestra Read.";
+    }
 
     // Every element of each proposal ends in some `de` or in the discards, and
     // every id cited exists in its proposal.

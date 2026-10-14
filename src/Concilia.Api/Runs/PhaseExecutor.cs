@@ -17,7 +17,9 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // v0.4 (13-10-2026): the mockup is written by parts, a base and one file per epic.
     // v0.5 (14-10-2026): the mockup follows the style of a .zip of the client.
     // v0.6 (14-10-2026): the mockup is one application, built in several runs.
-    public const string PromptVersion = "v0.6";
+    // v0.7 (14-10-2026): the arbiter consults the documentation by parts and gets
+    // the proposals with one element per line; a fragment is not a line number.
+    public const string PromptVersion = "v0.7";
     public const int MaxRepairs = 1;
 
     // proposals: the outputs of the two slots in the order of the plan (only for the arbiter).

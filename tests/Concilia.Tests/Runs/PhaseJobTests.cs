@@ -187,7 +187,7 @@ public class PhaseJobTests
         // (indented, so Read does not cut a long line, and with "1:" before
         // each id, so the arbiter cannot mix the proposals: the same JSON otherwise).
         var proposal1 = File.ReadAllText(Path.Combine(arbiter, PhaseTask.Proposal1File));
-        Assert.Contains("\"id\": \"1:", proposal1);
+        Assert.Contains("\"id\":\"1:", proposal1);
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(File.ReadAllText(firstOutput)), JsonNode.Parse(ProposalIds.Unprefix(kind, proposal1))));
         // Every run read its input by parts (FakeProvider reads every file of input/).
         Assert.All(setup.Finished, o => Assert.NotEmpty(o.Attempts![^1].Result.Reads));
@@ -201,18 +201,18 @@ public class PhaseJobTests
     }
 
     [Fact]
-    public async Task If_only_one_model_ends_well_its_output_is_the_result_without_cross_check()
+    public async Task If_only_one_model_ends_well_the_job_fails_without_its_output()
     {
         using var setup = new Setup(new FailingModels("SS - GPT-6-LUNA"));
 
         var result = await setup.RunAsync(setup.Create(PhaseKind.Questions));
 
-        Assert.Equal("A", result.Source);
-        Assert.False(result.CrossChecked);
-        Assert.NotNull(result.Output);
+        // Decision of 14-10-2026: the output of a single model is not the result.
+        Assert.Null(result.Source);
+        Assert.Null(result.Output);
         var arbiter = setup.Outcome("ARB");
         Assert.Null(arbiter.Attempts);
-        Assert.Contains("sin verificación cruzada", arbiter.SkipReason);
+        Assert.Contains("solo A terminó con una salida válida", arbiter.SkipReason);
         Assert.DoesNotContain("start ARB", setup.Order);
     }
 
