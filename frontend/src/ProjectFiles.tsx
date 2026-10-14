@@ -1,7 +1,7 @@
 import { useEffect, useState, type DragEvent } from 'react'
 import { BookOpen, FileText, Upload } from 'lucide-react'
 import { errorMessage, formatDate, type Project, type ProjectFile } from './api.ts'
-import { ALLOWED_EXTENSIONS, MAX_BYTES, validateUpload } from './uploadRules.ts'
+import { ALLOWED_EXTENSIONS, ALLOWED_KINDS, MAX_BYTES, validateUpload } from './uploadRules.ts'
 import Banner from './ui/Banner.tsx'
 import Badge from './ui/Badge.tsx'
 import Drawer from './ui/Drawer.tsx'
@@ -121,8 +121,8 @@ function ProjectFiles({ project, onChange }: ProjectFilesProps) {
         <Upload className={`shrink-0 text-faint ${files.length === 0 ? 'size-7' : 'size-4'}`} aria-hidden />
         <span className="text-sm">
           <span className="font-medium">{uploading ? 'Subiendo…' : 'Arrastra los archivos aquí o elígelos'}</span>
-          <span className="block text-muted">
-            {ALLOWED_EXTENSIONS.join(', ')}, hasta {MAX_BYTES / (1024 * 1024)} MB cada uno
+          <span className="block text-muted" title={ALLOWED_EXTENSIONS.join(' ')}>
+            {ALLOWED_KINDS}, hasta {MAX_BYTES / (1024 * 1024)} MB cada uno
           </span>
         </span>
         <input

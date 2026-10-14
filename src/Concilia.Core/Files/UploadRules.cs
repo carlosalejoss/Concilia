@@ -6,7 +6,11 @@ public static class UploadRules
 {
     public const long MaxBytes = 10 * 1024 * 1024; // 10 MB
 
-    public static readonly IReadOnlyList<string> AllowedExtensions = [".txt", ".md", ".pdf", ".docx"];
+    public static readonly IReadOnlyList<string> AllowedExtensions =
+    [
+        ".txt", ".md", ".pdf", ".docx", ".xlsx", ".csv", ".pptx", ".html", ".htm",
+        ".eml", ".msg", ".vtt", ".srt", ".json", ".yaml", ".yml", ".xml",
+    ];
 
     // Returns an error message for the user, or null if the file is valid.
     public static string? Validate(string fileName, long sizeBytes)

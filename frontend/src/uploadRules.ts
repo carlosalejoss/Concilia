@@ -4,7 +4,15 @@
 
 export const MAX_BYTES = 10 * 1024 * 1024 // 10 MB
 
-export const ALLOWED_EXTENSIONS = ['.txt', '.md', '.pdf', '.docx']
+export const ALLOWED_EXTENSIONS = [
+  '.txt', '.md', '.pdf', '.docx', '.xlsx', '.csv', '.pptx', '.html', '.htm',
+  '.eml', '.msg', '.vtt', '.srt', '.json', '.yaml', '.yml', '.xml',
+]
+
+// The same types in words, for the upload zone: the whole list of extensions
+// does not read well there (it goes in the tooltip).
+export const ALLOWED_KINDS =
+  'Word, PDF, Excel, CSV, PowerPoint, páginas web, correos (.eml, .msg), transcripciones (.vtt, .srt), texto, Markdown, JSON, YAML o XML'
 
 // Returns an error message for the user, or null if the file is valid.
 export function validateUpload(file: File): string | null {

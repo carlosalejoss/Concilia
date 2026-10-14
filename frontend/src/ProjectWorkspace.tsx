@@ -21,7 +21,7 @@ import Drawer from './ui/Drawer.tsx'
 // What each step does, and the button that launches its job.
 const STEP_INFO: Record<FlowStep, { description: string; launch?: { label: string; url: (projectId: number) => string } }> = {
   Documents: {
-    description: 'La documentación del sistema: .txt, .md, .docx o .pdf. Los modelos la leen por partes.',
+    description: 'La documentación del sistema: documentos, hojas de cálculo, presentaciones, correos, transcripciones de reuniones… Los modelos la leen por partes.',
   },
   Questions: {
     description: 'Dos modelos preparan las dudas para el cliente y un árbitro las une. Contesta o descarta cada una antes del catálogo.',

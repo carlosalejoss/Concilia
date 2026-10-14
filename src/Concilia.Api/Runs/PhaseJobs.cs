@@ -48,7 +48,7 @@ public static class PhaseJobs
         IReadOnlyList<string>? pendingQuestionIds = null)
     {
         if (documents.Count == 0)
-            return new NewPhaseJob(null, [], null, "El proyecto no tiene archivos con texto. Sube algún .txt, .md, .docx o .pdf.");
+            return new NewPhaseJob(null, [], null, "El proyecto no tiene archivos con texto. Sube algún documento con texto.");
 
         var fragments = documents.SelectMany(d => Fragmenter.FragmentDocument(d.Id, d.Text)).ToList();
         var fullInput = input with
