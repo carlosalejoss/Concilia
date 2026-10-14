@@ -31,7 +31,9 @@ function toBlocks(text: string): Block[] {
     const line = raw.trim()
     const last = blocks[blocks.length - 1]
     if (line === '') continue
-    if (line.startsWith('|')) {
+    // Markdown table rows ("| a | b |") and the rows of a Word table, which
+    // the extraction writes as "a | b".
+    if (line.startsWith('|') || line.includes(' | ')) {
       if (/^\|?\s*:?-{2,}/.test(line)) continue // the |---|---| line of a Markdown table
       if (last?.kind === 'table') last.rows.push(cells(line))
       else blocks.push({ kind: 'table', rows: [cells(line)] })
