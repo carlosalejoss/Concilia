@@ -78,6 +78,22 @@ public class PhaseJobTests
                 : _fake.RunAsync(request, onEvent, cancellationToken);
     }
 
+    // Like FakeProvider, but the given model writes its output and then runs
+    // out of time before the verdict.
+    private sealed class TimesOutAfterWriting(string model) : IRunnerProvider
+    {
+        private readonly FakeProvider _fake = new();
+        public string Name => "Test";
+
+        public async Task<RunResult> RunAsync(RunRequest request, Action<RunEvent> onEvent, CancellationToken cancellationToken)
+        {
+            var result = await _fake.RunAsync(request, onEvent, cancellationToken);
+            return request.ModelId == model
+                ? result with { Status = RunStatus.TimedOut, Verdict = null, ErrorMessage = "Se agotó el tiempo máximo (00:30:00)." }
+                : result;
+        }
+    }
+
     // Like FakeProvider, but the first attempt of every run reports no reads,
     // as a model that wrote its output without reading its input.
     private sealed class SkipsReadingFirst : IRunnerProvider
@@ -214,6 +230,19 @@ public class PhaseJobTests
         Assert.Null(arbiter.Attempts);
         Assert.Contains("solo A terminó con una salida válida", arbiter.SkipReason);
         Assert.DoesNotContain("start ARB", setup.Order);
+    }
+
+    [Fact]
+    public async Task A_valid_output_written_before_the_time_ran_out_is_accepted()
+    {
+        using var setup = new Setup(new TimesOutAfterWriting("SS - GPT-6-SOL"));
+
+        var result = await setup.RunAsync(setup.Create(PhaseKind.Questions));
+
+        Assert.Equal("ARB", result.Source);
+        var arbiter = setup.Outcome("ARB").Attempts!;
+        Assert.Equal(RunStatus.Done, Assert.Single(arbiter).Result.Status); // accepted, without a repair
+        Assert.Contains("la salida ya estaba escrita y es válida", arbiter[0].Result.ErrorMessage);
     }
 
     [Fact]

@@ -83,17 +83,31 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
         IReadOnlyList<string> requiredReads, IReadOnlyList<FileRead> reads, Func<string, string>? keepAs = null)
     {
         var result = attempt.Result;
-        if (!CatalogReview.ModelAnswered(result))
+        // A run that ran out of time (or of activity) after writing its output
+        // is reviewed too: a valid output is accepted. It is not repaired: the
+        // model did not get to answer (14-10-2026, an arbiter that wrote the
+        // catalog and then spent the 30 minutes trying to compact the context).
+        var answered = CatalogReview.ModelAnswered(result);
+        var cutShort = result.Status is RunStatus.TimedOut or RunStatus.HeartbeatLost;
+        if (!answered && !cutShort)
             return new AttemptReview(result, null);
 
         var path = Path.Combine(attempt.Request.WorkDirectory, outputFile);
         var output = File.Exists(path) ? File.ReadAllText(path) : null;
+        if (!answered && output is null)
+            return new AttemptReview(result, null);
         var review = reviewOutput(output, PhaseTask.UnreadErrors(attempt.Request.WorkDirectory, requiredReads, reads));
+        if (!answered && !review.Valid)
+            return new AttemptReview(result, null);
         if (review.Valid)
         {
             if (keepAs is not null && output is not null)
                 File.WriteAllText(path, keepAs(output));
             var notes = new List<string>();
+            if (cutShort)
+                notes.Add($"La ejecución terminó antes del veredicto ({result.ErrorMessage}), pero la salida ya estaba escrita y es válida: se acepta");
+            if (result.ErrorMessage == ClaudeCliRunner.CompactingAfterOutput)
+                notes.Add("Se detuvo al empezar a compactar el contexto después de escribir la salida; la salida es válida y se acepta");
             if (result.Compactions > 0)
                 notes.Add($"Claude Code compactó el contexto {result.Compactions} {(result.Compactions == 1 ? "vez" : "veces")}: puede haberse perdido detalle");
             if (result.VerdictError is { } verdictError)

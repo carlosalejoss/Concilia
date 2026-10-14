@@ -59,6 +59,11 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
         var reads = new List<FileRead>();
         var compactions = 0;
 
+        // The Write calls waiting for their result, and the files written, to
+        // know when every expected output is there (see CompactingAfterOutput).
+        var pendingWrites = new Dictionary<string, string>();
+        var written = new HashSet<string>();
+
         void OnLine(string rawLine)
         {
             // Redact first: everything derived from the line is then safe.
@@ -71,6 +76,12 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
                         break;
                     case ToolResultEvent answered when pendingReads.Remove(answered.ToolUseId, out var fileRead):
                         reads.Add(fileRead with { Succeeded = !answered.IsError });
+                        break;
+                    case ToolUseEvent { Name: "Write" } write when ReadOf(write.Input, folders.Root) is { } target:
+                        pendingWrites[write.ToolUseId] = target.Path;
+                        break;
+                    case ToolResultEvent answered when pendingWrites.Remove(answered.ToolUseId, out var path) && !answered.IsError:
+                        written.Add(path);
                         break;
                     case SystemEvent { Subtype: CompactBoundary }:
                         compactions++;
@@ -90,6 +101,12 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
                         break;
                     case ToolResultEvent toolResult when stopReason is null && IsTruncatedToolCall(toolResult):
                         stopReason = TruncatedToolCall;
+                        stop.Cancel();
+                        break;
+                    case SystemEvent system when stopReason is null && IsCompacting(system)
+                                                 && request.ExpectedOutputFiles.Count > 0
+                                                 && request.ExpectedOutputFiles.All(written.Contains):
+                        stopReason = CompactingAfterOutput;
                         stop.Cancel();
                         break;
                 }
@@ -148,6 +165,33 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
 
     // The "system" line Claude Code writes when it compacts the context.
     public const string CompactBoundary = "compact_boundary";
+
+    public const string CompactingAfterOutput =
+        "Se detuvo la ejecución: la salida ya estaba escrita y Claude Code empezó a compactar el contexto antes de " +
+        "contestar con el veredicto. La plataforma revisa la salida igualmente.";
+
+    // {"type":"system","subtype":"status","status":"compacting"}: Claude Code
+    // starts to compact the context. A real arbiter of the catalog (14-10-2026)
+    // wrote its output and then tried to compact seven times, without ending,
+    // until the 30 minutes ran out; all that was left was the verdict line.
+    // Once every expected output is written there is nothing to gain by
+    // waiting: the run stops and its output is reviewed.
+    private static bool IsCompacting(SystemEvent system)
+    {
+        if (system.Subtype != "status")
+            return false;
+        try
+        {
+            using var json = System.Text.Json.JsonDocument.Parse(system.RawJson);
+            return json.RootElement.TryGetProperty("status", out var status)
+                && status.ValueKind == System.Text.Json.JsonValueKind.String
+                && status.GetString() == "compacting";
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return false;
+        }
+    }
 
     // The arguments of a Read call: {"file_path": "...", "offset": 10, "limit": 200}.
     // The path is made relative to the run folder when it is inside it, so

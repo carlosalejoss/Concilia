@@ -78,7 +78,8 @@ public static class CatalogReview
         result.Status == RunStatus.Done
         || result.VerdictError is not null
         || result.Verdict?.State == VerdictState.Done // "hecho" but the file is missing
-        || result.ErrorMessage == ClaudeCliRunner.TruncatedToolCall;
+        || result.ErrorMessage == ClaudeCliRunner.TruncatedToolCall
+        || result.ErrorMessage == ClaudeCliRunner.CompactingAfterOutput;
 
     private static string Summary(IReadOnlyList<string> lines)
     {
