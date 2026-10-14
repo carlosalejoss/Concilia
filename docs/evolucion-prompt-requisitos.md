@@ -365,12 +365,29 @@ Corrige dos fallos de la primera prueba real con un proyecto grande («documento
 
 ### Resultados
 
-Pendiente de repetir el catálogo del mismo proyecto.
+Documento C, catálogo, 14-10-2026, una ejecución: A `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA` y árbitro `SS - GPT-6.1-SOL` (primera vez que se usa la 6.1).
+
+| Ejecución | Resultado | Tokens entrada / salida | Turnos |
+|---|---|---|---|
+| A | Válido a la primera | 231.528 / 24.017 | 6 |
+| B, intento 1 | Falla: cita `DOC-06#F455 sigue` (el id con la marca de continuación) | 135.654 / 27.637 | 6 |
+| B, intento 2 | Válido | 187.867 / 19.021 | 6 |
+| Árbitro | **Tiempo agotado (30 min)** después de escribir el catálogo unido | sin evento final | — |
+
+- **Un elemento por línea funciona:** las propuestas ocupan unas 200 líneas cada una, frente a 2.000–2.900 con sangría, y el árbitro las lee en 4 llamadas a `Read`.
+- **La consulta por tramos funciona a medias:** el árbitro va a tramos concretos de la documentación, pero suma unas 600 de las 838 líneas.
+- **LUNA ya no cita números de línea.** Su nuevo error es copiar la marca `sigue` en el id; la reparación lo corrige.
+- **El árbitro escribe el catálogo y se atasca después:** al ir a contestar con el veredicto, Claude Code intenta compactar el contexto siete veces sin terminar, hasta agotar los 30 minutos. El catálogo unido estaba escrito, pero una ejecución con el tiempo agotado no se revisaba.
+
+Cambios de la plataforma tras esta prueba (sin cambiar los prompts):
+- **El runner para una ejecución en cuanto Claude Code empieza a compactar con todas las salidas esperadas ya escritas** (`CompactingAfterOutput`). Solo faltaba la línea del veredicto: se revisa la salida como si hubiera contestado, con su reparación si no es válida.
+- **Una ejecución que agota el tiempo (o se queda sin actividad) después de escribir su salida se revisa:** si la salida es válida, se acepta con un aviso. Si no lo es, sigue sin repararse, como hasta ahora.
 
 ### Qué hay que mejorar
 
 - Si el árbitro sigue sin caber con propuestas aún más grandes, hará falta un árbitro por partes (por tipo de requisito o por documento).
-- Parar una ejecución que compacta varias veces seguidas, en lugar de dejar que agote los turnos (cada compactación cuesta casi 100.000 tokens).
+- Parar una ejecución que compacta varias veces seguidas antes de escribir su salida, en lugar de dejar que agote los turnos (cada compactación cuesta casi 100.000 tokens). Pendiente de que lo decida el autor.
+- Quitar la marca `sigue` de un id citado (`DOC-06#F455 sigue` → `DOC-06#F455`) en la plataforma, en lugar de gastar una reparación.
 
 ## v0.6 (14-10-2026)
 

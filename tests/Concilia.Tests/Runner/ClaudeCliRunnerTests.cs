@@ -188,6 +188,36 @@ public class ClaudeCliRunnerTests
         Assert.True(clock.Elapsed < TimeSpan.FromSeconds(15), $"Tardó {clock.Elapsed}");
     }
 
+    // A real arbiter wrote its output and then spent the 30 minutes trying to
+    // compact the context (14-10-2026): with every expected output written,
+    // the run stops as soon as compaction starts.
+    [Theory]
+    [InlineData("output/resumen.md", true)]
+    [InlineData("output/otro.md", false)]
+    public async Task Compacting_after_writing_the_output_stops_the_run_at_once(string expected, bool stops)
+    {
+        using var temp = new TempDirectory();
+        var request = Request(temp.Path, Directive("synthetic-compacta-tras-escribir.jsonl", sleepAfterMs: 3_000), expected) with
+        {
+            TotalTimeout = TimeSpan.FromSeconds(2),
+        };
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+
+        var (result, _) = await Run(request);
+
+        if (stops)
+        {
+            Assert.Equal(RunStatus.Failed, result.Status);
+            Assert.Equal(ClaudeCliRunner.CompactingAfterOutput, result.ErrorMessage);
+            Assert.True(clock.Elapsed < TimeSpan.FromSeconds(1.5), $"Tardó {clock.Elapsed}");
+        }
+        else
+        {
+            // Without the expected output it goes on (here, until the time runs out).
+            Assert.Equal(RunStatus.TimedOut, result.Status);
+        }
+    }
+
     [Fact]
     public async Task Stderr_is_kept_as_redacted_warnings()
     {
