@@ -43,7 +43,7 @@ public static class JobEndpoints
             {
                 return Results.ValidationProblem(new Dictionary<string, string[]>
                 {
-                    ["project"] = ["El proyecto no tiene archivos con texto. Sube algún .txt, .md, .docx o .pdf."],
+                    ["project"] = ["El proyecto no tiene archivos con texto. Sube algún documento con texto."],
                 });
             }
 

@@ -9,6 +9,9 @@ public class UploadRulesTests
     [InlineData("requisitos.md")]
     [InlineData("requisitos.pdf")]
     [InlineData("requisitos.docx")]
+    [InlineData("salas.xlsx")]
+    [InlineData("reunion.vtt")]
+    [InlineData("correo.msg")]
     [InlineData("REQUISITOS.PDF")]
     public void Allowed_types_are_valid(string fileName)
     {
@@ -17,7 +20,7 @@ public class UploadRulesTests
 
     [Theory]
     [InlineData("programa.exe")]
-    [InlineData("hoja.xlsx")]
+    [InlineData("mockup.zip")]
     [InlineData("antiguo.doc")]
     [InlineData("sin_extension")]
     public void Other_types_are_rejected(string fileName)

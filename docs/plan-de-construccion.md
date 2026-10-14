@@ -329,6 +329,21 @@ Decidido por el autor el 13-10-2026. La web era una sola página larga en la que
 
 **Hecho cuando:** con un proyecto real (documento B), cada paso cabe en pantalla plegado, se puede desplegar lo que se necesita, la URL lleva al mismo sitio al recargar y el modo oscuro se ve bien en todos los pasos.
 
+## Hito 15: más tipos de archivo
+
+Pedido por el autor el 14-10-2026: además de `.txt`, `.md`, `.docx` y `.pdf`, los proyectos admiten los tipos que suele traer la documentación de un cliente. Cada formato se convierte a texto con las marcas que ya entienden el fragmentador y el lector de la web: títulos `##`, elementos `- ` y filas de tabla `| a | b |`, con una línea en blanco entre bloques para que cada fila o elemento sea un fragmento citable.
+
+| Decisión (14-10-2026) | Origen |
+|---|---|
+| Primera tanda: `.xlsx`, `.csv`, `.pptx`, `.html`/`.htm`, `.eml`, `.msg`, `.vtt`, `.srt`, `.json`, `.yaml`/`.yml` y `.xml`. Sin imágenes (no hay OCR). | Autor |
+| Hojas de cálculo: una tabla por hoja, como mucho 2.000 filas por hoja, con una línea que dice cuántas se omiten. | Propuesta de Claude, aprobada por el autor |
+| Librerías nuevas, todas MIT: HtmlAgilityPack (HTML), MimeKit (`.eml`) y MsgReader (`.msg`). Las hojas y presentaciones usan DocumentFormat.OpenXml, que ya estaba. | Claude |
+| Los adjuntos de un correo no se leen: se listan por nombre y, si interesan, se suben aparte. | Claude |
+| Un `.zip` no es documentación: serán mockups existentes del cliente cuyo estilo debe seguir nuestro mockup. Es otra funcionalidad, que se diseña aparte. | Autor |
+
+- [x] 77. Convertidores (`SpreadsheetText`, `SlidesText`, `HtmlText`, `EmailText`, `TranscriptText`), reglas de subida en la API y en la web, y tests con documentos construidos en memoria. Un `.msg` no se puede construir en un test: solo se prueba que uno dañado da error.
+- [ ] 78. Referencia de estilo para el mockup a partir de un `.zip` con un mockup del cliente. Pendiente de que el autor apruebe el diseño.
+
 ## Después
 
 Por este orden:

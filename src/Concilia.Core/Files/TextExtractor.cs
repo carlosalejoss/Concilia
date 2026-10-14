@@ -11,8 +11,10 @@ namespace Concilia.Core.Files;
 public class TextExtractionException(string message, Exception inner) : Exception(message, inner);
 
 // Turns the bytes of an uploaded file into plain text, for the supported types:
-// .txt, .md, .docx and .pdf. Scanned PDFs (images only) give empty text: there
-// is no OCR.
+// documents (.txt, .md, .docx, .pdf), spreadsheets (.xlsx, .csv), presentations
+// (.pptx), web pages (.html, .htm), emails (.eml, .msg), meeting transcripts
+// (.vtt, .srt) and data files (.json, .yaml, .yml, .xml, kept as they are).
+// Scanned PDFs (images only) give empty text: there is no OCR.
 public static class TextExtractor
 {
     private static readonly HashSet<string> SupportedExtensions = new(StringComparer.OrdinalIgnoreCase)
@@ -21,6 +23,19 @@ public static class TextExtractor
         ".md",
         ".docx",
         ".pdf",
+        ".xlsx",
+        ".csv",
+        ".pptx",
+        ".html",
+        ".htm",
+        ".eml",
+        ".msg",
+        ".vtt",
+        ".srt",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".xml",
     };
 
     // UTF-8 that throws on invalid bytes instead of silently replacing them,
@@ -51,7 +66,14 @@ public static class TextExtractor
             {
                 ".docx" => ExtractDocx(content),
                 ".pdf" => ExtractPdf(content),
-                _ => DecodePlainText(content), // .txt and .md
+                ".xlsx" => SpreadsheetText.FromXlsx(content),
+                ".csv" => SpreadsheetText.FromCsv(PlainText(content)),
+                ".pptx" => SlidesText.FromPptx(content),
+                ".html" or ".htm" => HtmlText.Convert(PlainText(content)),
+                ".eml" => EmailText.FromEml(content),
+                ".msg" => EmailText.FromMsg(content),
+                ".vtt" or ".srt" => TranscriptText.Convert(PlainText(content)),
+                _ => DecodePlainText(content), // .txt, .md, .json, .yaml, .yml and .xml
             };
             return NormalizeLineEndings(text);
         }
@@ -62,6 +84,9 @@ public static class TextExtractor
             throw new TextExtractionException($"No se ha podido leer el contenido del archivo {extension}.", e);
         }
     }
+
+    // The text of a text-based format, with \n line endings, for the converters.
+    private static string PlainText(byte[] content) => NormalizeLineEndings(DecodePlainText(content));
 
     // Text files have no fixed encoding. Try UTF-8 first (the common case, with
     // or without BOM); if the bytes are not valid UTF-8, assume Windows-1252,
