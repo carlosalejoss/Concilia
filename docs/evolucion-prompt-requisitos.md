@@ -14,7 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Pendiente | Pendiente |
+| v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Generado en 40 min: 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Al autor le convence: «ya se parece mucho a lo que yo busco» |
 | v0.8 | 15-10-2026 | Mockup: la plataforma junta y revisa el prototipo (ids, globales de JavaScript y navegación) y solo corrige con un modelo las partes con problemas; se puede reanudar un mockup fallido | Pendiente | Pendiente |
 | v0.7 | 14-10-2026 | El árbitro consulta la documentación por tramos y lee las propuestas con un elemento por línea; un fragmento no es un número de línea (`REF-FRAG` dice qué fragmento hay en esa línea); sin la salida de un solo modelo como resultado | Pendiente | Pendiente |
 | v0.6 | 14-10-2026 | El mockup es una sola aplicación construida por pasos: diseño (mapa de pantallas y armazón), una ejecución por pantalla y una revisión del conjunto; pensado para `SS - GPT-6-SOL` | Pendiente | Pendiente |
@@ -392,11 +392,26 @@ Solo cambia el mockup. Detalle en `prompts/v0/CHANGELOG.md`.
 
 ### Resultados
 
-Pendiente de generar el mockup del documento C desde cero.
+Documento C (backlog validado de 9 épicas y 46 historias, con la referencia de estilo de un `.zip`), 15-10-2026, `SS - GPT-6-SOL`, generado desde cero.
+
+| Paso | Resultado | Tokens entrada / salida | Turnos |
+|---|---|---|---|
+| Diseño, intento 1 | Falla: 26 pantallas, el máximo es 25 | 174.330 / 32.645 | 11 |
+| Diseño, reparación | Válido: inicio de sesión y 25 pantallas en total | 29.188 / 5.923 | 3 |
+| 25 pantallas | **Todas válidas a la primera** | entre 85.189 y 299.389 / entre 10.688 y 43.250 cada una | 11–14 |
+| Plataforma | Junta el prototipo y encuentra problemas en una sola parte | — | — |
+| 1 corrección | Válida | 119.908 / 14.920 | 12 |
+| **Total** | **Mockup generado: 25 pantallas, las 46 historias, 866 KB, sin avisos** | **3.465.323 / 548.080** | — |
+
+- **Tiempo:** 40 minutos de principio a fin, con hasta 3 pantallas a la vez.
+- **El autor lo da por bueno:** «esto ya se parece mucho a lo que yo busco». Se entra por el inicio de sesión y se navega como en la aplicación real.
+- **La navegación pide más pantallas** que el índice de la v0.8 (25 frente a 19): aparecen la del inicio de sesión y las pantallas de detalle a las que se llega con acciones.
 
 ### Qué hay que mejorar
 
-Pendiente de la prueba.
+- **Tamaño:** 866 KB, cerca del límite de 1 MB. Con un backlog mayor se pasaría; habrá que subir el límite o pedir pantallas más ligeras.
+- **Coste:** unos 3,5 M tokens de entrada, el 70 % en las pantallas (unos 115.000 de media cada una, sobre todo por leer el armazón entero). Se podría pasar a cada pantalla solo la parte del armazón que usa: el CSS de su aplicación y las funciones comunes.
+- **Máximo de pantallas:** con la navegación real, el diseño se pasó de 25 en el primer intento. Si con otros proyectos vuelve a pasar, habrá que subirlo.
 
 ## v0.7 (14-10-2026)
 
