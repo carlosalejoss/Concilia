@@ -24,6 +24,10 @@ public static class JobEndpoints
             {
                 return Results.NotFound();
             }
+            if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
+            {
+                return busy; // one task at a time in the whole platform
+            }
 
             // The documents are the project files with extracted text, numbered
             // DOC-01, DOC-02... in upload order.

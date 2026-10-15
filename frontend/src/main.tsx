@@ -8,9 +8,12 @@ import '@fontsource/source-serif-4/400.css'
 import '@fontsource/source-serif-4/600.css'
 import './index.css'
 import App from './App.tsx'
+import ActiveJobProvider from './ActiveJobProvider.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ActiveJobProvider>
+      <App />
+    </ActiveJobProvider>
   </StrictMode>,
 )

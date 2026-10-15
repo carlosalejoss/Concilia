@@ -6,7 +6,8 @@ import JobReport from './JobReport.tsx'
 import { isFinished, lotsOfSlot, mockupStepName, RUN_STATE_NAMES, RUN_STATE_TONES, SLOT_NAMES, SLOTS, slotsOf, slotSummary } from './jobs.ts'
 import Badge from './ui/Badge.tsx'
 import Banner from './ui/Banner.tsx'
-import Button from './ui/Button.tsx'
+import LaunchButton from './ui/LaunchButton.tsx'
+import { useActiveJob } from './hooks/useActiveJob.ts'
 import Collapsible from './ui/Collapsible.tsx'
 import EmptyState from './ui/EmptyState.tsx'
 
@@ -42,6 +43,7 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
   const [selectedId, setSelectedId] = useState<string | null>(initialJobId ?? null)
   const [error, setError] = useState<string | null>(null)
   const [starting, setStarting] = useState(false)
+  const activeJob = useActiveJob()
 
   // Reloads the list; also called when a run starts or ends. useCallback keeps
   // the same function between renders, so the consoles below do not reconnect
@@ -65,6 +67,7 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
         setError(await errorMessage(response))
         return
       }
+      activeJob.refresh() // the other buttons go grey at once
       const created: JobView = await response.json()
       setJobs((current) => [created, ...current])
       setSelectedId(created.job.id)
@@ -161,9 +164,9 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
 
       <Collapsible persistKey={`p${project.id}.ejecuciones.v14`} title="Catálogo v1.4 por lotes" meta={<Badge>Experimental</Badge>}>
         <div className="flex flex-wrap items-center gap-3">
-          <Button icon={FlaskConical} onClick={start} disabled={starting}>
+          <LaunchButton icon={FlaskConical} onClick={start} disabled={starting}>
             Generar el catálogo v1.4
-          </Button>
+          </LaunchButton>
           <span className="text-sm text-muted">Por lotes y sin árbitro. Se conserva para el hito 7 y no forma parte del flujo.</span>
         </div>
       </Collapsible>

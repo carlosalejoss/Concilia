@@ -110,6 +110,10 @@ public static class MockupEndpoints
         {
             return Results.NotFound();
         }
+        if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
+        {
+            return busy; // one task at a time in the whole platform
+        }
         var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Mockup);
         if (!step.CanLaunch)
         {

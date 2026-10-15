@@ -4,6 +4,8 @@ import { errorMessage, formatDate, type Deliverable, type JobView, type PhaseRes
 import { isStyleFile } from './uploadRules.ts'
 import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
+import LaunchButton from './ui/LaunchButton.tsx'
+import { useActiveJob } from './hooks/useActiveJob.ts'
 import EmptyState from './ui/EmptyState.tsx'
 
 // What the platform keeps about the current mockup (the .html itself is served
@@ -32,6 +34,7 @@ function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange,
   const frame = useRef<HTMLIFrameElement>(null)
   const [resuming, setResuming] = useState(false)
   const [resumeError, setResumeError] = useState<string | null>(null)
+  const activeJob = useActiveJob()
 
   // A new job that starts from the steps the failed one finished.
   async function resume(jobId: string) {
@@ -40,7 +43,10 @@ function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange,
     try {
       const response = await fetch(`/projects/${project.id}/mockup-jobs/${jobId}/resume`, { method: 'POST' })
       if (!response.ok) setResumeError(await errorMessage(response))
-      else onLaunched()
+      else {
+        activeJob.refresh() // the other buttons go grey at once
+        onLaunched()
+      }
     } catch (e: unknown) {
       setResumeError(String(e))
     } finally {
@@ -106,14 +112,14 @@ function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange,
               <Button variant="ghost" size="sm" onClick={() => onShowJob(failedJob.id)}>
                 Ver la consola
               </Button>
-              <Button
+              <LaunchButton
                 size="sm"
                 disabled={resuming}
                 onClick={() => resume(failedJob.id)}
                 title="Un trabajo nuevo que aprovecha el diseño y las pantallas que ya terminaron bien"
               >
                 Reanudar
-              </Button>
+              </LaunchButton>
             </span>
           }
         >

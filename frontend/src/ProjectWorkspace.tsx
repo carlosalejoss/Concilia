@@ -16,6 +16,8 @@ import DeleteProject from './DeleteProject.tsx'
 import Badge from './ui/Badge.tsx'
 import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
+import LaunchButton from './ui/LaunchButton.tsx'
+import { useActiveJob } from './hooks/useActiveJob.ts'
 import Drawer from './ui/Drawer.tsx'
 
 // What each step does, and the button that launches its job.
@@ -82,6 +84,7 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
   const [firstStep, setFirstStep] = useState<FlowStep | null>(null)
   // Mockup: follow the style reference (.zip) or design from scratch.
   const [mockupStyle, setMockupStyle] = useState(true)
+  const activeJob = useActiveJob()
 
   const reload = useCallback(() => {
     fetch(`/projects/${project.id}/flow`)
@@ -119,6 +122,7 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
         setError(await errorMessage(response))
         return
       }
+      activeJob.refresh() // the other buttons go grey at once
       reload()
     } catch (e: unknown) {
       setError(String(e))
@@ -195,7 +199,7 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
               <p className="mt-1 max-w-prose text-sm text-muted">{info.description}</p>
             </div>
             {info.launch && (
-              <Button
+              <LaunchButton
                 variant="primary"
                 icon={launching ? Loader2 : Play}
                 disabled={!step.canLaunch || launching}
@@ -203,7 +207,7 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
                 onClick={() => launch(info.launch!.url(project.id, { mockupStyle }))}
               >
                 {info.launch.label}
-              </Button>
+              </LaunchButton>
             )}
           </div>
 

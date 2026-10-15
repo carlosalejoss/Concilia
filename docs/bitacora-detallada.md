@@ -1365,3 +1365,26 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - Decidir si se estima el consumo de las ejecuciones detenidas.
   - Reconstruir la API y la web cuando no haya trabajos en curso.
   - Paso 65.
+
+---
+
+## 15-10-2026, 14:10 (sesión)
+
+**Resumen para la bitácora (15-10-2026, una tarea cada vez en toda la plataforma)**
+
+- **Qué se hizo:**
+  - **Pregunta del autor:** ¿se pueden ejecutar dos proyectos a la vez? No: `JobWorker` ejecuta un trabajo detrás de otro, en todos los proyectos. Un segundo trabajo se quedaba en cola sin decir nada.
+  - **Bloqueo de lanzamientos** mientras hay una tarea en curso, en su proyecto o en cualquier otro:
+    - **API:** `ActiveJobs` busca el trabajo con alguna ejecución en cola o en marcha. `GET /jobs/active` lo devuelve con su proyecto y un mensaje, y todos los puntos que crean trabajos lo rechazan con ese mensaje (rondas, catálogo, backlog, sugerencias, mockup y su reanudación, catálogo v1.4).
+    - **Web:** `ActiveJobProvider` consulta la API cada 3 s. `LaunchButton` sustituye a los botones que lanzan tareas: mientras hay una en curso se ve apagado (opacidad y saturación más bajas, cursor de prohibido) y, al pulsarlo, sale abajo el aviso «Se está ejecutando X en el proyecto «Y». Espera a que termine para lanzar otra tarea.» durante 5 s.
+  - Test nuevo de la API: con una ronda en marcha se rechazan los lanzamientos en el mismo proyecto y en otro, y al terminar se puede lanzar de nuevo (830 tests).
+  - Las respuestas da igual quién las escriba: «Aprobar todas las sugerencias», contestar, descartar y validar no se bloquean, porque no lanzan ninguna tarea.
+- **Decisiones del autor:**
+  - una sola tarea a la vez en toda la plataforma, sin ejecutar trabajos en paralelo;
+  - bloquear los botones afectados con un tono apagado y un aviso de qué tarea se ejecuta y en qué proyecto.
+- **Decisiones de Claude (revisables):**
+  - el botón no se desactiva de verdad, para que al pulsarlo pueda mostrar el aviso;
+  - el aviso se muestra abajo, en el centro de la página;
+  - la API comprueba la tarea en curso antes que el estado del paso, para que el mensaje sea siempre el mismo.
+- **Cambios de criterio:** ninguno sobre decisiones anteriores. Se descarta la propuesta de ejecutar varios trabajos a la vez.
+- **Pendientes:** reconstruir la API y la web cuando termine el mockup en curso, y comprobarlo en el navegador; el paso 65.
