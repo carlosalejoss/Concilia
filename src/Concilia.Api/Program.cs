@@ -5,6 +5,7 @@ using Concilia.Api.Files;
 using Concilia.Api.Persistence;
 using Concilia.Api.Projects;
 using Concilia.Api.Questions;
+using Concilia.Api.Reports;
 using Concilia.Api.Runs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +60,7 @@ app.MapFlowEndpoints();
 app.MapQuestionEndpoints();
 app.MapDeliverableEndpoints();
 app.MapMockupEndpoints();
+app.MapReportEndpoints();
 
 app.Run();
 
