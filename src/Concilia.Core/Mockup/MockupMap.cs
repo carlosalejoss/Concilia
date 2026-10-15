@@ -34,9 +34,10 @@ public record MockupMap(IReadOnlyList<MockupScreen> Screens, string Start = "")
 {
     private static readonly Regex ScreenId = new(@"^P\d{2}$");
 
-    // Each screen is built in a run of its own: more than this would be a
-    // catalog of stories, not an application.
-    public const int MaxScreens = 25;
+    // There is no maximum of screens (decision of the author, 15-10-2026): the
+    // application has the ones it needs. Above this number the design gets a
+    // warning, because each screen is a run of its own (more time and cost).
+    public const int ManyScreens = 25;
 
     // The links of the map: from a screen to another one reached from it.
     public IEnumerable<(string From, MockupScreen To)> Links =>
@@ -93,8 +94,6 @@ public record MockupMap(IReadOnlyList<MockupScreen> Screens, string Start = "")
                 application, roles, menu, Texts(node?["desde"]).Distinct().ToList()));
         }
 
-        if (parsed.Count > MaxScreens)
-            errors.Add($"{file} MAPA: tiene {parsed.Count} pantallas; el máximo es {MaxScreens}. Junta en una pantalla las historias que se hacen en el mismo sitio.");
         var covered = parsed.SelectMany(s => s.StoryIds).ToHashSet();
         foreach (var missing in storyIds.Where(id => !covered.Contains(id)))
             errors.Add($"{missing} MAPA-HU: la historia no está en ninguna pantalla.");
@@ -133,6 +132,12 @@ public record MockupMap(IReadOnlyList<MockupScreen> Screens, string Start = "")
         foreach (var screen in screens.Where(s => !reached.Contains(s.Id)))
             yield return $"{screen.Id} MAPA-ACCESO: no se llega a esta pantalla: no es una entrada de menú (\"menu\") y ninguna pantalla a la que se llega la tiene en \"desde\".";
     }
+
+    // What is worth a look but is not an error.
+    public IReadOnlyList<string> Warnings() =>
+        Screens.Count > ManyScreens
+            ? [$"{MockupTask.MapFile} MAPA-PANTALLAS: tiene {Screens.Count} pantallas; cada una es una ejecución aparte, con su tiempo y su coste. Comprueba que no hay pantallas que se puedan juntar."]
+            : [];
 
     // Loads a map that was already checked (from the job's folder).
     public static MockupMap Load(string json, IReadOnlyList<string> storyIds) =>

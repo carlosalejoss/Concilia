@@ -409,9 +409,9 @@ Documento C (backlog validado de 9 épicas y 46 historias, con la referencia de 
 
 ### Qué hay que mejorar
 
-- **Tamaño:** 866 KB, cerca del límite de 1 MB. Con un backlog mayor se pasaría; habrá que subir el límite o pedir pantallas más ligeras.
+- **Tamaño:** 866 KB, cerca del límite de 1 MB. Con un backlog mayor se pasaría. (Resuelto el mismo día, autor: el límite pasa a 10 MB, con un aviso por encima de 2 MB.)
 - **Coste:** unos 3,5 M tokens de entrada, el 70 % en las pantallas (unos 115.000 de media cada una, sobre todo por leer el armazón entero). Se podría pasar a cada pantalla solo la parte del armazón que usa: el CSS de su aplicación y las funciones comunes.
-- **Máximo de pantallas:** con la navegación real, el diseño se pasó de 25 en el primer intento. Si con otros proyectos vuelve a pasar, habrá que subirlo.
+- **Máximo de pantallas:** con la navegación real, el diseño se pasó de 25 en el primer intento. (Resuelto el mismo día, autor: no hay máximo; las que tenga la aplicación real, con un aviso por encima de 25.)
 
 ## v0.7 (14-10-2026)
 

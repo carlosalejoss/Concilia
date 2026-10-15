@@ -14,6 +14,7 @@ El mockup v0.8 del documento C se generó (19 pantallas), pero con un menú late
 - El armazón tiene `entrar(usuario)`, `salir()` y la sesión en curso, en lugar del selector de rol.
 - `mockup_pantalla.md` recibe `{{NAVEGACION}}`: su aplicación y roles, desde dónde se llega y a qué pantallas debe llevar, cada una con `mostrarPantalla('…')`. La plataforma comprueba esos enlaces al juntar (`NAV-FALTA`) y, si falta alguno, se corrige como los demás problemas (`mockup_correccion.md`).
 - Un mockup diseñado con una versión anterior no se puede reanudar: se genera de nuevo.
+- Ampliado el 15-10-2026 (autor), después del primer mockup v0.9 (25 pantallas, 866 KB): no hay un máximo de pantallas (antes 20 y luego 25; por encima de 25, solo un aviso) y el tamaño máximo de la página pasa de 1 MB a 10 MB (por encima de 2 MB, solo un aviso). El prompt de diseño ya no habla de tamaño y dice que no hay un número máximo de pantallas.
 
 ## v0.8, la plataforma junta y revisa el mockup (2026-10-15)
 

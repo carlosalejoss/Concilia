@@ -43,7 +43,7 @@ El prototipo es **la aplicación tal como la usarán**, no un índice de pantall
 - **Ningún id a la vista.** Ni ids de pantalla (`P01`) ni de historia (`HU-001`) en ningún texto de la interfaz: solo en el código.
 - **Organiza el prototipo en las pantallas que tendría el sistema real**, no en una pantalla por historia ni por épica. Una pantalla reúne lo que el usuario hace en el mismo sitio: por ejemplo, listar, crear, modificar y cancelar reservas van juntas en «Reservas», con su listado, su formulario y sus acciones.
 - **Toda historia del backlog está en al menos una pantalla.** Si una historia toca dos pantallas (por ejemplo, un aviso que se configura en una y se ve en otra), ponla en las dos.
-- **Pantallas completas y no enormes:** cada una se construirá en una ejecución aparte, así que reparte las historias para que ninguna pantalla tenga más de unas 10.
+- **Pantallas completas y no enormes:** cada una se construirá en una ejecución aparte, así que reparte las historias para que ninguna pantalla tenga más de unas 10. No hay un número máximo de pantallas: las que tenga la aplicación real.
 - **Una sola fuente de datos:** lo que un rol crea o cambia en una pantalla lo ven las demás y los demás roles. Por ejemplo, una reserva del socio aparece en el back-office de la junta.
 - **Nada que no esté en el backlog:** ni pantallas, ni funciones, ni campos inventados.
 
@@ -89,7 +89,7 @@ Escribe cada fichero con **una sola llamada a Write**.
 - **Ningún recurso externo:** sin CDN, fuentes web, imágenes por URL ni `fetch`. Iconos con SVG en línea o caracteres. La única excepción son las imágenes y fuentes de la referencia de estilo que ofrece §5.
 - Tiene que funcionar abriendo el fichero con doble clic (`file://`) en Chrome, Edge o Firefox, sin servidor ni conexión.
 - Interacción simulada en memoria: los formularios cambian `DATOS` y la vista se actualiza. Al recargar, todo vuelve al estado inicial. Sin almacenamiento del navegador ni llamadas de red.
-- Como mucho 1 MB en total, sin contar las imágenes y fuentes de §5. Que también funcione en una pantalla estrecha.
+- Que también funcione en una pantalla estrecha.
 - JavaScript sin errores: comprueba que existe todo id, función y dato que usas.
 
 # §5 ESTILO

@@ -112,9 +112,13 @@ public static class MockupTask
     public const string StoriesInput = "input/historias.json";
     public const string FixInput = "input/original.html"; // the part to fix, as it was
 
-    // The limit the prompt gives (1 MB), without the images and fonts of the
-    // style reference that go inside as data: URIs.
-    public const int MaxBytes = 1024 * 1024;
+    // The size of the joined page, without the images and fonts of the style
+    // reference that go inside as data: URIs. The limit is only a safety net
+    // against a runaway output (15-10-2026, author: it was 1 MB, from when the
+    // whole page came in one answer, and a 25-screen mockup took 866 KB);
+    // above WarningBytes the page only gets a warning.
+    public const int MaxBytes = 10 * 1024 * 1024;
+    public const int WarningBytes = 2 * 1024 * 1024;
 
     // What §5 of the prompts says when there is no style reference.
     public const string NoStyle = "No hay referencia de estilo: haz un diseño sobrio y legible.";
@@ -356,7 +360,7 @@ public static class MockupTask
 
     private static PhaseValidation CheckDesign(MockupPlan plan, string workDirectory)
     {
-        var (_, errors) = MockupMap.Parse(ReadOrNull(workDirectory, MapFile), plan.StoryIds);
+        var (map, errors) = MockupMap.Parse(ReadOrNull(workDirectory, MapFile), plan.StoryIds);
         var all = new List<string>(errors);
         var app = ReadOrNull(workDirectory, AppFile);
         if (app is null)
@@ -367,7 +371,7 @@ public static class MockupTask
                 all.Add($"{AppFile} BASE: falta la línea {Placeholder} donde van las pantallas.");
             all.AddRange(PageErrors(app, AppFile, workDirectory));
         }
-        return new PhaseValidation(all, []);
+        return new PhaseValidation(all, map?.Warnings() ?? []);
     }
 
     private static PhaseValidation CheckScreen(MockupScreen screen, string workDirectory)
@@ -507,7 +511,7 @@ public static class MockupTask
         // reference) do not count towards the limit.
         var bytes = Encoding.UTF8.GetByteCount(DataUri.Replace(html, "data:"));
         if (bytes > MaxBytes)
-            errors.Add($"{OutputFile} TAMANO: ocupa {bytes:N0} bytes sin contar las imágenes y fuentes incrustadas; el máximo es {MaxBytes:N0} (1 MB).");
+            errors.Add($"{OutputFile} TAMANO: ocupa {bytes:N0} bytes sin contar las imágenes y fuentes incrustadas; el máximo es {MaxBytes:N0} (10 MB).");
         if (!html.TrimStart('﻿', ' ', '\t', '\r', '\n').StartsWith("<!doctype html", StringComparison.OrdinalIgnoreCase))
             errors.Add($"{OutputFile} DOCTYPE: no empieza por <!doctype html>.");
         if (!html.Contains("const DATOS", StringComparison.Ordinal))
@@ -525,6 +529,8 @@ public static class MockupTask
         var warnings = marks.Where(v => !storyIds.Contains(v)).Order()
             .Select(v => $"{v} HU-EXTRA: un elemento lleva el id de una historia que no está en el backlog.")
             .ToList();
+        if (bytes > WarningBytes && bytes <= MaxBytes)
+            warnings.Add($"{OutputFile} TAMANO-AVISO: ocupa {bytes / (1024.0 * 1024):N1} MB; puede tardar en abrirse en un equipo lento.");
         return new PhaseValidation(errors, warnings);
     }
 

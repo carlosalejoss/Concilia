@@ -298,6 +298,29 @@ public class MockupTaskTests
     }
 
     [Fact]
+    public void A_big_page_only_gets_a_warning_and_embedded_images_do_not_count()
+    {
+        var big = MockupTask.Validate(Valid(new string('x', MockupTask.WarningBytes + 1)), Plan.StoryIds);
+        var image = MockupTask.Validate(Valid($"<img src=\"data:image/png;base64,{new string('A', MockupTask.MaxBytes)}\">"), Plan.StoryIds);
+
+        Assert.True(big.Valid);
+        Assert.Contains(big.Warnings, w => w.StartsWith("output/mockup.html TAMANO-AVISO: ocupa 2,0 MB") || w.StartsWith("output/mockup.html TAMANO-AVISO: ocupa 2.0 MB"));
+        Assert.True(image.Valid);
+        Assert.Empty(image.Warnings);
+    }
+
+    [Fact]
+    public void There_is_no_maximum_of_screens_only_a_warning_above_25()
+    {
+        var screens = Enumerable.Range(1, 30).Select(i => ($"P{i:00}", i == 2 ? Plan.StoryIds.ToArray() : new[] { Plan.StoryIds[0] })).ToArray();
+
+        var (map, errors) = MockupMap.Parse(MapJson(screens), Plan.StoryIds);
+
+        Assert.Empty(errors);
+        Assert.StartsWith("output/prototipo/mapa.json MAPA-PANTALLAS: tiene 30 pantallas", Assert.Single(map!.Warnings()));
+    }
+
+    [Fact]
     public void A_mark_of_a_story_that_is_not_in_the_backlog_is_a_warning()
     {
         var result = MockupTask.Validate(Valid("<div data-hu=\"HU-999\"></div><script>const t = `<div data-hu=\"${h[0]}\">`;</script>"), Plan.StoryIds);
@@ -368,7 +391,6 @@ public class MockupTaskTests
         Assert.Empty(MockupTask.Assemble(temp.Path, TwoScreens()));
 
         var html = File.ReadAllText(Path.Combine(temp.Path, MockupTask.OutputFile));
-        Assert.True(html.Length > MockupTask.MaxBytes);
         Assert.DoesNotContain("input/estilo", html);
         Assert.True(MockupTask.Validate(html, Plan.StoryIds).Valid);
     }
