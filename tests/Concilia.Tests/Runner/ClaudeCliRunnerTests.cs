@@ -203,12 +203,14 @@ public class ClaudeCliRunnerTests
         };
         var clock = System.Diagnostics.Stopwatch.StartNew();
 
-        var (result, _) = await Run(request);
+        var (result, events) = await Run(request);
 
         if (stops)
         {
             Assert.Equal(RunStatus.Failed, result.Status);
             Assert.Equal(ClaudeCliRunner.CompactingAfterOutput, result.ErrorMessage);
+            // The console does not say "Failed": the platform reviews the output next.
+            Assert.Equal(ClaudeCliRunner.StoppedAfterOutputLine, events.Last().Text);
             Assert.True(clock.Elapsed < TimeSpan.FromSeconds(1.5), $"Tardó {clock.Elapsed}");
         }
         else

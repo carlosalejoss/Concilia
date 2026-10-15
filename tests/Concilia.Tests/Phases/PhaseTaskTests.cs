@@ -157,6 +157,35 @@ public class PhaseTaskTests
     }
 
     // A real run cited the line 830 of the documentation as DOC-06#F830.
+    // 15-10-2026: SOL cited "DOC-17#F003 sigue" (the mark of a continuation
+    // line) and the catalog went to a repair. The platform removes the mark.
+    [Fact]
+    public void The_sigue_mark_of_a_cited_fragment_is_removed_before_checking()
+    {
+        var phase = PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Proposal);
+        var output = File.ReadAllText(Example("catalogo_propuesta_1.json")).Replace("\"DOC-01#F002\"", "\"DOC-01#F002 sigue\"");
+        Assert.Contains("DOC-01#F002 sigue", output);
+
+        Assert.True(PhaseTask.Review(phase, output, Context(), "PROMPT", 1).Valid);
+        var cleaned = FragmentCitations.Clean(output);
+        Assert.DoesNotContain("sigue\"", cleaned);
+        Assert.Contains("\"DOC-01#F002\"", cleaned);
+    }
+
+    [Fact]
+    public void Only_a_whole_value_with_the_mark_changes()
+    {
+        const string output = """{"fuentes":["DOC-01#F002 sigue","DOC-01#F003"],"texto":"El texto sigue igual: DOC-01#F002 sigue"}""";
+
+        var cleaned = JsonNode.Parse(FragmentCitations.Clean(output))!;
+
+        Assert.Equal(["DOC-01#F002", "DOC-01#F003"], cleaned["fuentes"]!.AsArray().Select(f => f!.GetValue<string>()));
+        Assert.Equal("El texto sigue igual: DOC-01#F002 sigue", cleaned["texto"]!.GetValue<string>());
+        var plain = output.Replace(" sigue\",", "\",");
+        Assert.Same(plain, FragmentCitations.Clean(plain)); // nothing to clean: the same text
+        Assert.Equal("no es JSON", FragmentCitations.Clean("no es JSON"));
+    }
+
     [Fact]
     public void A_fragment_that_is_a_line_number_says_which_fragment_is_on_that_line()
     {

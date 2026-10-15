@@ -26,9 +26,15 @@ public record UserChanges(int Original, int Current, int Kept, int Modified, int
 // The questions of a round: how they ended and who wrote each answer.
 public record QuestionCounts(int Total, int Answered, int Discarded, int Pending, int ByUser, int ByAi, int ByAiEdited);
 
+// RunsWithoutUsage: runs that started but have no token counts. Claude Code
+// only reports the usage in its last line ("result"), and a run the platform
+// stops (CompactingAfterOutput, TruncatedToolCall) or that runs out of time
+// never writes it. Through the gateway the usage of each message comes as 0,
+// so there is nothing else to add up: the tokens of the job are then a lower
+// bound, and the report says so instead of giving a figure that looks complete.
 public record JobReport(
     Guid JobId, string Kind, DateTimeOffset CreatedAt, DateTimeOffset? FinishedAt, bool Succeeded, string? Message,
-    long InputTokens, long OutputTokens, int Repairs, double? Seconds,
+    long InputTokens, long OutputTokens, int RunsWithoutUsage, int Repairs, double? Seconds,
     IReadOnlyList<RunLine> Runs, ElementCounts? Elements, UserChanges? Changes, string? ChangesNote, QuestionCounts? Questions);
 
 public static class JobReports

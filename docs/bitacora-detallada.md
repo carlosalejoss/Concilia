@@ -1338,3 +1338,30 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Pendientes:**
   - reconstruir la API y la web cuando termine el catálogo en curso del proyecto 31;
   - el paso 65.
+
+---
+
+## 15-10-2026, 13:20 (sesión)
+
+**Resumen para la bitácora (15-10-2026, catálogo del proyecto grande de ejemplo y tres mejoras)**
+
+- **Qué se hizo:**
+  - **Análisis del catálogo del proyecto grande de ejemplo** (clínicas veterinarias, ficticio):
+    - A propone 299 requisitos y B 192; la unión tiene 209 (180 de ambas, 28 solo de A, 1 solo de B, 3 descartados), en 12 minutos;
+    - dos reparaciones por citas mal copiadas: SOL con la marca `sigue` y LUNA con un número de línea;
+    - el intento 2 de A y el árbitro se detuvieron al empezar a compactar después de escribir su salida, y la plataforma la aceptó. Es el mecanismo del 14-10 funcionando, aunque el mensaje de la consola («Terminada: Failed») asustaba.
+  - **Tres mejoras pedidas por el autor:**
+    1. **Informe:** cuenta las ejecuciones sin dato de consumo y avisa de que los tokens son un mínimo (y columna nueva en el CSV).
+    2. **Marca `sigue`:** la plataforma la quita de los fragmentos citados antes de validar y de guardar (`FragmentCitations`).
+    3. **Consola:** una ejecución detenida después de escribir su salida dice «Detenida…» y que la plataforma revisa la salida, sin «Failed».
+  - Resultados y cambios anotados en `docs/evolucion-prompt-requisitos.md` (v0.7); 2 tests nuevos (829 en total).
+- **Hallazgo:** no se puede sumar el consumo mensaje a mensaje. A través de la pasarela, cada mensaje del modelo trae el consumo a 0 (comprobado en las capturas reales `tools-sol.jsonl` y `tools-luna.jsonl`); el dato real solo llega en el evento final, que no existe si la plataforma corta la ejecución. Por eso la primera mejora quedó en avisar del mínimo, en lugar de dar la cifra completa como se propuso.
+- **Decisiones del autor:** hacer las tres mejoras.
+- **Cambios de criterio:**
+  - Se cierra la decisión abierta de quitar la marca `sigue`: la quita la plataforma.
+  - El coste de un trabajo con ejecuciones detenidas pasa a presentarse como un mínimo.
+- **Pendientes:**
+  - Decidir si la plataforma corrige las citas que son números de línea (LUNA) cuando la línea es inequívoca.
+  - Decidir si se estima el consumo de las ejecuciones detenidas.
+  - Reconstruir la API y la web cuando no haya trabajos en curso.
+  - Paso 65.

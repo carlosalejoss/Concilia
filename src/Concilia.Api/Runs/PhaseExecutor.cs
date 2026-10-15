@@ -61,7 +61,8 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
                 return Review(attempt, phase.OutputFile,
                     (output, unread) => PhaseTask.Review(phase, output, context, original, attemptsSoFar, unread),
                     built.RequiredReads!, reads,
-                    phase.IsArbiter ? ProposalIds.Strip : null);
+                    // Kept as it was checked: without the "sigue" marks and the arbiter's prefixes.
+                    phase.IsArbiter ? output => ProposalIds.Strip(FragmentCitations.Clean(output)) : FragmentCitations.Clean);
             },
             cancellationToken);
     }

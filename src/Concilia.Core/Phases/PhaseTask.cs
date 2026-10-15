@@ -135,11 +135,14 @@ public static class PhaseTask
         PhaseDefinition phase, string? output, PhaseContext context, string originalPrompt, int attempt,
         IReadOnlyList<string>? extraErrors = null)
     {
-        // The arbiter's ids come with the prefix of their proposal: checked without it.
-        var checkedOutput = output is null
+        // Checked without the "sigue" mark of the cited fragments
+        // (FragmentCitations) and, in the arbiter, without the prefix of the
+        // proposal in its ids (ProposalIds): the platform removes both.
+        var cleaned = output is null ? null : FragmentCitations.Clean(output);
+        var checkedOutput = cleaned is null
             ? new PhaseValidation([$"{phase.OutputFile} FICHERO: no se ha escrito el fichero."], [])
-            : PhaseValidator.Validate(phase, phase.IsArbiter ? ProposalIds.Strip(output) : output, context);
-        var wrongPrefixes = phase.IsArbiter && output is not null ? ProposalIds.WrongPrefixes(output) : [];
+            : PhaseValidator.Validate(phase, phase.IsArbiter ? ProposalIds.Strip(cleaned) : cleaned, context);
+        var wrongPrefixes = phase.IsArbiter && cleaned is not null ? ProposalIds.WrongPrefixes(cleaned) : [];
         var validation = new PhaseValidation([.. wrongPrefixes, .. checkedOutput.Errors, .. extraErrors ?? []], checkedOutput.Warnings);
         var repair = validation.Valid
             ? null
