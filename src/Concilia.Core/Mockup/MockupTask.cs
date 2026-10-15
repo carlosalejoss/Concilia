@@ -87,7 +87,9 @@ public static class MockupTask
     // The page the platform joins.
     public const string OutputFile = "output/mockup.html";
 
-    // What the model reads.
+    // What the model reads. The JSON inputs go with one element per line
+    // (ReadingPlan.OnePerLine), as the proposals of the arbiter: a backlog of
+    // 9 epics took 2,743 lines indented (15-10-2026).
     public const string BacklogFile = "input/backlog.json";
     public const string MapInput = "input/mapa.json";
     public const string AppInput = "input/app.html";
@@ -128,7 +130,7 @@ public static class MockupTask
         {
             case MockupStage.Design:
                 template = DesignPrompt;
-                reads = [new InputFile(BacklogFile, ReadingPlan.Indented(plan.Backlog), Required: true)];
+                reads = [new InputFile(BacklogFile, ReadingPlan.OnePerLine(plan.Backlog), Required: true)];
                 outputs = [MapFile, AppFile];
                 break;
 
@@ -137,9 +139,9 @@ public static class MockupTask
                 template = ScreenPrompt;
                 reads =
                 [
-                    new InputFile(MapInput, ReadingPlan.Indented(File.ReadAllText(Path.Combine(prototype, "mapa.json"))), Required: true),
+                    new InputFile(MapInput, ReadingPlan.OnePerLine(File.ReadAllText(Path.Combine(prototype, "mapa.json"))), Required: true),
                     new InputFile(AppInput, File.ReadAllText(Path.Combine(prototype, "app.html")), Required: true),
-                    new InputFile(StoriesInput, ReadingPlan.Indented(StoriesOf(plan.Backlog, screen.StoryIds)), Required: true),
+                    new InputFile(StoriesInput, ReadingPlan.OnePerLine(StoriesOf(plan.Backlog, screen.StoryIds)), Required: true),
                 ];
                 outputs = [ScreenFile(screen.Id)];
                 values["PANTALLA"] = screen.Id;
@@ -159,7 +161,7 @@ public static class MockupTask
                     .Select(f => Path.GetRelativePath(workDirectory, f).Replace('\\', '/'))
                     .OrderBy(PrototypeOrder).ThenBy(p => p, StringComparer.Ordinal)
                     .Select(p => new InputFile(p, File.ReadAllText(Path.Combine(workDirectory, p)), Required: true))
-                    .Append(new InputFile(BacklogFile, ReadingPlan.Indented(plan.Backlog), Required: false))
+                    .Append(new InputFile(BacklogFile, ReadingPlan.OnePerLine(plan.Backlog), Required: false))
                     .ToList();
                 outputs = [];
                 tools = ["Read", "Write", "Edit"];

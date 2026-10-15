@@ -37,7 +37,8 @@ public static class RunEndpoints
             http.Response.ContentType = "text/event-stream";
             http.Response.Headers.CacheControl = "no-cache";
 
-            // A finished run whose events were lost (API restarted): nothing to follow.
+            // A finished run without events in memory or saved (it was still
+            // running when the API restarted): nothing to follow.
             var finished = run.State is not (RunState.Queued or RunState.Running);
             if (!(finished && !store.Exists(runId)))
             {

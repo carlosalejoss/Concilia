@@ -1,5 +1,7 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Concilia.Core.Runner;
 
 namespace Concilia.Api.Runs;
@@ -8,13 +10,24 @@ namespace Concilia.Api.Runs;
 public record RunEventDto(int Index, RunEventKind Kind, string Text, DateTimeOffset At);
 
 // Keeps the progress events of each run in memory, so the SSE endpoint can
-// replay what already happened and then follow new events live.
-// Only in memory: after an API restart the events are gone, but the result
-// of each run stays in the database.
-public class RunEventStore
+// replay what already happened and then follow new events live. When a run
+// ends, its events are also written to a file (savedFile: the path for each
+// run, events.json in its folder), so its console survives an API restart
+// (15-10-2026: a restart to change the model lost the console of a mockup
+// that had just failed). The events of a run still in progress when the API
+// stops are lost.
+public class RunEventStore(Func<Guid, string>? savedFile = null)
 {
     // Safety limit so a very chatty run cannot use unbounded memory.
     public const int MaxEventsPerRun = 2000;
+
+    public const string FileName = "events.json";
+
+    private static readonly JsonSerializerOptions Json = new()
+    {
+        WriteIndented = true,
+        Converters = { new JsonStringEnumConverter() },
+    };
 
     private sealed class Stream
     {
@@ -28,7 +41,9 @@ public class RunEventStore
 
     private readonly ConcurrentDictionary<Guid, Stream> _streams = new();
 
-    public bool Exists(Guid runId) => _streams.ContainsKey(runId);
+    // Whether the run has events, in memory or saved.
+    public bool Exists(Guid runId) =>
+        _streams.ContainsKey(runId) || (savedFile is not null && File.Exists(savedFile(runId)));
 
     public void Publish(Guid runId, RunEvent runEvent)
     {
@@ -44,22 +59,59 @@ public class RunEventStore
         }
     }
 
-    // No more events will come for this run.
+    // No more events will come for this run: they are saved, if there is a file.
     public void Complete(Guid runId)
     {
         var stream = _streams.GetOrAdd(runId, _ => new Stream());
+        List<RunEventDto> events;
         lock (stream)
         {
             stream.Completed = true;
+            events = [.. stream.Events];
             Signal(stream);
         }
+        Save(runId, events);
+    }
+
+    private void Save(Guid runId, List<RunEventDto> events)
+    {
+        if (savedFile is null)
+            return;
+        try
+        {
+            var path = savedFile(runId);
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            File.WriteAllText(path, JsonSerializer.Serialize(events, Json));
+        }
+        catch (IOException)
+        {
+            // Not saved: the console is only lost after a restart, as before.
+        }
+    }
+
+    // A run that is not in memory: its saved events, as a completed stream.
+    private Stream LoadOrNew(Guid runId)
+    {
+        var stream = new Stream();
+        if (savedFile is null || !File.Exists(savedFile(runId)))
+            return stream;
+        try
+        {
+            stream.Events.AddRange(JsonSerializer.Deserialize<List<RunEventDto>>(File.ReadAllText(savedFile(runId)), Json) ?? []);
+            stream.Completed = true;
+        }
+        catch (Exception e) when (e is IOException or JsonException)
+        {
+            // An unreadable file: as if there were no events.
+        }
+        return stream;
     }
 
     // All the events of a run: first the ones already published, then the new
     // ones as they arrive, until the run is completed or the client leaves.
     public async IAsyncEnumerable<RunEventDto> Follow(Guid runId, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var stream = _streams.GetOrAdd(runId, _ => new Stream());
+        var stream = _streams.GetOrAdd(runId, LoadOrNew);
         var next = 0;
 
         while (true)

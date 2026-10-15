@@ -26,7 +26,9 @@ builder.Services.AddRunnerProvider(builder.Configuration);
 // are kept in memory for the SSE endpoint.
 builder.Services.AddSingleton(builder.Configuration.GetSection("Catalog").Get<CatalogOptions>() ?? new CatalogOptions());
 builder.Services.AddSingleton<JobQueue>();
-builder.Services.AddSingleton<RunEventStore>();
+// The console of each run is also saved in its folder when the run ends.
+builder.Services.AddSingleton(services =>
+    new RunEventStore(runId => Path.Combine(services.GetRequiredService<FileStorage>().RunFolder(runId), RunEventStore.FileName)));
 builder.Services.AddSingleton<RunExecutor>();
 builder.Services.AddSingleton<PhaseExecutor>();
 builder.Services.AddSingleton<MockupExecutor>();
