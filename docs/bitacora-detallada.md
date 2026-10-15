@@ -6,6 +6,7 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 
 - **Una sección por resumen**, con la fecha y la hora peninsular (CEST) en que se dio.
 - **«Recuperada del chat»:** el resumen tal como se dio en la conversación, sin cambios de contenido. Solo se han bajado de nivel sus títulos para que encajen aquí.
+- **«Sesión»:** desde el 15-10-2026, Claude Code escribe el resumen de cada sesión directamente aquí, sin darlo en el chat.
 - **«Reconstruida»:** días o tramos en los que hubo trabajo pero no se dio un resumen con ese nombre. Se han reconstruido a partir del resto de la conversación, del historial de git y de `docs/plan-de-construccion.md`, y cada una dice de dónde sale.
 - **Nombres:** el proyecto se llamó ReqArbiter hasta el 13-10-2026 y desde entonces Concilia. Los resúmenes anteriores usan el nombre antiguo (por ejemplo, `ReqArbiter.Api`, hoy `Concilia.Api`).
 - **Hitos y pasos:** los números son los de `docs/plan-de-construccion.md`.
@@ -1285,3 +1286,21 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Mockup:** abaratar las pantallas (cada una lee el armazón entero) y un posible historial de mockups.
 - **Abiertas:** conservación de datos de la memoria (`memoria/` sin versionar, con datos personales en la propuesta) y comprobar la tipología A/B de la propuesta.
 - **Más adelante:** hito 7 (catálogo v2), árbitro con embeddings y redacción de la memoria.
+
+---
+
+## 15-10-2026, 12:08 (sesión)
+
+**Resumen para la bitácora (15-10-2026, mediodía)**
+
+- **Qué se hizo:**
+  - Recuperación de todos los resúmenes de bitácora de la conversación con Claude Code (28-09 a 15-10) en `docs/bitacora-detallada.md`. Los tramos sin resumen se reconstruyeron a partir del resto de la conversación, de git y del plan.
+  - Visión de alto nivel del proyecto en `docs/trazabilidad-proyecto.md`: línea de tiempo, etapas, evolución de los prompts, decisiones abiertas y siguientes pasos.
+  - El autor movió los dos ficheros de `memoria/` a `docs/`, y quedaron en git (`cebff42`).
+- **Decisiones del autor:**
+  - Claude Code mantiene al día los dos ficheros al terminar cada sesión, sin que se le pida.
+  - El resumen de bitácora ya no se da en el chat: se escribe directamente en `docs/bitacora-detallada.md`.
+- **Cambio de criterio:** sustituye la regla del inicio del proyecto de imprimir el resumen para la bitácora en el chat para que el autor lo llevara a su proyecto de Claude. Ahora los dos ficheros de `docs/` son la fuente, y el autor se los pasa a su Claude cuando quiere.
+- **Pendientes:**
+  - **Paso 65:** ejecutar los dos proyectos de ejemplo, analizar sus CSV y cerrar el hito 13.
+  - Las decisiones abiertas de la sesión anterior, sin cambios.
