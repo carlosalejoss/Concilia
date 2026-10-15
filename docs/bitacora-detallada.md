@@ -1378,7 +1378,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
     - **API:** `ActiveJobs` busca el trabajo con alguna ejecución en cola o en marcha. `GET /jobs/active` lo devuelve con su proyecto y un mensaje, y todos los puntos que crean trabajos lo rechazan con ese mensaje (rondas, catálogo, backlog, sugerencias, mockup y su reanudación, catálogo v1.4).
     - **Web:** `ActiveJobProvider` consulta la API cada 3 s. `LaunchButton` sustituye a los botones que lanzan tareas: mientras hay una en curso se ve apagado (opacidad y saturación más bajas, cursor de prohibido) y, al pulsarlo, sale abajo el aviso «Se está ejecutando X en el proyecto «Y». Espera a que termine para lanzar otra tarea.» durante 5 s.
   - Test nuevo de la API: con una ronda en marcha se rechazan los lanzamientos en el mismo proyecto y en otro, y al terminar se puede lanzar de nuevo (830 tests).
-  - Las respuestas da igual quién las escriba: «Aprobar todas las sugerencias», contestar, descartar y validar no se bloquean, porque no lanzan ninguna tarea.
+  - No se bloquean «Aprobar todas las sugerencias», contestar, descartar ni validar, porque no lanzan ninguna tarea.
 - **Decisiones del autor:**
   - una sola tarea a la vez en toda la plataforma, sin ejecutar trabajos en paralelo;
   - bloquear los botones afectados con un tono apagado y un aviso de qué tarea se ejecuta y en qué proyecto.
@@ -1388,3 +1388,22 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - la API comprueba la tarea en curso antes que el estado del paso, para que el mensaje sea siempre el mismo.
 - **Cambios de criterio:** ninguno sobre decisiones anteriores. Se descarta la propuesta de ejecutar varios trabajos a la vez.
 - **Pendientes:** reconstruir la API y la web cuando termine el mockup en curso, y comprobarlo en el navegador; el paso 65.
+
+---
+
+## 15-10-2026, 14:30 (sesión)
+
+**Resumen para la bitácora (15-10-2026, skills en el mockup: idea aparcada)**
+
+- **Qué se hizo:** análisis de usar skills de Claude Code para mejorar el mockup.
+  - **Dos formas:**
+    - skills de verdad: quitar `--disable-slash-commands` y permitir la herramienta `Skill`, solo en el mockup;
+    - meter las pautas de `frontend-design` en el prompt de diseño (v0.10).
+  - **Coste estimado sobre el mockup v0.9** (3,47 M de entrada): menos de un 1 % más si las pautas van solo en el diseño, y un 9 % más si van también en cada pantalla.
+  - **Propuesta del autor:** rehacer el mockup del proyecto grande con su suscripción (Sonnet 5.5) y la skill.
+  - **Riesgos:**
+    - agotar el límite de 5 horas: el v0.4 gastó el 43 % con 1,49 M de entrada (se puede reanudar);
+    - cambiar dos cosas a la vez, el modelo y las skills, que impide atribuir la mejora a las skills.
+- **Decisiones del autor:** aparcarlo hasta terminar el paso 65.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:** paso 65; retomar después la prueba del mockup con skills (plan apuntado en la trazabilidad).
