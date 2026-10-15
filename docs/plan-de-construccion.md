@@ -357,7 +357,9 @@ Pedido por el autor el 14-10-2026, para probar el mockup con `SS - GPT-6-SOL`.
 | Al terminar una fase la web se queda en su paso; no avanza sola al siguiente. | Autor |
 
 - [x] 79. Prompts v0.6 (`mockup_diseno.md`, `mockup_pantalla.md`, `mockup_integracion.md`), `MockupMap`, `MockupTask` por pasos, orquestación en `JobRunner` (las pantallas y la revisión se crean cuando el diseño dice cuántas pantallas hay), pasos en la web y tests con `Fake`.
-- [ ] 80. Prueba real con `SS - GPT-6-SOL` y ReservaSalas; resultados en `docs/evolucion-prompt-requisitos.md` (v0.6).
+- [x] 80. Prueba real con `SS - GPT-6-SOL` (documento C, 19 pantallas): el diseño y las pantallas salen válidos; la revisión del conjunto no cabe en 128k. Resultados en `docs/evolucion-prompt-requisitos.md` (v0.8).
+- [x] 81. Prompts v0.8: la plataforma junta y revisa el prototipo (`MockupCoherence`) y corrige con un modelo solo las partes con problemas (`mockup_correccion.md`); reanudar un mockup fallido desde sus pasos aceptados. Decidido por el autor el 15-10-2026, a propuesta de Claude.
+- [ ] 82. Reanudar el mockup del documento C y medirlo.
 
 ## Después
 

@@ -6,7 +6,7 @@ namespace Concilia.Core.Mockup;
 
 // What FakeProvider writes in each run of a mockup job (prompts v0.6): in the
 // design, a map with one screen per epic and a shell; in each screen, a
-// section with a block per story; the integration changes nothing. Joined by
+// section with a block per story; in a fix, the part as it was. Joined by
 // MockupTask.Assemble, the page passes MockupTask.Validate, so the mockup step
 // can be tried without a model.
 public static class FakeMockup

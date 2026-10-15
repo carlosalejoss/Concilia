@@ -38,7 +38,7 @@ const STEP_INFO: Record<FlowStep, { description: string; launch?: { label: strin
     launch: { label: 'Generar el backlog', url: (id) => `/projects/${id}/backlog-jobs` },
   },
   Mockup: {
-    description: 'Un prototipo navegable del backlog validado: una sola aplicación que se construye por pasos (diseño, cada pantalla y una revisión del conjunto), en un único .html con datos de prueba.',
+    description: 'Un prototipo navegable del backlog validado: una sola aplicación que se construye por pasos (el diseño y cada pantalla; la plataforma las junta y corrige lo que no encaje), en un único .html con datos de prueba.',
     // Without the style reference when the user chooses a design from scratch.
     launch: { label: 'Generar el mockup', url: (id, options) => `/projects/${id}/mockup-jobs${options.mockupStyle ? '' : '?estilo=false'}` },
   },
@@ -176,7 +176,9 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
       Questions: <QuestionsPanel project={project} version={version} onChange={reload} onShowJob={showJob} />,
       Catalog: <CatalogEditor project={project} version={version} onChange={reload} />,
       Backlog: <BacklogEditor project={project} version={version} onChange={reload} />,
-      Mockup: <MockupViewer project={project} version={version} onShowJob={showJob} useStyle={mockupStyle} onUseStyleChange={setMockupStyle} />,
+      Mockup: (
+        <MockupViewer project={project} version={version} onShowJob={showJob} useStyle={mockupStyle} onUseStyleChange={setMockupStyle} onLaunched={reload} />
+      ),
     }
     content = (
       <>

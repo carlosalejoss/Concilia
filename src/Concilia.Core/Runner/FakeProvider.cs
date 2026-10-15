@@ -40,7 +40,7 @@ public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = fa
         var reads = new List<FileRead>();
         if (request.AllowedTools.Contains("Read") && Directory.Exists(Path.Combine(request.WorkDirectory, "input")))
         {
-            // Also the files in subfolders (the copy of the prototype the mockup integration reads).
+            // Also the files in subfolders (input/estilo/ of the mockup).
             foreach (var file in Directory.GetFiles(Path.Combine(request.WorkDirectory, "input"), "*", SearchOption.AllDirectories).Order(StringComparer.Ordinal))
             {
                 var relative = Path.GetRelativePath(request.WorkDirectory, file).Replace('\\', '/');
@@ -81,6 +81,9 @@ public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = fa
     {
         if (relativePath == MockupTask.MapFile)
             return FakeMockup.Map(request.WorkDirectory);
+        // A fix of the mockup: the part as it was.
+        if (File.Exists(Path.Combine(request.WorkDirectory, MockupTask.FixInput)))
+            return File.ReadAllText(Path.Combine(request.WorkDirectory, MockupTask.FixInput));
         if (relativePath == MockupTask.AppFile)
             return FakeMockup.App(request.WorkDirectory);
         if (relativePath.StartsWith(MockupTask.PrototypeFolder + "/pantallas/", StringComparison.Ordinal))

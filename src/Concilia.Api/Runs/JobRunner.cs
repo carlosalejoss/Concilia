@@ -35,70 +35,95 @@ public record RunOutcome(
 // verificación cruzada").
 public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecutor? phaseExecutor = null, MockupExecutor? mockupExecutor = null)
 {
-    // A mockup job (prompts v0.6): the design (its first run, already
-    // created), then one run per screen of the map it wrote (up to
-    // MaxParallelScreens at once) and the integration, each with one repair.
-    // Each step works on what the earlier ones left in the job's folder
-    // (MockupTask.Keep). addRuns creates the runs of the screens and of the
-    // integration once the map says how many screens there are; they are
-    // lots of the slot MOCK, so the web shows them as "n of m". Returns the
-    // outcome of the integration, whose .html is the mockup, or that of the
-    // step that stopped the job.
-    public async Task<RunOutcome> RunMockupAsync(
+    // A mockup job (prompts v0.8): the design (its first run, already
+    // created), one run per screen of the map it wrote (up to
+    // MaxParallelScreens at once), and then the platform joins and checks the
+    // prototype (MockupTask.Finish). If some parts have problems between them,
+    // one run fixes each of those parts, and the platform checks again. Each
+    // step works on what the earlier ones left in the job's folder
+    // (MockupTask.Keep); a step already there (a job that resumes a failed
+    // one) is not run again. addRuns creates runs once the map says how many
+    // screens there are (fixes: false) and for the fixes (fixes: true); they
+    // are lots of the slot MOCK, so the web shows them as steps.
+    public async Task<MockupJobResult> RunMockupAsync(
         Run design,
         MockupPlan plan,
         string jobFolder,
-        Func<int, Task<IReadOnlyList<Run>>> addRuns,
+        Func<int, bool, Task<IReadOnlyList<Run>>> addRuns,
         Func<Run, Task> onRunStarting,
         Func<RunOutcome, Task> onRunFinished,
         CancellationToken cancellationToken)
     {
         var mockups = mockupExecutor ?? throw new InvalidOperationException("JobRunner without MockupExecutor");
 
-        async Task<RunOutcome> Step(Run run, MockupStep step)
+        // A step: reused if the job's folder already has it, run otherwise.
+        async Task<bool> Step(Run run, MockupStep step)
         {
+            if (MockupTask.IsDone(step, jobFolder))
+            {
+                await onRunFinished(new RunOutcome(run, null, null, PhaseExecutor.PromptVersion,
+                    "Reutilizado: este paso ya terminó bien en el trabajo que se reanuda."));
+                return true;
+            }
             var outcome = await RunOneAsync(run, () => mockups.ExecuteAsync(run, plan, step, cancellationToken), onRunStarting, onRunFinished, cancellationToken);
             if (outcome.Succeeded)
                 MockupTask.Keep(step, outcome.Attempts![^1].Request.WorkDirectory, jobFolder);
-            return outcome;
+            return outcome.Succeeded;
         }
 
-        var designed = await Step(design, new MockupStep(MockupStage.Design));
-        if (!designed.Succeeded)
-            return designed;
+        // Several steps, up to MaxParallelScreens at once, like the lots of the
+        // catalog: the screens share the shell, not each other.
+        async Task<IReadOnlyList<string>> Failed(IReadOnlyList<(Run Run, MockupStep Step, string Name)> steps)
+        {
+            using var places = new SemaphoreSlim(mockups.MaxParallelScreens);
+            var done = await Task.WhenAll(steps.Select(async s =>
+            {
+                await places.WaitAsync(cancellationToken);
+                try
+                {
+                    return await Step(s.Run, s.Step);
+                }
+                finally
+                {
+                    places.Release();
+                }
+            }));
+            return steps.Where((_, i) => !done[i]).Select(s => s.Name).ToList();
+        }
+
+        if (!await Step(design, new MockupStep(MockupStage.Design)))
+            return new MockupJobResult(false, null, 0, "El diseño no terminó con una salida válida.");
 
         var map = MockupMap.Load(File.ReadAllText(Path.Combine(MockupTask.JobPrototypeFolder(jobFolder), "mapa.json")), plan.StoryIds);
-        var runs = await addRuns(map.Screens.Count + 1); // the screens, in order, and the integration
-        var integration = runs[^1];
-
-        // The screens are independent (they share the shell, not each other):
-        // up to MaxParallelScreens at once, like the lots of the catalog.
-        using var places = new SemaphoreSlim(mockups.MaxParallelScreens);
-        var screens = await Task.WhenAll(map.Screens.Select(async (screen, i) =>
-        {
-            await places.WaitAsync(cancellationToken);
-            try
-            {
-                return await Step(runs[i], new MockupStep(MockupStage.Screen, screen));
-            }
-            finally
-            {
-                places.Release();
-            }
-        }));
-
-        var failed = map.Screens.Where((_, i) => !screens[i].Succeeded).Select(s => s.Id).ToList();
+        var screenRuns = await addRuns(map.Screens.Count, false);
+        var failed = await Failed(map.Screens.Select((screen, i) => (screenRuns[i], new MockupStep(MockupStage.Screen, screen), screen.Id)).ToList());
         if (failed.Count > 0)
+            return new MockupJobResult(false, null, map.Screens.Count, $"No terminaron con una salida válida: {string.Join(", ", failed)}.");
+
+        var finish = MockupTask.Finish(jobFolder, plan, map);
+        if (finish.Errors.Count == 0 && finish.Problems.Count > 0)
         {
-            var reason = failed.Count == 1
-                ? $"No se revisa el conjunto: la pantalla {failed[0]} no terminó con una salida válida."
-                : $"No se revisa el conjunto: las pantallas {string.Join(", ", failed)} no terminaron con una salida válida.";
-            var skipped = new RunOutcome(integration, null, null, PhaseExecutor.PromptVersion, reason);
-            await onRunFinished(skipped);
-            return skipped;
+            // One fix per part with problems, the shell first.
+            var targets = finish.Problems.GroupBy(p => p.Target).ToList();
+            var fixRuns = await addRuns(targets.Count, true);
+            var fixes = targets.Select((group, i) =>
+            {
+                var screen = map.Screens.FirstOrDefault(s => s.Id == group.Key);
+                return (fixRuns[i], new MockupStep(MockupStage.Fix, screen, group.Select(p => p.Message).ToList()), group.Key);
+            }).ToList();
+            failed = await Failed(fixes);
+            if (failed.Count > 0)
+                return new MockupJobResult(false, null, map.Screens.Count, $"Las correcciones de {string.Join(", ", failed)} no terminaron con una salida válida.");
+            finish = MockupTask.Finish(jobFolder, plan, map);
         }
 
-        return await Step(integration, new MockupStep(MockupStage.Integration));
+        if (!finish.Valid)
+        {
+            var errors = finish.Errors.Concat(finish.Problems.Select(p => p.Message)).ToList();
+            var more = errors.Count > 3 ? $" (y {errors.Count - 3} más)" : "";
+            return new MockupJobResult(false, null, map.Screens.Count, $"El prototipo juntado no es válido: {string.Join(" | ", errors.Take(3))}{more}.");
+        }
+        return new MockupJobResult(true, finish.HtmlPath, map.Screens.Count, $"Mockup generado: {map.Screens.Count} pantallas.");
     }
 
     public async Task RunAsync(

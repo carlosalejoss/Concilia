@@ -44,12 +44,25 @@ public record MockupRunOptions
     public int MaxTurns { get; init; } = 40;
 }
 
-// The three steps of the build (prompts v0.6): the design (the map of screens
-// and the shell of the application), each screen, and the review of the whole.
-public enum MockupStage { Design, Screen, Integration }
+// The steps of the build (prompts v0.8): the design (the map of screens and
+// the shell of the application), each screen and, if the platform finds
+// problems between the parts, the fix of each part that has them.
+public enum MockupStage { Design, Screen, Fix }
 
-// One run of a mockup job: its stage and, for a screen, which one.
-public record MockupStep(MockupStage Stage, MockupScreen? Screen = null);
+// One run of a mockup job: its stage and, for a screen, which one. A fix is
+// of a screen or, without one, of the shell, with the problems to fix.
+public record MockupStep(MockupStage Stage, MockupScreen? Screen = null, IReadOnlyList<string>? Problems = null);
+
+// How a mockup job ended: the joined .html (if it is valid), the number of
+// screens and what to tell the user.
+public record MockupJobResult(bool Succeeded, string? HtmlPath, int Screens, string Message);
+
+// The prototype joined and checked by the platform (MockupTask.Finish): the
+// page, the errors that no model run can fix and the problems of each part.
+public record MockupFinish(string HtmlPath, IReadOnlyList<string> Errors, IReadOnlyList<MockupProblem> Problems)
+{
+    public bool Valid => Errors.Count == 0 && Problems.Count == 0;
+}
 
 // The request of a run, and the files of input/ the model must read entirely.
 public record MockupRequest(RunRequest Request, IReadOnlyList<string> RequiredReads);
@@ -64,18 +77,21 @@ public record MockupRequest(RunRequest Request, IReadOnlyList<string> RequiredRe
 //      data, common functions and a <!-- PANTALLAS --> line.
 //   2. Screens: one run per screen writes output/prototipo/pantallas/P01.html,
 //      solving all its stories together with the shell's styles and functions.
-//   3. Integration: one run reads the whole prototype and fixes, with Edit,
-//      what does not fit (links between screens, data, repeated names).
+//   3. The platform joins the shell and the screens (Finish) and checks the
+//      page and what does not fit between the parts (MockupCoherence). If a
+//      part has problems, one run fixes that part only (a Fix step), with
+//      the shell, the map and the part itself.
 //
+// Until v0.7 the third step was one run that read the whole prototype; with
+// 19 screens it did not fit in 128k and Claude Code stopped it (15-10-2026).
 // Each run sees what the earlier ones left: the platform keeps the accepted
 // files in the job's folder (prototipo/) and copies them to the next runs.
-// It joins the shell and the screens (Assemble) into output/mockup.html and
-// checks the page as before. Each run has its own checks and one repair.
+// Each run has its own checks and one repair.
 public static class MockupTask
 {
     public const string DesignPrompt = "v0/mockup_diseno.md";
     public const string ScreenPrompt = "v0/mockup_pantalla.md";
-    public const string IntegrationPrompt = "v0/mockup_integracion.md";
+    public const string FixPrompt = "v0/mockup_correccion.md";
 
     // What the model writes.
     public const string PrototypeFolder = "output/prototipo";
@@ -94,7 +110,7 @@ public static class MockupTask
     public const string MapInput = "input/mapa.json";
     public const string AppInput = "input/app.html";
     public const string StoriesInput = "input/historias.json";
-    public const string PrototypeCopy = "input/prototipo"; // the integration reads this copy entirely
+    public const string FixInput = "input/original.html"; // the part to fix, as it was
 
     // The limit the prompt gives (1 MB), without the images and fonts of the
     // style reference that go inside as data: URIs.
@@ -106,6 +122,28 @@ public static class MockupTask
     // In the job's folder: the accepted files of each step, and the style reference.
     public static string JobPrototypeFolder(string jobFolder) => Path.Combine(jobFolder, "prototipo");
     public static string JobStyleFolder(string jobFolder) => Path.Combine(jobFolder, "estilo");
+    public static string JobAssemblyFolder(string jobFolder) => Path.Combine(jobFolder, "ensamblado");
+
+    // Whether the job's folder already has a step, accepted in this job or in
+    // the failed job it resumes.
+    public static bool IsDone(MockupStep step, string jobFolder)
+    {
+        var prototype = JobPrototypeFolder(jobFolder);
+        return step.Stage switch
+        {
+            MockupStage.Design => File.Exists(Path.Combine(prototype, "mapa.json")) && File.Exists(Path.Combine(prototype, "app.html")),
+            MockupStage.Screen => File.Exists(Path.Combine(prototype, "pantallas", $"{step.Screen!.Id}.html")),
+            _ => false,
+        };
+    }
+
+    // The file a step writes.
+    public static string TargetOf(MockupStep step) => step.Stage switch
+    {
+        MockupStage.Design => MapFile,
+        MockupStage.Screen => ScreenFile(step.Screen!.Id),
+        _ => step.Screen is { } screen ? ScreenFile(screen.Id) : AppFile,
+    };
 
     // ---- Requests ----
 
@@ -151,20 +189,24 @@ public static class MockupTask
                 break;
 
             default:
-                template = IntegrationPrompt;
-                // The model edits the files in output/prototipo/ and reads the
-                // copy in input/prototipo/, which does not change while it edits:
-                // the platform checks against it that it read everything.
+                // A fix: the part as it was goes to input/original.html and the
+                // rest of the prototype to output/prototipo/, so the platform can
+                // check the fixed part against the others. The part itself is not
+                // there: the model writes it new (Write cannot overwrite a file
+                // it has not read).
+                template = FixPrompt;
+                var target = TargetOf(step);
                 CopyFolder(prototype, Path.Combine(workDirectory, PrototypeFolder));
-                CopyFolder(prototype, Path.Combine(workDirectory, PrototypeCopy));
-                reads = Directory.GetFiles(Path.Combine(workDirectory, PrototypeCopy), "*", SearchOption.AllDirectories)
-                    .Select(f => Path.GetRelativePath(workDirectory, f).Replace('\\', '/'))
-                    .OrderBy(PrototypeOrder).ThenBy(p => p, StringComparer.Ordinal)
-                    .Select(p => new InputFile(p, File.ReadAllText(Path.Combine(workDirectory, p)), Required: true))
-                    .Append(new InputFile(BacklogFile, ReadingPlan.OnePerLine(plan.Backlog), Required: false))
-                    .ToList();
-                outputs = [];
-                tools = ["Read", "Write", "Edit"];
+                File.Delete(Path.Combine(workDirectory, target));
+                var original = File.ReadAllText(Path.Combine(prototype, Path.GetRelativePath(PrototypeFolder, target)));
+                reads = [new InputFile(MapInput, ReadingPlan.OnePerLine(File.ReadAllText(Path.Combine(prototype, "mapa.json"))), Required: true)];
+                if (step.Screen is not null)
+                    reads.Add(new InputFile(AppInput, File.ReadAllText(Path.Combine(prototype, "app.html")), Required: true));
+                reads.Add(new InputFile(FixInput, original, Required: true));
+                outputs = [target];
+                values["PARTE"] = step.Screen is { } fixedScreen ? $"la pantalla {fixedScreen.Id} «{fixedScreen.Title}»" : "el armazón de la aplicación (`app.html`)";
+                values["FICHERO"] = target;
+                values["PROBLEMAS"] = string.Join("\n", (step.Problems ?? []).Select(problem => $"- {problem}"));
                 break;
         }
 
@@ -194,10 +236,6 @@ public static class MockupTask
         return new MockupRequest(request, reads.Where(r => r.Required).Select(r => r.Path).ToList());
     }
 
-    // The map first, then the shell, then the screens.
-    private static int PrototypeOrder(string path) =>
-        path.EndsWith("mapa.json", StringComparison.Ordinal) ? 0 : path.EndsWith("app.html", StringComparison.Ordinal) ? 1 : 2;
-
     // The stories of a screen, with their epic, as {"historias":[…]}.
     private static string StoriesOf(string backlog, IReadOnlyList<string> storyIds)
     {
@@ -221,12 +259,7 @@ public static class MockupTask
     public static void Keep(MockupStep step, string workDirectory, string jobFolder)
     {
         var prototype = JobPrototypeFolder(jobFolder);
-        IEnumerable<string> files = step.Stage switch
-        {
-            MockupStage.Design => [MapFile, AppFile],
-            MockupStage.Screen => [ScreenFile(step.Screen!.Id)],
-            _ => [],
-        };
+        IEnumerable<string> files = step.Stage == MockupStage.Design ? [MapFile, AppFile] : [TargetOf(step)];
         foreach (var file in files)
         {
             var target = Path.Combine(prototype, Path.GetRelativePath(PrototypeFolder, file));
@@ -289,7 +322,7 @@ public static class MockupTask
     {
         MockupStage.Design => CheckDesign(plan, workDirectory),
         MockupStage.Screen => CheckScreen(step.Screen!, workDirectory),
-        _ => CheckIntegration(plan, workDirectory),
+        _ => CheckFix(step, plan, workDirectory),
     };
 
     private static PhaseValidation CheckDesign(MockupPlan plan, string workDirectory)
@@ -328,15 +361,56 @@ public static class MockupTask
         return new PhaseValidation(errors, []);
     }
 
-    private static PhaseValidation CheckIntegration(MockupPlan plan, string workDirectory)
+    // A fixed part: the checks of its kind, and that it no longer has
+    // problems with the rest of the prototype, which is in the same folder.
+    private static PhaseValidation CheckFix(MockupStep step, MockupPlan plan, string workDirectory)
     {
-        var (map, mapErrors) = MockupMap.Parse(ReadOrNull(workDirectory, MapFile), plan.StoryIds);
-        if (map is null)
-            return new PhaseValidation(mapErrors, []);
-        var parts = Assemble(workDirectory, map);
-        var page = Validate(ReadOrNull(workDirectory, OutputFile), plan.StoryIds, map.Screens.Select(s => s.Id).ToList());
-        // The errors of the parts first: they explain those of the page.
-        return new PhaseValidation([.. parts, .. page.Errors], page.Warnings);
+        var own = step.Screen is { } screen ? CheckScreen(screen, workDirectory) : CheckShell(workDirectory);
+        if (own.Errors.Any(e => e.Contains(" FICHERO:", StringComparison.Ordinal)))
+            return own;
+        var map = MockupMap.Load(File.ReadAllText(Path.Combine(workDirectory, MapFile)), plan.StoryIds);
+        var target = step.Screen?.Id ?? MockupCoherence.Shell;
+        var left = Coherence(workDirectory, map).Where(p => p.Target == target).Select(p => p.Message);
+        return new PhaseValidation([.. own.Errors, .. left], own.Warnings);
+    }
+
+    private static PhaseValidation CheckShell(string workDirectory)
+    {
+        var app = ReadOrNull(workDirectory, AppFile);
+        if (app is null)
+            return new PhaseValidation([$"{AppFile} FICHERO: no se ha escrito el armazón de la aplicación."], []);
+        var errors = new List<string>();
+        if (!app.Contains(Placeholder, StringComparison.Ordinal))
+            errors.Add($"{AppFile} BASE: falta la línea {Placeholder} donde van las pantallas.");
+        errors.AddRange(PageErrors(app, AppFile, workDirectory));
+        return new PhaseValidation(errors, []);
+    }
+
+    // The problems between the parts of the prototype in a folder.
+    private static IReadOnlyList<MockupProblem> Coherence(string workDirectory, MockupMap map) =>
+        MockupCoherence.Check(
+            ReadOrNull(workDirectory, AppFile) ?? "",
+            map.Screens
+                .Select(s => (s.Id, Html: ReadOrNull(workDirectory, ScreenFile(s.Id))))
+                .Where(s => s.Html is not null)
+                .Select(s => (s.Id, s.Html!))
+                .ToList());
+
+    // The platform joins the prototype of a job (the accepted files of its
+    // steps) in its folder ensamblado/ and checks it: the page as before, and
+    // what does not fit between the parts.
+    public static MockupFinish Finish(string jobFolder, MockupPlan plan, MockupMap map)
+    {
+        var work = JobAssemblyFolder(jobFolder);
+        if (Directory.Exists(work))
+            Directory.Delete(work, recursive: true);
+        CopyFolder(JobPrototypeFolder(jobFolder), Path.Combine(work, PrototypeFolder));
+        CopyFolder(JobStyleFolder(jobFolder), Path.Combine(work, StyleReference.Folder));
+        Directory.CreateDirectory(Path.Combine(work, "output"));
+
+        var parts = Assemble(work, map);
+        var page = Validate(ReadOrNull(work, OutputFile), plan.StoryIds, map.Screens.Select(s => s.Id).ToList());
+        return new MockupFinish(Path.Combine(work, OutputFile), [.. parts, .. page.Errors], Coherence(work, map));
     }
 
     // What any part must satisfy: no external resources and only images and
@@ -350,7 +424,7 @@ public static class MockupTask
         foreach (var match in External.Matches(html).Select(m => m.Value).Distinct().Take(5))
             yield return $"{file} EXTERNO: carga un recurso externo ({match.Trim()}…); todo debe ir dentro del fichero.";
         foreach (var path in StyleReference.Inline(workDirectory, html).Missing)
-            yield return $"{path} ESTILO: no está en la lista de imágenes y fuentes de la referencia de estilo (§5); usa solo esas rutas.";
+            yield return $"{path} ESTILO: no está en la lista de imágenes y fuentes de la referencia de estilo (sección ESTILO); usa solo esas rutas.";
     }
 
     // Joins the shell and the screens, in the order of the map, into
@@ -385,7 +459,7 @@ public static class MockupTask
 
         var (html, missing) = StyleReference.Inline(workDirectory, app.Replace(Placeholder, screens.ToString()));
         errors.AddRange(missing.Select(path =>
-            $"{path} ESTILO: no está en la lista de imágenes y fuentes de la referencia de estilo (§5); usa solo esas rutas."));
+            $"{path} ESTILO: no está en la lista de imágenes y fuentes de la referencia de estilo (sección ESTILO); usa solo esas rutas."));
         File.WriteAllText(Path.Combine(workDirectory, OutputFile), html);
         return errors;
     }
@@ -442,8 +516,8 @@ public static class MockupTask
                 "Tus ficheros siguen en `output/prototipo/`. Reescribe solo los que señalan los errores; léelos antes con Read."),
             MockupStage.Screen => (ScreenFile(step.Screen!.Id),
                 $"Tu pantalla sigue en `{ScreenFile(step.Screen!.Id)}`. Léela con Read y reescríbela corregida."),
-            _ => (PrototypeFolder + "/",
-                "Tus correcciones siguen en `output/prototipo/`. Corrige con Edit lo que señalan los errores."),
+            _ => (TargetOf(step),
+                $"Tu versión sigue en `{TargetOf(step)}`. Léela con Read y reescríbela corregida."),
         };
         return new PhaseReview(validation, PhasePrompt.Repair(originalPrompt, attempt, target, previous, validation.Errors));
     }
