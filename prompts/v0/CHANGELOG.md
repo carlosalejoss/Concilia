@@ -1,5 +1,14 @@
 # Cambios de los prompts v0
 
+## v0.8, la plataforma junta y revisa el mockup (2026-10-15)
+
+Tras la primera prueba real del mockup v0.6 con `SS - GPT-6-SOL` (documento C, 19 pantallas): el diseño y las 19 pantallas salieron válidos, pero la revisión del conjunto tenía que leer entero el prototipo (el armazón y 19 pantallas de 200–370 líneas), no cabía en 128k y Claude Code la paró («autocompact is thrashing»). Decidido por el autor a propuesta de Claude:
+
+- `mockup_integracion.md` desaparece. La revisión la hace la plataforma, sin modelo: junta el armazón y las pantallas, comprueba la página como antes y lo que no encaja entre las partes (`MockupCoherence`: `ID-DUP`, `JS-GLOBAL`, `NAV`).
+- Si encuentra problemas, una ejecución por parte afectada con el prompt nuevo `mockup_correccion.md`: lee la parte tal como está (`input/original.html`), el mapa y, si es una pantalla, el armazón, y escribe la parte corregida entera con un solo `Write`. Nunca lee el prototipo entero. La plataforma vuelve a comprobarlo todo.
+- **Reanudar:** un mockup que falla deja en la carpeta del trabajo el diseño y las pantallas aceptadas. «Reanudar» crea un trabajo nuevo que parte de ellos y solo ejecuta lo que falta, mientras el backlog validado no cambie.
+- Los demás prompts no cambian.
+
 ## v0.7, el árbitro no se queda sin contexto y los fragmentos no son números de línea (2026-10-14)
 
 Tras una prueba real del autor con un proyecto de 8 documentos (unos 40.000 tokens) y propuestas de unos 230 requisitos:

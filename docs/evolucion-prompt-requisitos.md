@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.8 | 15-10-2026 | Mockup: la plataforma junta y revisa el prototipo (ids, globales de JavaScript y navegación) y solo corrige con un modelo las partes con problemas; se puede reanudar un mockup fallido | Pendiente | Pendiente |
 | v0.7 | 14-10-2026 | El árbitro consulta la documentación por tramos y lee las propuestas con un elemento por línea; un fragmento no es un número de línea (`REF-FRAG` dice qué fragmento hay en esa línea); sin la salida de un solo modelo como resultado | Pendiente | Pendiente |
 | v0.6 | 14-10-2026 | El mockup es una sola aplicación construida por pasos: diseño (mapa de pantallas y armazón), una ejecución por pantalla y una revisión del conjunto; pensado para `SS - GPT-6-SOL` | Pendiente | Pendiente |
 | v0.5 | 14-10-2026 | Referencia de estilo del mockup: un `.zip` con un mockup del cliente; el modelo lee sus `.html` y `.css` y la plataforma incrusta sus imágenes y fuentes; el resto de prompts no cambia | Pendiente | Pendiente |
@@ -340,6 +341,40 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.8 (15-10-2026)
+
+Solo cambia el mockup. Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué pasó con el mockup v0.6 y v0.7
+
+Documento C (backlog validado de 9 épicas), 14 y 15-10-2026, con la referencia de estilo de un `.zip`. Las horas no sirven como medida: el trabajo se interrumpió por la noche y se volvió a arrancar al día siguiente.
+
+| Ejecución | Modelo | Resultado | Tokens entrada / salida | Turnos |
+|---|---|---|---|---|
+| Diseño | `SS - GPT-6.1-SOL` | Tiempo agotado (45 min), sin eventos guardados | — | — |
+| Diseño | `SS - GPT-6-SOL` | Válido: mapa de **19 pantallas** y armazón | 233.920 / 31.397 | 12 |
+| 19 pantallas | `SS - GPT-6-SOL` | **Las 19 válidas a la primera**, sin reparación | entre 88.307 y 147.493 / entre 12.573 y 29.152 cada una | 11–13 |
+| Revisión del conjunto | `SS - GPT-6-SOL` | **Falla**: lee el armazón y las 19 pantallas, compacta tres veces y Claude Code la para («autocompact is thrashing») | 326.083 / 2.255 | 37 |
+
+- **Construir por pasos funciona:** con contexto pequeño en cada ejecución, el diseño y cada pantalla salen válidos a la primera.
+- **La revisión del conjunto no escala:** leer el prototipo entero no cabe en 128k a partir de unas pocas pantallas.
+- **La 6.1 es demasiado lenta** para las respuestas largas del diseño, como ya pasó con el catálogo.
+- Coste del diseño y las pantallas: unos 2,43 M tokens de entrada y 417.000 de salida.
+
+### Qué hace
+
+- **La plataforma junta y revisa:** además de las comprobaciones de la página, busca `id` repetidos, nombres globales de JavaScript repetidos y navegación a pantallas que no existen. Son los fallos típicos de partes escritas por separado.
+- **Correcciones solo donde hace falta:** una ejecución por parte con problemas, que lee solo esa parte, el mapa y el armazón.
+- **Reanudar:** un mockup fallido se reanuda desde sus pasos aceptados, sin repetirlos.
+
+### Resultados
+
+Pendiente: reanudar el trabajo anterior (diseño y 19 pantallas ya aceptados).
+
+### Qué hay que mejorar
+
+Pendiente de la prueba.
 
 ## v0.7 (14-10-2026)
 

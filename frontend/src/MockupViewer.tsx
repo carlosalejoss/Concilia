@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Download, ExternalLink, Maximize2, MonitorSmartphone, Palette } from 'lucide-react'
-import { formatDate, type Deliverable, type JobView, type PhaseResult, type Project, type ProjectFile } from './api.ts'
+import { errorMessage, formatDate, type Deliverable, type JobView, type PhaseResult, type Project, type ProjectFile } from './api.ts'
 import { isStyleFile } from './uploadRules.ts'
 import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
@@ -22,12 +22,31 @@ type MockupViewerProps = {
   // Whether the next mockup follows the style reference, when there is one.
   useStyle: boolean
   onUseStyleChange: (useStyle: boolean) => void
+  // A job was launched from here (resuming a failed one): reload the flow.
+  onLaunched: () => void
 }
 
-function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange }: MockupViewerProps) {
+function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange, onLaunched }: MockupViewerProps) {
   const [mockup, setMockup] = useState<Deliverable<MockupSummary> | null>(null)
   const [failedJob, setFailedJob] = useState<{ id: string; message: string } | null>(null)
   const frame = useRef<HTMLIFrameElement>(null)
+  const [resuming, setResuming] = useState(false)
+  const [resumeError, setResumeError] = useState<string | null>(null)
+
+  // A new job that starts from the steps the failed one finished.
+  async function resume(jobId: string) {
+    setResuming(true)
+    setResumeError(null)
+    try {
+      const response = await fetch(`/projects/${project.id}/mockup-jobs/${jobId}/resume`, { method: 'POST' })
+      if (!response.ok) setResumeError(await errorMessage(response))
+      else onLaunched()
+    } catch (e: unknown) {
+      setResumeError(String(e))
+    } finally {
+      setResuming(false)
+    }
+  }
   // The .zip files of the project: the style the next mockup will follow.
   const [styles, setStyles] = useState<string[]>([])
 
@@ -83,14 +102,25 @@ function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange 
         <Banner
           tone="danger"
           action={
-            <Button variant="ghost" size="sm" onClick={() => onShowJob(failedJob.id)}>
-              Ver la consola
-            </Button>
+            <span className="flex gap-1">
+              <Button variant="ghost" size="sm" onClick={() => onShowJob(failedJob.id)}>
+                Ver la consola
+              </Button>
+              <Button
+                size="sm"
+                disabled={resuming}
+                onClick={() => resume(failedJob.id)}
+                title="Un trabajo nuevo que aprovecha el diseño y las pantallas que ya terminaron bien"
+              >
+                Reanudar
+              </Button>
+            </span>
           }
         >
           El último intento no dio un mockup válido: {failedJob.message}
         </Banner>
       )}
+      {resumeError && <Banner tone="danger">{resumeError}</Banner>}
       {!mockup ? (
         <EmptyState icon={MonitorSmartphone} title="Todavía no hay mockup">
           Con el backlog validado, genera un prototipo navegable: una sola aplicación, con sus pantallas, que reúne todas las historias con datos de prueba, en un único .html.

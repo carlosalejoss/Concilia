@@ -63,14 +63,15 @@ export function lotsOfSlot(view: JobView, slot: string): Run[][] {
     .map(([, runs]) => runs.sort((a, b) => a.attempt - b.attempt))
 }
 
-// The name of each run of a mockup job (prompts v0.6), a "lot" of the slot
-// MOCK: the design, each screen and the review of the whole.
+// The name of each run of a mockup job (prompts v0.8), a "lot" of the slot
+// MOCK: the design (lot 1), each screen (up to lotTotal) and, after them, the
+// fixes of the parts the platform found problems in.
 export function mockupStepName(run: Run): string {
   const total = run.lotTotal ?? 0
   const lot = run.lotNumber ?? 1
   if (lot === 1) return 'Diseño: mapa de pantallas y armazón'
-  if (total > 0 && lot === total) return 'Revisión del conjunto'
-  return `Pantalla ${lot - 1} de ${total - 2}`
+  if (lot <= total) return `Pantalla ${lot - 1} de ${total - 1}`
+  return `Corrección ${lot - total}`
 }
 
 // The state of a slot: that of the last attempt of each lot (the worst one

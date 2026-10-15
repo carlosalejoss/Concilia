@@ -35,45 +35,40 @@ public static class MockupEndpoints
         app.MapPost("/projects/{projectId:int}/mockup-jobs",
             async (int projectId, bool? estilo, AppDbContext db, JobQueue queue, FileStorage storage, MockupOptions options,
                    [FromKeyedServices(RunnerSetup.MockupKey)] IRunnerProvider provider) =>
+                await CreateJobAsync(projectId, db, queue, storage, options, provider, null, async jobId =>
+                {
+                    if (estilo != false)
+                        await SaveStyleAsync(db, storage, projectId, jobId);
+                }));
+
+        // Resumes a failed mockup job: a new job that starts from the steps the
+        // failed one finished (the design and the screens it accepted, and its
+        // style reference), so only what is missing runs again. Only while the
+        // validated backlog is the same.
+        app.MapPost("/projects/{projectId:int}/mockup-jobs/{jobId:guid}/resume",
+            async (int projectId, Guid jobId, AppDbContext db, JobQueue queue, FileStorage storage, MockupOptions options,
+                   [FromKeyedServices(RunnerSetup.MockupKey)] IRunnerProvider provider) =>
         {
-            var project = await db.Projects.FindAsync(projectId);
-            if (project is null)
+            var failed = await db.Jobs.FirstOrDefaultAsync(j => j.Id == jobId && j.ProjectId == projectId && j.Kind == JobKind);
+            if (failed is null)
             {
                 return Results.NotFound();
             }
-            var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Mockup);
-            if (!step.CanLaunch)
+            var folder = storage.JobFolder(jobId);
+            if (failed.FinishedAt is null || await db.Deliverables.AnyAsync(d => d.JobId == jobId)
+                || !MockupTask.IsDone(new MockupStep(MockupStage.Design), folder))
             {
-                return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [step.Reason!] });
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["job"] = ["Solo se puede reanudar un mockup que terminó sin generarse y que llegó a tener el diseño."],
+                });
             }
-
-            var backlog = (await DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Backlog))!;
-            var plan = MockupPlan.From(project.SystemName, project.Language, BacklogDraft.ForNextPhase(backlog.Content));
-            var now = DateTimeOffset.UtcNow;
-            var job = new Job { Id = Guid.NewGuid(), ProjectId = projectId, Kind = JobKind, CreatedAt = now };
-            var run = new Run
+            return await CreateJobAsync(projectId, db, queue, storage, options, provider, MockupPlan.Load(folder), newJobId =>
             {
-                Id = Guid.NewGuid(),
-                ProjectId = projectId,
-                JobId = job.Id,
-                Slot = Slot,
-                Provider = provider.Name,
-                Model = options.Model,
-                State = RunState.Queued,
-                CreatedAt = now,
-                PromptVersion = PhaseExecutor.PromptVersion,
-                // The design, first of the steps: the screens and the integration
-                // are added when the design says how many screens there are.
-                LotNumber = 1,
-            };
-            plan.Save(storage.JobFolder(job.Id));
-            if (estilo != false)
-                await SaveStyleAsync(db, storage, projectId, job.Id);
-            db.Jobs.Add(job);
-            db.Runs.Add(run);
-            await db.SaveChangesAsync();
-            queue.Enqueue(job.Id);
-            return Results.Accepted($"/jobs/{job.Id}", new JobView(job, [run]));
+                CopyFolder(MockupTask.JobPrototypeFolder(folder), MockupTask.JobPrototypeFolder(storage.JobFolder(newJobId)));
+                CopyFolder(MockupTask.JobStyleFolder(folder), MockupTask.JobStyleFolder(storage.JobFolder(newJobId)));
+                return Task.CompletedTask;
+            });
         });
 
         // The current mockup as a page (for the iframe) or, with ?download=true,
@@ -89,6 +84,70 @@ public static class MockupEndpoints
             http.Response.Headers.XContentTypeOptions = "nosniff";
             return Results.File(path, "text/html; charset=utf-8", download == true ? $"mockup-proyecto-{projectId}.html" : null);
         });
+    }
+
+    // A mockup job: its design run (lot 1, the first of the steps; the rest
+    // are added when the design says how many screens there are), only when
+    // the step is available (the backlog is validated). resumed: the plan of
+    // the job it resumes, which must have the same backlog; prepare fills the
+    // new job's folder (the style reference, or the steps of the job it resumes).
+    private static async Task<IResult> CreateJobAsync(int projectId, AppDbContext db, JobQueue queue, FileStorage storage,
+        MockupOptions options, IRunnerProvider provider, MockupPlan? resumed, Func<Guid, Task> prepare)
+    {
+        var project = await db.Projects.FindAsync(projectId);
+        if (project is null)
+        {
+            return Results.NotFound();
+        }
+        var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Mockup);
+        if (!step.CanLaunch)
+        {
+            return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [step.Reason!] });
+        }
+
+        var backlog = (await DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Backlog))!;
+        var plan = MockupPlan.From(project.SystemName, project.Language, BacklogDraft.ForNextPhase(backlog.Content));
+        if (resumed is not null && resumed.Backlog != plan.Backlog)
+        {
+            return Results.ValidationProblem(new Dictionary<string, string[]>
+            {
+                ["job"] = ["El backlog validado ha cambiado desde ese trabajo: genera el mockup de nuevo."],
+            });
+        }
+        var now = DateTimeOffset.UtcNow;
+        var job = new Job { Id = Guid.NewGuid(), ProjectId = projectId, Kind = JobKind, CreatedAt = now };
+        var run = new Run
+        {
+            Id = Guid.NewGuid(),
+            ProjectId = projectId,
+            JobId = job.Id,
+            Slot = Slot,
+            Provider = provider.Name,
+            Model = options.Model,
+            State = RunState.Queued,
+            CreatedAt = now,
+            PromptVersion = PhaseExecutor.PromptVersion,
+            LotNumber = 1,
+        };
+        plan.Save(storage.JobFolder(job.Id));
+        await prepare(job.Id);
+        db.Jobs.Add(job);
+        db.Runs.Add(run);
+        await db.SaveChangesAsync();
+        queue.Enqueue(job.Id);
+        return Results.Accepted($"/jobs/{job.Id}", new JobView(job, [run]));
+    }
+
+    private static void CopyFolder(string from, string to)
+    {
+        if (!Directory.Exists(from))
+            return;
+        foreach (var file in Directory.GetFiles(from, "*", SearchOption.AllDirectories))
+        {
+            var target = Path.Combine(to, Path.GetRelativePath(from, file));
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            File.Copy(file, target, overwrite: true);
+        }
     }
 
     // The style references of the project (its .zip files), unpacked into the
@@ -111,36 +170,34 @@ public static class MockupEndpoints
 
     public static string StyleFolder(FileStorage storage, Guid jobId) => MockupTask.JobStyleFolder(storage.JobFolder(jobId));
 
-    // Called by JobWorker when the mockup run ends. A valid .html is copied to
+    // Called by JobWorker when the mockup job ends. A valid .html is copied to
     // the project (data/projects/{id}/mockup/mockup.html) and becomes the
-    // current mockup; the run folder keeps the original. The job result says
-    // how it went, as in the phases.
-    public static async Task StoreResultAsync(AppDbContext db, FileStorage storage, Job job, MockupPlan plan, RunOutcome outcome)
+    // current mockup; the job's folder keeps the original (ensamblado/). The
+    // job result says how it went, as in the phases.
+    public static async Task StoreResultAsync(AppDbContext db, FileStorage storage, Job job, MockupPlan plan, MockupJobResult result)
     {
-        if (!outcome.Succeeded)
+        if (!result.Succeeded)
         {
             PhaseJobs.WriteResult(storage.JobFolder(job.Id), new PhaseJobResult(null, false, null,
-                (outcome.SkipReason ?? "El modelo no terminó un paso del mockup con una salida válida.") + " Se puede generar de nuevo."));
+                $"{result.Message} Se puede reanudar, aprovechando los pasos que terminaron bien, o generar de nuevo."));
             return;
         }
 
-        var attempt = outcome.Attempts![^1];
-        var html = await File.ReadAllTextAsync(MockupExecutor.OutputPath(attempt));
+        var html = await File.ReadAllTextAsync(result.HtmlPath!);
         var target = storage.MockupFile(job.ProjectId);
         Directory.CreateDirectory(Path.GetDirectoryName(target)!);
         await File.WriteAllTextAsync(target, html);
 
-        var map = MockupMap.Load(await File.ReadAllTextAsync(Path.Combine(MockupTask.JobPrototypeFolder(storage.JobFolder(job.Id)), "mapa.json")), plan.StoryIds);
         var check = MockupTask.Validate(html, plan.StoryIds);
         var summary = new JsonObject
         {
             ["historias"] = plan.StoryIds.Count,
-            ["pantallas"] = map.Screens.Count,
+            ["pantallas"] = result.Screens,
             ["bytes"] = new FileInfo(target).Length,
             ["avisos"] = new JsonArray(check.Warnings.Select(w => (JsonNode)w).ToArray()),
         };
         PhaseJobs.WriteResult(storage.JobFolder(job.Id), new PhaseJobResult(Slot, false, summary.ToJsonString(),
-            $"Mockup generado: {map.Screens.Count} pantallas con las {plan.StoryIds.Count} historias del backlog validado."));
+            $"{result.Message} Con las {plan.StoryIds.Count} historias del backlog validado."));
 
         var current = await DeliverableEndpoints.CurrentAsync(db, job.ProjectId, DeliverableKind.Mockup);
         var (deliverable, change) = DeliverableRules.Generated(current, job.ProjectId, DeliverableKind.Mockup, job.Id, summary.ToJsonString(), DateTimeOffset.UtcNow);

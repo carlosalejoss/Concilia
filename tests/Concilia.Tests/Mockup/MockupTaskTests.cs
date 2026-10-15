@@ -144,24 +144,28 @@ public class MockupTaskTests
     }
 
     [Fact]
-    public void The_integration_reads_a_copy_of_the_whole_prototype_and_edits_the_files()
+    public void A_fix_reads_the_part_as_it_was_the_map_and_the_shell_and_writes_the_part_new()
     {
         using var temp = new TempDirectory();
         var job = JobAfterDesign(temp);
         var screens = MapOf(job).Screens;
         Directory.CreateDirectory(Path.Combine(MockupTask.JobPrototypeFolder(job), "pantallas"));
-        foreach (var screen in screens)
-            File.WriteAllText(Path.Combine(MockupTask.JobPrototypeFolder(job), "pantallas", $"{screen.Id}.html"), "<section></section>");
-        var work = Work(temp, "integration");
+        foreach (var s in screens)
+            File.WriteAllText(Path.Combine(MockupTask.JobPrototypeFolder(job), "pantallas", $"{s.Id}.html"), $"<section data-pantalla=\"{s.Id}\"></section>");
+        var work = Work(temp, "fix");
+        var step = new MockupStep(MockupStage.Fix, screens[0], ["P01 JS-GLOBAL: «guardar» ya se declara como global en el armazón (app.html)."]);
 
-        var built = MockupTask.BuildRequest(Plan, new MockupStep(MockupStage.Integration), job, Guid.NewGuid(), "m", work, new MockupRunOptions());
+        var built = MockupTask.BuildRequest(Plan, step, job, Guid.NewGuid(), "m", work, new MockupRunOptions());
 
-        Assert.Equal(["input/prototipo/mapa.json", "input/prototipo/app.html", .. screens.Select(s => $"input/prototipo/pantallas/{s.Id}.html")],
-            built.RequiredReads);
-        Assert.Equal(["Read", "Write", "Edit"], built.Request.AllowedTools);
-        Assert.Empty(built.Request.ExpectedOutputFiles);
-        Assert.True(File.Exists(Path.Combine(work, MockupTask.ScreenFile(screens[0].Id))));
-        Assert.Contains("- `input/backlog.json` (", built.Request.Prompt); // only to consult
+        Assert.Equal([MockupTask.MapInput, MockupTask.AppInput, MockupTask.FixInput], built.RequiredReads);
+        Assert.Equal($"<section data-pantalla=\"{screens[0].Id}\"></section>", File.ReadAllText(Path.Combine(work, MockupTask.FixInput)));
+        // The part is written new; the rest of the prototype is there to check it against.
+        Assert.False(File.Exists(Path.Combine(work, MockupTask.ScreenFile(screens[0].Id))));
+        Assert.True(File.Exists(Path.Combine(work, MockupTask.ScreenFile(screens[^1].Id))));
+        Assert.Equal([MockupTask.ScreenFile(screens[0].Id)], built.Request.ExpectedOutputFiles);
+        Assert.Equal(["Read", "Write"], built.Request.AllowedTools);
+        Assert.Contains("- P01 JS-GLOBAL: «guardar»", built.Request.Prompt);
+        Assert.Contains($"la pantalla {screens[0].Id}", built.Request.Prompt);
         Assert.DoesNotContain("{{", built.Request.Prompt);
     }
 
@@ -360,48 +364,143 @@ public class MockupTaskTests
 
     // ---- A whole job ----
 
-    // The job without the database, with FakeProvider: the design, one run per
-    // screen (each repaired once: the first attempt leaves out the mark of its
-    // last story) and the integration, which joins a valid page.
-    [Fact]
-    public async Task A_mockup_job_designs_builds_each_screen_and_integrates()
+    // A job without the database: the runner, its storage and what the job
+    // asks for (the runs it adds and those that end).
+    private sealed class JobSetup : IDisposable
     {
-        using var temp = new TempDirectory();
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["Storage:RootPath"] = temp.Path })
-            .Build();
-        var storage = new FileStorage(configuration, new HostingEnvironment { ContentRootPath = temp.Path });
-        var provider = new FakeProvider(simulateRepair: true);
-        var events = new RunEventStore();
-        var runner = new JobRunner(
-            new RunExecutor(provider, events, storage, new RunnerOptions(), new CatalogOptions()), new CatalogOptions(),
-            mockupExecutor: new MockupExecutor(provider, events, storage, new MockupOptions()));
-        var jobId = Guid.NewGuid();
-        Run NewRun(int lot) => new() { Id = Guid.NewGuid(), JobId = jobId, Slot = "MOCK", LotNumber = lot, Provider = "Fake", Model = "claude-sonnet-5-5", State = RunState.Queued };
-        var added = new List<Run>();
-        var finished = new List<RunOutcome>();
+        private readonly TempDirectory _temp = new();
+        public readonly FileStorage Storage;
+        public readonly JobRunner Runner;
+        public readonly Guid JobId = Guid.NewGuid();
+        public readonly List<Run> Added = [];
+        public readonly List<RunOutcome> Finished = [];
 
-        var outcome = await runner.RunMockupAsync(NewRun(1), Plan, storage.JobFolder(jobId),
-            count =>
-            {
-                added.AddRange(Enumerable.Range(2, count).Select(NewRun));
-                return Task.FromResult<IReadOnlyList<Run>>(added);
-            },
-            _ => Task.CompletedTask,
-            o => { lock (finished) finished.Add(o); return Task.CompletedTask; },
-            CancellationToken.None);
+        public JobSetup(IRunnerProvider provider)
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string?> { ["Storage:RootPath"] = _temp.Path })
+                .Build();
+            Storage = new FileStorage(configuration, new HostingEnvironment { ContentRootPath = _temp.Path });
+            var events = new RunEventStore();
+            Runner = new JobRunner(
+                new RunExecutor(provider, events, Storage, new RunnerOptions(), new CatalogOptions()), new CatalogOptions(),
+                mockupExecutor: new MockupExecutor(provider, events, Storage, new MockupOptions()));
+        }
 
-        Assert.True(outcome.Succeeded);
-        var map = MapOf(storage.JobFolder(jobId));
-        Assert.Equal(map.Screens.Count + 1, added.Count); // the screens and the integration
-        Assert.Equal(map.Screens.Count + 2, finished.Count);
-        Assert.All(finished.Where(o => o.Run.LotNumber is > 1 && o.Run != added[^1]), o =>
+        public string Folder => Storage.JobFolder(JobId);
+
+        private Run NewRun(int lot) => new() { Id = Guid.NewGuid(), JobId = JobId, Slot = "MOCK", LotNumber = lot, Provider = "Fake", Model = "m", State = RunState.Queued };
+
+        public Task<MockupJobResult> RunAsync()
+        {
+            Plan.Save(Folder);
+            return Runner.RunMockupAsync(NewRun(1), Plan, Folder,
+                (count, _) =>
+                {
+                    var runs = Enumerable.Range(Added.Count + 2, count).Select(NewRun).ToList();
+                    Added.AddRange(runs);
+                    return Task.FromResult<IReadOnlyList<Run>>(runs);
+                },
+                _ => Task.CompletedTask,
+                o => { lock (Finished) Finished.Add(o); return Task.CompletedTask; },
+                CancellationToken.None);
+        }
+
+        public void Dispose() => _temp.Dispose();
+    }
+
+    // With FakeProvider: the design, one run per screen (each repaired once:
+    // the first attempt leaves out the mark of its last story), and the
+    // platform joins a valid page without any fix.
+    [Fact]
+    public async Task A_mockup_job_designs_builds_each_screen_and_the_platform_joins_them()
+    {
+        using var setup = new JobSetup(new FakeProvider(simulateRepair: true));
+
+        var result = await setup.RunAsync();
+
+        Assert.True(result.Succeeded, result.Message);
+        var map = MapOf(setup.Folder);
+        Assert.Equal(map.Screens.Count, result.Screens);
+        Assert.Equal(map.Screens.Count, setup.Added.Count); // the screens, no fixes
+        Assert.All(setup.Finished.Where(o => o.Run.LotNumber > 1), o =>
         {
             Assert.Equal([RunStatus.Failed, RunStatus.Done], o.Attempts!.Select(a => a.Result.Status));
             Assert.Contains(" HU: ningún elemento de la pantalla lleva data-hu", o.Attempts![0].Result.ErrorMessage);
         });
-        Assert.Equal(["Read", "Write", "Edit"], outcome.Attempts![0].Request.AllowedTools);
-        var html = File.ReadAllText(MockupExecutor.OutputPath(outcome.Attempts[^1]));
-        Assert.True(MockupTask.Validate(html, Plan.StoryIds, map.Screens.Select(s => s.Id).ToList()).Valid);
+        Assert.True(MockupTask.Validate(File.ReadAllText(result.HtmlPath!), Plan.StoryIds, map.Screens.Select(s => s.Id).ToList()).Valid);
+    }
+
+    // Like FakeProvider, but every screen declares the same global function:
+    // the platform finds it and a fix of each later screen removes it.
+    private sealed class RepeatedGlobal : IRunnerProvider
+    {
+        private readonly FakeProvider _fake = new();
+        public string Name => "Test";
+
+        public async Task<RunResult> RunAsync(RunRequest request, Action<RunEvent> onEvent, CancellationToken cancellationToken)
+        {
+            var result = await _fake.RunAsync(request, onEvent, cancellationToken);
+            var fix = File.Exists(Path.Combine(request.WorkDirectory, MockupTask.FixInput));
+            foreach (var file in request.ExpectedOutputFiles.Where(f => f.Contains("/pantallas/")))
+            {
+                var path = Path.Combine(request.WorkDirectory, file);
+                var html = File.ReadAllText(path);
+                File.WriteAllText(path, fix
+                    ? html.Replace("<script>function comun() {}</script>", "")
+                    : html.Replace("</section>", "<script>function comun() {}</script></section>"));
+            }
+            return result;
+        }
+    }
+
+    [Fact]
+    public async Task Problems_between_the_screens_are_fixed_one_part_at_a_time()
+    {
+        using var setup = new JobSetup(new RepeatedGlobal());
+
+        var result = await setup.RunAsync();
+
+        Assert.True(result.Succeeded, result.Message);
+        var screens = MapOf(setup.Folder).Screens.Count;
+        // The first screen keeps the name; each of the others gets a fix.
+        Assert.Equal(screens + (screens - 1), setup.Added.Count);
+        var fixes = setup.Finished.Where(o => o.Run.LotNumber > screens + 1).ToList();
+        Assert.Equal(screens - 1, fixes.Count);
+        Assert.All(fixes, o => Assert.Contains("JS-GLOBAL: «comun»", o.Attempts![0].Request.Prompt));
+    }
+
+    // A job that resumes a failed one: its folder already has the design and
+    // the screens, so no model runs and the platform joins them.
+    [Fact]
+    public async Task A_resumed_job_reuses_the_steps_already_done()
+    {
+        using var first = new JobSetup(new FakeProvider());
+        Assert.True((await first.RunAsync()).Succeeded);
+        using var resumed = new JobSetup(new FailingProvider());
+        CopyAll(MockupTask.JobPrototypeFolder(first.Folder), MockupTask.JobPrototypeFolder(resumed.Folder));
+
+        var result = await resumed.RunAsync();
+
+        Assert.True(result.Succeeded, result.Message);
+        Assert.All(resumed.Finished, o => Assert.StartsWith("Reutilizado", o.SkipReason));
+    }
+
+    // A provider that must not be called.
+    private sealed class FailingProvider : IRunnerProvider
+    {
+        public string Name => "Test";
+        public Task<RunResult> RunAsync(RunRequest request, Action<RunEvent> onEvent, CancellationToken cancellationToken) =>
+            throw new InvalidOperationException("No model should run when resuming.");
+    }
+
+    private static void CopyAll(string from, string to)
+    {
+        foreach (var file in Directory.GetFiles(from, "*", SearchOption.AllDirectories))
+        {
+            var target = Path.Combine(to, Path.GetRelativePath(from, file));
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            File.Copy(file, target);
+        }
     }
 }

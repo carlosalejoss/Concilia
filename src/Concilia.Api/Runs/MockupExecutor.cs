@@ -7,7 +7,7 @@ using Concilia.Runner;
 
 namespace Concilia.Api.Runs;
 
-// Executes one run of a mockup job (the design, a screen or the integration;
+// Executes one run of a mockup job (the design, a screen or a fix;
 // slot MOCK) with the mockup provider (keyed "mockup": the author's
 // subscription, a gateway model or Fake), with one repair, without touching
 // the database. Like PhaseExecutor, with the checks of MockupTask.
@@ -42,21 +42,10 @@ public class MockupExecutor(
             (attempt, attemptsSoFar) =>
             {
                 reads.AddRange(attempt.Result.Reads);
-                return PhaseExecutor.Review(attempt, OutputFileOf(step),
+                return PhaseExecutor.Review(attempt, MockupTask.TargetOf(step),
                     (_, unread) => MockupTask.Review(step, plan, attempt.Request.WorkDirectory, original, attemptsSoFar, unread),
                     built.RequiredReads, reads);
             },
             cancellationToken);
     }
-
-    // The file each step is about (MockupTask.Review reads the rest itself).
-    private static string OutputFileOf(MockupStep step) => step.Stage switch
-    {
-        MockupStage.Design => MockupTask.MapFile,
-        MockupStage.Screen => MockupTask.ScreenFile(step.Screen!.Id),
-        _ => MockupTask.OutputFile,
-    };
-
-    // The path of the joined .html of an attempt of the integration.
-    public static string OutputPath(RunAttempt attempt) => Path.Combine(attempt.Request.WorkDirectory, MockupTask.OutputFile);
 }

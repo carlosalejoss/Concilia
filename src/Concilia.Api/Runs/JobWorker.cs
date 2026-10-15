@@ -62,15 +62,15 @@ public class JobWorker(
             .OrderBy(r => r.Slot).ThenBy(r => r.LotNumber)
             .ToListAsync(cancellationToken);
 
-        // The mockup: the design, the screens and the integration, and the .html
+        // The mockup: the design, the screens and the fixes, and the .html
         // copied to the project.
         if (job.Kind == Deliverables.MockupEndpoints.JobKind)
         {
             var mockupPlan = MockupPlan.Load(storage.JobFolder(jobId));
             var design = runs.Single();
-            var outcome = await jobRunner.RunMockupAsync(design, mockupPlan, storage.JobFolder(jobId),
-                count => AddMockupRunsAsync(design, count), MarkRunningAsync, SaveOutcomeAsync, cancellationToken);
-            await Deliverables.MockupEndpoints.StoreResultAsync(db, storage, job, mockupPlan, outcome);
+            var result = await jobRunner.RunMockupAsync(design, mockupPlan, storage.JobFolder(jobId),
+                (count, fixes) => AddMockupRunsAsync(design, count, fixes), MarkRunningAsync, SaveOutcomeAsync, cancellationToken);
+            await Deliverables.MockupEndpoints.StoreResultAsync(db, storage, job, mockupPlan, result);
             job.FinishedAt = DateTimeOffset.UtcNow;
             await db.SaveChangesAsync(CancellationToken.None);
             return;
@@ -110,19 +110,25 @@ public class JobWorker(
         await db.SaveChangesAsync(CancellationToken.None);
     }
 
-    // The runs of the screens and the integration of a mockup job, queued as
-    // lots 2 to n of its slot after the design (lot 1). The design learns the
-    // total too, so the web shows "1 of n".
-    private async Task<IReadOnlyList<Run>> AddMockupRunsAsync(Run design, int count)
+    // Runs of a mockup job, queued after the ones it has. The screens are
+    // lots 2 to n + 1, after the design (lot 1), and all of them learn the
+    // total n + 1, so the web shows "screen 3 of 19". The fixes go after them
+    // and keep that total: a lot beyond it is a fix.
+    private async Task<IReadOnlyList<Run>> AddMockupRunsAsync(Run design, int count, bool fixes)
     {
         using var scope = scopes.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var total = count + 1;
-        await db.Runs.Where(r => r.JobId == design.JobId && r.Slot == design.Slot)
-            .ExecuteUpdateAsync(set => set.SetProperty(r => r.LotTotal, total));
-        design.LotTotal = total;
+        var existing = await db.Runs.Where(r => r.JobId == design.JobId && r.Slot == design.Slot).ToListAsync();
+        var last = existing.Max(r => r.LotNumber ?? 1);
+        var total = fixes ? existing.Max(r => r.LotTotal ?? last) : last + count;
+        if (!fixes)
+        {
+            await db.Runs.Where(r => r.JobId == design.JobId && r.Slot == design.Slot)
+                .ExecuteUpdateAsync(set => set.SetProperty(r => r.LotTotal, total));
+            design.LotTotal = total;
+        }
 
-        var runs = Enumerable.Range(2, count).Select(lot => new Run
+        var runs = Enumerable.Range(last + 1, count).Select(lot => new Run
         {
             Id = Guid.NewGuid(),
             ProjectId = design.ProjectId,
