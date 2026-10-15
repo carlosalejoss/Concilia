@@ -1407,3 +1407,25 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisiones del autor:** aparcarlo hasta terminar el paso 65.
 - **Cambios de criterio:** ninguno.
 - **Pendientes:** paso 65; retomar después la prueba del mockup con skills (plan apuntado en la trazabilidad).
+
+---
+
+## 15-10-2026, 15:00 (sesión)
+
+**Resumen para la bitácora (15-10-2026, mockup del proyecto grande de ejemplo)**
+
+- **Qué se hizo:**
+  - **Mockup del proyecto grande de ejemplo con SOL (v0.9):** el mapa tiene 38 pantallas, por encima del aviso de 25.
+    - 37 terminan en 4–8 minutos cada una, con hasta 36.000 tokens de salida.
+    - La P34 falla: la pasarela responde 504 (Gateway Timeout) en los 10 reintentos de Claude Code, unos 18 minutos sin avanzar. Los errores de la API no se reparan, así que el trabajo termina sin mockup y con la opción de reanudar.
+    - El informe da a esa ejecución 3.420 tokens de entrada y 263 de salida, que no son reales: en un error de la API, el evento final solo trae el consumo de la última petición.
+  - **API y web reconstruidas** con los cambios del día (aprobar todas las sugerencias, marca `sigue`, aviso de consumo mínimo, texto de la consola y una tarea cada vez), después de dejar terminar una ronda de preguntas en curso. Comprobado que responden `/health` y `/jobs/active`.
+- **Hallazgos:**
+  - Si la API se reinicia con un trabajo de mockup en marcha, ese trabajo no se puede reanudar, porque queda sin fecha de fin. La web además deja de ofrecer «Reanudar». Refuerza la decisión pendiente de cerrar los trabajos interrumpidos al reiniciar.
+  - Que solo falle una pantalla de 38 apunta a que su respuesta tarda más de lo que la pasarela espera. Lo confirmará la reanudación.
+- **Decisiones del autor:** dejar terminar la ronda en curso antes de reconstruir y reanudar el mockup al día siguiente.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:**
+  - Reanudar el mockup (16-10). Si la P34 vuelve a dar 504, partirla en el mapa o pedir más tiempo de espera a quien gestiona la pasarela.
+  - Cerrar los trabajos interrumpidos al reiniciar la API (decisión pendiente).
+  - Paso 65.
