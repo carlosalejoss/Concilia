@@ -56,6 +56,7 @@ app.MapProjectEndpoints();
 app.MapProjectFileEndpoints();
 app.MapRunEndpoints();
 app.MapJobEndpoints();
+app.MapActiveJobEndpoint();
 app.MapFlowEndpoints();
 app.MapQuestionEndpoints();
 app.MapDeliverableEndpoints();

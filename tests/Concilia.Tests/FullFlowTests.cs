@@ -20,11 +20,12 @@ namespace Concilia.Tests;
 // ones outdated.
 public class FullFlowTests
 {
-    private static WebApplicationFactory<Program> Api(string storage) =>
+    // stepDelayMs: how long each event of Fake takes (0: a job ends at once).
+    private static WebApplicationFactory<Program> Api(string storage, int stepDelayMs = 0) =>
         new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.UseSetting("Runner:Provider", "Fake");
-            builder.UseSetting("Runner:FakeStepDelayMs", "0");
+            builder.UseSetting("Runner:FakeStepDelayMs", stepDelayMs.ToString());
             builder.UseSetting("Mockup:Provider", "Fake");
             builder.UseSetting("Storage:RootPath", storage);
             builder.UseSetting("Database:MigrateOnStartup", "false");
@@ -98,6 +99,47 @@ public class FullFlowTests
         flow = await Flow(client, id);
         Assert.Equal("Draft", flow[2]!["state"]!.GetValue<string>());
         Assert.Equal([false, false, false, true, true], flow.Select(s => s!["outdated"]!.GetValue<bool>()));
+    }
+
+    // One task at a time in the whole platform (15-10-2026): while a round runs
+    // in one project, nothing can be launched there or in another project,
+    // and /jobs/active says what is running and where.
+    [Fact]
+    public async Task Nothing_can_be_launched_while_a_task_runs_in_any_project()
+    {
+        using var temp = new TempDirectory();
+        await using var api = Api(temp.Path, stepDelayMs: 200);
+        var client = api.CreateClient();
+        var first = (await Json(await client.PostAsJsonAsync("/projects", new { name = "Clínicas" })))["id"]!.GetValue<int>();
+        var second = (await Json(await client.PostAsJsonAsync("/projects", new { name = "Banco de alimentos" })))["id"]!.GetValue<int>();
+        var document = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "prompts", "ejemplo", "fuentes", "DOC-01.txt"));
+        foreach (var id in new[] { first, second })
+            using (var form = new MultipartFormDataContent { { new ByteArrayContent(document), "file", "DOC-01.txt" } })
+                (await client.PostAsync($"/projects/{id}/files", form)).EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.NoContent, (await client.GetAsync("/jobs/active")).StatusCode);
+
+        var round = await client.PostAsync($"/projects/{first}/question-rounds", null);
+        Assert.Equal(HttpStatusCode.Accepted, round.StatusCode);
+        var jobId = (await Json(round))["job"]!["id"]!.GetValue<string>();
+
+        var active = await Json(await client.GetAsync("/jobs/active"));
+        Assert.Equal(jobId, active["jobId"]!.GetValue<string>());
+        Assert.Equal("Se está ejecutando una ronda de preguntas en el proyecto «Clínicas». Espera a que termine para lanzar otra tarea.",
+            active["message"]!.GetValue<string>());
+        foreach (var url in new[] { $"/projects/{second}/question-rounds", $"/projects/{first}/question-rounds", $"/projects/{second}/jobs" })
+        {
+            var refused = await client.PostAsync(url, null);
+            Assert.Equal(HttpStatusCode.BadRequest, refused.StatusCode);
+            Assert.Equal(active["message"]!.GetValue<string>(), JsonNode.Parse(await refused.Content.ReadAsStringAsync())!["errors"]!["job"]![0]!.GetValue<string>());
+        }
+
+        var until = DateTime.UtcNow.AddSeconds(60);
+        while ((await client.GetAsync("/jobs/active")).StatusCode != HttpStatusCode.NoContent)
+        {
+            Assert.True(DateTime.UtcNow < until, "The round did not end in 60 s.");
+            await Task.Delay(100);
+        }
+        Assert.Equal(HttpStatusCode.Accepted, (await client.PostAsync($"/projects/{second}/question-rounds", null)).StatusCode);
     }
 
     // Launches a job and waits until it ends; it must end with a result.

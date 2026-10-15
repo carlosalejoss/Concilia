@@ -30,6 +30,10 @@ public static class QuestionEndpoints
             {
                 return Results.NotFound();
             }
+            if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
+            {
+                return busy; // one task at a time in the whole platform
+            }
 
             var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Questions);
             if (!step.CanLaunch)
@@ -59,6 +63,10 @@ public static class QuestionEndpoints
             if (project is null)
             {
                 return Results.NotFound();
+            }
+            if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
+            {
+                return busy; // one task at a time in the whole platform
             }
 
             var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Catalog);
@@ -92,6 +100,10 @@ public static class QuestionEndpoints
             if (project is null)
             {
                 return Results.NotFound();
+            }
+            if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
+            {
+                return busy; // one task at a time in the whole platform
             }
 
             var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Backlog);
@@ -243,6 +255,10 @@ public static class QuestionEndpoints
     private static async Task<IResult> SuggestAsync(AppDbContext db, JobQueue queue, IRunnerProvider provider,
         RunnerOptions options, FileStorage storage, int projectId, List<Question> pending)
     {
+        if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
+        {
+            return busy; // one task at a time in the whole platform
+        }
         if (pending.Count == 0)
         {
             return Results.ValidationProblem(new Dictionary<string, string[]> { ["questions"] = ["No hay preguntas pendientes para sugerir."] });

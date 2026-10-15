@@ -16,7 +16,7 @@ const SIZES: Record<Size, string> = {
   md: 'h-9 gap-2 px-3.5 text-sm',
 }
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant
   size?: Size
   icon?: LucideIcon

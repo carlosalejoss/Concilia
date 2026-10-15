@@ -14,6 +14,8 @@ import {
 import Badge from './ui/Badge.tsx'
 import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
+import LaunchButton from './ui/LaunchButton.tsx'
+import { useActiveJob } from './hooks/useActiveJob.ts'
 import Collapsible from './ui/Collapsible.tsx'
 import EmptyState from './ui/EmptyState.tsx'
 import Provenance from './ui/Provenance.tsx'
@@ -84,6 +86,7 @@ function QuestionsPanel({
   const [filter, setFilter] = useState<Filter>('all')
   const [search, setSearch] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const activeJob = useActiveJob()
 
   const load = useCallback(() => {
     Promise.all([
@@ -127,6 +130,7 @@ function QuestionsPanel({
     setError(null)
     const failure = await send(url, 'POST')
     if (failure) setError(failure)
+    activeJob.refresh() // the other buttons go grey at once
     load()
   }
 
@@ -242,7 +246,7 @@ function QuestionsPanel({
                     </Button>
                   )}
                   {pendingOfRound > 0 && (
-                    <Button
+                    <LaunchButton
                       size="sm"
                       variant={allSuggested ? 'ghost' : undefined}
                       icon={Sparkles}
@@ -251,7 +255,7 @@ function QuestionsPanel({
                       title="Pide a la IA una respuesta para cada pregunta pendiente de la ronda; no se guarda nada hasta que la guardes tú"
                     >
                       Sugerir respuestas
-                    </Button>
+                    </LaunchButton>
                   )}
                   <Button variant="ghost" size="sm" icon={Terminal} onClick={() => onShowJob(view.job.id)} aria-label="Ver la ejecución" title="Ver la ejecución" />
                 </>
@@ -462,9 +466,9 @@ function QuestionItem({
                   </Button>
                 )}
                 {q.status === 'Pending' && (
-                  <Button size="sm" variant="ghost" icon={Sparkles} disabled={suggesting} onClick={onSuggest}>
+                  <LaunchButton size="sm" variant="ghost" icon={Sparkles} disabled={suggesting} onClick={onSuggest}>
                     {suggestion === null ? 'Sugerir con IA' : 'Pedir otra sugerencia'}
-                  </Button>
+                  </LaunchButton>
                 )}
                 {q.status !== 'Discarded' && (
                   <Button size="sm" variant="ghost" onClick={() => setMode('discard')}>
