@@ -27,3 +27,6 @@ coverage/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Memoria con datos personales
+/memoria/
