@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.12" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
@@ -23,8 +24,7 @@
     <!-- Recorded outputs used by the runner tests, copied next to the test DLL. -->
     <None Include="..\fixtures\**\*.jsonl;..\fixtures\**\*.json;..\fixtures\**\*.txt" LinkBase="fixtures" CopyToOutputDirectory="PreserveNewest" />
     <!-- Examples of the reference scripts (prompts/), used to compare the C# port with Python. -->
-    <None Include="..\..\prompts\generacion_requisitos\**\*.json;..\..\prompts\generacion_requisitos\**\*.txt;..\..\prompts\generacion_requisitos\**\*.md"
-          LinkBase="prompts" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\prompts\generacion_requisitos\**\*.json;..\..\prompts\generacion_requisitos\**\*.txt;..\..\prompts\generacion_requisitos\**\*.md" LinkBase="prompts" CopyToOutputDirectory="PreserveNewest" />
     <!-- Example of the v0 prompts (validar_v0.py and test_v0.py use it too). -->
     <None Include="..\..\prompts\v0\ejemplo\*.json" LinkBase="prompts-v0\ejemplo" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

@@ -123,8 +123,8 @@ public class JobWorker(
         var total = fixes ? existing.Max(r => r.LotTotal ?? last) : last + count;
         if (!fixes)
         {
-            await db.Runs.Where(r => r.JobId == design.JobId && r.Slot == design.Slot)
-                .ExecuteUpdateAsync(set => set.SetProperty(r => r.LotTotal, total));
+            foreach (var run in existing)
+                run.LotTotal = total;
             design.LotTotal = total;
         }
 
