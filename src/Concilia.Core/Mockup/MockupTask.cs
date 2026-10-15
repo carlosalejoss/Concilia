@@ -185,7 +185,8 @@ public static class MockupTask
                 values["PANTALLA"] = screen.Id;
                 values["TITULO"] = screen.Title;
                 values["FICHERO"] = ScreenFile(screen.Id);
-                values["HISTORIAS"] = string.Join(", ", screen.StoryIds);
+                values["HISTORIAS"] = screen.StoryIds.Count > 0 ? string.Join(", ", screen.StoryIds) : "ninguna";
+                values["NAVEGACION"] = NavigationOf(MockupMap.Load(File.ReadAllText(Path.Combine(prototype, "mapa.json")), plan.StoryIds), screen);
                 break;
 
             default:
@@ -234,6 +235,34 @@ public static class MockupTask
             InputFilesInBudget = false,
         };
         return new MockupRequest(request, reads.Where(r => r.Required).Select(r => r.Path).ToList());
+    }
+
+    // How a screen fits in the navigation of the application (prompts v0.9):
+    // which application and roles, how one gets to it and, above all, the
+    // screens it must lead to, each with mostrarPantalla (the platform checks
+    // that those calls are there).
+    public static string NavigationOf(MockupMap map, MockupScreen screen)
+    {
+        var lines = new List<string>();
+        if (screen.Id == map.Start)
+            lines.Add("- **Es la pantalla de inicio de sesión**, la primera que se ve. Muestra a la vista los usuarios de prueba, uno por rol (nombre, rol y aplicación a la que entra), y con un clic en uno se entra como ese usuario: llama a la función del armazón que inicia la sesión. También un formulario de usuario y contraseña que acepta esos mismos usuarios.");
+        else
+            lines.Add($"- Aplicación: {screen.Application}. La ven los roles: {string.Join(", ", screen.RolesOrEmpty)}.");
+
+        var reachedFrom = screen.FromOrEmpty.Select(id => map.Screens.FirstOrDefault(s => s.Id == id)).OfType<MockupScreen>()
+            .Select(s => $"{s.Id} «{s.Title}»").ToList();
+        if (screen.Menu)
+            reachedFrom.Insert(0, $"el menú de {screen.Application}");
+        if (reachedFrom.Count > 0)
+            lines.Add($"- Se llega a ella desde: {string.Join("; ", reachedFrom)}.");
+
+        var leadsTo = map.Screens.Where(s => s.FromOrEmpty.Contains(screen.Id)).ToList();
+        if (leadsTo.Count > 0)
+        {
+            lines.Add("- **Desde esta pantalla se llega a estas otras.** Cada una necesita una acción visible (un botón, un enlace, una tarjeta o una fila que se pulsa) cuyo código llame exactamente a `mostrarPantalla('…')` con su id; la plataforma lo comprueba:");
+            lines.AddRange(leadsTo.Select(s => $"  - `mostrarPantalla('{s.Id}')`: {s.Title}"));
+        }
+        return string.Join("\n", lines);
     }
 
     // The stories of a screen, with their epic, as {"historias":[…]}.
@@ -394,7 +423,8 @@ public static class MockupTask
                 .Select(s => (s.Id, Html: ReadOrNull(workDirectory, ScreenFile(s.Id))))
                 .Where(s => s.Html is not null)
                 .Select(s => (s.Id, s.Html!))
-                .ToList());
+                .ToList(),
+            map.Links.Select(l => (l.From, l.To.Id, l.To.Title)));
 
     // The platform joins the prototype of a job (the accepted files of its
     // steps) in its folder ensamblado/ and checks it: the page as before, and

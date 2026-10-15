@@ -1,5 +1,20 @@
 # Cambios de los prompts v0
 
+## v0.9, el mockup es una aplicación que funciona, no un índice de pantallas (2026-10-15)
+
+El mockup v0.8 del documento C se generó (19 pantallas), pero con un menú lateral que listaba todas las pantallas: el prompt de diseño pedía «el menú con un enlace por pantalla del mapa». El autor quiere un prototipo completo y funcional; sí le gustó que siguiera el estilo del mockup de referencia. Decidido por el autor a propuesta de Claude, con inicio de sesión y los usuarios de prueba a la vista para entrar con un clic:
+
+- `mockup_diseno.md`, §2 «Una aplicación que funciona»:
+  - empieza en el inicio de sesión, con los usuarios de prueba a la vista;
+  - cada rol entra en su aplicación, con su aspecto y su navegación, siguiendo la referencia de estilo si la tiene;
+  - el menú de cada aplicación lleva solo sus secciones principales, nunca un enlace por pantalla, y al resto se llega por acciones (botones, tarjetas, filas, ventanas);
+  - ningún id de pantalla ni de historia a la vista;
+  - una sola fuente de datos para todos los roles.
+- El mapa recoge la navegación: `inicio` (el inicio de sesión) y, en cada pantalla, `aplicacion`, `roles`, `menu` (si es una entrada de menú) y `desde` (las pantallas desde las que se llega). La plataforma comprueba que desde el inicio de sesión se llega a todas (`MAPA-INICIO`, `MAPA-APP`, `MAPA-ROL`, `MAPA-DESDE`, `MAPA-ACCESO`).
+- El armazón tiene `entrar(usuario)`, `salir()` y la sesión en curso, en lugar del selector de rol.
+- `mockup_pantalla.md` recibe `{{NAVEGACION}}`: su aplicación y roles, desde dónde se llega y a qué pantallas debe llevar, cada una con `mostrarPantalla('…')`. La plataforma comprueba esos enlaces al juntar (`NAV-FALTA`) y, si falta alguno, se corrige como los demás problemas (`mockup_correccion.md`).
+- Un mockup diseñado con una versión anterior no se puede reanudar: se genera de nuevo.
+
 ## v0.8, la plataforma junta y revisa el mockup (2026-10-15)
 
 Tras la primera prueba real del mockup v0.6 con `SS - GPT-6-SOL` (documento C, 19 pantallas): el diseño y las 19 pantallas salieron válidos, pero la revisión del conjunto tenía que leer entero el prototipo (el armazón y 19 pantallas de 200–370 líneas), no cabía en 128k y Claude Code la paró («autocompact is thrashing»). Decidido por el autor a propuesta de Claude:

@@ -38,13 +38,19 @@ public class MockupTaskTests
             + "<script>const DATOS = { salas: [] };</script></body></html>";
     }
 
+    // A map whose first screen is the sign-in and every other one a menu entry.
     private static string MapJson(params (string Id, string[] Stories)[] screens) =>
         new JsonObject
         {
+            ["inicio"] = screens[0].Id,
             ["pantallas"] = new JsonArray(screens.Select(s => (JsonNode)new JsonObject
             {
                 ["id"] = s.Id,
                 ["titulo"] = $"Pantalla {s.Id}",
+                ["aplicacion"] = "App",
+                ["roles"] = new JsonArray("socio"),
+                ["menu"] = true,
+                ["desde"] = new JsonArray(),
                 ["descripcion"] = "…",
                 ["historias"] = new JsonArray(s.Stories.Select(h => (JsonNode)h).ToArray()),
             }).ToArray()),
@@ -98,6 +104,68 @@ public class MockupTaskTests
         Assert.Contains($"{Plan.StoryIds[0]} MAPA-HU: la historia no está en ninguna pantalla.", errors);
         Assert.StartsWith("output/prototipo/mapa.json JSON:", Assert.Single(MockupMap.Parse("{", Plan.StoryIds).Errors));
         Assert.StartsWith("output/prototipo/mapa.json MAPA:", Assert.Single(MockupMap.Parse("{\"pantallas\":[]}", Plan.StoryIds).Errors));
+    }
+
+    // A small map with navigation: sign-in P01, a menu entry P02 and P03,
+    // reached from P02. change edits the screens before writing the map.
+    private static string NavigationMap(Action<JsonArray>? change = null)
+    {
+        JsonObject Screen(string id, string title, bool menu, string[] from, string[] stories) => new()
+        {
+            ["id"] = id, ["titulo"] = title, ["aplicacion"] = id == "P01" ? "Común" : "App del socio",
+            ["roles"] = new JsonArray("socio"), ["menu"] = menu,
+            ["desde"] = new JsonArray(from.Select(f => (JsonNode)f).ToArray()), ["descripcion"] = "…",
+            ["historias"] = new JsonArray(stories.Select(h => (JsonNode)h).ToArray()),
+        };
+        var half = Plan.StoryIds.Count / 2;
+        var screens = new JsonArray(
+            Screen("P01", "Iniciar sesión", false, [], []),
+            Screen("P02", "Inicio", true, [], [.. Plan.StoryIds.Take(half)]),
+            Screen("P03", "Detalle", false, ["P02"], [.. Plan.StoryIds.Skip(half)]));
+        change?.Invoke(screens);
+        return new JsonObject { ["inicio"] = "P01", ["pantallas"] = screens }.ToJsonString();
+    }
+
+    [Fact]
+    public void A_map_says_how_one_gets_to_each_screen_from_the_sign_in()
+    {
+        var (map, errors) = MockupMap.Parse(NavigationMap(), Plan.StoryIds);
+
+        Assert.Empty(errors); // the sign-in may solve no story
+        Assert.Equal("P01", map!.Start);
+        Assert.Equal([("P02", "P03")], map.Links.Select(l => (l.From, l.To.Id)));
+    }
+
+    [Fact]
+    public void Each_problem_of_the_navigation_has_its_code()
+    {
+        string[] Errors(Action<JsonArray> change) => [.. MockupMap.Parse(NavigationMap(change), Plan.StoryIds).Errors];
+
+        Assert.Contains("P03 MAPA-ACCESO: no se llega a esta pantalla: no es una entrada de menú (\"menu\") y ninguna pantalla a la que se llega la tiene en \"desde\".",
+            Errors(s => s[2]!["desde"] = new JsonArray()));
+        Assert.Contains("P03 MAPA-DESDE: P09 no es una pantalla del mapa.", Errors(s => s[2]!["desde"] = new JsonArray("P02", "P09")));
+        Assert.Contains("P02 MAPA-APP: falta la aplicación a la que pertenece la pantalla (\"aplicacion\").", Errors(s => s[1]!["aplicacion"] = ""));
+        Assert.Contains("P02 MAPA-ROL: falta qué roles ven la pantalla (\"roles\").", Errors(s => s[1]!["roles"] = new JsonArray()));
+        var withoutStart = JsonNode.Parse(NavigationMap())!.AsObject();
+        withoutStart.Remove("inicio");
+        Assert.Contains(MockupMap.Parse(withoutStart.ToJsonString(), Plan.StoryIds).Errors, e => e.Contains("MAPA-INICIO"));
+    }
+
+    [Fact]
+    public void A_screen_is_told_where_it_leads_and_the_sign_in_shows_the_test_users()
+    {
+        var map = MockupMap.Load(NavigationMap(), Plan.StoryIds);
+
+        var signIn = MockupTask.NavigationOf(map, map.Screens[0]);
+        var home = MockupTask.NavigationOf(map, map.Screens[1]);
+        var detail = MockupTask.NavigationOf(map, map.Screens[2]);
+
+        Assert.Contains("inicio de sesión", signIn);
+        Assert.Contains("usuarios de prueba", signIn);
+        Assert.Contains("Se llega a ella desde: el menú de App del socio.", home);
+        Assert.Contains("`mostrarPantalla('P03')`: Detalle", home);
+        Assert.Contains("Se llega a ella desde: P02 «Inicio».", detail);
+        Assert.DoesNotContain("mostrarPantalla('", detail);
     }
 
     // ---- The requests of each step ----

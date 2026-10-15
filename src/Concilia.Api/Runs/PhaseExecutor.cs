@@ -20,7 +20,8 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // v0.7 (14-10-2026): the arbiter consults the documentation by parts and gets
     // the proposals with one element per line; a fragment is not a line number.
     // v0.8 (15-10-2026): the platform joins and checks the mockup; one fix run per part with problems.
-    public const string PromptVersion = "v0.8";
+    // v0.9 (15-10-2026): the mockup is a working application: sign-in, an application per role and real navigation.
+    public const string PromptVersion = "v0.9";
     public const int MaxRepairs = 1;
 
     // proposals: the outputs of the two slots in the order of the plan (only for the arbiter).

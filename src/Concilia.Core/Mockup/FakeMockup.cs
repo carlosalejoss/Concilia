@@ -25,11 +25,16 @@ public static class FakeMockup
                 ["id"] = $"P{number:00}",
                 ["titulo"] = epic!["titulo"]!.GetValue<string>(),
                 ["descripcion"] = "Pantalla simulada por FakeProvider.",
+                ["aplicacion"] = "Aplicación simulada",
+                ["roles"] = new JsonArray("usuario"),
+                ["menu"] = true,
+                ["desde"] = new JsonArray(),
                 ["historias"] = new JsonArray((epic["historias"] as JsonArray ?? [])
                     .Select(h => (JsonNode)h!["id"]!.GetValue<string>()).ToArray()),
             });
         }
-        return new JsonObject { ["pantallas"] = screens }.ToJsonString();
+        // The first screen stands for the sign-in.
+        return new JsonObject { ["inicio"] = "P01", ["pantallas"] = screens }.ToJsonString();
     }
 
     // The shell: a menu with a link per screen of the map it just wrote.

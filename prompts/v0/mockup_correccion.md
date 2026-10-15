@@ -37,6 +37,7 @@ Los ficheros de `input/` no van en este mensaje: léelos con Read, por partes, a
 - `ID-DUP`: otro fichero ya usa ese `id`. Ponle uno propio, con el prefijo de la pantalla (`P05-…`), y cámbialo también donde lo use el script.
 - `JS-GLOBAL`: otro fichero ya declara ese nombre como global. Renómbralo con el prefijo de la pantalla (`P05_…`) en todos sus usos, o mételo dentro de una función para que deje de ser global.
 - `NAV`: `mostrarPantalla` lleva a una pantalla que no existe. Usa un id del mapa, o quita el enlace si no lleva a ninguna pantalla real.
+- `NAV-FALTA`: según el mapa, desde esta parte se llega a otra pantalla y no hay ninguna acción que lleve allí. Añade un botón, enlace, tarjeta o fila, donde tenga sentido, cuyo código llame exactamente a `mostrarPantalla('…')` con ese id.
 
 # §3 CÓMO CORREGIR
 

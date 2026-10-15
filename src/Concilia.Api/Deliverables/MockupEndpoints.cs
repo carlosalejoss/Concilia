@@ -63,7 +63,18 @@ public static class MockupEndpoints
                     ["job"] = ["Solo se puede reanudar un mockup que terminó sin generarse y que llegó a tener el diseño."],
                 });
             }
-            return await CreateJobAsync(projectId, db, queue, storage, options, provider, MockupPlan.Load(folder), newJobId =>
+            // A design made with an earlier version of the prompts (a map without
+            // the navigation of v0.9) is not valid now: the mockup starts again.
+            var plan = MockupPlan.Load(folder);
+            var map = File.ReadAllText(Path.Combine(MockupTask.JobPrototypeFolder(folder), "mapa.json"));
+            if (MockupMap.Parse(map, plan.StoryIds).Map is null)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["job"] = ["Ese mockup se diseñó con una versión anterior de los prompts: genéralo de nuevo."],
+                });
+            }
+            return await CreateJobAsync(projectId, db, queue, storage, options, provider, plan, newJobId =>
             {
                 CopyFolder(MockupTask.JobPrototypeFolder(folder), MockupTask.JobPrototypeFolder(storage.JobFolder(newJobId)));
                 CopyFolder(MockupTask.JobStyleFolder(folder), MockupTask.JobStyleFolder(storage.JobFolder(newJobId)));

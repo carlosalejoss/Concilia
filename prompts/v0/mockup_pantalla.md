@@ -4,7 +4,7 @@ Eres un diseñador de interfaces. Preparas prototipos navegables para que el cli
 
 # TAREA
 
-El prototipo es **una sola aplicación** que se construye por pasos, cada uno en una ejecución distinta. El diseño ya está hecho: el mapa de pantallas y el armazón de la aplicación (estilos, cabecera, menú, datos de prueba y funciones comunes). Otras ejecuciones construyen las demás pantallas con el mismo armazón.
+El prototipo es **la aplicación tal como la usarán**, no un índice de pantallas: se entra con un usuario de prueba y se trabaja de principio a fin. Se construye por pasos, cada uno en una ejecución distinta. El diseño ya está hecho: el mapa de pantallas y el armazón de la aplicación (estilos, cabecera, menú, datos de prueba y funciones comunes). Otras ejecuciones construyen las demás pantallas con el mismo armazón.
 
 Tu parte: construir la pantalla **{{PANTALLA}} «{{TITULO}}»**, que resuelve las historias {{HISTORIAS}}, en `{{FICHERO}}`. Termina con la línea de veredicto de §6.
 
@@ -33,13 +33,20 @@ Los ficheros de `input/` no van en este mensaje: léelos con Read, por partes, a
 
 # §2 QUÉ DEBE TENER
 
+## Su sitio en la aplicación
+
+{{NAVEGACION}}
+
+## Su contenido
+
 - **Una pantalla de la aplicación, no una lista de historias:** resuelve sus historias juntas, como lo haría el sistema real. Por ejemplo, un listado con sus filtros, un botón que abre el formulario de alta y, en cada fila, las acciones de modificar y cancelar.
 - **Lo que pide cada historia, visible y usable:** formularios, listas, tablas, botones y mensajes. Los criterios de aceptación mandan: si un criterio dice que se rechaza una reserva solapada, la pantalla muestra ese rechazo al intentarlo con los datos de prueba.
 - **Marca con `data-hu` el elemento que resuelve cada historia**: `data-hu="HU-004"` o, si un elemento resuelve varias, `data-hu="HU-004 HU-007"`. Cada historia de tu pantalla tiene al menos un elemento marcado.
-- **Usa el armazón:** sus clases CSS, `DATOS` y sus funciones. No redefinas los estilos generales, la cabecera ni la navegación. Para llevar al usuario a otra pantalla, `mostrarPantalla('P03')` con un id del mapa.
+- **Usa el armazón:** sus clases CSS, `DATOS`, la sesión en curso y sus funciones. No redefinas los estilos generales, la cabecera, el menú ni la navegación. Para llevar al usuario a otra pantalla, `mostrarPantalla('P03')` con un id del mapa.
 - **Datos:** usa los de `DATOS` con sus mismos nombres de campo. Si te faltan datos de prueba, añádelos desde tu script sin borrar los que hay. Ficticios y verosímiles.
 - **Interacción simulada en memoria:** los formularios añaden o cambian datos en `DATOS` y la vista se actualiza.
-- Si hay varios roles, lo que ve cada rol según el selector del armazón.
+- Si la ven varios roles, cada uno ve lo que le toca según el usuario que ha entrado.
+- **Ningún id a la vista:** ni ids de pantalla (`P01`) ni de historia (`HU-001`) en ningún texto de la interfaz; solo en el código (`data-pantalla`, `data-hu`, `mostrarPantalla`).
 - Nada que no esté en tus historias: ni funciones ni campos inventados.
 
 # §3 FICHERO
