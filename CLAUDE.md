@@ -118,3 +118,9 @@ Copiadas de `docs/hito-3-runner.md`.
 ## Al terminar cada sesión
 
 Imprime un resumen para la bitácora del TFG: qué se hizo, decisiones tomadas, cambios de criterio respecto a decisiones anteriores (sin borrar las anteriores) y pendientes. El autor lo llevará al proyecto de Claude donde se mantiene la bitácora.
+
+Además, sin esperar a que se pida (15-10-2026, autor), mantén al día los dos ficheros de trazabilidad:
+
+- `docs/bitacora-detallada.md`: añade al final cada resumen de bitácora, tal como se da, en una sección `## DD-MM-AAAA, HH:MM (recuperada del chat)` con la hora peninsular.
+- `docs/trazabilidad-proyecto.md`: actualiza la visión de alto nivel. Incluye la línea de tiempo, la etapa que corresponda, la tabla de prompts si cambia alguno, las decisiones abiertas, los siguientes pasos y las cifras de seguimiento. Que se pueda seguir el proyecto sin el detalle.
+- Si el trabajo de la sesión termina en un commit, los dos ficheros van en ese mismo commit; si no, en un commit `docs:` propio. De documentos internos, solo cifras agregadas y anonimizadas.
