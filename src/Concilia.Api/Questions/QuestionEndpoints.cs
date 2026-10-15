@@ -148,6 +148,31 @@ public static class QuestionEndpoints
             return await SuggestAsync(db, queue, provider, options, storage, question.ProjectId, pending);
         });
 
+        // Approve at once the suggestions of all the pending questions of a round
+        // (QuestionRules.AcceptSuggestions). Not while suggestions are being
+        // generated: they could still change.
+        app.MapPost("/question-rounds/{jobId:guid}/accept-suggestions", async (Guid jobId, AppDbContext db) =>
+        {
+            var round = await db.Jobs.FindAsync(jobId);
+            if (round is null || round.Kind != PhasePlan.JobKind(PhaseKind.Questions))
+            {
+                return Results.NotFound();
+            }
+            if (await SuggestionsRunningAsync(db, round.ProjectId))
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["questions"] = ["Se están generando sugerencias: espera a que terminen."] });
+            }
+            var questions = await db.Questions.Where(q => q.JobId == jobId).OrderBy(q => q.Code).ToListAsync();
+            var change = QuestionRules.AcceptSuggestions(questions, DateTimeOffset.UtcNow);
+            if (change.Error is not null)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["questions"] = [change.Error] });
+            }
+            await Deliverables.DeliverableEndpoints.ApplyChangeAsync(db, round.ProjectId, change.Change!.Value);
+            await db.SaveChangesAsync();
+            return Results.Ok(questions);
+        });
+
         // All the questions of the project, by code (optionally only one status: ?status=Pending).
         app.MapGet("/projects/{projectId:int}/questions", async (int projectId, QuestionStatus? status, AppDbContext db) =>
         {

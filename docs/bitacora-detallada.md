@@ -1318,3 +1318,23 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisiones:** ninguna nueva.
 - **Cambios de criterio:** ninguno.
 - **Pendientes:** el autor confirma el arreglo en el navegador; el paso 65 sigue pendiente.
+
+---
+
+## 15-10-2026, 12:40 (sesión)
+
+**Resumen para la bitácora (15-10-2026, aprobar todas las sugerencias)**
+
+- **Qué se hizo:** botón «Aprobar todas las sugerencias» en cada ronda de preguntas.
+  - **Cuándo aparece:** solo si todas las preguntas pendientes de la ronda tienen una sugerencia de la IA y no se están generando sugerencias. Sin sugerencias, o con alguna pendiente sin ella, no aparece.
+  - **Qué hace:** guarda la sugerencia de cada pregunta pendiente como su respuesta, tal cual y con origen `ia`, en una sola operación. Las respondidas y las descartadas no cambian. Como con cualquier respuesta, el catálogo, el backlog y el mockup quedan desactualizados si existían, y cualquier pregunta se puede reabrir o editar después.
+  - **API:** `POST /question-rounds/{id}/accept-suggestions`. La regla está en `QuestionRules.AcceptSuggestions`, que rechaza la petición si alguna pendiente no tiene sugerencia y la API la rechaza también mientras se generan sugerencias. Hay 3 tests nuevos (827 en total).
+- **Decisiones del autor:** aprobar todas de golpe, solo cuando están todas generadas.
+- **Decisiones de Claude (revisables):**
+  - sin ventana de confirmación;
+  - si falta la sugerencia de alguna pendiente, no se aprueba ninguna, para que «todas» signifique todas;
+  - «Sugerir respuestas» sigue disponible, en segundo plano, para pedirlas de nuevo.
+- **Cambios de criterio:** ninguno. Amplía las sugerencias de respuesta del 09-10. Conviene recordar el hallazgo del 09-10: aceptar las sugerencias sin revisarlas casi duplica el catálogo.
+- **Pendientes:**
+  - reconstruir la API y la web cuando termine el catálogo en curso del proyecto 31;
+  - el paso 65.

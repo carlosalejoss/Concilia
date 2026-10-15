@@ -98,6 +98,23 @@ public static class QuestionRules
         }
     }
 
+    // "Aprobar todas" (15-10-2026, autor): answers every pending question of a
+    // round with its suggestion as is (origin "ia"). Only when all of them have
+    // one, the same condition under which the web shows the button: approving
+    // some and leaving the rest pending would not be "all".
+    public static QuestionChange AcceptSuggestions(IEnumerable<Question> roundQuestions, DateTimeOffset now)
+    {
+        var pending = roundQuestions.Where(q => q.Status == QuestionStatus.Pending).ToList();
+        if (pending.Count == 0)
+            return QuestionChange.Fail("La ronda no tiene preguntas pendientes.");
+        var without = pending.Where(q => q.SuggestedAnswer is null).Select(q => q.Code).ToList();
+        if (without.Count > 0)
+            return QuestionChange.Fail($"Sin sugerencia: {string.Join(", ", without)}. Pídelas antes de aprobarlas todas.");
+        foreach (var q in pending)
+            Answer(q, q.SuggestedAnswer, now, fromSuggestion: true);
+        return new QuestionChange(null, FlowChange.AnswerChanged);
+    }
+
     // Discards a question (not needed, out of scope…), with an optional reason.
     // A discarded question has no answer.
     public static QuestionChange Discard(Question q, string? reason, DateTimeOffset now)
