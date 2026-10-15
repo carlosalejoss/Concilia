@@ -10,6 +10,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Stack:** React 19 + TypeScript + Vite + Tailwind; .NET 10 (ASP.NET Core y EF Core); PostgreSQL; Docker Compose.
 - **Modelos:** los de la empresa, a través de su pasarela LiteLLM (`SS - GPT-6-SOL`, `SS - GPT-6-LUNA`), ejecutados con Claude Code (`claude -p`) como agente.
 - **Forma de trabajo:** un plan por hitos y pasos (`docs/plan-de-construccion.md`), un commit por paso, y un resumen de bitácora al final de cada sesión. El autor decide; Claude Code propone, implementa y documenta.
+- **Trazabilidad:** hasta el 15-10-2026 el resumen de cada sesión se daba en el chat y el autor lo llevaba a su proyecto de Claude. Desde ese día, Claude Code lo escribe directamente en `docs/bitacora-detallada.md` y mantiene al día este fichero.
 
 ## Línea de tiempo
 
@@ -96,6 +97,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Paso 64:** informe automático por trabajo (cuánto aporta cada modelo, qué cambia el usuario al validar, tokens y tiempos) y CSV por proyecto: la base del capítulo de evaluación.
 - **Paso 66:** README y documentación al día.
 - **Preparación del paso 65:** dos proyectos ficticios de análisis (mediano: banco de alimentos, 7 archivos; grande: red de clínicas veterinarias, 21 archivos) en formatos variados, con contradicciones y huecos puestos a propósito como referencia para evaluar las preguntas.
+- **Trazabilidad:** bitácora detallada y este fichero, recuperados de toda la conversación, en `docs/` y mantenidos al día en cada sesión.
 
 ## Evolución de los prompts
 
@@ -132,5 +134,5 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Cifras de seguimiento
 
-- **Commits:** 139 entre el 28-09 y el 15-10-2026.
+- **Commits:** 141 entre el 28-09 y el 15-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 824 (15-10).
