@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Exportación de prueba del programa actual (4 clínicas). Datos ficticios. Formato propio del programa antiguo. -->
+<exportacion fecha="2026-09-20" clinicas="C,N,R,M">
+  <animal codigo="N-04512">
+    <nombre>Thor</nombre>
+    <especie>P</especie>
+    <raza>Pastor alemán</raza>
+    <nacimiento>2018-05-12</nacimiento>
+    <chip>941000012345671</chip>
+    <propietario><nombre>Ana Gil Ruiz</nombre><telefono>600 100 201</telefono></propietario>
+    <alertas>Alérgico a meloxicam</alertas>
+    <ultima_visita>2026-07-30</ultima_visita>
+    <visitas>
+      <visita fecha="2026-07-30" veterinario="OB">Revisión. Exploración normal. Peso estable. Se recomienda continuar tratamiento.</visita>
+    </visitas>
+  </animal>
+  <animal codigo="N-04513">
+    <nombre>Luna</nombre>
+    <especie>G</especie>
+    <raza>Común europeo</raza>
+    <nacimiento>2021</nacimiento>
+    <chip></chip>
+    <propietario><nombre>Ana Gil Ruiz</nombre><telefono>600 100 201</telefono></propietario>
+    <alertas></alertas>
+    <ultima_visita>2026-03-02</ultima_visita>
+    <visitas>
+      <visita fecha="2026-03-02" veterinario="OB">Revisión. Exploración normal. Peso estable. Se recomienda continuar tratamiento.</visita>
+    </visitas>
+  </animal>
+  <animal codigo="C-11870">
+    <nombre>Coco</nombre>
+    <especie>C</especie>
+    <raza>Belier</raza>
+    <nacimiento>2023-02-01</nacimiento>
+    <chip></chip>
+    <propietario><nombre>Marcos Lahoz</nombre><telefono>600 100 202</telefono></propietario>
+    <alertas></alertas>
+    <ultima_visita>2026-08-14</ultima_visita>
+    <visitas>
+      <visita fecha="2026-08-14" veterinario="OB">Revisión. Exploración normal. Peso estable. Se recomienda continuar tratamiento.</visita>
+    </visitas>
+  </animal>
+  <animal codigo="C-11871">
+    <nombre>Kira</nombre>
+    <especie>P</especie>
+    <raza>Mestizo</raza>
+    <nacimiento>2015-09-20</nacimiento>
+    <chip>941000012345672</chip>
+    <propietario><nombre>Laura Pina</nombre><telefono>600 100 203</telefono></propietario>
+    <alertas>Cardiópata (tratamiento con pimobendan)</alertas>
+    <ultima_visita>2026-09-10</ultima_visita>
+    <visitas>
+      <visita fecha="2026-09-10" veterinario="OB">Revisión. Exploración normal. Peso estable. Se recomienda continuar tratamiento.</visita>
+    </visitas>
+  </animal>
+  <animal codigo="R-02210">
+    <nombre>Simba</nombre>
+    <especie>G</especie>
+    <raza>Persa</raza>
+    <nacimiento>2019-11-05</nacimiento>
+    <chip>941000012345673</chip>
+    <propietario><nombre>Pedro Aznar</nombre><telefono>600 100 204</telefono></propietario>
+    <alertas>Insuficiencia renal crónica</alertas>
+    <ultima_visita>2026-09-01</ultima_visita>
+    <visitas>
+      <visita fecha="2026-09-01" veterinario="OB">Revisión. Exploración normal. Peso estable. Se recomienda continuar tratamiento.</visita>
+    </visitas>
+  </animal>
+  <animal codigo="M-00987">
+    <nombre>Rocky</nombre>
+    <especie>P</especie>
+    <raza>Bulldog francés</raza>
+    <nacimiento>2022-04-18</nacimiento>
+    <chip>941000012345674</chip>
+    <propietario><nombre>Hannah Becker</nombre><telefono>+49 151 0000001</telefono></propietario>
+    <alertas></alertas>
+    <ultima_visita>2026-08-20</ultima_visita>
+    <visitas>
+      <visita fecha="2026-08-20" veterinario="OB">Revisión. Exploración normal. Peso estable. Se recomienda continuar tratamiento.</visita>
+    </visitas>
+  </animal>
+  <animal codigo="C-11872">
+    <nombre>Pipo</nombre>
+    <especie>H</especie>
+    <raza>Hurón</raza>
+    <nacimiento>2024-01-10</nacimiento>
+    <chip></chip>
+    <propietario><nombre>Sara Moreno</nombre><telefono>600 100 205</telefono></propietario>
+    <alertas></alertas>
+    <ultima_visita>2026-06-12</ultima_visita>
+    <visitas>
+      <visita fecha="2026-06-12" veterinario="OB">Revisión. Exploración normal. Peso estable. Se recomienda continuar tratamiento.</visita>
+    </visitas>
+  </animal>
+  <animal codigo="N-04514">
+    <nombre>Nala</nombre>
+    <especie>P</especie>
+    <raza>Golden retriever</raza>
+    <nacimiento>2020-07-07</nacimiento>
+    <chip>941000012345675</chip>
+    <propietario><nombre>Jaime Ortega</nombre><telefono>600 100 206</telefono></propietario>
+    <alertas>Dermatitis atópica</alertas>
+    <ultima_visita>2026-09-18</ultima_visita>
+    <visitas>
+      <visita fecha="2026-09-18" veterinario="OB">Revisión. Exploración normal. Peso estable. Se recomienda continuar tratamiento.</visita>
+    </visitas>
+  </animal>
+  <!-- Nota: el mismo cliente (Ana Gil Ruiz) aparece en Norte y en Centro con teléfonos distintos en la exportación completa. -->
+  <!-- Las especies se codifican con una letra: P perro, G gato, C conejo, H hurón, A ave, R reptil. -->
+</exportacion>
