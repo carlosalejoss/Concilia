@@ -51,6 +51,21 @@ public class MockupCoherenceTests
     }
 
     [Fact]
+    public void A_link_of_the_map_that_the_screen_does_not_have_is_a_problem_of_that_screen()
+    {
+        var problems = MockupCoherence.Check(App, [
+            ("P01", "<section data-pantalla=\"P01\"></section>"),
+            ("P02", "<section data-pantalla=\"P02\"><button onclick=\"mostrarPantalla('P03')\">Ver</button></section>"),
+            ("P03", "<section data-pantalla=\"P03\"></section>"),
+            ("P04", "<section data-pantalla=\"P04\"></section>"),
+        ], [("P02", "P03", "Detalle"), ("P02", "P04", "Pagar")]);
+
+        Assert.Equal(
+            "P02 NAV-FALTA: según el mapa, desde esta pantalla se llega a P04 («Pagar»), pero ninguna acción llama a mostrarPantalla('P04'). Añade el botón, enlace o fila que lleva allí.",
+            Assert.Single(problems).Message);
+    }
+
+    [Fact]
     public void Only_top_level_declarations_are_global()
     {
         const string script = """

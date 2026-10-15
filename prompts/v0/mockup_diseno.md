@@ -33,38 +33,55 @@ Los ficheros de `input/` no van en este mensaje: léelos con Read, por partes, a
 - No te saltes ningún tramo de un fichero que hay que leer entero: la plataforma comprueba qué líneas has leído y, si falta alguna, te pide repetir.
 - Lee solo los ficheros de esta lista y, si los hay, los de la referencia de estilo (§5).
 
-# §2 UNA SOLA APLICACIÓN
+# §2 UNA APLICACIÓN QUE FUNCIONA
 
+El prototipo es **la aplicación tal como la usarán**, no un índice de pantallas. Quien lo abra tiene que poder entrar como un usuario y hacer su trabajo de principio a fin.
+
+- **Empieza en el inicio de sesión.** La primera pantalla es la de inicio de sesión, con los usuarios de prueba a la vista (uno por rol): un clic en uno entra como ese usuario. Es la única pantalla que se ve antes de entrar.
+- **Cada rol entra en su aplicación.** Si el sistema tiene varias aplicaciones (por ejemplo, la del socio en el móvil, el TPV del local y el back-office de la junta), cada rol ve la suya, con su propio aspecto y su propia navegación. Si la referencia de estilo (§5) las tiene, sigue cómo las organiza.
+- **Menús reales.** El menú de cada aplicación lleva solo sus secciones principales, las que tendría el sistema real. **Nunca un enlace por pantalla.** Al resto de pantallas se llega por acciones: un botón, una tarjeta, una fila de una tabla, un enlace o una ventana modal.
+- **Ningún id a la vista.** Ni ids de pantalla (`P01`) ni de historia (`HU-001`) en ningún texto de la interfaz: solo en el código.
 - **Organiza el prototipo en las pantallas que tendría el sistema real**, no en una pantalla por historia ni por épica. Una pantalla reúne lo que el usuario hace en el mismo sitio: por ejemplo, listar, crear, modificar y cancelar reservas van juntas en «Reservas», con su listado, su formulario y sus acciones.
 - **Toda historia del backlog está en al menos una pantalla.** Si una historia toca dos pantallas (por ejemplo, un aviso que se configura en una y se ve en otra), ponla en las dos.
 - **Pantallas completas y no enormes:** cada una se construirá en una ejecución aparte, así que reparte las historias para que ninguna pantalla tenga más de unas 10.
+- **Una sola fuente de datos:** lo que un rol crea o cambia en una pantalla lo ven las demás y los demás roles. Por ejemplo, una reserva del socio aparece en el back-office de la junta.
 - **Nada que no esté en el backlog:** ni pantallas, ni funciones, ni campos inventados.
-- Si las historias tienen varios roles, la aplicación tiene un selector de rol en la cabecera y cada pantalla muestra lo que ve cada rol.
 
 # §3 FICHEROS
 
 Escribe cada fichero con **una sola llamada a Write**.
 
-1. **`output/prototipo/mapa.json`**, el mapa de pantallas, en el orden del menú:
+1. **`output/prototipo/mapa.json`**, el mapa de pantallas y de su navegación:
 
    ```json
-   {"pantallas":[{"id":"P01","titulo":"Reservas","descripcion":"…","historias":["HU-001","HU-004"]}]}
+   {"inicio":"P01","pantallas":[
+     {"id":"P01","titulo":"Iniciar sesión","aplicacion":"Común","roles":["socio","junta"],"menu":false,"desde":[],"descripcion":"…","historias":["HU-001"]},
+     {"id":"P02","titulo":"Inicio","aplicacion":"App del socio","roles":["socio"],"menu":true,"desde":[],"descripcion":"…","historias":["HU-010"]},
+     {"id":"P03","titulo":"Detalle de la reserva","aplicacion":"App del socio","roles":["socio"],"menu":false,"desde":["P02"],"descripcion":"…","historias":["HU-012"]}
+   ]}
    ```
 
+   - `inicio`: el id de la pantalla de inicio de sesión.
    - `id`: `P01`, `P02`…
-   - `descripcion`: qué muestra la pantalla y cómo resuelve cada una de sus historias, en pocas frases. Es lo que leerá quien construya la pantalla: di qué listados, formularios, acciones y mensajes lleva y con qué otras pantallas enlaza.
+   - `aplicacion` y `roles`: a qué aplicación pertenece la pantalla y qué roles la ven.
+   - `menu`: `true` si es una entrada del menú de su aplicación (solo las secciones principales).
+   - `desde`: las pantallas desde las que se llega a esta con una acción. Una pantalla que no es de menú tiene al menos una. Quien construya cada pantalla de `desde` pondrá la acción que lleva aquí.
+   - `descripcion`: qué muestra la pantalla y cómo resuelve cada una de sus historias, en pocas frases. Es lo que leerá quien construya la pantalla: di qué listados, formularios, acciones y mensajes lleva y a qué pantallas lleva cada acción.
+   - La plataforma comprueba que desde el inicio de sesión se llega a todas las pantallas.
 
 2. **`output/prototipo/app.html`**, el armazón de la aplicación: un documento HTML5 completo que empieza por `<!doctype html>`.
-   - **El CSS de toda la aplicación:** colores, tipografía y los componentes que usarán las pantallas (botones, tablas, formularios, tarjetas, pestañas, avisos, ventanas modales, etiquetas de estado).
-   - **La cabecera** con el nombre del sistema, el selector de rol si hace falta y el menú con un enlace por pantalla del mapa.
+   - **El CSS de toda la aplicación:** colores, tipografía y los componentes que usarán las pantallas (botones, tablas, formularios, tarjetas, pestañas, avisos, ventanas modales, etiquetas de estado), con el aspecto de cada aplicación.
+   - **La estructura de cada aplicación:** su cabecera y su menú con las pantallas `"menu": true` de sus roles (por ejemplo, una barra inferior en el móvil y un menú lateral de secciones en el back-office), con el usuario que ha entrado y la opción de salir. Antes de entrar no se ve ninguna.
    - **Un `<script>`** con:
-     - `const DATOS = { … };`: los datos de prueba de toda la aplicación, ficticios y verosímiles (nombres, fechas, cantidades). Ningún dato real de personas ni de empresas.
-     - las funciones comunes: `mostrarPantalla('P01')` (muestra esa pantalla, oculta las demás y marca su enlace en el menú) y las que vayan a necesitar varias pantallas (pintar una tabla, mostrar un aviso, abrir y cerrar una ventana modal, formatear fechas…);
+     - `const DATOS = { … };`: los datos de prueba de toda la aplicación, ficticios y verosímiles (nombres, fechas, cantidades), incluidos los usuarios de prueba de cada rol. Ningún dato real de personas ni de empresas.
+     - `entrar(usuario)` (entra como ese usuario: muestra su aplicación y su primera pantalla de menú), `salir()` (vuelve al inicio de sesión) y la sesión en curso (quién ha entrado y con qué rol);
+     - `mostrarPantalla('P02')`: muestra esa pantalla, oculta las demás y marca su entrada en el menú si la tiene;
+     - las funciones que vayan a necesitar varias pantallas (pintar una tabla, mostrar un aviso, abrir y cerrar una ventana modal, formatear fechas…);
      - al principio, un comentario breve con las clases CSS y las funciones disponibles para las pantallas.
    - Donde irán las pantallas, una línea con exactamente `<!-- PANTALLAS -->`. El `<script>` con `DATOS` y las funciones va **antes** de esa línea, para que las pantallas puedan usarlos.
-   - Al cargar, se muestra la primera pantalla del mapa.
+   - Al cargar, se muestra la pantalla de inicio de sesión.
 
-   Cada pantalla será un `<section data-pantalla="P01">…</section>` que la plataforma pondrá en el lugar de `<!-- PANTALLAS -->`, en el orden del mapa.
+   Cada pantalla será un `<section data-pantalla="P01">…</section>` que la plataforma pondrá en el lugar de `<!-- PANTALLAS -->`.
 
 # §4 REGLAS TÉCNICAS
 

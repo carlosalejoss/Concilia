@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Pendiente | Pendiente |
 | v0.8 | 15-10-2026 | Mockup: la plataforma junta y revisa el prototipo (ids, globales de JavaScript y navegación) y solo corrige con un modelo las partes con problemas; se puede reanudar un mockup fallido | Pendiente | Pendiente |
 | v0.7 | 14-10-2026 | El árbitro consulta la documentación por tramos y lee las propuestas con un elemento por línea; un fragmento no es un número de línea (`REF-FRAG` dice qué fragmento hay en esa línea); sin la salida de un solo modelo como resultado | Pendiente | Pendiente |
 | v0.6 | 14-10-2026 | El mockup es una sola aplicación construida por pasos: diseño (mapa de pantallas y armazón), una ejecución por pantalla y una revisión del conjunto; pensado para `SS - GPT-6-SOL` | Pendiente | Pendiente |
@@ -370,7 +371,28 @@ Documento C (backlog validado de 9 épicas), 14 y 15-10-2026, con la referencia 
 
 ### Resultados
 
-Pendiente: reanudar el trabajo anterior (diseño y 19 pantallas ya aceptados).
+Documento C, 15-10-2026, `SS - GPT-6-SOL`: se reanudó el trabajo anterior, reutilizando el diseño y las 19 pantallas sin llamar al modelo.
+
+- La plataforma encontró problemas en **una sola pantalla** (P19: un `id` que ya usaba otra parte y enlaces a pantallas que no existían). Su corrección tardó unos 3 minutos (149.497 tokens de entrada y 17.248 de salida).
+- **Mockup generado:** 19 pantallas, las 46 historias, 736 KB, sin avisos.
+- Juntar y revisar el prototipo con la plataforma cuesta unos segundos, frente a la revisión del conjunto de la v0.7, que no cabía en el contexto.
+
+### Qué hay que mejorar
+
+- **Al autor no le sirve como prototipo:** tiene un menú lateral con todas las pantallas, porque el prompt de diseño pedía «un enlace por pantalla del mapa». Es un índice de pantallas, no una aplicación que se pueda usar. Sí siguió bien el estilo del mockup de referencia. Se corrige en la v0.9.
+
+## v0.9 (15-10-2026)
+
+Solo cambia el mockup. Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- **Una aplicación que funciona:** se entra por el inicio de sesión con un usuario de prueba, cada rol ve su aplicación y se navega por menús de secciones y por acciones, como en el sistema real.
+- **La navegación está en el mapa y se comprueba:** desde el inicio de sesión se tiene que llegar a todas las pantallas, y cada pantalla tiene que llevar de verdad a las que dice el mapa.
+
+### Resultados
+
+Pendiente de generar el mockup del documento C desde cero.
 
 ### Qué hay que mejorar
 
