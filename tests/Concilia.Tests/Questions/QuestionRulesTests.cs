@@ -222,4 +222,60 @@ public class QuestionRulesTests
         Assert.Null(edited.AnswerOrigin);
         Assert.Equal("Sí, 30 minutos.", edited.SuggestedAnswer); // the suggestion stays for the next answer
     }
+
+    // "Aprobar todas" (15-10-2026): all the pending questions of a round are
+    // answered with their suggestion, only when every one of them has one.
+
+    private static Question WithSuggestion(string code, string suggestion)
+    {
+        var q = Pending(code);
+        q.SuggestedAnswer = suggestion;
+        return q;
+    }
+
+    [Fact]
+    public void Approving_all_answers_every_pending_question_with_its_suggestion()
+    {
+        var first = WithSuggestion("P-001", "Sí.");
+        var second = WithSuggestion("P-002", "30 minutos.");
+        var answered = Pending("P-003");
+        QuestionRules.Answer(answered, "Mía", Now);
+        var discarded = Pending("P-004");
+        QuestionRules.Discard(discarded, null, Now);
+
+        var change = QuestionRules.AcceptSuggestions([first, second, answered, discarded], Now);
+
+        Assert.Null(change.Error);
+        Assert.Equal(FlowChange.AnswerChanged, change.Change);
+        Assert.All([first, second], q =>
+        {
+            Assert.Equal(QuestionStatus.Answered, q.Status);
+            Assert.Equal(q.SuggestedAnswer, q.Answer);
+            Assert.Equal("ia", q.AnswerOrigin);
+        });
+        Assert.Equal("Mía", answered.Answer); // the others are left as they were
+        Assert.Equal("usuario", answered.AnswerOrigin);
+        Assert.Equal(QuestionStatus.Discarded, discarded.Status);
+    }
+
+    [Fact]
+    public void Approving_all_is_refused_while_a_pending_question_has_no_suggestion()
+    {
+        var suggested = WithSuggestion("P-001", "Sí.");
+        var without = Pending("P-002");
+
+        var change = QuestionRules.AcceptSuggestions([suggested, without], Now);
+
+        Assert.Contains("P-002", change.Error);
+        Assert.Equal(QuestionStatus.Pending, suggested.Status); // nothing is answered
+    }
+
+    [Fact]
+    public void Approving_all_is_refused_without_pending_questions()
+    {
+        var answered = WithSuggestion("P-001", "Sí.");
+        QuestionRules.Answer(answered, "Sí.", Now, fromSuggestion: true);
+
+        Assert.NotNull(QuestionRules.AcceptSuggestions([answered], Now).Error);
+    }
 }

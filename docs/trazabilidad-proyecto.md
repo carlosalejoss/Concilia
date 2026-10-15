@@ -98,6 +98,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Paso 66:** README y documentación al día.
 - **Preparación del paso 65:** dos proyectos ficticios de análisis (mediano: banco de alimentos, 7 archivos; grande: red de clínicas veterinarias, 21 archivos) en formatos variados, con contradicciones y huecos puestos a propósito como referencia para evaluar las preguntas.
 - **Trazabilidad:** bitácora detallada y este fichero, recuperados de toda la conversación, en `docs/` y mantenidos al día en cada sesión.
+- **Preguntas:** botón «Aprobar todas las sugerencias» de una ronda, visible solo cuando la IA ha sugerido la respuesta de todas sus preguntas pendientes.
 
 ## Evolución de los prompts
 
@@ -134,5 +135,5 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Cifras de seguimiento
 
-- **Commits:** 141 entre el 28-09 y el 15-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 824 (15-10).
+- **Commits:** 143 entre el 28-09 y el 15-10-2026.
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 827 (15-10).

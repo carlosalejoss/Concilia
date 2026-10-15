@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { CheckCircle2, ChevronRight, CircleDot, MessageSquareText, MinusCircle, Search, Sparkles, Terminal, type LucideIcon } from 'lucide-react'
+import { CheckCheck, CheckCircle2, ChevronRight, CircleDot, MessageSquareText, MinusCircle, Search, Sparkles, Terminal, type LucideIcon } from 'lucide-react'
 import {
   errorMessage,
   formatDay,
@@ -209,6 +209,9 @@ function QuestionsPanel({
           const ofRound = questions.filter((q) => q.jobId === view.job.id)
           const shown = ofRound.filter(visible)
           const pendingOfRound = ofRound.filter((q) => q.status === 'Pending').length
+          // "Aprobar todas" only when the AI has suggested an answer for every
+          // pending question of the round, and no suggestion is on its way.
+          const allSuggested = pendingOfRound > 0 && ofRound.every((q) => q.status !== 'Pending' || q.suggestedAnswer !== null)
           const finished = view.runs.every(isFinished)
           return (
             <Collapsible
@@ -227,9 +230,21 @@ function QuestionsPanel({
               }
               actions={
                 <>
+                  {allSuggested && !suggesting && (
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      icon={CheckCheck}
+                      onClick={() => act(`/question-rounds/${view.job.id}/accept-suggestions`, 'POST')}
+                      title="Guarda como respuesta la sugerencia de la IA de cada pregunta pendiente de la ronda, tal cual; después puedes reabrir o editar cualquiera"
+                    >
+                      Aprobar todas las sugerencias
+                    </Button>
+                  )}
                   {pendingOfRound > 0 && (
                     <Button
                       size="sm"
+                      variant={allSuggested ? 'ghost' : undefined}
                       icon={Sparkles}
                       disabled={suggesting}
                       onClick={() => suggest(`/question-rounds/${view.job.id}/suggestions`)}
