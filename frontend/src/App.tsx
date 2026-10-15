@@ -66,7 +66,11 @@ function App() {
         onToggleCollapsed={() => setCollapsed(!collapsed)}
         onHome={() => navigate({ kind: 'home' })}
       />
-      <main className="min-w-0 flex-1 overflow-y-auto">
+      {/* relative: the hidden labels for screen readers (sr-only) are
+          positioned absolutely; without a positioned ancestor they hang from
+          the page instead of from <main>, and stretch the page's own scroll
+          bar down to where they sit in a long list. */}
+      <main className="relative min-w-0 flex-1 overflow-y-auto">
         {project && route.kind !== 'home' ? (
           // key: another project starts with empty state.
           <ProjectWorkspace
