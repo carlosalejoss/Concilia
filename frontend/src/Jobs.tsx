@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { FlaskConical, Terminal } from 'lucide-react'
+import { Download, FlaskConical, Terminal } from 'lucide-react'
 import { errorMessage, formatDate, isPhaseJob, JOB_KIND_NAMES, type JobView, type PhaseResult, type Project, type Run, type RunEvent } from './api.ts'
 import CatalogView from './CatalogView.tsx'
+import JobReport from './JobReport.tsx'
 import { isFinished, lotsOfSlot, mockupStepName, RUN_STATE_NAMES, RUN_STATE_TONES, SLOT_NAMES, SLOTS, slotsOf, slotSummary } from './jobs.ts'
 import Badge from './ui/Badge.tsx'
 import Banner from './ui/Banner.tsx'
@@ -93,6 +94,12 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
         <p className="mt-1 max-w-prose text-sm text-muted">
           Todos los trabajos del proyecto, con sus consolas, tokens y errores. Las fases se lanzan desde los pasos del proyecto.
         </p>
+        {jobs.length > 0 && (
+          <a href={`/projects/${project.id}/report.csv`} className="mt-2 inline-flex items-center gap-1.5 text-sm text-accent hover:underline">
+            <Download className="size-4" aria-hidden />
+            Descargar el informe del proyecto (CSV, un trabajo por fila)
+          </a>
+        )}
       </div>
 
       {error && <Banner tone="danger">{error}</Banner>}
@@ -126,6 +133,7 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
       {selected && isPhaseJob(selected.job) && (
         <div className="space-y-4">
           <JobResult key={`${selected.job.id}-${selected.runs.filter(isFinished).length}`} jobId={selected.job.id} finished={!selectedUnfinished} />
+          <JobReport key={`report-${selected.job.id}-${selected.runs.filter(isFinished).length}`} jobId={selected.job.id} finished={!selectedUnfinished} />
           {/* Columns side by side on wide screens, stacked on narrow ones. */}
           <div className={`grid grid-cols-1 gap-5 ${slotsOf(selected).length > 1 ? 'lg:grid-cols-3' : ''}`}>
             {slotsOf(selected).map((slot) =>

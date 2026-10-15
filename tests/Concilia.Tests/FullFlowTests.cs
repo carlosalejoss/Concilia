@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -61,8 +62,15 @@ public class FullFlowTests
             (await client.PutAsJsonAsync($"/questions/{question!["id"]}/answer", new { answer = "Sí, como describe el documento." })).EnsureSuccessStatusCode();
 
         // The catalog and the backlog: generated, reviewed and validated.
-        await Launch(client, $"/projects/{id}/catalog-jobs", id);
+        var catalogJob = await Launch(client, $"/projects/{id}/catalog-jobs", id);
         await ReviewAndValidate(client, id, "catalog");
+
+        // Step 64: its report. Reviewing the discrepancies is not a change.
+        var report = await Json(await client.GetAsync($"/jobs/{catalogJob}/report"));
+        Assert.True(report["succeeded"]!.GetValue<bool>());
+        Assert.True(report["elements"]!["merged"]!.GetValue<int>() > 0);
+        Assert.Equal(report["elements"]!["merged"]!.GetValue<int>(), report["changes"]!["kept"]!.GetValue<int>());
+        Assert.Equal(0, report["changes"]!["modified"]!.GetValue<int>() + report["changes"]!["added"]!.GetValue<int>() + report["changes"]!["deleted"]!.GetValue<int>());
         await Launch(client, $"/projects/{id}/backlog-jobs", id);
         await ReviewAndValidate(client, id, "backlog");
 
@@ -71,6 +79,13 @@ public class FullFlowTests
         var page = await client.GetAsync($"/projects/{id}/mockup");
         Assert.Equal(HttpStatusCode.OK, page.StatusCode);
         Assert.StartsWith("<!doctype html", (await page.Content.ReadAsStringAsync()).TrimStart(), StringComparison.OrdinalIgnoreCase);
+
+        // The report of the project, as a CSV: a header and one row per job.
+        var csv = await (await client.GetAsync($"/projects/{id}/report.csv")).Content.ReadAsByteArrayAsync();
+        Assert.Equal(Encoding.UTF8.GetPreamble(), csv[..3]); // for Excel
+        var rows = Encoding.UTF8.GetString(csv[3..]).Trim().Split('\n');
+        Assert.StartsWith("fecha;trabajo;tipo;resultado", rows[0]);
+        Assert.Equal(1 + 4, rows.Length); // the header, and the questions, the catalog, the backlog and the mockup
 
         var flow = await Flow(client, id);
         Assert.Equal(["Draft", "Draft", "Validated", "Validated", "Draft"], flow.Select(s => s!["state"]!.GetValue<string>()));
@@ -86,7 +101,7 @@ public class FullFlowTests
     }
 
     // Launches a job and waits until it ends; it must end with a result.
-    private static async Task Launch(HttpClient client, string url, int projectId)
+    private static async Task<string> Launch(HttpClient client, string url, int projectId)
     {
         var response = await client.PostAsync(url, null);
         var text = await response.Content.ReadAsStringAsync();
@@ -100,6 +115,7 @@ public class FullFlowTests
         }
         var result = await Json(await client.GetAsync($"/jobs/{jobId}/result"));
         Assert.True(result["fuente"] is not null, $"{url}: the job failed: {result["mensaje"]}");
+        return jobId;
     }
 
     // The user reviews every discrepancy of the arbiter and validates.

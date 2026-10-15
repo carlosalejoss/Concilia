@@ -296,11 +296,12 @@ Propuesta del team leader, aprobada por el autor el 09-10-2026. Va antes del hit
 ## Hito 13: flujo completo de punta a punta
 
 - [x] 63. Desactualización completa en la API y en la web: cualquier fase se puede lanzar de nuevo y las siguientes muestran el aviso. Test del flujo completo con `Fake`, de crear el proyecto al mockup. (15-10-2026: la API y la web ya lo cumplían; se añade `FullFlowTests`, que recorre la API como la web con una base de datos en memoria y comprueba la desactualización al relanzar el catálogo.)
-- [ ] 64. Informe automático por trabajo y fase, base de la evaluación:
+- [x] 64. Informe automático por trabajo y fase, base de la evaluación:
   - tokens y duración;
   - elementos de A, de B y de la fusión;
   - acuerdo (origen `ambas`) y discrepancias;
   - cambios del usuario frente al original congelado (añadidos, borrados y modificados).
+  (15-10-2026: `GET /jobs/{id}/report`, el panel «Informe del trabajo» en la vista de ejecuciones y `GET /projects/{id}/report.csv`, un trabajo por fila, para la hoja de cálculo de la evaluación. Los cambios del usuario se emparejan por contenido y no por id, porque la plataforma renumera tras cada edición; en las preguntas, cuántas se respondieron, descartaron o quedaron pendientes, y quién escribió cada respuesta.)
 - [ ] 65. Ejecución completa con ReservaSalas y con un segundo documento público. Resultados en `docs/`: qué hace cada prompt v0, sus resultados y qué hay que mejorar.
 - [ ] 66. Actualizar el README (puesta en marcha con el token y el flujo), `CLAUDE.md` y la hoja de ruta.
 
