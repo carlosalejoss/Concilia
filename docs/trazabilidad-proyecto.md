@@ -134,6 +134,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 1. **Paso 65:** ejecutar los dos proyectos de ejemplo, analizar sus CSV y cerrar el hito 13.
 2. Retomar el hito 7 (catálogo v2) como mejora del prompt del catálogo.
 3. Árbitro con embeddings.
+- **Aparcado (15-10-2026):** rehacer el mockup del proyecto grande de ejemplo con la suscripción del autor (Sonnet 5.5) y la skill `frontend-design`, para ver si mejora la calidad; se retoma tras el paso 65. Riesgos: agotar el límite de 5 horas de la suscripción (se puede reanudar) y cambiar dos cosas a la vez, el modelo y las skills.
 4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución (ciclo de vida de alto nivel), 3.2 implementación (tripas y prompts) y 4 Evaluación.
 
 ## Cifras de seguimiento
