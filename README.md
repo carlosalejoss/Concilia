@@ -63,6 +63,7 @@ concilia/
 ├── src/         # solución .NET: Concilia.Api, Concilia.Core (dominio) y Concilia.Runner
 ├── tests/       # tests de la solución .NET
 ├── frontend/    # aplicación React
+├── ejemplos/    # dos proyectos ficticios (mediano y grande) con su documentación de análisis
 └── data/        # archivos de cada proyecto, trabajo y ejecución (ignorado por git)
 ```
 

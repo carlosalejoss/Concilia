@@ -1,0 +1,74 @@
+codigo;area;diagnostico;especies;uso_estadistico
+DER-001;Dermatología;Dermatitis atópica;perro, gato;sí
+DER-002;Dermatología;Dermatitis alérgica a la picadura de pulga;perro, gato;sí
+DER-003;Dermatología;Otitis externa;perro, gato;sí
+DER-004;Dermatología;Pioderma superficial;perro, gato;sí
+DER-005;Dermatología;Sarna sarcóptica;perro, gato;sí
+DER-006;Dermatología;Dermatofitosis (tiña);perro, gato;sí
+DER-007;Dermatología;Alopecia psicógena;perro, gato;sí
+DIG-001;Digestivo;Gastroenteritis aguda;perro, gato;sí
+DIG-002;Digestivo;Gastroenteritis hemorrágica;perro, gato;sí
+DIG-003;Digestivo;Pancreatitis;perro, gato;sí
+DIG-004;Digestivo;Cuerpo extraño gastrointestinal;perro, gato;sí
+DIG-005;Digestivo;Enfermedad inflamatoria intestinal;perro, gato;sí
+DIG-006;Digestivo;Dilatación-torsión gástrica;perro, gato;sí
+DIG-007;Digestivo;Insuficiencia pancreática exocrina;perro, gato;sí
+CAR-001;Cardiología;Enfermedad degenerativa de la válvula mitral;perro, gato;sí
+CAR-002;Cardiología;Cardiomiopatía dilatada;perro, gato;sí
+CAR-003;Cardiología;Cardiomiopatía hipertrófica felina;gato;sí
+CAR-004;Cardiología;Insuficiencia cardiaca congestiva;perro, gato;sí
+NEF-001;Nefrología y urología;Enfermedad renal crónica;perro, gato;sí
+NEF-002;Nefrología y urología;Insuficiencia renal aguda;perro, gato;sí
+NEF-003;Nefrología y urología;Cistitis idiopática felina;gato;sí
+NEF-004;Nefrología y urología;Urolitiasis;perro, gato;sí
+NEF-005;Nefrología y urología;Infección del tracto urinario;perro, gato;sí
+NEF-006;Nefrología y urología;Obstrucción uretral;perro, gato;sí
+END-001;Endocrinología;Diabetes mellitus;perro, gato;sí
+END-002;Endocrinología;Hipotiroidismo;perro, gato;sí
+END-003;Endocrinología;Hipertiroidismo felino;gato;sí
+END-004;Endocrinología;Hiperadrenocorticismo (Cushing);perro, gato;sí
+END-005;Endocrinología;Hipoadrenocorticismo (Addison);perro, gato;sí
+TRA-001;Traumatología;Rotura del ligamento cruzado craneal;perro, gato;sí
+TRA-002;Traumatología;Luxación de rótula;perro, gato;sí
+TRA-003;Traumatología;Fractura de huesos largos;perro, gato;sí
+TRA-004;Traumatología;Displasia de cadera;perro, gato;sí
+TRA-005;Traumatología;Displasia de codo;perro, gato;sí
+TRA-006;Traumatología;Artrosis;perro, gato;sí
+NEU-001;Neurología;Epilepsia idiopática;perro, gato;sí
+NEU-002;Neurología;Hernia discal;perro, gato;sí
+NEU-003;Neurología;Síndrome vestibular;perro, gato;sí
+NEU-004;Neurología;Síndrome de Wobbler;perro, gato;sí
+INF-001;Infecciosas;Parvovirosis;perro, gato;sí
+INF-002;Infecciosas;Moquillo;perro, gato;sí
+INF-003;Infecciosas;Leishmaniosis;perro, gato;sí
+INF-004;Infecciosas;Leptospirosis;perro, gato;sí
+INF-005;Infecciosas;Leucemia felina;gato;sí
+INF-006;Infecciosas;Inmunodeficiencia felina;gato;sí
+INF-007;Infecciosas;Ehrlichiosis;perro, gato;sí
+ODO-001;Odontología;Enfermedad periodontal;perro, gato;sí
+ODO-002;Odontología;Fractura dental;perro, gato;sí
+ODO-003;Odontología;Gingivoestomatitis felina;gato;sí
+ODO-004;Odontología;Persistencia de dientes de leche;perro, gato;sí
+OFT-001;Oftalmología;Conjuntivitis;perro, gato;sí
+OFT-002;Oftalmología;Úlcera corneal;perro, gato;sí
+OFT-003;Oftalmología;Queratoconjuntivitis seca;perro, gato;sí
+OFT-004;Oftalmología;Cataratas;perro, gato;sí
+OFT-005;Oftalmología;Glaucoma;perro, gato;sí
+ONC-001;Oncología;Mastocitoma;perro, gato;sí
+ONC-002;Oncología;Linfoma;perro, gato;sí
+ONC-003;Oncología;Tumor mamario;perro, gato;sí
+ONC-004;Oncología;Osteosarcoma;perro, gato;sí
+ONC-005;Oncología;Hemangiosarcoma;perro, gato;sí
+TOX-001;Toxicología;Intoxicación por rodenticidas anticoagulantes;perro, gato;sí
+TOX-002;Toxicología;Intoxicación por chocolate;perro, gato;sí
+TOX-003;Toxicología;Intoxicación por paracetamol en gatos;gato;sí
+TOX-004;Toxicología;Picadura de procesionaria;perro, gato;sí
+EXO-001;Exóticos;Maloclusión dental del conejo;conejo, hurón, reptil;sí
+EXO-002;Exóticos;Estasis gastrointestinal del conejo;conejo, hurón, reptil;sí
+EXO-003;Exóticos;Insulinoma del hurón;conejo, hurón, reptil;sí
+EXO-004;Exóticos;Enfermedad adrenal del hurón;conejo, hurón, reptil;sí
+EXO-005;Exóticos;Enfermedad ósea metabólica en reptiles;conejo, hurón, reptil;sí
+PRE-001;Medicina preventiva;Revisión anual sin hallazgos;perro, gato;sí
+PRE-002;Medicina preventiva;Control de peso / obesidad;perro, gato;sí
+PRE-003;Medicina preventiva;Revisión geriátrica;perro, gato;sí
+OTR-999;Otros;Otro (texto libre);todas;no

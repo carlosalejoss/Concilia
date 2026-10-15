@@ -1,0 +1,107 @@
+WEBVTT
+
+NOTE Transcripción generada por la herramienta de reuniones.
+
+1
+00:00:00.000 --> 00:00:07.000
+<v Andrés Royo>Elena, hoy queríamos repasar contigo los informes y las decisiones pendientes de las otras reuniones.</v>
+
+2
+00:00:08.000 --> 00:00:15.000
+<v Elena Sanchís>Perfecto. Empezamos por los informes, que es lo que más me importa a mí.</v>
+
+3
+00:00:16.000 --> 00:00:23.000
+<v Elena Sanchís>Cada lunes quiero ver la semana anterior: facturación por clínica comparada con la misma semana del año pasado, citas atendidas, citas no presentadas y clientes nuevos.</v>
+
+4
+00:00:24.000 --> 00:00:31.000
+<v Andrés Royo>¿Comparado con el año pasado? Los datos del año pasado están en el programa antiguo y no migramos las facturas.</v>
+
+5
+00:00:32.000 --> 00:00:39.000
+<v Elena Sanchís>Vaya. Entonces para el primer año me vale con comparar con la semana anterior. Pero que el año que viene ya compare con el año anterior.</v>
+
+6
+00:00:40.000 --> 00:00:47.000
+<v Elena Sanchís>Luego, cada mes: facturación por veterinario y por familia de servicio, ventas de farmacia y alimentación, margen de los productos, planes de salud nuevos y bajas, y el ingreso por plan.</v>
+
+7
+00:00:48.000 --> 00:00:55.000
+<v Andrés Royo>¿Margen de productos? Necesitaríamos el precio de compra de cada lote.</v>
+
+8
+00:00:56.000 --> 00:01:03.000
+<v Elena Sanchís>Lo tenemos en los albaranes del proveedor. Que al dar entrada a un pedido se apunte el precio de compra.</v>
+
+9
+00:01:04.000 --> 00:01:11.000
+<v Andrés Royo>Vamos con las decisiones pendientes. La primera: el plazo para cancelar citas. La especificación dice 24 horas y recepción pide 12.</v>
+
+10
+00:01:12.000 --> 00:01:19.000
+<v Elena Sanchís>12 horas desde la app. Por teléfono, lo que diga recepción en cada caso.</v>
+
+11
+00:01:20.000 --> 00:01:27.000
+<v Andrés Royo>Segunda: la señal económica para los clientes que no se presentan.</v>
+
+12
+00:01:28.000 --> 00:01:35.000
+<v Elena Sanchís>No en la primera versión. Que salga el aviso en la ficha y ya veremos.</v>
+
+13
+00:01:36.000 --> 00:01:43.000
+<v Andrés Royo>Tercera: los traspasos de stock. Los veterinarios dicen que cualquiera debería poder pedirlos y que solo los controlados necesitan aprobación.</v>
+
+14
+00:01:44.000 --> 00:01:51.000
+<v Elena Sanchís>De acuerdo, pero que quede registrado quién lo pide y quién lo envía. Y los controlados, aprobados por el responsable de la clínica que envía.</v>
+
+15
+00:01:52.000 --> 00:01:59.000
+<v Andrés Royo>Cuarta: los recordatorios de vacunas. La especificación dice 15 días antes y recepción dice que mejor 7 y otro el día antes.</v>
+
+16
+00:02:00.000 --> 00:02:07.000
+<v Elena Sanchís>Que sea configurable. Por defecto, 7 días antes y el día anterior si tiene cita.</v>
+
+17
+00:02:08.000 --> 00:02:15.000
+<v Andrés Royo>Quinta: la conservación de las historias clínicas. La especificación dice indefinida y la política de protección de datos dice cinco años.</v>
+
+18
+00:02:16.000 --> 00:02:23.000
+<v Elena Sanchís>Uf. Eso lo tiene que mirar nuestra asesora legal. Dejadlo abierto.</v>
+
+19
+00:02:24.000 --> 00:02:31.000
+<v Andrés Royo>Sexta: las urgencias de Norte los fines de semana.</v>
+
+20
+00:02:32.000 --> 00:02:39.000
+<v Elena Sanchís>Está aprobado para marzo de 2027. Que la plataforma lo permita desde el principio.</v>
+
+21
+00:02:40.000 --> 00:02:47.000
+<v Andrés Royo>Séptima: los planes de salud. El documento dice dos consultas al año en el plan Adulto y tu correo dice consultas ilimitadas.</v>
+
+22
+00:02:48.000 --> 00:02:55.000
+<v Elena Sanchís>Ilimitadas. Lo de dos era la idea inicial, pero la competencia ofrece ilimitadas.</v>
+
+23
+00:02:56.000 --> 00:03:03.000
+<v Andrés Royo>¿Y el descuento en alimentación del plan Adulto? El documento dice que no, tu correo dice que sí.</v>
+
+24
+00:03:04.000 --> 00:03:11.000
+<v Elena Sanchís>Sí, un 10 % también en alimentación. El documento estaba mal.</v>
+
+25
+00:03:12.000 --> 00:03:19.000
+<v Elena Sanchís>Una última cosa que no he dicho a nadie: queremos un programa de puntos para los clientes, que acumulen por cada euro gastado. Pero eso es para el año que viene.</v>
+
+26
+00:03:20.000 --> 00:03:27.000
+<v Andrés Royo>Lo anoto como fuera de alcance de esta versión. Gracias, Elena.</v>

@@ -1,0 +1,135 @@
+WEBVTT
+
+NOTE Transcripción generada por la herramienta de reuniones.
+
+1
+00:00:00.000 --> 00:00:08.000
+<v Lucía Pardo>Buenos días. Hoy queremos entender cómo trabajáis en consulta, en quirófano y en hospitalización. Raquel, tú estás en hospitalización, ¿verdad?</v>
+
+2
+00:00:09.000 --> 00:00:17.000
+<v Raquel Ortiz>Sí, soy la veterinaria responsable del hospital de Centro. Y Sergio hace guardias y consulta en Norte.</v>
+
+3
+00:00:18.000 --> 00:00:26.000
+<v Óscar Benedí>Antes de entrar en detalle: lo más importante para nosotros es que, de noche, el de guardia vea todo lo de un paciente, venga de la clínica que venga. Alergias, medicación, cirugías, todo.</v>
+
+4
+00:00:27.000 --> 00:00:35.000
+<v Lucía Pardo>Entendido, la historia única es el centro de todo. ¿Qué apuntáis en una consulta normal?</v>
+
+5
+00:00:36.000 --> 00:00:44.000
+<v Sergio Lamata>Motivo, lo que cuenta el cliente, la exploración con las constantes, el peso, lo que creemos que tiene y el tratamiento. Muchas veces el diagnóstico definitivo llega días después, con la analítica.</v>
+
+6
+00:00:45.000 --> 00:00:53.000
+<v Sergio Lamata>Por eso necesito poder volver a la visita y completar el diagnóstico cuando llegan los resultados, aunque ya la haya cerrado.</v>
+
+7
+00:00:54.000 --> 00:01:02.000
+<v Lucía Pardo>En la especificación pusimos que una visita cerrada no se modifica, pero se le pueden añadir anotaciones. ¿Os sirve?</v>
+
+8
+00:01:03.000 --> 00:01:11.000
+<v Sergio Lamata>Si la anotación aparece junto al diagnóstico y se ve claro, sí. Lo que no quiero es tener que crear otra visita.</v>
+
+9
+00:01:12.000 --> 00:01:20.000
+<v Óscar Benedí>Y que quede quién y cuándo. Hemos tenido algún problema legal y necesitamos poder demostrar qué se sabía en cada momento.</v>
+
+10
+00:01:21.000 --> 00:01:29.000
+<v Lucía Pardo>Hablemos de hospitalización. Raquel, cuéntanos un ingreso.</v>
+
+11
+00:01:30.000 --> 00:01:38.000
+<v Raquel Ortiz>Llega el paciente, el veterinario decide el ingreso y hace la hoja: qué medicación, a qué horas, la fluidoterapia, cuándo comer, cada cuánto tomar constantes. Las ATV lo van haciendo y lo marcan.</v>
+
+12
+00:01:39.000 --> 00:01:47.000
+<v Raquel Ortiz>Hoy es una hoja de papel colgada en la jaula. Si alguien no la marca, no sabemos si se le dio la medicación. Ese es el error más peligroso que tenemos.</v>
+
+13
+00:01:48.000 --> 00:01:56.000
+<v Raquel Ortiz>Necesito una pantalla grande en la sala con todo lo que toca en la próxima hora y lo que va con retraso, en rojo.</v>
+
+14
+00:01:57.000 --> 00:02:05.000
+<v Lucía Pardo>¿Y cuando cambia el tratamiento a mitad del ingreso?</v>
+
+15
+00:02:06.000 --> 00:02:14.000
+<v Raquel Ortiz>Lo cambia el veterinario y las tareas futuras se recalculan. Las ya hechas no se tocan. Y si se suspende una medicación, que se vea tachada, no que desaparezca.</v>
+
+16
+00:02:15.000 --> 00:02:23.000
+<v Lucía Pardo>¿El cliente recibe información del ingreso?</v>
+
+17
+00:02:24.000 --> 00:02:32.000
+<v Raquel Ortiz>Ahora lo llamamos una vez al día. Lo ideal sería un informe por la app, sí, pero escrito por el veterinario, nunca automático. Y fotos, a los clientes les encanta ver a su perro.</v>
+
+18
+00:02:33.000 --> 00:02:41.000
+<v Lucía Pardo>Tomo nota de las fotos, no estaba en la especificación. Hablemos de stock: ¿quién mueve medicación entre clínicas?</v>
+
+19
+00:02:42.000 --> 00:02:50.000
+<v Sergio Lamata>Cualquiera. Si a mí me falta un antibiótico en Norte, llamo a Centro y alguien me lo manda con el mensajero de las tres. No hay aprobación de nadie, sería muy lento.</v>
+
+20
+00:02:51.000 --> 00:02:59.000
+<v Óscar Benedí>Bueno, eso es así ahora, pero los estupefacientes y los controlados no pueden moverse sin registro. Para esos sí hace falta que lo apruebe el responsable.</v>
+
+21
+00:03:00.000 --> 00:03:08.000
+<v Lucía Pardo>Entonces, ¿aprobación solo para los controlados y libre para el resto?</v>
+
+22
+00:03:09.000 --> 00:03:17.000
+<v Óscar Benedí>Eso tendríamos que hablarlo con gerencia. A mí me parecería razonable.</v>
+
+23
+00:03:18.000 --> 00:03:26.000
+<v Lucía Pardo>Las urgencias: ahora solo en Centro, ¿no?</v>
+
+24
+00:03:27.000 --> 00:03:35.000
+<v Óscar Benedí>De momento sí. Pero la idea es abrir urgencias en Norte los fines de semana el año que viene. La plataforma debería permitirlo sin rehacer nada.</v>
+
+25
+00:03:36.000 --> 00:03:44.000
+<v Sergio Lamata>Y el triaje: usamos cinco niveles, del uno, que es inmediato, al cinco, que puede esperar. El nivel lo pone la recepcionista con unas preguntas, pero el veterinario lo puede cambiar.</v>
+
+26
+00:03:45.000 --> 00:03:53.000
+<v Lucía Pardo>¿Las recetas de antibióticos cómo las hacéis hoy?</v>
+
+27
+00:03:54.000 --> 00:04:02.000
+<v Óscar Benedí>Las hacemos en el programa y luego alguien las sube a la plataforma oficial a mano, una por una. Es una pérdida de tiempo enorme. Si la integración automática no entra al principio, al menos que el fichero salga bien hecho.</v>
+
+28
+00:04:03.000 --> 00:04:11.000
+<v Lucía Pardo>¿Tenéis protocolos de vacunación distintos por clínica?</v>
+
+29
+00:04:12.000 --> 00:04:20.000
+<v Sergio Lamata>Deberían ser iguales, pero en Montaña, por la zona, se pone también la vacuna de la leishmania a todos los perros. Habría que poder tener protocolos por clínica.</v>
+
+30
+00:04:21.000 --> 00:04:29.000
+<v Óscar Benedí>Y en exóticos, conejos y hurones, tienen sus propios protocolos. Eso solo en Centro.</v>
+
+31
+00:04:30.000 --> 00:04:38.000
+<v Lucía Pardo>Última cosa: los diagnósticos codificados. ¿Usáis algún catálogo?</v>
+
+32
+00:04:39.000 --> 00:04:47.000
+<v Óscar Benedí>No uno oficial. Tenemos una lista nuestra de unos 300 diagnósticos frecuentes. Queremos usarla para sacar estadísticas, por ejemplo cuántas dermatitis vemos al mes.</v>
+
+33
+00:04:48.000 --> 00:04:56.000
+<v Lucía Pardo>Muy bien. Con esto actualizamos la especificación y os la pasamos.</v>

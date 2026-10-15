@@ -1,0 +1,8 @@
+codigo;nombre;tipo;contacto;email;quiere_certificado;observaciones
+D-01;Federación de bancos de alimentos;Federación;Responsable de logística;logistica@federacion.example;no;Camión mensual con albarán
+D-02;Supermercados El Puente;Supermercado;Encargada de tienda;tienda@elpuente.example;sí;Recogida martes y viernes
+D-03;Frutería La Huerta;Comercio;Propietario;huerta@correo.example;sí;Fruta y verdura los lunes
+D-04;Panadería Hermanos Gracia;Comercio;Hermanos Gracia;pedidos@panaderiagracia.example;no;Pan del día anterior, diario
+D-05;Colegio San Jorge;Centro educativo;AMPA;ampa@sanjorge.example;no;Campaña de Navidad
+D-06;Transportes Ribera S.L.;Empresa;Dirección;rrhh@transportesribera.example;sí;Donación económica y alimentos en Navidad
+D-07;Particulares;Particular;;;no;Sin registro de nombre

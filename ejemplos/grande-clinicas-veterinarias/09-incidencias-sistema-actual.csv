@@ -1,0 +1,16 @@
+id;fecha;clinica;area;descripcion;impacto;frecuencia
+INC-01;2026-01-14;Centro;Urgencias;El veterinario de guardia no ve la historia de un paciente de Norte y administra un antiinflamatorio al que era alérgico;Alto;Varias veces al año
+INC-02;2026-02-03;Ribera;Agenda;Dos citas a la misma hora para el mismo veterinario porque una se dio por teléfono y otra en el mostrador;Medio;Semanal
+INC-03;2026-02-20;Centro;Hospitalización;No consta si se dio la dosis de las 4:00 de un antibiótico; la hoja de papel no estaba marcada;Alto;Mensual
+INC-04;2026-03-02;Norte;Laboratorio;Resultado de analítica en el correo de la clínica durante 5 días sin adjuntar ni avisar al veterinario;Alto;Mensual
+INC-05;2026-03-15;Montaña;Stock;Vacuna de la leishmania agotada; el pedido se hizo tarde porque nadie vio el stock;Medio;Trimestral
+INC-06;2026-04-08;Centro;Facturación;Fármacos usados en consulta que no se cobran porque no figuran en la hoja que pasa el veterinario;Medio;Diaria
+INC-07;2026-04-22;Todas;Clientes;Cliente con fichas en dos clínicas y teléfonos distintos; los recordatorios van al número antiguo;Bajo;Semanal
+INC-08;2026-05-06;Norte;Stock;Traspaso de un estupefaciente a Centro sin anotarlo en el libro de registro;Alto;Puntual
+INC-09;2026-05-19;Centro;Recordatorios;Recordatorio de vacuna enviado a un cliente cuya mascota había fallecido;Medio;Mensual
+INC-10;2026-06-01;Todas;Facturación;El cierre mensual tarda tres días porque hay que juntar cuatro hojas de cálculo;Medio;Mensual
+INC-11;2026-06-17;Montaña;Comunicaciones;Clientes extranjeros que no entienden los SMS en castellano;Bajo;Verano
+INC-12;2026-07-03;Centro;Planes de salud;Baja de un plan antes de los 12 meses sin cobrar la diferencia porque el cálculo es manual;Medio;Mensual
+INC-13;2026-07-29;Ribera;Cirugía;Paciente derivado a Centro para cirugía sin la analítica prequirúrgica, que estaba en Ribera;Medio;Mensual
+INC-14;2026-08-11;Centro;Aseguradoras;Mascota Protegida rechaza el pago de una cirugía por no haber pedido la autorización previa;Alto;Trimestral
+INC-15;2026-08-25;Todas;Recetas;Recetas de antibióticos subidas tarde a la plataforma oficial de prescripción;Medio;Mensual

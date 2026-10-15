@@ -1,0 +1,148 @@
+{
+  "version": "2026-09",
+  "autor": "Dirección veterinaria del Grupo Veterinario Huellas",
+  "nota": "Protocolos vigentes. Huellas Montaña añade la vacuna de la leishmaniosis a todos los perros mayores de 6 meses. Los exóticos solo se atienden en Huellas Centro.",
+  "protocolos": [
+    {
+      "especie": "perro",
+      "fase": "cachorro",
+      "clinicas": "todas",
+      "dosis": [
+        {
+          "vacuna": "Polivalente (moquillo, parvovirus, hepatitis, leptospirosis)",
+          "edad_semanas": 8
+        },
+        {
+          "vacuna": "Polivalente",
+          "edad_semanas": 12
+        },
+        {
+          "vacuna": "Polivalente + antirrábica",
+          "edad_semanas": 16,
+          "nota": "La antirrábica, a partir de las 12 semanas y con registro oficial"
+        }
+      ]
+    },
+    {
+      "especie": "perro",
+      "fase": "adulto",
+      "clinicas": "todas",
+      "dosis": [
+        {
+          "vacuna": "Polivalente",
+          "cada_meses": 12
+        },
+        {
+          "vacuna": "Antirrábica",
+          "cada_meses": 12,
+          "nota": "Obligatoria; registro oficial"
+        }
+      ]
+    },
+    {
+      "especie": "perro",
+      "fase": "adulto",
+      "clinicas": [
+        "Huellas Montaña"
+      ],
+      "dosis": [
+        {
+          "vacuna": "Leishmaniosis",
+          "cada_meses": 12,
+          "requisito_previo": "Test de leishmaniosis negativo en los 3 meses anteriores"
+        }
+      ]
+    },
+    {
+      "especie": "gato",
+      "fase": "cachorro",
+      "clinicas": "todas",
+      "dosis": [
+        {
+          "vacuna": "Trivalente felina",
+          "edad_semanas": 9
+        },
+        {
+          "vacuna": "Trivalente felina",
+          "edad_semanas": 12
+        },
+        {
+          "vacuna": "Leucemia felina",
+          "edad_semanas": 12,
+          "nota": "Solo gatos con acceso al exterior, tras test negativo"
+        }
+      ]
+    },
+    {
+      "especie": "gato",
+      "fase": "adulto",
+      "clinicas": "todas",
+      "dosis": [
+        {
+          "vacuna": "Trivalente felina",
+          "cada_meses": 36,
+          "nota": "Gatos de interior; 12 meses si salen al exterior"
+        }
+      ]
+    },
+    {
+      "especie": "conejo",
+      "fase": "adulto",
+      "clinicas": [
+        "Huellas Centro"
+      ],
+      "dosis": [
+        {
+          "vacuna": "Mixomatosis y enfermedad hemorrágica vírica",
+          "cada_meses": 12
+        }
+      ]
+    },
+    {
+      "especie": "huron",
+      "fase": "adulto",
+      "clinicas": [
+        "Huellas Centro"
+      ],
+      "dosis": [
+        {
+          "vacuna": "Moquillo (formulación para hurones)",
+          "cada_meses": 12
+        },
+        {
+          "vacuna": "Antirrábica",
+          "cada_meses": 12,
+          "nota": "Obligatoria para viajar"
+        }
+      ]
+    }
+  ],
+  "desparasitacion": [
+    {
+      "especie": "perro",
+      "tipo": "interna",
+      "cada_meses": 3
+    },
+    {
+      "especie": "perro",
+      "tipo": "externa",
+      "cada_meses": 1,
+      "nota": "Pipeta o collar según el producto; collar cada 6 meses"
+    },
+    {
+      "especie": "gato",
+      "tipo": "interna",
+      "cada_meses": 3
+    },
+    {
+      "especie": "gato",
+      "tipo": "externa",
+      "cada_meses": 1,
+      "nota": "Solo gatos con acceso al exterior"
+    }
+  ],
+  "recordatorios": {
+    "dias_antes": 15,
+    "nota": "Valor de la especificación; pendiente de confirmar (recepción pide 7 días y otro el día anterior)"
+  }
+}

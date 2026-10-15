@@ -1,0 +1,111 @@
+1
+00:00:00,000 --> 00:00:06,000
+LUCÍA PARDO: Nuria, Javier, gracias por venir. Queremos entender el trabajo de recepción, que es donde más se va a usar la plataforma.
+
+2
+00:00:07,000 --> 00:00:13,000
+NURIA CLAVERÍA: Pues es una locura. El teléfono no para: citas, cambios, resultados, recetas. Calculo que el 60 % de las llamadas son para cambiar o confirmar citas.
+
+3
+00:00:14,000 --> 00:00:20,000
+LUCÍA PARDO: ¿Cuánto tiempo antes puede cancelar un cliente?
+
+4
+00:00:21,000 --> 00:00:27,000
+NURIA CLAVERÍA: Pedimos 12 horas para que nos dé tiempo a llamar a otro de la lista de espera. Si es por teléfono, les dejamos hasta dos horas antes. Lo de 24 horas que pone el documento es demasiado; la gente no planifica tanto.
+
+5
+00:00:28,000 --> 00:00:34,000
+LUCÍA PARDO: Lo anoto como discrepancia con la especificación. ¿Y los que no se presentan?
+
+6
+00:00:35,000 --> 00:00:41,000
+JAVIER ESCÓ: Los apuntamos, pero no hacemos nada. Algunos fallan todos los meses. Estaría bien un aviso y, a partir de tres, que tengan que dejar una señal para reservar.
+
+7
+00:00:42,000 --> 00:00:48,000
+LUCÍA PARDO: ¿Una señal económica?
+
+8
+00:00:49,000 --> 00:00:55,000
+JAVIER ESCÓ: Diez euros, que se descuentan de la consulta. Pero eso lo tiene que decidir la gerente.
+
+9
+00:00:56,000 --> 00:01:02,000
+LUCÍA PARDO: ¿Cómo funciona hoy el cobro?
+
+10
+00:01:03,000 --> 00:01:09,000
+NURIA CLAVERÍA: Al terminar la consulta el veterinario nos pasa una hoja con lo que ha hecho y nosotros lo metemos. Se nos olvidan cosas, sobre todo los fármacos que se usan en consulta.
+
+11
+00:01:10,000 --> 00:01:16,000
+LUCÍA PARDO: En la especificación, lo que el veterinario registra en la visita pasa solo al cargo del cliente.
+
+12
+00:01:17,000 --> 00:01:23,000
+NURIA CLAVERÍA: Eso sería genial. Pero necesitamos poder quitar algo si el veterinario dice que no se cobra, por ejemplo una revisión de cortesía.
+
+13
+00:01:24,000 --> 00:01:30,000
+LUCÍA PARDO: ¿Quién puede hacer descuentos?
+
+14
+00:01:31,000 --> 00:01:37,000
+NURIA CLAVERÍA: Hasta un 10 % cualquiera de recepción. Más de eso, el responsable de clínica. Y los descuentos a empleados y familiares, que son del 25 %, también.
+
+15
+00:01:38,000 --> 00:01:44,000
+LUCÍA PARDO: ¿Recordatorios de vacunas?
+
+16
+00:01:45,000 --> 00:01:51,000
+JAVIER ESCÓ: Ahora salen siete días antes. Y nos gustaría otro el día anterior a la cita, si la han pedido. Quince días antes es mucho, la gente se olvida.
+
+17
+00:01:52,000 --> 00:01:58,000
+LUCÍA PARDO: ¿Qué pasa cuando llegan los resultados del laboratorio?
+
+18
+00:01:59,000 --> 00:02:05,000
+NURIA CLAVERÍA: Llegan al correo de la clínica en PDF. Los abrimos, buscamos al paciente, los adjuntamos y avisamos al veterinario. A veces se quedan en el correo días.
+
+19
+00:02:06,000 --> 00:02:12,000
+JAVIER ESCÓ: Y si es urgente, el laboratorio llama, pero no siempre.
+
+20
+00:02:13,000 --> 00:02:19,000
+LUCÍA PARDO: ¿Los clientes llaman para pedir resultados?
+
+21
+00:02:20,000 --> 00:02:26,000
+NURIA CLAVERÍA: Constantemente. Si pudieran verlos en la app sería un descanso. Pero ojo: solo cuando el veterinario los haya revisado. No queremos que un cliente vea un resultado malo sin que nadie se lo explique.
+
+22
+00:02:27,000 --> 00:02:33,000
+LUCÍA PARDO: Muy importante, lo apunto. ¿Y el chat que salió en la presentación?
+
+23
+00:02:34,000 --> 00:02:40,000
+NURIA CLAVERÍA: Lo propuse yo. Muchas consultas son tonterías: si puede bañar al perro después de la vacuna, cosas así. Por chat lo contestaríamos en un momento.
+
+24
+00:02:41,000 --> 00:02:47,000
+JAVIER ESCÓ: Pero alguien tiene que estar mirándolo. En Montaña somos una persona por la tarde.
+
+25
+00:02:48,000 --> 00:02:54,000
+LUCÍA PARDO: En la especificación quedó fuera de esta versión. Lo trasladaremos a la gerente.
+
+26
+00:02:55,000 --> 00:03:01,000
+LUCÍA PARDO: ¿Algo más que os complique el día?
+
+27
+00:03:02,000 --> 00:03:08,000
+JAVIER ESCÓ: Las fichas duplicadas. Un cliente que va a dos clínicas tiene dos fichas, con teléfonos distintos. Y las mascotas que comparten una pareja separada: cada uno quiere su factura.
+
+28
+00:03:09,000 --> 00:03:15,000
+NURIA CLAVERÍA: Y los clientes extranjeros, que en verano en Montaña hay muchos. Agradecerían que los recordatorios llegaran en su idioma.

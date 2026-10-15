@@ -1,0 +1,93 @@
+# Borrador de la API de LabVet Análisis para clínicas (versión 0.2, agosto de 2026).
+# Enviado por el laboratorio al Grupo Veterinario Huellas. Sujeto a cambios.
+openapi: 3.0.3
+info:
+  title: LabVet Análisis - API de clínicas
+  version: 0.2.0
+  description: >
+    Permite a las clínicas enviar solicitudes de análisis y recibir los resultados.
+    La autenticación definitiva está por decidir (clave de API por clínica o OAuth2).
+servers:
+  - url: https://api.labvet.example/v0
+paths:
+  /solicitudes:
+    post:
+      summary: Crear una solicitud de análisis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Solicitud'
+      responses:
+        '201':
+          description: Solicitud creada; devuelve el código de muestra que hay que escribir en el tubo.
+        '422':
+          description: Datos incompletos (por ejemplo, especie no admitida para la prueba).
+  /solicitudes/{codigoMuestra}:
+    get:
+      summary: Estado de una solicitud
+      parameters:
+        - name: codigoMuestra
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Estado (recibida, en proceso, completada, rechazada) y, si está completada, el resultado.
+  /resultados:
+    get:
+      summary: Resultados completados desde una fecha (para consultar periódicamente)
+      parameters:
+        - name: desde
+          in: query
+          required: true
+          schema: { type: string, format: date-time }
+      responses:
+        '200':
+          description: Lista de resultados.
+  /webhooks:
+    post:
+      summary: Registrar una URL de la clínica para recibir los resultados en cuanto estén
+      description: En estudio. Puede que no esté disponible en la primera versión.
+components:
+  schemas:
+    Solicitud:
+      type: object
+      required: [clinica, veterinario, paciente, pruebas, urgente]
+      properties:
+        clinica: { type: string, description: Código de clínica asignado por LabVet }
+        veterinario: { type: string, description: Nombre y número de colegiado }
+        paciente:
+          type: object
+          required: [nombre, especie]
+          properties:
+            nombre: { type: string }
+            especie: { type: string, enum: [perro, gato, conejo, huron, ave, reptil] }
+            raza: { type: string }
+            edad_meses: { type: integer }
+            sexo: { type: string, enum: [macho, hembra, macho_castrado, hembra_esterilizada] }
+        pruebas:
+          type: array
+          items: { type: string, description: Código de prueba del catálogo de LabVet }
+        urgente: { type: boolean, description: Las urgentes se procesan en 4 horas y tienen recargo }
+        observaciones: { type: string }
+    Resultado:
+      type: object
+      properties:
+        codigoMuestra: { type: string }
+        estado: { type: string, enum: [completada, rechazada] }
+        fecha: { type: string, format: date-time }
+        informe_pdf: { type: string, description: URL temporal (24 h) del informe en PDF }
+        valores:
+          type: array
+          description: Valores estructurados. Solo para hematología y bioquímica; el resto de pruebas, solo en PDF.
+          items:
+            type: object
+            properties:
+              parametro: { type: string }
+              valor: { type: number }
+              unidad: { type: string }
+              rango_referencia: { type: string }
+              fuera_de_rango: { type: boolean }
+        motivo_rechazo: { type: string, description: Por ejemplo, muestra hemolizada }

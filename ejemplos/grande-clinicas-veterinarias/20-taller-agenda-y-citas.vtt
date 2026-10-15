@@ -1,0 +1,111 @@
+WEBVTT
+
+NOTE Transcripción generada por la herramienta de reuniones.
+
+1
+00:00:00.000 --> 00:00:07.000
+<v Lucía Pardo>En este taller queremos cerrar cómo funciona la agenda. Empecemos por los horarios de los veterinarios.</v>
+
+2
+00:00:08.000 --> 00:00:15.000
+<v Teresa Gállego>Cada veterinario tiene un horario semanal por clínica. Sergio, por ejemplo, está lunes y miércoles en Norte y martes y jueves en Centro, más las guardias.</v>
+
+3
+00:00:16.000 --> 00:00:23.000
+<v Sergio Lamata>Y las guardias van aparte: un calendario de guardias del hospital, con turnos de 12 horas. Quien está de guardia no tiene consulta normal ese día.</v>
+
+4
+00:00:24.000 --> 00:00:31.000
+<v Lucía Pardo>¿Quién hace el calendario de guardias?</v>
+
+5
+00:00:32.000 --> 00:00:39.000
+<v Teresa Gállego>Raquel, como responsable del hospital, una vez al mes. Lo hace en una hoja de cálculo. Que la plataforma lo tenga para saber quién está de guardia cada noche sería suficiente.</v>
+
+6
+00:00:40.000 --> 00:00:47.000
+<v Lucía Pardo>¿Y las ausencias, vacaciones, congresos?</v>
+
+7
+00:00:48.000 --> 00:00:55.000
+<v Nuria Clavería>Las vacaciones se saben con meses de antelación. El problema son las bajas imprevistas: hay que mover todas las citas de ese veterinario.</v>
+
+8
+00:00:56.000 --> 00:01:03.000
+<v Nuria Clavería>Me gustaría poder seleccionar las citas de un veterinario de un día y pasarlas a otro veterinario de golpe, o avisar a todos los clientes.</v>
+
+9
+00:01:04.000 --> 00:01:11.000
+<v Lucía Pardo>Anotado: reasignación masiva y aviso a los clientes afectados. ¿Los clientes pueden elegir veterinario?</v>
+
+10
+00:01:12.000 --> 00:01:19.000
+<v Nuria Clavería>Sí, y muchos quieren siempre al mismo. Si su veterinario no tiene hueco, prefieren esperar.</v>
+
+11
+00:01:20.000 --> 00:01:27.000
+<v Lucía Pardo>¿Hay huecos que no se puedan dar por la app?</v>
+
+12
+00:01:28.000 --> 00:01:35.000
+<v Teresa Gállego>Sí. Reservamos los dos primeros huecos de la mañana y de la tarde para urgencias leves que llaman ese mismo día. Esos solo los da recepción.</v>
+
+13
+00:01:36.000 --> 00:01:43.000
+<v Sergio Lamata>Y las cirugías se hacen por la mañana. El quirófano está bloqueado de 9 a 13 para cirugías programadas; por la tarde, solo urgencias quirúrgicas.</v>
+
+14
+00:01:44.000 --> 00:01:51.000
+<v Lucía Pardo>¿Qué duración tiene cada tipo de cita? En la especificación pusimos 20 minutos la consulta.</v>
+
+15
+00:01:52.000 --> 00:01:59.000
+<v Sergio Lamata>La consulta, 20. Pero la primera visita de un cachorro, 30, y la consulta de un paciente geriátrico con varias patologías, también 30. Debería poder alargarla el veterinario.</v>
+
+16
+00:02:00.000 --> 00:02:07.000
+<v Nuria Clavería>Y en el procedimiento de la intranet ya pone que la primera visita de cachorro son 30 minutos.</v>
+
+17
+00:02:08.000 --> 00:02:15.000
+<v Lucía Pardo>¿Cómo funciona la sala de espera?</v>
+
+18
+00:02:16.000 --> 00:02:23.000
+<v Nuria Clavería>Cuando llega el cliente lo marcamos como llegado. El veterinario ve en su pantalla quién está esperando y desde qué hora. Al llamarlo, pasa a «en consulta».</v>
+
+19
+00:02:24.000 --> 00:02:31.000
+<v Teresa Gállego>Sería útil que en la sala hubiera una pantalla con el orden, pero solo con el nombre de la mascota, nunca el del cliente.</v>
+
+20
+00:02:32.000 --> 00:02:39.000
+<v Lucía Pardo>¿Qué pasa cuando un cliente llega tarde?</v>
+
+21
+00:02:40.000 --> 00:02:47.000
+<v Nuria Clavería>Si llega más de 15 minutos tarde, le ofrecemos otra cita, salvo que el veterinario pueda atenderlo. Está en los procedimientos.</v>
+
+22
+00:02:48.000 --> 00:02:55.000
+<v Lucía Pardo>Hablemos de las peluquerías de Montaña.</v>
+
+23
+00:02:56.000 --> 00:03:03.000
+<v Teresa Gállego>Es una agenda aparte, con la peluquera, no con veterinarios. Los perros grandes ocupan dos huecos. Y en verano la demanda se dobla.</v>
+
+24
+00:03:04.000 --> 00:03:11.000
+<v Lucía Pardo>¿Las citas se confirman?</v>
+
+25
+00:03:12.000 --> 00:03:19.000
+<v Nuria Clavería>Hoy llamamos el día anterior a las cirugías. Para el resto, nada. Con la app, un recordatorio 24 horas antes con un botón para confirmar o cancelar estaría muy bien.</v>
+
+26
+00:03:20.000 --> 00:03:27.000
+<v Sergio Lamata>Una cosa más: cuando el cliente pide cita para varias mascotas a la vez, debería poder ser una cita seguida, no tres separadas.</v>
+
+27
+00:03:28.000 --> 00:03:35.000
+<v Lucía Pardo>Muy buena idea, lo anoto como cita múltiple. Con esto cerramos la agenda.</v>

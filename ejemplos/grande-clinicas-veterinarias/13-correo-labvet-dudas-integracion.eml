@@ -1,0 +1,45 @@
+From:
+ Soporte de =?utf-8?q?integraci=C3=B3n?= LabVet <integraciones@labvet.example>
+To: =?utf-8?q?Andr=C3=A9s?= Royo <andres.royo@estudionorte.example>
+Subject: Re: Dudas sobre la API de =?utf-8?q?cl=C3=ADnicas?= (v0.2)
+Date: Wed, 30 Sep 2026 09:12:00 +0200
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Buenos d=C3=ADas, Andr=C3=A9s:
+
+Respondo a vuestras preguntas sobre el borrador de la API.
+
+1. Autenticaci=C3=B3n: usaremos una clave de API por cl=C3=ADnica, que cada c=
+l=C3=ADnica pedir=C3=A1 en nuestro portal. OAuth2 queda para m=C3=A1s adelant=
+e.
+
+2. Avisos de resultados (webhooks): no estar=C3=A1n en la primera versi=C3=B3=
+n. Tendr=C3=A9is que consultar /resultados peri=C3=B3dicamente; os pedimos qu=
+e no sea m=C3=A1s de una vez cada 10 minutos por cl=C3=ADnica.
+
+3. Resultados estructurados: solo hematolog=C3=ADa y bioqu=C3=ADmica. Orina, =
+citolog=C3=ADas, biopsias, serolog=C3=ADas y pruebas de imagen solo llegan en=
+ PDF. El PDF est=C3=A1 disponible 24 horas en la URL temporal, as=C3=AD que t=
+en=C3=A9is que descargarlo y guardarlo.
+
+4. Especies: los reptiles no se admiten para bioqu=C3=ADmica; la API devolver=
+=C3=A1 un error 422.
+
+5. Muestras urgentes: el recargo es de 15 euros por solicitud y el plazo de 4=
+ horas solo aplica si la muestra llega antes de las 16:00 de lunes a viernes.
+
+6. Cancelaciones: una solicitud se puede cancelar mientras est=C3=A9 en estad=
+o =C2=ABrecibida=C2=BB; a=C3=B1adiremos DELETE /solicitudes/{codigoMuestra} e=
+n la versi=C3=B3n 0.3.
+
+7. Facturaci=C3=B3n del laboratorio: os facturamos mensualmente por cl=C3=ADn=
+ica. En el resultado no viene el precio; el precio al cliente lo fija cada cl=
+=C3=ADnica en su tarifa.
+
+Quedamos a vuestra disposici=C3=B3n para una prueba en nuestro entorno de pru=
+ebas a partir del 15 de octubre.
+
+Un saludo,
+Equipo de integraciones =E2=80=94 LabVet An=C3=A1lisis
