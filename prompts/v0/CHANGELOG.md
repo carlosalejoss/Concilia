@@ -11,6 +11,7 @@ Cambios:
 - `arbitro_catalogo.md` y `arbitro_preguntas.md`: la documentación no se lee entera; se consultan solo los tramos necesarios. El plan de lectura de un fichero para consultar dice ahora «no lo leas entero» y, en la documentación, en qué línea empieza cada documento.
 - `catalogo.md`, `preguntas.md`, `sugerir_respuestas.md` y los árbitros: el id de un fragmento es el que va entre corchetes, no el número de línea que muestra `Read`.
 - El error `REF-FRAG` de un fragmento que no existe, cuando su número es una línea del fichero, dice qué fragmento hay en esa línea, para que la reparación lo corrija.
+- Ampliado el 15-10-2026: el mockup también lee con un elemento por línea el backlog, el mapa de pantallas y las historias de cada pantalla. Con sangría, el backlog de 9 épicas del documento C ocupaba 2.743 líneas.
 - Plataforma (no es del prompt): si solo uno de los dos modelos termina con una salida válida, el trabajo falla en lugar de dar esa salida como resultado sin verificación cruzada (decisión del autor).
 
 ## v0.6, el mockup como una sola aplicación, construida por pasos (2026-10-14)

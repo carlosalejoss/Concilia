@@ -7,6 +7,29 @@ namespace Concilia.Tests.Runs;
 public class RunPiecesTests
 {
     [Fact]
+    public async Task The_events_of_a_finished_run_survive_a_restart()
+    {
+        using var temp = new TempDirectory();
+        string File(Guid id) => Path.Combine(temp.Path, id.ToString(), RunEventStore.FileName);
+        var runId = Guid.NewGuid();
+        var before = new RunEventStore(File);
+        before.Publish(runId, new RunEvent(RunEventKind.Started, "uno"));
+        before.Publish(runId, new RunEvent(RunEventKind.ToolUse, "Read input/backlog.json"));
+        before.Complete(runId);
+
+        // A new store, as after a restart of the API.
+        var after = new RunEventStore(File);
+        var replayed = new List<RunEventDto>();
+        await foreach (var e in after.Follow(runId, CancellationToken.None))
+            replayed.Add(e);
+
+        Assert.True(after.Exists(runId));
+        Assert.Equal(["uno", "Read input/backlog.json"], replayed.Select(e => e.Text));
+        Assert.Equal(RunEventKind.ToolUse, replayed[1].Kind);
+        Assert.False(after.Exists(Guid.NewGuid()));
+    }
+
+    [Fact]
     public async Task Event_store_replays_past_events_then_follows_new_ones()
     {
         var store = new RunEventStore();
