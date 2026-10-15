@@ -361,7 +361,7 @@ Pedido por el autor el 14-10-2026, para probar el mockup con `SS - GPT-6-SOL`.
 - [x] 81. Prompts v0.8: la plataforma junta y revisa el prototipo (`MockupCoherence`) y corrige con un modelo solo las partes con problemas (`mockup_correccion.md`); reanudar un mockup fallido desde sus pasos aceptados. Decidido por el autor el 15-10-2026, a propuesta de Claude.
 - [x] 82. Reanudar el mockup del documento C y medirlo: se genera (19 pantallas, una corrección), pero es un índice de pantallas y no una aplicación.
 - [x] 83. Prompts v0.9: el mockup como aplicación que funciona (inicio de sesión con los usuarios de prueba a la vista, una aplicación por rol, menús de secciones y navegación por acciones), con la navegación en el mapa y comprobada por la plataforma. Decidido por el autor el 15-10-2026.
-- [ ] 84. Generar el mockup del documento C con la v0.9 y medirlo.
+- [x] 84. Generar el mockup del documento C con la v0.9 y medirlo: 25 pantallas, las 46 historias, 866 KB, en 40 minutos y con una sola corrección. El autor lo da por bueno (15-10-2026).
 
 ## Después
 
