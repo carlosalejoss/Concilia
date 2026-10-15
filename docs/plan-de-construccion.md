@@ -295,7 +295,7 @@ Propuesta del team leader, aprobada por el autor el 09-10-2026. Va antes del hit
 
 ## Hito 13: flujo completo de punta a punta
 
-- [ ] 63. Desactualización completa en la API y en la web: cualquier fase se puede lanzar de nuevo y las siguientes muestran el aviso. Test del flujo completo con `Fake`, de crear el proyecto al mockup.
+- [x] 63. Desactualización completa en la API y en la web: cualquier fase se puede lanzar de nuevo y las siguientes muestran el aviso. Test del flujo completo con `Fake`, de crear el proyecto al mockup. (15-10-2026: la API y la web ya lo cumplían; se añade `FullFlowTests`, que recorre la API como la web con una base de datos en memoria y comprueba la desactualización al relanzar el catálogo.)
 - [ ] 64. Informe automático por trabajo y fase, base de la evaluación:
   - tokens y duración;
   - elementos de A, de B y de la fusión;

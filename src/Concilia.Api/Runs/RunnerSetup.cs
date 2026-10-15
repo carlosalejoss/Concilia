@@ -9,6 +9,10 @@ public class RunnerOptions
     // "Fake" (default: no model, no secrets) or "LiteLlm" (the real gateway).
     public string Provider { get; set; } = "Fake";
 
+    // Fake only: the pause between its events, so the web shows them arriving
+    // one by one (0 in the test of the whole flow).
+    public int FakeStepDelayMs { get; set; } = 300;
+
     // "claude" in Linux and Docker; "claude.cmd" when the API runs on Windows.
     public string ClaudeExecutable { get; set; } = "claude";
 
@@ -104,7 +108,7 @@ public static class RunnerSetup
         name.ToLowerInvariant() switch
         {
             // The small delay lets the web show the fake events arriving one by one.
-            "fake" => new FakeProvider(stepDelay: TimeSpan.FromMilliseconds(300), simulateRepair: options.SimulateRepair),
+            "fake" => new FakeProvider(stepDelay: TimeSpan.FromMilliseconds(options.FakeStepDelayMs), simulateRepair: options.SimulateRepair),
             "litellm" => new LiteLlmProvider(
                 options.ClaudeExecutable,
                 LiteLlmProvider.SettingsFrom(
