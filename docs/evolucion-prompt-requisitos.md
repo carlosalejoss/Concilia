@@ -16,7 +16,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
 | v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Generado en 40 min: 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Al autor le convence: «ya se parece mucho a lo que yo busco» |
 | v0.8 | 15-10-2026 | Mockup: la plataforma junta y revisa el prototipo (ids, globales de JavaScript y navegación) y solo corrige con un modelo las partes con problemas; se puede reanudar un mockup fallido | Pendiente | Pendiente |
-| v0.7 | 14-10-2026 | El árbitro consulta la documentación por tramos y lee las propuestas con un elemento por línea; un fragmento no es un número de línea (`REF-FRAG` dice qué fragmento hay en esa línea); sin la salida de un solo modelo como resultado | Pendiente | Pendiente |
+| v0.7 | 14-10-2026 | El árbitro consulta la documentación por tramos y lee las propuestas con un elemento por línea; un fragmento no es un número de línea (`REF-FRAG` dice qué fragmento hay en esa línea); sin la salida de un solo modelo como resultado | Sí (documento C, 14-10-2026; proyecto grande de ejemplo, 15-10-2026) | El árbitro cabe y lee las propuestas en pocas llamadas, pero termina compactando después de escribir (la plataforma lo corta y acepta la salida). Con el proyecto de ejemplo: 299 y 192 requisitos, unión de 209 en 12 min, con dos reparaciones por citas mal copiadas (la marca `sigue` y un número de línea) |
 | v0.6 | 14-10-2026 | El mockup es una sola aplicación construida por pasos: diseño (mapa de pantallas y armazón), una ejecución por pantalla y una revisión del conjunto; pensado para `SS - GPT-6-SOL` | Pendiente | Pendiente |
 | v0.5 | 14-10-2026 | Referencia de estilo del mockup: un `.zip` con un mockup del cliente; el modelo lee sus `.html` y `.css` y la plataforma incrusta sus imágenes y fuentes; el resto de prompts no cambia | Pendiente | Pendiente |
 | v0.4 | 13-10-2026 | Mockup por partes: una base y un fichero por épica, que la plataforma junta; el resto de prompts no cambia | Sí (documento B, 53 historias, 13-10-2026) | El mockup se genera (166 KB, las 53 historias) en 23 min, pero gasta 1,49 M de entrada y 204.000 de salida, el 43 % del límite de 5 h de la suscripción, y al autor no le convence el resultado |
@@ -455,11 +455,34 @@ Cambios de la plataforma tras esta prueba (sin cambiar los prompts):
 - **El runner para una ejecución en cuanto Claude Code empieza a compactar con todas las salidas esperadas ya escritas** (`CompactingAfterOutput`). Solo faltaba la línea del veredicto: se revisa la salida como si hubiera contestado, con su reparación si no es válida.
 - **Una ejecución que agota el tiempo (o se queda sin actividad) después de escribir su salida se revisa:** si la salida es válida, se acepta con un aviso. Si no lo es, sigue sin repararse, como hasta ahora.
 
+**Proyecto grande de ejemplo** (clínicas veterinarias, ficticio, de `ejemplos/`: 21 archivos de 13 formatos, unos 23.400 tokens), catálogo, 15-10-2026, una ejecución. Los prompts del catálogo son los de la v0.7 (los del trabajo dicen v0.9, que solo cambia el mockup). A y árbitro `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA`:
+
+| Ejecución | Resultado | Tokens entrada / salida | Turnos |
+|---|---|---|---|
+| A, intento 1 | Falla: cita `DOC-17#F003 sigue` (esquema y `REF-FRAG`) | 186.752 / 32.399 | 5 |
+| A, intento 2 | Válido; **detenida al empezar a compactar** después de escribir | sin dato | — |
+| B, intento 1 | Falla: cita `DOC-03#F285`, un número de línea (en esa línea está `DOC-03#F055`), y 2 errores más | 120.330 / 34.870 | 5 |
+| B, intento 2 | Válido | 189.278 / 24.511 | 5 |
+| Árbitro | Válido; **detenido al empezar a compactar** después de escribir | sin dato | — |
+
+- **Elementos:** A propone 299 requisitos y B 192. La unión tiene 209: 180 de ambas, 28 solo de A y 1 solo de B, ninguna discrepancia y 3 descartados.
+- **Duración:** 12 minutos el trabajo entero.
+- **El corte al compactar funciona,** y dos veces en el mismo trabajo: el intento 2 de A y el árbitro escriben su salida, Claude Code empieza a compactar antes del veredicto y la plataforma acepta la salida. La compactación llega al final porque el contexto suma la base, el prompt, la documentación leída y el propio `Write` del catálogo, unos 32.000 tokens en SOL, y la reparación añade el catálogo anterior con sus errores.
+- **Las dos reparaciones las provocan citas mal copiadas,** no el contenido: la marca `sigue` en SOL y un número de línea en LUNA, que vuelve a aparecer aunque no se vio en la prueba anterior. Cada reparación cuesta unos 190.000 tokens de entrada.
+- **El coste del informe se queda corto:** las ejecuciones detenidas no tienen dato de consumo, porque Claude Code solo lo da en su evento final. A través de la pasarela, el consumo de cada mensaje llega a 0 (comprobado en las capturas reales de `tests/fixtures/stream-json/`), así que no se puede sumar por mensajes. Los 496.360 tokens de entrada y 91.780 de salida del informe son de A1, B1 y B2.
+
+Cambios de la plataforma tras esta prueba (sin cambiar los prompts):
+- **La plataforma quita la marca `sigue`** de los fragmentos citados antes de validar y de guardar la salida (`FragmentCitations`), igual que quita los prefijos de las propuestas del árbitro. Habría evitado la reparación de A.
+- **El informe dice cuántas ejecuciones no tienen dato de consumo** (columna `ejecuciones_sin_consumo` en el CSV), y la web avisa de que los tokens son un mínimo.
+- **La consola ya no dice «Terminada: Failed»** en una ejecución detenida después de escribir su salida: dice que se detuvo y que la plataforma revisa la salida.
+
 ### Qué hay que mejorar
 
 - Si el árbitro sigue sin caber con propuestas aún más grandes, hará falta un árbitro por partes (por tipo de requisito o por documento).
 - Parar una ejecución que compacta varias veces seguidas antes de escribir su salida, en lugar de dejar que agote los turnos (cada compactación cuesta casi 100.000 tokens). Pendiente de que lo decida el autor.
-- Quitar la marca `sigue` de un id citado (`DOC-06#F455 sigue` → `DOC-06#F455`) en la plataforma, en lugar de gastar una reparación.
+- ~~Quitar la marca `sigue` de un id citado en la plataforma, en lugar de gastar una reparación.~~ Hecho el 15-10-2026 (`FragmentCitations`).
+- LUNA sigue citando a veces números de línea como fragmentos. Corregirlo en la plataforma (cuando el fragmento no existe y la línea con ese número es inequívoca) sería decidir por el modelo: pendiente de que lo decida el autor.
+- Las ejecuciones detenidas no tienen dato de consumo. Solo se podría estimar a partir del texto leído y escrito; hoy el informe lo marca como mínimo.
 
 ## v0.6 (14-10-2026)
 

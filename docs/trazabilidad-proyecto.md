@@ -98,6 +98,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Paso 66:** README y documentación al día.
 - **Preparación del paso 65:** dos proyectos ficticios de análisis (mediano: banco de alimentos, 7 archivos; grande: red de clínicas veterinarias, 21 archivos) en formatos variados, con contradicciones y huecos puestos a propósito como referencia para evaluar las preguntas.
 - **Trazabilidad:** bitácora detallada y este fichero, recuperados de toda la conversación, en `docs/` y mantenidos al día en cada sesión.
+- **Primer catálogo del proyecto grande de ejemplo:** 299 y 192 requisitos, unión de 209 en 12 minutos. A raíz de él, la plataforma quita la marca `sigue` de las citas (evita una reparación), el informe avisa cuando el consumo es un mínimo (las ejecuciones detenidas no lo dan) y la consola deja de decir «Failed» al detener una ejecución con la salida ya escrita.
 - **Preguntas:** botón «Aprobar todas las sugerencias» de una ronda, visible solo cuando la IA ha sugerido la respuesta de todas sus preguntas pendientes.
 
 ## Evolución de los prompts
@@ -122,7 +123,8 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - Origen de los embeddings y umbral de «discrepancia grave», para el árbitro con embeddings.
 - Si se paran las ejecuciones que compactan varias veces antes de escribir su salida.
 - Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
-- Quitar automáticamente la marca `sigue` de los fragmentos citados.
+- Si la plataforma corrige las citas que son números de línea (LUNA) cuando la línea es inequívoca.
+- Si se estima el consumo de las ejecuciones detenidas antes del final.
 - Abaratar las pantallas del mockup y un posible historial de mockups.
 - Prompt de sugerencias más conservador y marcar en el catálogo lo que viene de una respuesta de la IA.
 
@@ -135,5 +137,5 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Cifras de seguimiento
 
-- **Commits:** 143 entre el 28-09 y el 15-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 827 (15-10).
+- **Commits:** 145 entre el 28-09 y el 15-10-2026.
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 829 (15-10).

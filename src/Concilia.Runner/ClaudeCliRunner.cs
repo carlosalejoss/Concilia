@@ -229,10 +229,23 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
     private static bool IsTruncatedToolCall(ToolResultEvent toolResult) =>
         toolResult.IsError && toolResult.Content.Contains("could not be parsed as JSON", StringComparison.Ordinal);
 
+    // The last line of the console. A run stopped after writing its output is
+    // Failed for the runner (it never got to the verdict), but its output is
+    // usually good and the platform reviews it next: "Terminada: Failed" made
+    // it look like an error (15-10-2026), so the line says what happened.
     private static RunResult Finish(Action<RunEvent> onEvent, RunResult result)
     {
+        if (result.ErrorMessage == CompactingAfterOutput)
+        {
+            onEvent(new RunEvent(RunEventKind.Finished, StoppedAfterOutputLine));
+            return result;
+        }
         var detail = result.ErrorMessage is null ? "" : $": {EventSummaries.Truncate(result.ErrorMessage, EventSummaries.MaxTextLength)}";
         onEvent(new RunEvent(RunEventKind.Finished, $"Terminada: {result.Status}{detail}"));
         return result;
     }
+
+    public const string StoppedAfterOutputLine =
+        "Detenida: la salida ya estaba escrita y Claude Code empezó a compactar el contexto antes del veredicto. " +
+        "La plataforma revisa la salida.";
 }

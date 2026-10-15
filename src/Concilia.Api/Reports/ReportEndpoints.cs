@@ -44,7 +44,7 @@ public static class ReportEndpoints
 
     private static readonly string[] Columns =
     [
-        "fecha", "trabajo", "tipo", "resultado", "tokens_entrada", "tokens_salida", "segundos", "reparaciones",
+        "fecha", "trabajo", "tipo", "resultado", "tokens_entrada", "tokens_salida", "ejecuciones_sin_consumo", "segundos", "reparaciones",
         "elementos_A", "elementos_B", "elementos_union", "de_ambas", "solo_A", "solo_B", "discrepancias", "descartados",
         "usuario_conservados", "usuario_modificados", "usuario_anadidos", "usuario_borrados",
         "preguntas", "respondidas", "descartadas", "pendientes", "respuestas_usuario", "respuestas_ia", "respuestas_ia_editadas",
@@ -54,7 +54,7 @@ public static class ReportEndpoints
     private static IEnumerable<object?> Row(JobReport r) =>
     [
         r.CreatedAt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture), r.JobId, r.Kind, r.Succeeded ? "ok" : "fallo",
-        r.InputTokens, r.OutputTokens, r.Seconds is { } s ? Math.Round(s) : null, r.Repairs,
+        r.InputTokens, r.OutputTokens, r.RunsWithoutUsage, r.Seconds is { } s ? Math.Round(s) : null, r.Repairs,
         r.Elements?.A, r.Elements?.B, r.Elements?.Merged, r.Elements?.Both, r.Elements?.OnlyA, r.Elements?.OnlyB,
         r.Elements?.Discrepancies, r.Elements?.Discarded,
         r.Changes?.Kept, r.Changes?.Modified, r.Changes?.Added, r.Changes?.Deleted,
@@ -132,7 +132,8 @@ public static class ReportEndpoints
         }
 
         return new JobReport(job.Id, job.Kind, job.CreatedAt, job.FinishedAt, succeeded, result?["mensaje"]?.GetValue<string>(),
-            runs.Sum(r => r.InputTokens ?? 0), runs.Sum(r => r.OutputTokens ?? 0), runs.Count(r => r.Attempt > 1),
+            runs.Sum(r => r.InputTokens ?? 0), runs.Sum(r => r.OutputTokens ?? 0),
+            runs.Count(r => r.StartedAt is not null && r.InputTokens is null), runs.Count(r => r.Attempt > 1),
             job.FinishedAt is { } finished ? (finished - job.CreatedAt).TotalSeconds : null,
             lines, elements, changes, changesNote, questions);
     }

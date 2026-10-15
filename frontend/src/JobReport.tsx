@@ -6,6 +6,7 @@ type Report = {
   succeeded: boolean
   inputTokens: number
   outputTokens: number
+  runsWithoutUsage: number
   repairs: number
   seconds: number | null
   elements: { a: number | null; b: number | null; merged: number; both: number; onlyA: number; onlyB: number; discrepancies: number; discarded: number } | null
@@ -43,6 +44,13 @@ function JobReport({ jobId, finished }: { jobId: string; finished: boolean }) {
         <Line label="Coste">
           {number(report.inputTokens)} tokens de entrada y {number(report.outputTokens)} de salida · {minutes(report.seconds)} ·{' '}
           {report.repairs === 1 ? '1 reparación' : `${report.repairs} reparaciones`}
+          {/* Runs stopped before Claude Code's last line leave no token counts: the figure is a minimum. */}
+          {report.runsWithoutUsage > 0 && (
+            <span className="block text-xs text-warn">
+              Como mínimo: {report.runsWithoutUsage === 1 ? '1 ejecución no tiene' : `${report.runsWithoutUsage} ejecuciones no tienen`} dato de
+              consumo, porque se detuvieron antes de que Claude Code lo diera.
+            </span>
+          )}
         </Line>
         {elements && (
           <Line label="Elementos">
