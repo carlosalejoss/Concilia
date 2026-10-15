@@ -1304,3 +1304,17 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Pendientes:**
   - **Paso 65:** ejecutar los dos proyectos de ejemplo, analizar sus CSV y cerrar el hito 13.
   - Las decisiones abiertas de la sesión anterior, sin cambios.
+
+---
+
+## 15-10-2026, 12:20 (sesión)
+
+**Resumen para la bitácora (15-10-2026, doble barra de desplazamiento)**
+
+- **Qué se hizo:** corregida la segunda barra de desplazamiento vertical de la web, que dejaba bajar muy por debajo del contenido.
+  - **Causa:** las etiquetas ocultas para lectores de pantalla (`sr-only`, como el estado de cada pregunta) tienen posición absoluta. Como ningún contenedor estaba posicionado, colgaban de la página y no de la zona de contenido. Por eso escapaban del `overflow-hidden` del contenedor y estiraban la página hasta donde quedaba la última de una lista larga.
+  - **Arreglo:** la zona de contenido (`<main>`) pasa a ser `relative`.
+  - **Comprobación:** reproducción mínima en Chrome sin interfaz. Sin el cambio, la página medía 3.001 px con una ventana de 705; con el cambio, lo mismo que la ventana.
+- **Decisiones:** ninguna nueva.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:** el autor confirma el arreglo en el navegador; el paso 65 sigue pendiente.
