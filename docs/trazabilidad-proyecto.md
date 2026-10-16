@@ -103,6 +103,33 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Mockup del proyecto grande de ejemplo:** 38 pantallas con las 109 historias (1,54 MB). La P34 falló por un 504 puntual de la pasarela y se recuperó al reanudar al día siguiente (16-10), aprovechando las otras 37.
 - **Una tarea cada vez en toda la plataforma:** mientras se ejecuta una, la API rechaza cualquier otro lanzamiento y la web apaga los botones de lanzar y dice qué tarea está en marcha y en qué proyecto.
 - **Preguntas:** botón «Aprobar todas las sugerencias» de una ronda, visible solo cuando la IA ha sugerido la respuesta de todas sus preguntas pendientes.
+- **Resultados del proyecto grande de ejemplo (16-10):** el flujo completo trata como se esperaba las 26 contradicciones y huecos puestos a propósito. Pero la unión del árbitro se parece mucho a la propuesta de A, lo que abre la pregunta clave de la sección siguiente.
+
+## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
+
+> **Prioridad alta (autor, 16-10-2026).** Afecta al valor de la verificación cruzada, que es la idea central del TFG.
+
+**Lo observado** en el proyecto grande de ejemplo, con A y el árbitro con `SS - GPT-6-SOL` y B con `SS - GPT-6-LUNA`:
+
+| Fase | Propone A | Propone B | Unión del árbitro | De ambas | Solo de A | Solo de B |
+| --- | --- | --- | --- | --- | --- | --- |
+| Preguntas | 50 | 17 | 55 | 11 | 38 | 6 |
+| Catálogo | 299 | 192 | 209 | 180 | 28 | 1 |
+| Backlog | 109 | 54 | 109 | 89 | 20 | 0 |
+
+A propone mucho más que B, y la unión se parece mucho a A: lo que aporta solo B son 6 preguntas, 1 requisito y ninguna historia.
+
+**Dos explicaciones posibles:**
+1. **A es simplemente más completo:** SOL cubre más de la documentación y lo que propone B ya está en A.
+2. **El árbitro prefiere la propuesta de su mismo modelo.** El árbitro también es SOL. Las propuestas le llegan anónimas y en orden aleatorio, pero podría reconocer y favorecer el estilo de su propio modelo.
+
+**Por qué importa:** si pasa lo segundo, la verificación cruzada pierde parte de su valor. El resultado dependería de qué modelo hace de árbitro más que de lo que aportan los dos, y la memoria tendría que reconocerlo como una limitación o proponer cómo corregirlo.
+
+**Cómo comprobarlo:** repetir una fase con el mismo documento cambiando solo el reparto de modelos, por ejemplo con `SS - GPT-6-LUNA` de árbitro (`RUNNER_MODEL_ARBITER`), y comparar qué parte de la unión viene de A y de B.
+- Si con LUNA de árbitro la unión sigue pareciéndose a A, es que A es más completo.
+- Si pasa a parecerse a B, hay preferencia del árbitro por su propio modelo.
+- Para que sea comparable, conviene repetir cada configuración 2 o 3 veces, por la variabilidad entre ejecuciones.
+- Lo más barato es hacerlo en la fase de preguntas o en la del backlog; el informe por trabajo ya da los recuentos necesarios.
 
 ## Evolución de los prompts
 
@@ -123,6 +150,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Decisiones que siguen abiertas
 
+- **Si el árbitro prefiere a su propio modelo** y, si es así, cómo se corrige (por ejemplo, un árbitro de un modelo distinto al de A y B, o rotar los papeles). Ver la sección «Pregunta clave para la evaluación».
 - Origen de los embeddings y umbral de «discrepancia grave», para el árbitro con embeddings.
 - Si se paran las ejecuciones que compactan varias veces antes de escribir su salida.
 - Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
@@ -135,12 +163,14 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 ## Siguientes pasos
 
 1. **Paso 65:** ejecutar los dos proyectos de ejemplo, analizar sus CSV y cerrar el hito 13.
-2. Retomar el hito 7 (catálogo v2) como mejora del prompt del catálogo.
-3. Árbitro con embeddings.
+2. **Comprobar si el árbitro prefiere a su propio modelo** (prioridad alta, ver la sección «Pregunta clave para la evaluación»): repetir una fase con otro reparto de modelos.
+3. Retomar el hito 7 (catálogo v2) como mejora del prompt del catálogo.
+4. Árbitro con embeddings.
+5. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución (ciclo de vida de alto nivel), 3.2 implementación (tripas y prompts) y 4 Evaluación.
+
 - **Aparcado (15-10-2026):** rehacer el mockup del proyecto grande de ejemplo con la suscripción del autor (Sonnet 5.5) y la skill `frontend-design`, para ver si mejora la calidad; se retoma tras el paso 65. Riesgos: agotar el límite de 5 horas de la suscripción (se puede reanudar) y cambiar dos cosas a la vez, el modelo y las skills.
-4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución (ciclo de vida de alto nivel), 3.2 implementación (tripas y prompts) y 4 Evaluación.
 
 ## Cifras de seguimiento
 
-- **Commits:** 150 entre el 28-09 y el 16-10-2026.
+- **Commits:** 151 entre el 28-09 y el 16-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 830 (15-10).
