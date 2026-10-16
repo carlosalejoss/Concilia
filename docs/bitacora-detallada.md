@@ -1529,3 +1529,25 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - desplegar cuando no haya tareas en curso;
   - lanzar los arbitrajes y escribir la tabla comparativa;
   - CSV del proyecto mediano.
+
+---
+
+## 16-10-2026, 11:30 (sesión)
+
+**Resumen para la bitácora (16-10-2026, búsqueda de repositorios útiles)**
+
+- **Qué se hizo:**
+  - **Análisis de `chubozeko/EARS-Rule-Detection`:** trabajo de asignatura, solo en inglés, con 3 de las 6 plantillas EARS, errores de base y sin evaluación. No merece la pena integrarlo.
+  - **Búsqueda de repositorios y herramientas** de generación y validación de requisitos, a petición del autor. Se aceptan herramientas solo en inglés, porque el catálogo se puede generar en inglés para comprobarlo.
+- **Candidatos más útiles:**
+  - **Modelo de embeddings multilingüe** (`paraphrase-multilingual-MiniLM-L12-v2`, ONNX, Apache 2.0) ejecutado en local desde .NET: resolvería que la pasarela no ofrece embeddings y daría una referencia objetiva para la prueba del sesgo del árbitro.
+  - **AQUSA (`RELabUU/aqusa-core`, MIT):** calidad de historias de usuario según los criterios QUS, sobre el backlog en inglés.
+  - **Analizador oficial de Gherkin (`cucumber/gherkin`, MIT, con implementación .NET):** exportar los criterios del backlog a ficheros `.feature` y validarlos.
+  - **`vale-ears` (MIT):** comprobación barata de EARS sobre el catálogo en inglés.
+  - **Dataset PURE (79 documentos públicos, CC BY 4.0):** candidato para el segundo documento público del paso 65.
+- **Solo como estado del arte:** Paska, Smella, QuARS, NoRBERT, MARE, Elicitron, ReqInOne y la lista `nlp4re-tools` (126 herramientas). No se encontró código mantenido de varios de ellos.
+- **Decisiones:**
+  - **Del autor:** no añadir de momento la comprobación propia de la plantilla EARS, porque no lo ve claro.
+  - Ninguna integración decidida todavía.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:** que el autor elija qué candidatos integrar; los arbitrajes del proyecto grande; el CSV del mediano.
