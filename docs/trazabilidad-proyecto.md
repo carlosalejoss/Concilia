@@ -26,7 +26,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 13-10 | Hito 14 y ajustes | Interfaz nueva; mockup por partes; flujo completo con el documento B; nombre Concilia |
 | 14-10 | Hitos 15 y 16 | Más tipos de archivo, referencia de estilo, mockup como aplicación, árbitro con documentos grandes |
 | 15-10 | Mockup v0.8 y v0.9, hito 13 | Mockup navegable de verdad; test del flujo completo, informes y proyectos de ejemplo |
-| 15-10 y 16-10 | Paso 65 con el proyecto grande de ejemplo | Catálogo, backlog y mockup de 38 pantallas; una tarea cada vez en toda la plataforma |
+| 15-10 y 16-10 | Paso 65 con el proyecto grande de ejemplo | Flujo completo (unos 105 min y al menos 5,2 M tokens de entrada, el 63 % en el mockup); las 26 contradicciones puestas a propósito se tratan como se esperaba; A propone mucho más que B y la unión se parece a A |
 
 ## Etapas
 
@@ -142,5 +142,5 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Cifras de seguimiento
 
-- **Commits:** 149 entre el 28-09 y el 16-10-2026.
+- **Commits:** 150 entre el 28-09 y el 16-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 830 (15-10).

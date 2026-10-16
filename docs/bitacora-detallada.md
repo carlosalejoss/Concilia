@@ -1450,3 +1450,36 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - Decidir si la plataforma quita las etiquetas de documento de las pantallas en lugar de pedir una reparación.
   - Cerrar los trabajos interrumpidos al reiniciar la API.
   - Paso 65: los dos CSV.
+
+---
+
+## 16-10-2026, 09:10 (sesión)
+
+**Resumen para la bitácora (16-10-2026, paso 65: análisis del proyecto grande de ejemplo)**
+
+- **Qué se hizo:** análisis del CSV del proyecto grande (guardado en `docs/resultados-paso-65/informe-proyecto-grande.csv`) y de sus preguntas y su catálogo frente a las 26 contradicciones y huecos puestos a propósito (G1–G26 de `ejemplos/README.md`).
+- **Cifras del flujo completo:**
+  - **Total:** al menos 5,18 M tokens de entrada y 1,12 M de salida (3 ejecuciones sin dato de consumo) y unos 105 minutos de ejecución.
+  - **Por fases:**
+    - preguntas: 1,09 M de entrada, 8 min, 2 reparaciones;
+    - sugerencias: 0,10 M, 2,5 min;
+    - catálogo: 0,50 M, 12 min, 2 reparaciones;
+    - backlog: 0,21 M, 9 min, ninguna reparación;
+    - mockup: 3,28 M (el 63 % de la entrada y el 79 % de la salida), 73 min.
+- **Contradicciones (G1–G26):** el comportamiento es el esperado en las 26.
+  - **Resueltas en un documento posterior (14):** ninguna se pregunta de nuevo, y el catálogo recoge la decisión final en todas. Por ejemplo, cancelar con 12 h por la app, el Plan Adulto del correo, el recordatorio configurable de 7 días y el día anterior, y las urgencias de Huellas Norte desde marzo de 2027.
+  - **Abiertas (5: G5, G16, G17, G18 y G21):** las 5 salen como preguntas; 4 las detectan los dos modelos y 1 (G17, sin conexión) solo A.
+  - **Huecos de un solo documento (6):** los 6 están en el catálogo, y 3 se preguntan además para concretar detalles.
+  - **Fuera de alcance (G26, puntos):** no aparece en el catálogo, como debe ser.
+- **Hallazgos para la evaluación:**
+  - **A (SOL) propone mucho más que B (LUNA):** 50 frente a 17 preguntas, 299 frente a 192 requisitos y 109 frente a 54 historias. La unión del árbitro se parece mucho a A: lo que aporta solo B son 6 preguntas, 1 requisito y ninguna historia.
+    - Puede ser que A sea más completo, o que el árbitro (también SOL) prefiera la propuesta de su mismo modelo aunque no sepa cuál es.
+    - Para distinguirlo habría que repetir con otro reparto de modelos, por ejemplo el árbitro con LUNA.
+  - **Las 55 respuestas son sugerencias de la IA aceptadas tal cual,** todas marcadas como suposición. Las 5 contradicciones abiertas las resolvió la IA y no el cliente, y esas suposiciones pasaron al catálogo.
+  - **El catálogo y el backlog se validaron sin cambios** (209 y 109 conservados), así que la métrica de cambios del usuario no dice nada en este proyecto.
+- **Límites del método:** los documentos de ejemplo, la lista G1–G26 y la comprobación los ha hecho Claude. El emparejamiento se hizo por palabras clave y leyendo, así que conviene que el autor lo revise.
+- **Decisiones:** ninguna.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:**
+  - CSV del proyecto mediano y documento de resultados del paso 65, con los dos proyectos.
+  - Valorar una ejecución con otro reparto de modelos para el posible sesgo del árbitro.

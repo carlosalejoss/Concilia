@@ -1,0 +1,7 @@
+fecha;trabajo;tipo;resultado;tokens_entrada;tokens_salida;ejecuciones_sin_consumo;segundos;reparaciones;elementos_A;elementos_B;elementos_union;de_ambas;solo_A;solo_B;discrepancias;descartados;usuario_conservados;usuario_modificados;usuario_anadidos;usuario_borrados;preguntas;respondidas;descartadas;pendientes;respuestas_usuario;respuestas_ia;respuestas_ia_editadas;mensaje
+2026-10-16 06:31;e1cffff0-0af2-4398-90bd-36e1dbd11488;mockup;ok;68530;18906;0;152;0;;;;;;;;;;;;;;;;;;;;Mockup generado: 38 pantallas. Con las 109 historias del backlog validado.
+2026-10-15 10:38;ca41356d-16dd-4ef5-a9a1-76e8471b2bdc;mockup;fallo;3215390;869889;0;4255;4;;;;;;;;;;;;;;;;;;;;No terminaron con una salida válida: P34. Se puede reanudar, aprovechando los pasos que terminaron bien, o generar de nuevo.
+2026-10-15 10:27;223f1efe-bb3e-42ed-b34f-8ddd43e11c85;backlog;ok;211741;60286;1;545;0;109;54;109;89;20;0;2;0;109;0;0;0;;;;;;;;Unión del árbitro.
+2026-10-15 10:11;2b5e1fe9-e828-48a1-aaf5-0c63077c8cad;catalog-v0;ok;496360;91780;2;702;2;299;192;209;180;28;1;0;3;209;0;0;0;;;;;;;;Unión del árbitro.
+2026-10-15 09:01;a83591b2-9326-4cd7-948b-5c6d5a2418e0;answer-suggestions;ok;97511;15900;0;156;0;;;;;;;;;;;;;;;;;;;;Salida de un solo modelo.
+2026-10-15 08:52;9637d55f-5c00-4bb5-a040-aeb01856a4cb;questions;ok;1092194;62659;0;481;2;50;17;55;11;38;6;0;1;;;;;55;55;0;0;0;55;0;Unión del árbitro.
