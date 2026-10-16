@@ -156,7 +156,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 ## Decisiones que siguen abiertas
 
 - **Si el árbitro prefiere a su propio modelo** y, si es así, cómo se corrige (por ejemplo, un árbitro de un modelo distinto al de A y B, o rotar los papeles). Ver la sección «Pregunta clave para la evaluación».
-- Origen de los embeddings y umbral de «discrepancia grave», para el árbitro con embeddings.
+- Umbral de «discrepancia grave», para el árbitro con embeddings (hito 19). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
 - Si se paran las ejecuciones que compactan varias veces antes de escribir su salida.
 - Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
 - Si la plataforma corrige las citas que son números de línea (LUNA) cuando la línea es inequívoca.
@@ -171,9 +171,9 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.md` como hitos 17 a 22:
 
 1. **Terminar el experimento de si el árbitro prefiere a su propio modelo** (prioridad alta; ver la sección «Pregunta clave para la evaluación»). Es el paso 103 del hito 22.
-2. **Hito 17, fiabilidad y calidad:** LUNA, reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
-3. **Hito 18, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
-4. **Hito 19, embeddings en local:** cierra la decisión abierta del origen de los embeddings y lleva al árbitro con embeddings.
+2. **Hito 19, embeddings en local (el siguiente, autor 16-10-2026):** modelo multilingüe en el contenedor de la API, emparejamiento de A y B por significado y árbitro con embeddings. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
+3. **Hito 17, fiabilidad y calidad:** LUNA, reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
+4. **Hito 18, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
 5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
 6. **Hito 21, historial de versiones de los entregables.**
 7. **Hito 22, evaluación:** métricas externas, un documento de PURE y una prueba editando de verdad.
@@ -184,5 +184,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 159 entre el 28-09 y el 16-10-2026.
+- **Commits:** 160 entre el 28-09 y el 16-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 835 (16-10).

@@ -9,7 +9,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - No se pule la interfaz hasta que exista el árbitro.
 - Decisiones abiertas que afectan al plan: origen de los embeddings y umbral de discrepancia grave (antes del árbitro con embeddings). La jerarquía del backlog y el modelo del árbitro se cerraron el 08-10-2026 (ver la iteración v0).
 - Desde el 08-10-2026 se trabaja en la iteración v0 (hitos 8 a 13) antes que en el hito 7.
-- Desde el 16-10-2026, con los hitos 8 a 16 terminados, se sigue con los hitos 17 a 22 (fiabilidad, exportar, embeddings, trazabilidad, historial y evaluación), acordados con el autor. Los pasos marcados «por decidir» esperan a que el autor elija antes de empezarlos.
+- Desde el 16-10-2026, con los hitos 8 a 16 terminados, se sigue con los hitos 17 a 22 (fiabilidad, exportar, embeddings, trazabilidad, historial y evaluación), acordados con el autor. Los pasos marcados «por decidir» esperan a que el autor elija antes de empezarlos. Orden (autor, 16-10-2026): primero el hito 19 (embeddings), justo después de terminar el experimento del árbitro; luego 17, 18, 20, 21 y 22.
 
 ## Hito 0: preparación y prueba de humo (completado)
 
@@ -393,9 +393,9 @@ Acordado con el autor el 16-10-2026. Hoy todo se queda dentro de la web.
 
 ## Hito 19: embeddings en local
 
-Resuelve la decisión abierta desde el principio (el origen de los embeddings): la pasarela no los ofrece. Propuesta (16-10-2026): el modelo `paraphrase-multilingual-MiniLM-L12-v2` (ONNX, Apache 2.0, español e inglés), ejecutado con ONNX Runtime dentro del contenedor de la API, sin servicios nuevos.
+**Es el siguiente hito** (autor, 16-10-2026: «quiero usarlos al 100 %, pueden aportar mucho valor al TFG»). Resuelve la decisión abierta desde el principio (el origen de los embeddings): la pasarela no los ofrece. Decidido por el autor (16-10-2026): el modelo `paraphrase-multilingual-MiniLM-L12-v2` (ONNX, Apache 2.0, español e inglés), ejecutado con ONNX Runtime dentro del contenedor de la API, sin servicios nuevos.
 
-- [ ] 95. **Decisión del autor:** origen de los embeddings y umbral de «discrepancia grave».
+- [ ] 95. **Decisión del autor:** origen de los embeddings, decidido el 16-10-2026 (el modelo local de arriba), y umbral de «discrepancia grave», que se calibra con datos reales en el paso 97 antes de fijarlo.
 - [ ] 96. Servicio de embeddings en la API: el modelo, el tokenizador y el cálculo del vector de un texto, y la similitud entre dos textos, con tests.
 - [ ] 97. Emparejamiento de A y B por significado, fuera del LLM: qué elementos de A y de B dicen lo mismo y cuáles solo están en uno. Es la referencia objetiva del experimento del sesgo del árbitro (`docs/experimento-sesgo-arbitro.md`).
 - [ ] 98. Árbitro con embeddings, como estaba en el diseño original: el emparejamiento se calcula antes, el LLM explica y fusiona, y la discrepancia grave la marca el umbral.
