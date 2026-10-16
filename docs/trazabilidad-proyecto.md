@@ -170,9 +170,10 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 4. Árbitro con embeddings.
 5. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución (ciclo de vida de alto nivel), 3.2 implementación (tripas y prompts) y 4 Evaluación.
 
+- **Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub (detalle en la bitácora): embeddings multilingües en local (árbitro y prueba del sesgo), AQUSA para las historias, el analizador de Gherkin, `vale-ears` para EARS en inglés y el dataset PURE como documento público.
 - **Aparcado (15-10-2026):** rehacer el mockup del proyecto grande de ejemplo con la suscripción del autor (Sonnet 5.5) y la skill `frontend-design`, para ver si mejora la calidad; se retoma tras el paso 65. Riesgos: agotar el límite de 5 horas de la suscripción (se puede reanudar) y cambiar dos cosas a la vez, el modelo y las skills.
 
 ## Cifras de seguimiento
 
-- **Commits:** 152 entre el 28-09 y el 16-10-2026.
+- **Commits:** 153 entre el 28-09 y el 16-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 830 (15-10).
