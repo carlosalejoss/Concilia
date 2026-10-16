@@ -72,6 +72,8 @@ Por cada arbitraje, el informe del trabajo (también en el CSV del proyecto, con
 ## Incidencias
 
 - **16-10-2026, catálogo con LUNA de árbitro, segundo intento:** el árbitro escribió un `de` con `"propuesta_2"` dos veces. La revisión de la plataforma falló con un error interno, porque `JsonNode` no admite claves repetidas, en lugar de pedir una reparación. Se corrigió el mismo día (`CLAVE-DUP`). Ese arbitraje no cuenta y se repite.
+- **16-10-2026, catálogo con LUNA de árbitro, tercer intento:** el primer intento del árbitro necesitó reparación. La reparación (el prompt original más el catálogo anterior entero, unos 30.000 tokens, y sus errores) no cabía en el contexto junto con las dos propuestas. Claude Code intentó compactar, la compactación falló (`too_few_groups`) y las peticiones a la pasarela empezaron a fallar. No cuenta. Arreglo del mismo día: la plataforma junta ella misma las claves repetidas cuando son listas, sin reparación. Pendiente de decidir: reparar editando solo los elementos con errores, en lugar de reescribir la salida entera.
+- **Dato para la evaluación:** como árbitro del catálogo, **LUNA falla más que SOL.** De 3 intentos, 1 terminó bien y 2 fallaron por errores de formato que la reparación no pudo arreglar. SOL terminó a la primera. Si solo se cuentan los arbitrajes válidos, LUNA se compara en sus mejores ejecuciones, así que la tasa de fallos se declara junto a los resultados.
 
 ## Resultados
 

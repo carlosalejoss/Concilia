@@ -174,21 +174,57 @@ public class PhaseTaskTests
 
     // 16-10-2026: LUNA, as the arbiter of a catalog, wrote "propuesta_2" twice
     // in a `de`. JsonNode throws on a repeated key, and the review ended with an
-    // internal error instead of a repair.
+    // internal error; then the repair of the whole catalog did not fit in the
+    // context. Two lists are joined by the platform; anything else asks for a repair.
+    [Fact]
+    public void Repeated_keys_with_lists_are_joined()
+    {
+        const string output = """{"requisitos":[{"id":"RF-001","de":{"propuesta_2":["2:RF-001"],"propuesta_1":["1:RF-004"],"propuesta_2":["2:RF-002","2:RF-001"]}}]}""";
+
+        var de = JsonNode.Parse(JsonDuplicates.Merge(output)!)!["requisitos"]![0]!["de"]!;
+
+        Assert.Equal(["2:RF-001", "2:RF-002"], de["propuesta_2"]!.AsArray().Select(x => x!.GetValue<string>()));
+        Assert.Equal(["1:RF-004"], de["propuesta_1"]!.AsArray().Select(x => x!.GetValue<string>()));
+        Assert.Equal(["requisitos[0].de: propuesta_2"], JsonDuplicates.Find(output));
+        const string plain = """{"a":[1]}""";
+        Assert.Same(plain, JsonDuplicates.Merge(plain)); // nothing repeated: the same text
+    }
+
+    [Fact]
+    public void An_arbiter_output_with_a_repeated_list_is_accepted_with_a_warning()
+    {
+        var phase = PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Arbiter);
+        // The first `de` of the example, with its propuesta_2 split in two.
+        var output = File.ReadAllText(Example("catalogo_arbitro.json"))
+            .Replace("\"propuesta_2\":[\"RF-001\"]}", "\"propuesta_2\":[],\"propuesta_2\":[\"RF-001\"]}");
+        Assert.Single(JsonDuplicates.Find(output));
+        var context = Context() with
+        {
+            Proposal1 = File.ReadAllText(Example("catalogo_propuesta_1.json")),
+            Proposal2 = File.ReadAllText(Example("catalogo_propuesta_2.json")),
+        };
+
+        var review = PhaseTask.Review(phase, output, context, "PROMPT", 1);
+
+        Assert.True(review.Valid, string.Join(" | ", review.Validation.Errors));
+        Assert.Contains(review.Validation.Warnings, w => w.Contains("CLAVE-DUP: clave repetida unida por la plataforma"));
+        Assert.Empty(JsonDuplicates.Find(PhaseTask.Clean(output)!)); // what is kept has it joined
+    }
+
     [Theory]
     [InlineData(PhaseRole.Proposal)]
     [InlineData(PhaseRole.Arbiter)]
-    public void A_repeated_key_asks_for_a_repair_instead_of_failing(PhaseRole role)
+    public void A_repeated_key_that_is_not_a_list_asks_for_a_repair_instead_of_failing(PhaseRole role)
     {
         var phase = PhaseDefinition.For(PhaseKind.Catalog, role);
-        const string output = """{"requisitos":[{"id":"RF-001","de":{"propuesta_2":["2:RF-001"],"propuesta_2":["2:RF-002"]}}]}""";
+        const string output = """{"requisitos":[{"id":"RF-001","texto":"Uno","texto":"Otro"}]}""";
 
         var review = PhaseTask.Review(phase, output, Context(), "PROMPT", 1);
 
         Assert.False(review.Valid);
         var error = Assert.Single(review.Validation.Errors);
         Assert.Contains("CLAVE-DUP", error);
-        Assert.Contains("requisitos[0].de: propuesta_2", error);
+        Assert.Contains("requisitos[0]: texto", error);
         Assert.NotNull(review.RepairPrompt);
     }
 
