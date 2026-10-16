@@ -134,6 +134,8 @@ A propone mucho más que B, y la unión se parece mucho a A: lo que aporta solo 
 
 **Experimento en curso (16-10-2026):** en preguntas y catálogo, 3 arbitrajes con SOL (el original más 2 nuevos) y 3 con LUNA sobre las mismas propuestas. Se repite 3 veces porque el mismo árbitro no da siempre el mismo resultado: así se distingue una diferencia real de una casualidad. El backlog se deja fuera porque depende del catálogo.
 
+**Resultado (16-10-2026): no hay preferencia del árbitro por su propio modelo.** Con las mismas propuestas, lo que entra solo de B es igual con SOL y con LUNA de árbitro: 6 en los 6 arbitrajes de preguntas, y una media de 2,7 con SOL y 1,5 con LUNA en el catálogo. La unión se parece a A porque A propone más y casi todo lo que propone B ya está en A. Hallazgo secundario: LUNA es poco fiable como árbitro de un catálogo grande (2 válidos de 6 intentos, frente a 3 de 3 de SOL), por errores de formato y tamaño. Detalle en `experimento-sesgo-arbitro.md`.
+
 **Herramienta (16-10-2026):** «Volver a arbitrar» repite solo el árbitro de un trabajo terminado sobre las mismas propuestas de A y B, con el modelo que se elija, sin cambiar nada del proyecto. Así lo único que cambia es el árbitro. El plan es hacer 3 arbitrajes con SOL y 3 con LUNA sobre el proyecto grande y comparar las proporciones de A y B en la unión.
 
 ## Evolución de los prompts
@@ -155,7 +157,6 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Decisiones que siguen abiertas
 
-- **Si el árbitro prefiere a su propio modelo** y, si es así, cómo se corrige (por ejemplo, un árbitro de un modelo distinto al de A y B, o rotar los papeles). Ver la sección «Pregunta clave para la evaluación».
 - Umbral de «discrepancia grave», para el árbitro con embeddings (hito 17, paso 87). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
 - Si se paran las ejecuciones que compactan varias veces antes de escribir su salida.
 - Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
@@ -170,7 +171,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.md` como hitos 17 a 22:
 
-1. **Terminar el experimento de si el árbitro prefiere a su propio modelo** (prioridad alta; ver la sección «Pregunta clave para la evaluación»). Es el paso 103 del hito 22.
+1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
 2. **Hito 17, embeddings en local (el siguiente):** modelo multilingüe en el contenedor de la API, emparejamiento de A y B por significado y árbitro con embeddings. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
 3. **Hito 18, fiabilidad y calidad:** LUNA, reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
 4. **Hito 19, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
@@ -184,5 +185,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 162 entre el 28-09 y el 16-10-2026.
+- **Commits:** 164 entre el 28-09 y el 16-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 835 (16-10).
