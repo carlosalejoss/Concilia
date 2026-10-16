@@ -1678,3 +1678,22 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - **prioridad:** el hito 19 pasa a ser el siguiente, justo después del experimento, por delante del 17 y el 18.
 - **Cambios de criterio:** se cierra la decisión abierta desde el inicio del proyecto sobre el origen de los embeddings. Sigue abierto el umbral de discrepancia grave, que se calibrará con datos reales en el paso 97.
 - **Pendientes:** el último arbitraje del experimento; empezar el hito 19 (paso 96, servicio de embeddings).
+
+---
+
+## 16-10-2026, 15:45 (sesión)
+
+**Resumen para la bitácora (16-10-2026, estado del experimento y cambio de chat)**
+
+- **Experimento del sesgo del árbitro:**
+  - **Preguntas:** completo, con 3 arbitrajes de SOL y 3 de LUNA.
+  - **Catálogo:** SOL completo (el original, 10:22 y 10:31 UTC); LUNA con 2 válidos de 5 intentos (07:42 y 10:39 UTC).
+  - **Lo que entra solo de B:** en preguntas, 6 en los 6 arbitrajes; en catálogo, 1, 7 y 0 con SOL y 3 y 0 con LUNA.
+  - **Lectura provisional:** A propone más y el árbitro no favorece a su propio modelo.
+  - **Falta:** un último intento de LUNA en el catálogo; si falla, se cierra con 2 válidos.
+- **Fallo del quinto intento de LUNA en el catálogo:** inactividad, reparación y 7 errores de tipo (`RF-066` con tipo `RNF`). La corrección mecánica del prefijo se añade al paso 85 como candidata.
+- **Hallazgo:** como árbitro de un catálogo grande, LUNA es mucho menos fiable que SOL (2 de 5 frente a 3 de 3).
+- **Decisión del autor:** seguir en un chat nuevo, porque este es muy largo. Toda la información para la memoria está en `docs/`, en git, en `CLAUDE.md` y en la memoria persistente.
+- **Pendientes:**
+  - el último arbitraje de LUNA y escribir los resultados del experimento;
+  - empezar el hito 19 (o el 17, si el autor cambia el orden).
