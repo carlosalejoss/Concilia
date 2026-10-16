@@ -75,6 +75,13 @@ Por cada arbitraje, el informe del trabajo (también en el CSV del proyecto, con
 - **16-10-2026, catálogo con LUNA de árbitro, tercer intento:** el primer intento del árbitro necesitó reparación. La reparación (el prompt original más el catálogo anterior entero, unos 30.000 tokens, y sus errores) no cabía en el contexto junto con las dos propuestas. Claude Code intentó compactar, la compactación falló (`too_few_groups`) y las peticiones a la pasarela empezaron a fallar. No cuenta. Arreglo del mismo día: la plataforma junta ella misma las claves repetidas cuando son listas, sin reparación. Pendiente de decidir: reparar editando solo los elementos con errores, en lugar de reescribir la salida entera.
 - **Dato para la evaluación:** como árbitro del catálogo, **LUNA falla más que SOL.** De 3 intentos, 1 terminó bien y 2 fallaron por errores de formato que la reparación no pudo arreglar. SOL terminó a la primera. Si solo se cuentan los arbitrajes válidos, LUNA se compara en sus mejores ejecuciones, así que la tasa de fallos se declara junto a los resultados.
 
+- **16-10-2026, catálogo con LUNA de árbitro, quinto intento:**
+  - el primer intento leyó toda la documentación y se quedó 15 minutos sin actividad (`HeartbeatLost`), y se repitió;
+  - el segundo necesitó una reparación;
+  - la reparación siguió con 7 errores, como `RF-066 TIPO` (un id `RF-` con tipo `RNF`).
+  No cuenta.
+- **Recuento de LUNA como árbitro del catálogo:** 2 válidos de 5 intentos (16-10-2026). SOL: 3 de 3.
+
 ## Resultados
 
 Pendientes. Primer dato, sin valor estadístico todavía: en las preguntas, el primer arbitraje con LUNA dio una unión de 52 (11 de ambas, 35 solo de A y 6 solo de B, 3 descartadas), frente a 55 (11, 38 y 6, 1 descartada) del original con SOL. Lo que entra solo de B no cambia.
