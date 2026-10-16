@@ -14,7 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Generado en 40 min: 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Al autor le convence: «ya se parece mucho a lo que yo busco» |
+| v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Documento C: 40 min, 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Proyecto grande de ejemplo: 38 pantallas y las 109 historias (1,54 MB), con una pantalla perdida por un 504 de la pasarela y recuperada al reanudar. Al autor le convencen los dos |
 | v0.8 | 15-10-2026 | Mockup: la plataforma junta y revisa el prototipo (ids, globales de JavaScript y navegación) y solo corrige con un modelo las partes con problemas; se puede reanudar un mockup fallido | Pendiente | Pendiente |
 | v0.7 | 14-10-2026 | El árbitro consulta la documentación por tramos y lee las propuestas con un elemento por línea; un fragmento no es un número de línea (`REF-FRAG` dice qué fragmento hay en esa línea); sin la salida de un solo modelo como resultado | Sí (documento C, 14-10-2026; proyecto grande de ejemplo, 15-10-2026) | El árbitro cabe y lee las propuestas en pocas llamadas, pero termina compactando después de escribir (la plataforma lo corta y acepta la salida). Con el proyecto de ejemplo: 299 y 192 requisitos, unión de 209 en 12 min, con dos reparaciones por citas mal copiadas (la marca `sigue` y un número de línea) |
 | v0.6 | 14-10-2026 | El mockup es una sola aplicación construida por pasos: diseño (mapa de pantallas y armazón), una ejecución por pantalla y una revisión del conjunto; pensado para `SS - GPT-6-SOL` | Pendiente | Pendiente |
@@ -407,10 +407,29 @@ Documento C (backlog validado de 9 épicas y 46 historias, con la referencia de 
 - **El autor lo da por bueno:** «esto ya se parece mucho a lo que yo busco». Se entra por el inicio de sesión y se navega como en la aplicación real.
 - **La navegación pide más pantallas** que el índice de la v0.8 (25 frente a 19): aparecen la del inicio de sesión y las pantallas de detalle a las que se llega con acciones.
 
+**Proyecto grande de ejemplo** (clínicas veterinarias, ficticio, de `ejemplos/`: backlog validado de 15 épicas y 109 historias, sin referencia de estilo), 15 y 16-10-2026, `SS - GPT-6-SOL`, hasta 3 pantallas a la vez:
+
+| Paso | Resultado | Tokens entrada / salida |
+|---|---|---|
+| Diseño | Válido a la primera: 38 pantallas (aviso por encima de 25) | incluido en el total |
+| 37 pantallas | Válidas; 4 tras una reparación (`FRAGMENTO`: la pantalla traía `<!doctype>`, `<html>`… que ya pone el armazón) | incluido en el total |
+| P34 | **Falla: 504 de la pasarela** en los 10 reintentos de Claude Code (unos 18 min); el trabajo termina sin mockup | sin dato real |
+| Reanudación (16-10) | Solo repite la P34: válida en 2,5 min | 68.530 / 18.906 |
+| Plataforma | Junta las 38 pantallas sin encontrar problemas: ninguna corrección | — |
+| **Total** | **Mockup generado: 38 pantallas, las 109 historias, 1,54 MB** | **3.283.920 / 888.795** |
+
+- **Tiempo:** 71 minutos el primer trabajo y 2,5 minutos la reanudación.
+- **El autor lo da por bueno:** «se ha creado el mockup muy completo».
+- **Reanudar funciona en un caso real:** las 37 pantallas aceptadas y el diseño se aprovechan, y solo se repite la que falló. Sin esa opción, el fallo de la pasarela habría obligado a repetir más de una hora de trabajo.
+- **El 504 fue puntual:** la P34 escribió 18.906 tokens, menos que otras pantallas (hasta 36.000), y al reanudar terminó a la primera.
+- **Coste por historia, más bajo que con el documento C:** unos 30.000 tokens de entrada por historia, frente a unos 75.000. El backlog es más del doble de grande, pero cada pantalla cubre más historias.
+
 ### Qué hay que mejorar
 
 - **Tamaño:** 866 KB, cerca del límite de 1 MB. Con un backlog mayor se pasaría. (Resuelto el mismo día, autor: el límite pasa a 10 MB, con un aviso por encima de 2 MB.)
 - **Coste:** unos 3,5 M tokens de entrada, el 70 % en las pantallas (unos 115.000 de media cada una, sobre todo por leer el armazón entero). Se podría pasar a cada pantalla solo la parte del armazón que usa: el CSS de su aplicación y las funciones comunes.
+- **Reparaciones evitables:** 4 de 38 pantallas escribieron un documento HTML completo en lugar de solo su parte. La plataforma podría quitar `<!doctype>`, `<html>`, `<head>` y `<body>` ella misma, como hace con la marca `sigue`, en lugar de pedir una reparación.
+- **Un trabajo interrumpido no se puede reanudar:** si la API se reinicia con el mockup en marcha, el trabajo se queda sin fecha de fin y «Reanudar» no está disponible. Pendiente de que lo decida el autor: cerrar los trabajos interrumpidos al arrancar la API.
 - **Máximo de pantallas:** con la navegación real, el diseño se pasó de 25 en el primer intento. (Resuelto el mismo día, autor: no hay máximo; las que tenga la aplicación real, con un aviso por encima de 25.)
 
 ## v0.7 (14-10-2026)

@@ -1,6 +1,6 @@
 # Trazabilidad del proyecto (Concilia)
 
-Visión de alto nivel de cómo se ha construido el TFG, del 28-09-2026 al 15-10-2026: qué se hizo en cada etapa, qué se decidió y qué cambió de criterio. El detalle de cada día está en `bitacora-detallada.md`; el estado vigente, en `CLAUDE.md` del repositorio.
+Visión de alto nivel de cómo se ha construido el TFG, del 28-09-2026 al 16-10-2026: qué se hizo en cada etapa, qué se decidió y qué cambió de criterio. El detalle de cada día está en `bitacora-detallada.md`; el estado vigente, en `CLAUDE.md` del repositorio.
 
 ## El proyecto en una frase
 
@@ -26,6 +26,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 13-10 | Hito 14 y ajustes | Interfaz nueva; mockup por partes; flujo completo con el documento B; nombre Concilia |
 | 14-10 | Hitos 15 y 16 | Más tipos de archivo, referencia de estilo, mockup como aplicación, árbitro con documentos grandes |
 | 15-10 | Mockup v0.8 y v0.9, hito 13 | Mockup navegable de verdad; test del flujo completo, informes y proyectos de ejemplo |
+| 15-10 y 16-10 | Paso 65 con el proyecto grande de ejemplo | Catálogo, backlog y mockup de 38 pantallas; una tarea cada vez en toda la plataforma |
 
 ## Etapas
 
@@ -99,7 +100,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Preparación del paso 65:** dos proyectos ficticios de análisis (mediano: banco de alimentos, 7 archivos; grande: red de clínicas veterinarias, 21 archivos) en formatos variados, con contradicciones y huecos puestos a propósito como referencia para evaluar las preguntas.
 - **Trazabilidad:** bitácora detallada y este fichero, recuperados de toda la conversación, en `docs/` y mantenidos al día en cada sesión.
 - **Primer catálogo del proyecto grande de ejemplo:** 299 y 192 requisitos, unión de 209 en 12 minutos. A raíz de él, la plataforma quita la marca `sigue` de las citas (evita una reparación), el informe avisa cuando el consumo es un mínimo (las ejecuciones detenidas no lo dan) y la consola deja de decir «Failed» al detener una ejecución con la salida ya escrita.
-- **Mockup del proyecto grande de ejemplo:** 37 de 38 pantallas; la P34 falla por un 504 de la pasarela en los 10 reintentos y queda para reanudar.
+- **Mockup del proyecto grande de ejemplo:** 38 pantallas con las 109 historias (1,54 MB). La P34 falló por un 504 puntual de la pasarela y se recuperó al reanudar al día siguiente (16-10), aprovechando las otras 37.
 - **Una tarea cada vez en toda la plataforma:** mientras se ejecuta una, la API rechaza cualquier otro lanzamiento y la web apaga los botones de lanzar y dice qué tarea está en marcha y en qué proyecto.
 - **Preguntas:** botón «Aprobar todas las sugerencias» de una ronda, visible solo cuando la IA ha sugerido la respuesta de todas sus preguntas pendientes.
 
@@ -127,6 +128,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
 - Si la plataforma corrige las citas que son números de línea (LUNA) cuando la línea es inequívoca.
 - Si se estima el consumo de las ejecuciones detenidas antes del final.
+- Si la plataforma quita las etiquetas de documento (`<!doctype>`, `<html>`…) de una pantalla del mockup en lugar de pedir una reparación.
 - Abaratar las pantallas del mockup y un posible historial de mockups.
 - Prompt de sugerencias más conservador y marcar en el catálogo lo que viene de una respuesta de la IA.
 
@@ -140,5 +142,5 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Cifras de seguimiento
 
-- **Commits:** 148 entre el 28-09 y el 15-10-2026.
+- **Commits:** 149 entre el 28-09 y el 16-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 830 (15-10).
