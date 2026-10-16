@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Moon, Plus, Search, Sun, X } from 'lucide-re
 import { formatDay, searchable, type Project } from './api.ts'
 import Logo from './ui/Logo.tsx'
 import Button from './ui/Button.tsx'
-import type { Theme } from './hooks/useTheme.ts'
+import type { Theme, ThemeOrigin } from './hooks/useTheme.ts'
 
 export type HealthState = { kind: 'loading' } | { kind: 'ok' } | { kind: 'error'; message: string }
 
@@ -15,7 +15,7 @@ type SidebarProps = {
   onCreate: (name: string) => Promise<string | null>
   health: HealthState
   theme: Theme
-  onToggleTheme: () => void
+  onToggleTheme: (origin: ThemeOrigin) => void
   // Minimized: a narrow column with the logo and the buttons only.
   collapsed: boolean
   onToggleCollapsed: () => void
@@ -63,15 +63,27 @@ function Sidebar({ projects, selectedId, onSelect, onCreate, health, theme, onTo
     />
   )
   const healthText = health.kind === 'ok' ? 'API conectada' : health.kind === 'error' ? 'API sin conexión' : 'Comprobando…'
+  // The sun and the moon are both there, one on top of the other: the one of
+  // the next theme shows and the other turns and shrinks away. The change of
+  // theme starts from the centre of the button (see useTheme).
+  const dark = theme === 'dark'
+  const iconMotion = 'absolute inset-0 size-4 transition-[rotate,scale,opacity] duration-500 ease-out'
   const themeButton = (
     <Button
       variant="ghost"
       size="sm"
-      icon={theme === 'dark' ? Sun : Moon}
-      onClick={onToggleTheme}
-      aria-label={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
-      title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
-    />
+      onClick={(e) => {
+        const box = e.currentTarget.getBoundingClientRect()
+        onToggleTheme({ x: box.left + box.width / 2, y: box.top + box.height / 2 })
+      }}
+      aria-label={dark ? 'Modo claro' : 'Modo oscuro'}
+      title={dark ? 'Modo claro' : 'Modo oscuro'}
+    >
+      <span className="relative size-4" aria-hidden>
+        <Sun className={`${iconMotion} ${dark ? 'rotate-0 scale-100 opacity-100' : 'rotate-90 scale-0 opacity-0'}`} />
+        <Moon className={`${iconMotion} ${dark ? '-rotate-90 scale-0 opacity-0' : 'rotate-0 scale-100 opacity-100'}`} />
+      </span>
+    </Button>
   )
 
   return (

@@ -101,3 +101,15 @@ body {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* The change of theme (useTheme): the browser's default cross-fade is turned
+   off, so the new theme only appears through the circle that grows from the
+   button, drawn over the old one. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
