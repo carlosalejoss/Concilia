@@ -1483,3 +1483,20 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Pendientes:**
   - CSV del proyecto mediano y documento de resultados del paso 65, con los dos proyectos.
   - Valorar una ejecución con otro reparto de modelos para el posible sesgo del árbitro.
+
+---
+
+## 16-10-2026, 09:25 (sesión)
+
+**Resumen para la bitácora (16-10-2026, pregunta clave: ¿el árbitro prefiere a su propio modelo?)**
+
+- **Qué se hizo:** a petición del autor, la posible preferencia del árbitro por su propio modelo queda como **pregunta clave de la evaluación, con prioridad alta**. Tiene sección propia en `docs/trazabilidad-proyecto.md` y es el segundo de los siguientes pasos.
+- **Lo observado (proyecto grande de ejemplo):** A (SOL) propone 50 preguntas, 299 requisitos y 109 historias; B (LUNA), 17, 192 y 54. Lo que aporta solo B a la unión son 6 preguntas, 1 requisito y ninguna historia.
+- **Dos explicaciones posibles:**
+  - A es más completo;
+  - el árbitro, que también es SOL, prefiere la propuesta de su mismo modelo aunque le llegue anónima y en orden aleatorio.
+- **Por qué importa:** afecta al valor de la verificación cruzada, la idea central del TFG.
+- **Cómo comprobarlo:** repetir una fase (preguntas o backlog, las más baratas) con el mismo documento y otro reparto de modelos, por ejemplo LUNA de árbitro. Repetir cada configuración 2 o 3 veces y comparar qué parte de la unión viene de A y de B.
+- **Decisiones del autor:** darle importancia en los documentos de seguimiento.
+- **Cambios de criterio:** ninguno. Queda como decisión abierta cómo corregirlo si se confirma: un árbitro distinto de A y B, o rotar los papeles.
+- **Pendientes:** CSV del proyecto mediano; diseñar y lanzar la prueba del reparto de modelos.
