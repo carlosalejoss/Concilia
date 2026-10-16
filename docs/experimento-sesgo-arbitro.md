@@ -66,8 +66,8 @@ Por cada arbitraje, el informe del trabajo (también en el CSV del proyecto, con
 
 | Fase | SOL (original + 2) | LUNA (3) |
 | --- | --- | --- |
-| Preguntas | original ✅, 0 de 2 nuevos | 1 de 3 |
-| Catálogo | original ✅, 0 de 2 nuevos | 1 en curso |
+| Preguntas | ✅ 3 de 3 | ✅ 3 de 3 |
+| Catálogo | ✅ 3 de 3 | 2 de 3 válidos (3 intentos fallidos); el último intento, en curso |
 
 ## Incidencias
 
@@ -84,7 +84,54 @@ Por cada arbitraje, el informe del trabajo (también en el CSV del proyecto, con
 
 ## Resultados
 
-Pendientes. Primer dato, sin valor estadístico todavía: en las preguntas, el primer arbitraje con LUNA dio una unión de 52 (11 de ambas, 35 solo de A y 6 solo de B, 3 descartadas), frente a 55 (11, 38 y 6, 1 descartada) del original con SOL. Lo que entra solo de B no cambia.
+Proyecto grande de ejemplo («Clinicas Veterinarias»), 15 y 16-10-2026. En todos los arbitrajes de una fase las propuestas son las mismas: en las preguntas, 50 de A y 17 de B; en el catálogo, 299 de A y 192 de B. Las horas son UTC.
+
+### Preguntas
+
+| Árbitro | Arbitraje | Unión | De ambas | Solo de A | **Solo de B** | Descartadas | Reparaciones | Tiempo |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| SOL | Original (15-10, 08:52) | 55 | 11 | 38 | **6** | 1 | — | — |
+| SOL | Nuevo (16-10, 10:16) | 55 | 11 | 38 | **6** | 0 | 0 | 2,5 min |
+| SOL | Nuevo (16-10, 10:19) | 55 | 11 | 38 | **6** | 0 | 0 | 2,5 min |
+| LUNA | Nuevo (16-10, 07:37) | 52 | 11 | 35 | **6** | 3 | 0 | 3,4 min |
+| LUNA | Nuevo (16-10, 08:11) | 55 | 11 | 38 | **6** | 0 | 0 | 6,9 min |
+| LUNA | Nuevo (16-10, 10:10) | 54 | 10 | 38 | **6** | 2 | 1 | 4,6 min |
+
+- **Lo que entra solo de B es idéntico en los 6 arbitrajes: 6 de las 17 preguntas de B.** Las otras 11 se unen con preguntas de A («de ambas»). No queda ninguna pregunta de B fuera de la unión que un árbitro de su mismo modelo pudiera rescatar.
+- **SOL es totalmente estable** (55 / 11 / 38 / 6 en los tres arbitrajes). **LUNA varía un poco:** descarta entre 0 y 3 preguntas, pero siempre de A, y necesitó una reparación en uno de los tres.
+- **Coste:** los arbitrajes nuevos de preguntas usaron entre 0,18 y 0,30 M tokens de entrada cada uno. El original costó 1,09 M porque incluye a A y a B.
+
+### Catálogo
+
+| Árbitro | Arbitraje | Unión | De ambas | Solo de A | **Solo de B** | Descartados | Reparaciones |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SOL | Original (15-10, 10:11) | 209 | 180 | 28 | **1** | 3 | — |
+| SOL | Nuevo (16-10, 10:22) | 220 | 183 | 30 | **7** | 0 | 0 |
+| SOL | Nuevo (16-10, 10:31) | 291 | 264 | 27 | **0** | 3 | 0 |
+| LUNA | Nuevo (16-10, 07:42) | 209 | 179 | 27 | **3** | 0 | 1 |
+| LUNA | Nuevo (16-10, 10:39) | 204 | 177 | 27 | **0** | 0 | 1 |
+| LUNA | Último intento (16-10, 11:36) | *en curso* | | | | | |
+
+- **Lo que entra solo de B es muy poco con los dos árbitros:** 1, 7 y 0 con SOL (media 2,7) y 3 y 0 con LUNA (media 1,5). LUNA, que es el modelo de B, no incorpora más propuestas de B que SOL; si acaso, menos.
+- **Lo que entra solo de A es casi constante:** entre 27 y 30 con los dos árbitros.
+- **El tamaño de la unión varía mucho con SOL** (209, 220 y 291) y poco con LUNA (209 y 204). La diferencia está en cuántos elementos fusiona: con 291, SOL junta menos y deja más requisitos separados. Con las mismas propuestas, el grado de fusión depende de cada ejecución: es una fuente de variabilidad que conviene declarar.
+- **Fiabilidad:** SOL terminó los 3 arbitrajes a la primera. LUNA necesitó una reparación en los 2 válidos y falló en 3 intentos más (ver «Incidencias»).
+- **Coste:** los arbitrajes del catálogo no tienen dato de consumo, porque todos se detuvieron al compactar con la salida ya escrita. Los de SOL tardaron unos 6 minutos; el válido de LUNA de las 10:39, 12 minutos con su reparación.
+
+### Conclusión (provisional, a falta del último intento de LUNA)
+
+**Se confirma H1: A es más completo, y no hay preferencia del árbitro por su propio modelo.** Con las mismas propuestas, cambiar el árbitro de SOL a LUNA no aumenta lo que entra solo de B:
+- **en las preguntas:** 6 con los dos árbitros, en los 6 arbitrajes;
+- **en el catálogo:** una media de 2,7 con SOL y de 1,5 con LUNA.
+
+Que la unión se parezca a A se explica porque **A propone más** (50 frente a 17 preguntas y 299 frente a 192 requisitos) y porque **casi todo lo que propone B ya está en A** («de ambas»).
+
+**Para la memoria:**
+- **Positivo:** el diseño anónimo y en orden aleatorio de las propuestas no muestra sesgo de autopreferencia en estos datos.
+- **A matizar:** la verificación cruzada aporta poco por lo que solo encuentra B, con estos dos modelos. Su valor está más en confirmar lo que coincide (el «de ambas») y en las discrepancias que en sumar elementos nuevos.
+- **Hallazgo secundario:** LUNA es mucho menos fiable como árbitro de un catálogo grande (2 válidos de 5 intentos frente a 3 de 3 de SOL). Con estos modelos, SOL es la mejor elección de árbitro.
+
+**Pendiente:** el resultado del último intento de LUNA en el catálogo, y la referencia independiente con embeddings (hito 17, paso 87): cuántas propuestas de B no tienen ningún equivalente en A, sin depender de ningún LLM.
 
 ## Para la memoria
 
