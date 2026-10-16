@@ -1551,3 +1551,26 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - Ninguna integración decidida todavía.
 - **Cambios de criterio:** ninguno.
 - **Pendientes:** que el autor elija qué candidatos integrar; los arbitrajes del proyecto grande; el CSV del mediano.
+
+---
+
+## 16-10-2026, 12:15 (sesión)
+
+**Resumen para la bitácora (16-10-2026, diseño del experimento del sesgo del árbitro)**
+
+- **Qué se hizo:** a petición del autor, el experimento queda documentado para la memoria en `docs/experimento-sesgo-arbitro.md`, con:
+  - el origen, la pregunta y las dos hipótesis;
+  - el diseño, con la justificación de cada decisión;
+  - cómo se mide e interpreta, el estado y las limitaciones;
+  - frases de método listas para la memoria.
+- **Diseño acordado:**
+  - **Se cambia solo el árbitro,** sobre las mismas propuestas de A y B, con «Volver a arbitrar».
+  - **Configuraciones:** árbitro SOL (el modelo de A) y LUNA (el de B).
+  - **Fases:** preguntas, donde más difieren A y B, y catálogo, la más representativa. El backlog queda fuera porque depende del catálogo.
+  - **Repeticiones:** 3 por configuración y fase, porque el mismo árbitro no da siempre lo mismo (muestreo del modelo y orden sorteado de las propuestas). El arbitraje original cuenta como uno de los 3 de SOL.
+  - **Métrica principal:** lo que entra solo de B en la unión y su variación entre árbitros, no quién predomina.
+- **Estado:** preguntas, 1 de 3 con LUNA; catálogo, 1 con LUNA en curso; faltan los 2 nuevos con SOL de cada fase.
+- **Primer dato** (sin valor estadístico): con LUNA de árbitro, lo que entra solo de B en las preguntas sigue en 6, como con SOL.
+- **Decisiones del autor:** darle importancia en la documentación para la memoria; 3 repeticiones por configuración.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:** completar los arbitrajes (2 con LUNA y 2 con SOL por fase) y escribir los resultados en el documento del experimento.

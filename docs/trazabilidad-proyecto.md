@@ -107,7 +107,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 
 ## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
 
-> **Prioridad alta (autor, 16-10-2026).** Afecta al valor de la verificación cruzada, que es la idea central del TFG.
+> **Prioridad alta (autor, 16-10-2026).** Afecta al valor de la verificación cruzada, que es la idea central del TFG. Diseño completo del experimento, estado y resultados en [`experimento-sesgo-arbitro.md`](experimento-sesgo-arbitro.md): es material directo para el capítulo de evaluación de la memoria.
 
 **Lo observado** en el proyecto grande de ejemplo, con A y el árbitro con `SS - GPT-6-SOL` y B con `SS - GPT-6-LUNA`:
 
@@ -130,6 +130,8 @@ A propone mucho más que B, y la unión se parece mucho a A: lo que aporta solo 
 - Si pasa a parecerse a B, hay preferencia del árbitro por su propio modelo.
 - Para que sea comparable, conviene repetir cada configuración 2 o 3 veces, por la variabilidad entre ejecuciones.
 - Lo más barato es hacerlo en la fase de preguntas o en la del backlog; el informe por trabajo ya da los recuentos necesarios.
+
+**Experimento en curso (16-10-2026):** en preguntas y catálogo, 3 arbitrajes con SOL (el original más 2 nuevos) y 3 con LUNA sobre las mismas propuestas. Se repite 3 veces porque el mismo árbitro no da siempre el mismo resultado: así se distingue una diferencia real de una casualidad. El backlog se deja fuera porque depende del catálogo.
 
 **Herramienta (16-10-2026):** «Volver a arbitrar» repite solo el árbitro de un trabajo terminado sobre las mismas propuestas de A y B, con el modelo que se elija, sin cambiar nada del proyecto. Así lo único que cambia es el árbitro. El plan es hacer 3 arbitrajes con SOL y 3 con LUNA sobre el proyecto grande y comparar las proporciones de A y B en la unión.
 
@@ -175,5 +177,5 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Cifras de seguimiento
 
-- **Commits:** 153 entre el 28-09 y el 16-10-2026.
+- **Commits:** 154 entre el 28-09 y el 16-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 830 (15-10).
