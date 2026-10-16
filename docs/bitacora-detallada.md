@@ -1697,3 +1697,24 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Pendientes:**
   - el último arbitraje de LUNA y escribir los resultados del experimento;
   - empezar el hito 19 (o el 17, si el autor cambia el orden).
+
+---
+
+## 16-10-2026, 16:00 (sesión)
+
+**Resumen para la bitácora (16-10-2026, plan reordenado)**
+
+- **Qué se hizo:** a petición del autor, el plan queda en el orden de trabajo, para empezar sin saltos. Los hitos 17 a 22 se renumeran:
+
+  | Antes | Ahora | Pasos |
+  | --- | --- | --- |
+  | 19 (embeddings) | **17** | 85–88 |
+  | 17 (fiabilidad y calidad) | **18** | 89–95 |
+  | 18 (exportar) | **19** | 96–98 |
+  | 20, 21 y 22 | sin cambios | 99–106 |
+
+- El plan tiene un apartado nuevo, «Dónde estamos», con lo que está en curso (el experimento, paso 103) y el siguiente paso (el 86, servicio de embeddings).
+- `CLAUDE.md` y la trazabilidad, actualizados con los números nuevos. **Las entradas anteriores de esta bitácora conservan los números de entonces.**
+- **Decisiones:** ninguna nueva; solo cambia la numeración.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:** el último arbitraje de LUNA; empezar el paso 86 en un chat nuevo.
