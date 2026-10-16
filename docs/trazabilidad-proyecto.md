@@ -131,6 +131,8 @@ A propone mucho más que B, y la unión se parece mucho a A: lo que aporta solo 
 - Para que sea comparable, conviene repetir cada configuración 2 o 3 veces, por la variabilidad entre ejecuciones.
 - Lo más barato es hacerlo en la fase de preguntas o en la del backlog; el informe por trabajo ya da los recuentos necesarios.
 
+**Herramienta (16-10-2026):** «Volver a arbitrar» repite solo el árbitro de un trabajo terminado sobre las mismas propuestas de A y B, con el modelo que se elija, sin cambiar nada del proyecto. Así lo único que cambia es el árbitro. El plan es hacer 3 arbitrajes con SOL y 3 con LUNA sobre el proyecto grande y comparar las proporciones de A y B en la unión.
+
 ## Evolución de los prompts
 
 | Versión | Fecha | Idea principal |
@@ -172,5 +174,5 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Cifras de seguimiento
 
-- **Commits:** 151 entre el 28-09 y el 16-10-2026.
+- **Commits:** 152 entre el 28-09 y el 16-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 830 (15-10).

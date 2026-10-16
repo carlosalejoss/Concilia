@@ -8,7 +8,7 @@ import type { Tone } from './ui/tones.ts'
 // suggestions (SUG) and the mockup (MOCK) have a single run.
 export const SLOTS = ['A', 'B', 'ARB'] as const
 export const SLOT_NAMES: Record<string, string> = { A: 'A', B: 'B', ARB: 'Árbitro', SUG: 'Sugerencias', MOCK: 'Mockup' }
-const SINGLE_SLOT: Record<string, string> = { [SUGGESTIONS_KIND]: 'SUG', mockup: 'MOCK' }
+const SINGLE_SLOT: Record<string, string> = { [SUGGESTIONS_KIND]: 'SUG', mockup: 'MOCK', rearbitration: 'ARB' }
 
 export function slotsOf(view: JobView): string[] {
   const single = SINGLE_SLOT[view.job.kind]

@@ -172,8 +172,24 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
             return new PhaseJobResult(null, false, null, reason);
         }
 
-        // The arbiter, with the two outputs as "Propuesta 1" and "Propuesta 2" in the order of the plan.
-        var proposals = (OutputOf(plan.ProposalOrder[0]), OutputOf(plan.ProposalOrder[1]));
+        return await RunArbiterAsync(arbiter, plan, OutputOf("A"), OutputOf("B"), onRunStarting, onRunFinished, cancellationToken);
+    }
+
+    // The arbiter alone, with the outputs of A and B as "Propuesta 1" and
+    // "Propuesta 2" in the order of the plan. Also used to arbitrate again the
+    // proposals of a finished job (Rearbitration).
+    public async Task<PhaseJobResult> RunArbiterAsync(
+        Run arbiter,
+        PhasePlan plan,
+        string outputA,
+        string outputB,
+        Func<Run, Task> onRunStarting,
+        Func<RunOutcome, Task> onRunFinished,
+        CancellationToken cancellationToken)
+    {
+        var phases = phaseExecutor ?? throw new InvalidOperationException("JobRunner without PhaseExecutor");
+        string Of(string slot) => slot == "A" ? outputA : outputB;
+        var proposals = (Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]));
         var final = await RunOneAsync(arbiter, () => phases.ExecuteAsync(arbiter, plan, proposals, cancellationToken), onRunStarting, onRunFinished, cancellationToken);
         return final.Succeeded
             ? new PhaseJobResult("ARB", true, File.ReadAllText(PhaseExecutor.OutputPath(final.Attempts![^1], plan.Kind)), "Unión del árbitro.")

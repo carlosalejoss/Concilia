@@ -32,10 +32,14 @@ public record QuestionCounts(int Total, int Answered, int Discarded, int Pending
 // never writes it. Through the gateway the usage of each message comes as 0,
 // so there is nothing else to add up: the tokens of the job are then a lower
 // bound, and the report says so instead of giving a figure that looks complete.
+// Phase: the phase of a v0 job ("Questions", "Catalog"…). ArbiterModel: the
+// model of its arbiter. RearbitrationOf: for a new arbitration, the job whose
+// proposals it arbitrated again (to compare arbiters on the same proposals).
 public record JobReport(
     Guid JobId, string Kind, DateTimeOffset CreatedAt, DateTimeOffset? FinishedAt, bool Succeeded, string? Message,
     long InputTokens, long OutputTokens, int RunsWithoutUsage, int Repairs, double? Seconds,
-    IReadOnlyList<RunLine> Runs, ElementCounts? Elements, UserChanges? Changes, string? ChangesNote, QuestionCounts? Questions);
+    IReadOnlyList<RunLine> Runs, ElementCounts? Elements, UserChanges? Changes, string? ChangesNote, QuestionCounts? Questions,
+    string? Phase = null, string? ArbiterModel = null, Guid? RearbitrationOf = null);
 
 public static class JobReports
 {

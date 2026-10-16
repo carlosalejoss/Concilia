@@ -13,6 +13,8 @@ type Report = {
   changes: { original: number; current: number; kept: number; modified: number; added: number; deleted: number } | null
   changesNote: string | null
   questions: { total: number; answered: number; discarded: number; pending: number; byUser: number; byAi: number; byAiEdited: number } | null
+  arbiterModel: string | null
+  rearbitrationOf: string | null
 }
 
 const number = (n: number | null | undefined) => (n ?? 0).toLocaleString('es-ES')
@@ -52,6 +54,12 @@ function JobReport({ jobId, finished }: { jobId: string; finished: boolean }) {
             </span>
           )}
         </Line>
+        {report.arbiterModel && (
+          <Line label="Árbitro">
+            {report.arbiterModel}
+            {report.rearbitrationOf && ' · nuevo arbitraje de las mismas propuestas de A y B de otro trabajo'}
+          </Line>
+        )}
         {elements && (
           <Line label="Elementos">
             A propuso {elements.a ?? '—'} y B {elements.b ?? '—'}. La unión tiene {elements.merged}: {elements.both} de ambas, {elements.onlyA} solo

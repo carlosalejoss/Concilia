@@ -142,10 +142,50 @@ public class FullFlowTests
         Assert.Equal(HttpStatusCode.Accepted, (await client.PostAsync($"/projects/{second}/question-rounds", null)).StatusCode);
     }
 
-    // Launches a job and waits until it ends; it must end with a result.
-    private static async Task<string> Launch(HttpClient client, string url, int projectId)
+    // A new arbitration (16-10-2026): the same proposals of A and B judged
+    // again with another model. It leaves its result and its report, and the
+    // questions of the project do not change.
+    [Fact]
+    public async Task A_finished_round_can_be_arbitrated_again_without_changing_the_project()
     {
-        var response = await client.PostAsync(url, null);
+        using var temp = new TempDirectory();
+        await using var api = Api(temp.Path);
+        var client = api.CreateClient();
+        var id = (await Json(await client.PostAsJsonAsync("/projects", new { name = "Clínicas" })))["id"]!.GetValue<int>();
+        var document = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "prompts", "ejemplo", "fuentes", "DOC-01.txt"));
+        using (var form = new MultipartFormDataContent { { new ByteArrayContent(document), "file", "DOC-01.txt" } })
+            (await client.PostAsync($"/projects/{id}/files", form)).EnsureSuccessStatusCode();
+        var round = await Launch(client, $"/projects/{id}/question-rounds", id);
+        var questions = (await Json(await client.GetAsync($"/projects/{id}/questions"))).AsArray().Count;
+
+        var models = (await Json(await client.GetAsync("/jobs/arbiter-models"))).AsArray().Select(m => m!.GetValue<string>()).ToList();
+        Assert.Equal(["SS - GPT-6-SOL", "SS - GPT-6-LUNA"], models);
+        var unknown = await client.PostAsJsonAsync($"/jobs/{round}/rearbitrate", new { model = "otro" });
+        Assert.Equal(HttpStatusCode.BadRequest, unknown.StatusCode);
+
+        var again = await Launch(client, $"/jobs/{round}/rearbitrate", id, new { model = "SS - GPT-6-LUNA" });
+
+        Assert.Equal(questions, (await Json(await client.GetAsync($"/projects/{id}/questions"))).AsArray().Count);
+        var report = await Json(await client.GetAsync($"/jobs/{again}/report"));
+        Assert.Equal("rearbitration", report["kind"]!.GetValue<string>());
+        Assert.Equal("Questions", report["phase"]!.GetValue<string>());
+        Assert.Equal("SS - GPT-6-LUNA", report["arbiterModel"]!.GetValue<string>());
+        Assert.Equal(round, report["rearbitrationOf"]!.GetValue<string>());
+        Assert.True(report["elements"]!["merged"]!.GetValue<int>() > 0);
+        Assert.NotNull(report["elements"]!["a"]);
+        Assert.Null(report["questions"]); // the questions belong to the round, not to the experiment
+        var original = await Json(await client.GetAsync($"/jobs/{round}/report"));
+        Assert.Equal(original["elements"]!["a"]!.GetValue<int>(), report["elements"]!["a"]!.GetValue<int>()); // the same proposals
+
+        var csv = Encoding.UTF8.GetString(await (await client.GetAsync($"/projects/{id}/report.csv")).Content.ReadAsByteArrayAsync());
+        Assert.Contains($"{again};rearbitration;ok", csv);
+        Assert.Contains($";Questions;SS - GPT-6-LUNA;{round};", csv);
+    }
+
+    // Launches a job and waits until it ends; it must end with a result.
+    private static async Task<string> Launch(HttpClient client, string url, int projectId, object? body = null)
+    {
+        var response = body is null ? await client.PostAsync(url, null) : await client.PostAsJsonAsync(url, body);
         var text = await response.Content.ReadAsStringAsync();
         Assert.True(response.StatusCode == HttpStatusCode.Accepted, $"{url}: {response.StatusCode} {text}");
         var jobId = JsonNode.Parse(text)!["job"]!["id"]!.GetValue<string>();
