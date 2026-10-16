@@ -135,31 +135,40 @@ public static class PhaseTask
         PhaseDefinition phase, string? output, PhaseContext context, string originalPrompt, int attempt,
         IReadOnlyList<string>? extraErrors = null)
     {
-        // A key written twice in the same object cannot be checked (see
-        // JsonDuplicates): it is reported as such, and nothing else is checked.
+        // A key written twice in the same object (see JsonDuplicates): when its
+        // values are lists the platform joins them, with a warning; otherwise
+        // it cannot be checked, it is reported as such and nothing else is checked.
         var duplicates = output is null ? [] : JsonDuplicates.Find(output);
-        if (duplicates.Count > 0)
+        var joined = output is null ? null : JsonDuplicates.Merge(output);
+        if (duplicates.Count > 0 && joined is null)
         {
             var errors = duplicates
                 .Select(d => $"{phase.OutputFile} CLAVE-DUP: la clave se repite en el mismo objeto ({d}). Escribe cada clave una sola vez y junta sus valores.")
                 .ToList();
             return new PhaseReview(new PhaseValidation(errors, []), PhasePrompt.Repair(originalPrompt, attempt, phase.OutputFile, output!, errors));
         }
+        var joinedWarnings = duplicates.Select(d => $"{phase.OutputFile} CLAVE-DUP: clave repetida unida por la plataforma ({d}).").ToList();
 
         // Checked without the "sigue" mark of the cited fragments
         // (FragmentCitations) and, in the arbiter, without the prefix of the
         // proposal in its ids (ProposalIds): the platform removes both.
-        var cleaned = output is null ? null : FragmentCitations.Clean(output);
+        var cleaned = joined is null ? null : FragmentCitations.Clean(joined);
         var checkedOutput = cleaned is null
             ? new PhaseValidation([$"{phase.OutputFile} FICHERO: no se ha escrito el fichero."], [])
             : PhaseValidator.Validate(phase, phase.IsArbiter ? ProposalIds.Strip(cleaned) : cleaned, context);
         var wrongPrefixes = phase.IsArbiter && cleaned is not null ? ProposalIds.WrongPrefixes(cleaned) : [];
-        var validation = new PhaseValidation([.. wrongPrefixes, .. checkedOutput.Errors, .. extraErrors ?? []], checkedOutput.Warnings);
+        var validation = new PhaseValidation([.. wrongPrefixes, .. checkedOutput.Errors, .. extraErrors ?? []], [.. joinedWarnings, .. checkedOutput.Warnings]);
         var repair = validation.Valid
             ? null
             : PhasePrompt.Repair(originalPrompt, attempt, phase.OutputFile, output ?? "", validation.Errors);
         return new PhaseReview(validation, repair);
     }
+
+    // What the platform fixes by itself in an output before checking it and
+    // keeping it: repeated keys whose values are lists (JsonDuplicates) and
+    // the "sigue" mark of the cited fragments (FragmentCitations).
+    public static string? Clean(string? output) =>
+        output is null ? null : FragmentCitations.Clean(JsonDuplicates.Merge(output) ?? output);
 
     // The context of the validator from the run folder (what BuildRequest wrote).
     public static PhaseContext LoadContext(string workDirectory, IReadOnlySet<string> answeredQuestionIds)

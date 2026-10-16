@@ -159,6 +159,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - Si se paran las ejecuciones que compactan varias veces antes de escribir su salida.
 - Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
 - Si la plataforma corrige las citas que son números de línea (LUNA) cuando la línea es inequívoca.
+- Reparar editando solo los elementos con errores, en lugar de reescribir la salida entera: la reparación del árbitro de un catálogo grande no cabe en 128k (16-10-2026).
 - Si se estima el consumo de las ejecuciones detenidas antes del final.
 - Si la plataforma quita las etiquetas de documento (`<!doctype>`, `<html>`…) de una pantalla del mockup en lugar de pedir una reparación.
 - Abaratar las pantallas del mockup y un posible historial de mockups.
@@ -177,5 +178,5 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Cifras de seguimiento
 
-- **Commits:** 156 entre el 28-09 y el 16-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 833 (16-10).
+- **Commits:** 157 entre el 28-09 y el 16-10-2026.
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 835 (16-10).

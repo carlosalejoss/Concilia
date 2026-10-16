@@ -1602,3 +1602,18 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisión de Claude (revisable):** pedir la reparación en lugar de juntar los valores automáticamente, porque juntarlos sería decidir por el modelo. El código no existe en la referencia en Python, que se queda con la última clave.
 - **Cambios de criterio:** ninguno.
 - **Pendientes:** desplegar la API cuando no haya tareas en marcha; repetir el arbitraje fallido; los demás arbitrajes del experimento.
+
+---
+
+## 16-10-2026, 13:45 (sesión)
+
+**Resumen para la bitácora (16-10-2026, la reparación del árbitro del catálogo no cabe)**
+
+- **Qué pasó:** otro arbitraje del catálogo con LUNA necesitó reparación. La reparación pega en el prompt el catálogo anterior entero (unos 30.000 tokens) y no cabía en 128k junto con las dos propuestas. Claude Code intentó compactar, la compactación falló (`too_few_groups`) y las peticiones a la pasarela fallaron hasta agotar los reintentos.
+- **Qué se hizo:** la plataforma junta ella misma las claves repetidas cuando todos sus valores son listas, con un aviso. Así este error ya no provoca una reparación. Si no son listas, sigue siendo `CLAVE-DUP` con reparación. Lo que se guarda va ya unido (`PhaseTask.Clean`, que también quita la marca `sigue`). Hay 3 tests nuevos (835 en total).
+- **Hallazgo para la evaluación:** como árbitro del catálogo, LUNA falla más que SOL (2 de 3 intentos, por errores de formato). Se anota en el documento del experimento, para declarar la tasa de fallos junto a los resultados.
+- **Cambio de criterio:** la decisión de la mañana (pedir la reparación ante una clave repetida, para no decidir por el modelo) se sustituye cuando los valores son listas: la plataforma los junta, porque la reparación de un catálogo grande no cabe en el contexto.
+- **Pendientes:**
+  - **Decisión del autor:** reparar editando solo los elementos con errores (con la herramienta `Edit` en las reparaciones), en lugar de reescribir la salida entera.
+  - Desplegar cuando termine la tanda de arbitrajes de preguntas.
+  - Repetir los arbitrajes del catálogo.
