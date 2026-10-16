@@ -69,6 +69,10 @@ Por cada arbitraje, el informe del trabajo (también en el CSV del proyecto, con
 | Preguntas | original ✅, 0 de 2 nuevos | 1 de 3 |
 | Catálogo | original ✅, 0 de 2 nuevos | 1 en curso |
 
+## Incidencias
+
+- **16-10-2026, catálogo con LUNA de árbitro, segundo intento:** el árbitro escribió un `de` con `"propuesta_2"` dos veces. La revisión de la plataforma falló con un error interno, porque `JsonNode` no admite claves repetidas, en lugar de pedir una reparación. Se corrigió el mismo día (`CLAVE-DUP`). Ese arbitraje no cuenta y se repite.
+
 ## Resultados
 
 Pendientes. Primer dato, sin valor estadístico todavía: en las preguntas, el primer arbitraje con LUNA dio una unión de 52 (11 de ambas, 35 solo de A y 6 solo de B, 3 descartadas), frente a 55 (11, 38 y 6, 1 descartada) del original con SOL. Lo que entra solo de B no cambia.

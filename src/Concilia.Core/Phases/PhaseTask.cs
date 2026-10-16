@@ -135,6 +135,17 @@ public static class PhaseTask
         PhaseDefinition phase, string? output, PhaseContext context, string originalPrompt, int attempt,
         IReadOnlyList<string>? extraErrors = null)
     {
+        // A key written twice in the same object cannot be checked (see
+        // JsonDuplicates): it is reported as such, and nothing else is checked.
+        var duplicates = output is null ? [] : JsonDuplicates.Find(output);
+        if (duplicates.Count > 0)
+        {
+            var errors = duplicates
+                .Select(d => $"{phase.OutputFile} CLAVE-DUP: la clave se repite en el mismo objeto ({d}). Escribe cada clave una sola vez y junta sus valores.")
+                .ToList();
+            return new PhaseReview(new PhaseValidation(errors, []), PhasePrompt.Repair(originalPrompt, attempt, phase.OutputFile, output!, errors));
+        }
+
         // Checked without the "sigue" mark of the cited fragments
         // (FragmentCitations) and, in the arbiter, without the prefix of the
         // proposal in its ids (ProposalIds): the platform removes both.

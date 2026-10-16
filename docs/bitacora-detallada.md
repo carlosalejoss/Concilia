@@ -1590,3 +1590,15 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisiones de Claude (revisables):** duraciones de 450 y 500 ms y curva de aceleración estándar; no hizo falta ninguna skill.
 - **Cambios de criterio:** ninguno.
 - **Pendientes:** que el autor lo vea en el navegador; los arbitrajes del experimento.
+
+---
+
+## 16-10-2026, 13:05 (sesión)
+
+**Resumen para la bitácora (16-10-2026, error interno por una clave repetida)**
+
+- **Qué pasó:** un arbitraje del catálogo con LUNA terminó con «Error interno al ejecutar». LUNA escribió el catálogo unido y la ejecución se detuvo al compactar, pero un elemento tenía `"propuesta_2"` dos veces en su `de`. `JsonNode`, que usan la limpieza de la marca `sigue` (del 15-10), la de los prefijos del árbitro y el validador, lanza una excepción con las claves repetidas. La revisión se cayó en lugar de pedir una reparación.
+- **Arreglo:** `JsonDuplicates` busca las claves repetidas con `JsonDocument`, que sí las admite, antes de cualquier otra comprobación. Las convierte en el error `CLAVE-DUP`, con la ruta (por ejemplo, `requisitos[12].de: propuesta_2`), y pide la reparación. Hay 2 tests nuevos (833 en total).
+- **Decisión de Claude (revisable):** pedir la reparación en lugar de juntar los valores automáticamente, porque juntarlos sería decidir por el modelo. El código no existe en la referencia en Python, que se queda con la última clave.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:** desplegar la API cuando no haya tareas en marcha; repetir el arbitraje fallido; los demás arbitrajes del experimento.

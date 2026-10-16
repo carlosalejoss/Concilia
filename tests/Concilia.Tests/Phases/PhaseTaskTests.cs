@@ -172,6 +172,26 @@ public class PhaseTaskTests
         Assert.Contains("\"DOC-01#F002\"", cleaned);
     }
 
+    // 16-10-2026: LUNA, as the arbiter of a catalog, wrote "propuesta_2" twice
+    // in a `de`. JsonNode throws on a repeated key, and the review ended with an
+    // internal error instead of a repair.
+    [Theory]
+    [InlineData(PhaseRole.Proposal)]
+    [InlineData(PhaseRole.Arbiter)]
+    public void A_repeated_key_asks_for_a_repair_instead_of_failing(PhaseRole role)
+    {
+        var phase = PhaseDefinition.For(PhaseKind.Catalog, role);
+        const string output = """{"requisitos":[{"id":"RF-001","de":{"propuesta_2":["2:RF-001"],"propuesta_2":["2:RF-002"]}}]}""";
+
+        var review = PhaseTask.Review(phase, output, Context(), "PROMPT", 1);
+
+        Assert.False(review.Valid);
+        var error = Assert.Single(review.Validation.Errors);
+        Assert.Contains("CLAVE-DUP", error);
+        Assert.Contains("requisitos[0].de: propuesta_2", error);
+        Assert.NotNull(review.RepairPrompt);
+    }
+
     [Fact]
     public void Only_a_whole_value_with_the_mark_changes()
     {
