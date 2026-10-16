@@ -1429,3 +1429,24 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - Reanudar el mockup (16-10). Si la P34 vuelve a dar 504, partirla en el mapa o pedir más tiempo de espera a quien gestiona la pasarela.
   - Cerrar los trabajos interrumpidos al reiniciar la API (decisión pendiente).
   - Paso 65.
+
+---
+
+## 16-10-2026, 08:40 (sesión)
+
+**Resumen para la bitácora (16-10-2026, mockup del proyecto grande reanudado)**
+
+- **Qué se hizo:**
+  - El autor reanudó el mockup del proyecto grande de ejemplo. Solo se repitió la P34, que terminó a la primera en 2,5 minutos (68.530 tokens de entrada y 18.906 de salida). La plataforma juntó las 38 pantallas sin pedir ninguna corrección.
+  - **Resultado:** 38 pantallas, las 109 historias de 15 épicas y una página de 1,54 MB. Entre los dos trabajos, 3,28 M tokens de entrada y 889.000 de salida, en 71 + 2,5 minutos. El autor lo da por bueno: «muy completo».
+  - Anotado en `docs/evolucion-prompt-requisitos.md` (v0.9).
+- **Hallazgos:**
+  - El 504 de ayer fue un fallo puntual de la pasarela, no el tamaño de la pantalla.
+  - Reanudar ahorró repetir más de una hora de trabajo.
+  - 4 de las 38 pantallas necesitaron una reparación por escribir un documento HTML completo (código `FRAGMENTO`); la plataforma podría quitar esas etiquetas ella misma.
+- **Decisiones:** ninguna nueva.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:**
+  - Decidir si la plataforma quita las etiquetas de documento de las pantallas en lugar de pedir una reparación.
+  - Cerrar los trabajos interrumpidos al reiniciar la API.
+  - Paso 65: los dos CSV.
