@@ -1660,3 +1660,21 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - **De Claude:** el árbitro con embeddings pasa de «Después» al hito 19, por delante de la trazabilidad, que lo aprovecha.
 - **Cambios de criterio:** el árbitro con embeddings deja de ser un «después» sin fecha y pasa a ser el hito 19.
 - **Pendientes:** el último arbitraje del experimento; empezar el hito 17 por el paso que elija el autor.
+
+---
+
+## 16-10-2026, 15:20 (sesión)
+
+**Resumen para la bitácora (16-10-2026, embeddings: decisión y prioridad)**
+
+- **Qué se hizo:** explicación al autor de qué son los embeddings (convertir un texto en un vector de números que representa su significado, de forma que frases que dicen lo mismo con palabras distintas dan vectores parecidos) y para qué servirían en Concilia:
+  - emparejar A y B fuera del LLM;
+  - medir la discrepancia con un umbral;
+  - un árbitro más barato y estable;
+  - una referencia objetiva para el experimento del sesgo.
+- **Decisiones del autor:**
+  - usar los embeddings «al 100 %»;
+  - **origen:** el modelo local `paraphrase-multilingual-MiniLM-L12-v2` (ONNX, Apache 2.0) con ONNX Runtime en el contenedor de la API, frente a un proveedor externo;
+  - **prioridad:** el hito 19 pasa a ser el siguiente, justo después del experimento, por delante del 17 y el 18.
+- **Cambios de criterio:** se cierra la decisión abierta desde el inicio del proyecto sobre el origen de los embeddings. Sigue abierto el umbral de discrepancia grave, que se calibrará con datos reales en el paso 97.
+- **Pendientes:** el último arbitraje del experimento; empezar el hito 19 (paso 96, servicio de embeddings).
