@@ -1500,3 +1500,32 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisiones del autor:** darle importancia en los documentos de seguimiento.
 - **Cambios de criterio:** ninguno. Queda como decisión abierta cómo corregirlo si se confirma: un árbitro distinto de A y B, o rotar los papeles.
 - **Pendientes:** CSV del proyecto mediano; diseñar y lanzar la prueba del reparto de modelos.
+
+---
+
+## 16-10-2026, 10:15 (sesión)
+
+**Resumen para la bitácora (16-10-2026, volver a arbitrar)**
+
+- **Qué se hizo:** la funcionalidad «Volver a arbitrar», para la pregunta clave de si el árbitro prefiere a su propio modelo.
+  - **API:**
+    - `POST /jobs/{id}/rearbitrate` con el modelo del árbitro, que se elige entre los configurados (`GET /jobs/arbiter-models`);
+    - crea un trabajo `rearbitration` que copia las propuestas de A y B del trabajo original, sortea otra vez su orden y solo ejecuta el árbitro;
+    - el resultado queda en la carpeta del trabajo, con su salida descargable y su informe.
+  - **No toca el proyecto:** las preguntas, el catálogo y el backlog no cambian.
+  - **Informe y CSV:** columnas nuevas `fase`, `modelo_arbitro` y `arbitraje_de`, para comparar arbitrajes de las mismas propuestas.
+  - **Web:** en «Ejecuciones», al abrir una ronda, un catálogo o un backlog terminados aparece «Volver a arbitrar», con un desplegable del árbitro y el botón «Arbitrar de nuevo», que respeta la regla de una tarea cada vez. Además, la salida de cualquier trabajo se puede descargar en JSON.
+  - **Tests:** uno nuevo de la API: ronda → nuevo arbitraje con LUNA → resultado e informe, con las mismas propuestas y sin cambiar las preguntas (831 tests).
+- **Decisiones del autor:**
+  - repetir solo el árbitro sobre las mismas propuestas, sin cambiar los resultados del proyecto;
+  - poder descargar el resultado;
+  - 3 arbitrajes con SOL y 3 con LUNA sobre el proyecto grande, y una tabla comparativa para la memoria.
+- **Decisiones de Claude (revisables):**
+  - el orden de las propuestas se sortea de nuevo en cada arbitraje, como en cualquier trabajo;
+  - solo se pueden elegir los modelos ya configurados;
+  - no se puede volver a arbitrar un nuevo arbitraje, solo el trabajo original.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:**
+  - desplegar cuando no haya tareas en curso;
+  - lanzar los arbitrajes y escribir la tabla comparativa;
+  - CSV del proyecto mediano.

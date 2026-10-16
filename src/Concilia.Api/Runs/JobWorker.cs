@@ -76,6 +76,17 @@ public class JobWorker(
             return;
         }
 
+        // A new arbitration of a finished job: only the arbiter, and its result
+        // only in the folder of the job (it changes nothing of the project).
+        if (job.Kind == Rearbitration.JobKind)
+        {
+            var result = await Rearbitration.RunAsync(jobRunner, runs.Single(), storage.JobFolder(jobId), MarkRunningAsync, SaveOutcomeAsync, cancellationToken);
+            PhaseJobs.WriteResult(storage.JobFolder(jobId), result);
+            job.FinishedAt = DateTimeOffset.UtcNow;
+            await db.SaveChangesAsync(CancellationToken.None);
+            return;
+        }
+
         // A v0 phase: A ‖ B → arbiter, and the result of the job in its folder.
         if (PhasePlan.KindOfJob(job.Kind) is not null)
         {

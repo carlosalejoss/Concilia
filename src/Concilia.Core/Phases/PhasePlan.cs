@@ -35,6 +35,10 @@ public record PhasePlan(
     // Suggestions: the pending questions to answer, in order.
     public IReadOnlyList<string> PendingQuestionIds { get; init; } = [];
 
+    // A new arbitration (Rearbitration, 16-10-2026): the job whose proposals
+    // of A and B are arbitrated again. Null in every other job.
+    public Guid? RearbitrationOf { get; init; }
+
     public static PhaseKind? KindOfJob(string jobKind) =>
         Enum.GetValues<PhaseKind>().Cast<PhaseKind?>().FirstOrDefault(k => JobKind(k!.Value) == jobKind);
 

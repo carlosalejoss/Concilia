@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Files;
 using Concilia.Api.Persistence;
+using Concilia.Api.Runs;
 using Concilia.Core.Deliverables;
 using Concilia.Core.Phases;
 using Concilia.Core.Questions;
@@ -48,6 +49,7 @@ public static class ReportEndpoints
         "elementos_A", "elementos_B", "elementos_union", "de_ambas", "solo_A", "solo_B", "discrepancias", "descartados",
         "usuario_conservados", "usuario_modificados", "usuario_anadidos", "usuario_borrados",
         "preguntas", "respondidas", "descartadas", "pendientes", "respuestas_usuario", "respuestas_ia", "respuestas_ia_editadas",
+        "fase", "modelo_arbitro", "arbitraje_de",
         "mensaje",
     ];
 
@@ -60,6 +62,7 @@ public static class ReportEndpoints
         r.Changes?.Kept, r.Changes?.Modified, r.Changes?.Added, r.Changes?.Deleted,
         r.Questions?.Total, r.Questions?.Answered, r.Questions?.Discarded, r.Questions?.Pending,
         r.Questions?.ByUser, r.Questions?.ByAi, r.Questions?.ByAiEdited,
+        r.Phase, r.ArbiterModel, r.RearbitrationOf,
         r.Message,
     ];
 
@@ -87,12 +90,23 @@ public static class ReportEndpoints
         UserChanges? changes = null;
         string? changesNote = null;
         QuestionCounts? questions = null;
-        var kind = PhasePlan.KindOfJob(job.Kind);
-        if (kind is { } phase && File.Exists(Path.Combine(folder, PhasePlan.FileName)))
+        // A new arbitration takes its phase from its plan, and its proposals
+        // from the copies in its folder (it has no runs of A and B).
+        var rearbitration = job.Kind == Rearbitration.JobKind;
+        var hasPlan = File.Exists(Path.Combine(folder, PhasePlan.FileName));
+        var kind = PhasePlan.KindOfJob(job.Kind) ?? (rearbitration && hasPlan ? PhasePlan.Load(folder).Kind : null);
+        Guid? rearbitrationOf = null;
+        if (kind is { } phase && hasPlan)
         {
             var plan = PhasePlan.Load(folder);
+            rearbitrationOf = plan.RearbitrationOf;
             int? Proposal(string slot)
             {
+                if (rearbitration)
+                {
+                    var copy = Path.Combine(folder, Rearbitration.ProposalFile(slot));
+                    return File.Exists(copy) ? JobReports.Count(phase, File.ReadAllText(copy)) : null;
+                }
                 var last = runs.Where(r => r.Slot == slot).OrderBy(r => r.Attempt).LastOrDefault();
                 if (last?.State != RunState.Done)
                     return null;
@@ -103,7 +117,11 @@ public static class ReportEndpoints
             if (result?["fuente"]?.GetValue<string>() == "ARB" && output is not null)
                 elements = JobReports.Merge(phase, output, plan, Proposal("A"), Proposal("B"));
 
-            if (phase is PhaseKind.Catalog or PhaseKind.Backlog && succeeded && output is not null)
+            if (rearbitration)
+            {
+                changesNote = "Arbitraje experimental: no cambia las preguntas, el catálogo ni el backlog del proyecto.";
+            }
+            else if (phase is PhaseKind.Catalog or PhaseKind.Backlog && succeeded && output is not null)
             {
                 var deliverableKind = phase == PhaseKind.Catalog ? DeliverableKind.Catalog : DeliverableKind.Backlog;
                 var current = await db.Deliverables.SingleOrDefaultAsync(d => d.ProjectId == job.ProjectId && d.Kind == deliverableKind);
@@ -118,7 +136,7 @@ public static class ReportEndpoints
                     changesNote = "El entregable actual viene de otro trabajo: los cambios del usuario se cuentan en ese.";
             }
 
-            if (phase == PhaseKind.Questions)
+            if (phase == PhaseKind.Questions && !rearbitration)
             {
                 var round = await db.Questions.Where(q => q.JobId == job.Id).ToListAsync();
                 questions = new QuestionCounts(round.Count,
@@ -135,7 +153,8 @@ public static class ReportEndpoints
             runs.Sum(r => r.InputTokens ?? 0), runs.Sum(r => r.OutputTokens ?? 0),
             runs.Count(r => r.StartedAt is not null && r.InputTokens is null), runs.Count(r => r.Attempt > 1),
             job.FinishedAt is { } finished ? (finished - job.CreatedAt).TotalSeconds : null,
-            lines, elements, changes, changesNote, questions);
+            lines, elements, changes, changesNote, questions,
+            kind?.ToString(), runs.FirstOrDefault(r => r.Slot == "ARB")?.Model, rearbitrationOf);
     }
 
     private static JsonNode? ReadResult(string jobFolder)

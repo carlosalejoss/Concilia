@@ -53,6 +53,7 @@ public static class ActiveJobs
         _ when kind == PhasePlan.JobKind(PhaseKind.Backlog) => "el backlog",
         Deliverables.MockupEndpoints.JobKind => "el mockup",
         CatalogTask.Kind => "el catálogo v1.4 (experimental)",
+        Rearbitration.JobKind => "un nuevo arbitraje (experimental)",
         _ => "una tarea",
     };
 

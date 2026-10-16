@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Download, FlaskConical, Terminal } from 'lucide-react'
-import { errorMessage, formatDate, isPhaseJob, JOB_KIND_NAMES, type JobView, type PhaseResult, type Project, type Run, type RunEvent } from './api.ts'
+import { Download, FlaskConical, Scale, Terminal } from 'lucide-react'
+import { errorMessage, formatDate, isPhaseJob, JOB_KIND_NAMES, REARBITRABLE_KINDS, type JobView, type PhaseResult, type Project, type Run, type RunEvent } from './api.ts'
 import CatalogView from './CatalogView.tsx'
 import JobReport from './JobReport.tsx'
 import { isFinished, lotsOfSlot, mockupStepName, RUN_STATE_NAMES, RUN_STATE_TONES, SLOT_NAMES, SLOTS, slotsOf, slotSummary } from './jobs.ts'
@@ -137,6 +137,15 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
         <div className="space-y-4">
           <JobResult key={`${selected.job.id}-${selected.runs.filter(isFinished).length}`} jobId={selected.job.id} finished={!selectedUnfinished} />
           <JobReport key={`report-${selected.job.id}-${selected.runs.filter(isFinished).length}`} jobId={selected.job.id} finished={!selectedUnfinished} />
+          {REARBITRABLE_KINDS.includes(selected.job.kind) && !selectedUnfinished && (
+            <Rearbitrate
+              jobId={selected.job.id}
+              onLaunched={(created) => {
+                setJobs((current) => [created, ...current])
+                setSelectedId(created.job.id)
+              }}
+            />
+          )}
           {/* Columns side by side on wide screens, stacked on narrow ones. */}
           <div className={`grid grid-cols-1 gap-5 ${slotsOf(selected).length > 1 ? 'lg:grid-cols-3' : ''}`}>
             {slotsOf(selected).map((slot) =>
@@ -270,6 +279,76 @@ function MockupSteps({ steps, onChange }: { steps: Run[][]; onChange: () => void
 }
 
 // The result of a v0 phase job: the output that counts and where it comes from.
+// A new arbitration of this job (16-10-2026): the same proposals of A and B,
+// judged again by the arbiter with the chosen model, to see whether the
+// arbiter prefers the proposal of its own model. It leaves its own result and
+// report (a new job in this list) and changes nothing of the project.
+function Rearbitrate({ jobId, onLaunched }: { jobId: string; onLaunched: (created: JobView) => void }) {
+  const [models, setModels] = useState<string[]>([])
+  const [model, setModel] = useState('')
+  const [launching, setLaunching] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const activeJob = useActiveJob()
+
+  useEffect(() => {
+    fetch('/jobs/arbiter-models')
+      .then((response) => (response.ok ? (response.json() as Promise<string[]>) : []))
+      .then((list) => {
+        setModels(list)
+        setModel((current) => current || list[0] || '')
+      })
+      .catch(() => setModels([]))
+  }, [])
+
+  async function launch() {
+    setLaunching(true)
+    setError(null)
+    try {
+      const response = await fetch(`/jobs/${jobId}/rearbitrate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model }),
+      })
+      if (!response.ok) {
+        setError(await errorMessage(response))
+        return
+      }
+      activeJob.refresh() // the other buttons go grey at once
+      onLaunched((await response.json()) as JobView)
+    } catch (e: unknown) {
+      setError(String(e))
+    } finally {
+      setLaunching(false)
+    }
+  }
+
+  if (models.length === 0) return null
+  return (
+    <div className="space-y-2 rounded border border-line bg-surface px-3 py-2.5 text-sm">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-medium">Volver a arbitrar</span>
+        <Badge>Experimental</Badge>
+        <label className="ml-auto flex items-center gap-2 text-muted">
+          Árbitro
+          <select value={model} onChange={(e) => setModel(e.target.value)} className="rounded border border-line bg-surface px-2 py-1 text-fg">
+            {models.map((m) => (
+              <option key={m}>{m}</option>
+            ))}
+          </select>
+        </label>
+        <LaunchButton size="sm" icon={Scale} disabled={launching || model === ''} onClick={launch}>
+          Arbitrar de nuevo
+        </LaunchButton>
+      </div>
+      <p className="text-muted">
+        Las mismas propuestas de A y B, juzgadas otra vez por el árbitro que elijas. Sirve para comparar árbitros: deja su propio resultado e
+        informe y no cambia las preguntas, el catálogo ni el backlog del proyecto.
+      </p>
+      {error && <Banner tone="danger">{error}</Banner>}
+    </div>
+  )
+}
+
 function JobResult({ jobId, finished }: { jobId: string; finished: boolean }) {
   const [result, setResult] = useState<PhaseResult | null>(null)
 
@@ -298,6 +377,10 @@ function JobResult({ jobId, finished }: { jobId: string; finished: boolean }) {
       {result.salida !== null && (
         <details className="text-sm">
           <summary className="cursor-pointer text-muted hover:text-fg">Ver la salida en JSON</summary>
+          <a href={`/jobs/${jobId}/result`} download={`resultado-${jobId}.json`} className="mt-2 inline-flex items-center gap-1.5 text-accent hover:underline">
+            <Download className="size-4" aria-hidden />
+            Descargar la salida (JSON)
+          </a>
           <pre className="mt-2 max-h-96 overflow-auto rounded border border-line bg-sunken p-3 text-xs">{JSON.stringify(result.salida, null, 2)}</pre>
         </details>
       )}

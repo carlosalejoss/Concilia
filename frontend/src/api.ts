@@ -66,7 +66,11 @@ export type Job = {
 
 // The job kinds of the v0 flow (A ‖ B → arbiter, or a single run for the
 // answer suggestions and the mockup).
-export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'backlog', 'answer-suggestions', 'mockup']
+export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'backlog', 'answer-suggestions', 'mockup', 'rearbitration']
+// A new arbitration of a finished job (16-10-2026): only the arbiter, on the
+// same proposals of A and B; an experiment that changes nothing of the project.
+export const REARBITRATION_KIND = 'rearbitration'
+export const REARBITRABLE_KINDS = ['questions', 'catalog-v0', 'backlog']
 export const SUGGESTIONS_KIND = 'answer-suggestions'
 
 export function isPhaseJob(job: Job): boolean {
@@ -80,6 +84,7 @@ export const JOB_KIND_NAMES: Record<string, string> = {
   'answer-suggestions': 'Sugerencias de respuesta',
   mockup: 'Mockup',
   catalog: 'Catálogo v1.4 (experimental)',
+  rearbitration: 'Nuevo arbitraje (experimental)',
 }
 
 // GET /jobs/{id}/result: the output of a v0 phase job that counts, and where
