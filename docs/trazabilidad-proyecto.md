@@ -92,13 +92,14 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Modelos:** `SS - GPT-6.1-SOL` resulta demasiado lento en respuestas largas; se vuelve a SOL 6.0 para A, B y el mockup.
 - **Mockup v0.6 a v0.9 (hito 16):** un único prototipo de toda la aplicación, construido en varias ejecuciones (diseño, una por pantalla y correcciones). La revisión del conjunto pasa a hacerla la plataforma (**cambio de criterio:** con 19 pantallas no cabía en el contexto de un modelo), se puede reanudar un mockup fallido y, en la v0.9, es una aplicación navegable con inicio de sesión y usuarios de prueba, no un índice de pantallas. Resultado con el documento C: 25 pantallas, 866 KB, unos 40 minutos; el autor lo da por bueno. Sin máximo de pantallas (aviso por encima de 25) y hasta 10 MB.
 
-### 7. Hito 13: flujo de punta a punta y evaluación (15-10, en curso)
+### 7. Hito 13: flujo de punta a punta y evaluación (15-10 y 16-10, completado)
 
 - **Paso 63:** test automático del flujo completo a través de la API, de los documentos al mockup.
 - **Paso 64:** informe automático por trabajo (cuánto aporta cada modelo, qué cambia el usuario al validar, tokens y tiempos) y CSV por proyecto: la base del capítulo de evaluación.
 - **Paso 66:** README y documentación al día.
 - **Preparación del paso 65:** dos proyectos ficticios de análisis (mediano: banco de alimentos, 7 archivos; grande: red de clínicas veterinarias, 21 archivos) en formatos variados, con contradicciones y huecos puestos a propósito como referencia para evaluar las preguntas.
 - **Trazabilidad:** bitácora detallada y este fichero, recuperados de toda la conversación, en `docs/` y mantenidos al día en cada sesión.
+- **Paso 65 cerrado (16-10):** flujo completo con los dos proyectos de ejemplo; resultados en `docs/resultados-paso-65/`. Mediano: 2,23 M tokens de entrada en 55 minutos, sin reparaciones. Grande: al menos 5,18 M en 105 minutos. Las 38 contradicciones y huecos se tratan como se esperaba, el mockup es el 63–70 % del coste y la unión se parece a A.
 - **Primer catálogo del proyecto grande de ejemplo:** 299 y 192 requisitos, unión de 209 en 12 minutos. A raíz de él, la plataforma quita la marca `sigue` de las citas (evita una reparación), el informe avisa cuando el consumo es un mínimo (las ejecuciones detenidas no lo dan) y la consola deja de decir «Failed» al detener una ejecución con la salida ya escrita.
 - **Mockup del proyecto grande de ejemplo:** 38 pantallas con las 109 historias (1,54 MB). La P34 falló por un 504 puntual de la pasarela y se recuperó al reanudar al día siguiente (16-10), aprovechando las otras 37.
 - **Una tarea cada vez en toda la plataforma:** mientras se ejecuta una, la API rechaza cualquier otro lanzamiento y la web apaga los botones de lanzar y dice qué tarea está en marcha y en qué proyecto.
@@ -167,16 +168,15 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Siguientes pasos
 
-1. **Paso 65:** ejecutar los dos proyectos de ejemplo, analizar sus CSV y cerrar el hito 13.
-2. **Comprobar si el árbitro prefiere a su propio modelo** (prioridad alta, ver la sección «Pregunta clave para la evaluación»): repetir una fase con otro reparto de modelos.
-3. Retomar el hito 7 (catálogo v2) como mejora del prompt del catálogo.
-4. Árbitro con embeddings.
-5. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución (ciclo de vida de alto nivel), 3.2 implementación (tripas y prompts) y 4 Evaluación.
+1. **Terminar el experimento de si el árbitro prefiere a su propio modelo** (prioridad alta, ver la sección «Pregunta clave para la evaluación»): repetir una fase con otro reparto de modelos.
+2. Retomar el hito 7 (catálogo v2) como mejora del prompt del catálogo.
+3. Árbitro con embeddings.
+4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución (ciclo de vida de alto nivel), 3.2 implementación (tripas y prompts) y 4 Evaluación.
 
 - **Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub (detalle en la bitácora): embeddings multilingües en local (árbitro y prueba del sesgo), AQUSA para las historias, el analizador de Gherkin, `vale-ears` para EARS en inglés y el dataset PURE como documento público.
 - **Aparcado (15-10-2026):** rehacer el mockup del proyecto grande de ejemplo con la suscripción del autor (Sonnet 5.5) y la skill `frontend-design`, para ver si mejora la calidad; se retoma tras el paso 65. Riesgos: agotar el límite de 5 horas de la suscripción (se puede reanudar) y cambiar dos cosas a la vez, el modelo y las skills.
 
 ## Cifras de seguimiento
 
-- **Commits:** 157 entre el 28-09 y el 16-10-2026.
+- **Commits:** 158 entre el 28-09 y el 16-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 835 (16-10).
