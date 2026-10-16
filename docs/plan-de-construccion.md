@@ -9,6 +9,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - No se pule la interfaz hasta que exista el árbitro.
 - Decisiones abiertas que afectan al plan: origen de los embeddings y umbral de discrepancia grave (antes del árbitro con embeddings). La jerarquía del backlog y el modelo del árbitro se cerraron el 08-10-2026 (ver la iteración v0).
 - Desde el 08-10-2026 se trabaja en la iteración v0 (hitos 8 a 13) antes que en el hito 7.
+- Desde el 16-10-2026, con los hitos 8 a 16 terminados, se sigue con los hitos 17 a 22 (fiabilidad, exportar, embeddings, trazabilidad, historial y evaluación), acordados con el autor. Los pasos marcados «por decidir» esperan a que el autor elija antes de empezarlos.
 
 ## Hito 0: preparación y prueba de humo (completado)
 
@@ -328,6 +329,8 @@ Decidido por el autor el 13-10-2026. La web era una sola página larga en la que
 - [x] 75. Backlog: árbol plegable épica → historia → criterios y tareas, «Desplegar todo» y «Plegar todo», filtros y tarjeta de cobertura.
 - [x] 76. Mockup y Actividad: visor a ancho completo con su barra; panel «Actividad de este paso» con sus trabajos y la consola, y la vista técnica de ejecuciones con el mismo estilo.
 
+Revisado por el autor en el navegador el 16-10-2026: funciona bien.
+
 **Hecho cuando:** con un proyecto real (documento B), cada paso cabe en pantalla plegado, se puede desplegar lo que se necesita, la URL lleva al mismo sitio al recargar y el modo oscuro se ve bien en todos los pasos.
 
 ## Hito 15: más tipos de archivo
@@ -343,7 +346,7 @@ Pedido por el autor el 14-10-2026: además de `.txt`, `.md`, `.docx` y `.pdf`, l
 | Un `.zip` no es documentación: serán mockups existentes del cliente cuyo estilo debe seguir nuestro mockup. Es otra funcionalidad, que se diseña aparte. | Autor |
 
 - [x] 77. Convertidores (`SpreadsheetText`, `SlidesText`, `HtmlText`, `EmailText`, `TranscriptText`), reglas de subida en la API y en la web, y tests con documentos construidos en memoria. Un `.msg` no se puede construir en un test: solo se prueba que uno dañado da error.
-- [x] 78. Referencia de estilo para el mockup a partir de un `.zip` con un mockup del cliente (prompts v0.5; detalle en `prompts/v0/CHANGELOG.md`). Decisiones del autor (14-10-2026): el `.zip` se sube en Documentos, marcado como «estilo»; el modelo recibe solo los ficheros y saca el estilo él solo; las imágenes de la referencia entran en el mockup (la plataforma las incrusta). Falta probarlo con un modelo.
+- [x] 78. Referencia de estilo para el mockup a partir de un `.zip` con un mockup del cliente (prompts v0.5; detalle en `prompts/v0/CHANGELOG.md`). Decisiones del autor (14-10-2026): el `.zip` se sube en Documentos, marcado como «estilo»; el modelo recibe solo los ficheros y saca el estilo él solo; las imágenes de la referencia entran en el mockup (la plataforma las incrusta). Probado por el autor con un modelo el 16-10-2026: funciona bien.
 
 ## Hito 16: el mockup como una sola aplicación
 
@@ -364,10 +367,75 @@ Pedido por el autor el 14-10-2026, para probar el mockup con `SS - GPT-6-SOL`.
 - [x] 83. Prompts v0.9: el mockup como aplicación que funciona (inicio de sesión con los usuarios de prueba a la vista, una aplicación por rol, menús de secciones y navegación por acciones), con la navegación en el mapa y comprobada por la plataforma. Decidido por el autor el 15-10-2026.
 - [x] 84. Generar el mockup del documento C con la v0.9 y medirlo: 25 pantallas, las 46 historias, 866 KB, en 40 minutos y con una sola corrección. El autor lo da por bueno (15-10-2026).
 
+## Hito 17: fiabilidad y calidad
+
+Acordado con el autor el 16-10-2026, tras el paso 65 y el experimento del árbitro. Recoge lo que falló o se quedó corto en las pruebas reales.
+
+- [ ] 85. Fiabilidad de LUNA. Comete errores de formato que obligan a reparar: claves repetidas, elementos sin clasificar (`ARB-FALTA`) y números de línea citados como fragmentos. Hay que hacer los prompts más explícitos y añadir más correcciones mecánicas en la plataforma. **Por decidir** cuáles se corrigen solas, por ejemplo las citas que son números de línea o las etiquetas `<html>`, `<body>`… de las pantallas del mockup.
+- [ ] 86. Reparar editando. **Por decidir.** La reparación pega la salida anterior entera en el prompt, y la de un catálogo de árbitro (unos 30.000 tokens) no cabe en 128k junto con las propuestas. Con `Edit`, el modelo corregiría solo los elementos con errores.
+- [ ] 87. Cerrar los trabajos interrumpidos al arrancar la API. **Por decidir.** Hoy quedan sin fecha de fin, y un mockup interrumpido no se puede reanudar.
+- [ ] 88. Parar las ejecuciones que compactan varias veces antes de escribir su salida. **Por decidir.**
+- [ ] 89. Sugerencias de respuesta más prudentes, y marca en el catálogo de lo que sale de una suposición de la IA. En las pruebas, casi todas las sugerencias eran suposiciones y se aceptaron sin revisar, lo que infla el catálogo.
+- [ ] 90. Variedad del mockup sin `.zip`. Observación del autor (16-10-2026): sin una referencia de estilo, sale siempre con el mismo estilo y la misma organización. Relacionado con la idea aparcada de usar la skill `frontend-design` con la suscripción del autor (ver `docs/trazabilidad-proyecto.md`).
+- [ ] 91. Estimar el consumo de las ejecuciones detenidas antes del final, que hoy no tienen dato. **Por decidir.**
+
+**Hecho cuando:** el flujo completo del proyecto grande de ejemplo termina sin errores internos ni reparaciones que no caben, y el mockup sin `.zip` cambia de estilo entre proyectos distintos.
+
+## Hito 18: exportar los entregables
+
+Acordado con el autor el 16-10-2026. Hoy todo se queda dentro de la web.
+
+- [ ] 92. Catálogo a Word (`.docx`) y PDF, con los requisitos agrupados por tipo y sus fuentes.
+- [ ] 93. Backlog a ficheros `.feature` de Gherkin, uno por épica, comprobados con el analizador oficial (`cucumber/gherkin`, MIT, con implementación .NET).
+- [ ] 94. Backlog a CSV que se pueda importar en Jira y en Azure DevOps.
+
+**Hecho cuando:** desde la web se descargan el catálogo y el backlog en esos formatos, y los ficheros se abren o se importan sin errores.
+
+## Hito 19: embeddings en local
+
+Resuelve la decisión abierta desde el principio (el origen de los embeddings): la pasarela no los ofrece. Propuesta (16-10-2026): el modelo `paraphrase-multilingual-MiniLM-L12-v2` (ONNX, Apache 2.0, español e inglés), ejecutado con ONNX Runtime dentro del contenedor de la API, sin servicios nuevos.
+
+- [ ] 95. **Decisión del autor:** origen de los embeddings y umbral de «discrepancia grave».
+- [ ] 96. Servicio de embeddings en la API: el modelo, el tokenizador y el cálculo del vector de un texto, y la similitud entre dos textos, con tests.
+- [ ] 97. Emparejamiento de A y B por significado, fuera del LLM: qué elementos de A y de B dicen lo mismo y cuáles solo están en uno. Es la referencia objetiva del experimento del sesgo del árbitro (`docs/experimento-sesgo-arbitro.md`).
+- [ ] 98. Árbitro con embeddings, como estaba en el diseño original: el emparejamiento se calcula antes, el LLM explica y fusiona, y la discrepancia grave la marca el umbral.
+
+**Hecho cuando:** el emparejamiento de A y B de un trabajo real coincide en lo esencial con lo que hizo el árbitro, y las diferencias se pueden explicar.
+
+## Hito 20: trazabilidad visual y comparación de A, B y el árbitro
+
+Acordado con el autor el 16-10-2026. Las dos vistas usan los mismos datos, que ya existen: fuentes, preguntas y requisitos de cada historia, y el `de` del árbitro.
+
+- [ ] 99. Trazabilidad: desde un requisito, sus fragmentos (con el texto), las preguntas que lo justifican y las historias que lo cubren; y al revés, desde una historia.
+- [ ] 100. Comparación lado a lado de A, B y el árbitro en cada trabajo: qué propuso cada uno y qué hizo el árbitro con cada elemento (unido, descartado o con discrepancia). Con el hito 19, también los emparejamientos por significado.
+
+**Hecho cuando:** desde cualquier requisito se llega a su origen en la documentación, y en un trabajo se ve qué aportó cada modelo.
+
+## Hito 21: historial de versiones de los entregables
+
+Acordado con el autor el 16-10-2026.
+
+- [ ] 101. Guardar cada versión del catálogo, el backlog y el mockup (generada, editada o validada), con su fecha y su origen.
+- [ ] 102. Ver una versión anterior, compararla con la actual y volver a ella.
+
+**Hecho cuando:** después de regenerar o editar un entregable, se puede volver a la versión anterior.
+
+## Hito 22: evaluación
+
+Material para el capítulo de evaluación de la memoria.
+
+- [ ] 103. Terminar el experimento de si el árbitro prefiere a su propio modelo (`docs/experimento-sesgo-arbitro.md`).
+- [ ] 104. Métricas externas sobre el catálogo y el backlog generados en inglés: AQUSA (`RELabUU/aqusa-core`) para las historias y `vale-ears` para EARS.
+- [ ] 105. El flujo completo con un documento público del dataset PURE, que el tribunal pueda reproducir.
+- [ ] 106. Una prueba editando de verdad el catálogo y el backlog, como un analista, para que la métrica de cambios del usuario tenga datos. Incluye los pasos 49 (segunda ronda de preguntas) y 53 (editar el catálogo), que siguen pendientes.
+
+**Hecho cuando:** el capítulo de evaluación tiene datos de los tres experimentos (sesgo del árbitro, calidad con métricas externas y cambios del usuario) y de al menos un documento público.
+
 ## Después
 
 Por este orden:
 
 1. Mejorar los prompts fase a fase sobre el flujo que ya funciona. En el catálogo, se retoma el hito 7 con los prompts v2 del autor.
-2. Árbitro con embeddings. Queda pendiente decidir su origen (un modelo local en el contenedor de la API u otro proveedor) y el umbral de discrepancia grave.
+2. ~~Árbitro con embeddings.~~ Pasa al hito 19 (16-10-2026).
 3. Aprobación por umbral y evaluación: precision, recall y F1 frente a la versión validada y a listas de referencia hechas a mano.
+4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación.

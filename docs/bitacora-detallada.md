@@ -1639,3 +1639,24 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisiones:** cerrar el hito 13 con los dos proyectos ficticios, como pidió el autor el 15-10-2026.
 - **Cambios de criterio:** ninguno.
 - **Pendientes:** terminar el experimento del sesgo del árbitro; valorar un documento de PURE; las herramientas externas candidatas.
+
+---
+
+## 16-10-2026, 15:00 (sesión)
+
+**Resumen para la bitácora (16-10-2026, plan de los hitos 17 a 22)**
+
+- **Qué se hizo:** repaso de todo lo pendiente del proyecto y plan nuevo, acordado con el autor, en `docs/plan-de-construccion.md`:
+  - **Hito 17, fiabilidad y calidad:** LUNA, reparar editando, trabajos interrumpidos, compactaciones, sugerencias más prudentes, variedad del mockup sin `.zip` y consumo de las ejecuciones detenidas. Varios pasos están marcados «por decidir».
+  - **Hito 18, exportar:** el catálogo a Word y PDF, y el backlog a `.feature` y a CSV para Jira o Azure DevOps.
+  - **Hito 19, embeddings en local:** modelo multilingüe con ONNX Runtime, emparejamiento de A y B por significado y árbitro con embeddings.
+  - **Hito 20, trazabilidad visual y comparación** de A, B y el árbitro.
+  - **Hito 21, historial de versiones** de los entregables.
+  - **Hito 22, evaluación:** el experimento del sesgo, AQUSA y `vale-ears`, un documento de PURE y una prueba editando (con los pasos 49 y 53).
+- **Revisado por el autor:** la interfaz del hito 14 y el mockup con el estilo de un `.zip` del hito 15 funcionan bien.
+- **Observación del autor:** sin `.zip`, el mockup sale siempre con el mismo estilo y la misma organización. Es el paso 90.
+- **Decisiones:**
+  - **Del autor:** las 5 funcionalidades (exportar, trazabilidad, comparación, historial y métricas externas) y las mejoras propuestas. Queda fuera abaratar el mockup.
+  - **De Claude:** el árbitro con embeddings pasa de «Después» al hito 19, por delante de la trazabilidad, que lo aprovecha.
+- **Cambios de criterio:** el árbitro con embeddings deja de ser un «después» sin fecha y pasa a ser el hito 19.
+- **Pendientes:** el último arbitraje del experimento; empezar el hito 17 por el paso que elija el autor.

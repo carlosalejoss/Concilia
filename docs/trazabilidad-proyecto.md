@@ -168,15 +168,21 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Siguientes pasos
 
-1. **Terminar el experimento de si el árbitro prefiere a su propio modelo** (prioridad alta, ver la sección «Pregunta clave para la evaluación»): repetir una fase con otro reparto de modelos.
-2. Retomar el hito 7 (catálogo v2) como mejora del prompt del catálogo.
-3. Árbitro con embeddings.
-4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución (ciclo de vida de alto nivel), 3.2 implementación (tripas y prompts) y 4 Evaluación.
+Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.md` como hitos 17 a 22:
+
+1. **Terminar el experimento de si el árbitro prefiere a su propio modelo** (prioridad alta; ver la sección «Pregunta clave para la evaluación»). Es el paso 103 del hito 22.
+2. **Hito 17, fiabilidad y calidad:** LUNA, reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
+3. **Hito 18, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
+4. **Hito 19, embeddings en local:** cierra la decisión abierta del origen de los embeddings y lleva al árbitro con embeddings.
+5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
+6. **Hito 21, historial de versiones de los entregables.**
+7. **Hito 22, evaluación:** métricas externas, un documento de PURE y una prueba editando de verdad.
+8. **Después:** hito 7 (catálogo v2) y redactar la memoria (sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación).
 
 - **Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub (detalle en la bitácora): embeddings multilingües en local (árbitro y prueba del sesgo), AQUSA para las historias, el analizador de Gherkin, `vale-ears` para EARS en inglés y el dataset PURE como documento público.
 - **Aparcado (15-10-2026):** rehacer el mockup del proyecto grande de ejemplo con la suscripción del autor (Sonnet 5.5) y la skill `frontend-design`, para ver si mejora la calidad; se retoma tras el paso 65. Riesgos: agotar el límite de 5 horas de la suscripción (se puede reanudar) y cambiar dos cosas a la vez, el modelo y las skills.
 
 ## Cifras de seguimiento
 
-- **Commits:** 158 entre el 28-09 y el 16-10-2026.
+- **Commits:** 159 entre el 28-09 y el 16-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 835 (16-10).
