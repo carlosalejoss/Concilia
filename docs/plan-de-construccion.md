@@ -9,11 +9,11 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - No se pule la interfaz hasta que exista el árbitro.
 - Decisiones abiertas que afectan al plan: el umbral de discrepancia grave (se calibra en el paso 87). La jerarquía del backlog y el modelo del árbitro se cerraron el 08-10-2026 (ver la iteración v0), y el origen de los embeddings el 16-10-2026 (hito 17).
 - Desde el 08-10-2026 se trabaja en la iteración v0 (hitos 8 a 13) antes que en el hito 7.
-- Desde el 16-10-2026, con los hitos 8 a 16 terminados, se sigue con los hitos 17 a 22 en su orden, acordado con el autor: 17 embeddings, 18 fiabilidad y calidad, 19 exportar, 20 trazabilidad y comparación, 21 historial y 22 evaluación. Los pasos marcados «por decidir» esperan a que el autor elija antes de empezarlos. En paralelo, el autor termina el experimento del árbitro (paso 103).
+- Desde el 16-10-2026, con los hitos 8 a 16 terminados, se sigue con los hitos 17 a 22 en su orden, acordado con el autor: 17 embeddings, 18 fiabilidad y calidad, 19 exportar, 20 trazabilidad y comparación, 21 historial y 22 evaluación. Los pasos marcados «por decidir» esperan a que el autor elija antes de empezarlos. El experimento del árbitro (paso 103) se cerró el mismo día.
 
 ## Dónde estamos (16-10-2026)
 
-- **En curso:** el experimento de si el árbitro prefiere a su propio modelo (paso 103, `docs/experimento-sesgo-arbitro.md`). Falta un último arbitraje de LUNA en el catálogo.
+- **Terminado:** el experimento de si el árbitro prefiere a su propio modelo (paso 103): no hay preferencia (`docs/experimento-sesgo-arbitro.md`).
 - **Siguiente paso:** el 86 (servicio de embeddings en la API), del hito 17. El 85 está decidido en parte: falta el umbral, que se elige en el 87.
 
 ## Hito 0: preparación y prueba de humo (completado)
@@ -429,7 +429,7 @@ Acordado con el autor el 16-10-2026.
 
 Material para el capítulo de evaluación de la memoria.
 
-- [ ] 103. Terminar el experimento de si el árbitro prefiere a su propio modelo (`docs/experimento-sesgo-arbitro.md`).
+- [x] 103. Terminar el experimento de si el árbitro prefiere a su propio modelo (`docs/experimento-sesgo-arbitro.md`). (16-10-2026: no hay preferencia; la unión se parece a A porque A propone más y casi todo lo de B ya está en A. LUNA, 2 arbitrajes válidos de 6 en el catálogo.)
 - [ ] 104. Métricas externas sobre el catálogo y el backlog generados en inglés: AQUSA (`RELabUU/aqusa-core`) para las historias y `vale-ears` para EARS.
 - [ ] 105. El flujo completo con un documento público del dataset PURE, que el tribunal pueda reproducir.
 - [ ] 106. Una prueba editando de verdad el catálogo y el backlog, como un analista, para que la métrica de cambios del usuario tenga datos. Incluye los pasos 49 (segunda ronda de preguntas) y 53 (editar el catálogo), que siguen pendientes.

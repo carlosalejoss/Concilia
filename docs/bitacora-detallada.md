@@ -1718,3 +1718,20 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisiones:** ninguna nueva; solo cambia la numeración.
 - **Cambios de criterio:** ninguno.
 - **Pendientes:** el último arbitraje de LUNA; empezar el paso 86 en un chat nuevo.
+
+---
+
+## 16-10-2026, 16:30 (sesión)
+
+**Resumen para la bitácora (16-10-2026, experimento del árbitro cerrado)**
+
+- **Qué se hizo:** cierre del experimento de si el árbitro prefiere a su propio modelo, con la tabla de todos los arbitrajes en `docs/experimento-sesgo-arbitro.md`.
+- **Resultados (las mismas propuestas en todos los arbitrajes de cada fase):**
+  - **Preguntas:** lo que entra solo de B es 6 en los 6 arbitrajes (3 de SOL y 3 de LUNA). SOL da exactamente lo mismo las tres veces; LUNA varía en los descartes.
+  - **Catálogo:** solo de B entran 1, 7 y 0 con SOL (media 2,7) y 3 y 0 con LUNA (media 1,5). Solo de A, entre 27 y 30 siempre. El tamaño de la unión con SOL varía mucho (209, 220 y 291), porque cada ejecución fusiona más o menos.
+- **Conclusión:** se confirma H1. A es más completo y el árbitro no favorece a su propio modelo. El diseño de propuestas anónimas en orden aleatorio no muestra sesgo. Con estos modelos, la verificación cruzada aporta poco por lo que solo encuentra B; su valor está en confirmar lo que coincide y en las discrepancias.
+- **Hallazgo secundario:** LUNA, como árbitro de un catálogo grande, termina 2 de 6 intentos, frente a 3 de 3 de SOL. Todos sus fallos son de formato o de tamaño: clave repetida, reparación que no cabe, tipos mal puestos, salida cortada por el tope y JSON mal formado. En las preguntas, una salida pequeña, no falló ninguna vez.
+- **Limitación:** en el catálogo, LUNA solo tiene 2 arbitrajes válidos. La conclusión se apoya sobre todo en las preguntas.
+- **Decisiones del autor:** cerrar el catálogo con 2 arbitrajes válidos de LUNA, como se acordó antes del último intento.
+- **Cambios de criterio:** ninguno. Se cierra la pregunta clave abierta el mismo día.
+- **Pendientes:** seguir en un chat nuevo con el hito 17 (embeddings), paso 86. El paso 87 dará la referencia independiente del experimento.
