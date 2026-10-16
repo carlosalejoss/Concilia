@@ -1574,3 +1574,19 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisiones del autor:** darle importancia en la documentación para la memoria; 3 repeticiones por configuración.
 - **Cambios de criterio:** ninguno.
 - **Pendientes:** completar los arbitrajes (2 con LUNA y 2 con SOL por fase) y escribir los resultados en el documento del experimento.
+
+---
+
+## 16-10-2026, 12:40 (sesión)
+
+**Resumen para la bitácora (16-10-2026, transición entre modo claro y oscuro)**
+
+- **Qué se hizo:**
+  - **Revelado circular:** el tema nuevo aparece como un círculo que crece desde el botón de sol o luna hasta cubrir la página, en 450 ms. Usa la View Transitions API del navegador: una imagen de antes y otra de después, con la nueva recortada en un círculo que crece. Sin dependencias nuevas.
+  - **Icono animado:** el sol y la luna están superpuestos en el botón; el del tema siguiente aparece y el otro gira y se encoge, en 500 ms.
+  - **Sin la API, o con «reducir movimiento» activado en el sistema,** el cambio es instantáneo, como antes.
+  - Web reconstruida sin tocar la API, con los arbitrajes en marcha.
+- **Decisiones del autor:** opciones 3 (revelado circular) y 4 (icono animado) entre las cinco propuestas.
+- **Decisiones de Claude (revisables):** duraciones de 450 y 500 ms y curva de aceleración estándar; no hizo falta ninguna skill.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:** que el autor lo vea en el navegador; los arbitrajes del experimento.
