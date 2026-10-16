@@ -1617,3 +1617,25 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - **Decisión del autor:** reparar editando solo los elementos con errores (con la herramienta `Edit` en las reparaciones), en lugar de reescribir la salida entera.
   - Desplegar cuando termine la tanda de arbitrajes de preguntas.
   - Repetir los arbitrajes del catálogo.
+
+---
+
+## 16-10-2026, 14:30 (sesión)
+
+**Resumen para la bitácora (16-10-2026, paso 65 y cierre del hito 13)**
+
+- **Qué se hizo:** análisis del CSV del proyecto mediano (banco de alimentos) y documento de resultados de los dos proyectos, en `docs/resultados-paso-65/README.md` (con los dos CSV). Paso 65 y hito 13 cerrados.
+- **Mediano:**
+  - **Coste y tiempo:** 2,23 M tokens de entrada y 504.000 de salida, en 55 minutos y sin ninguna reparación.
+  - **Mockup:** el 70 % de la entrada, con 20 pantallas y las 45 historias.
+  - **Lo que propone cada modelo:** preguntas 27 / 21 → 29; catálogo 120 / 68 → 100; backlog 45 / 28 → 45. Solo de B entran 2, 1 y 0.
+  - **Contradicciones:** 12 de 12 tratadas como se esperaba (10 abiertas preguntadas; la resuelta y el hueco, en el catálogo).
+- **Los dos proyectos juntos:**
+  - 38 de 38 contradicciones y huecos tratados como se esperaba;
+  - 15 de 15 contradicciones abiertas preguntadas, 2 solo por A y ninguna solo por B;
+  - la unión se parece a A en las tres fases;
+  - el mockup se lleva entre el 63 % y el 70 % del coste.
+- **Limitaciones declaradas:** proyectos, lista y comprobación hechos por Claude; una sola ejecución; respuestas de la IA; sin cambios del usuario; sin documento público.
+- **Decisiones:** cerrar el hito 13 con los dos proyectos ficticios, como pidió el autor el 15-10-2026.
+- **Cambios de criterio:** ninguno.
+- **Pendientes:** terminar el experimento del sesgo del árbitro; valorar un documento de PURE; las herramientas externas candidatas.

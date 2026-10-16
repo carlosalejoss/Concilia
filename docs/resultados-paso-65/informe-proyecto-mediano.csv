@@ -1,0 +1,6 @@
+fecha;trabajo;tipo;resultado;tokens_entrada;tokens_salida;ejecuciones_sin_consumo;segundos;reparaciones;elementos_A;elementos_B;elementos_union;de_ambas;solo_A;solo_B;discrepancias;descartados;usuario_conservados;usuario_modificados;usuario_anadidos;usuario_borrados;preguntas;respondidas;descartadas;pendientes;respuestas_usuario;respuestas_ia;respuestas_ia_editadas;fase;modelo_arbitro;arbitraje_de;mensaje
+2026-10-16 06:57;e14d624f-8cdb-4bdb-ba20-15646ea807bd;mockup;ok;1568036;333966;0;2141;0;;;;;;;;;;;;;;;;;;;;;;;Mockup generado: 20 pantallas. Con las 45 historias del backlog validado.
+2026-10-16 06:51;1628caf6-4820-427f-9369-e8922d2e92e1;backlog;ok;212321;63142;0;327;0;45;28;45;45;0;0;1;0;45;0;0;0;;;;;;;;Backlog;SS - GPT-6-SOL;;Unión del árbitro.
+2026-10-16 06:43;294fe7bb-def8-4b68-b7cd-7c52d27ed3fe;catalog-v0;ok;269279;62410;0;494;0;120;68;100;65;34;1;0;1;100;0;0;0;;;;;;;;Catalog;SS - GPT-6-SOL;;Unión del árbitro.
+2026-10-16 06:41;5ad41283-b2e0-47c7-a2ff-90486a391f90;answer-suggestions;ok;38430;10232;0;97;0;;;;;;;;;;;;;;;;;;;;Suggestions;;;Salida de un solo modelo.
+2026-10-16 06:36;b2adf10a-e095-4a5f-815e-e7cc3c8d8304;questions;ok;138773;33944;0;258;0;27;21;29;17;10;2;0;0;;;;;29;29;0;0;0;29;0;Questions;SS - GPT-6-SOL;;Unión del árbitro.
