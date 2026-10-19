@@ -13,8 +13,8 @@ namespace Concilia.Core.Phases;
 //   proposal 2 in the same position; what proposal 2 has left over is discarded.
 public static class FakePhaseOutput
 {
-    // The repair annex wraps the previous output in this tag.
-    public const string RepairMarker = "<salida_previa>";
+    // The title of the repair annex (prompts/v0/anexo_reparacion.md).
+    public const string RepairMarker = "# REPARACIÓN (intento";
 
     private const string Note = "Simulado por FakeProvider; ningún modelo ha intervenido.";
 

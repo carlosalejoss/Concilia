@@ -9,7 +9,11 @@ public record RunAttempt(RunRequest Request, RunResult Result, Guid? PreviousRun
 // caller may turn a Done into a Failed, for example when the file the model
 // wrote is not valid) and, when asking again is worth it, the complete prompt
 // of the next attempt. A null RetryPrompt means no retry.
-public record AttemptReview(RunResult Result, string? RetryPrompt);
+// RetryFiles (step 90): files to place in the folder of the retry, by path
+// inside it (the previous output, ready to be edited); RetryTools: the tools
+// of the retry, if they are not the same as the attempt's.
+public record AttemptReview(RunResult Result, string? RetryPrompt,
+    IReadOnlyDictionary<string, string>? RetryFiles = null, IReadOnlyList<string>? RetryTools = null);
 
 // Runs a task and retries it while the review asks for it, at most maxRetries
 // times (DefaultMaxRetries unless the caller says otherwise; the catalog task
@@ -76,7 +80,7 @@ public class RetryRunner(IRunnerProvider provider, int maxRetries = RetryRunner.
             }
 
             previousRunId = request.RunId;
-            request = NextAttempt(request, decision.RetryPrompt);
+            request = NextAttempt(request, decision.RetryPrompt, decision.RetryFiles, decision.RetryTools);
         }
     }
 
@@ -90,9 +94,10 @@ public class RetryRunner(IRunnerProvider provider, int maxRetries = RetryRunner.
         attempt.Result.VerdictError is { } error ? attempt.Request.Prompt + RetryNote(error) : null);
 
     // The retry gets a new id and a sibling folder (data/runs/{newId}/) with a
-    // copy of the folders the request carries (input/, and output/mockup/ in
-    // the mockup), and the prompt the review chose.
-    private static RunRequest NextAttempt(RunRequest previous, string prompt)
+    // copy of the folders the request carries (input/, and output/prototipo/ in
+    // the mockup), the files and tools the review chose, and its prompt.
+    private static RunRequest NextAttempt(RunRequest previous, string prompt,
+        IReadOnlyDictionary<string, string>? files = null, IReadOnlyList<string>? tools = null)
     {
         var runId = Guid.NewGuid();
         var parent = Path.GetDirectoryName(Path.GetFullPath(previous.WorkDirectory))!;
@@ -107,11 +112,19 @@ public class RetryRunner(IRunnerProvider provider, int maxRetries = RetryRunner.
             }
         }
 
+        foreach (var (path, content) in files ?? new Dictionary<string, string>())
+        {
+            var target = Path.Combine(workDirectory, path);
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            File.WriteAllText(target, content);
+        }
+
         return previous with
         {
             RunId = runId,
             WorkDirectory = workDirectory,
             Prompt = prompt,
+            AllowedTools = tools ?? previous.AllowedTools,
         };
     }
 

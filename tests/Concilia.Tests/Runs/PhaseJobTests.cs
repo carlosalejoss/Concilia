@@ -280,7 +280,10 @@ public class PhaseJobTests
             var attempts = setup.Outcome(slot).Attempts!;
             Assert.Equal([RunStatus.Failed, RunStatus.Done], attempts.Select(a => a.Result.Status));
             Assert.StartsWith("Salida no válida: JSON no válido", attempts[0].Result.ErrorMessage);
-            Assert.Contains("<salida_previa>", attempts[1].Request.Prompt);
+            Assert.Contains("# REPARACIÓN (intento 1)", attempts[1].Request.Prompt);
+            // Step 90: the repair may edit its file, and the previous output is not pasted in its prompt.
+            Assert.Contains("Edit", attempts[1].Request.AllowedTools);
+            Assert.DoesNotContain("Edit", attempts[0].Request.AllowedTools);
         }
     }
 

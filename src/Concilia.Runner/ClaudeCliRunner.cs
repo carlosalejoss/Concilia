@@ -78,7 +78,8 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
                     case ToolResultEvent answered when pendingReads.Remove(answered.ToolUseId, out var fileRead):
                         reads.Add(fileRead with { Succeeded = !answered.IsError });
                         break;
-                    case ToolUseEvent { Name: "Write" } write when ReadOf(write.Input, folders.Root) is { } target:
+                    // An Edit also leaves the file written (a repair edits the previous output, step 90).
+                    case ToolUseEvent { Name: "Write" or "Edit" } write when ReadOf(write.Input, folders.Root) is { } target:
                         pendingWrites[write.ToolUseId] = target.Path;
                         break;
                     case ToolResultEvent answered when pendingWrites.Remove(answered.ToolUseId, out var path) && !answered.IsError:

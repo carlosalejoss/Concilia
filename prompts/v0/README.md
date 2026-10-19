@@ -35,7 +35,7 @@ Los valores se insertan en una sola pasada, como en `PromptBuilder.Fill`: un doc
 - `input/emparejamiento.txt` (desde la v0.10, solo el árbitro): el emparejamiento por significado de las dos propuestas que calcula la plataforma con embeddings, una línea por par (`1:RF-003 2:RF-001 mismo 0.94`, `… parecido 0.78`) o por elemento sin par (`1:RF-020 sin-par`). Se lee entero.
 - Los ficheros JSON van indentados, un valor por línea, para que `Read` no corte ninguna línea larga.
 - `LECTURA` (`ReadingPlan.Block`): qué ficheros de `input/` lee el modelo y cómo. De los que tiene que leer enteros da el número de líneas y los argumentos exactos de cada llamada a `Read` (`offset` y `limit`, desde la línea 1). Cada tramo tiene como mucho unos 40.000 caracteres o 1.000 líneas, para que quepa en una llamada. Los demás, solo para consultar.
-- Anexo de reparación: `FICHERO` es la ruta de salida de la fase, `SALIDA_PREVIA` el fichero del intento anterior y `ERRORES` una línea por error de las comprobaciones.
+- Anexo de reparación: `FICHERO` es la ruta de salida de la fase, `SALIDA_PREVIA` una nota que dice dónde está la salida anterior y cómo corregirla, y `ERRORES` una línea por error de las comprobaciones. Desde la v0.11 la salida anterior no va en el prompt: se queda en su fichero, con un elemento por línea, cada error dice en qué línea está su elemento y la reparación la corrige con Edit.
 
 ## Comprobaciones
 

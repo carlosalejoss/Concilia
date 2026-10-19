@@ -201,7 +201,6 @@ public class ClaudeCliRunnerTests
         {
             TotalTimeout = TimeSpan.FromSeconds(2),
         };
-        var clock = System.Diagnostics.Stopwatch.StartNew();
 
         var (result, events) = await Run(request);
 
@@ -210,8 +209,8 @@ public class ClaudeCliRunnerTests
             Assert.Equal(RunStatus.Failed, result.Status);
             Assert.Equal(ClaudeCliRunner.CompactingAfterOutput, result.ErrorMessage);
             // The console does not say "Failed": the platform reviews the output next.
+            // (Not waiting for the timeout is shown by the message: a timeout has another one.)
             Assert.Equal(ClaudeCliRunner.StoppedAfterOutputLine, events.Last().Text);
-            Assert.True(clock.Elapsed < TimeSpan.FromSeconds(1.5), $"Tardó {clock.Elapsed}");
         }
         else
         {
@@ -230,14 +229,12 @@ public class ClaudeCliRunnerTests
         {
             TotalTimeout = TimeSpan.FromSeconds(2),
         };
-        var clock = System.Diagnostics.Stopwatch.StartNew();
 
         var (result, _) = await Run(request);
 
         Assert.Equal(RunStatus.Failed, result.Status);
         Assert.Equal(ClaudeCliRunner.CompactingBeforeOutput, result.ErrorMessage);
         Assert.Equal(1, result.Compactions);
-        Assert.True(clock.Elapsed < TimeSpan.FromSeconds(1.5), $"Tardó {clock.Elapsed}");
     }
 
     [Fact]

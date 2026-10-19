@@ -50,12 +50,14 @@ public static class PhasePrompt
     // The repair is the ORIGINAL prompt plus the annex with the previous output
     // and the errors, one per line (not the previous prompt, so annexes do not
     // pile up).
-    public static string Repair(string originalPrompt, int attempt, string outputFile, string previousOutput, IEnumerable<string> errors) =>
+    // previous: where the previous output is and how to correct it (since
+    // prompts v0.11 it is not pasted here: it stays in its file).
+    public static string Repair(string originalPrompt, int attempt, string outputFile, string previous, IEnumerable<string> errors) =>
         originalPrompt + "\n" + PromptBuilder.Fill(RepairAnnexTemplate, new Dictionary<string, string>
         {
             ["INTENTO"] = attempt.ToString(System.Globalization.CultureInfo.InvariantCulture),
             ["FICHERO"] = outputFile,
-            ["SALIDA_PREVIA"] = previousOutput,
+            ["SALIDA_PREVIA"] = previous,
             ["ERRORES"] = string.Join("\n", errors),
         });
 
