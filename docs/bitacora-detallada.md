@@ -1897,3 +1897,45 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - el intento que agotó los turnos (relacionado con el paso 92);
   - el consumo de las ejecuciones detenidas (paso 95), que impide comparar el coste de las versiones;
   - la petición del autor de una tabla de coste en tiempo y dinero por fase y versión.
+
+---
+
+## 19-10-2026, 13:05 (sesión)
+
+**Resumen para la bitácora (19-10-2026, hito 18, paso 95, y coste en tiempo y dinero)**
+
+- **Petición del autor:** una tabla con el coste en tiempo y en dinero de las fases del proceso, antes y después de cada cambio (por ejemplo, de los embeddings), para justificar los cambios del TFG también por su coste.
+- **Decisiones del autor:**
+  - **precios** de la pasarela LiteLLM (captura de su configuración), en dólares por millón de tokens: SOL y SOL 6.1, 2 de entrada y 10 de salida; LUNA, 0,10 y 0,50;
+  - **estimar como se pueda** las ejecuciones sin dato (paso 95, adelantado), siempre que no se salte nada necesario. No depende de los pasos 90–94;
+  - **comparar sobre el proyecto de clínicas veterinarias** y, si otro proyecto tiene la misma fase en varias versiones, usarlo también;
+  - **medir el tiempo de CPU de los embeddings;**
+  - **el mockup cuenta como coste**, porque ahora se hace con SOL por la pasarela;
+  - el script, las tablas, el antes y el después y poder regenerarlo, como proponía Claude.
+- **Qué se hizo:**
+  - **`UsageEstimator`** (Core):
+    - separa los intentos de la consola guardada de cada ejecución (las reparaciones publican en la del primer intento, con «[reintento]»);
+    - reconstruye el contexto turno a turno, sabiendo que cada llamada vuelve a enviarlo entero: cada Read suma las líneas de su tramo (leídas de la carpeta de la ejecución), cada Write el fichero escrito y cada texto su longitud, y una compactación envía el contexto una vez y lo deja en un resumen;
+    - convierte el resultado en tokens con `a·turnos + b·caracteres`;
+    - 7 tests.
+  - **`scripts/evaluacion/ajustar-estimador.cs`:** ajusta los coeficientes por mínimos cuadrados con las 125 ejecuciones con dato real y consola, por separado para el mockup (97) y las fases (28), y mide el error dejando cada ejecución fuera de su ajuste. Error típico por ejecución: 5 % y 9 % (mockup, entrada y salida) y 9 % y 20 % (fases). Error del total: −0,7 % y −1,0 %, y −3,5 % y −5,1 %. Resultado en `docs/costes/estimador.md`.
+    - En el prototipo, la simulación sin compactaciones no servía para las fases (error del total del +60 %). Con ellas, el error bajó al −3,5 %.
+  - **Informe:** cada ejecución sin dato lleva su estimación (`estimatedInputTokens`, `estimatedOutputTokens`), el trabajo la suma aparte y el CSV la añade en dos columnas. La web dice cuánto es estimado.
+  - **Tiempo de los embeddings** (`ComputeTime`): el de reloj y el de CPU del emparejamiento y de las desviaciones, guardados con cada arbitraje (`emparejamiento` en `resultado-arbitro.json`). Están en el informe, el CSV y `GET /jobs/{id}/matching`.
+  - **`scripts/evaluacion/costes.cs` y `precios.json`:** generan `docs/costes/costes.md`, con los precios, cada trabajo de clínicas, el flujo de cada proyecto por fase, el antes y el después (misma fase, mismos modelos, distinta versión del prompt) y el coste por papel y modelo. Los proyectos que no son de ejemplo salen anonimizados, y las ejecuciones del proveedor `Fake` no cuentan.
+  - **`docs/costes/README.md`:** el método en palabras sencillas, las conclusiones y los límites.
+  - Tests: 884 en total.
+- **Resultados:**
+  - **el flujo completo** cuesta 22,25 $ y 105 minutos (proyecto grande) y 8,76 $ y 55 minutos (mediano); el mockup es el 69 % y el 74 % del coste;
+  - **B (LUNA)** es el 0,5 % del coste del flujo grande, frente al 12 % de A;
+  - **el árbitro del catálogo grande con SOL:** a la primera, v0.10 cuesta unos 1,40 $ (unos 414.000 tokens de entrada, estimados) y v0.9 entre 1,58 y 1,98 $. La media de v0.10 (2,44 $) sube por la ejecución con reparación (4,53 $);
+  - **el emparejamiento** cuesta unos 13 s de reloj, unos 54 s de CPU y 0 $.
+- **Correcciones del script durante la revisión:**
+  - no mezclar en el antes y el después árbitros de modelos distintos (SOL y LUNA en la v0.9 daban una media engañosa);
+  - excluir las ejecuciones del proveedor `Fake`;
+  - poner «sin precio» en los mockups de la suscripción;
+  - medir aparte el emparejamiento de los arbitrajes v0.10 anteriores a la medición.
+- **Pendientes:**
+  - volver a ajustar el estimador cuando haya muchas más ejecuciones;
+  - regenerar `costes.md` tras cada medición;
+  - siguen el paso 90 y los demás pasos por decidir del hito 18.

@@ -1,0 +1,6 @@
+{
+  "_nota": "Dólares por millón de tokens, de la configuración de la pasarela LiteLLM de la empresa (captura del autor, 19-10-2026). Un modelo que no está aquí sale sin coste en las tablas.",
+  "SS - GPT-6-SOL": { "entrada": 2.00, "salida": 10.00 },
+  "SS - GPT-6-LUNA": { "entrada": 0.10, "salida": 0.50 },
+  "SS - GPT-6.1-SOL": { "entrada": 2.00, "salida": 10.00 }
+}

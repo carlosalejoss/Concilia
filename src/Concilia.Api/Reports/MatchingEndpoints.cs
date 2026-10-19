@@ -7,6 +7,7 @@ using Concilia.Api.Runs;
 using Concilia.Core.Embeddings;
 using Concilia.Core.Matching;
 using Concilia.Core.Phases;
+using Concilia.Core.Runs;
 
 namespace Concilia.Api.Reports;
 
@@ -21,8 +22,9 @@ public static class MatchingEndpoints
     // output goes against this matching, also for the jobs from before the
     // arbiter got it (what the platform would have marked); DeviationElements,
     // the elements of the arbiter they mark.
+    // Time (step 95): what this computation took the platform.
     public record MatchingView(Guid JobId, string Phase, Guid? RearbitrationOf, bool HasArbiter, string? ArbiterModel, MatchingResult Matching,
-        IReadOnlyList<ArbiterDeviation>? Deviations, int? DeviationElements);
+        IReadOnlyList<ArbiterDeviation>? Deviations, int? DeviationElements, ComputeTime Time);
 
     public static void MapMatchingEndpoints(this WebApplication app)
     {
@@ -57,12 +59,15 @@ public static class MatchingEndpoints
                 ? salida.ToJsonString() : null;
             var arbiterPairs = arbiterOutput is null ? null : ProposalMatcher.ArbiterPairs(plan.Kind, arbiterOutput, plan.ProposalOrder);
 
-            var matching = ProposalMatcher.Match(ProposalMatcher.ElementsOf(plan.Kind, a), ProposalMatcher.ElementsOf(plan.Kind, b),
-                embedder, thresholds, arbiterPairs);
-            var deviations = arbiterOutput is null ? null : ArbiterDeviations.Find(plan.Kind, arbiterOutput, matching, plan.ProposalOrder);
+            var ((matching, deviations), time) = ComputeTime.Measure(() =>
+            {
+                var matching = ProposalMatcher.Match(ProposalMatcher.ElementsOf(plan.Kind, a), ProposalMatcher.ElementsOf(plan.Kind, b),
+                    embedder, thresholds, arbiterPairs);
+                return (matching, arbiterOutput is null ? null : ArbiterDeviations.Find(plan.Kind, arbiterOutput, matching, plan.ProposalOrder));
+            });
             return Results.Ok(new MatchingView(jobId, plan.Kind.ToString(), plan.RearbitrationOf, arbiterPairs is not null,
                 runs.FirstOrDefault(r => r.Slot == "ARB")?.Model, matching,
-                deviations, deviations is null ? null : ArbiterDeviations.ElementCount(deviations)));
+                deviations, deviations is null ? null : ArbiterDeviations.ElementCount(deviations), time));
         });
     }
 

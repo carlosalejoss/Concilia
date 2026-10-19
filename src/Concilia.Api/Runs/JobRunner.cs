@@ -193,15 +193,17 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
     {
         var phases = phaseExecutor ?? throw new InvalidOperationException("JobRunner without PhaseExecutor");
         string Of(string slot) => slot == "A" ? outputA : outputB;
-        var matching = phases.Matching.Compute(plan.Kind, outputA, outputB);
+        var (matching, before) = ComputeTime.Measure(() => phases.Matching.Compute(plan.Kind, outputA, outputB));
         var input = (Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]), MatchingFile.Write(matching, plan.ProposalOrder));
         var final = await RunOneAsync(arbiter, () => phases.ExecuteAsync(arbiter, plan, input, cancellationToken), onRunStarting, onRunFinished, cancellationToken);
         if (!final.Succeeded)
             return new PhaseJobResult(null, false, null, "El árbitro no terminó con una salida válida. El trabajo falla; se puede lanzar de nuevo.");
         var output = File.ReadAllText(PhaseExecutor.OutputPath(final.Attempts![^1], plan.Kind));
+        var (deviations, after) = ComputeTime.Measure(() => ArbiterDeviations.Find(plan.Kind, output, matching, plan.ProposalOrder));
         return new PhaseJobResult("ARB", true, output, "Unión del árbitro.")
         {
-            Deviations = ArbiterDeviations.Find(plan.Kind, output, matching, plan.ProposalOrder),
+            Deviations = deviations,
+            MatchingTime = new ComputeTime(before.Seconds + after.Seconds, before.CpuSeconds + after.CpuSeconds),
         };
     }
 

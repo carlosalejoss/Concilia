@@ -45,24 +45,27 @@ public static class ReportEndpoints
 
     private static readonly string[] Columns =
     [
-        "fecha", "trabajo", "tipo", "resultado", "tokens_entrada", "tokens_salida", "ejecuciones_sin_consumo", "segundos", "reparaciones",
+        "fecha", "trabajo", "tipo", "resultado", "tokens_entrada", "tokens_salida", "ejecuciones_sin_consumo",
+        "tokens_entrada_estimados", "tokens_salida_estimados", "segundos", "reparaciones",
         "elementos_A", "elementos_B", "elementos_union", "de_ambas", "solo_A", "solo_B", "discrepancias", "descartados", "desviaciones",
         "usuario_conservados", "usuario_modificados", "usuario_anadidos", "usuario_borrados",
         "preguntas", "respondidas", "descartadas", "pendientes", "respuestas_usuario", "respuestas_ia", "respuestas_ia_editadas",
-        "fase", "modelo_arbitro", "arbitraje_de",
+        "fase", "modelo_arbitro", "arbitraje_de", "emparejamiento_segundos", "emparejamiento_segundos_cpu",
         "mensaje",
     ];
 
     private static IEnumerable<object?> Row(JobReport r) =>
     [
         r.CreatedAt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture), r.JobId, r.Kind, r.Succeeded ? "ok" : "fallo",
-        r.InputTokens, r.OutputTokens, r.RunsWithoutUsage, r.Seconds is { } s ? Math.Round(s) : null, r.Repairs,
+        r.InputTokens, r.OutputTokens, r.RunsWithoutUsage,
+        r.EstimatedInputTokens, r.EstimatedOutputTokens, r.Seconds is { } s ? Math.Round(s) : null, r.Repairs,
         r.Elements?.A, r.Elements?.B, r.Elements?.Merged, r.Elements?.Both, r.Elements?.OnlyA, r.Elements?.OnlyB,
         r.Elements?.Discrepancies, r.Elements?.Discarded, r.Elements?.Deviations,
         r.Changes?.Kept, r.Changes?.Modified, r.Changes?.Added, r.Changes?.Deleted,
         r.Questions?.Total, r.Questions?.Answered, r.Questions?.Discarded, r.Questions?.Pending,
         r.Questions?.ByUser, r.Questions?.ByAi, r.Questions?.ByAiEdited,
         r.Phase, r.ArbiterModel, r.RearbitrationOf,
+        r.MatchingTime is { } m ? Math.Round(m.Seconds, 1) : null, r.MatchingTime is { } mc ? Math.Round(mc.CpuSeconds, 1) : null,
         r.Message,
     ];
 
@@ -76,10 +79,13 @@ public static class ReportEndpoints
     {
         var runs = await db.Runs.Where(r => r.JobId == job.Id)
             .OrderBy(r => r.Slot).ThenBy(r => r.LotNumber).ThenBy(r => r.Attempt).ToListAsync();
+        // Step 95: the runs without usage, estimated from their console.
+        var estimates = RunUsageEstimates.For(runs, job.Kind, storage);
         var lines = runs.Select(r => new RunLine(r.Slot ?? "", r.LotNumber, r.Attempt, r.Model, r.State.ToString(),
             r.InputTokens, r.OutputTokens, r.NumTurns,
             r.StartedAt is { } start && r.FinishedAt is { } end ? (end - start).TotalSeconds : null,
-            r.ErrorMessage)).ToList();
+            r.ErrorMessage,
+            estimates.GetValueOrDefault(r.Id)?.InputTokens, estimates.GetValueOrDefault(r.Id)?.OutputTokens)).ToList();
 
         var folder = storage.JobFolder(job.Id);
         var result = ReadResult(folder);
@@ -148,7 +154,11 @@ public static class ReportEndpoints
             runs.Count(r => r.StartedAt is not null && r.InputTokens is null), runs.Count(r => r.Attempt > 1),
             job.FinishedAt is { } finished ? (finished - job.CreatedAt).TotalSeconds : null,
             lines, elements, changes, changesNote, questions,
-            kind?.ToString(), runs.FirstOrDefault(r => r.Slot == "ARB")?.Model, rearbitrationOf);
+            kind?.ToString(), runs.FirstOrDefault(r => r.Slot == "ARB")?.Model, rearbitrationOf,
+            estimates.Values.Sum(e => e.InputTokens), estimates.Values.Sum(e => e.OutputTokens),
+            result?["emparejamiento"] is JsonObject time
+                ? new ComputeTime(time["segundos"]!.GetValue<double>(), time["segundos_cpu"]!.GetValue<double>())
+                : null);
     }
 
     public static JsonNode? ReadResult(string jobFolder)

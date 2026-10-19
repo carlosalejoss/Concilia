@@ -28,6 +28,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 15-10 | Mockup v0.8 y v0.9, hito 13 | Mockup navegable de verdad; test del flujo completo, informes y proyectos de ejemplo |
 | 15-10 y 16-10 | Paso 65 con el proyecto grande de ejemplo | Flujo completo (unos 105 min y al menos 5,2 M tokens de entrada, el 63 % en el mockup); las 26 contradicciones puestas a propósito se tratan como se esperaba; A propone mucho más que B y la unión se parece a A |
 | 19-10 | Hito 17, paso 86 | Servicio de embeddings en local: el modelo multilingüe en el contenedor de la API, con los mismos vectores que sentence-transformers |
+| 19-10 | Hito 18, paso 95 y costes | Estimación del consumo de las ejecuciones sin dato y tablas de coste en tiempo y dinero por fase y versión |
 | 19-10 | Hito 18, paso 89 | La plataforma corrige sola cuatro errores de formato que hacían fallar a LUNA, con un aviso |
 | 19-10 | Hito 17, paso 88 | Árbitro con embeddings (prompts v0.10): parte del emparejamiento de la plataforma y lo que hace en contra de los números se marca como discrepancia |
 | 19-10 | Hito 17, paso 87 | Emparejamiento de A y B por significado; umbrales 0,90 y 0,70 calibrados con 48 pares etiquetados por el autor; el árbitro, medido por primera vez frente a un criterio humano |
@@ -180,6 +181,20 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Cierra** dos decisiones abiertas: corregir las citas que son números de línea y quitar las etiquetas de documento de las pantallas.
 - **Para la memoria, en palabras sencillas:** algunos errores de los modelos son como erratas: tienen una sola corrección posible. En lugar de pedir al modelo que repita todo el trabajo, la plataforma los corrige sola y deja constancia de que lo hizo.
 
+- **Coste en tiempo y dinero (petición del autor):** los cambios se justifican también por lo que cuestan.
+  - **Precios** de la pasarela (captura del autor), en dólares por millón de tokens: SOL 2 de entrada y 10 de salida; LUNA 0,10 y 0,50, es decir, 20 veces más barata.
+  - **Paso 95, estimar las ejecuciones sin dato:** muchas ejecuciones grandes no tienen consumo, porque la plataforma las detiene antes de que Claude Code lo dé.
+    - La plataforma reconstruye, a partir de la consola guardada, cuánto creció el contexto turno a turno (cada Read con su tramo, cada Write y las compactaciones), y lo convierte en tokens con dos coeficientes ajustados en las 125 ejecuciones que sí tienen dato.
+    - Error sobre el total, estimando cada ejecución sin ella: −0,7 % en el mockup y −3,5 % en las fases.
+  - **Tiempo de los embeddings:** el de reloj y el de CPU se guardan con cada arbitraje. El catálogo grande tarda unos 13 s (54 s de CPU) y 0 $.
+  - **Tablas** en `docs/costes/costes.md`, que se regeneran con `scripts/evaluacion/costes.cs`.
+  - **Resultados:**
+    - el flujo completo cuesta 22,25 $ y 105 minutos en el proyecto grande, y 8,76 $ y 55 minutos en el mediano;
+    - el mockup es el 69–74 % del coste;
+    - B (LUNA) es el 0,5 % del coste del flujo grande, así que la verificación cruzada con un modelo barato añade muy poco;
+    - un arbitraje v0.10 a la primera cuesta unos 1,40 $, frente a 1,58–1,98 $ con la v0.9.
+  - **Para la memoria, en palabras sencillas:** cada cambio se puede defender con lo que cuesta. Cuando falta el dato, se estima con un método comprobado contra los casos en que sí se conoce.
+
 ## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
 
 > **Prioridad alta (autor, 16-10-2026).** Afecta al valor de la verificación cruzada, que es la idea central del TFG. Diseño completo del experimento, estado y resultados en [`experimento-sesgo-arbitro.md`](experimento-sesgo-arbitro.md): es material directo para el capítulo de evaluación de la memoria.
@@ -238,7 +253,6 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - Si se paran las ejecuciones que compactan varias veces antes de escribir su salida.
 - Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
 - Reparar editando solo los elementos con errores, en lugar de reescribir la salida entera: la reparación del árbitro de un catálogo grande no cabe en 128k (16-10-2026).
-- Si se estima el consumo de las ejecuciones detenidas antes del final.
 - Abaratar las pantallas del mockup y un posible historial de mockups.
 - Prompt de sugerencias más conservador y marcar en el catálogo lo que viene de una respuesta de la IA.
 
@@ -248,7 +262,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
 2. ~~**Hito 17, embeddings en local**~~: modelo multilingüe en la API (paso 86), emparejamiento de A y B con los umbrales calibrados (paso 87) y árbitro con embeddings con su prueba real (paso 88), todo el 19-10-2026. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
-3. **Hito 18, fiabilidad y calidad (en curso):** ~~correcciones automáticas de formato para LUNA~~ (paso 89, 19-10-2026); siguen reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
+3. **Hito 18, fiabilidad y calidad (en curso):** ~~correcciones automáticas de formato para LUNA~~ (paso 89) y ~~estimar el consumo de las ejecuciones sin dato~~ (paso 95), los dos el 19-10-2026, con las tablas de coste; siguen reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
 4. **Hito 19, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
 5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
 6. **Hito 21, historial de versiones de los entregables.**
@@ -260,5 +274,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 172 entre el 28-09 y el 19-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 877 (19-10; 6 de ellos se saltan sin el modelo de embeddings).
+- **Commits:** 174 entre el 28-09 y el 19-10-2026.
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 884 (19-10; 6 de ellos se saltan sin el modelo de embeddings).

@@ -26,6 +26,10 @@ type Report = {
   questions: { total: number; answered: number; discarded: number; pending: number; byUser: number; byAi: number; byAiEdited: number } | null
   arbiterModel: string | null
   rearbitrationOf: string | null
+  // Step 95: the estimate of the runs without usage, and what the matching of the arbiter cost.
+  estimatedInputTokens: number
+  estimatedOutputTokens: number
+  matchingTime: { seconds: number; cpuSeconds: number } | null
 }
 
 const number = (n: number | null | undefined) => (n ?? 0).toLocaleString('es-ES')
@@ -60,8 +64,17 @@ function JobReport({ jobId, finished }: { jobId: string; finished: boolean }) {
           {/* Runs stopped before Claude Code's last line leave no token counts: the figure is a minimum. */}
           {report.runsWithoutUsage > 0 && (
             <span className="block text-xs text-warn">
-              Como mínimo: {report.runsWithoutUsage === 1 ? '1 ejecución no tiene' : `${report.runsWithoutUsage} ejecuciones no tienen`} dato de
-              consumo, porque se detuvieron antes de que Claude Code lo diera.
+              {report.runsWithoutUsage === 1 ? '1 ejecución no tiene' : `${report.runsWithoutUsage} ejecuciones no tienen`} dato de consumo,
+              porque se detuvieron antes de que Claude Code lo diera.
+              {report.estimatedInputTokens > 0
+                ? ` Estimado a partir de su consola: ${number(report.estimatedInputTokens)} tokens de entrada y ${number(report.estimatedOutputTokens)} de salida más.`
+                : ' Sin consola guardada no se puede estimar: la cifra es un mínimo.'}
+            </span>
+          )}
+          {report.matchingTime && (
+            <span className="block text-xs text-muted">
+              Emparejamiento por significado: {report.matchingTime.seconds.toLocaleString('es-ES', { maximumFractionDigits: 1 })} s
+              ({report.matchingTime.cpuSeconds.toLocaleString('es-ES', { maximumFractionDigits: 1 })} s de CPU), en local y sin coste.
             </span>
           )}
         </Line>
