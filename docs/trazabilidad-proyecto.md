@@ -117,6 +117,11 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - con 14 textos de prueba, los mismos ids de tokens que Hugging Face y una diferencia máxima de 9,4·10⁻⁷ con los vectores de sentence-transformers;
   - el mismo requisito en español y en inglés da 0,84–0,89, y requisitos distintos, 0,06–0,29;
   - 500 textos tardan unos 6 s en CPU.
+- **Para la memoria, en palabras sencillas:**
+  - **Qué se calcula:** un embedding convierte un texto en 384 números que sitúan su significado en un «mapa». Las frases que dicen lo mismo quedan cerca aunque no compartan palabras ni idioma.
+  - **Cómo se comprobó:** este modelo se usa normalmente desde Python, con las bibliotecas de sus autores (sentence-transformers). Se calcularon en Python los vectores de 14 frases de prueba, y el código en C# de la plataforma da los mismos números, con diferencias de menos de una millonésima.
+  - **Qué demuestra:** la implementación es fiel al modelo original.
+  - **Es repetible:** la comprobación es un test automático, y la referencia se puede regenerar con `tests/fixtures/embeddings/generar_referencia.py`.
 - **Decisión del autor:** los tests que necesitan el modelo (470 MB, fuera de git) se saltan si no está, también en GitHub Actions.
 
 ## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
