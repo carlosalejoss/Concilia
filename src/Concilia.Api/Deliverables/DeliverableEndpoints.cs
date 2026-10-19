@@ -12,10 +12,13 @@ namespace Concilia.Api.Deliverables;
 
 // A deliverable as the web sees it: its content and, while it is a draft,
 // what keeps it from being validated (Errors) and the warnings.
+// AssumedQuestionIds (step 93, catalog only): the questions answered with a
+// guess of the AI taken as it was; the requirements that cite them are marked.
 public record DeliverableView(
     int Id, DeliverableKind Kind, DeliverableStatus Status, bool Outdated, Guid JobId,
     JsonNode Content, IReadOnlyList<string> Errors, IReadOnlyList<string> Warnings,
-    DateTimeOffset CreatedAt, DateTimeOffset? UpdatedAt, DateTimeOffset? ValidatedAt);
+    DateTimeOffset CreatedAt, DateTimeOffset? UpdatedAt, DateTimeOffset? ValidatedAt,
+    IReadOnlyList<string>? AssumedQuestionIds = null);
 
 public record SaveDeliverableRequest(JsonElement Content);
 
@@ -180,8 +183,14 @@ public static class DeliverableEndpoints
         var check = d.Status == DeliverableStatus.Draft && d.Kind != DeliverableKind.Mockup
             ? await CheckAsync(db, storage, d)
             : new PhaseValidation([], []);
+        IReadOnlyList<string>? assumed = null;
+        if (d.Kind == DeliverableKind.Catalog)
+        {
+            var answered = await db.Questions.Where(q => q.ProjectId == d.ProjectId && q.Status == QuestionStatus.Answered).ToListAsync();
+            assumed = answered.Where(QuestionRules.IsAcceptedGuess).Select(q => q.Code).Order().ToList();
+        }
         return new DeliverableView(d.Id, d.Kind, d.Status, d.Outdated, d.JobId, JsonNode.Parse(d.Content)!,
-            check.Errors, check.Warnings, d.CreatedAt, d.UpdatedAt, d.ValidatedAt);
+            check.Errors, check.Warnings, d.CreatedAt, d.UpdatedAt, d.ValidatedAt, assumed);
     }
 
     private static string Name(DeliverableKind kind) => kind == DeliverableKind.Catalog ? "catálogo" : "backlog";

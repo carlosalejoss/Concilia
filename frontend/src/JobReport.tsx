@@ -30,6 +30,8 @@ type Report = {
   estimatedInputTokens: number
   estimatedOutputTokens: number
   matchingTime: { seconds: number; cpuSeconds: number } | null
+  // Step 93: requirements that cite a question answered with a guess of the AI taken as it was.
+  assumedRequirements: number | null
 }
 
 const number = (n: number | null | undefined) => (n ?? 0).toLocaleString('es-ES')
@@ -90,6 +92,9 @@ function JobReport({ jobId, finished }: { jobId: string; finished: boolean }) {
             de A y {elements.onlyB} solo de B; {elements.discrepancies} con discrepancia del árbitro y {elements.discarded} descartados.
             {elements.deviations !== null &&
               ` En ${elements.deviations} el árbitro se apartó del emparejamiento por significado de la plataforma.`}
+            {report.assumedRequirements !== null &&
+              report.assumedRequirements > 0 &&
+              ` ${report.assumedRequirements} se apoyan en una suposición de la IA aceptada tal cual.`}
           </Line>
         )}
         {changes && (

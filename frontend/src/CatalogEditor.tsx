@@ -43,6 +43,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
   const [search, setSearch] = useState('')
   const [origin, setOrigin] = useState<(typeof ORIGINS)[number][0]>('all')
   const [onlyPending, setOnlyPending] = useState(false)
+  const [onlyAssumed, setOnlyAssumed] = useState(false)
   // The requirements open, by their position in the list.
   const [open, setOpen] = useState<Set<number>>(new Set())
 
@@ -58,6 +59,10 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
   const requirements = draft.requisitos
   const discrepancies = requirements.filter((r) => r.discrepancia).length
   const pending = requirements.filter(pendingDiscrepancy).length
+  // Step 93: the requirements that rest on a guess of the AI accepted without a look.
+  const assumedQuestions = new Set(deliverable.assumedQuestionIds ?? [])
+  const isAssumed = (r: CatalogRequirement) => r.preguntas.some((p) => assumedQuestions.has(p))
+  const assumed = requirements.filter(isAssumed).length
 
   function update(index: number, change: Partial<CatalogRequirement>) {
     edit({ requisitos: requirements.map((r, i) => (i === index ? { ...r, ...change } : r)) })
@@ -101,6 +106,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
   const visible = (r: CatalogRequirement) =>
     (origin === 'all' || r.origen === origin) &&
     (!onlyPending || pendingDiscrepancy(r)) &&
+    (!onlyAssumed || isAssumed(r)) &&
     (needle === '' || `${r.id} ${r.texto} ${r.fuentes.join(' ')} ${r.preguntas.join(' ')}`.toLowerCase().includes(needle))
   const indexed = requirements.map((r, index) => ({ r, index }))
 
@@ -141,6 +147,12 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
             Solo discrepancias sin revisar <Badge tone={pending > 0 ? 'danger' : 'ok'}>{pending}</Badge>
           </label>
         )}
+        {assumed > 0 && (
+          <label className="flex items-center gap-2 text-sm" title="Requisitos que se apoyan en una respuesta que era una suposición de la IA y se aceptó tal cual">
+            <input type="checkbox" checked={onlyAssumed} onChange={(e) => setOnlyAssumed(e.target.checked)} className="accent-accent" />
+            Solo basados en suposiciones de la IA <Badge tone="warn">{assumed}</Badge>
+          </label>
+        )}
       </div>
 
       <div className="space-y-3">
@@ -175,6 +187,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
                       key={index}
                       requirement={r}
                       readOnly={readOnly}
+                      assumed={isAssumed(r)}
                       open={open.has(index)}
                       onToggle={() => toggle(index)}
                       onUpdate={(change) => update(index, change)}
@@ -202,6 +215,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
 function RequirementItem({
   requirement: r,
   readOnly,
+  assumed,
   open,
   onToggle,
   onUpdate,
@@ -209,6 +223,7 @@ function RequirementItem({
 }: {
   requirement: CatalogRequirement
   readOnly: boolean
+  assumed: boolean
   open: boolean
   onToggle: () => void
   onUpdate: (change: Partial<CatalogRequirement>) => void
@@ -231,6 +246,11 @@ function RequirementItem({
           {r.notacion === 'MASTeR' && <Badge>MASTeR</Badge>}
           {r.obligatoriedad !== 'shall' && <Badge tone="info">{r.obligatoriedad}</Badge>}
           {r.discrepancia && <Badge tone={discrepancy ? 'danger' : 'ok'}>{discrepancy ? 'Discrepancia' : 'Revisada'}</Badge>}
+          {assumed && (
+            <span title="Se apoya en una respuesta que era una suposición de la IA y se aceptó tal cual: confírmala con el cliente">
+              <Badge tone="warn">Suposición de la IA</Badge>
+            </span>
+          )}
         </span>
       </button>
 

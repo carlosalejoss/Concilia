@@ -213,9 +213,12 @@ function QuestionsPanel({
           const ofRound = questions.filter((q) => q.jobId === view.job.id)
           const shown = ofRound.filter(visible)
           const pendingOfRound = ofRound.filter((q) => q.status === 'Pending').length
-          // "Aprobar todas" only when the AI has suggested an answer for every
+          // "Aprobar" only when the AI has suggested an answer for every
           // pending question of the round, and no suggestion is on its way.
+          // Step 93: it approves only those that come from the documentation;
+          // the guesses are reviewed one by one.
           const allSuggested = pendingOfRound > 0 && ofRound.every((q) => q.status !== 'Pending' || q.suggestedAnswer !== null)
+          const documented = ofRound.filter((q) => q.status === 'Pending' && q.suggestionBasis === 'documentacion').length
           const finished = view.runs.every(isFinished)
           return (
             <Collapsible
@@ -234,15 +237,17 @@ function QuestionsPanel({
               }
               actions={
                 <>
-                  {allSuggested && !suggesting && (
+                  {allSuggested && documented > 0 && !suggesting && (
                     <Button
                       size="sm"
                       variant="primary"
                       icon={CheckCheck}
                       onClick={() => act(`/question-rounds/${view.job.id}/accept-suggestions`, 'POST')}
-                      title="Guarda como respuesta la sugerencia de la IA de cada pregunta pendiente de la ronda, tal cual; después puedes reabrir o editar cualquiera"
+                      title="Guarda como respuesta, tal cual, cada sugerencia de la IA que sale de la documentación; las suposiciones quedan pendientes para revisarlas una a una"
                     >
-                      Aprobar todas las sugerencias
+                      {documented === pendingOfRound
+                        ? 'Aprobar todas las sugerencias'
+                        : `Aprobar las ${documented === 1 ? 'que sale' : `${documented} que salen`} de la documentación`}
                     </Button>
                   )}
                   {pendingOfRound > 0 && (

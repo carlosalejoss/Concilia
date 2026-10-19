@@ -47,7 +47,7 @@ public static class ReportEndpoints
     [
         "fecha", "trabajo", "tipo", "resultado", "tokens_entrada", "tokens_salida", "ejecuciones_sin_consumo",
         "tokens_entrada_estimados", "tokens_salida_estimados", "segundos", "reparaciones",
-        "elementos_A", "elementos_B", "elementos_union", "de_ambas", "solo_A", "solo_B", "discrepancias", "descartados", "desviaciones",
+        "elementos_A", "elementos_B", "elementos_union", "de_ambas", "solo_A", "solo_B", "discrepancias", "descartados", "desviaciones", "basados_en_suposiciones",
         "usuario_conservados", "usuario_modificados", "usuario_anadidos", "usuario_borrados",
         "preguntas", "respondidas", "descartadas", "pendientes", "respuestas_usuario", "respuestas_ia", "respuestas_ia_editadas",
         "fase", "modelo_arbitro", "arbitraje_de", "emparejamiento_segundos", "emparejamiento_segundos_cpu",
@@ -60,7 +60,7 @@ public static class ReportEndpoints
         r.InputTokens, r.OutputTokens, r.RunsWithoutUsage,
         r.EstimatedInputTokens, r.EstimatedOutputTokens, r.Seconds is { } s ? Math.Round(s) : null, r.Repairs,
         r.Elements?.A, r.Elements?.B, r.Elements?.Merged, r.Elements?.Both, r.Elements?.OnlyA, r.Elements?.OnlyB,
-        r.Elements?.Discrepancies, r.Elements?.Discarded, r.Elements?.Deviations,
+        r.Elements?.Discrepancies, r.Elements?.Discarded, r.Elements?.Deviations, r.AssumedRequirements,
         r.Changes?.Kept, r.Changes?.Modified, r.Changes?.Added, r.Changes?.Deleted,
         r.Questions?.Total, r.Questions?.Answered, r.Questions?.Discarded, r.Questions?.Pending,
         r.Questions?.ByUser, r.Questions?.ByAi, r.Questions?.ByAiEdited,
@@ -102,6 +102,7 @@ public static class ReportEndpoints
         var hasPlan = File.Exists(Path.Combine(folder, PhasePlan.FileName));
         var kind = PhasePlan.KindOfJob(job.Kind) ?? (rearbitration && hasPlan ? PhasePlan.Load(folder).Kind : null);
         Guid? rearbitrationOf = null;
+        int? assumedRequirements = null;
         if (kind is { } phase && hasPlan)
         {
             var plan = PhasePlan.Load(folder);
@@ -136,6 +137,15 @@ public static class ReportEndpoints
                     changesNote = "El entregable actual viene de otro trabajo: los cambios del usuario se cuentan en ese.";
             }
 
+            // Step 93: the requirements that rest on a guess of the AI accepted without a look.
+            if (phase == PhaseKind.Catalog && output is not null)
+            {
+                var answered = await db.Questions.Where(q => q.ProjectId == job.ProjectId && q.Status == QuestionStatus.Answered).ToListAsync();
+                var guesses = answered.Where(QuestionRules.IsAcceptedGuess).Select(q => q.Code).ToHashSet();
+                assumedRequirements = JobReports.Elements(phase, JsonNode.Parse(output))
+                    .Count(r => (r["preguntas"] as JsonArray ?? []).Any(p => p is JsonValue v && v.TryGetValue<string>(out var id) && guesses.Contains(id)));
+            }
+
             if (phase == PhaseKind.Questions && !rearbitration)
             {
                 var round = await db.Questions.Where(q => q.JobId == job.Id).ToListAsync();
@@ -158,7 +168,8 @@ public static class ReportEndpoints
             estimates.Values.Sum(e => e.InputTokens), estimates.Values.Sum(e => e.OutputTokens),
             result?["emparejamiento"] is JsonObject time
                 ? new ComputeTime(time["segundos"]!.GetValue<double>(), time["segundos_cpu"]!.GetValue<double>())
-                : null);
+                : null,
+            assumedRequirements);
     }
 
     public static JsonNode? ReadResult(string jobFolder)

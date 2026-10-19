@@ -39,6 +39,8 @@ Para cada pregunta, una sola sugerencia, con su `base`:
 
 - **`documentacion`:** la documentación o una respuesta previa contesta la pregunta, aunque sea de forma indirecta. La sugerencia dice lo que dicen, sin añadir nada, y `fuentes` cita los fragmentos (al menos uno) en que se apoya.
 - **`suposicion`:** la documentación no lo dice. Propón lo más habitual y prudente para un sistema como este, como una propuesta que el cliente puede aceptar o cambiar ("Proponemos…", "Lo habitual es…"). Si hay fragmentos relacionados, cítalos en `fuentes`; si no, la lista va vacía.
+- **Una decisión del cliente:** si la pregunta pide algo que solo el cliente puede decidir (un precio, un plazo, una política, quién aprueba algo) y la documentación no lo dice, no lo decidas tú. La sugerencia empieza por "A decidir por el cliente:" y da las opciones razonables, con `base` `suposicion`.
+- Ante la duda entre `documentacion` y `suposicion`, es `suposicion`.
 
 Reglas:
 
