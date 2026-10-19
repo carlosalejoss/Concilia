@@ -30,3 +30,6 @@ Thumbs.db
 
 # Memoria con datos personales
 /memoria/
+
+# Modelo de embeddings descargado con scripts/descargar-modelo-embeddings.ps1 (470 MB)
+/models/

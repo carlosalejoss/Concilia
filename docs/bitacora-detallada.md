@@ -1735,3 +1735,35 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisiones del autor:** cerrar el catálogo con 2 arbitrajes válidos de LUNA, como se acordó antes del último intento.
 - **Cambios de criterio:** ninguno. Se cierra la pregunta clave abierta el mismo día.
 - **Pendientes:** seguir en un chat nuevo con el hito 17 (embeddings), paso 86. El paso 87 dará la referencia independiente del experimento.
+
+---
+
+## 19-10-2026, 09:00 (sesión)
+
+**Resumen para la bitácora (19-10-2026, hito 17, paso 86: servicio de embeddings)**
+
+- **Qué se hizo:** el servicio de embeddings en la API, en `Concilia.Core/Embeddings`:
+  - `ITextEmbedder` (textos → vectores), con dos implementaciones: `OnnxTextEmbedder`, con el modelo real, y `FakeTextEmbedder`, que cuenta las palabras compartidas y sirve para los tests y el proveedor `Fake`;
+  - `XlmRobertaTokenizer`: el tokenizador SentencePiece del modelo (Microsoft.ML.Tokenizers 2.0.0, MIT), con la traducción de ids de fairseq que hace Hugging Face (los trozos, un puesto más; `<s>`, `<pad>`, `</s>` y `<unk>`, en 0 a 3);
+  - `VectorMath`: la similitud coseno y la media de los vectores de token sin el relleno (lo que hace sentence-transformers con este modelo);
+  - el modelo, `paraphrase-multilingual-MiniLM-L12-v2` en fp32 con ONNX Runtime 1.30.0 (MIT). Se carga la primera vez que se usa, procesa los textos de 32 en 32 y los corta a 128 tokens.
+- **Dónde está el modelo:**
+  - **En Docker:** la imagen de la API descarga `model.onnx` y `sentencepiece.bpe.model` al construirse (`ADD --checksum`), con el commit de Hugging Face fijado (`e8f8c21`) y el SHA-256 comprobado.
+  - **En local:** `scripts/descargar-modelo-embeddings.ps1` lo deja en `models/` (ignorado por git y por Docker).
+  - **Configuración:** `Embeddings:Provider` es `Fake` por defecto y `Onnx` en `docker-compose.yml` (`EMBEDDINGS_PROVIDER`).
+  - `POST /embeddings/similarity` devuelve la similitud de dos textos, para probarlo a mano.
+- **Tests:** 19 nuevos (854 en total). Los 6 que usan el modelo se saltan si no está. Comparan con una referencia calculada en Python (`tests/fixtures/embeddings/generar_referencia.py`: tokenizador de Hugging Face y sentence-transformers 6.1.0 con los pesos originales), con 14 textos en español e inglés, espacios, tildes, caracteres de ancho completo, emojis y un texto de más de 128 tokens, y comprueban el relleno, los lotes y el corte a 128 tokens.
+- **Resultados:**
+  - **Fidelidad:** los mismos ids de tokens que Hugging Face en los 14 casos; diferencia máxima con los vectores de sentence-transformers de 9,4·10⁻⁷ (el redondeo de la referencia) y coseno mínimo de 1,0000000.
+  - **Similitudes:** el mismo requisito en español y en inglés, 0,888 y 0,839; reservar frente a cancelar una reserva, 0,294; reservar frente a exportar un informe o el tiempo de respuesta, 0,063 y 0,091. Es una primera idea para el umbral del paso 87, no una calibración.
+  - **Velocidad (CPU del portátil):** la primera llamada, con la carga del modelo, unos 6 s; 500 textos de unos 30 tokens, unos 6,4 s.
+  - **En Docker:** imagen construida con otra etiqueta y probada en un contenedor aparte, sin tocar los que estaban en marcha. `POST /embeddings/similarity` da en Linux lo mismo que en Windows (0,888 y 0,063). La imagen de la API crece unos 530 MB: 475 del modelo y unos 55 de las bibliotecas nativas de ONNX Runtime para Linux.
+- **Decisiones del autor:**
+  - el modelo en fp32 (470 MB), no el cuantizado en int8 (120 MB), para dar los mismos vectores que la referencia de Python;
+  - los tests que necesitan el modelo se saltan si no está, también en GitHub Actions, que no lo descarga.
+- **Cambios de criterio:** ninguno.
+- **Notas:**
+  - dos problemas encontrados al probar la imagen y corregidos: un `ADD --chmod` remoto aplica el modo también a las carpetas que crea, que quedaban sin permiso de entrada (`drw-r--r--`). Ahora el modelo se descarga en una etapa propia y se copia con los permisos corregidos. Además, ONNX Runtime traía sus bibliotecas nativas de todas las plataformas (unos 240 MB), y la imagen solo conserva las de Linux;
+  - el aviso de vulnerabilidad de `System.Security.Cryptography.Pkcs` 10.0.12 al compilar ya salía antes de este paso; no lo traen los paquetes nuevos;
+  - `scripts/descargar-modelo-embeddings.ps1` se guarda con BOM, porque Windows PowerShell 5.1 lee como ANSI los scripts sin él y estropea las tildes.
+- **Pendientes:** paso 87, emparejamiento de A y B por significado y calibración del umbral con datos reales.

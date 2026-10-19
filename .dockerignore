@@ -13,3 +13,5 @@ frontend/
 tests/
 docs/
 **/__pycache__/
+# The embeddings model: the image downloads its own copy.
+models/
