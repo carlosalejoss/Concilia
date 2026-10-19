@@ -50,7 +50,9 @@ foreach (var job in jobs.OrderBy(j => j!["job"]!["createdAt"]!.GetValue<DateTime
             deviations = JsonNode.Parse(await matching.Content.ReadAsStringAsync())!["deviationElements"]?.GetValue<int>();
     }
     rows.Add(new Row(source, job["job"]!["createdAt"]!.GetValue<DateTimeOffset>(), arbiter?["model"]?.GetValue<string>() ?? "?",
-        arbiter?["promptVersion"]?.GetValue<string>() ?? "?", job["job"]!["finishedAt"] is null, report["succeeded"]!.GetValue<bool>(), report["repairs"]!.GetValue<int>(),
+        arbiter?["promptVersion"]?.GetValue<string>() ?? "?",
+        // In progress: a run still queued or running (a job left open by a restart of the API is not).
+        job["runs"]!.AsArray().Any(r => r!["state"]!.GetValue<string>() is "Queued" or "Running"), report["succeeded"]!.GetValue<bool>(), report["repairs"]!.GetValue<int>(),
         report["seconds"]?.GetValue<double>(), elements?["merged"]?.GetValue<int>(), elements?["both"]?.GetValue<int>(),
         elements?["onlyA"]?.GetValue<int>(), elements?["onlyB"]?.GetValue<int>(), elements?["discarded"]?.GetValue<int>(),
         elements?["discrepancies"]?.GetValue<int>(), deviations));
