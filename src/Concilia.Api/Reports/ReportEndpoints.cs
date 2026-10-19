@@ -46,7 +46,7 @@ public static class ReportEndpoints
     private static readonly string[] Columns =
     [
         "fecha", "trabajo", "tipo", "resultado", "tokens_entrada", "tokens_salida", "ejecuciones_sin_consumo", "segundos", "reparaciones",
-        "elementos_A", "elementos_B", "elementos_union", "de_ambas", "solo_A", "solo_B", "discrepancias", "descartados",
+        "elementos_A", "elementos_B", "elementos_union", "de_ambas", "solo_A", "solo_B", "discrepancias", "descartados", "desviaciones",
         "usuario_conservados", "usuario_modificados", "usuario_anadidos", "usuario_borrados",
         "preguntas", "respondidas", "descartadas", "pendientes", "respuestas_usuario", "respuestas_ia", "respuestas_ia_editadas",
         "fase", "modelo_arbitro", "arbitraje_de",
@@ -58,7 +58,7 @@ public static class ReportEndpoints
         r.CreatedAt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture), r.JobId, r.Kind, r.Succeeded ? "ok" : "fallo",
         r.InputTokens, r.OutputTokens, r.RunsWithoutUsage, r.Seconds is { } s ? Math.Round(s) : null, r.Repairs,
         r.Elements?.A, r.Elements?.B, r.Elements?.Merged, r.Elements?.Both, r.Elements?.OnlyA, r.Elements?.OnlyB,
-        r.Elements?.Discrepancies, r.Elements?.Discarded,
+        r.Elements?.Discrepancies, r.Elements?.Discarded, r.Elements?.Deviations,
         r.Changes?.Kept, r.Changes?.Modified, r.Changes?.Added, r.Changes?.Deleted,
         r.Questions?.Total, r.Questions?.Answered, r.Questions?.Discarded, r.Questions?.Pending,
         r.Questions?.ByUser, r.Questions?.ByAi, r.Questions?.ByAiEdited,
@@ -103,7 +103,13 @@ public static class ReportEndpoints
             int? Proposal(string slot) => JobReports.Count(phase, JobProposals.Read(storage, job, runs, phase, slot));
 
             if (result?["fuente"]?.GetValue<string>() == "ARB" && output is not null)
-                elements = JobReports.Merge(phase, output, plan, Proposal("A"), Proposal("B"));
+                elements = JobReports.Merge(phase, output, plan, Proposal("A"), Proposal("B")) with
+                {
+                    // The arbiter's elements that went against the matching of the platform (step 88).
+                    Deviations = result["desviaciones"] is JsonArray deviations
+                        ? deviations.Select(d => d!["id"]!.GetValue<string>()).Distinct().Count()
+                        : null,
+                };
 
             if (rearbitration)
             {

@@ -1,4 +1,5 @@
 using Concilia.Core.Embeddings;
+using Concilia.Core.Matching;
 
 namespace Concilia.Api.Embeddings;
 
@@ -39,6 +40,8 @@ public static class EmbeddingSetup
         };
         services.AddSingleton(embedder);
         services.AddSingleton(options);
+        // The matching that the arbiter of every job gets (step 88).
+        services.AddSingleton(new ArbiterMatching(embedder, new MatchThresholds(options.SameThreshold, options.SimilarThreshold)));
         return services;
     }
 

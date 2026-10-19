@@ -1,5 +1,22 @@
 # Cambios de los prompts v0
 
+## v0.10, el árbitro parte del emparejamiento de la plataforma (2026-10-19)
+
+Hito 17, paso 88. Es el diseño original del TFG: los embeddings emparejan y el LLM explica y fusiona. Decidido por el autor a propuesta de Claude:
+
+- **Fichero nuevo para el árbitro:** `input/emparejamiento.txt`, en las tres fases. Antes de llamar al árbitro, la plataforma calcula el emparejamiento por significado de las dos propuestas (paso 87, umbrales 0,90 y 0,70) y escribe una línea por par o por elemento sin par: `1:RF-003 2:RF-001 mismo 0.94`, `1:RF-010 2:RF-007 parecido 0.78` o `1:RF-020 sin-par`. Usa los números de las propuestas, así que A y B siguen siendo anónimos. Se lee entero, como las propuestas: está en `LECTURA` y la plataforma comprueba que no queda ninguna línea sin leer.
+- **§2 de `arbitro_preguntas.md`, `arbitro_catalogo.md` y `arbitro_backlog.md`:** el paso 1 ya no es «empareja tú», sino «parte del emparejamiento»:
+  - `mismo` se une, salvo que la fuente muestre lo contrario;
+  - `parecido` lo decide el árbitro;
+  - `sin-par` solo se une si de verdad es lo mismo.
+  - El árbitro puede apartarse cuando la fuente lo justifique, y lo dice en `explicacion`. Es orientativo, no obligatorio (decisión del autor).
+- **Discrepancias:** el prompt del catálogo y el del backlog avisan de que el emparejamiento no detecta contradicciones («1 hora» y «24 horas» salen `mismo`): las discrepancias de contenido las sigue marcando el árbitro.
+- **La plataforma, después del árbitro,** busca dónde se apartó del emparejamiento (`ArbiterDeviations`): unió algo que no tiene nada «mismo» ni «parecido» en la otra propuesta, o dejó en dos elementos distintos un par «mismo». No cuenta como desviación descartar uno de los dos.
+  - En el catálogo y el backlog, esos elementos quedan como discrepancia, con la explicación de la plataforma detrás de la del árbitro (`[Plataforma] …`), y el usuario los revisa al validar.
+  - En las preguntas, que no tienen discrepancia, solo se cuentan en el informe (decisión del autor).
+  - Se guardan en `resultado-arbitro.json` como `desviaciones`, aparte de la salida del árbitro, que se conserva tal cual. El informe y su CSV las cuentan (`desviaciones`).
+- Los esquemas, el validador y los prompts de A y B no cambian.
+
 ## v0.9, el mockup es una aplicación que funciona, no un índice de pantallas (2026-10-15)
 
 El mockup v0.8 del documento C se generó (19 pantallas), pero con un menú lateral que listaba todas las pantallas: el prompt de diseño pedía «el menú con un enlace por pantalla del mapa». El autor quiere un prototipo completo y funcional; sí le gustó que siguiera el estilo del mockup de referencia. Decidido por el autor a propuesta de Claude, con inicio de sesión y los usuarios de prueba a la vista para entrar con un clic:

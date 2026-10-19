@@ -9,7 +9,18 @@ type Report = {
   runsWithoutUsage: number
   repairs: number
   seconds: number | null
-  elements: { a: number | null; b: number | null; merged: number; both: number; onlyA: number; onlyB: number; discrepancies: number; discarded: number } | null
+  elements: {
+    a: number | null
+    b: number | null
+    merged: number
+    both: number
+    onlyA: number
+    onlyB: number
+    discrepancies: number
+    discarded: number
+    // Step 88: elements where the arbiter went against the matching of the platform (null in older jobs).
+    deviations: number | null
+  } | null
   changes: { original: number; current: number; kept: number; modified: number; added: number; deleted: number } | null
   changesNote: string | null
   questions: { total: number; answered: number; discarded: number; pending: number; byUser: number; byAi: number; byAiEdited: number } | null
@@ -63,7 +74,9 @@ function JobReport({ jobId, finished }: { jobId: string; finished: boolean }) {
         {elements && (
           <Line label="Elementos">
             A propuso {elements.a ?? '—'} y B {elements.b ?? '—'}. La unión tiene {elements.merged}: {elements.both} de ambas, {elements.onlyA} solo
-            de A y {elements.onlyB} solo de B; {elements.discrepancies} con discrepancia y {elements.discarded} descartados.
+            de A y {elements.onlyB} solo de B; {elements.discrepancies} con discrepancia del árbitro y {elements.discarded} descartados.
+            {elements.deviations !== null &&
+              ` En ${elements.deviations} el árbitro se apartó del emparejamiento por significado de la plataforma.`}
           </Line>
         )}
         {changes && (

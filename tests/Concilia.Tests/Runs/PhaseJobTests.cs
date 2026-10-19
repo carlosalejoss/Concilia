@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting.Internal;
 using Concilia.Api.Files;
 using Concilia.Api.Runs;
 using Concilia.Core.Catalog;
+using Concilia.Core.Embeddings;
+using Concilia.Core.Matching;
 using Concilia.Core.Phases;
 using Concilia.Core.Projects;
 using Concilia.Core.Runner;
@@ -37,7 +39,8 @@ public class PhaseJobTests
             var runnerOptions = new RunnerOptions();
             Runner = new JobRunner(
                 new RunExecutor(provider, Events, Storage, runnerOptions, catalogOptions), catalogOptions,
-                new PhaseExecutor(provider, Events, Storage, runnerOptions, catalogOptions));
+                new PhaseExecutor(provider, Events, Storage, runnerOptions, catalogOptions,
+                    new ArbiterMatching(new FakeTextEmbedder(), new MatchThresholds(0.9, 0.7))));
         }
 
         public RunEventStore Events { get; } = new();
@@ -207,6 +210,12 @@ public class PhaseJobTests
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(File.ReadAllText(firstOutput)), JsonNode.Parse(ProposalIds.Unprefix(kind, proposal1))));
         // Every run read its input by parts (FakeProvider reads every file of input/).
         Assert.All(setup.Finished, o => Assert.NotEmpty(o.Attempts![^1].Result.Reads));
+
+        // Step 88: the arbiter also got the matching of the platform, in its reading plan.
+        var matching = File.ReadAllText(Path.Combine(arbiter, MatchingFile.Path));
+        Assert.Matches(@"^1:\S+ (2:\S+ (mismo|parecido) \d\.\d\d|sin-par)$", matching.Split('\n')[0]);
+        Assert.Contains(MatchingFile.Path, setup.Outcome("ARB").Attempts![0].Request.Prompt);
+        Assert.Contains(setup.Outcome("ARB").Attempts![^1].Result.Reads, r => r.Path == MatchingFile.Path);
 
         // The result is the arbiter's output, kept without the prefixes, and
         // it is valid for the arbiter's schema.

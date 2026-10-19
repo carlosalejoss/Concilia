@@ -1,3 +1,5 @@
+using Concilia.Core.Matching;
+
 namespace Concilia.Core.Phases;
 
 // The result of a v0 phase job: the output that the next steps use, and where
@@ -7,4 +9,9 @@ public record PhaseJobResult(string? Source, bool CrossChecked, string? Output, 
 {
     // data/jobs/{id}/resultado-arbitro.json: the result, frozen.
     public const string FileName = "resultado-arbitro.json";
+
+    // Where the arbiter went against the matching of the platform (step 88).
+    // Kept apart from Output, which stays the arbiter's output as it wrote it:
+    // the drafts of the catalog and the backlog mark these elements as a discrepancy.
+    public IReadOnlyList<ArbiterDeviation> Deviations { get; init; } = [];
 }

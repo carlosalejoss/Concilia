@@ -16,8 +16,10 @@ public record RunLine(string Slot, int? Lot, int Attempt, string Model, string S
 
 // What each model proposed and what the arbiter made of it: A and B (null if
 // that model did not end well), the elements of the merge, by origin, those
-// with a discrepancy and those the arbiter discarded.
-public record ElementCounts(int? A, int? B, int Merged, int Both, int OnlyA, int OnlyB, int Discrepancies, int Discarded);
+// with a discrepancy marked by the arbiter and those it discarded. Deviations
+// (step 88): the elements of the merge where the arbiter went against the
+// matching of the platform; null in the jobs from before it.
+public record ElementCounts(int? A, int? B, int Merged, int Both, int OnlyA, int OnlyB, int Discrepancies, int Discarded, int? Deviations = null);
 
 // The user's changes to the deliverable, against the draft the job left:
 // kept as they were, modified, added and deleted.
