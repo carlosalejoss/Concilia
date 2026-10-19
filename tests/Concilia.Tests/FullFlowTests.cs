@@ -81,6 +81,7 @@ public class FullFlowTests
         Assert.Equal(0.9, matching["matching"]!["thresholds"]!["same"]!.GetValue<double>());
         Assert.Equal(report["elements"]!["a"]!.GetValue<int>(), matching["matching"]!["counts"]!["a"]!.GetValue<int>());
         Assert.NotNull(matching["matching"]!["agreement"]);
+        Assert.NotNull(matching["deviationElements"]); // step 88: where the arbiter went against this matching
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"/jobs/{catalogJob}/matching?same=0.5&similar=0.9")).StatusCode);
 
         await Launch(client, $"/projects/{id}/backlog-jobs", id);
