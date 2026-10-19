@@ -70,6 +70,7 @@ public class FullFlowTests
         var report = await Json(await client.GetAsync($"/jobs/{catalogJob}/report"));
         Assert.True(report["succeeded"]!.GetValue<bool>());
         Assert.True(report["elements"]!["merged"]!.GetValue<int>() > 0);
+        Assert.NotNull(report["elements"]!["deviations"]); // step 88: the arbiter against the matching of the platform
         Assert.Equal(report["elements"]!["merged"]!.GetValue<int>(), report["changes"]!["kept"]!.GetValue<int>());
         Assert.Equal(0, report["changes"]!["modified"]!.GetValue<int>() + report["changes"]!["added"]!.GetValue<int>() + report["changes"]!["deleted"]!.GetValue<int>());
 

@@ -7,11 +7,11 @@ Prompts muy básicos de la iteración v0 (D-65, D-73): sirven para tener el fluj
 | Fase | Prompt | Lee de `input/` (entero · si lo necesita) | El modelo escribe | Esquema | Marcadores |
 |---|---|---|---|---|---|
 | Preguntas, A y B | `preguntas.md` | `documentacion.txt` | `output/preguntas.json` | `esquemas/preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `PREGUNTAS_PREVIAS`, `LECTURA` |
-| Preguntas, árbitro | `arbitro_preguntas.md` | `propuesta_1.json`, `propuesta_2.json` · `documentacion.txt` | `output/preguntas.json` | `esquemas/arbitro_preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `PREGUNTAS_PREVIAS`, `LECTURA` |
+| Preguntas, árbitro | `arbitro_preguntas.md` | `propuesta_1.json`, `propuesta_2.json`, `emparejamiento.txt` · `documentacion.txt` | `output/preguntas.json` | `esquemas/arbitro_preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `PREGUNTAS_PREVIAS`, `LECTURA` |
 | Catálogo, A y B | `catalogo.md` | `documentacion.txt` | `output/catalogo.json` | `esquemas/catalogo.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `LECTURA` |
-| Catálogo, árbitro | `arbitro_catalogo.md` | `propuesta_1.json`, `propuesta_2.json` · `documentacion.txt` | `output/catalogo.json` | `esquemas/arbitro_catalogo.schema.json` | los del catálogo |
+| Catálogo, árbitro | `arbitro_catalogo.md` | `propuesta_1.json`, `propuesta_2.json`, `emparejamiento.txt` · `documentacion.txt` | `output/catalogo.json` | `esquemas/arbitro_catalogo.schema.json` | los del catálogo |
 | Backlog, A y B | `backlog.md` | `catalogo.json` | `output/backlog.json` | `esquemas/backlog.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `LECTURA` |
-| Backlog, árbitro | `arbitro_backlog.md` | `catalogo.json`, `propuesta_1.json`, `propuesta_2.json` | `output/backlog.json` | `esquemas/arbitro_backlog.schema.json` | los del backlog |
+| Backlog, árbitro | `arbitro_backlog.md` | `catalogo.json`, `propuesta_1.json`, `propuesta_2.json`, `emparejamiento.txt` | `output/backlog.json` | `esquemas/arbitro_backlog.schema.json` | los del backlog |
 | Sugerencias de respuesta (un modelo) | `sugerir_respuestas.md` | `documentacion.txt` | `output/sugerencias.json` | `esquemas/sugerencias.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `PREGUNTAS`, `LECTURA` |
 | Mockup, diseño | `mockup_diseno.md` | `backlog.json` | `output/prototipo/mapa.json` y `output/prototipo/app.html` (el armazón) | comprobaciones propias (abajo) | `NOMBRE_SISTEMA`, `IDIOMA`, `LECTURA`, `ESTILO` |
 | Mockup, una pantalla (una ejecución por pantalla) | `mockup_pantalla.md` | `mapa.json`, `app.html`, `historias.json` (las de la pantalla) | `output/prototipo/pantallas/P01.html` | comprobaciones propias (abajo) | los del diseño, `PANTALLA`, `TITULO`, `HISTORIAS`, `FICHERO`, `NAVEGACION` |
@@ -32,6 +32,7 @@ Los valores se insertan en una sola pasada, como en `PromptBuilder.Fill`: un doc
 - `input/catalogo.json`: el catálogo **validado**, con los campos de `catalogo.schema.json` (sin `de`, `discrepancia` ni `explicacion`).
 - `input/backlog.json`: el backlog **validado**, con los campos de `backlog.schema.json`.
 - `input/propuesta_1.json` e `input/propuesta_2.json`: el JSON de A y de B, en orden aleatorio. El reparto se guarda en `plan.json` del trabajo, y la plataforma traduce los `de` del árbitro a A y B.
+- `input/emparejamiento.txt` (desde la v0.10, solo el árbitro): el emparejamiento por significado de las dos propuestas que calcula la plataforma con embeddings, una línea por par (`1:RF-003 2:RF-001 mismo 0.94`, `… parecido 0.78`) o por elemento sin par (`1:RF-020 sin-par`). Se lee entero.
 - Los ficheros JSON van indentados, un valor por línea, para que `Read` no corte ninguna línea larga.
 - `LECTURA` (`ReadingPlan.Block`): qué ficheros de `input/` lee el modelo y cómo. De los que tiene que leer enteros da el número de líneas y los argumentos exactos de cada llamada a `Read` (`offset` y `limit`, desde la línea 1). Cada tramo tiene como mucho unos 40.000 caracteres o 1.000 líneas, para que quepa en una llamada. Los demás, solo para consultar.
 - Anexo de reparación: `FICHERO` es la ruta de salida de la fase, `SALIDA_PREVIA` el fichero del intento anterior y `ERRORES` una línea por error de las comprobaciones.

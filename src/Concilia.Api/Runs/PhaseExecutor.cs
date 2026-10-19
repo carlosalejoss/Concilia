@@ -1,4 +1,5 @@
 using Concilia.Api.Files;
+using Concilia.Core.Matching;
 using Concilia.Core.Phases;
 using Concilia.Core.Runner;
 using Concilia.Core.Runs;
@@ -9,7 +10,8 @@ namespace Concilia.Api.Runs;
 // Executes one run of a v0 phase job (A, B or the arbiter), with its repair,
 // without touching the database: builds the request (PhaseTask), runs it with
 // RetryRunner (one repair) and reviews each attempt with PhaseTask.Review.
-public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileStorage storage, RunnerOptions runnerOptions, CatalogOptions catalogOptions)
+public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileStorage storage, RunnerOptions runnerOptions, CatalogOptions catalogOptions,
+    ArbiterMatching matching)
 {
     // v0.1 (09-10-2026): the inputs are read by parts from input/ (milestone 12b).
     // v0.2 (09-10-2026): the reading plan gives the exact offset and limit of each Read call.
@@ -21,15 +23,20 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // the proposals with one element per line; a fragment is not a line number.
     // v0.8 (15-10-2026): the platform joins and checks the mockup; one fix run per part with problems.
     // v0.9 (15-10-2026): the mockup is a working application: sign-in, an application per role and real navigation.
-    public const string PromptVersion = "v0.9";
+    // v0.10 (19-10-2026): the arbiter starts from the matching of the platform (input/emparejamiento.txt).
+    public const string PromptVersion = "v0.10";
+
+    // The matching of A and B by meaning that the arbiter gets (step 88).
+    public ArbiterMatching Matching => matching;
     public const int MaxRepairs = 1;
 
-    // proposals: the outputs of the two slots in the order of the plan (only for the arbiter).
+    // arbiter: only for the arbiter, the outputs of the two slots in the order
+    // of the plan and the matching of the platform (MatchingFile).
     public async Task<IReadOnlyList<RunAttempt>> ExecuteAsync(
-        Run run, PhasePlan plan, (string P1, string P2)? proposals, CancellationToken cancellationToken)
+        Run run, PhasePlan plan, (string P1, string P2, string Matching)? arbiter, CancellationToken cancellationToken)
     {
-        var phase = PhaseDefinition.For(plan.Kind, proposals is null ? PhaseRole.Proposal : PhaseRole.Arbiter);
-        var input = proposals is var (p1, p2) ? plan.Input with { Proposal1 = p1, Proposal2 = p2 } : plan.Input;
+        var phase = PhaseDefinition.For(plan.Kind, arbiter is null ? PhaseRole.Proposal : PhaseRole.Arbiter);
+        var input = arbiter is var (p1, p2, pairs) ? plan.Input with { Proposal1 = p1, Proposal2 = p2, Matching = pairs } : plan.Input;
         var options = new PhaseOptions
         {
             MaxContextTokens = runnerOptions.MaxContextTokens,

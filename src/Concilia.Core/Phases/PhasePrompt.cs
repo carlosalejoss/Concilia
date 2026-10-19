@@ -20,6 +20,7 @@ public record PhaseInput
     public string Backlog { get; init; } = "";           // the validated backlog (mockup)
     public string Proposal1 { get; init; } = "";         // arbiter: the two proposals, in random order
     public string Proposal2 { get; init; } = "";
+    public string Matching { get; init; } = "";          // arbiter: MatchingFile of the two proposals (input/emparejamiento.txt)
     public string PendingQuestions { get; init; } = "";  // suggestions: PhasePrompt.PendingQuestionsBlock
     public string Reading { get; init; } = "";           // ReadingPlan.Block of the files of input/ (set by PhaseTask)
 }

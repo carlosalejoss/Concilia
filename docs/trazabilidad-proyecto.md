@@ -28,6 +28,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 15-10 | Mockup v0.8 y v0.9, hito 13 | Mockup navegable de verdad; test del flujo completo, informes y proyectos de ejemplo |
 | 15-10 y 16-10 | Paso 65 con el proyecto grande de ejemplo | Flujo completo (unos 105 min y al menos 5,2 M tokens de entrada, el 63 % en el mockup); las 26 contradicciones puestas a propósito se tratan como se esperaba; A propone mucho más que B y la unión se parece a A |
 | 19-10 | Hito 17, paso 86 | Servicio de embeddings en local: el modelo multilingüe en el contenedor de la API, con los mismos vectores que sentence-transformers |
+| 19-10 | Hito 17, paso 88 | Árbitro con embeddings (prompts v0.10): parte del emparejamiento de la plataforma y lo que hace en contra de los números se marca como discrepancia |
 | 19-10 | Hito 17, paso 87 | Emparejamiento de A y B por significado; umbrales 0,90 y 0,70 calibrados con 48 pares etiquetados por el autor; el árbitro, medido por primera vez frente a un criterio humano |
 
 ## Etapas
@@ -108,7 +109,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Preguntas:** botón «Aprobar todas las sugerencias» de una ronda, visible solo cuando la IA ha sugerido la respuesta de todas sus preguntas pendientes.
 - **Resultados del proyecto grande de ejemplo (16-10):** el flujo completo trata como se esperaba las 26 contradicciones y huecos puestos a propósito. Pero la unión del árbitro se parece mucho a la propuesta de A, lo que abre la pregunta clave de la sección siguiente.
 
-### 8. Hito 17: embeddings en local (19-10, en curso)
+### 8. Hito 17: embeddings en local (19-10; falta la prueba real del paso 88)
 
 - **Paso 86, servicio de embeddings en la API:**
   - **Modelo:** `paraphrase-multilingual-MiniLM-L12-v2` en fp32 (decisión del autor, frente al cuantizado), con ONNX Runtime y su tokenizador SentencePiece, dentro de la API.
@@ -147,6 +148,17 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Cómo se eligió el criterio:** para saber desde qué parecido dos textos «dicen lo mismo», el autor clasificó a mano 48 pares sin ver los números, y se eligieron los umbrales que mejor coinciden con su criterio (0,90 y 0,70).
   - **Qué se comprobó:** que el resultado coincide con lo que deciden casi todos los árbitros.
   - **Resultado añadido:** de paso, se midió por primera vez al árbitro contra un criterio humano. Junta todo lo que el autor ve igual y casi nada de lo que ve distinto.
+
+- **Paso 88, árbitro con embeddings (prompts v0.10):**
+  - **Cómo funciona:** antes de llamar al árbitro, la plataforma empareja las dos propuestas y le da el resultado en `input/emparejamiento.txt` (`1:RF-003 2:RF-001 mismo 0.94`). El árbitro parte de ahí: los «mismo» se unen, los «parecido» los decide él, y los «sin par» siguen las reglas de siempre. Es el diseño original del TFG.
+  - **Decisiones del autor, entre las opciones que se le explicaron:**
+    1. **El emparejamiento es orientativo, no obligatorio:** el árbitro puede apartarse si la fuente lo justifica, y la plataforma le enseña al usuario dónde lo hizo. Se descartó obligarlo, porque los embeddings también se equivocan, y pasarlo solo como pista, porque no se comprobaría nada.
+    2. **Qué marca la «discrepancia grave»** (cierra la decisión abierta desde el principio): lo que el árbitro hace en contra de los números, es decir, unir algo que no tiene nada «mismo» ni «parecido» en la otra propuesta o dejar separado un par «mismo». Se suma a la discrepancia que marca el propio árbitro, que se mantiene porque los embeddings no ven contradicciones («1 hora» y «24 horas» salen «mismo»). Se descartó marcar toda la franja «parecido»: habrían sido 91 de 209 requisitos en el catálogo grande.
+    3. **Las preguntas reciben el emparejamiento sin marcar nada:** no tienen discrepancia, y las desviaciones solo se cuentan en el informe.
+  - **Estimación con los trabajos de antes:** entre 0 y 10 discrepancias de la plataforma por trabajo, y 21 en el backlog del proyecto grande.
+  - **Cambio de criterio:** sustituye al «árbitro solo con el LLM» de la iteración v0 (08-10-2026).
+  - **Pendiente:** la prueba real, que lanza el autor. Consiste en volver a arbitrar el catálogo de clínicas 2 o 3 veces y ver si la unión es más estable que en el experimento (209, 220 y 291 requisitos con las mismas propuestas).
+- **Para la memoria, en palabras sencillas:** ahora el árbitro no empieza de cero. La plataforma le dice primero qué elementos de los dos modelos se parecen, con un criterio fijo y medido. El árbitro decide y redacta, y si contradice a los números, el usuario lo ve y lo revisa.
 
 ## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
 
@@ -196,12 +208,13 @@ A propone mucho más que B, y la unión se parece mucho a A: lo que aporta solo 
 | v0.5 | 14-10 | Referencia de estilo del mockup |
 | v0.6 y v0.7 | 14-10 | Mockup como una sola aplicación; árbitro que consulta la documentación por tramos |
 | v0.8 y v0.9 | 15-10 | La plataforma junta y revisa el mockup; mockup navegable con inicio de sesión |
+| v0.10 | 19-10 | El árbitro parte del emparejamiento por significado de la plataforma, y sus desviaciones se marcan como discrepancia |
 
 El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-requisitos.md`.
 
 ## Decisiones que siguen abiertas
 
-- Cómo marca el umbral la «discrepancia grave» en el árbitro con embeddings (paso 88). Los dos umbrales del emparejamiento los fijó el autor el 19-10-2026 (0,90 y 0,70); la candidata es la franja «parecido». El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
+- ~~Umbral de «discrepancia grave»~~: cerrado por el autor el 19-10-2026. Dos umbrales del emparejamiento (0,90 y 0,70, paso 87), y la discrepancia la marcan las desviaciones del árbitro respecto al emparejamiento (paso 88). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
 - Si se paran las ejecuciones que compactan varias veces antes de escribir su salida.
 - Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
 - Si la plataforma corrige las citas que son números de línea (LUNA) cuando la línea es inequívoca.
@@ -216,7 +229,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.md` como hitos 17 a 22:
 
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
-2. **Hito 17, embeddings en local (en curso):** ~~modelo multilingüe en el contenedor de la API~~ (paso 86, 19-10-2026) y ~~emparejamiento de A y B por significado, con los umbrales calibrados~~ (paso 87, 19-10-2026); sigue el árbitro con embeddings (paso 88). Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
+2. **Hito 17, embeddings en local:** ~~modelo multilingüe en el contenedor de la API~~ (paso 86), ~~emparejamiento de A y B por significado, con los umbrales calibrados~~ (paso 87) y ~~árbitro con embeddings~~ (paso 88), todo el 19-10-2026. Falta la prueba real del paso 88, que lanza el autor. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
 3. **Hito 18, fiabilidad y calidad:** LUNA, reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
 4. **Hito 19, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
 5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
@@ -229,5 +242,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 168 entre el 28-09 y el 19-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 864 (19-10; 6 de ellos se saltan sin el modelo de embeddings).
+- **Commits:** 170 entre el 28-09 y el 19-10-2026.
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 871 (19-10; 6 de ellos se saltan sin el modelo de embeddings).

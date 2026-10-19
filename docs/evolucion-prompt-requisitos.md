@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.10 | 19-10-2026 | El árbitro parte del emparejamiento por significado de la plataforma (`input/emparejamiento.txt`, embeddings en local); puede apartarse si la fuente lo justifica, y la plataforma marca como discrepancia en el catálogo y el backlog dónde lo hizo | Pendiente | Pendiente: volver a arbitrar el catálogo de clínicas y comparar con los arbitrajes del experimento |
 | v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Documento C: 40 min, 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Proyecto grande de ejemplo: 38 pantallas y las 109 historias (1,54 MB), con una pantalla perdida por un 504 de la pasarela y recuperada al reanudar. Al autor le convencen los dos |
 | v0.8 | 15-10-2026 | Mockup: la plataforma junta y revisa el prototipo (ids, globales de JavaScript y navegación) y solo corrige con un modelo las partes con problemas; se puede reanudar un mockup fallido | Pendiente | Pendiente |
 | v0.7 | 14-10-2026 | El árbitro consulta la documentación por tramos y lee las propuestas con un elemento por línea; un fragmento no es un número de línea (`REF-FRAG` dice qué fragmento hay en esa línea); sin la salida de un solo modelo como resultado | Sí (documento C, 14-10-2026; proyecto grande de ejemplo, 15-10-2026) | El árbitro cabe y lee las propuestas en pocas llamadas, pero termina compactando después de escribir (la plataforma lo corta y acepta la salida). Con el proyecto de ejemplo: 299 y 192 requisitos, unión de 209 en 12 min, con dos reparaciones por citas mal copiadas (la marca `sigue` y un número de línea) |
@@ -342,6 +343,36 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.10 (19-10-2026)
+
+Cambian los tres prompts del árbitro. Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- **Antes de llamar al árbitro, la plataforma empareja las dos propuestas por significado,** con los embeddings en local y los umbrales que calibró el autor en el paso 87: «mismo» desde 0,90, «parecido» desde 0,70. El árbitro recibe ese emparejamiento en `input/emparejamiento.txt`. Ya no tiene que buscar él solo qué elementos se corresponden: los pares «mismo» se unen, los «parecido» los decide él y los «sin par» se mantienen o se descartan con las reglas de siempre.
+- **El emparejamiento es orientativo** (decisión del autor): el árbitro puede apartarse si la fuente lo justifica. La plataforma busca dónde lo hizo:
+  - unir algo sin nada parecido en la otra propuesta;
+  - dejar separado un par «mismo».
+
+  En el catálogo y el backlog, esos elementos son discrepancias que el usuario revisa al validar, con la explicación de la plataforma. En las preguntas solo se cuentan.
+- **Las discrepancias de contenido** (una cifra o una regla distinta) las sigue marcando el árbitro, porque los embeddings miden cuánto se parecen dos textos, no si se contradicen.
+
+**Por qué:**
+- es el diseño original del TFG, simplificado en la iteración v0;
+- con las mismas propuestas, la unión del catálogo del proyecto grande de ejemplo salió de 209, 220 y 291 requisitos según la ejecución del árbitro (`docs/experimento-sesgo-arbitro.md`). Un emparejamiento fijo de partida debería hacerla más estable.
+
+**Cuántas discrepancias se esperan.** Se estimó con los 9 trabajos originales de los proyectos ficticios, con los árbitros de antes:
+- con la opción elegida (lo que el árbitro hace en contra de los números), entre 0 y 10 por trabajo, y 21 en el backlog del proyecto grande;
+- marcar toda la franja «parecido» habría dado 91 de 209 requisitos en el catálogo grande, y se descartó.
+
+### Resultados
+
+Pendiente. La prueba propuesta es volver a arbitrar 2 o 3 veces el catálogo de clínicas con la v0.10 y comparar el tamaño de la unión, lo que entra solo de A y de B y el número de desviaciones con los arbitrajes del experimento.
+
+### Qué hay que mejorar
+
+Pendiente de la prueba.
 
 ## v0.8 (15-10-2026)
 

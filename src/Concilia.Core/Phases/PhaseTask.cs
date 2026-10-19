@@ -1,6 +1,7 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Concilia.Core.Catalog;
+using Concilia.Core.Matching;
 using Concilia.Core.Runner;
 
 namespace Concilia.Core.Phases;
@@ -64,6 +65,9 @@ public static class PhaseTask
             // With "1:" and "2:" before the ids, so the arbiter cannot mix them (ProposalIds).
             files.Add(new InputFile(Proposal1File, ProposalIds.Prefix(phase.Kind, input.Proposal1, 1), Required: true));
             files.Add(new InputFile(Proposal2File, ProposalIds.Prefix(phase.Kind, input.Proposal2, 2), Required: true));
+            // The matching computed by the platform (step 88), read entirely too.
+            if (input.Matching.Length > 0)
+                files.Add(new InputFile(MatchingFile.Path, input.Matching, Required: true));
         }
         return files;
     }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Files;
 using Concilia.Api.Persistence;
 using Concilia.Core.Catalog;
+using Concilia.Core.Matching;
 using Concilia.Core.Phases;
 using Concilia.Core.Projects;
 using Concilia.Core.Runner;
@@ -120,6 +121,14 @@ public static class PhaseJobs
             ["verificacion_cruzada"] = result.CrossChecked,
             ["mensaje"] = result.Message,
             ["salida"] = result.Output is null ? null : JsonNode.Parse(result.Output),
+            // Where the arbiter went against the matching of the platform (step 88).
+            ["desviaciones"] = new JsonArray(result.Deviations.Select(d => (JsonNode)new JsonObject
+            {
+                ["id"] = d.ElementId,
+                ["tipo"] = d.Kind == DeviationKind.JoinedDifferent ? "junta-distintos" : "separa-iguales",
+                ["similitud"] = Math.Round(d.Similarity, 3),
+                ["explicacion"] = d.Explanation,
+            }).ToArray()),
         };
         File.WriteAllText(Path.Combine(jobFolder, PhaseJobResult.FileName),
             content.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }));

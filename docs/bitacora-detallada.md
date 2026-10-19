@@ -1818,3 +1818,31 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Pendientes:**
   - paso 88, árbitro con embeddings, que necesita decidir cómo marca la discrepancia grave;
   - **decidido por el autor después de la sesión:** el emparejamiento entra en el informe por trabajo y en el CSV del proyecto en el hito 20, paso 100, no ahora, porque calcularlo en cada informe cuesta unos segundos por trabajo. Anotado en el plan.
+
+---
+
+## 19-10-2026, 12:00 (sesión)
+
+**Resumen para la bitácora (19-10-2026, hito 17, paso 88: árbitro con embeddings, prompts v0.10)**
+
+- **Qué se hizo:**
+  - **Emparejamiento para el árbitro:** antes de llamar al árbitro, la plataforma empareja por significado las dos propuestas (`ArbiterMatching`, con los umbrales 0,90 y 0,70 de la configuración). Le pasa el resultado en `input/emparejamiento.txt` (`MatchingFile`), con los números de las propuestas para que A y B sigan siendo anónimos: `1:RF-003 2:RF-001 mismo 0.94`, `… parecido 0.78` o `1:RF-020 sin-par`. Lo lee entero, como las propuestas, y la plataforma comprueba la lectura.
+  - **Prompts v0.10** de los tres árbitros: el paso 1 de §2 es «parte del emparejamiento» (los «mismo» se unen, los «parecido» los decides tú, los «sin par» solo se unen si de verdad son lo mismo, y puedes apartarte si la fuente lo justifica, diciéndolo en `explicacion`). En el catálogo y el backlog, además, el aviso de que el emparejamiento no detecta contradicciones. Los valores de los umbrales no aparecen en el texto, para que no se desajusten si cambia la configuración.
+  - **Desviaciones** (`ArbiterDeviations`): después del árbitro, la plataforma busca dónde unió algo sin nada «mismo» ni «parecido» en la otra propuesta, o dejó en dos elementos distintos un par «mismo». Descartar uno de los dos no cuenta.
+    - Se guardan en `resultado-arbitro.json` como `desviaciones`, aparte de la salida del árbitro, que queda tal cual.
+    - En los borradores del catálogo y del backlog, esos elementos quedan como discrepancia, con `[Plataforma] …` detrás de la explicación del árbitro.
+    - El informe, el CSV (`desviaciones`) y la web las cuentan aparte de las discrepancias del árbitro.
+  - **Tests:** 7 nuevos de las desviaciones y del fichero de emparejamiento; el árbitro de las tres fases recibe y lee el emparejamiento; el informe del flujo completo trae el recuento. 871 en total. Los 46 tests de la referencia en Python siguen pasando (el validador no cambia).
+- **Decisiones del autor**, entre las opciones que se le explicaron con datos de los 9 trabajos de los proyectos ficticios:
+  1. **El emparejamiento es orientativo (b).** Se descartó obligarlo (a), porque los embeddings también se equivocan (M20, 0,91, distintos para el autor) y las reparaciones son caras, y pasarlo solo como pista (c).
+  2. **La discrepancia grave es D2:** lo que el árbitro hace en contra de los números, más la discrepancia que marca el propio árbitro, que se mantiene porque los embeddings no ven contradicciones.
+     - D1 (toda la franja «parecido» unida) habría marcado 91 de 209 requisitos en el catálogo grande y 51 de 109 historias.
+     - D2 se estimó en 0–10 por trabajo, y 21 en el backlog grande.
+     - D3 (solo el LLM, como antes) marcaba 0–2.
+  3. **Las preguntas reciben el emparejamiento y no marcan nada:** sus desviaciones solo se cuentan en el informe.
+- **Cambios de criterio:**
+  - sustituye al «árbitro solo con el LLM» de la iteración v0 (08-10-2026);
+  - se cierra la decisión abierta del umbral de «discrepancia grave», con los umbrales del paso 87 y las desviaciones del 88.
+- **Pendientes:**
+  - **prueba real, que lanza el autor:** reconstruir la API y volver a arbitrar 2 o 3 veces el catálogo de clínicas con la v0.10. Comparar el tamaño de la unión (antes 209, 220 y 291 con las mismas propuestas), lo que entra solo de A y de B y las desviaciones, y anotarlo en `docs/evolucion-prompt-requisitos.md` (sección v0.10);
+  - después, el hito 18.

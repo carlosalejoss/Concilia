@@ -1,6 +1,7 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Concilia.Core.Matching;
 using Concilia.Core.Phases;
 
 namespace Concilia.Core.Deliverables;
@@ -9,8 +10,10 @@ namespace Concilia.Core.Deliverables;
 // validates. Each requirement has the fields of prompts/v0/esquemas/catalogo.schema.json
 // plus four of the platform:
 //   origen        "A", "B" or "ambas" (from the arbiter's `de`, in the order of the plan)
-//   discrepancia  the arbiter found a difference the source does not settle
-//   explicacion   the arbiter's explanation (or why there was no cross-check)
+//   discrepancia  the arbiter found a difference the source does not settle, or
+//                 the arbiter went against the matching of the platform (step 88)
+//   explicacion   the arbiter's explanation, followed by the platform's one if
+//                 there is a deviation (or why there was no cross-check)
 //   revisada      the user reviewed the discrepancy (needed to validate)
 public static class CatalogDraft
 {
@@ -29,8 +32,11 @@ public static class CatalogDraft
         {
             var copy = Pick(r, SchemaFields);
             copy["origen"] = crossChecked ? plan.OriginOf(r["de"]!.AsObject()) ?? "ambas" : result.Source;
-            copy["discrepancia"] = crossChecked && r["discrepancia"]!.GetValue<bool>();
-            copy["explicacion"] = crossChecked ? r["explicacion"]!.GetValue<string>() : $"Sin verificación cruzada: solo terminó bien {result.Source}.";
+            var deviations = result.Deviations.Where(d => d.ElementId == r["id"]!.GetValue<string>()).ToList();
+            copy["discrepancia"] = crossChecked && (r["discrepancia"]!.GetValue<bool>() || deviations.Count > 0);
+            copy["explicacion"] = crossChecked
+                ? ArbiterDeviations.Explain(r["explicacion"]!.GetValue<string>(), deviations)
+                : $"Sin verificación cruzada: solo terminó bien {result.Source}.";
             copy["revisada"] = false;
             requirements.Add(copy);
         }

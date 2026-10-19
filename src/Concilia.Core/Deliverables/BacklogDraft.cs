@@ -1,6 +1,7 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Concilia.Core.Matching;
 using Concilia.Core.Phases;
 
 namespace Concilia.Core.Deliverables;
@@ -30,8 +31,12 @@ public static class BacklogDraft
             {
                 var story = CatalogDraft.Pick(h, StoryFields);
                 story["origen"] = crossChecked ? plan.OriginOf(h["de"]!.AsObject()) ?? "ambas" : result.Source;
-                story["discrepancia"] = crossChecked && h["discrepancia"]!.GetValue<bool>();
-                story["explicacion"] = crossChecked ? h["explicacion"]!.GetValue<string>() : $"Sin verificación cruzada: solo terminó bien {result.Source}.";
+                // A deviation from the matching of the platform is a discrepancy too (step 88).
+                var deviations = result.Deviations.Where(d => d.ElementId == h["id"]!.GetValue<string>()).ToList();
+                story["discrepancia"] = crossChecked && (h["discrepancia"]!.GetValue<bool>() || deviations.Count > 0);
+                story["explicacion"] = crossChecked
+                    ? ArbiterDeviations.Explain(h["explicacion"]!.GetValue<string>(), deviations)
+                    : $"Sin verificación cruzada: solo terminó bien {result.Source}.";
                 story["revisada"] = false;
                 stories.Add(story);
             }

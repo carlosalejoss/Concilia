@@ -1,4 +1,5 @@
 using Concilia.Core.Catalog;
+using Concilia.Core.Matching;
 using Concilia.Core.Mockup;
 using Concilia.Core.Phases;
 using Concilia.Core.Runner;
@@ -178,6 +179,9 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
     // The arbiter alone, with the outputs of A and B as "Propuesta 1" and
     // "Propuesta 2" in the order of the plan. Also used to arbitrate again the
     // proposals of a finished job (Rearbitration).
+    // Step 88: first the platform matches A and B by meaning and gives the
+    // matching to the arbiter as a guide; afterwards it looks for where the
+    // arbiter went against it (ArbiterDeviations), kept with the result.
     public async Task<PhaseJobResult> RunArbiterAsync(
         Run arbiter,
         PhasePlan plan,
@@ -189,11 +193,16 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
     {
         var phases = phaseExecutor ?? throw new InvalidOperationException("JobRunner without PhaseExecutor");
         string Of(string slot) => slot == "A" ? outputA : outputB;
-        var proposals = (Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]));
-        var final = await RunOneAsync(arbiter, () => phases.ExecuteAsync(arbiter, plan, proposals, cancellationToken), onRunStarting, onRunFinished, cancellationToken);
-        return final.Succeeded
-            ? new PhaseJobResult("ARB", true, File.ReadAllText(PhaseExecutor.OutputPath(final.Attempts![^1], plan.Kind)), "Unión del árbitro.")
-            : new PhaseJobResult(null, false, null, "El árbitro no terminó con una salida válida. El trabajo falla; se puede lanzar de nuevo.");
+        var matching = phases.Matching.Compute(plan.Kind, outputA, outputB);
+        var input = (Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]), MatchingFile.Write(matching, plan.ProposalOrder));
+        var final = await RunOneAsync(arbiter, () => phases.ExecuteAsync(arbiter, plan, input, cancellationToken), onRunStarting, onRunFinished, cancellationToken);
+        if (!final.Succeeded)
+            return new PhaseJobResult(null, false, null, "El árbitro no terminó con una salida válida. El trabajo falla; se puede lanzar de nuevo.");
+        var output = File.ReadAllText(PhaseExecutor.OutputPath(final.Attempts![^1], plan.Kind));
+        return new PhaseJobResult("ARB", true, output, "Unión del árbitro.")
+        {
+            Deviations = ArbiterDeviations.Find(plan.Kind, output, matching, plan.ProposalOrder),
+        };
     }
 
     // A job of a single run (the suggestions of answers, slot SUG): its output
