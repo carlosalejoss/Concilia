@@ -24,7 +24,9 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // v0.8 (15-10-2026): the platform joins and checks the mockup; one fix run per part with problems.
     // v0.9 (15-10-2026): the mockup is a working application: sign-in, an application per role and real navigation.
     // v0.10 (19-10-2026): the arbiter starts from the matching of the platform (input/emparejamiento.txt).
-    public const string PromptVersion = "v0.10";
+    // v0.11 (19-10-2026): the repair edits the previous output in its file; prudent suggestions;
+    // a direction of style per project for the mockup without a style reference.
+    public const string PromptVersion = "v0.11";
 
     // The matching of A and B by meaning that the arbiter gets (step 88).
     public ArbiterMatching Matching => matching;
@@ -139,6 +141,9 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
 
         var errors = review.Validation.Errors;
         var more = errors.Count > 1 ? $" (y {errors.Count - 1} más)" : "";
-        return new AttemptReview(result with { Status = RunStatus.Failed, ErrorMessage = $"Salida no válida: {errors[0]}{more}" }, review.RepairPrompt);
+        // Step 90: the repair finds its previous output in its file and may correct it with Edit.
+        return new AttemptReview(result with { Status = RunStatus.Failed, ErrorMessage = $"Salida no válida: {errors[0]}{more}" }, review.RepairPrompt,
+            review.RepairFile is { } file ? new Dictionary<string, string> { [outputFile] = file } : null,
+            [.. attempt.Request.AllowedTools.Union(["Edit"])]);
     }
 }

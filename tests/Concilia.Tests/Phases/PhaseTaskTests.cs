@@ -527,9 +527,16 @@ public class PhaseTaskTests
         Assert.StartsWith("PROMPT ORIGINAL\n", repair);
         Assert.Contains("REPARACIÓN (intento 1)", repair);
         Assert.Contains("`output/catalogo.json`", repair);
-        Assert.Contains($"<salida_previa>{output}</salida_previa>", repair);
         Assert.Contains("REF-FRAG: el fragmento DOC-01#F099 no existe.", repair);
         Assert.DoesNotMatch(new Regex(@"\{\{[A-Z_0-9]+\}\}"), repair);
+
+        // Step 90: the previous output is not pasted; it stays in its file,
+        // one element per line, and the error says on which line its element is.
+        Assert.DoesNotContain(output, repair);
+        var file = review.RepairFile!.Split('\n');
+        var line = Array.FindIndex(file, l => l.Contains("DOC-01#F099")) + 1;
+        Assert.Contains($"REF-FRAG: el fragmento DOC-01#F099 no existe. (línea {line})", repair);
+        Assert.StartsWith("{\"id\":\"RF-", file[line - 1]);
     }
 
     [Fact]

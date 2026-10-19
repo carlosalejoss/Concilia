@@ -586,11 +586,11 @@ public static class MockupTask
         var (target, previous) = step.Stage switch
         {
             MockupStage.Design => (PrototypeFolder + "/",
-                "Tus ficheros siguen en `output/prototipo/`. Reescribe solo los que señalan los errores; léelos antes con Read."),
+                "Tus ficheros siguen en `output/prototipo/`. Corrige solo los que señalan los errores: léelos antes con Read y corrígelos con Edit, o reescríbelos con Write si cambia casi todo."),
             MockupStage.Screen => (ScreenFile(step.Screen!.Id),
-                $"Tu pantalla sigue en `{ScreenFile(step.Screen!.Id)}`. Léela con Read y reescríbela corregida."),
+                $"Tu pantalla sigue en `{ScreenFile(step.Screen!.Id)}`. Léela con Read y corrígela con Edit, o reescríbela con Write si cambia casi todo."),
             _ => (TargetOf(step),
-                $"Tu versión sigue en `{TargetOf(step)}`. Léela con Read y reescríbela corregida."),
+                $"Tu versión sigue en `{TargetOf(step)}`. Léela con Read y corrígela con Edit, o reescríbela con Write si cambia casi todo."),
         };
         return new PhaseReview(validation, PhasePrompt.Repair(originalPrompt, attempt, target, previous, validation.Errors));
     }

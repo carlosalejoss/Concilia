@@ -25,9 +25,12 @@ public record PhaseRequest(RunRequest? Request, string? Error, IReadOnlyList<str
 
 // After an attempt: is the output valid, its errors and warnings and, when it
 // is not valid, the prompt of the repair.
+// RepairFile (step 90): the previous output as the repair finds it in its
+// file, to correct it with Edit (null if there was none or nothing to repair).
 public record PhaseReview(PhaseValidation Validation, string? RepairPrompt)
 {
     public bool Valid => Validation.Valid;
+    public string? RepairFile { get; init; }
 }
 
 // The generic task of a v0 phase (step 42): one run with all the documentation
@@ -149,7 +152,7 @@ public static class PhaseTask
             var errors = duplicates
                 .Select(d => $"{phase.OutputFile} CLAVE-DUP: la clave se repite en el mismo objeto ({d}). Escribe cada clave una sola vez y junta sus valores.")
                 .ToList();
-            return new PhaseReview(new PhaseValidation(errors, []), PhasePrompt.Repair(originalPrompt, attempt, phase.OutputFile, output!, errors));
+            return Repair(phase, output, new PhaseValidation(errors, []), originalPrompt, attempt);
         }
         var joinedWarnings = duplicates.Select(d => $"{phase.OutputFile} CLAVE-DUP: clave repetida unida por la plataforma ({d}).").ToList();
 
@@ -165,10 +168,47 @@ public static class PhaseTask
         var wrongPrefixes = phase.IsArbiter && cleaned is not null ? ProposalIds.WrongPrefixes(cleaned) : [];
         var validation = new PhaseValidation([.. wrongPrefixes, .. checkedOutput.Errors, .. extraErrors ?? []],
             [.. joinedWarnings, .. fixes?.Warnings ?? [], .. checkedOutput.Warnings]);
-        var repair = validation.Valid
-            ? null
-            : PhasePrompt.Repair(originalPrompt, attempt, phase.OutputFile, output ?? "", validation.Errors);
-        return new PhaseReview(validation, repair);
+        return validation.Valid
+            ? new PhaseReview(validation, null)
+            : Repair(phase, cleaned ?? output, validation, originalPrompt, attempt);
+    }
+
+    // Step 90 (decision of the author, 19-10-2026; prompts v0.11): the repair
+    // does not get the previous output pasted in its prompt. It stays in its
+    // file, revised by the platform (with its fixes) and with one element per
+    // line, and each error says on which line its element is, so the model
+    // reads only those lines and corrects them with Edit. Before, the whole
+    // output went in the prompt and had to be written again entirely: an
+    // arbiter's catalog (about 30,000 tokens) did not fit in 128k with the
+    // proposals, and LUNA's rewriting of 191 KB was cut by the output cap.
+    private static PhaseReview Repair(PhaseDefinition phase, string? output, PhaseValidation validation, string originalPrompt, int attempt)
+    {
+        if (output is null)
+            return new PhaseReview(validation, PhasePrompt.Repair(originalPrompt, attempt, phase.OutputFile,
+                $"No llegaste a escribir `{phase.OutputFile}`: escríbelo entero con Write.", validation.Errors));
+        var file = ReadingPlan.OnePerLine(output);
+        var note = $"Tu salida anterior sigue en `{phase.OutputFile}`, ya revisada por la plataforma y con un elemento por línea. " +
+                   "Cada error dice en qué línea está su elemento: lee solo esas líneas con Read (offset y limit) y corrígelas con Edit.";
+        return new PhaseReview(validation, PhasePrompt.Repair(originalPrompt, attempt, phase.OutputFile, note, Locate(validation.Errors, file)))
+        {
+            RepairFile = file,
+        };
+    }
+
+    // Each error that starts with the id of an element of the output gets the
+    // line of that element ("RF-007 TIPO: … (línea 9)"). ARB-FALTA starts with
+    // an id of a proposal, which is not in the output: it stays as it is.
+    private static IReadOnlyList<string> Locate(IReadOnlyList<string> errors, string file)
+    {
+        var lines = file.Split('\n');
+        return errors.Select(error =>
+        {
+            var id = error.Split(' ')[0];
+            var line = error.Contains(" ARB-FALTA:", StringComparison.Ordinal)
+                ? -1
+                : Array.FindIndex(lines, l => l.Contains($"\"id\":\"{id}\"", StringComparison.Ordinal));
+            return line >= 0 ? $"{error} (línea {line + 1})" : error;
+        }).ToList();
     }
 
     // What the platform fixes by itself in an output before checking it and

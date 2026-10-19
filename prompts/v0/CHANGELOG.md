@@ -1,5 +1,23 @@
 # Cambios de los prompts v0
 
+## v0.11, reparar editando, sugerencias prudentes y estilo propio del mockup (2026-10-19)
+
+Hito 18, pasos 90, 93 y 94. Decidido por el autor a propuesta de Claude:
+
+- **`anexo_reparacion.md` (paso 90):** la reparación ya no lleva pegada la salida anterior ni pide reescribirla entera.
+  - La salida anterior se queda en su fichero, en la carpeta del nuevo intento, revisada por la plataforma (con sus correcciones automáticas) y con un elemento por línea.
+  - Cada error dice en qué línea está su elemento (`… (línea 9)`).
+  - El modelo lee solo esas líneas con Read y las corrige con Edit; si cambia casi todo, reescribe el fichero con Write.
+  - La reparación recibe la herramienta Edit; el primer intento no cambia.
+  - `{{SALIDA_PREVIA}}` es ahora una nota que dice dónde está la salida y cómo corregirla.
+  - Por qué: la salida de un árbitro de catálogo (unos 30.000 tokens) no cabía en 128k junto con las propuestas, y la reescritura de LUNA (191 KB) llegó cortada por el tope de salida.
+  - Las reparaciones del mockup ya dejaban sus ficheros en la carpeta. Ahora también pueden corregirlos con Edit.
+- **`sugerir_respuestas.md` (paso 93):**
+  - si la pregunta es una decisión que solo puede tomar el cliente (un precio, un plazo, una política, quién aprueba algo) y la documentación no la resuelve, la sugerencia empieza por «A decidir por el cliente:» y da las opciones, como suposición;
+  - ante la duda entre documentación y suposición, es suposición.
+  - Además, en la plataforma: «Aprobar todas las sugerencias» solo aprueba las que salen de la documentación, y los requisitos que se apoyan en una suposición de la IA aceptada tal cual llevan una marca y un filtro, sin bloquear la validación.
+- **Mockup sin referencia de estilo (paso 94):** §5 ya no dice «haz un diseño sobrio y legible». La plataforma asigna a cada proyecto una de 8 direcciones de estilo (`StyleDirections`), siempre la misma para el mismo proyecto, y pide adaptarla al sector y a los usuarios, con una identidad visual propia. Con un `.zip` no cambia nada.
+
 ## v0.10, el árbitro parte del emparejamiento de la plataforma (2026-10-19)
 
 Hito 17, paso 88. Es el diseño original del TFG: los embeddings emparejan y el LLM explica y fusiona. Decidido por el autor a propuesta de Claude:

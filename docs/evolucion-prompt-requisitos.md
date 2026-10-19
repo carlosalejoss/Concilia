@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.11 | 19-10-2026 | La reparación corrige con Edit la salida anterior en su fichero, con la línea de cada error, en lugar de llevarla pegada y reescribirla; sugerencias más prudentes; estilo propio del mockup por proyecto | Pendiente | Pendiente |
 | v0.10 | 19-10-2026 | El árbitro parte del emparejamiento por significado de la plataforma (`input/emparejamiento.txt`, embeddings en local); puede apartarse si la fuente lo justifica, y la plataforma marca como discrepancia en el catálogo y el backlog dónde lo hizo | Sí (proyecto grande de ejemplo, catálogo, 19-10-2026) | Con las mismas propuestas, 3 arbitrajes de SOL válidos de 3: unión de 202 a 222 requisitos (media 212,3), frente a 209–291 (media 240) con la v0.9. Las desviaciones no bajan (7,7 de media, frente a las 7,0 que habría marcado la v0.9) |
 | v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Documento C: 40 min, 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Proyecto grande de ejemplo: 38 pantallas y las 109 historias (1,54 MB), con una pantalla perdida por un 504 de la pasarela y recuperada al reanudar. Al autor le convencen los dos |
 | v0.8 | 15-10-2026 | Mockup: la plataforma junta y revisa el prototipo (ids, globales de JavaScript y navegación) y solo corrige con un modelo las partes con problemas; se puede reanudar un mockup fallido | Pendiente | Pendiente |
@@ -343,6 +344,32 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.11 (19-10-2026)
+
+Cambian el anexo de reparación, el prompt de las sugerencias y el §5 de los prompts del mockup cuando no hay referencia de estilo. Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- **Reparar editando (paso 90).** Hasta la v0.10, una reparación llevaba en su prompt la salida anterior entera y pedía escribirla de nuevo completa. Ahora la salida anterior se queda en su fichero, revisada por la plataforma y con un elemento por línea. Cada error dice en qué línea está, y el modelo lee solo esas líneas y las corrige con Edit.
+  - **En la entrada:** el prompt de la reparación ya no lleva la salida (unos 30.000 tokens en un catálogo de árbitro), que además se reenviaba en cada turno.
+  - **En la salida:** el modelo ya no reescribe todo (lo que cortaba la salida de LUNA, 191 KB), solo las líneas con error.
+- **Sugerencias más prudentes (paso 93).**
+  - Una decisión que solo puede tomar el cliente no se inventa: «A decidir por el cliente: …» con las opciones.
+  - «Aprobar todas» solo aprueba lo que sale de la documentación.
+  - El catálogo marca los requisitos que se apoyan en una suposición de la IA aceptada tal cual.
+- **Estilo del mockup (paso 94).** Sin `.zip`, cada proyecto recibe una de 8 direcciones de estilo, siempre la misma para el mismo proyecto, que el modelo adapta al sector.
+
+### Resultados
+
+Pendiente. Medir:
+- en una ejecución real con reparaciones, el consumo de la reparación frente a la v0.10 (tablas de `docs/costes/`);
+- el número de sugerencias «A decidir por el cliente» y de requisitos marcados;
+- que el mockup de dos proyectos distintos sin `.zip` cambia de estilo.
+
+### Qué hay que mejorar
+
+Pendiente de la prueba.
 
 ## v0.10 (19-10-2026)
 
