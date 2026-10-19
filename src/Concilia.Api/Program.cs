@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Deliverables;
+using Concilia.Api.Embeddings;
 using Concilia.Api.Files;
 using Concilia.Api.Persistence;
 using Concilia.Api.Projects;
@@ -21,6 +22,10 @@ builder.Services.AddSingleton<FileStorage>();
 
 // The model runner: Fake by default, LiteLlm when Runner:Provider says so.
 builder.Services.AddRunnerProvider(builder.Configuration);
+
+// Embeddings to compare texts by meaning, computed in local (milestone 17):
+// Fake by default, the ONNX model when Embeddings:Provider says so.
+builder.Services.AddTextEmbedder(builder.Configuration);
 
 // Jobs (model A and model B over the same input) are queued by the API and
 // executed in the background by JobWorker; the progress events of each run
@@ -63,6 +68,7 @@ app.MapQuestionEndpoints();
 app.MapDeliverableEndpoints();
 app.MapMockupEndpoints();
 app.MapReportEndpoints();
+app.MapEmbeddingEndpoints();
 
 app.Run();
 

@@ -52,6 +52,7 @@ La comparación entre notaciones se apoya en [Großer et al., 2024](https://link
 | Base de datos | PostgreSQL |
 | Modelos de IA | Pasarela LiteLLM de la empresa; qué modelo hace cada papel (A, B, árbitro, sugerencias, mockup) es configuración |
 | Ejecución de los modelos | Runner en .NET que lanza Claude Code no interactivo (`claude -p`), con salida stream-json y veredicto final obligatorio |
+| Embeddings | `paraphrase-multilingual-MiniLM-L12-v2` (Apache 2.0) en ONNX, con ONNX Runtime dentro de la API: en local, sin enviar datos fuera |
 | Despliegue | Docker y Docker Compose |
 
 ## Estructura del repositorio
@@ -64,6 +65,8 @@ concilia/
 ├── tests/       # tests de la solución .NET
 ├── frontend/    # aplicación React
 ├── ejemplos/    # dos proyectos ficticios (mediano y grande) con su documentación de análisis
+├── scripts/     # utilidades de desarrollo (descargar el modelo de embeddings)
+├── models/      # modelo de embeddings descargado para desarrollo local (ignorado por git)
 └── data/        # archivos de cada proyecto, trabajo y ejecución (ignorado por git)
 ```
 
@@ -96,7 +99,7 @@ Requisitos: Docker Desktop.
 
 Los datos se guardan en el volumen de la base de datos y en `data/`, y sobreviven a `docker compose down`. Para borrarlos: `docker compose down -v`.
 
-Reconstruir la API (`docker compose up --build -d`) interrumpe los trabajos en curso: conviene hacerlo sin ninguno en marcha.
+Reconstruir la API (`docker compose up --build -d`) interrumpe los trabajos en curso: conviene hacerlo sin ninguno en marcha. La primera construcción descarga el modelo de embeddings (470 MB); después Docker lo guarda en caché.
 
 ### Desarrollo sin Docker
 
@@ -105,6 +108,7 @@ Con .NET 10 y Node 24 instalados:
 - API: `dotnet run --project src/Concilia.Api --launch-profile http` (escucha en <http://localhost:5292>).
 - Web: `npm install` y `npm run dev` dentro de `frontend/` (<http://localhost:5173>; reenvía las llamadas a la API).
 - Tests: `dotnet test src/Concilia.slnx`. Ninguno llama a la pasarela; el del flujo completo usa `Fake` y una base de datos en memoria.
+- Embeddings: la imagen de Docker trae el modelo. Fuera de Docker, `.\scripts\descargar-modelo-embeddings.ps1` lo deja en `models/` (470 MB, con el SHA-256 comprobado), y la API lo usa con `Embeddings__Provider=Onnx` y `Embeddings__ModelPath` apuntando a esa carpeta. Sin él, la API usa `Fake` y los tests que necesitan el modelo se saltan (también en GitHub Actions).
 
 La API necesita una base de datos PostgreSQL en la cadena de conexión `ConnectionStrings__Default`; el endpoint `/health` funciona sin ella.
 

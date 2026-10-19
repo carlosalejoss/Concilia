@@ -1,6 +1,6 @@
 # Trazabilidad del proyecto (Concilia)
 
-Visión de alto nivel de cómo se ha construido el TFG, del 28-09-2026 al 16-10-2026: qué se hizo en cada etapa, qué se decidió y qué cambió de criterio. El detalle de cada día está en `bitacora-detallada.md`; el estado vigente, en `CLAUDE.md` del repositorio.
+Visión de alto nivel de cómo se ha construido el TFG, del 28-09-2026 al 19-10-2026: qué se hizo en cada etapa, qué se decidió y qué cambió de criterio. El detalle de cada día está en `bitacora-detallada.md`; el estado vigente, en `CLAUDE.md` del repositorio.
 
 ## El proyecto en una frase
 
@@ -27,6 +27,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 14-10 | Hitos 15 y 16 | Más tipos de archivo, referencia de estilo, mockup como aplicación, árbitro con documentos grandes |
 | 15-10 | Mockup v0.8 y v0.9, hito 13 | Mockup navegable de verdad; test del flujo completo, informes y proyectos de ejemplo |
 | 15-10 y 16-10 | Paso 65 con el proyecto grande de ejemplo | Flujo completo (unos 105 min y al menos 5,2 M tokens de entrada, el 63 % en el mockup); las 26 contradicciones puestas a propósito se tratan como se esperaba; A propone mucho más que B y la unión se parece a A |
+| 19-10 | Hito 17, paso 86 | Servicio de embeddings en local: el modelo multilingüe en el contenedor de la API, con los mismos vectores que sentence-transformers |
 
 ## Etapas
 
@@ -106,6 +107,18 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Preguntas:** botón «Aprobar todas las sugerencias» de una ronda, visible solo cuando la IA ha sugerido la respuesta de todas sus preguntas pendientes.
 - **Resultados del proyecto grande de ejemplo (16-10):** el flujo completo trata como se esperaba las 26 contradicciones y huecos puestos a propósito. Pero la unión del árbitro se parece mucho a la propuesta de A, lo que abre la pregunta clave de la sección siguiente.
 
+### 8. Hito 17: embeddings en local (19-10, en curso)
+
+- **Paso 86, servicio de embeddings en la API:**
+  - **Modelo:** `paraphrase-multilingual-MiniLM-L12-v2` en fp32 (decisión del autor, frente al cuantizado), con ONNX Runtime y su tokenizador SentencePiece, dentro de la API.
+  - **Cómo se calcula:** el vector de un texto es la media de los vectores de sus tokens, como en sentence-transformers, y la similitud entre dos textos es el coseno de sus vectores.
+  - **De dónde sale el modelo:** la imagen de Docker lo descarga al construirse, con el commit de Hugging Face fijado y su SHA-256 comprobado. En marcha no envía nada fuera.
+- **Comprobado frente a Python:**
+  - con 14 textos de prueba, los mismos ids de tokens que Hugging Face y una diferencia máxima de 9,4·10⁻⁷ con los vectores de sentence-transformers;
+  - el mismo requisito en español y en inglés da 0,84–0,89, y requisitos distintos, 0,06–0,29;
+  - 500 textos tardan unos 6 s en CPU.
+- **Decisión del autor:** los tests que necesitan el modelo (470 MB, fuera de git) se saltan si no está, también en GitHub Actions.
+
 ## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
 
 > **Prioridad alta (autor, 16-10-2026).** Afecta al valor de la verificación cruzada, que es la idea central del TFG. Diseño completo del experimento, estado y resultados en [`experimento-sesgo-arbitro.md`](experimento-sesgo-arbitro.md): es material directo para el capítulo de evaluación de la memoria.
@@ -172,7 +185,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.md` como hitos 17 a 22:
 
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
-2. **Hito 17, embeddings en local (el siguiente):** modelo multilingüe en el contenedor de la API, emparejamiento de A y B por significado y árbitro con embeddings. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
+2. **Hito 17, embeddings en local (en curso):** ~~modelo multilingüe en el contenedor de la API~~ (paso 86, 19-10-2026); siguen el emparejamiento de A y B por significado (paso 87, con el umbral) y el árbitro con embeddings. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
 3. **Hito 18, fiabilidad y calidad:** LUNA, reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
 4. **Hito 19, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
 5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
@@ -185,5 +198,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 164 entre el 28-09 y el 16-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10) y 835 (16-10).
+- **Commits:** 165 entre el 28-09 y el 19-10-2026.
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 854 (19-10; 6 de ellos se saltan sin el modelo de embeddings).

@@ -61,6 +61,10 @@ services:
       Mockup__Model: ${MOCKUP_MODEL:-claude-sonnet-5-5}
       # The author's subscription token: it only reaches the mockup child process.
       CLAUDE_CODE_OAUTH_TOKEN: ${CLAUDE_CODE_OAUTH_TOKEN:-}
+      # Embeddings computed in local with the model the image brings (milestone 17).
+      # Onnx by default here; Fake counts shared words instead (no model).
+      Embeddings__Provider: ${EMBEDDINGS_PROVIDER:-Onnx}
+      Embeddings__ModelPath: /opt/models/paraphrase-multilingual-MiniLM-L12-v2
     volumes:
       # Uploaded files go to the data/ folder of the repository (ignored by git),
       # so they can be inspected from the host.
