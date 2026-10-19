@@ -296,19 +296,16 @@ public class JobWorker(
         }
     }
 
-    // Runs that were queued or running when the API stopped will never finish.
+    // At start-up, what a restart of the API left half done (InterruptedJobs).
     private async Task MarkInterruptedRunsAsync()
     {
+        // Only what existed before this start: the API may already accept a
+        // new job while this runs, and that one is not interrupted.
+        var start = DateTimeOffset.UtcNow;
         try
         {
             using var scope = scopes.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            await db.Runs
-                .Where(r => r.State == RunState.Queued || r.State == RunState.Running)
-                .ExecuteUpdateAsync(set => set
-                    .SetProperty(r => r.State, RunState.Failed)
-                    .SetProperty(r => r.FinishedAt, DateTimeOffset.UtcNow)
-                    .SetProperty(r => r.ErrorMessage, "Interrumpida: la API se reinició."));
+            await InterruptedJobs.CloseAsync(scope.ServiceProvider.GetRequiredService<AppDbContext>(), storage, start);
         }
         catch (Exception e)
         {
@@ -316,4 +313,5 @@ public class JobWorker(
             logger.LogWarning(e, "Could not check for interrupted runs");
         }
     }
+
 }
