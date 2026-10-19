@@ -230,6 +230,7 @@ public class QuestionRulesTests
     {
         var q = Pending(code);
         q.SuggestedAnswer = suggestion;
+        q.SuggestionBasis = QuestionRules.DocumentationBasis;
         return q;
     }
 
@@ -256,6 +257,38 @@ public class QuestionRulesTests
         Assert.Equal("Mía", answered.Answer); // the others are left as they were
         Assert.Equal("usuario", answered.AnswerOrigin);
         Assert.Equal(QuestionStatus.Discarded, discarded.Status);
+    }
+
+    // Step 93: the guesses of the AI are left pending, to be reviewed one by one.
+    [Fact]
+    public void Approving_all_leaves_the_guesses_pending()
+    {
+        var documented = WithSuggestion("P-001", "Sí, lo dice el documento.");
+        var guess = WithSuggestion("P-002", "Proponemos 30 minutos.");
+        guess.SuggestionBasis = QuestionRules.GuessBasis;
+
+        var change = QuestionRules.AcceptSuggestions([documented, guess], Now);
+        var onlyGuesses = QuestionRules.AcceptSuggestions([guess], Now);
+
+        Assert.Null(change.Error);
+        Assert.Equal(QuestionStatus.Answered, documented.Status);
+        Assert.Equal(QuestionStatus.Pending, guess.Status);
+        Assert.Contains("suposiciones", onlyGuesses.Error);
+    }
+
+    [Fact]
+    public void An_accepted_guess_is_marked_but_an_edited_one_is_not()
+    {
+        var guess = WithSuggestion("P-001", "Proponemos 30 minutos.");
+        guess.SuggestionBasis = QuestionRules.GuessBasis;
+        var edited = WithSuggestion("P-002", "Proponemos 30 minutos.");
+        edited.SuggestionBasis = QuestionRules.GuessBasis;
+
+        QuestionRules.Answer(guess, "Proponemos 30 minutos.", Now, fromSuggestion: true);
+        QuestionRules.Answer(edited, "45 minutos.", Now, fromSuggestion: true);
+
+        Assert.True(QuestionRules.IsAcceptedGuess(guess));
+        Assert.False(QuestionRules.IsAcceptedGuess(edited));
     }
 
     [Fact]

@@ -98,10 +98,14 @@ public static class QuestionRules
         }
     }
 
-    // "Aprobar todas" (15-10-2026, autor): answers every pending question of a
-    // round with its suggestion as is (origin "ia"). Only when all of them have
-    // one, the same condition under which the web shows the button: approving
-    // some and leaving the rest pending would not be "all".
+    // "Aprobar todas" (15-10-2026, autor): answers the pending questions of a
+    // round with their suggestion as is (origin "ia"). Only when all of them
+    // have one, the same condition under which the web shows the button.
+    // Step 93 (decision of the author, 19-10-2026): only the suggestions that
+    // come from the documentation; the guesses ("suposicion") stay pending, to
+    // be reviewed one by one. In the tests almost every suggestion was a guess,
+    // they were all approved without a look, and the catalog filled with data
+    // the documentation does not have.
     public static QuestionChange AcceptSuggestions(IEnumerable<Question> roundQuestions, DateTimeOffset now)
     {
         var pending = roundQuestions.Where(q => q.Status == QuestionStatus.Pending).ToList();
@@ -110,10 +114,22 @@ public static class QuestionRules
         var without = pending.Where(q => q.SuggestedAnswer is null).Select(q => q.Code).ToList();
         if (without.Count > 0)
             return QuestionChange.Fail($"Sin sugerencia: {string.Join(", ", without)}. Pídelas antes de aprobarlas todas.");
-        foreach (var q in pending)
+        var fromDocumentation = pending.Where(q => q.SuggestionBasis == DocumentationBasis).ToList();
+        if (fromDocumentation.Count == 0)
+            return QuestionChange.Fail("Todas las sugerencias son suposiciones: revísalas una a una.");
+        foreach (var q in fromDocumentation)
             Answer(q, q.SuggestedAnswer, now, fromSuggestion: true);
         return new QuestionChange(null, FlowChange.AnswerChanged);
     }
+
+    // The basis of a suggestion: the documentation or a guess of the AI.
+    public const string DocumentationBasis = "documentacion";
+    public const string GuessBasis = "suposicion";
+
+    // An answer taken as it was from a guess of the AI (step 93): what the
+    // catalog marks. One the user edited ("ia-editada") was reviewed.
+    public static bool IsAcceptedGuess(Question q) =>
+        q.Status == QuestionStatus.Answered && q.AnswerOrigin == "ia" && q.SuggestionBasis == GuessBasis;
 
     // Discards a question (not needed, out of scope…), with an optional reason.
     // A discarded question has no answer.

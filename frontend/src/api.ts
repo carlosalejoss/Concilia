@@ -137,6 +137,8 @@ export type Deliverable<T> = {
   createdAt: string
   updatedAt: string | null
   validatedAt: string | null
+  // Step 93 (catalog): the questions answered with a guess of the AI taken as it was.
+  assumedQuestionIds?: string[] | null
 }
 
 // One requirement of the catalog v0 working copy (prompts/v0/esquemas/catalogo.schema.json

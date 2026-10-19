@@ -43,12 +43,14 @@ public record QuestionCounts(int Total, int Answered, int Discarded, int Pending
 // Step 95: EstimatedInputTokens and EstimatedOutputTokens, the estimate of the
 // runs without usage (the tokens of the job are then InputTokens plus them);
 // MatchingTime, what the matching of the arbiter cost the platform.
+// AssumedRequirements (step 93, catalog): the requirements of the merge that
+// cite a question answered with a guess of the AI taken as it was.
 public record JobReport(
     Guid JobId, string Kind, DateTimeOffset CreatedAt, DateTimeOffset? FinishedAt, bool Succeeded, string? Message,
     long InputTokens, long OutputTokens, int RunsWithoutUsage, int Repairs, double? Seconds,
     IReadOnlyList<RunLine> Runs, ElementCounts? Elements, UserChanges? Changes, string? ChangesNote, QuestionCounts? Questions,
     string? Phase = null, string? ArbiterModel = null, Guid? RearbitrationOf = null,
-    long EstimatedInputTokens = 0, long EstimatedOutputTokens = 0, ComputeTime? MatchingTime = null);
+    long EstimatedInputTokens = 0, long EstimatedOutputTokens = 0, ComputeTime? MatchingTime = null, int? AssumedRequirements = null);
 
 public static class JobReports
 {
