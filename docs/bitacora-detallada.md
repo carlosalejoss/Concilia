@@ -1817,4 +1817,4 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Tests:** 10 nuevos del emparejamiento y la comprobación del endpoint en el test del flujo completo. 864 en total.
 - **Pendientes:**
   - paso 88, árbitro con embeddings, que necesita decidir cómo marca la discrepancia grave;
-  - si el emparejamiento entra en el informe por trabajo y en su CSV (propuesta: dejarlo para el hito 20, porque cuesta unos segundos por trabajo).
+  - **decidido por el autor después de la sesión:** el emparejamiento entra en el informe por trabajo y en el CSV del proyecto en el hito 20, paso 100, no ahora, porque calcularlo en cada informe cuesta unos segundos por trabajo. Anotado en el plan.
