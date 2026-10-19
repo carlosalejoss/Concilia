@@ -139,6 +139,20 @@ Que la unión se parezca a A se explica porque **A propone más** (50 frente a 1
 
 **Siguiente:** la referencia independiente con embeddings (hito 17, paso 87): cuántas propuestas de B no tienen ningún equivalente en A, sin depender de ningún LLM.
 
+### Referencia independiente con embeddings (paso 87, 19-10-2026)
+
+- **Método:** se comparan los mismos elementos de A y B con embeddings, sin ningún LLM, con los umbrales que calibró el autor (`docs/calibracion-embeddings/`). Un elemento de B «solo está en B» si no tiene en A nada «mismo» (similitud desde 0,90) ni «parecido» (desde 0,70).
+- **Resultado, en el proyecto de clínicas:**
+
+| Fase | Elementos de B | Solo en B según los embeddings | Solo de B en la unión del árbitro original |
+| --- | --- | --- | --- |
+| Preguntas | 17 | 8 | 6 |
+| Catálogo | 192 | 1 | 1 |
+| Backlog | 54 | 1 | 0 |
+
+- **Conclusión:** lo confirma una medida que no depende de ningún modelo de IA. Casi todo lo que propone B tiene algo igual o parecido en A, y lo que aporta solo B es muy poco. En las preguntas, los embeddings ven 2 más que el árbitro: son 2 preguntas de B con similitud 0,62 y 0,64 con su par de A, por debajo de «parecido», que el árbitro sí juntó con una de A.
+- **Además, el árbitro frente al criterio del autor:** en una muestra de 48 pares etiquetados a mano, el árbitro juntó los 9 que el autor consideró «lo mismo» y solo 2 de los 22 «distintos». No solo no favorece a su modelo: decide bien qué es lo mismo.
+
 ## Para la memoria
 
 - **Método:** «Para aislar el efecto del árbitro se repitió solo el arbitraje sobre las mismas propuestas, cambiando el modelo del árbitro. Cada configuración se repitió tres veces para tener en cuenta la variabilidad de los modelos.»

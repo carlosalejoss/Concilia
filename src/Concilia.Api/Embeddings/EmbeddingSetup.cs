@@ -12,6 +12,14 @@ public class EmbeddingOptions
 
     // Onnx only: the folder with model.onnx and sentencepiece.bpe.model.
     public string ModelPath { get; set; } = "";
+
+    // The two thresholds of the matching of A and B (step 87): from SameThreshold
+    // up, two elements say the same; from SimilarThreshold up, they are close but
+    // not the same. Fixed by the author on 19-10-2026 after the calibration with
+    // 48 pairs labelled by hand by the author (docs/calibracion-embeddings/): the best
+    // intervals were 0.89–0.92 and 0.70–0.72. /jobs/{id}/matching accepts others.
+    public double SameThreshold { get; set; } = 0.90;
+    public double SimilarThreshold { get; set; } = 0.70;
 }
 
 public static class EmbeddingSetup
@@ -30,6 +38,7 @@ public static class EmbeddingSetup
                 $"Embeddings:Provider desconocido: \"{options.Provider}\". Los valores válidos son Fake y Onnx."),
         };
         services.AddSingleton(embedder);
+        services.AddSingleton(options);
         return services;
     }
 

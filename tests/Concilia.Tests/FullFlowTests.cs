@@ -72,6 +72,16 @@ public class FullFlowTests
         Assert.True(report["elements"]!["merged"]!.GetValue<int>() > 0);
         Assert.Equal(report["elements"]!["merged"]!.GetValue<int>(), report["changes"]!["kept"]!.GetValue<int>());
         Assert.Equal(0, report["changes"]!["modified"]!.GetValue<int>() + report["changes"]!["added"]!.GetValue<int>() + report["changes"]!["deleted"]!.GetValue<int>());
+
+        // Step 87: the matching of A and B by meaning, next to the arbiter's.
+        var matching = await Json(await client.GetAsync($"/jobs/{catalogJob}/matching?same=0.9&similar=0.5"));
+        Assert.Equal("Catalog", matching["phase"]!.GetValue<string>());
+        Assert.True(matching["hasArbiter"]!.GetValue<bool>());
+        Assert.Equal(0.9, matching["matching"]!["thresholds"]!["same"]!.GetValue<double>());
+        Assert.Equal(report["elements"]!["a"]!.GetValue<int>(), matching["matching"]!["counts"]!["a"]!.GetValue<int>());
+        Assert.NotNull(matching["matching"]!["agreement"]);
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"/jobs/{catalogJob}/matching?same=0.5&similar=0.9")).StatusCode);
+
         await Launch(client, $"/projects/{id}/backlog-jobs", id);
         await ReviewAndValidate(client, id, "backlog");
 

@@ -100,19 +100,7 @@ public static class ReportEndpoints
         {
             var plan = PhasePlan.Load(folder);
             rearbitrationOf = plan.RearbitrationOf;
-            int? Proposal(string slot)
-            {
-                if (rearbitration)
-                {
-                    var copy = Path.Combine(folder, Rearbitration.ProposalFile(slot));
-                    return File.Exists(copy) ? JobReports.Count(phase, File.ReadAllText(copy)) : null;
-                }
-                var last = runs.Where(r => r.Slot == slot).OrderBy(r => r.Attempt).LastOrDefault();
-                if (last?.State != RunState.Done)
-                    return null;
-                var path = Path.Combine(storage.RunFolder(last.Id), PhaseDefinition.For(phase, PhaseRole.Proposal).OutputFile);
-                return File.Exists(path) ? JobReports.Count(phase, File.ReadAllText(path)) : null;
-            }
+            int? Proposal(string slot) => JobReports.Count(phase, JobProposals.Read(storage, job, runs, phase, slot));
 
             if (result?["fuente"]?.GetValue<string>() == "ARB" && output is not null)
                 elements = JobReports.Merge(phase, output, plan, Proposal("A"), Proposal("B"));
@@ -157,7 +145,7 @@ public static class ReportEndpoints
             kind?.ToString(), runs.FirstOrDefault(r => r.Slot == "ARB")?.Model, rearbitrationOf);
     }
 
-    private static JsonNode? ReadResult(string jobFolder)
+    public static JsonNode? ReadResult(string jobFolder)
     {
         var path = Path.Combine(jobFolder, PhaseJobResult.FileName);
         return File.Exists(path) ? JsonNode.Parse(File.ReadAllText(path)) : null;

@@ -69,6 +69,7 @@ app.MapDeliverableEndpoints();
 app.MapMockupEndpoints();
 app.MapReportEndpoints();
 app.MapEmbeddingEndpoints();
+app.MapMatchingEndpoints();
 
 app.Run();
 
