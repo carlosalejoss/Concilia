@@ -412,7 +412,7 @@ Acordado con el autor el 16-10-2026. Hoy todo se queda dentro de la web.
 Acordado con el autor el 16-10-2026. Las dos vistas usan los mismos datos, que ya existen: fuentes, preguntas y requisitos de cada historia, y el `de` del árbitro.
 
 - [ ] 99. Trazabilidad: desde un requisito, sus fragmentos (con el texto), las preguntas que lo justifican y las historias que lo cubren; y al revés, desde una historia.
-- [ ] 100. Comparación lado a lado de A, B y el árbitro en cada trabajo: qué propuso cada uno y qué hizo el árbitro con cada elemento (unido, descartado o con discrepancia). Con el hito 17, también los emparejamientos por significado.
+- [ ] 100. Comparación lado a lado de A, B y el árbitro en cada trabajo: qué propuso cada uno y qué hizo el árbitro con cada elemento (unido, descartado o con discrepancia). Con el hito 17, también los emparejamientos por significado (`GET /jobs/{id}/matching`). Además, el informe de cada trabajo y el CSV del proyecto muestran, junto a las cifras del árbitro, las de los embeddings: «solo A», «solo B» y el acuerdo con el árbitro. El autor lo dejó para este paso el 19-10-2026, porque calcularlo en cada informe lo hace más lento (unos segundos por trabajo): conviene guardar el cálculo una vez.
 
 **Hecho cuando:** desde cualquier requisito se llega a su origen en la documentación, y en un trabajo se ve qué aportó cada modelo.
 
