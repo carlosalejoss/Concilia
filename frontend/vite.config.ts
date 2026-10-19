@@ -16,6 +16,7 @@ export default defineConfig({
       '/jobs': 'http://localhost:5292',
       '/questions': 'http://localhost:5292',
       '/question-rounds': 'http://localhost:5292',
+      '/embeddings': 'http://localhost:5292',
     },
   },
 })
