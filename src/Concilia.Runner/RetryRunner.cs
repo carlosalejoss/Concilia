@@ -20,8 +20,9 @@ public record AttemptReview(RunResult Result, string? RetryPrompt);
 // its own review (CatalogReview).
 //
 // Apart from those retries, an attempt lost by inactivity (HeartbeatLost: no
-// output at all during HeartbeatTimeout) is repeated ONCE per task with the
-// same prompt. In the v1.3 test, three lots of one model died at the same
+// output at all during HeartbeatTimeout) or stopped because it compacted
+// twice without writing its output (ClaudeCliRunner.CompactingBeforeOutput,
+// step 92) is repeated ONCE per task with the same prompt. In the v1.3 test, three lots of one model died at the same
 // moment with no output while other attempts of the same model finished: the
 // gateway, not the prompt, was the cause. The repetition is a new linked run,
 // but it is not a retry: it does not count for maxRetries and the review gets
@@ -60,7 +61,7 @@ public class RetryRunner(IRunnerProvider provider, int maxRetries = RetryRunner.
             var decision = review(new RunAttempt(request, result, previousRunId), attempts.Count + 1 - repeats);
             attempts.Add(new RunAttempt(request, decision.Result, previousRunId));
 
-            if (result.Status == RunStatus.HeartbeatLost && !heartbeatRepeated)
+            if (IsLost(result) && !heartbeatRepeated)
             {
                 heartbeatRepeated = true;
                 previousRunId = request.RunId;
@@ -78,6 +79,10 @@ public class RetryRunner(IRunnerProvider provider, int maxRetries = RetryRunner.
             request = NextAttempt(request, decision.RetryPrompt);
         }
     }
+
+    // An attempt that got nowhere for a reason the same prompt may not repeat.
+    private static bool IsLost(RunResult result) =>
+        result.Status == RunStatus.HeartbeatLost || result.ErrorMessage == ClaudeCliRunner.CompactingBeforeOutput;
 
     // Retry only a missing or invalid verdict, adding the reason to the prompt.
     public static AttemptReview ReviewVerdict(RunAttempt attempt) => new(

@@ -58,6 +58,7 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
         var pendingReads = new Dictionary<string, FileRead>();
         var reads = new List<FileRead>();
         var compactions = 0;
+        var compactingBeforeOutput = 0; // see CompactingBeforeOutput
 
         // The Write calls waiting for their result, and the files written, to
         // know when every expected output is there (see CompactingAfterOutput).
@@ -107,6 +108,12 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
                                                  && request.ExpectedOutputFiles.Count > 0
                                                  && request.ExpectedOutputFiles.All(written.Contains):
                         stopReason = CompactingAfterOutput;
+                        stop.Cancel();
+                        break;
+                    case SystemEvent system when stopReason is null && IsCompacting(system)
+                                                 && request.ExpectedOutputFiles.Count > 0
+                                                 && ++compactingBeforeOutput >= MaxCompactionsBeforeOutput:
+                        stopReason = CompactingBeforeOutput;
                         stop.Cancel();
                         break;
                 }
@@ -169,6 +176,20 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
     public const string CompactingAfterOutput =
         "Se detuvo la ejecución: la salida ya estaba escrita y Claude Code empezó a compactar el contexto antes de " +
         "contestar con el veredicto. La plataforma revisa la salida igualmente.";
+
+    // Step 92 (decision of the author, 19-10-2026). A run
+    // that starts to compact for the second time and has not written its
+    // output yet is stopped: each compaction loses detail and every turn
+    // sends the whole context again. A real arbiter of the catalog (prompts
+    // v0.10, 19-10-2026) compacted six times in 98 turns and about 1.15 M
+    // tokens without writing anything; its repetition from scratch wrote a
+    // valid output. Compacting once before writing happened four times, and
+    // three of those ended well, so once is allowed. RetryRunner repeats the
+    // stopped run once from scratch, as one lost by inactivity.
+    public const int MaxCompactionsBeforeOutput = 2;
+
+    public const string CompactingBeforeOutput =
+        "Se detuvo la ejecución: Claude Code empezó a compactar el contexto por segunda vez sin haber escrito la salida.";
 
     // {"type":"system","subtype":"status","status":"compacting"}: Claude Code
     // starts to compact the context. A real arbiter of the catalog (14-10-2026)

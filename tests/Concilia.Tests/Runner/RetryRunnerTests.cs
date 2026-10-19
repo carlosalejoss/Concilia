@@ -27,6 +27,7 @@ public class RetryRunnerTests
     private static readonly RunResult ApiError = new() { Status = RunStatus.Failed, IsError = true, ErrorMessage = "403" };
     private static readonly RunResult TimedOut = new() { Status = RunStatus.TimedOut };
     private static readonly RunResult HeartbeatLost = new() { Status = RunStatus.HeartbeatLost };
+    private static readonly RunResult CompactedTwice = new() { Status = RunStatus.Failed, ErrorMessage = ClaudeCliRunner.CompactingBeforeOutput };
 
     private static RunRequest FirstRequest(string root)
     {
@@ -126,6 +127,25 @@ public class RetryRunnerTests
         Assert.Equal(first.RunId, attempts[1].PreviousRunId);
         Assert.Equal(first.Prompt, attempts[1].Request.Prompt);
         Assert.Equal(RunStatus.Done, attempts[1].Result.Status);
+    }
+
+    // Step 92: a run stopped because it compacted twice without writing is
+    // repeated once from scratch, as one lost by inactivity; only once in all.
+    [Fact]
+    public async Task A_run_that_compacted_twice_without_writing_is_repeated_once()
+    {
+        using var temp = new TempDirectory();
+        var first = FirstRequest(temp.Path);
+
+        var attempts = await new RetryRunner(new ScriptedProvider(CompactedTwice, Done)).RunAsync(first, _ => _ => { }, CancellationToken.None);
+        var twice = await new RetryRunner(new ScriptedProvider(CompactedTwice, HeartbeatLost, Done)).RunAsync(
+            FirstRequest(temp.Path), _ => _ => { }, CancellationToken.None);
+
+        Assert.Equal(2, attempts.Count);
+        Assert.Equal(first.Prompt, attempts[1].Request.Prompt);
+        Assert.Equal(RunStatus.Done, attempts[1].Result.Status);
+        Assert.Equal(2, twice.Count); // the inactivity after it is not repeated again
+        Assert.Equal(RunStatus.HeartbeatLost, twice[^1].Result.Status);
     }
 
     [Fact]
