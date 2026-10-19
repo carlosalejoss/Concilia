@@ -220,6 +220,26 @@ public class ClaudeCliRunnerTests
         }
     }
 
+    // Step 92: compacting a second time without the output written stops the
+    // run (a real arbiter compacted six times in 98 turns without writing).
+    [Fact]
+    public async Task Compacting_twice_before_writing_the_output_stops_the_run()
+    {
+        using var temp = new TempDirectory();
+        var request = Request(temp.Path, Directive("synthetic-compacta-sin-escribir.jsonl", sleepAfterMs: 3_000), "output/resumen.md") with
+        {
+            TotalTimeout = TimeSpan.FromSeconds(2),
+        };
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+
+        var (result, _) = await Run(request);
+
+        Assert.Equal(RunStatus.Failed, result.Status);
+        Assert.Equal(ClaudeCliRunner.CompactingBeforeOutput, result.ErrorMessage);
+        Assert.Equal(1, result.Compactions);
+        Assert.True(clock.Elapsed < TimeSpan.FromSeconds(1.5), $"Tardó {clock.Elapsed}");
+    }
+
     [Fact]
     public async Task Stderr_is_kept_as_redacted_warnings()
     {
