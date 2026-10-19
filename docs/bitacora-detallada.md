@@ -1868,3 +1868,32 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - `scripts/evaluacion/comparar-arbitrajes.cs` compara los arbitrajes de las mismas propuestas por modelo y versión del prompt;
   - `GET /jobs/{id}/matching` calcula también las desviaciones de los trabajos de antes del paso 88, es decir, lo que la plataforma habría marcado.
 - **Pendientes:** terminar la prueba del paso 88 y anotar sus resultados; después, el paso 90 (por decidir).
+
+---
+
+## 19-10-2026, 13:00 (sesión)
+
+**Resumen para la bitácora (19-10-2026, prueba real del paso 88 e hito 17 cerrado)**
+
+- **Qué se hizo:**
+  - el autor lanzó 3 nuevos arbitrajes con `SS - GPT-6-SOL` y los prompts v0.10 sobre las mismas propuestas del catálogo del proyecto grande de ejemplo (A 299 requisitos, B 192);
+  - se reconstruyó la API con los pasos 88 y 89 cuando terminaron;
+  - se compararon con los arbitrajes del experimento del sesgo con `scripts/evaluacion/comparar-arbitrajes.cs`, que ahora solo da por «en curso» un trabajo con una ejecución en cola o en marcha. Tabla en `docs/resultados-arbitro-v0.10/clinicas-veterinarias-catalog-v0.md`.
+- **Resultados:**
+  - **SOL v0.10:** 3 válidos de 3, unión de 202, 213 y 222 requisitos (media 212,3); solo A 26–37; solo B 1,3 de media; 7,7 desviaciones de media; 0 discrepancias del árbitro; 5, 5 y 11 minutos.
+  - **SOL v0.9:** unión de 209, 220 y 291 (media 240); solo B 2,7; las desviaciones que habría marcado la plataforma, 7,0.
+  - **LUNA v0.9:** 2 válidos (204 y 209), con 7,5 desviaciones de media.
+- **Lectura:**
+  - **La unión es más estable** con la v0.10: varía 20 requisitos, frente a 82. Con 3 ejecuciones por versión es una señal, no una prueba.
+  - **Las desviaciones no bajan:** el árbitro discrepa de los números en unos 8 requisitos aunque los tenga delante, así que son diferencias de criterio, y justifica que las revise el usuario.
+  - **El árbitro no marca ninguna discrepancia propia:** lo que se revisa sale todo de la plataforma.
+- **Incidencias:**
+  - en la tercera ejecución, el primer intento agotó sus turnos sin escribir la salida (98 turnos, unos 1,15 M tokens de entrada) y la reparación la escribió;
+  - los intentos válidos no tienen dato de consumo, porque se detuvieron al compactar con la salida escrita (paso 95);
+  - un arbitraje de LUNA del 16-10 sigue sin fecha de fin, porque la API se reinició durante él (paso 91).
+- **El hito 17 queda completado.**
+- **Pendientes:**
+  - más repeticiones para confirmar la estabilidad;
+  - el intento que agotó los turnos (relacionado con el paso 92);
+  - el consumo de las ejecuciones detenidas (paso 95), que impide comparar el coste de las versiones;
+  - la petición del autor de una tabla de coste en tiempo y dinero por fase y versión.

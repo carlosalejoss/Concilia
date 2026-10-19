@@ -14,7 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.10 | 19-10-2026 | El árbitro parte del emparejamiento por significado de la plataforma (`input/emparejamiento.txt`, embeddings en local); puede apartarse si la fuente lo justifica, y la plataforma marca como discrepancia en el catálogo y el backlog dónde lo hizo | Pendiente | Pendiente: volver a arbitrar el catálogo de clínicas y comparar con los arbitrajes del experimento |
+| v0.10 | 19-10-2026 | El árbitro parte del emparejamiento por significado de la plataforma (`input/emparejamiento.txt`, embeddings en local); puede apartarse si la fuente lo justifica, y la plataforma marca como discrepancia en el catálogo y el backlog dónde lo hizo | Sí (proyecto grande de ejemplo, catálogo, 19-10-2026) | Con las mismas propuestas, 3 arbitrajes de SOL válidos de 3: unión de 202 a 222 requisitos (media 212,3), frente a 209–291 (media 240) con la v0.9. Las desviaciones no bajan (7,7 de media, frente a las 7,0 que habría marcado la v0.9) |
 | v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Documento C: 40 min, 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Proyecto grande de ejemplo: 38 pantallas y las 109 historias (1,54 MB), con una pantalla perdida por un 504 de la pasarela y recuperada al reanudar. Al autor le convencen los dos |
 | v0.8 | 15-10-2026 | Mockup: la plataforma junta y revisa el prototipo (ids, globales de JavaScript y navegación) y solo corrige con un modelo las partes con problemas; se puede reanudar un mockup fallido | Pendiente | Pendiente |
 | v0.7 | 14-10-2026 | El árbitro consulta la documentación por tramos y lee las propuestas con un elemento por línea; un fragmento no es un número de línea (`REF-FRAG` dice qué fragmento hay en esa línea); sin la salida de un solo modelo como resultado | Sí (documento C, 14-10-2026; proyecto grande de ejemplo, 15-10-2026) | El árbitro cabe y lee las propuestas en pocas llamadas, pero termina compactando después de escribir (la plataforma lo corta y acepta la salida). Con el proyecto de ejemplo: 299 y 192 requisitos, unión de 209 en 12 min, con dos reparaciones por citas mal copiadas (la marca `sigue` y un número de línea) |
@@ -368,11 +368,25 @@ Cambian los tres prompts del árbitro. Detalle en `prompts/v0/CHANGELOG.md`.
 
 ### Resultados
 
-Pendiente. La prueba propuesta es volver a arbitrar 2 o 3 veces el catálogo de clínicas con la v0.10 y comparar el tamaño de la unión, lo que entra solo de A y de B y el número de desviaciones con los arbitrajes del experimento.
+**Proyecto grande de ejemplo** (clínicas veterinarias, ficticio), catálogo, 19-10-2026. Tres nuevos arbitrajes con `SS - GPT-6-SOL` sobre las mismas propuestas de A (299 requisitos) y B (192) que los del experimento del sesgo. Tabla completa en `docs/resultados-arbitro-v0.10/clinicas-veterinarias-catalog-v0.md`, generada con `scripts/evaluacion/comparar-arbitrajes.cs`.
+
+| Árbitro y prompt | Válidos | Unión (mín.–máx., media) | Solo A | Solo B (media) | Desviaciones (media) | Discrepancias del árbitro | Minutos |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SOL v0.10 | 3 de 3 | 202–222, 212,3 | 26–37 | 1,3 | 7,7 | 0 | 5, 5 y 11 |
+| SOL v0.9 | 3 de 3 | 209–291, 240,0 | 27–30 | 2,7 | 7,0 (las que habría marcado) | 0 | 12, 6 y 6 |
+| LUNA v0.9 | 2 de 5 cerrados | 204–209, 206,5 | 27 | 1,5 | 7,5 (las que habría marcado) | 0 | 27 y 12 |
+
+- **La unión es más estable:** con la v0.10 varía 20 requisitos entre ejecuciones (202–222), frente a 82 con la v0.9 (209–291). Con solo 3 ejecuciones por versión es una señal, no una prueba: sin la ejecución de 291, la v0.9 se movía en 209–220.
+- **Las desviaciones no bajan:** el árbitro se aparta del emparejamiento en unos 7 u 8 requisitos por ejecución, con la v0.10 y con la v0.9. Tenerlo como guía no hace que lo siga más en los puntos donde discrepa: son diferencias de criterio que se repiten, y por eso tiene sentido enseñárselas al usuario, como decidió el autor.
+- **Discrepancias del propio árbitro:** ninguna en ninguna ejecución. En este catálogo, todo lo que el usuario tendría que revisar sale de la plataforma (unos 8 requisitos de 212).
+- **Fiabilidad:** dos ejecuciones a la primera. En la tercera, el primer intento terminó sin escribir la salida tras 98 turnos y unos 1,15 M tokens de entrada, y la reparación la escribió. Esos 11 minutos son de ese intento.
+- **Consumo:** los intentos válidos no tienen dato, porque la plataforma los detuvo al compactar con la salida ya escrita (el mismo problema que en el experimento; paso 95).
 
 ### Qué hay que mejorar
 
-Pendiente de la prueba.
+- **Más repeticiones** para confirmar la estabilidad, y repetirlo con las preguntas, que son más baratas.
+- **El intento que agotó los turnos sin escribir** (1,15 M tokens de entrada perdidos). Conviene saber si consultó la documentación de más, ahora que también lee el emparejamiento. Se relaciona con el paso 92: parar las ejecuciones que compactan varias veces antes de escribir.
+- **El consumo de las ejecuciones detenidas,** sin el cual no se puede comparar el coste de la v0.9 y la v0.10 (paso 95).
 
 ## v0.8 (15-10-2026)
 

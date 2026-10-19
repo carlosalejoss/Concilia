@@ -110,7 +110,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Preguntas:** botón «Aprobar todas las sugerencias» de una ronda, visible solo cuando la IA ha sugerido la respuesta de todas sus preguntas pendientes.
 - **Resultados del proyecto grande de ejemplo (16-10):** el flujo completo trata como se esperaba las 26 contradicciones y huecos puestos a propósito. Pero la unión del árbitro se parece mucho a la propuesta de A, lo que abre la pregunta clave de la sección siguiente.
 
-### 8. Hito 17: embeddings en local (19-10; falta la prueba real del paso 88)
+### 8. Hito 17: embeddings en local (19-10, completado)
 
 - **Paso 86, servicio de embeddings en la API:**
   - **Modelo:** `paraphrase-multilingual-MiniLM-L12-v2` en fp32 (decisión del autor, frente al cuantizado), con ONNX Runtime y su tokenizador SentencePiece, dentro de la API.
@@ -158,7 +158,12 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
     3. **Las preguntas reciben el emparejamiento sin marcar nada:** no tienen discrepancia, y las desviaciones solo se cuentan en el informe.
   - **Estimación con los trabajos de antes:** entre 0 y 10 discrepancias de la plataforma por trabajo, y 21 en el backlog del proyecto grande.
   - **Cambio de criterio:** sustituye al «árbitro solo con el LLM» de la iteración v0 (08-10-2026).
-  - **Pendiente:** la prueba real, que lanza el autor. Consiste en volver a arbitrar el catálogo de clínicas 2 o 3 veces y ver si la unión es más estable que en el experimento (209, 220 y 291 requisitos con las mismas propuestas).
+  - **Prueba real (19-10-2026, lanzada por el autor):** 3 nuevos arbitrajes de SOL v0.10 sobre las mismas propuestas del catálogo de clínicas.
+    - **La unión es más estable:** 202, 213 y 222 requisitos, frente a 209, 220 y 291 con la v0.9. Con 3 ejecuciones por versión es una señal, no una prueba.
+    - **Las desviaciones no bajan:** unas 8 por ejecución, frente a las 7 que la plataforma habría marcado en la v0.9. El árbitro discrepa de los números en los mismos puntos aunque los tenga delante, así que son diferencias de criterio, y tiene sentido que las revise el usuario.
+    - **Ninguna discrepancia del propio árbitro:** lo que el usuario revisaría (unos 8 de 212 requisitos) sale todo de la plataforma.
+    - **Fiabilidad:** una de las tres ejecuciones necesitó una reparación. El primer intento agotó sus turnos sin escribir la salida, con unos 1,15 M tokens de entrada.
+    - **Sin dato de consumo:** las ejecuciones válidas se detuvieron al compactar, igual que en el experimento.
 - **Para la memoria, en palabras sencillas:** ahora el árbitro no empieza de cero. La plataforma le dice primero qué elementos de los dos modelos se parecen, con un criterio fijo y medido. El árbitro decide y redacta, y si contradice a los números, el usuario lo ve y lo revisa.
 
 ### 9. Hito 18: fiabilidad y calidad (19-10, en curso)
@@ -242,7 +247,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.md` como hitos 17 a 22:
 
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
-2. **Hito 17, embeddings en local:** ~~modelo multilingüe en el contenedor de la API~~ (paso 86), ~~emparejamiento de A y B por significado, con los umbrales calibrados~~ (paso 87) y ~~árbitro con embeddings~~ (paso 88), todo el 19-10-2026. Falta la prueba real del paso 88, que lanza el autor. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
+2. ~~**Hito 17, embeddings en local**~~: modelo multilingüe en la API (paso 86), emparejamiento de A y B con los umbrales calibrados (paso 87) y árbitro con embeddings con su prueba real (paso 88), todo el 19-10-2026. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
 3. **Hito 18, fiabilidad y calidad (en curso):** ~~correcciones automáticas de formato para LUNA~~ (paso 89, 19-10-2026); siguen reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
 4. **Hito 19, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
 5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
