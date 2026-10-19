@@ -7,14 +7,14 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - Un paso cada vez, en orden, con un commit por paso.
 - Si un paso se atasca más de 30 minutos, se anota el bloqueo y se pasa al siguiente que no dependa de él.
 - No se pule la interfaz hasta que exista el árbitro.
-- Decisiones abiertas que afectan al plan: el umbral de discrepancia grave (se calibra en el paso 87). La jerarquía del backlog y el modelo del árbitro se cerraron el 08-10-2026 (ver la iteración v0), y el origen de los embeddings el 16-10-2026 (hito 17).
+- Decisiones abiertas que afectan al plan: cómo marca el umbral la discrepancia grave (paso 88; los dos umbrales del emparejamiento, 0,90 y 0,70, los fijó el autor el 19-10-2026 tras calibrarlos en el paso 87). La jerarquía del backlog y el modelo del árbitro se cerraron el 08-10-2026 (ver la iteración v0), y el origen de los embeddings el 16-10-2026 (hito 17).
 - Desde el 08-10-2026 se trabaja en la iteración v0 (hitos 8 a 13) antes que en el hito 7.
 - Desde el 16-10-2026, con los hitos 8 a 16 terminados, se sigue con los hitos 17 a 22 en su orden, acordado con el autor: 17 embeddings, 18 fiabilidad y calidad, 19 exportar, 20 trazabilidad y comparación, 21 historial y 22 evaluación. Los pasos marcados «por decidir» esperan a que el autor elija antes de empezarlos. El experimento del árbitro (paso 103) se cerró el mismo día.
 
 ## Dónde estamos (19-10-2026)
 
-- **Terminado:** el paso 86, el servicio de embeddings en la API, con el modelo en local y los mismos vectores que sentence-transformers.
-- **Siguiente paso:** el 87 (emparejamiento de A y B por significado), del hito 17. El 85 está decidido en parte: falta el umbral, que se elige en el 87.
+- **Terminado:** los pasos 86 (servicio de embeddings en la API) y 87 (emparejamiento de A y B por significado, con los umbrales calibrados con el criterio del autor: 0,90 y 0,70).
+- **Siguiente paso:** el 88 (árbitro con embeddings), del hito 17.
 
 ## Hito 0: preparación y prueba de humo (completado)
 
@@ -376,9 +376,9 @@ Pedido por el autor el 14-10-2026, para probar el mockup con `SS - GPT-6-SOL`.
 
 **Primero de esta tanda** (autor, 16-10-2026: «quiero usarlos al 100 %, pueden aportar mucho valor al TFG»). Resuelve la decisión abierta desde el principio (el origen de los embeddings): la pasarela no los ofrece. Decidido por el autor (16-10-2026): el modelo `paraphrase-multilingual-MiniLM-L12-v2` (ONNX, Apache 2.0, español e inglés), ejecutado con ONNX Runtime dentro del contenedor de la API, sin servicios nuevos.
 
-- [ ] 85. **Decisión del autor:** origen de los embeddings, decidido el 16-10-2026 (el modelo local de arriba), y umbral de «discrepancia grave», que se calibra con datos reales en el paso 87 antes de fijarlo.
+- [x] 85. **Decisión del autor:** origen de los embeddings, decidido el 16-10-2026 (el modelo local de arriba), y umbral de «discrepancia grave», que se calibra con datos reales en el paso 87 antes de fijarlo. (19-10-2026: dos umbrales, «lo mismo» desde 0,90 y «parecido» desde 0,70, fijados por el autor tras la calibración del paso 87. Cómo marcan la discrepancia grave se concreta en el paso 88; la candidata es la franja «parecido».)
 - [x] 86. Servicio de embeddings en la API: el modelo, el tokenizador y el cálculo del vector de un texto, y la similitud entre dos textos, con tests. (19-10-2026: `Concilia.Core/Embeddings`. `ITextEmbedder` con dos implementaciones: `OnnxTextEmbedder`, con el modelo en fp32 (ONNX Runtime 1.30.0) y su tokenizador SentencePiece (Microsoft.ML.Tokenizers 2.0.0), y `FakeTextEmbedder`, que cuenta palabras. El vector es la media de los vectores de token sin el relleno, como en sentence-transformers. Textos de hasta 128 tokens, de 32 en 32. El modelo se descarga en la imagen de Docker, con el commit de Hugging Face fijado y el SHA-256 comprobado, y en local con `scripts/descargar-modelo-embeddings.ps1`. `Embeddings:Provider` (`Fake` por defecto, `Onnx` en Docker) y `POST /embeddings/similarity` para probarlo a mano. Comprobado frente a Python con 14 textos: los mismos ids de tokens que Hugging Face y una diferencia máxima de 9,4·10⁻⁷ con los vectores de sentence-transformers. Los 6 tests que necesitan el modelo se saltan si no está, como en GitHub Actions.)
-- [ ] 87. Emparejamiento de A y B por significado, fuera del LLM: qué elementos de A y de B dicen lo mismo y cuáles solo están en uno. Es la referencia objetiva del experimento del sesgo del árbitro (`docs/experimento-sesgo-arbitro.md`).
+- [x] 87. Emparejamiento de A y B por significado, fuera del LLM: qué elementos de A y de B dicen lo mismo y cuáles solo están en uno. Es la referencia objetiva del experimento del sesgo del árbitro (`docs/experimento-sesgo-arbitro.md`). (19-10-2026: `Concilia.Core/Matching/ProposalMatcher` y `GET /jobs/{id}/matching`. Cada elemento se une con el más parecido de la otra propuesta y queda como «mismo» (desde 0,90), «parecido» (desde 0,70) o «distinto». Calibración con la opción D del autor: 48 pares de los proyectos ficticios etiquetados por el autor fijan los umbrales (coinciden en 37 de 48 con las tres etiquetas), y el consenso de los 5 y 6 arbitrajes de clínicas los comprueba (el 99 % y el 82 % de lo que juntan los árbitros es «mismo» o «parecido»). Acuerdo por elemento con el árbitro en los 9 trabajos originales: 89 %. El árbitro juntó los 9 pares «mismo» del autor y solo 2 de sus 22 «distintos». Scripts y resultados en `docs/calibracion-embeddings/`.)
 - [ ] 88. Árbitro con embeddings, como estaba en el diseño original: el emparejamiento se calcula antes, el LLM explica y fusiona, y la discrepancia grave la marca el umbral.
 
 **Hecho cuando:** el emparejamiento de A y B de un trabajo real coincide en lo esencial con lo que hizo el árbitro, y las diferencias se pueden explicar.

@@ -1767,3 +1767,54 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - el aviso de vulnerabilidad de `System.Security.Cryptography.Pkcs` 10.0.12 al compilar ya salía antes de este paso; no lo traen los paquetes nuevos;
   - `scripts/descargar-modelo-embeddings.ps1` se guarda con BOM, porque Windows PowerShell 5.1 lee como ANSI los scripts sin él y estropea las tildes.
 - **Pendientes:** paso 87, emparejamiento de A y B por significado y calibración del umbral con datos reales.
+
+---
+
+## 19-10-2026, 11:00 (sesión)
+
+**Resumen para la bitácora (19-10-2026, hito 17, paso 87: emparejamiento de A y B por significado y umbrales calibrados)**
+
+- **Qué se hizo:**
+  - **Emparejamiento sin LLM** (`Concilia.Core/Matching/ProposalMatcher`):
+    - cada elemento de A se compara con todos los de B y al revés, y se une con el más parecido;
+    - el par es «mismo», «parecido» o «distinto» según dos umbrales, y varios elementos pueden unirse con el mismo, como hace el árbitro;
+    - el texto comparado es la pregunta, el texto del requisito o «título + como… quiero… para…» de la historia;
+    - lo que juntó el árbitro sale de su `de`, con el orden de las propuestas del plan.
+  - **`GET /jobs/{id}/matching`** (también con `?same=&similar=`): los pares, su similitud, su nivel y si el árbitro los juntó, más los recuentos y el acuerdo con el árbitro. La lectura de las propuestas de A y B que hacía el informe pasa a `JobProposals`, compartida por los dos.
+  - **Scripts reproducibles** en `scripts/calibracion-embeddings/`, que leen la API en marcha:
+    - `muestra.cs` saca la muestra para etiquetar, con semilla fija;
+    - `calibrar.cs` calcula los resultados y escribe `docs/calibracion-embeddings/resultados.md`.
+  - **Arreglo del paso 86** (commit propio): la web (nginx y Vite) no reenviaba `/embeddings` a la API.
+  - **Contenedores:** se reconstruyeron la API y la web sin ninguna tarea en marcha; la imagen ya lleva el modelo.
+- **Decisiones del autor:**
+  1. **Dos umbrales**, no uno. Entre los dos, la franja «parecido»: se parece pero no es lo mismo, y es la candidata a «discrepancia grave» en el paso 88.
+  2. **Calibrar solo con los proyectos ficticios:** banco de alimentos, clínicas veterinarias (con los arbitrajes de SOL y LUNA del experimento) y ReservaSalas.
+  3. **Cómo calibrar: la opción D.** Se explicaron cuatro opciones antes de elegir:
+     - A, un árbitro con calibración y comprobación separadas;
+     - B, el consenso de varios árbitros;
+     - C, una muestra etiquetada por el autor;
+     - D, C para fijar los umbrales y B para comprobarlos.
+
+     Se descartó calibrar solo con el árbitro porque es circular: los embeddings sirven para comprobarlo.
+  4. **Criterio de etiquetado** (aclarado a petición del autor): lo que cuenta es lo que dicen, no el tema. Dos textos del mismo tema que dicen cosas distintas son «distinto». Escrito con ejemplos inventados en `docs/calibracion-embeddings/README.md`.
+  5. **Umbrales fijados: «lo mismo» desde 0,90 y «parecido» desde 0,70.** La calibración proponía 0,90 y 0,71, los centros de los intervalos óptimos 0,89–0,92 y 0,70–0,72. Con 0,70 los resultados no cambian. Quedan en `Embeddings:SameThreshold` y `Embeddings:SimilarThreshold`.
+- **Muestra:** 48 pares, 8 por tramo de similitud entre 0,4 y 1,0, con las tres fases por turnos y el texto de A unas veces primero y otras segundo. Por proyecto, 31 de clínicas, 15 del banco de alimentos y 2 de ReservaSalas; por fase, 18 preguntas, 16 historias y 14 requisitos. El autor los etiquetó sin ver la similitud ni lo que hizo el árbitro: 9 «mismo», 17 «parecido» y 22 «distinto».
+- **Resultados** (`docs/calibracion-embeddings/resultados-y-decision.md`):
+  - **Embeddings frente al autor:**
+    - 37 de 48 pares coinciden con las tres etiquetas (77 %): preguntas 17 de 18, historias 12 de 16 y requisitos 8 de 14;
+    - «mismo» frente al resto, 85 %; «distinto» frente al resto, 88 %.
+  - **Frente al consenso de los árbitros de clínicas** (5 arbitrajes del catálogo, 3 de SOL y 2 de LUNA; 6 de las preguntas, 3 y 3). Consenso «juntar» es al menos el 80 % de los árbitros; «no juntar», como mucho el 20 %.
+    - De lo que se junta, los embeddings ven «mismo o parecido» el 99 % en el catálogo (246 de 248) y el 82 % en las preguntas (9 de 11).
+    - De lo que no se junta, ven «distinto» el 90 % en las preguntas, pero solo el 11 % en el catálogo, donde casi todo cae en la franja «parecido».
+  - **El árbitro frente al autor (primera medida frente a un criterio humano):** juntó 9 de 9 «mismo», 12 de 17 «parecido» y 2 de 22 «distinto».
+  - **Acuerdo por elemento con el árbitro** («¿está también en la otra propuesta?») en los 9 trabajos originales de los proyectos ficticios: 89 % (937 + 73 de 1.129 elementos).
+  - **Referencia del experimento del sesgo:** en clínicas, solo en B según los embeddings hay 8 preguntas, 1 requisito y 1 historia, frente a 6, 1 y 0 según el árbitro. Las 2 preguntas de diferencia tienen similitud 0,62 y 0,64 y el árbitro las juntó. Confirma, sin LLM, que casi todo lo que propone B ya está en A. Añadido a `docs/experimento-sesgo-arbitro.md`.
+  - **Dónde fallan los embeddings:**
+    - textos con casi las mismas palabras que dicen otra cosa (0,91 con dos requisitos de integración que el autor vio distintos; el árbitro también los juntó);
+    - lo mismo en estilo telegráfico (0,69).
+- **Cambio de criterio:** el acuerdo con el árbitro contaba un elemento como presente en la otra propuesta solo si su par era «mismo». Ahora cuenta también «parecido», porque los datos muestran que el árbitro también junta lo parecido, conservando el detalle de cada uno. Así es coherente con «solo A» y «solo B», que son los «distinto».
+- **Decisión abierta acotada, no cerrada:** quedan fijados los umbrales del emparejamiento. Cómo marcan la «discrepancia grave» se decide en el paso 88; la candidata es la franja «parecido».
+- **Tests:** 10 nuevos del emparejamiento y la comprobación del endpoint en el test del flujo completo. 864 en total.
+- **Pendientes:**
+  - paso 88, árbitro con embeddings, que necesita decidir cómo marca la discrepancia grave;
+  - si el emparejamiento entra en el informe por trabajo y en su CSV (propuesta: dejarlo para el hito 20, porque cuesta unos segundos por trabajo).

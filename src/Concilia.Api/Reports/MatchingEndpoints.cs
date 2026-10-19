@@ -1,0 +1,65 @@
+using System.Text.Json.Nodes;
+using Microsoft.EntityFrameworkCore;
+using Concilia.Api.Embeddings;
+using Concilia.Api.Files;
+using Concilia.Api.Persistence;
+using Concilia.Api.Runs;
+using Concilia.Core.Embeddings;
+using Concilia.Core.Matching;
+using Concilia.Core.Phases;
+
+namespace Concilia.Api.Reports;
+
+// The matching of A and B of a job by meaning (step 87), computed with
+// embeddings and without any LLM, next to what the arbiter did. Nothing is
+// stored: it is computed on each call (a few seconds with the real model).
+public static class MatchingEndpoints
+{
+    // Phase: the phase of the job. RearbitrationOf: for a new arbitration, the
+    // job whose proposals it arbitrated again. HasArbiter: whether the job has
+    // a valid arbiter output to compare with.
+    public record MatchingView(Guid JobId, string Phase, Guid? RearbitrationOf, bool HasArbiter, string? ArbiterModel, MatchingResult Matching);
+
+    public static void MapMatchingEndpoints(this WebApplication app)
+    {
+        // ?same=0.85&similar=0.6 to try other thresholds than the configured ones.
+        app.MapGet("/jobs/{jobId:guid}/matching", async (Guid jobId, double? same, double? similar,
+            AppDbContext db, FileStorage storage, ITextEmbedder embedder, EmbeddingOptions options) =>
+        {
+            var job = await db.Jobs.FindAsync(jobId);
+            if (job is null)
+                return Results.NotFound();
+
+            var thresholds = new MatchThresholds(same ?? options.SameThreshold, similar ?? options.SimilarThreshold);
+            if (thresholds.Similar < 0 || thresholds.Same > 1 || thresholds.Similar >= thresholds.Same)
+                return Refuse("Los umbrales deben cumplir 0 ≤ similar < same ≤ 1.");
+
+            var folder = storage.JobFolder(jobId);
+            if (!File.Exists(Path.Combine(folder, PhasePlan.FileName)))
+                return Refuse("El trabajo no es de preguntas, catálogo o backlog.");
+            var plan = PhasePlan.Load(folder);
+            if (plan.Kind is not (PhaseKind.Questions or PhaseKind.Catalog or PhaseKind.Backlog))
+                return Refuse("Solo se emparejan las propuestas de preguntas, catálogo o backlog.");
+
+            var runs = await db.Runs.Where(r => r.JobId == jobId).ToListAsync();
+            var a = JobProposals.Read(storage, job, runs, plan.Kind, "A");
+            var b = JobProposals.Read(storage, job, runs, plan.Kind, "B");
+            if (a is null || b is null)
+                return Refuse("El trabajo no tiene una propuesta válida de A y de B.");
+
+            // The arbiter's output, only if it is really the arbiter's ("fuente": "ARB").
+            var result = ReportEndpoints.ReadResult(folder);
+            var arbiterOutput = result?["fuente"]?.GetValue<string>() == "ARB" && result["salida"] is JsonNode salida
+                ? salida.ToJsonString() : null;
+            var arbiterPairs = arbiterOutput is null ? null : ProposalMatcher.ArbiterPairs(plan.Kind, arbiterOutput, plan.ProposalOrder);
+
+            var matching = ProposalMatcher.Match(ProposalMatcher.ElementsOf(plan.Kind, a), ProposalMatcher.ElementsOf(plan.Kind, b),
+                embedder, thresholds, arbiterPairs);
+            return Results.Ok(new MatchingView(jobId, plan.Kind.ToString(), plan.RearbitrationOf, arbiterPairs is not null,
+                runs.FirstOrDefault(r => r.Slot == "ARB")?.Model, matching));
+        });
+    }
+
+    private static IResult Refuse(string message) =>
+        Results.ValidationProblem(new Dictionary<string, string[]> { ["matching"] = [message] });
+}

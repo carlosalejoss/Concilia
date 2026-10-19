@@ -1,0 +1,722 @@
+[
+  {
+    "Id": "M01",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "b2adf10a-e095-4a5f-815e-e7cc3c8d8304",
+      "Phase": "Questions",
+      "AId": "P-011",
+      "BId": "P-008",
+      "AText": "Si también hay reparto los jueves y los lotes se preparan el día anterior, ¿debe haber un turno de preparación los miércoles? En ese caso, ¿en qué horario y con cuántos voluntarios?",
+      "BText": "Si el día anterior a un turno faltan voluntarios, ¿a quién debe avisarse y por qué canal?",
+      "Similarity": 0.6675279911119977,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M02",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "1628caf6-4820-427f-9369-e8922d2e92e1",
+      "Phase": "Backlog",
+      "AId": "HU-003",
+      "BId": "HU-003",
+      "AText": "Registrar consentimiento y activar el alta. Como coordinadora, quiero registrar la firma del consentimiento y activar el alta cuando corresponda, para evitar entregas a familias sin consentimiento firmado.",
+      "BText": "Registrar el consentimiento y activar el alta. Como coordinadora, quiero registrar la firma del consentimiento y activar el alta solo cuando corresponda, para respetar el consentimiento antes de atender a la familia.",
+      "Similarity": 0.9537996402150857,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M03",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "223f1efe-bb3e-42ed-b34f-8ddd43e11c85",
+      "Phase": "Backlog",
+      "AId": "HU-073",
+      "BId": "HU-042",
+      "AText": "Registro seguro de cuenta de cliente. Como cliente, quiero vincular mi cuenta con mi ficha verificada, para consultar únicamente mis mascotas.",
+      "BText": "Vincular de forma segura una cuenta de cliente. Como cliente, quiero vincular mi cuenta de app o web a mi ficha verificada, para consultar únicamente las mascotas autorizadas.",
+      "Similarity": 0.935633469816061,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M04",
+    "AFirst": true,
+    "Pair": {
+      "Project": "ReservaSalasHito911.v2",
+      "JobId": "2c85a3b4-1467-492c-b3b6-547711bc99ee",
+      "Phase": "Questions",
+      "AId": "P-005",
+      "BId": "P-003",
+      "AText": "Si se contrata el módulo de catering, ¿qué debe poder indicar el empleado al añadir catering a una reserva y puede hacerlo o modificarlo después de confirmar la reserva?",
+      "BText": "¿Se incluye el módulo de catering en esta versión y, si se incluye, qué opciones o datos debe poder indicar el empleado al añadirlo a una reserva?",
+      "Similarity": 0.8818751205020123,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M05",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-026",
+      "BId": "P-008",
+      "AText": "¿Podéis proporcionar el ejemplo definitivo del fichero mensual para contabilidad, con el formato de fechas, importes, facturas rectificativas y facturas con varios tipos de IVA o parte de aseguradora?",
+      "BText": "Para mostrar el aviso tras tres citas no presentadas «en un año», ¿se cuentan los últimos doce meses desde cada consulta o el año natural?",
+      "Similarity": 0.418681948067827,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M06",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-022",
+      "BId": "P-007",
+      "AText": "¿Qué formato, campos y medio de entrega exige cada aseguradora para la relación mensual de facturas, incluida Seguros Animalia y, si procede, Mascota Protegida?",
+      "BText": "Cuando una mascota está asociada a varios clientes, ¿cómo se debe decidir quién recibe la factura de cada cargo: siempre el cliente principal, el cliente elegido para esa visita o se permite dividir el cargo entre varios?",
+      "Similarity": 0.494756292112801,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M07",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "b2adf10a-e095-4a5f-815e-e7cc3c8d8304",
+      "Phase": "Questions",
+      "AId": "P-001",
+      "BId": "P-003",
+      "AText": "¿La regla para todas las familias es una recogida cada quince días o deben existir recogidas semanales según el tamaño familiar? Cuando Servicios Sociales solicita una excepción para una familia grande, ¿se concede una cita adicional, un lote más grande u otra medida, y durante cuánto tiempo?",
+      "BText": "Para una familia grande que necesite más entregas y cuya excepción soliciten los Servicios Sociales, ¿qué frecuencia y durante cuánto tiempo puede autorizar la coordinadora?",
+      "Similarity": 0.7753419044088009,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M08",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-025",
+      "BId": "P-017",
+      "AText": "¿Podéis proporcionar los formatos y ejemplos definitivos de la remesa de domiciliaciones y del fichero bancario de recibos devueltos de los planes de salud?",
+      "BText": "¿Qué formato, estructura y campos debe tener el fichero mensual de recetas de antibióticos para cargarlo en la plataforma oficial de prescripción?",
+      "Similarity": 0.4687565113138064,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M09",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "223f1efe-bb3e-42ed-b34f-8ddd43e11c85",
+      "Phase": "Backlog",
+      "AId": "HU-033",
+      "BId": "HU-024",
+      "AText": "Cambio de tratamiento durante ingreso. Como veterinario, quiero cambiar un tratamiento hospitalario, para actualizar solo las tareas pendientes.",
+      "BText": "Actualizar tratamientos y traspasar turnos. Como veterinario, quiero actualizar tratamientos y dejar notas de traspaso por paciente, para mantener la continuidad del cuidado hospitalario.",
+      "Similarity": 0.8811146106477118,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M10",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "2b5e1fe9-e828-48a1-aaf5-0c63077c8cad",
+      "Phase": "Catalog",
+      "AId": "RF-084",
+      "BId": "RF-086",
+      "AText": "el sistema Clinicas Veterinarias DEBERÁ mostrar en la sala de hospitalización las tareas pendientes de la próxima hora y las retrasadas, estas últimas resaltadas en rojo.",
+      "BText": "SI una tarea de hospitalización sigue sin marcar 30 minutos después de su hora prevista, ENTONCES el sistema Clinicas Veterinarias DEBERÁ cambiarla a retrasada y avisar en la pantalla de la sala y en la tableta del veterinario responsable.",
+      "Similarity": 0.8022043600197742,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M11",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "223f1efe-bb3e-42ed-b34f-8ddd43e11c85",
+      "Phase": "Backlog",
+      "AId": "HU-047",
+      "BId": "HU-018",
+      "AText": "Recepción y avisos de resultados de LabVet. Como veterinario, quiero recibir estados y documentos de las muestras solicitadas, para revisar resultados o gestionar rechazos.",
+      "BText": "Revisar y publicar resultados de laboratorio. Como veterinario, quiero gestionar la llegada, revisión y publicación de resultados, para comunicar al cliente únicamente resultados completados y revisados.",
+      "Similarity": 0.787328739420482,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M12",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "1628caf6-4820-427f-9369-e8922d2e92e1",
+      "Phase": "Backlog",
+      "AId": "HU-027",
+      "BId": "HU-005",
+      "AText": "Respetar restricciones de menores en turnos. Como coordinadora, quiero asignar a menores solo tareas permitidas y acompañadas, para evitar que participen en el reparto o trabajen sin acompañamiento adulto.",
+      "BText": "Asignar citas de recogida. Como coordinadora, quiero asignar citas en franjas de recogida y autorizar las excepciones acordadas, para organizar las recogidas de las familias.",
+      "Similarity": 0.6013563365127753,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M13",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "2b5e1fe9-e828-48a1-aaf5-0c63077c8cad",
+      "Phase": "Catalog",
+      "AId": "RNF-008",
+      "BId": "RNF-009",
+      "AText": "La pérdida máxima de datos del sistema Clinicas Veterinarias tras un desastre DEBERÁ SER de 1 hora.",
+      "BText": "Pérdida máxima de datos en recuperación ante desastres DEBERÁ SER 1 h.",
+      "Similarity": 0.6855545375226705,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M14",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "1628caf6-4820-427f-9369-e8922d2e92e1",
+      "Phase": "Backlog",
+      "AId": "HU-004",
+      "BId": "HU-004",
+      "AText": "Gestionar caducidad y entrega durante la renovación. Como coordinadora, quiero ver las derivaciones caducadas y controlar las entregas mientras se renuevan, para avisar a la trabajadora social y respetar el límite de entregas adicionales.",
+      "BText": "Gestionar bajas y derivaciones caducadas. Como coordinadora, quiero registrar bajas y controlar las entregas durante la renovación de derivaciones, para aplicar las condiciones de atención mientras la derivación está vigente o se renueva.",
+      "Similarity": 0.7750379822570603,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M15",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "2b5e1fe9-e828-48a1-aaf5-0c63077c8cad",
+      "Phase": "Catalog",
+      "AId": "RF-142",
+      "BId": "RF-139",
+      "AText": "CUANDO se aplique un descuento, el sistema Clinicas Veterinarias DEBERÁ exigir la autorización que corresponda al descuento efectivamente aplicado sin permitir eludir los límites cambiándole el nombre.",
+      "BText": "CUANDO se aplique un precio de tarifa especial, el sistema Clinicas Veterinarias DEBERÁ aplicarlo primero y, sobre ese precio, permitir únicamente el descuento elegible más favorable entre plan, empleado, protectora o descuento manual, sin acumular descuentos ni conceder otro a servicios incluidos en un plan, y exigir la autorización correspondiente al descuento finalmente aplicado.",
+      "Similarity": 0.8859263901799406,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M16",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "223f1efe-bb3e-42ed-b34f-8ddd43e11c85",
+      "Phase": "Backlog",
+      "AId": "HU-088",
+      "BId": "HU-046",
+      "AText": "Resumen semanal comparado. Como gerencia, quiero recibir el resumen de la semana anterior, para comparar su actividad con un período adecuado.",
+      "BText": "Consultar informes de actividad y cobertura. Como gerencia, quiero consultar informes por clínica y período, para seguir la actividad, facturación y cobertura de las clínicas.",
+      "Similarity": 0.47765610597164093,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M17",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "2b5e1fe9-e828-48a1-aaf5-0c63077c8cad",
+      "Phase": "Catalog",
+      "AId": "RF-168",
+      "BId": "RF-143",
+      "AText": "CUANDO se programe una cirugía cubierta por Mascota Protegida, el sistema Clinicas Veterinarias DEBERÁ permitir solicitar autorización previa con el presupuesto y registrar el número de autorización en la factura.",
+      "BText": "CUANDO se programe una cirugía de Mascota Protegida, el sistema Clinicas Veterinarias DEBERÁ permitir solicitar autorización previa con el presupuesto y registrar el número de autorización en la factura; si no hay autorización y la intervención es inaplazable, deberá advertir al cliente del posible cargo y documentar su decisión, sin imputar la cirugía a la aseguradora.",
+      "Similarity": 0.9554201786255438,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M18",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "1628caf6-4820-427f-9369-e8922d2e92e1",
+      "Phase": "Backlog",
+      "AId": "HU-028",
+      "BId": "HU-018",
+      "AText": "Registrar asistencia y duración efectiva. Como coordinadora, quiero registrar la asistencia y la duración reales del voluntariado, para disponer de horas efectivas para la memoria anual.",
+      "BText": "Registrar asistencia y duración efectivas. Como coordinadora, quiero registrar la asistencia y duración efectivas del trabajo de cada voluntario en sus turnos, para disponer de datos reales de participación.",
+      "Similarity": 0.898329142460104,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M19",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "223f1efe-bb3e-42ed-b34f-8ddd43e11c85",
+      "Phase": "Backlog",
+      "AId": "HU-019",
+      "BId": "HU-006",
+      "AText": "Alternativa a la espera de nivel cinco. Como recepción, quiero proponer otra cita a pacientes de nivel cinco, para darles una alternativa sin obligarles a abandonar urgencias.",
+      "BText": "Crear citas clínicas y reservas múltiples. Como recepción, quiero registrar citas con su paciente, duración, profesional y estado, para organizar la atención sin conflictos de agenda.",
+      "Similarity": 0.5499795732276809,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M20",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "2b5e1fe9-e828-48a1-aaf5-0c63077c8cad",
+      "Phase": "Catalog",
+      "AId": "RI-004",
+      "BId": "RI-001",
+      "AText": "el sistema Clinicas Veterinarias DEBERÁ autenticar las solicitudes a LabVet Análisis mediante la clave de API de cada clínica.",
+      "BText": "CUANDO se integre con LabVet Análisis, el sistema Clinicas Veterinarias DEBERÁ enviar solicitudes a la API con la clave de API de la clínica y consultar su estado mediante los servicios disponibles.",
+      "Similarity": 0.9083947290918436,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M21",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-044",
+      "BId": "P-014",
+      "AText": "¿Deben corregirse antes de su uso las especies admitidas para los diagnósticos del catálogo de exóticos, por ejemplo los diagnósticos propios del conejo que figuran también para hurones y reptiles? ¿Quién valida esas correcciones?",
+      "BText": "¿Cómo debe registrarse si un gato tiene acceso al exterior, para que se aplique el protocolo correcto de vacunación y desparasitación?",
+      "Similarity": 0.43765176507473225,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M22",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "2b5e1fe9-e828-48a1-aaf5-0c63077c8cad",
+      "Phase": "Catalog",
+      "AId": "RF-019",
+      "BId": "RF-021",
+      "AText": "el sistema Clinicas Veterinarias DEBERÁ limitar la programación de cirugías al veterinario y reservar el quirófano de 9:00 a 13:00 para cirugías programadas y por la tarde para urgencias quirúrgicas.",
+      "BText": "el sistema Clinicas Veterinarias DEBERÁ bloquear el quirófano de 9:00 a 13:00 para cirugías programadas y permitir por la tarde únicamente urgencias quirúrgicas.",
+      "Similarity": 0.9285099496862428,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M23",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "b2adf10a-e095-4a5f-815e-e7cc3c8d8304",
+      "Phase": "Questions",
+      "AId": "P-027",
+      "BId": "P-003",
+      "AText": "¿Durante cuánto tiempo deben conservarse en la aplicación los datos personales y de salud de familias y voluntarios, los registros de entregas y el historial de accesos, y qué debe hacerse con ellos al terminar esos plazos?",
+      "BText": "Para una familia grande que necesite más entregas y cuya excepción soliciten los Servicios Sociales, ¿qué frecuencia y durante cuánto tiempo puede autorizar la coordinadora?",
+      "Similarity": 0.6878263228449896,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M24",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "294fe7bb-def8-4b68-b7cd-7c52d27ed3fe",
+      "Phase": "Catalog",
+      "AId": "RNF-007",
+      "BId": "RNF-004",
+      "AText": "El plazo de conservación del historial de accesos DEBERÁ SER de dos años.",
+      "BText": "CUANDO venza el plazo de conservación de los datos, el sistema Banco De Alimentos DEBERÁ suprimirlos o anonimizararlos salvo que una obligación legal aplicable exija otro plazo, conservando los datos de salud mientras la familia esté siendo atendida, los demás datos personales de familias y voluntarios durante su vinculación y dos años más, las entregas durante cinco años y el historial de accesos durante dos años.",
+      "Similarity": 0.552672081358592,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M25",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "1628caf6-4820-427f-9369-e8922d2e92e1",
+      "Phase": "Backlog",
+      "AId": "HU-016",
+      "BId": "HU-012",
+      "AText": "Registrar la entrega de lotes. Como voluntariado, quiero registrar el lote entregado al comprobar el código de la familia, para dejar constancia del reparto efectuado.",
+      "BText": "Registrar entregas de lotes. Como voluntariado, quiero registrar la entrega del lote cuando se comprueba el código de la familia, para dejar constancia de los productos entregados y de quién los recoge.",
+      "Similarity": 0.931166548055648,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M26",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "294fe7bb-def8-4b68-b7cd-7c52d27ed3fe",
+      "Phase": "Catalog",
+      "AId": "RF-096",
+      "BId": "RF-031",
+      "AText": "SI faltan pesos verificables de registros de higiene, infantil u otros productos, ENTONCES el sistema Banco De Alimentos DEBERÁ señalar como incompletos los totales en kilos de los informes en vez de presentar esos registros como si pesaran cero.",
+      "BText": "SI falta el peso verificable de un registro, ENTONCES el sistema Banco De Alimentos DEBERÁ señalarlo como pendiente y evitar presentar como completo el total en kilos que lo excluya.",
+      "Similarity": 0.7977553304926419,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M27",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-012",
+      "BId": "P-013",
+      "AText": "¿Qué determina que se cobre la tarifa de urgencia nocturna o festiva: la hora de llegada, de inicio o de cierre de la visita, su tipo, o una combinación? ¿Qué tarifa se aplica de día en fin de semana y festivos?",
+      "BText": "¿Qué regla clasifica una urgencia como diurna (65 €) o nocturna/festiva (95 €), especialmente en sábados, domingos y festivos entre las 9:00 y las 20:00?",
+      "Similarity": 0.7337836019951428,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M28",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-023",
+      "BId": "P-010",
+      "AText": "Si una mascota tiene plan de salud y seguro, ¿en qué orden se aplican los servicios incluidos, descuentos y cobertura, y sobre qué importe se calcula el copago de la aseguradora?",
+      "BText": "¿Qué criterio, por ejemplo un peso mínimo, define a un perro grande para asignarle dos huecos de peluquería?",
+      "Similarity": 0.5776639863147872,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M29",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-027",
+      "BId": "P-011",
+      "AText": "Cuando se pide una factura completa después de emitir una simplificada, ¿cómo debe quedar anulada o rectificada la original y cómo se vincula a la nueva factura, sin modificar ni borrar una factura emitida?",
+      "BText": "Cuando un servicio o producto añadido automáticamente a un cargo no debe cobrarse, ¿quién puede retirarlo y hace falta registrar un motivo o una autorización?",
+      "Similarity": 0.4117799731389215,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M30",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "223f1efe-bb3e-42ed-b34f-8ddd43e11c85",
+      "Phase": "Backlog",
+      "AId": "HU-035",
+      "BId": "HU-023",
+      "AText": "Consumo de fármacos en hospital. Como ATV, quiero registrar fármacos administrados durante el ingreso, para reflejar consumo y cargo de la estancia.",
+      "BText": "Programar y completar tareas hospitalarias. Como ATV, quiero consultar y registrar las tareas previstas para cada paciente ingresado, para realizar tratamientos y cuidados a tiempo y dejar constancia de su cumplimiento.",
+      "Similarity": 0.6895703250664046,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M31",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-017",
+      "BId": "P-014",
+      "AText": "¿Pueden contratar planes de salud conejos, hurones, aves y reptiles, o solo perros y gatos? Si se admiten exóticos, ¿qué vacunas y servicios preventivos incluye cada plan para ellos?",
+      "BText": "¿Cómo debe registrarse si un gato tiene acceso al exterior, para que se aplique el protocolo correcto de vacunación y desparasitación?",
+      "Similarity": 0.5686365484287035,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M32",
+    "AFirst": true,
+    "Pair": {
+      "Project": "ReservaSalasHito911.v2",
+      "JobId": "2c85a3b4-1467-492c-b3b6-547711bc99ee",
+      "Phase": "Questions",
+      "AId": "P-010",
+      "BId": "P-009",
+      "AText": "¿Qué versiones de Chrome y Edge deben estar soportadas?",
+      "BText": "¿Qué versiones mínimas de Chrome y Edge debe soportar la aplicación?",
+      "Similarity": 0.9091235264316014,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M33",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "223f1efe-bb3e-42ed-b34f-8ddd43e11c85",
+      "Phase": "Backlog",
+      "AId": "HU-074",
+      "BId": "HU-043",
+      "AText": "Consulta de mascota compartida. Como cliente, quiero consultar las mascotas a las que tengo acceso, para ver su actividad sin conocer información de otros clientes.",
+      "BText": "Consultar datos de mascotas compartidas. Como cliente, quiero consultar las mascotas y datos permitidos para mi cuenta, para acceder a su atención sin ver datos personales de otros clientes.",
+      "Similarity": 0.8970460208212735,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M34",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-033",
+      "BId": "P-014",
+      "AText": "¿Se podrá dispensar o administrar stock migrado cuyo lote y caducidad sean desconocidos antes del inventario físico, especialmente vacunas, estupefacientes y otros medicamentos, o deberá bloquearse hasta identificarlo?",
+      "BText": "¿Cómo debe registrarse si un gato tiene acceso al exterior, para que se aplique el protocolo correcto de vacunación y desparasitación?",
+      "Similarity": 0.5387677570701144,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M35",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "b2adf10a-e095-4a5f-815e-e7cc3c8d8304",
+      "Phase": "Questions",
+      "AId": "P-012",
+      "BId": "P-006",
+      "AText": "¿Cómo se determina la vigencia del certificado de manipulador de alimentos: por la fecha de caducidad indicada en el propio certificado o aplicando un plazo fijo? ¿En qué tareas o turnos se debe impedir la participación sin certificado vigente?",
+      "BText": "¿Cuál es el plazo de vigencia del certificado de manipulador de alimentos?",
+      "Similarity": 0.8390830590281949,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M36",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-019",
+      "BId": "P-011",
+      "AText": "En una baja de plan de salud antes de los 12 meses, ¿cómo se computan los servicios con descuento y qué se hace si las cuotas pagadas superan el precio de tarifa de lo utilizado: se devuelve la diferencia o no se cobra ni devuelve nada?",
+      "BText": "Cuando un servicio o producto añadido automáticamente a un cargo no debe cobrarse, ¿quién puede retirarlo y hace falta registrar un motivo o una autorización?",
+      "Similarity": 0.4716507075492468,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M37",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "294fe7bb-def8-4b68-b7cd-7c52d27ed3fe",
+      "Phase": "Catalog",
+      "AId": "RNF-006",
+      "BId": "RF-007",
+      "AText": "El plazo de conservación de los registros de entregas DEBERÁ SER de cinco años.",
+      "BText": "CUANDO se registre una derivación, el sistema Banco De Alimentos DEBERÁ calcular su caducidad a seis meses desde la fecha de emisión y, para una derivación antigua cuya caducidad se hubiera calculado automáticamente a un año, recalcularla desde esa fecha salvo que la derivación emitida por Servicios Sociales indique expresamente una fecha posterior.",
+      "Similarity": 0.5784519882068955,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M38",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "223f1efe-bb3e-42ed-b34f-8ddd43e11c85",
+      "Phase": "Backlog",
+      "AId": "HU-031",
+      "BId": "HU-023",
+      "AText": "Aviso de aislamiento. Como ATV, quiero identificar pacientes ingresados infecciosos, para aplicar las medidas de protección indicadas.",
+      "BText": "Programar y completar tareas hospitalarias. Como ATV, quiero consultar y registrar las tareas previstas para cada paciente ingresado, para realizar tratamientos y cuidados a tiempo y dejar constancia de su cumplimiento.",
+      "Similarity": 0.5543662413169306,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M39",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-008",
+      "BId": "P-007",
+      "AText": "Si una mascota tiene varios clientes asociados, ¿puede elegirse para cada visita quién recibirá la factura, y puede dividirse el importe entre ellos en vez de facturar siempre al cliente principal?",
+      "BText": "Cuando una mascota está asociada a varios clientes, ¿cómo se debe decidir quién recibe la factura de cada cargo: siempre el cliente principal, el cliente elegido para esa visita o se permite dividir el cargo entre varios?",
+      "Similarity": 0.9301523469035908,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M40",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "223f1efe-bb3e-42ed-b34f-8ddd43e11c85",
+      "Phase": "Backlog",
+      "AId": "HU-014",
+      "BId": "HU-006",
+      "AText": "Aviso de inasistencias. Como recepción, quiero ver las citas no presentadas recientes en la ficha, para detectar reiteración de ausencias.",
+      "BText": "Crear citas clínicas y reservas múltiples. Como recepción, quiero registrar citas con su paciente, duración, profesional y estado, para organizar la atención sin conflictos de agenda.",
+      "Similarity": 0.5124389732012884,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M41",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "2b5e1fe9-e828-48a1-aaf5-0c63077c8cad",
+      "Phase": "Catalog",
+      "AId": "RF-230",
+      "BId": "RF-102",
+      "AText": "SI una raza migrada no coincide con el catálogo, ENTONCES el sistema Clinicas Veterinarias DEBERÁ marcarla para revisión manual en lugar de asignarle otra raza sin validación.",
+      "BText": "SI un stock migrado tiene lote o caducidad desconocidos, ENTONCES el sistema Clinicas Veterinarias DEBERÁ bloquear su dispensación, administración y traspaso hasta que se verifique en inventario físico y se registren los datos reales, y mantenerlo segregado y sin uso si no puede identificarse.",
+      "Similarity": 0.6945251887056164,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M42",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "294fe7bb-def8-4b68-b7cd-7c52d27ed3fe",
+      "Phase": "Catalog",
+      "AId": "RNF-004",
+      "BId": "RNF-004",
+      "AText": "MIENTRAS una familia esté siendo atendida, el sistema Banco De Alimentos DEBERÁ conservar sus datos de salud solo durante ese período.",
+      "BText": "CUANDO venza el plazo de conservación de los datos, el sistema Banco De Alimentos DEBERÁ suprimirlos o anonimizararlos salvo que una obligación legal aplicable exija otro plazo, conservando los datos de salud mientras la familia esté siendo atendida, los demás datos personales de familias y voluntarios durante su vinculación y dos años más, las entregas durante cinco años y el historial de accesos durante dos años.",
+      "Similarity": 0.7253199640340434,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M43",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "223f1efe-bb3e-42ed-b34f-8ddd43e11c85",
+      "Phase": "Backlog",
+      "AId": "HU-030",
+      "BId": "HU-025",
+      "AText": "Ingreso y alojamiento hospitalario. Como veterinario, quiero ingresar pacientes y asignar alojamiento disponible, para organizar su estancia en Huellas Centro desde la fase 1.",
+      "BText": "Compartir información de hospitalización con el cliente. Como veterinario, quiero publicar informes, fotos y horarios de visita para pacientes ingresados, para informar al cliente autorizado durante la estancia.",
+      "Similarity": 0.6820355329410014,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M44",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "294fe7bb-def8-4b68-b7cd-7c52d27ed3fe",
+      "Phase": "Catalog",
+      "AId": "RF-065",
+      "BId": "RF-001",
+      "AText": "el sistema Banco De Alimentos DEBERÁ proporcionar a la coordinadora la capacidad de mantener los datos de identificación, tipo, contacto, correo electrónico y solicitud de certificado de los donantes.",
+      "BText": "el sistema Banco De Alimentos DEBERÁ proporcionar a la coordinadora una vista de las citas, el stock y los voluntarios.",
+      "Similarity": 0.7661830521573257,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M45",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "2b5e1fe9-e828-48a1-aaf5-0c63077c8cad",
+      "Phase": "Catalog",
+      "AId": "RF-079",
+      "BId": "RF-084",
+      "AText": "el sistema Clinicas Veterinarias DEBERÁ ofrecer desde la fase 1 una hoja de hospitalización por horas con medicación, dosis, vía, fluidoterapia, alimentación, paseos, controles de constantes, limpieza de heridas y observaciones.",
+      "BText": "el sistema Clinicas Veterinarias DEBERÁ permitir registrar para cada tarea de hospitalización el tipo, hora prevista, dosis o detalle y persona responsable, incluyendo medicación, fluidoterapia, alimentación, paseo, control de constantes y limpieza de herida.",
+      "Similarity": 0.8691605720779587,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M46",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "9637d55f-5c00-4bb5-a040-aeb01856a4cb",
+      "Phase": "Questions",
+      "AId": "P-015",
+      "BId": "P-003",
+      "AText": "¿La jaula de aislamiento del hospital es adicional a las 18 jaulas enumeradas o una de ellas, y qué tipos de paciente se pueden alojar allí simultáneamente?",
+      "BText": "¿Qué módulos deben incluirse en el primer lanzamiento y cuáles quedan para fases posteriores? La propuesta sitúa hospitalización en la fase 2 y la app en la fase 3, pero se pidió adelantar hospitalización y se propuso incluir un formulario de consulta no urgente en la primera versión.",
+      "Similarity": 0.47770814183810256,
+      "ArbiterJoined": false
+    }
+  },
+  {
+    "Id": "M47",
+    "AFirst": false,
+    "Pair": {
+      "Project": "Banco De Alimentos",
+      "JobId": "1628caf6-4820-427f-9369-e8922d2e92e1",
+      "Phase": "Backlog",
+      "AId": "HU-029",
+      "BId": "HU-017",
+      "AText": "Avisar de turnos incompletos. Como coordinadora, quiero recibir y compartir avisos sobre turnos que siguen incompletos, para facilitar que voluntarios disponibles y aptos cubran las plazas.",
+      "BText": "Comprobar aptitud y cubrir turnos incompletos. Como coordinadora, quiero asignar tareas según la aptitud acreditada y avisar de turnos incompletos, para cubrir los turnos respetando las condiciones de participación.",
+      "Similarity": 0.7396503596960043,
+      "ArbiterJoined": true
+    }
+  },
+  {
+    "Id": "M48",
+    "AFirst": true,
+    "Pair": {
+      "Project": "Clinicas Veterinarias",
+      "JobId": "2b5e1fe9-e828-48a1-aaf5-0c63077c8cad",
+      "Phase": "Catalog",
+      "AId": "RNF-004",
+      "BId": "RF-061",
+      "AText": "El tamaño máximo de cada archivo adjunto a una historia clínica DEBERÁ SER de 50 MB.",
+      "BText": "el sistema Clinicas Veterinarias DEBERÁ permitir adjuntar imágenes, radiografías, ecografías, PDF de laboratorio y consentimientos firmados de hasta 50 MB por archivo.",
+      "Similarity": 0.6206354556397683,
+      "ArbiterJoined": true
+    }
+  }
+]

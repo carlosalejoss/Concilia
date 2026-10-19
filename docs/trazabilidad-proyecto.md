@@ -28,6 +28,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 15-10 | Mockup v0.8 y v0.9, hito 13 | Mockup navegable de verdad; test del flujo completo, informes y proyectos de ejemplo |
 | 15-10 y 16-10 | Paso 65 con el proyecto grande de ejemplo | Flujo completo (unos 105 min y al menos 5,2 M tokens de entrada, el 63 % en el mockup); las 26 contradicciones puestas a propósito se tratan como se esperaba; A propone mucho más que B y la unión se parece a A |
 | 19-10 | Hito 17, paso 86 | Servicio de embeddings en local: el modelo multilingüe en el contenedor de la API, con los mismos vectores que sentence-transformers |
+| 19-10 | Hito 17, paso 87 | Emparejamiento de A y B por significado; umbrales 0,90 y 0,70 calibrados con 48 pares etiquetados por el autor; el árbitro, medido por primera vez frente a un criterio humano |
 
 ## Etapas
 
@@ -124,6 +125,29 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Es repetible:** la comprobación es un test automático, y la referencia se puede regenerar con `tests/fixtures/embeddings/generar_referencia.py`.
 - **Decisión del autor:** los tests que necesitan el modelo (470 MB, fuera de git) se saltan si no está, también en GitHub Actions.
 
+- **Paso 87, emparejamiento de A y B por significado (sin LLM):**
+  - **Cómo funciona:** cada elemento de A se compara con todos los de B (y al revés) y se une con el más parecido. Según la similitud, el par es «lo mismo», «parecido» o «distinto»; varios elementos pueden unirse con el mismo, como hace el árbitro. Endpoint `GET /jobs/{id}/matching`.
+  - **Decisión del autor: dos umbrales,** no uno. Por debajo del bajo, el elemento solo está en su propuesta; entre los dos, se parece pero no es lo mismo, y es la franja candidata a «discrepancia grave» en el paso 88.
+  - **Decisión del autor: cómo calibrarlos (opción D)** entre cuatro opciones:
+    - A, un árbitro; B, el consenso de varios árbitros; C, una muestra etiquetada por el autor; D, C y B juntas;
+    - se descartó usar solo el árbitro porque sería circular: los embeddings sirven para comprobar al árbitro y no se pueden calibrar con él;
+    - en la D, el criterio del autor fija los umbrales y el consenso de los árbitros los comprueba;
+    - solo con proyectos ficticios.
+  - **Muestra:** 48 pares de los proyectos ficticios, 8 por tramo de similitud, etiquetados a mano por el autor como «mismo» (9), «parecido» (17) o «distinto» (22), sin ver la similitud ni lo que hizo el árbitro.
+  - **Decisión del autor (19-10-2026): «lo mismo» desde 0,90 y «parecido» desde 0,70.** Los intervalos con más aciertos eran 0,89–0,92 y 0,70–0,72. Así se cierra la elección de los umbrales; cómo marcan la discrepancia grave se decide en el paso 88.
+  - **Resultados** (`docs/calibracion-embeddings/resultados.md`):
+    - **Frente al criterio del autor:** coinciden en 37 de 48 pares con las tres etiquetas (77 %). Por fase, preguntas 17 de 18, historias 12 de 16 y requisitos 8 de 14.
+    - **Frente al consenso de los árbitros de clínicas** (5 arbitrajes del catálogo y 6 de las preguntas): de lo que juntan casi todos los árbitros, los embeddings ven «mismo o parecido» el 99 % en el catálogo y el 82 % en las preguntas. Lo que los árbitros dejan separado en el catálogo cae casi siempre en la franja «parecido», la franja dudosa.
+    - **El árbitro frente al criterio del autor (resultado nuevo):** juntó los 9 pares que el autor marcó como «mismo» y solo 2 de los 22 «distintos». Junta también 12 de los 17 «parecidos», conservando el detalle de cada uno.
+    - **Acuerdo por elemento con el árbitro** («¿está también en la otra propuesta?») en los 9 trabajos originales de los proyectos ficticios: 89 %.
+  - **Cambio de criterio:** un elemento cuenta como presente en la otra propuesta si su par es «mismo» o «parecido», no solo «mismo», porque los datos muestran que el árbitro también junta lo parecido.
+  - **Dónde fallan los embeddings:** con textos que comparten casi todas las palabras pero dicen otra cosa (similitud de 0,91 con dos requisitos que el autor vio distintos), y con lo mismo dicho en estilo telegráfico (0,69 con dos que el autor vio iguales).
+- **Para la memoria, en palabras sencillas:**
+  - **Qué se hizo:** la plataforma compara sola, sin preguntar a ningún modelo de IA, qué propuso cada modelo y decide qué dicen lo mismo.
+  - **Cómo se eligió el criterio:** para saber desde qué parecido dos textos «dicen lo mismo», el autor clasificó a mano 48 pares sin ver los números, y se eligieron los umbrales que mejor coinciden con su criterio (0,90 y 0,70).
+  - **Qué se comprobó:** que el resultado coincide con lo que deciden casi todos los árbitros.
+  - **Resultado añadido:** de paso, se midió por primera vez al árbitro contra un criterio humano. Junta todo lo que el autor ve igual y casi nada de lo que ve distinto.
+
 ## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
 
 > **Prioridad alta (autor, 16-10-2026).** Afecta al valor de la verificación cruzada, que es la idea central del TFG. Diseño completo del experimento, estado y resultados en [`experimento-sesgo-arbitro.md`](experimento-sesgo-arbitro.md): es material directo para el capítulo de evaluación de la memoria.
@@ -154,6 +178,8 @@ A propone mucho más que B, y la unión se parece mucho a A: lo que aporta solo 
 
 **Resultado (16-10-2026): no hay preferencia del árbitro por su propio modelo.** Con las mismas propuestas, lo que entra solo de B es igual con SOL y con LUNA de árbitro: 6 en los 6 arbitrajes de preguntas, y una media de 2,7 con SOL y 1,5 con LUNA en el catálogo. La unión se parece a A porque A propone más y casi todo lo que propone B ya está en A. Hallazgo secundario: LUNA es poco fiable como árbitro de un catálogo grande (2 válidos de 6 intentos, frente a 3 de 3 de SOL), por errores de formato y tamaño. Detalle en `experimento-sesgo-arbitro.md`.
 
+**Referencia independiente con embeddings (paso 87, 19-10-2026):** sin ningún LLM de por medio, lo que solo está en B (sin nada «mismo» ni «parecido» en A) es muy poco: en clínicas, 8 preguntas, 1 requisito y 1 historia, frente a 6, 1 y 0 según el árbitro. Confirma la conclusión del experimento: la unión se parece a A porque casi todo lo que propone B ya está en A.
+
 **Herramienta (16-10-2026):** «Volver a arbitrar» repite solo el árbitro de un trabajo terminado sobre las mismas propuestas de A y B, con el modelo que se elija, sin cambiar nada del proyecto. Así lo único que cambia es el árbitro. El plan es hacer 3 arbitrajes con SOL y 3 con LUNA sobre el proyecto grande y comparar las proporciones de A y B en la unión.
 
 ## Evolución de los prompts
@@ -175,7 +201,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 ## Decisiones que siguen abiertas
 
-- Umbral de «discrepancia grave», para el árbitro con embeddings (hito 17, paso 87). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
+- Cómo marca el umbral la «discrepancia grave» en el árbitro con embeddings (paso 88). Los dos umbrales del emparejamiento los fijó el autor el 19-10-2026 (0,90 y 0,70); la candidata es la franja «parecido». El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
 - Si se paran las ejecuciones que compactan varias veces antes de escribir su salida.
 - Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
 - Si la plataforma corrige las citas que son números de línea (LUNA) cuando la línea es inequívoca.
@@ -190,7 +216,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.md` como hitos 17 a 22:
 
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
-2. **Hito 17, embeddings en local (en curso):** ~~modelo multilingüe en el contenedor de la API~~ (paso 86, 19-10-2026); siguen el emparejamiento de A y B por significado (paso 87, con el umbral) y el árbitro con embeddings. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
+2. **Hito 17, embeddings en local (en curso):** ~~modelo multilingüe en el contenedor de la API~~ (paso 86, 19-10-2026) y ~~emparejamiento de A y B por significado, con los umbrales calibrados~~ (paso 87, 19-10-2026); sigue el árbitro con embeddings (paso 88). Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
 3. **Hito 18, fiabilidad y calidad:** LUNA, reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
 4. **Hito 19, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
 5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
@@ -203,5 +229,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 165 entre el 28-09 y el 19-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 854 (19-10; 6 de ellos se saltan sin el modelo de embeddings).
+- **Commits:** 168 entre el 28-09 y el 19-10-2026.
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 864 (19-10; 6 de ellos se saltan sin el modelo de embeddings).
