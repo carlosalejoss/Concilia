@@ -28,6 +28,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 15-10 | Mockup v0.8 y v0.9, hito 13 | Mockup navegable de verdad; test del flujo completo, informes y proyectos de ejemplo |
 | 15-10 y 16-10 | Paso 65 con el proyecto grande de ejemplo | Flujo completo (unos 105 min y al menos 5,2 M tokens de entrada, el 63 % en el mockup); las 26 contradicciones puestas a propósito se tratan como se esperaba; A propone mucho más que B y la unión se parece a A |
 | 19-10 | Hito 17, paso 86 | Servicio de embeddings en local: el modelo multilingüe en el contenedor de la API, con los mismos vectores que sentence-transformers |
+| 19-10 | Hito 18, pasos 90 a 94 | Reparar editando, trabajos interrumpidos cerrados, parar las ejecuciones que compactan sin escribir, sugerencias prudentes y estilo propio del mockup (prompts v0.11) |
 | 19-10 | Hito 18, paso 95 y costes | Estimación del consumo de las ejecuciones sin dato y tablas de coste en tiempo y dinero por fase y versión |
 | 19-10 | Hito 18, paso 89 | La plataforma corrige sola cuatro errores de formato que hacían fallar a LUNA, con un aviso |
 | 19-10 | Hito 17, paso 88 | Árbitro con embeddings (prompts v0.10): parte del emparejamiento de la plataforma y lo que hace en contra de los números se marca como discrepancia |
@@ -167,7 +168,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
     - **Sin dato de consumo:** las ejecuciones válidas se detuvieron al compactar, igual que en el experimento.
 - **Para la memoria, en palabras sencillas:** ahora el árbitro no empieza de cero. La plataforma le dice primero qué elementos de los dos modelos se parecen, con un criterio fijo y medido. El árbitro decide y redacta, y si contradice a los números, el usuario lo ve y lo revisa.
 
-### 9. Hito 18: fiabilidad y calidad (19-10, en curso)
+### 9. Hito 18: fiabilidad y calidad (19-10; faltan sus pruebas reales)
 
 - **Paso 89, correcciones automáticas de formato:**
   - **Por qué:** como árbitro del catálogo, LUNA terminó 2 de 6 intentos, y todos sus fallos fueron de formato, no de criterio. Cada uno obliga a una reparación, que en un catálogo grande es cara o no cabe en el contexto.
@@ -194,6 +195,18 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
     - B (LUNA) es el 0,5 % del coste del flujo grande, así que la verificación cruzada con un modelo barato añade muy poco;
     - un arbitraje v0.10 a la primera cuesta unos 1,40 $, frente a 1,58–1,98 $ con la v0.9.
   - **Para la memoria, en palabras sencillas:** cada cambio se puede defender con lo que cuesta. Cuando falta el dato, se estima con un método comprobado contra los casos en que sí se conoce.
+
+- **Pasos 90 a 94** (decisiones del autor del 19-10-2026, todas como recomendaba Claude, entre las opciones que se le explicaron con datos):
+  - **90, reparar editando (prompts v0.11):** la reparación ya no lleva pegada la salida anterior ni la reescribe entera. La salida se queda en su fichero, revisada y con un elemento por línea; cada error dice su línea, y el modelo corrige solo esas líneas con Edit. Ataca los dos fallos de LUNA que no se podían arreglar: la reparación que no cabía en 128k y la reescritura cortada por el tope de salida.
+  - **91, trabajos interrumpidos:** al arrancar, la API cierra como fallidos los trabajos que un reinicio dejó a medias, sin relanzarlos, y un mockup interrumpido se puede reanudar.
+  - **92, compactar sin escribir:** una ejecución que compacta por segunda vez sin haber escrito su salida se detiene y se repite una vez desde cero. El caso real costó 1,15 M tokens (unos 2,5 $) sin escribir nada; su repetición sí escribió.
+  - **93, sugerencias prudentes (prompts v0.11):**
+    - «Aprobar todas» solo aprueba lo que sale de la documentación;
+    - una decisión del cliente se sugiere como «A decidir por el cliente» con las opciones;
+    - el catálogo marca, sin bloquear, los requisitos que se apoyan en una suposición de la IA aceptada tal cual.
+  - **94, estilo del mockup:** sin `.zip`, cada proyecto recibe una de 8 direcciones de estilo, que el modelo adapta al sector.
+  - **Pendiente:** las pruebas reales, que lanza el autor: el flujo completo del proyecto grande sin errores internos ni reparaciones que no caben, y dos mockups sin `.zip` con estilos distintos.
+- **Para la memoria, en palabras sencillas:** el hito 18 hace la plataforma más robusta frente a los fallos de los modelos (corrige lo que tiene una sola corrección, repara cambiando solo lo que está mal y no malgasta ejecuciones perdidas). También la hace más honesta con el usuario: no da por buena una suposición sin que la mire, y los prototipos no salen todos iguales.
 
 ## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
 
@@ -243,6 +256,7 @@ A propone mucho más que B, y la unión se parece mucho a A: lo que aporta solo 
 | v0.5 | 14-10 | Referencia de estilo del mockup |
 | v0.6 y v0.7 | 14-10 | Mockup como una sola aplicación; árbitro que consulta la documentación por tramos |
 | v0.8 y v0.9 | 15-10 | La plataforma junta y revisa el mockup; mockup navegable con inicio de sesión |
+| v0.11 | 19-10 | Reparar editando, sugerencias prudentes y estilo propio del mockup por proyecto |
 | v0.10 | 19-10 | El árbitro parte del emparejamiento por significado de la plataforma, y sus desviaciones se marcan como discrepancia |
 
 El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-requisitos.md`.
@@ -250,11 +264,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 ## Decisiones que siguen abiertas
 
 - ~~Umbral de «discrepancia grave»~~: cerrado por el autor el 19-10-2026. Dos umbrales del emparejamiento (0,90 y 0,70, paso 87), y la discrepancia la marcan las desviaciones del árbitro respecto al emparejamiento (paso 88). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
-- Si se paran las ejecuciones que compactan varias veces antes de escribir su salida.
-- Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
-- Reparar editando solo los elementos con errores, en lugar de reescribir la salida entera: la reparación del árbitro de un catálogo grande no cabe en 128k (16-10-2026).
 - Abaratar las pantallas del mockup y un posible historial de mockups.
-- Prompt de sugerencias más conservador y marcar en el catálogo lo que viene de una respuesta de la IA.
 
 ## Siguientes pasos
 
@@ -262,7 +272,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
 2. ~~**Hito 17, embeddings en local**~~: modelo multilingüe en la API (paso 86), emparejamiento de A y B con los umbrales calibrados (paso 87) y árbitro con embeddings con su prueba real (paso 88), todo el 19-10-2026. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
-3. **Hito 18, fiabilidad y calidad (en curso):** ~~correcciones automáticas de formato para LUNA~~ (paso 89) y ~~estimar el consumo de las ejecuciones sin dato~~ (paso 95), los dos el 19-10-2026, con las tablas de coste; siguen reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
+3. ~~**Hito 18, fiabilidad y calidad**~~ (pasos 89 a 95, 19-10-2026, prompts v0.11, con las tablas de coste); faltan sus pruebas reales, que lanza el autor. Siguiente: el hito 19.
 4. **Hito 19, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
 5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
 6. **Hito 21, historial de versiones de los entregables.**
@@ -274,5 +284,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 174 entre el 28-09 y el 19-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 884 (19-10; 6 de ellos se saltan sin el modelo de embeddings).
+- **Commits:** 180 entre el 28-09 y el 19-10-2026.
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings).

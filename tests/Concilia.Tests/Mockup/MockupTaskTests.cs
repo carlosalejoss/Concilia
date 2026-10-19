@@ -170,6 +170,24 @@ public class MockupTaskTests
 
     // ---- The requests of each step ----
 
+    // Step 94: without a style reference, each project gets a direction of
+    // style of its own, kept in the plan so a resumed mockup keeps it.
+    [Fact]
+    public void Without_a_style_reference_the_prompt_gives_the_direction_of_the_project()
+    {
+        using var temp = new TempDirectory();
+        var plan = Plan with { StyleDirection = StyleDirections.For(3) };
+        plan.Save(Work(temp, "plan"));
+
+        var built = MockupTask.BuildRequest(MockupPlan.Load(Work(temp, "plan")), new MockupStep(MockupStage.Design), Work(temp, "job"),
+            Guid.NewGuid(), "SS - GPT-6-SOL", Work(temp, "run"), new MockupRunOptions());
+
+        Assert.Contains(StyleDirections.WithoutReference(StyleDirections.For(3)), built.Request.Prompt);
+        Assert.DoesNotContain(MockupTask.NoStyle, built.Request.Prompt);
+        Assert.Equal(StyleDirections.For(3), StyleDirections.For(3 + StyleDirections.All.Count)); // always the same for a project
+        Assert.Equal(StyleDirections.All.Count, Enumerable.Range(1, StyleDirections.All.Count).Select(StyleDirections.For).Distinct().Count());
+    }
+
     [Fact]
     public void The_design_reads_the_whole_backlog_and_writes_the_map_and_the_shell()
     {

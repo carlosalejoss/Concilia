@@ -1939,3 +1939,43 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - volver a ajustar el estimador cuando haya muchas más ejecuciones;
   - regenerar `costes.md` tras cada medición;
   - siguen el paso 90 y los demás pasos por decidir del hito 18.
+
+---
+
+## 19-10-2026, 14:00 (sesión)
+
+**Resumen para la bitácora (19-10-2026, hito 18 terminado: pasos 90 a 94, prompts v0.11)**
+
+- **Petición del autor:** acabar el hito 18 entero. Claude explicó a la vez las decisiones de los pasos 90 a 94, con opciones y datos, y el autor eligió todo como se recomendaba.
+- **Paso 91, trabajos interrumpidos** (commit propio): al arrancar, `InterruptedJobs` marca como fallidas las ejecuciones a medias y cierra sus trabajos con un resultado «Interrumpido: la API se reinició…», sin relanzarlos. Un mockup interrumpido se puede reanudar. Solo toca lo creado antes del arranque, porque la API puede aceptar un trabajo nuevo mientras limpia. Sale de `JobWorker` a una clase propia con su test, que no se podía probar con `ExecuteUpdateAsync` en la base en memoria.
+- **Paso 92, compactar sin escribir** (commit propio):
+  - el runner detiene una ejecución en su segunda compactación si no ha escrito su salida (`CompactingBeforeOutput`), y `RetryRunner` la repite una vez desde cero, como una perdida por inactividad (una sola repetición por tarea entre las dos causas);
+  - datos: compactar una vez antes de escribir pasó 4 veces y 3 acabaron bien; el árbitro del 19-10 compactó 6 veces en 98 turnos y unos 1,15 M tokens sin escribir;
+  - fixture sintético nuevo.
+  - **Incidencia:** el commit se hizo con un test en rojo (el que cuenta los fixtures), porque la orden encadenaba el commit al código de salida de `tail` y no al de los tests. Se arregló en el commit siguiente, y desde entonces el commit depende del código de salida de `dotnet test`.
+  - También se quitó de dos tests la comprobación del tiempo transcurrido, que fallaba con la máquina cargada y no aportaba nada: el mensaje ya demuestra que la ejecución se detuvo y no agotó el tiempo.
+- **Paso 90, reparar editando:**
+  - la revisión de un intento puede pasar ficheros y herramientas al siguiente (`AttemptReview.RetryFiles` y `RetryTools`);
+  - la de las fases deja la salida anterior en su fichero, ya revisada por la plataforma (con sus correcciones) y con un elemento por línea;
+  - cada error que empieza por el id de un elemento lleva su línea (`ARB-FALTA` no, porque su id es de una propuesta);
+  - la reparación recibe Edit, y un Edit cuenta como escritura para el runner;
+  - el anexo v0.11 ya no lleva `<salida_previa>`; `{{SALIDA_PREVIA}}` es una nota de dónde está y cómo corregirla, y las notas del mockup dicen que se corrija con Edit;
+  - `FakeProvider` reconoce ahora una reparación por el título del anexo.
+- **Paso 93, sugerencias prudentes:**
+  - **aprobar:** `AcceptSuggestions` solo aprueba las sugerencias con base `documentacion`; si todas son suposiciones, lo dice. El botón de la web dice cuántas aprueba;
+  - **prompt:** una decisión del cliente se sugiere como «A decidir por el cliente:» con las opciones, y ante la duda la base es suposición;
+  - **catálogo:** la vista del catálogo trae las preguntas respondidas con una suposición de la IA aceptada tal cual (`QuestionRules.IsAcceptedGuess`; una editada por el usuario no cuenta). La web marca los requisitos que las citan («Suposición de la IA») y tiene un filtro;
+  - **informe:** cuenta esos requisitos (`basados_en_suposiciones` en el CSV);
+  - no bloquea la validación.
+- **Paso 94, estilo del mockup:** `StyleDirections`, 8 direcciones de estilo concretas (paleta, tipografía, navegación, densidad, formas). Cada proyecto recibe la suya por su id, guardada en el plan del mockup para que reanudar no la cambie, y el §5 pide adaptarla al sector y a los usuarios. Con `.zip` no cambia nada, y los planes anteriores siguen con el texto de antes.
+- **Prompts v0.11:** `PromptVersion` sube a v0.11. CHANGELOG, README de los prompts y sección v0.11 de la evolución, con los resultados pendientes.
+- **Tests:** 890 (6 se saltan sin el modelo de embeddings). Los 46 de la referencia en Python siguen pasando.
+- **Cambios de criterio:**
+  - la reparación ya no lleva la salida previa;
+  - «Aprobar todas» ya no aprueba las suposiciones;
+  - sin `.zip`, el mockup ya no es «sobrio y legible» por defecto;
+  - se cierran las decisiones abiertas de los pasos 90, 91, 92 y 93.
+- **Pendientes:**
+  - las pruebas reales del hito, que lanza el autor: el flujo completo del proyecto grande sin errores internos ni reparaciones que no caben (unos 22 $ y 2 horas), y dos mockups sin `.zip` con estilos distintos;
+  - medir la v0.11 y regenerar las tablas de coste;
+  - después, el hito 19.

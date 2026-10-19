@@ -121,7 +121,9 @@ public static class MockupEndpoints
         }
 
         var backlog = (await DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Backlog))!;
-        var plan = MockupPlan.From(project.SystemName, project.Language, BacklogDraft.ForNextPhase(backlog.Content));
+        // Step 94: a direction of style of its own for each project, used if there is no style reference.
+        var plan = MockupPlan.From(project.SystemName, project.Language, BacklogDraft.ForNextPhase(backlog.Content))
+            with { StyleDirection = StyleDirections.For(project.Id) };
         if (resumed is not null && resumed.Backlog != plan.Backlog)
         {
             return Results.ValidationProblem(new Dictionary<string, string[]>

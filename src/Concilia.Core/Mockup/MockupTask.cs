@@ -16,6 +16,11 @@ public record MockupPlan(string SystemName, string Language, string Backlog, IRe
 {
     public const string FileName = "mockup-plan.json";
 
+    // Step 94: the direction of style of the project (StyleDirections), used
+    // when there is no style reference. Kept in the plan, so a resumed mockup
+    // keeps it; null in the plans from before it.
+    public string? StyleDirection { get; init; }
+
     private static readonly JsonSerializerOptions Json = new()
     {
         WriteIndented = true,
@@ -120,7 +125,8 @@ public static class MockupTask
     public const int MaxBytes = 10 * 1024 * 1024;
     public const int WarningBytes = 2 * 1024 * 1024;
 
-    // What §5 of the prompts says when there is no style reference.
+    // What §5 of the prompts says when there is no style reference, in the
+    // plans from before step 94 (StyleDirections since then).
     public const string NoStyle = "No hay referencia de estilo: haz un diseño sobrio y legible.";
 
     // In the job's folder: the accepted files of each step, and the style reference.
@@ -156,7 +162,8 @@ public static class MockupTask
     {
         CopyFolder(JobStyleFolder(jobFolder), Path.Combine(workDirectory, StyleReference.Folder));
         var prototype = JobPrototypeFolder(jobFolder);
-        var style = StyleReference.Describe(workDirectory) ?? NoStyle;
+        var style = StyleReference.Describe(workDirectory)
+            ?? (plan.StyleDirection is { } direction ? StyleDirections.WithoutReference(direction) : NoStyle);
         var values = new Dictionary<string, string>
         {
             ["NOMBRE_SISTEMA"] = plan.SystemName,
