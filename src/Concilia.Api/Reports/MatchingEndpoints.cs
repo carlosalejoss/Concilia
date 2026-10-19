@@ -17,8 +17,12 @@ public static class MatchingEndpoints
 {
     // Phase: the phase of the job. RearbitrationOf: for a new arbitration, the
     // job whose proposals it arbitrated again. HasArbiter: whether the job has
-    // a valid arbiter output to compare with.
-    public record MatchingView(Guid JobId, string Phase, Guid? RearbitrationOf, bool HasArbiter, string? ArbiterModel, MatchingResult Matching);
+    // a valid arbiter output to compare with. Deviations (step 88): where that
+    // output goes against this matching, also for the jobs from before the
+    // arbiter got it (what the platform would have marked); DeviationElements,
+    // the elements of the arbiter they mark.
+    public record MatchingView(Guid JobId, string Phase, Guid? RearbitrationOf, bool HasArbiter, string? ArbiterModel, MatchingResult Matching,
+        IReadOnlyList<ArbiterDeviation>? Deviations, int? DeviationElements);
 
     public static void MapMatchingEndpoints(this WebApplication app)
     {
@@ -55,8 +59,10 @@ public static class MatchingEndpoints
 
             var matching = ProposalMatcher.Match(ProposalMatcher.ElementsOf(plan.Kind, a), ProposalMatcher.ElementsOf(plan.Kind, b),
                 embedder, thresholds, arbiterPairs);
+            var deviations = arbiterOutput is null ? null : ArbiterDeviations.Find(plan.Kind, arbiterOutput, matching, plan.ProposalOrder);
             return Results.Ok(new MatchingView(jobId, plan.Kind.ToString(), plan.RearbitrationOf, arbiterPairs is not null,
-                runs.FirstOrDefault(r => r.Slot == "ARB")?.Model, matching));
+                runs.FirstOrDefault(r => r.Slot == "ARB")?.Model, matching,
+                deviations, deviations is null ? null : ArbiterDeviations.ElementCount(deviations)));
         });
     }
 
