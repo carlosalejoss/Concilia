@@ -28,6 +28,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 15-10 | Mockup v0.8 y v0.9, hito 13 | Mockup navegable de verdad; test del flujo completo, informes y proyectos de ejemplo |
 | 15-10 y 16-10 | Paso 65 con el proyecto grande de ejemplo | Flujo completo (unos 105 min y al menos 5,2 M tokens de entrada, el 63 % en el mockup); las 26 contradicciones puestas a propósito se tratan como se esperaba; A propone mucho más que B y la unión se parece a A |
 | 19-10 | Hito 17, paso 86 | Servicio de embeddings en local: el modelo multilingüe en el contenedor de la API, con los mismos vectores que sentence-transformers |
+| 19-10 | Hito 18, paso 89 | La plataforma corrige sola cuatro errores de formato que hacían fallar a LUNA, con un aviso |
 | 19-10 | Hito 17, paso 88 | Árbitro con embeddings (prompts v0.10): parte del emparejamiento de la plataforma y lo que hace en contra de los números se marca como discrepancia |
 | 19-10 | Hito 17, paso 87 | Emparejamiento de A y B por significado; umbrales 0,90 y 0,70 calibrados con 48 pares etiquetados por el autor; el árbitro, medido por primera vez frente a un criterio humano |
 
@@ -160,6 +161,20 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Pendiente:** la prueba real, que lanza el autor. Consiste en volver a arbitrar el catálogo de clínicas 2 o 3 veces y ver si la unión es más estable que en el experimento (209, 220 y 291 requisitos con las mismas propuestas).
 - **Para la memoria, en palabras sencillas:** ahora el árbitro no empieza de cero. La plataforma le dice primero qué elementos de los dos modelos se parecen, con un criterio fijo y medido. El árbitro decide y redacta, y si contradice a los números, el usuario lo ve y lo revisa.
 
+### 9. Hito 18: fiabilidad y calidad (19-10, en curso)
+
+- **Paso 89, correcciones automáticas de formato:**
+  - **Por qué:** como árbitro del catálogo, LUNA terminó 2 de 6 intentos, y todos sus fallos fueron de formato, no de criterio. Cada uno obliga a una reparación, que en un catálogo grande es cara o no cabe en el contexto.
+  - **Decisión del autor:** que la plataforma corrija sola, con un aviso, los errores con una única solución evidente, como ya hacía con las claves repetidas y la marca `sigue`:
+    - una cita que es un número de línea pasa a ser el fragmento de esa línea, si es del mismo documento;
+    - un id cuyo prefijo no coincide con su tipo hace renumerar el catálogo por tipo;
+    - un elemento olvidado por el árbitro se añade donde está su par «mismo» del emparejamiento (aprovecha el paso 88);
+    - una pantalla del mockup escrita como documento entero se queda solo con su contenido.
+  - **Decisión del autor: los prompts no cambian en este paso,** para poder medir el efecto de las correcciones por separado (los del árbitro acababan de cambiar en la v0.10).
+  - **Fuera de este paso:** el JSON mal formado y la salida cortada por tamaño, que no tienen arreglo mecánico (paso 90, reparar editando).
+  - **Cierra** dos decisiones abiertas: corregir las citas que son números de línea y quitar las etiquetas de documento de las pantallas.
+- **Para la memoria, en palabras sencillas:** algunos errores de los modelos son como erratas: tienen una sola corrección posible. En lugar de pedir al modelo que repita todo el trabajo, la plataforma los corrige sola y deja constancia de que lo hizo.
+
 ## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
 
 > **Prioridad alta (autor, 16-10-2026).** Afecta al valor de la verificación cruzada, que es la idea central del TFG. Diseño completo del experimento, estado y resultados en [`experimento-sesgo-arbitro.md`](experimento-sesgo-arbitro.md): es material directo para el capítulo de evaluación de la memoria.
@@ -217,10 +232,8 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - ~~Umbral de «discrepancia grave»~~: cerrado por el autor el 19-10-2026. Dos umbrales del emparejamiento (0,90 y 0,70, paso 87), y la discrepancia la marcan las desviaciones del árbitro respecto al emparejamiento (paso 88). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
 - Si se paran las ejecuciones que compactan varias veces antes de escribir su salida.
 - Que un reinicio de la API cierre los trabajos a medias para poder reanudarlos.
-- Si la plataforma corrige las citas que son números de línea (LUNA) cuando la línea es inequívoca.
 - Reparar editando solo los elementos con errores, en lugar de reescribir la salida entera: la reparación del árbitro de un catálogo grande no cabe en 128k (16-10-2026).
 - Si se estima el consumo de las ejecuciones detenidas antes del final.
-- Si la plataforma quita las etiquetas de documento (`<!doctype>`, `<html>`…) de una pantalla del mockup en lugar de pedir una reparación.
 - Abaratar las pantallas del mockup y un posible historial de mockups.
 - Prompt de sugerencias más conservador y marcar en el catálogo lo que viene de una respuesta de la IA.
 
@@ -230,7 +243,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
 2. **Hito 17, embeddings en local:** ~~modelo multilingüe en el contenedor de la API~~ (paso 86), ~~emparejamiento de A y B por significado, con los umbrales calibrados~~ (paso 87) y ~~árbitro con embeddings~~ (paso 88), todo el 19-10-2026. Falta la prueba real del paso 88, que lanza el autor. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
-3. **Hito 18, fiabilidad y calidad:** LUNA, reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
+3. **Hito 18, fiabilidad y calidad (en curso):** ~~correcciones automáticas de formato para LUNA~~ (paso 89, 19-10-2026); siguen reparar editando, trabajos interrumpidos, sugerencias más prudentes y variedad del mockup sin `.zip`.
 4. **Hito 19, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
 5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
 6. **Hito 21, historial de versiones de los entregables.**
@@ -242,5 +255,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 170 entre el 28-09 y el 19-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 871 (19-10; 6 de ellos se saltan sin el modelo de embeddings).
+- **Commits:** 172 entre el 28-09 y el 19-10-2026.
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 877 (19-10; 6 de ellos se saltan sin el modelo de embeddings).

@@ -54,7 +54,8 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
             return [new RunAttempt(request, new RunResult { Status = RunStatus.Failed, ErrorMessage = built.Error }, null)];
         }
 
-        var context = plan.Context(input.Proposal1.Length > 0 ? input.Proposal1 : null, input.Proposal2.Length > 0 ? input.Proposal2 : null);
+        var context = plan.Context(input.Proposal1.Length > 0 ? input.Proposal1 : null, input.Proposal2.Length > 0 ? input.Proposal2 : null,
+            input.Matching.Length > 0 ? input.Matching : null);
         var original = built.Request.Prompt;
         var reads = new List<FileRead>(); // of every attempt: a repair only has to read what was missing
         return await new RetryRunner(provider, MaxRepairs).RunAsync(
@@ -68,8 +69,11 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
                 return Review(attempt, phase.OutputFile,
                     (output, unread) => PhaseTask.Review(phase, output, context, original, attemptsSoFar, unread),
                     built.RequiredReads!, reads,
-                    // Kept as it was checked: repeated lists joined, without the "sigue" marks and the arbiter's prefixes.
-                    phase.IsArbiter ? output => ProposalIds.Strip(PhaseTask.Clean(output)!) : output => PhaseTask.Clean(output)!);
+                    // Kept as it was checked: repeated lists joined, without the "sigue" marks, with the
+                    // fixes of the platform and without the arbiter's prefixes.
+                    phase.IsArbiter
+                        ? output => ProposalIds.Strip(PhaseTask.Clean(phase, output, context)!)
+                        : output => PhaseTask.Clean(phase, output, context)!);
             },
             cancellationToken);
     }

@@ -15,7 +15,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 
 - **Terminado:** los pasos 86 (servicio de embeddings en la API), 87 (emparejamiento de A y B por significado, con los umbrales calibrados con el criterio del autor: 0,90 y 0,70).
 - **Hecho el 19-10-2026:** el paso 88, el árbitro con embeddings (prompts v0.10), salvo su prueba real con modelos, que lanza el autor: volver a arbitrar el catálogo de clínicas y compararlo con los arbitrajes del experimento.
-- **Siguiente:** esa prueba y, después, el hito 18 (fiabilidad y calidad).
+- **Hecho el 19-10-2026:** el paso 89 (correcciones automáticas de formato), del hito 18.
+- **Siguiente:** cerrar la prueba del paso 88 y seguir con el hito 18 (paso 90, por decidir).
 
 ## Hito 0: preparación y prueba de humo (completado)
 
@@ -388,7 +389,7 @@ Pedido por el autor el 14-10-2026, para probar el mockup con `SS - GPT-6-SOL`.
 
 Acordado con el autor el 16-10-2026, tras el paso 65 y el experimento del árbitro. Recoge lo que falló o se quedó corto en las pruebas reales.
 
-- [ ] 89. Fiabilidad de LUNA. Comete errores de formato que obligan a reparar: claves repetidas, elementos sin clasificar (`ARB-FALTA`) y números de línea citados como fragmentos. Hay que hacer los prompts más explícitos y añadir más correcciones mecánicas en la plataforma. **Por decidir** cuáles se corrigen solas, por ejemplo las citas que son números de línea, las etiquetas `<html>`, `<body>`… de las pantallas del mockup, o un id cuyo prefijo no coincide con su tipo (`RF-066` de tipo `RNF`: la plataforma podría renumerarlo, como hace la v1.3).
+- [x] 89. Fiabilidad de LUNA. Comete errores de formato que obligan a reparar: claves repetidas, elementos sin clasificar (`ARB-FALTA`) y números de línea citados como fragmentos. Hay que hacer los prompts más explícitos y añadir más correcciones mecánicas en la plataforma. **Por decidir** cuáles se corrigen solas, por ejemplo las citas que son números de línea, las etiquetas `<html>`, `<body>`… de las pantallas del mockup, o un id cuyo prefijo no coincide con su tipo (`RF-066` de tipo `RNF`: la plataforma podría renumerarlo, como hace la v1.3). (19-10-2026, decisiones del autor: las cuatro correcciones automáticas y sin tocar los prompts, para poder medir el efecto de las correcciones por separado. `PlatformFixes`, antes de comprobar cada salida y en lo que se guarda, con un aviso cada una: `REF-LINEA`, la cita de un número de línea del mismo documento cambiada por su fragmento; `TIPO`, renumeración por tipo cuando el prefijo no coincide; y `ARB-FALTA`, el elemento olvidado por el árbitro añadido donde está su par «mismo» del emparejamiento. Y en el mockup, `FRAGMENTO`: la pantalla escrita como documento entero se queda con su contenido. No se arregla el JSON mal formado ni la salida cortada, que son del paso 90.)
 - [ ] 90. Reparar editando. **Por decidir.** La reparación pega la salida anterior entera en el prompt, y la de un catálogo de árbitro (unos 30.000 tokens) no cabe en 128k junto con las propuestas. Con `Edit`, el modelo corregiría solo los elementos con errores.
 - [ ] 91. Cerrar los trabajos interrumpidos al arrancar la API. **Por decidir.** Hoy quedan sin fecha de fin, y un mockup interrumpido no se puede reanudar.
 - [ ] 92. Parar las ejecuciones que compactan varias veces antes de escribir su salida. **Por decidir.**

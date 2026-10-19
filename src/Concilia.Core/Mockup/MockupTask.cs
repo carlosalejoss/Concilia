@@ -336,6 +336,34 @@ public static class MockupTask
 
     private static readonly Regex DocumentTag = new(@"<\s*(?:!doctype|html|head|body)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+    // The parts of a whole document that a screen may come wrapped in (step 89).
+    private static readonly Regex HeadBlock = new(@"<head\b[^>]*>(.*?)</head\s*>", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+    private static readonly Regex BodyBlock = new(@"<body\b[^>]*>(.*)</body\s*>", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+    private static readonly Regex StyleOrScript = new(@"<(style|script)\b.*?</\1\s*>", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+    private static readonly Regex DocumentTags = new(@"<!doctype[^>]*>|</?html\b[^>]*>|<head\b[^>]*>.*?</head\s*>|</?body\b[^>]*>",
+        RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+    private static readonly Regex SectionStart = new(@"^<section\b[^>]*>", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    // Step 89 (decision of the author, 19-10-2026): a screen written as a
+    // whole document (<!doctype>, <html>, <head>, <body>) keeps only what goes
+    // in the page: the content of its <body>, and the <style> and <script>
+    // of its <head> moved inside the root <section>, so they still apply. The
+    // rest of the head (title, meta) is what the shell already has.
+    public static string WithoutDocumentTags(string html)
+    {
+        var fromHead = HeadBlock.Match(html) is { Success: true } head
+            ? StyleOrScript.Matches(head.Groups[1].Value).Select(m => m.Value).ToList()
+            : [];
+        var content = BodyBlock.Match(html) is { Success: true } body ? body.Groups[1].Value : html;
+        content = DocumentTags.Replace(content, "").Trim();
+        if (fromHead.Count == 0)
+            return content;
+        var moved = "\n" + string.Join("\n", fromHead);
+        return SectionStart.Match(content) is { Success: true } start
+            ? content.Insert(start.Length, moved)
+            : moved.TrimStart() + "\n" + content;
+    }
+
     // The content of a data: URI ("data:image/png;base64,iVBOR…").
     private static readonly Regex DataUri = new(@"data:[\w.+/-]+;base64,[A-Za-z0-9+/=]+", RegexOptions.Compiled);
 
@@ -382,6 +410,15 @@ public static class MockupTask
             return new PhaseValidation([$"{file} FICHERO: no se ha escrito la pantalla."], []);
 
         var errors = new List<string>();
+        var warnings = new List<string>();
+        // Step 89: the wrapping of a whole document is removed by the
+        // platform, in the file itself, instead of asking for a repair.
+        if (DocumentTag.IsMatch(html) && WithoutDocumentTags(html) is var inner && !DocumentTag.IsMatch(inner))
+        {
+            File.WriteAllText(Path.Combine(workDirectory, file), inner);
+            warnings.Add($"{screen.Id} FRAGMENTO: la pantalla venía como documento entero (<!doctype>, <html>, <head> o <body>); la plataforma deja solo su contenido.");
+            html = inner;
+        }
         var root = ScreenMark.Match(html);
         if (!html.TrimStart().StartsWith("<section", StringComparison.OrdinalIgnoreCase) || !root.Success || root.Groups[1].Value != screen.Id)
             errors.Add($"{screen.Id} PANTALLA: el fichero empieza por <section data-pantalla=\"{screen.Id}\">.");
@@ -391,7 +428,7 @@ public static class MockupTask
         foreach (var id in screen.StoryIds.Where(id => !marks.Contains(id)))
             errors.Add($"{id} HU: ningún elemento de la pantalla lleva data-hu=\"{id}\".");
         errors.AddRange(PageErrors(html, file, workDirectory, wholeDocument: false));
-        return new PhaseValidation(errors, []);
+        return new PhaseValidation(errors, warnings);
     }
 
     // A fixed part: the checks of its kind, and that it no longer has

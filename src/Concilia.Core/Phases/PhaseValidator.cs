@@ -20,6 +20,8 @@ public record PhaseContext
     public string? Catalog { get; init; }
     public string? Proposal1 { get; init; }
     public string? Proposal2 { get; init; }
+    // Arbiter: the matching of the platform (MatchingFile), for PlatformFixes.
+    public string? Matching { get; init; }
 }
 
 // Errors cause the repair (each line goes to the annex); warnings are shown

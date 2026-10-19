@@ -64,6 +64,18 @@ Mockup (`MockupMap` y `MockupTask.Check` en C#, sin referencia en Python). Desde
 
 `python validar_v0.py` valida los ejemplos. Necesita `jsonschema` 4 o superior (draft 2020-12).
 
+## Lo que corrige la plataforma sin reparación
+
+Antes de comprobar una salida, la plataforma corrige ella misma los errores de formato que tienen una única solución evidente, y deja un aviso con su código. Lo mismo se aplica a lo que se guarda. Ninguna de estas correcciones existe en `validar_v0.py`, que sigue siendo la referencia del validador:
+
+- **Claves repetidas** cuyos valores son listas: se juntan (`CLAVE-DUP`, 16-10-2026).
+- **La marca `sigue`** en un fragmento citado (`DOC-17#F003 sigue`): se quita (15-10-2026).
+- **Desde el paso 89** (19-10-2026):
+  - **`REF-LINEA`:** un fragmento citado que no existe y cuyo número es una línea de `input/documentacion.txt` con un fragmento del mismo documento se cambia por ese fragmento. Si el documento no coincide, sigue siendo el error `REF-FRAG`, que dice qué fragmento hay en esa línea.
+  - **`TIPO`** (catálogo): si el prefijo de algún id no coincide con su tipo, se toma el tipo como bueno y se renumera el catálogo por tipo.
+  - **`ARB-FALTA`** (árbitro): un elemento de una propuesta que no está en ningún `de` ni en los descartes se añade al elemento donde está su par «mismo» de `input/emparejamiento.txt`. Sin ese par, o con pares en varios elementos, sigue siendo un error.
+  - **`FRAGMENTO`** (pantalla del mockup): una pantalla escrita como documento entero se queda con el contenido de su `<body>`, y los `<style>` y `<script>` de su `<head>` pasan dentro de la `<section>` raíz.
+
 ## Ejemplo
 
 `ejemplo/` usa ReservaSalas: `generacion_requisitos/ejemplo/fuentes/DOC-01.txt` y sus 14 fragmentos de `fragmentos.json`. Cada fase tiene dos propuestas y la salida del árbitro, con diferencias pensadas para ver cómo se une:

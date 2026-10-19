@@ -251,10 +251,14 @@ public class MockupTaskTests
 
         Directory.CreateDirectory(Path.GetDirectoryName(file)!);
         File.WriteAllText(file, "<html><body><section data-pantalla=\"P01\"><p data-hu=\"HU-001\"></p></section></body></html>");
-        var errors = MockupTask.Check(step, Plan, temp.Path).Errors;
+        var check = MockupTask.Check(step, Plan, temp.Path);
+        var errors = check.Errors;
 
         Assert.Contains(errors, e => e.StartsWith("P02 PANTALLA:"));
-        Assert.Contains(errors, e => e.StartsWith("P02 FRAGMENTO:"));
+        // Step 89: the wrapping of a whole document is removed by the platform, with a warning.
+        Assert.DoesNotContain(errors, e => e.StartsWith("P02 FRAGMENTO:"));
+        Assert.Contains(check.Warnings, w => w.StartsWith("P02 FRAGMENTO:"));
+        Assert.Equal("<section data-pantalla=\"P01\"><p data-hu=\"HU-001\"></p></section>", File.ReadAllText(file));
         Assert.Equal(["HU-002 HU: ningún elemento de la pantalla lleva data-hu=\"HU-002\"."], errors.Where(e => e.Contains(" HU:")));
 
         File.WriteAllText(file, "<section data-pantalla=\"P02\"><p data-hu=\"HU-001 HU-002\"></p></section>");
@@ -359,6 +363,24 @@ public class MockupTaskTests
         Assert.True(MockupTask.Validate(html, Plan.StoryIds, ["P01", "P02"]).Valid);
         Assert.DoesNotContain(MockupTask.Placeholder, html);
         Assert.True(html.IndexOf("<!-- P01 -->") < html.IndexOf("<!-- P02 -->"));
+    }
+
+    [Fact]
+    public void A_screen_written_as_a_whole_document_keeps_its_content_and_its_styles()
+    {
+        var html = """
+            <!doctype html>
+            <html lang="es"><head><meta charset="utf-8"><title>P01</title><style>.x { color: red; }</style></head>
+            <body><section data-pantalla="P01"><p class="x">Hola</p></section></body></html>
+            """;
+
+        var inner = MockupTask.WithoutDocumentTags(html);
+
+        Assert.StartsWith("<section data-pantalla=\"P01\">", inner);
+        Assert.Contains("<style>.x { color: red; }</style>", inner); // moved inside the section
+        Assert.DoesNotContain("<title>", inner);
+        Assert.DoesNotContain("<body", inner);
+        Assert.EndsWith("</section>", inner);
     }
 
     [Fact]

@@ -154,14 +154,17 @@ public static class PhaseTask
         var joinedWarnings = duplicates.Select(d => $"{phase.OutputFile} CLAVE-DUP: clave repetida unida por la plataforma ({d}).").ToList();
 
         // Checked without the "sigue" mark of the cited fragments
-        // (FragmentCitations) and, in the arbiter, without the prefix of the
-        // proposal in its ids (ProposalIds): the platform removes both.
-        var cleaned = joined is null ? null : FragmentCitations.Clean(joined);
+        // (FragmentCitations), with the fixes of the platform (PlatformFixes)
+        // and, in the arbiter, without the prefix of the proposal in its ids
+        // (ProposalIds): the platform does all of it by itself.
+        var fixes = joined is null ? null : PlatformFixes.Apply(phase, FragmentCitations.Clean(joined), context);
+        var cleaned = fixes?.Output;
         var checkedOutput = cleaned is null
             ? new PhaseValidation([$"{phase.OutputFile} FICHERO: no se ha escrito el fichero."], [])
             : PhaseValidator.Validate(phase, phase.IsArbiter ? ProposalIds.Strip(cleaned) : cleaned, context);
         var wrongPrefixes = phase.IsArbiter && cleaned is not null ? ProposalIds.WrongPrefixes(cleaned) : [];
-        var validation = new PhaseValidation([.. wrongPrefixes, .. checkedOutput.Errors, .. extraErrors ?? []], [.. joinedWarnings, .. checkedOutput.Warnings]);
+        var validation = new PhaseValidation([.. wrongPrefixes, .. checkedOutput.Errors, .. extraErrors ?? []],
+            [.. joinedWarnings, .. fixes?.Warnings ?? [], .. checkedOutput.Warnings]);
         var repair = validation.Valid
             ? null
             : PhasePrompt.Repair(originalPrompt, attempt, phase.OutputFile, output ?? "", validation.Errors);
@@ -169,10 +172,11 @@ public static class PhaseTask
     }
 
     // What the platform fixes by itself in an output before checking it and
-    // keeping it: repeated keys whose values are lists (JsonDuplicates) and
-    // the "sigue" mark of the cited fragments (FragmentCitations).
-    public static string? Clean(string? output) =>
-        output is null ? null : FragmentCitations.Clean(JsonDuplicates.Merge(output) ?? output);
+    // keeping it: repeated keys whose values are lists (JsonDuplicates), the
+    // "sigue" mark of the cited fragments (FragmentCitations) and the
+    // mistakes of format with only one fix (PlatformFixes, step 89).
+    public static string? Clean(PhaseDefinition phase, string? output, PhaseContext context) =>
+        output is null ? null : PlatformFixes.Apply(phase, FragmentCitations.Clean(JsonDuplicates.Merge(output) ?? output), context).Output;
 
     // The context of the validator from the run folder (what BuildRequest wrote).
     public static PhaseContext LoadContext(string workDirectory, IReadOnlySet<string> answeredQuestionIds)
@@ -190,6 +194,7 @@ public static class PhaseTask
             Catalog = ReadIfExists(workDirectory, CatalogFile),
             Proposal1 = Proposal(Proposal1File),
             Proposal2 = Proposal(Proposal2File),
+            Matching = ReadIfExists(workDirectory, MatchingFile.Path),
             PendingQuestionIds = ReadIfExists(workDirectory, PendingFile) is { } pending
                 ? JsonSerializer.Deserialize<List<string>>(pending)!
                 : [],
