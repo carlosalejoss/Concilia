@@ -1846,3 +1846,25 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Pendientes:**
   - **prueba real, que lanza el autor:** reconstruir la API y volver a arbitrar 2 o 3 veces el catálogo de clínicas con la v0.10. Comparar el tamaño de la unión (antes 209, 220 y 291 con las mismas propuestas), lo que entra solo de A y de B y las desviaciones, y anotarlo en `docs/evolucion-prompt-requisitos.md` (sección v0.10);
   - después, el hito 18.
+
+---
+
+## 19-10-2026, 12:30 (sesión)
+
+**Resumen para la bitácora (19-10-2026, hito 18, paso 89: correcciones automáticas de formato)**
+
+- **Qué se hizo:** `PlatformFixes`, que corrige sola cuatro errores de formato con una única solución evidente y deja un aviso con su código. Se aplica antes de comprobar cada intento (`PhaseTask.Review`) y a lo que se guarda (`PhaseTask.Clean`), igual que la unión de claves repetidas y la marca `sigue`:
+  - **`REF-LINEA`:** un fragmento citado que no existe, cuyo número es una línea de `input/documentacion.txt` con un fragmento del mismo documento, pasa a ser ese fragmento. Con otro documento sigue siendo `REF-FRAG`, con la pista de qué fragmento hay en esa línea.
+  - **`TIPO`** (catálogo de A, B y árbitro): si algún prefijo no coincide con su tipo, se toma el tipo como bueno y se renumera por tipo, como hace el borrador. Ningún otro elemento cita los ids propios.
+  - **`ARB-FALTA`** (árbitro): un elemento de una propuesta que no está en ningún `de` ni en los descartes se añade al `de` del elemento donde está su par «mismo» de `input/emparejamiento.txt`. Si no tiene par «mismo», o sus pares están en varios elementos, sigue siendo un error. El contexto del validador lleva ahora el emparejamiento.
+  - **`FRAGMENTO`** (pantalla del mockup): una pantalla escrita como documento entero se queda con el contenido de su `<body>`, con los `<style>` y `<script>` de su `<head>` dentro de la `<section>` raíz. Se corrige en el propio fichero, con un aviso.
+  - **Tests:** 6 nuevos y 2 adaptados (el de la cita con número de línea y el de la pantalla envuelta en `<html>`). 877 en total.
+- **Decisiones del autor** (con la recomendación de Claude):
+  - las cuatro correcciones, la de `ARB-FALTA` solo con pares «mismo»;
+  - los prompts no cambian en este paso, para poder medir por separado el efecto de las correcciones (los del árbitro acababan de cambiar en la v0.10).
+- **Fuera del paso:** el JSON mal formado y la salida cortada por el tope, que no tienen arreglo mecánico (paso 90).
+- **Cambios de criterio:** se cierran dos decisiones abiertas, corregir las citas que son números de línea y quitar las etiquetas de documento de las pantallas, que antes pedían reparación.
+- **En paralelo**, mientras el autor lanzaba los arbitrajes de la prueba del paso 88:
+  - `scripts/evaluacion/comparar-arbitrajes.cs` compara los arbitrajes de las mismas propuestas por modelo y versión del prompt;
+  - `GET /jobs/{id}/matching` calcula también las desviaciones de los trabajos de antes del paso 88, es decir, lo que la plataforma habría marcado.
+- **Pendientes:** terminar la prueba del paso 88 y anotar sus resultados; después, el paso 90 (por decidir).

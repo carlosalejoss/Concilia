@@ -208,7 +208,7 @@ public class PhaseTaskTests
 
         Assert.True(review.Valid, string.Join(" | ", review.Validation.Errors));
         Assert.Contains(review.Validation.Warnings, w => w.Contains("CLAVE-DUP: clave repetida unida por la plataforma"));
-        Assert.Empty(JsonDuplicates.Find(PhaseTask.Clean(output)!)); // what is kept has it joined
+        Assert.Empty(JsonDuplicates.Find(PhaseTask.Clean(phase, output, context)!)); // what is kept has it joined
     }
 
     [Theory]
@@ -242,20 +242,87 @@ public class PhaseTaskTests
         Assert.Equal("no es JSON", FragmentCitations.Clean("no es JSON"));
     }
 
-    [Fact]
-    public void A_fragment_that_is_a_line_number_says_which_fragment_is_on_that_line()
+    // Step 89: a line number of the same document is fixed by the platform,
+    // with a warning; with another document it is still an error, which says
+    // which fragment is on that line.
+    [Theory]
+    [InlineData("DOC-01", true)]
+    [InlineData("DOC-09", false)]
+    public void A_fragment_that_is_a_line_number_is_fixed_when_the_line_is_of_its_document(string document, bool fixedByPlatform)
     {
         var phase = PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Proposal);
         var documentation = DocumentationFile.Build(Fragments, new Dictionary<string, string>());
         var lines = DocumentationFile.FragmentAtLine(documentation);
         var line = lines.Keys.Max();
-        var cited = $"DOC-01#F{line:000}";
+        var cited = $"{document}#F{line:000}";
         Assert.DoesNotContain(cited, Fragments.Select(f => f.Id)); // a line number, not a fragment
         var output = File.ReadAllText(Example("catalogo_propuesta_1.json")).Replace("\"DOC-01#F002\"", $"\"{cited}\"");
+        var context = Context() with { FragmentAtLine = lines };
 
-        var review = PhaseTask.Review(phase, output, Context() with { FragmentAtLine = lines }, "PROMPT", 1);
+        var review = PhaseTask.Review(phase, output, context, "PROMPT", 1);
 
-        Assert.Contains(review.Validation.Errors, e => e.Contains($"REF-FRAG: el fragmento {cited} no existe. La línea {line} de input/documentacion.txt es {lines[line]}:"));
+        if (fixedByPlatform)
+        {
+            Assert.True(review.Valid, string.Join(" | ", review.Validation.Errors));
+            Assert.Contains(review.Validation.Warnings, w => w.Contains($"REF-LINEA: {cited} no existe") && w.Contains(lines[line]));
+            Assert.Contains($"\"{lines[line]}\"", PhaseTask.Clean(phase, output, context)); // what is kept has the fragment
+        }
+        else
+            Assert.Contains(review.Validation.Errors, e => e.Contains($"REF-FRAG: el fragmento {cited} no existe. La línea {line} de input/documentacion.txt es {lines[line]}:"));
+    }
+
+    // Step 89: an id that does not match its type (RF-009 of type RNF) is
+    // renumbered by type, with a warning; the type is taken as right.
+    [Fact]
+    public void A_requirement_whose_id_does_not_match_its_type_is_renumbered()
+    {
+        var phase = PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Proposal);
+        var catalog = JsonNode.Parse(File.ReadAllText(Example("catalogo_propuesta_1.json")))!;
+        var wrong = catalog["requisitos"]!.AsArray().Single(r => r!["id"]!.GetValue<string>() == "RF-009")!;
+        wrong["tipo"] = "RNF";
+        var output = catalog.ToJsonString();
+
+        var review = PhaseTask.Review(phase, output, Context(), "PROMPT", 1);
+
+        Assert.True(review.Valid, string.Join(" | ", review.Validation.Errors));
+        Assert.Contains(review.Validation.Warnings, w => w.Contains("TIPO") && w.Contains("RF-009"));
+        var kept = JsonNode.Parse(PhaseTask.Clean(phase, output, Context())!)!["requisitos"]!.AsArray();
+        Assert.Equal(["RF-008", "RNF-001", "RNF-002", "RT-001"], kept.Skip(7).Select(r => r!["id"]!.GetValue<string>()));
+    }
+
+    // Step 89: an element the arbiter left out of every `de` and of the
+    // discards is added to the element where its pair "mismo" of the
+    // matching is; without that pair it is still an error.
+    [Theory]
+    [InlineData("1:RF-004 2:RF-004 mismo 0.95", true)]
+    [InlineData("1:RF-004 2:RF-004 parecido 0.80", false)]
+    [InlineData("", false)]
+    public void An_element_left_out_by_the_arbiter_joins_its_pair_mismo(string matchingLine, bool fixedByPlatform)
+    {
+        var phase = PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Arbiter);
+        var arbiter = JsonNode.Parse(File.ReadAllText(Example("catalogo_arbitro.json")))!;
+        var element = arbiter["requisitos"]!.AsArray().Single(r => r!["id"]!.GetValue<string>() == "RF-004")!;
+        element["de"]!["propuesta_1"] = new JsonArray(); // proposal 1's RF-004 is left out
+        var output = arbiter.ToJsonString();
+        var context = Context() with
+        {
+            Proposal1 = File.ReadAllText(Example("catalogo_propuesta_1.json")),
+            Proposal2 = File.ReadAllText(Example("catalogo_propuesta_2.json")),
+            Matching = matchingLine.Length > 0 ? matchingLine + "\n" : null,
+        };
+
+        var review = PhaseTask.Review(phase, output, context, "PROMPT", 1);
+
+        if (fixedByPlatform)
+        {
+            Assert.True(review.Valid, string.Join(" | ", review.Validation.Errors));
+            Assert.Contains(review.Validation.Warnings, w => w.StartsWith("1:RF-004 ARB-FALTA") && w.Contains("RF-004"));
+            var kept = JsonNode.Parse(ProposalIds.Strip(PhaseTask.Clean(phase, output, context)!))!;
+            Assert.Equal(["RF-004"], kept["requisitos"]!.AsArray().Single(r => r!["id"]!.GetValue<string>() == "RF-004")!["de"]!["propuesta_1"]!
+                .AsArray().Select(i => i!.GetValue<string>()));
+        }
+        else
+            Assert.Contains(review.Validation.Errors, e => e.StartsWith("RF-004 ARB-FALTA"));
     }
 
     // A and B read their input entirely; the arbiter, the two proposals (and

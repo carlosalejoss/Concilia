@@ -45,8 +45,8 @@ public record PhasePlan(
     public static IReadOnlyList<string> RandomOrder(Random random) =>
         random.Next(2) == 0 ? ["A", "B"] : ["B", "A"];
 
-    // The context of the validator for this plan (the arbiter adds its proposals).
-    public PhaseContext Context(string? proposal1 = null, string? proposal2 = null) => new()
+    // The context of the validator for this plan (the arbiter adds its proposals and the matching).
+    public PhaseContext Context(string? proposal1 = null, string? proposal2 = null, string? matching = null) => new()
     {
         FragmentIds = Fragments.Select(f => f.Id).ToHashSet(),
         FragmentAtLine = DocumentationFile.FragmentAtLine(Input.Documentation),
@@ -55,6 +55,7 @@ public record PhasePlan(
         PendingQuestionIds = PendingQuestionIds,
         Proposal1 = proposal1,
         Proposal2 = proposal2,
+        Matching = matching,
     };
 
     // Where an element of the arbiter comes from, from its `de`: "A", "B" or
