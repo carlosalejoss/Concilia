@@ -15,7 +15,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 
 - **Terminado:** los pasos 86 (servicio de embeddings en la API), 87 (emparejamiento de A y B por significado, con los umbrales calibrados con el criterio del autor: 0,90 y 0,70).
 - **Hecho el 19-10-2026:** el paso 88, el árbitro con embeddings (prompts v0.10), con su prueba real (la unión es más estable: 202–222 requisitos frente a 209–291). El hito 17 queda completado.
-- **Hecho el 19-10-2026:** el paso 89 (correcciones automáticas de formato), del hito 18.
+- **Hecho el 19-10-2026:** los pasos 89 (correcciones automáticas de formato) y 95 (estimar el consumo de las ejecuciones sin dato), del hito 18, y las tablas de coste en tiempo y dinero (`docs/costes/`).
 - **Siguiente:** el hito 18, paso 90 (por decidir).
 
 ## Hito 0: preparación y prueba de humo (completado)
@@ -395,7 +395,7 @@ Acordado con el autor el 16-10-2026, tras el paso 65 y el experimento del árbit
 - [ ] 92. Parar las ejecuciones que compactan varias veces antes de escribir su salida. **Por decidir.**
 - [ ] 93. Sugerencias de respuesta más prudentes, y marca en el catálogo de lo que sale de una suposición de la IA. En las pruebas, casi todas las sugerencias eran suposiciones y se aceptaron sin revisar, lo que infla el catálogo.
 - [ ] 94. Variedad del mockup sin `.zip`. Observación del autor (16-10-2026): sin una referencia de estilo, sale siempre con el mismo estilo y la misma organización. Relacionado con la idea aparcada de usar la skill `frontend-design` con la suscripción del autor (ver `docs/trazabilidad-proyecto.md`).
-- [ ] 95. Estimar el consumo de las ejecuciones detenidas antes del final, que hoy no tienen dato. **Por decidir.**
+- [x] 95. Estimar el consumo de las ejecuciones detenidas antes del final, que hoy no tienen dato. **Por decidir.** (19-10-2026, decisión del autor: estimarlo como se pueda, validando la estimación. `UsageEstimator` reconstruye el contexto turno a turno a partir de la consola guardada (cada Read con su tramo, cada Write y las compactaciones) y lo convierte en tokens con coeficientes ajustados en las 125 ejecuciones con dato real (`scripts/evaluacion/ajustar-estimador.cs`). Error del total: −0,7 % en el mockup y −3,5 % en las fases. El informe, su CSV y la web dan la estimación aparte. Junto con él, a petición del autor, las tablas de coste en tiempo y dinero (`docs/costes/`, `scripts/evaluacion/costes.cs` y `precios.json`) y el tiempo de CPU de los embeddings, guardado con cada arbitraje.)
 
 **Hecho cuando:** el flujo completo del proyecto grande de ejemplo termina sin errores internos ni reparaciones que no caben, y el mockup sin `.zip` cambia de estilo entre proyectos distintos.
 

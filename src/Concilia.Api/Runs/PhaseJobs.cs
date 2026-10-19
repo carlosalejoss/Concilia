@@ -129,6 +129,10 @@ public static class PhaseJobs
                 ["similitud"] = Math.Round(d.Similarity, 3),
                 ["explicacion"] = d.Explanation,
             }).ToArray()),
+            // What the matching cost: the embeddings are local, so time and not money (step 95).
+            ["emparejamiento"] = result.MatchingTime is { } time
+                ? new JsonObject { ["segundos"] = Math.Round(time.Seconds, 2), ["segundos_cpu"] = Math.Round(time.CpuSeconds, 2) }
+                : null,
         };
         File.WriteAllText(Path.Combine(jobFolder, PhaseJobResult.FileName),
             content.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }));

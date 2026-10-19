@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using Concilia.Core.Phases;
+using Concilia.Core.Runs;
 
 namespace Concilia.Core.Reports;
 
@@ -10,9 +11,11 @@ namespace Concilia.Core.Reports;
 // current deliverable.
 
 // One run of the job. Seconds: from its start to its end (for a repair, the
-// whole run, since the attempts share the start).
+// whole run, since the attempts share the start). Estimated tokens (step
+// 95): only for a run without usage, from its saved console (UsageEstimator).
 public record RunLine(string Slot, int? Lot, int Attempt, string Model, string State,
-    long? InputTokens, long? OutputTokens, int? Turns, double? Seconds, string? Error);
+    long? InputTokens, long? OutputTokens, int? Turns, double? Seconds, string? Error,
+    long? EstimatedInputTokens = null, long? EstimatedOutputTokens = null);
 
 // What each model proposed and what the arbiter made of it: A and B (null if
 // that model did not end well), the elements of the merge, by origin, those
@@ -37,11 +40,15 @@ public record QuestionCounts(int Total, int Answered, int Discarded, int Pending
 // Phase: the phase of a v0 job ("Questions", "Catalog"…). ArbiterModel: the
 // model of its arbiter. RearbitrationOf: for a new arbitration, the job whose
 // proposals it arbitrated again (to compare arbiters on the same proposals).
+// Step 95: EstimatedInputTokens and EstimatedOutputTokens, the estimate of the
+// runs without usage (the tokens of the job are then InputTokens plus them);
+// MatchingTime, what the matching of the arbiter cost the platform.
 public record JobReport(
     Guid JobId, string Kind, DateTimeOffset CreatedAt, DateTimeOffset? FinishedAt, bool Succeeded, string? Message,
     long InputTokens, long OutputTokens, int RunsWithoutUsage, int Repairs, double? Seconds,
     IReadOnlyList<RunLine> Runs, ElementCounts? Elements, UserChanges? Changes, string? ChangesNote, QuestionCounts? Questions,
-    string? Phase = null, string? ArbiterModel = null, Guid? RearbitrationOf = null);
+    string? Phase = null, string? ArbiterModel = null, Guid? RearbitrationOf = null,
+    long EstimatedInputTokens = 0, long EstimatedOutputTokens = 0, ComputeTime? MatchingTime = null);
 
 public static class JobReports
 {

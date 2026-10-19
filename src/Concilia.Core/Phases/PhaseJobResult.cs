@@ -1,4 +1,5 @@
 using Concilia.Core.Matching;
+using Concilia.Core.Runs;
 
 namespace Concilia.Core.Phases;
 
@@ -14,4 +15,8 @@ public record PhaseJobResult(string? Source, bool CrossChecked, string? Output, 
     // Kept apart from Output, which stays the arbiter's output as it wrote it:
     // the drafts of the catalog and the backlog mark these elements as a discrepancy.
     public IReadOnlyList<ArbiterDeviation> Deviations { get; init; } = [];
+
+    // What the matching and the deviations cost the platform (step 95): the
+    // embeddings are local, so their cost is time, not money. Null without arbiter.
+    public ComputeTime? MatchingTime { get; init; }
 }
