@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using Concilia.Api.OpenApi;
 using Concilia.Core.Embeddings;
 using Concilia.Core.Matching;
 
@@ -52,8 +54,18 @@ public static class EmbeddingSetup
         app.MapPost("/embeddings/similarity", (SimilarityRequest request, ITextEmbedder embedder) =>
             request.A is null || request.B is null
                 ? Results.BadRequest(new { error = "Faltan los textos \"a\" y \"b\"." })
-                : Results.Ok(new { similarity = embedder.Similarity(request.A, request.B) }));
+                : Results.Ok(new SimilarityView(embedder.Similarity(request.A, request.B))))
+            .WithTags(ApiTags.Reports)
+            .WithSummary("Similitud entre dos textos")
+            .WithDescription("El coseno de sus embeddings, calculados en local (por ejemplo, el mismo requisito en español y en inglés). No se guarda nada.")
+            .Produces<SimilarityView>()
+            .Produces(StatusCodes.Status400BadRequest);
     }
 
-    public record SimilarityRequest(string? A, string? B);
+    public record SimilarityRequest(
+        [property: Description("El primer texto.")] string? A,
+        [property: Description("El segundo texto.")] string? B);
+
+    // Similarity: from -1 to 1; from 0.90 up, the two texts say the same (step 87).
+    public record SimilarityView(double Similarity);
 }

@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Files;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Api.Runs;
 using Concilia.Core.Deliverables;
@@ -19,15 +20,21 @@ public static class ReportEndpoints
 {
     public static void MapReportEndpoints(this WebApplication app)
     {
-        app.MapGet("/jobs/{jobId:guid}/report", async (Guid jobId, AppDbContext db, FileStorage storage) =>
+        var group = app.MapGroup("").WithTags(ApiTags.Reports);
+
+        group.MapGet("/jobs/{jobId:guid}/report", async (Guid jobId, AppDbContext db, FileStorage storage) =>
         {
             var job = await db.Jobs.FindAsync(jobId);
             return job is null ? Results.NotFound() : Results.Ok(await BuildAsync(db, storage, job));
-        });
+        })
+            .WithSummary("Informe de un trabajo")
+            .WithDescription("La base de la evaluación: tokens (reales y, aparte, estimados para las ejecuciones sin dato), duración, reparaciones, cada ejecución, los elementos de A, de B y de la unión (de ambas, solo de A, solo de B, discrepancias, descartados y desviaciones del árbitro), los cambios del usuario frente al borrador que dejó el trabajo y, en las preguntas, su estado y el origen de cada respuesta.")
+            .Produces<JobReport>()
+            .Produces(StatusCodes.Status404NotFound);
 
         // One row per job, newest first, separated by ";" and with a BOM so
         // Excel in Spanish opens it with its columns and accents.
-        app.MapGet("/projects/{projectId:int}/report.csv", async (int projectId, AppDbContext db, FileStorage storage) =>
+        group.MapGet("/projects/{projectId:int}/report.csv", async (int projectId, AppDbContext db, FileStorage storage) =>
         {
             if (!await db.Projects.AnyAsync(p => p.Id == projectId))
             {
@@ -40,7 +47,11 @@ public static class ReportEndpoints
                 csv.AppendLine(string.Join(';', Row(await BuildAsync(db, storage, job)).Select(Cell)));
             return Results.File(Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv.ToString())).ToArray(),
                 "text/csv; charset=utf-8", $"informe-proyecto-{projectId}.csv");
-        });
+        })
+            .WithSummary("Informes de todos los trabajos del proyecto, en CSV")
+            .WithDescription("Una fila por trabajo, del más reciente al más antiguo, con las cifras del informe. Separado por `;` y con BOM, para que Excel en español lo abra con sus columnas y sus tildes.")
+            .Produces<Stream>(contentType: "text/csv")
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     private static readonly string[] Columns =

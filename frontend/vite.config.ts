@@ -17,6 +17,9 @@ export default defineConfig({
       '/questions': 'http://localhost:5292',
       '/question-rounds': 'http://localhost:5292',
       '/embeddings': 'http://localhost:5292',
+      // The documentation of the API: Swagger UI and its OpenAPI document.
+      '/swagger': 'http://localhost:5292',
+      '/openapi': 'http://localhost:5292',
     },
   },
 })

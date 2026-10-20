@@ -1,6 +1,8 @@
+using System.ComponentModel;
 using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Files;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Api.Projects;
 using Concilia.Api.Runs;
@@ -29,23 +31,28 @@ public static class MockupEndpoints
 
     public static void MapMockupEndpoints(this WebApplication app)
     {
+        var group = app.MapGroup("").WithTags(ApiTags.Mockup);
+
         // A mockup job: a single run (MOCK) with the mockup provider and model,
         // only when the step is available (the backlog is validated).
         // ?estilo=false: a design from scratch, without the style reference.
-        app.MapPost("/projects/{projectId:int}/mockup-jobs",
-            async (int projectId, bool? estilo, AppDbContext db, JobQueue queue, FileStorage storage, MockupOptions options,
+        group.MapPost("/projects/{projectId:int}/mockup-jobs",
+            async (int projectId, [Description("`false`: diseño desde cero, sin seguir la referencia de estilo del proyecto.")] bool? estilo, AppDbContext db, JobQueue queue, FileStorage storage, MockupOptions options,
                    [FromKeyedServices(RunnerSetup.MockupKey)] IRunnerProvider provider) =>
                 await CreateJobAsync(projectId, db, queue, storage, options, provider, null, async jobId =>
                 {
                     if (estilo != false)
                         await SaveStyleAsync(db, storage, projectId, jobId);
-                }));
+                }))
+            .WithSummary("Genera el mockup")
+            .WithDescription("Un prototipo navegable de toda la aplicación, en un `.html` autocontenido con datos ficticios, a partir del backlog validado. Se construye en varias ejecuciones del mismo trabajo: el diseño (mapa de pantallas y armazón), una por pantalla y, si hace falta, la corrección de las partes con problemas. Usa su propio proveedor y modelo. Si el proyecto tiene una referencia de estilo (`.zip`), la sigue salvo con `?estilo=false`; si no, recibe una dirección de estilo propia.")
+            .LaunchesJob();
 
         // Resumes a failed mockup job: a new job that starts from the steps the
         // failed one finished (the design and the screens it accepted, and its
         // style reference), so only what is missing runs again. Only while the
         // validated backlog is the same.
-        app.MapPost("/projects/{projectId:int}/mockup-jobs/{jobId:guid}/resume",
+        group.MapPost("/projects/{projectId:int}/mockup-jobs/{jobId:guid}/resume",
             async (int projectId, Guid jobId, AppDbContext db, JobQueue queue, FileStorage storage, MockupOptions options,
                    [FromKeyedServices(RunnerSetup.MockupKey)] IRunnerProvider provider) =>
         {
@@ -80,11 +87,15 @@ public static class MockupEndpoints
                 CopyFolder(MockupTask.JobStyleFolder(folder), MockupTask.JobStyleFolder(storage.JobFolder(newJobId)));
                 return Task.CompletedTask;
             });
-        });
+        })
+            .WithSummary("Reanuda un mockup que falló")
+            .WithDescription("Un trabajo nuevo que parte de los pasos que el fallido terminó bien (el diseño, las pantallas aceptadas y su referencia de estilo), de modo que solo se repite lo que falta. Solo si llegó a tener el diseño y el backlog validado no ha cambiado.")
+            .LaunchesJob();
 
         // The current mockup as a page (for the iframe) or, with ?download=true,
         // as a file to save and open with a double click.
-        app.MapGet("/projects/{projectId:int}/mockup", async (int projectId, bool? download, AppDbContext db, FileStorage storage, HttpContext http) =>
+        group.MapGet("/projects/{projectId:int}/mockup", async (int projectId,
+            [Description("`true`: como archivo para guardar (`mockup-proyecto-{id}.html`).")] bool? download, AppDbContext db, FileStorage storage, HttpContext http) =>
         {
             var path = storage.MockupFile(projectId);
             if (await DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Mockup) is null || !File.Exists(path))
@@ -94,7 +105,11 @@ public static class MockupEndpoints
             http.Response.Headers.ContentSecurityPolicy = ContentSecurityPolicy;
             http.Response.Headers.XContentTypeOptions = "nosniff";
             return Results.File(path, "text/html; charset=utf-8", download == true ? $"mockup-proyecto-{projectId}.html" : null);
-        });
+        })
+            .WithSummary("El mockup actual")
+            .WithDescription("Como página, para el iframe de la web, o con `?download=true` como archivo para abrir con doble clic. Se sirve con una política de seguridad que no le deja llegar a la red ni a la aplicación.")
+            .Produces<string>(contentType: "text/html")
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     // A mockup job: its design run (lot 1, the first of the steps; the rest

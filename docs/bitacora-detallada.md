@@ -2052,3 +2052,29 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - La corrección se probó sola en un *worktree* aparte (892 tests y 6 saltados, sin el modelo de embeddings), porque la carpeta del repositorio tiene cambios sin commit de la otra sesión (hito 19). El commit incluye solo los ficheros de esta corrección.
 - **Coste perdido** por el fallo: los dos intentos del árbitro, estimados en unos 620.000 tokens de entrada (unos 1,3 $).
 - **Pendientes:** reconstruir la API sin tareas en marcha y volver a lanzar el catálogo; después, el backlog y el mockup de la prueba, y el mockup del banco de alimentos.
+
+---
+
+## 20-10-2026, 10:31 (sesión)
+
+**Resumen para la bitácora (20-10-2026, documentación de la API con Swagger, a petición del autor)**
+
+- **Petición del autor:** un Swagger completo y cuidado con toda la información de la API, que se actualice solo cuando cambie o crezca la API.
+- **Qué se hizo:**
+  - `Concilia.Api/OpenApi/ApiDocumentation.cs`: el documento OpenAPI 3.1 con `Microsoft.AspNetCore.OpenApi` (`/openapi/v1.json`), con portada en Markdown (qué es Concilia, el flujo con sus endpoints y las convenciones: tareas en segundo plano con `202`, una tarea cada vez, errores como *ValidationProblem*, enumerados como texto) y 10 grupos (`ApiTags`) en el orden del flujo. Swagger UI en `/swagger` con enlaces directos, filtro, duración de cada petición y «Try it out» abierto.
+  - Los 42 endpoints, documentados junto a su código: un `MapGroup("")` con su grupo por fichero, `WithSummary`, `WithDescription`, `Produces<T>` por respuesta y `[Description]` en parámetros y campos de las peticiones. `LaunchesJob()`, `ChangesQuestion()` y `ChangesDeliverable()` reúnen las respuestas que se repiten.
+  - Dos transformaciones del documento: sin `servers` (detrás de nginx saldría el contenedor `api`, y «Try it out» fallaría) y los números como números (ASP.NET Core también los lee como texto y el generador los describía como «integer o string»).
+  - Cambios pequeños en el código para que el documento se lea bien: `/health` y `/embeddings/similarity` devuelven un record (`HealthView`, `SimilarityView`) en lugar de un objeto anónimo, con el mismo JSON, y `Rearbitration.Request` pasa a `RearbitrationRequest`.
+  - Estilo (`swagger-ui.css`, incrustado en la API): la paleta y la fuente de la web, la marca de Concilia en la barra y un color por método (GET azul de A, POST verde de validación, PUT ciruela de B, DELETE rojo). Swagger UI trae modo oscuro propio; la hoja redefine las variables en `html.dark-mode` y empieza cada regla por `html:root` para pesar lo mismo que las reglas oscuras de Swagger UI y ganarles por ir después. Comprobado con capturas de Edge sin ventana en los dos modos.
+  - `/swagger` y `/openapi` pasan por nginx (Docker) y por el proxy de Vite; `launchSettings.json` abre `/swagger` al arrancar la API.
+  - Copia en el repositorio: cada compilación en Debug escribe `docs/api/openapi.json` con `Microsoft.Extensions.ApiDescription.Server`, que arranca la aplicación sin servir y le pide el documento (unos segundos más por compilación). En Release no, y tampoco en Docker ni en GitHub Actions.
+  - `OpenApiDocumentTests` (5 tests): toda operación tiene grupo declarado, resumen y respuesta 2xx que dice qué devuelve (salvo `204`); todos los endpoints de la API están en el documento; cada grupo tiene descripción y se usa; la copia de `docs/api/` coincide con la API (en CI, que compila en Release, avisa de un cambio subido sin la copia); y Swagger UI se sirve con el estilo. 903 tests, todos correctos, también los de la documentación en Release.
+- **Decisiones (de Claude, a revisar por el autor):**
+  - Swagger UI, como pidió el autor, y no Scalar ni Redoc. `Swashbuckle.AspNetCore.SwaggerUI` 10.2.3 (MIT) solo como interfaz, sobre el generador oficial de .NET 10; la 10.3.1 tenía un día.
+  - Las descripciones van en el código de cada endpoint y no en comentarios XML: con lambdas el generador no los lee, y pasar a métodos con nombre habría cambiado los 42 endpoints.
+  - La documentación de la API se publica sin autenticación, como el resto de la API.
+  - Nueva regla en CLAUDE.md: cada endpoint nuevo o cambiado se documenta junto a su código y se sube con su `docs/api/openapi.json`.
+- **Observado, sin tocar:** sigue el aviso de vulnerabilidades de `System.Security.Cryptography.Pkcs` 10.0.12 al compilar.
+- **Pendientes:**
+  - ver `/swagger` en Docker cuando no haya tareas en marcha y el autor permita reconstruir la API y la web;
+  - los textos propios de Swagger UI («Try it out», «Filter by tag») siguen en inglés.

@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Files;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Core.Deliverables;
 using Concilia.Core.Flow;
@@ -20,21 +22,27 @@ public record DeliverableView(
     DateTimeOffset CreatedAt, DateTimeOffset? UpdatedAt, DateTimeOffset? ValidatedAt,
     IReadOnlyList<string>? AssumedQuestionIds = null);
 
-public record SaveDeliverableRequest(JsonElement Content);
+public record SaveDeliverableRequest([property: Description("El catálogo o el backlog entero, con la forma de su esquema.")] JsonElement Content);
 
 public static class DeliverableEndpoints
 {
     public static void MapDeliverableEndpoints(this WebApplication app)
     {
-        app.MapGet("/projects/{projectId:int}/deliverables/{kind}", async (int projectId, string kind, AppDbContext db, FileStorage storage) =>
+        var group = app.MapGroup("").WithTags(ApiTags.Deliverables);
+
+        group.MapGet("/projects/{projectId:int}/deliverables/{kind}", async (int projectId, [Description("`catalog`, `backlog` o `mockup`.")] string kind, AppDbContext db, FileStorage storage) =>
         {
             var d = await FindAsync(db, projectId, kind);
             return d is null ? Results.NotFound() : Results.Ok(await ViewAsync(db, storage, d));
-        });
+        })
+            .WithSummary("Lee el catálogo, el backlog o el mockup del proyecto")
+            .WithDescription("La versión actual, validada o en borrador. Si es un borrador, `errors` dice lo que impide validarlo y `warnings` los avisos. En el catálogo, `assumedQuestionIds` son las preguntas respondidas con una suposición de la IA aceptada tal cual: los requisitos que las citan se marcan. El contenido del mockup es su resumen (historias, pantallas, tamaño y avisos); la página está en `GET /projects/{projectId}/mockup`.")
+            .Produces<DeliverableView>()
+            .Produces(StatusCodes.Status404NotFound);
 
         // The user's changes replace the content (normalized: ids renumbered).
-        app.MapPut("/projects/{projectId:int}/deliverables/{kind}",
-            async (int projectId, string kind, SaveDeliverableRequest body, AppDbContext db, FileStorage storage) =>
+        group.MapPut("/projects/{projectId:int}/deliverables/{kind}",
+            async (int projectId, [Description("`catalog`, `backlog` o `mockup`.")] string kind, SaveDeliverableRequest body, AppDbContext db, FileStorage storage) =>
         {
             var d = await FindAsync(db, projectId, kind);
             if (d is null)
@@ -61,11 +69,14 @@ public static class DeliverableEndpoints
             }
             await db.SaveChangesAsync();
             return Results.Ok(await ViewAsync(db, storage, d));
-        });
+        })
+            .WithSummary("Guarda los cambios del usuario")
+            .WithDescription("El contenido nuevo sustituye al anterior, normalizado (los ids se renumeran). Solo el catálogo y el backlog, y solo en borrador: el mockup no se edita.")
+            .ChangesDeliverable();
 
         // Validates it if it has no errors; the later steps become outdated.
-        app.MapPost("/projects/{projectId:int}/deliverables/{kind}/validate",
-            async (int projectId, string kind, AppDbContext db, FileStorage storage) =>
+        group.MapPost("/projects/{projectId:int}/deliverables/{kind}/validate",
+            async (int projectId, [Description("`catalog`, `backlog` o `mockup`.")] string kind, AppDbContext db, FileStorage storage) =>
         {
             var d = await FindAsync(db, projectId, kind);
             if (d is null)
@@ -84,11 +95,14 @@ public static class DeliverableEndpoints
             await ApplyChangeAsync(db, projectId, change.Change!.Value);
             await db.SaveChangesAsync();
             return Results.Ok(await ViewAsync(db, storage, d));
-        });
+        })
+            .WithSummary("Valida el catálogo o el backlog")
+            .WithDescription("Solo si el borrador no tiene errores (si los tiene, `400` con todos ellos). Las fases siguientes solo ven la versión validada; los pasos posteriores quedan desactualizados.")
+            .ChangesDeliverable();
 
         // Back to draft; the later steps become outdated.
-        app.MapPost("/projects/{projectId:int}/deliverables/{kind}/reopen",
-            async (int projectId, string kind, AppDbContext db, FileStorage storage) =>
+        group.MapPost("/projects/{projectId:int}/deliverables/{kind}/reopen",
+            async (int projectId, [Description("`catalog`, `backlog` o `mockup`.")] string kind, AppDbContext db, FileStorage storage) =>
         {
             var d = await FindAsync(db, projectId, kind);
             if (d is null)
@@ -107,8 +121,17 @@ public static class DeliverableEndpoints
             await ApplyChangeAsync(db, projectId, change.Change!.Value);
             await db.SaveChangesAsync();
             return Results.Ok(await ViewAsync(db, storage, d));
-        });
+        })
+            .WithSummary("Vuelve a dejar en borrador el catálogo o el backlog")
+            .WithDescription("Para editarlo otra vez; los pasos posteriores quedan desactualizados.")
+            .ChangesDeliverable();
     }
+
+    // The answers of the endpoints that change a deliverable, for the documentation.
+    private static RouteHandlerBuilder ChangesDeliverable(this RouteHandlerBuilder endpoint) => endpoint
+        .Produces<DeliverableView>()
+        .ProducesValidationProblem()
+        .Produces(StatusCodes.Status404NotFound);
 
     // Called by JobWorker when a catalog or backlog job ends with a result:
     // the working copy becomes the current draft, and the later steps outdated.

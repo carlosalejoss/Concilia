@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Deliverables;
 using Concilia.Api.Embeddings;
 using Concilia.Api.Files;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Api.Projects;
 using Concilia.Api.Questions;
@@ -45,6 +46,10 @@ builder.Services.AddHostedService<JobWorker>();
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+// The OpenAPI document of the API, generated from the endpoints (/openapi/v1.json),
+// and Swagger UI to read it and try it (/swagger).
+builder.Services.AddApiDocumentation();
+
 var app = builder.Build();
 
 // Apply pending migrations on startup when asked to (docker-compose.yml sets
@@ -56,7 +61,11 @@ if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
     db.Database.Migrate();
 }
 
-app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+app.MapApiDocumentation();
+app.MapGet("/health", () => TypedResults.Ok(new HealthView("ok")))
+    .WithTags(ApiTags.System)
+    .WithSummary("Estado de la API")
+    .WithDescription("Responde `ok` si la API está en marcha. No comprueba la base de datos.");
 app.MapProjectEndpoints();
 app.MapProjectFileEndpoints();
 app.MapRunEndpoints();
@@ -73,6 +82,8 @@ app.MapEmbeddingEndpoints();
 app.MapMatchingEndpoints();
 
 app.Run();
+
+public record HealthView(string Status);
 
 // Exposes Program to the test project (WebApplicationFactory<Program>).
 public partial class Program { }

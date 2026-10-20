@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Embeddings;
 using Concilia.Api.Files;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Api.Runs;
 using Concilia.Core.Embeddings;
@@ -29,7 +31,9 @@ public static class MatchingEndpoints
     public static void MapMatchingEndpoints(this WebApplication app)
     {
         // ?same=0.85&similar=0.6 to try other thresholds than the configured ones.
-        app.MapGet("/jobs/{jobId:guid}/matching", async (Guid jobId, double? same, double? similar,
+        app.MapGet("/jobs/{jobId:guid}/matching", async (Guid jobId,
+            [Description("Umbral de «lo mismo» (0,90 por defecto).")] double? same,
+            [Description("Umbral de «parecido» (0,70 por defecto).")] double? similar,
             AppDbContext db, FileStorage storage, ITextEmbedder embedder, EmbeddingOptions options) =>
         {
             var job = await db.Jobs.FindAsync(jobId);
@@ -68,7 +72,13 @@ public static class MatchingEndpoints
             return Results.Ok(new MatchingView(jobId, plan.Kind.ToString(), plan.RearbitrationOf, arbiterPairs is not null,
                 runs.FirstOrDefault(r => r.Slot == "ARB")?.Model, matching,
                 deviations, deviations is null ? null : ArbiterDeviations.ElementCount(deviations), time));
-        });
+        })
+            .WithTags(ApiTags.Reports)
+            .WithSummary("Emparejamiento de A y B por significado")
+            .WithDescription("Calculado con embeddings en local, sin ningún LLM, junto a lo que hizo el árbitro: los pares «mismo» y «parecido», lo que quedó solo en A o en B y dónde se apartó el árbitro del emparejamiento. No se guarda: se calcula en cada llamada (unos segundos con el modelo real). `?same=0.85&similar=0.6` prueba otros umbrales.")
+            .Produces<MatchingView>()
+            .ProducesValidationProblem()
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     private static IResult Refuse(string message) =>
