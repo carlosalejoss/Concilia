@@ -2033,3 +2033,22 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Pendientes:**
   - probar las descargas en Docker cuando no haya tareas en marcha (`GET /jobs/active` da 204) y el autor permita reconstruir la API y la web;
   - pasos 97 (backlog a Gherkin) y 98 (CSV para Jira y Azure DevOps).
+
+---
+
+## 20-10-2026, 10:25 (sesión)
+
+**Resumen para la bitácora (20-10-2026, prueba real del hito 18: el catálogo falla por un error del paso 92, corregido)**
+
+- **Prueba real del hito 18**, en un proyecto nuevo con los ficheros del proyecto grande de ejemplo («Clinicas Veterinarias v0.11», prompts v0.11):
+  - **preguntas:** 63, y las 63 sugerencias salieron como suposición, 40 de ellas «A decidir por el cliente». Es lo esperado: las preguntas existen porque la documentación no las resuelve;
+  - **respuestas:** a petición del autor, solo para la prueba, Claude escribió una respuesta concreta en las 32 que seguían sin decidir (inventando algunos valores, por ejemplo precios y pesos) y aceptó tal cual la única propuesta pendiente. Quedan 39 «ia-editada», 23 «ia» (tal cual) y 1 «usuario»;
+  - **catálogo:**
+    - A (SOL) terminó a la primera;
+    - B (LUNA) necesitó una reparación, y **la reparación editando funcionó**: leyó solo las dos líneas con el error, las corrigió con Edit y gastó unos 42.000 tokens de entrada y 465 de salida, sin reescribir el catálogo;
+    - **el árbitro falló dos veces**, detenido por «compactar por segunda vez sin haber escrito la salida». El trabajo falló sin resultado.
+- **Causa: un error del paso 92.** El runner contaba los avisos `status: compacting`, y Claude Code da dos por la misma compactación antes de su `compact_boundary` (secuencia `SS` en las dos ejecuciones; las compactaciones de verdad salen como `SB`). Así cortó el árbitro en su **primera** compactación, que la regla permite. El árbitro del catálogo grande lee las dos propuestas, el emparejamiento y casi toda la documentación, y suele compactar una vez.
+- **Corrección:** un aviso solo abre una compactación nueva cuando la anterior ha terminado (`compactionInProgress`). Fixture `synthetic-compacta-una-vez.jsonl` y su test, en el que dos avisos seguidos no detienen la ejecución.
+  - La corrección se probó sola en un *worktree* aparte (892 tests y 6 saltados, sin el modelo de embeddings), porque la carpeta del repositorio tiene cambios sin commit de la otra sesión (hito 19). El commit incluye solo los ficheros de esta corrección.
+- **Coste perdido** por el fallo: los dos intentos del árbitro, estimados en unos 620.000 tokens de entrada (unos 1,3 $).
+- **Pendientes:** reconstruir la API sin tareas en marcha y volver a lanzar el catálogo; después, el backlog y el mockup de la prueba, y el mockup del banco de alimentos.
