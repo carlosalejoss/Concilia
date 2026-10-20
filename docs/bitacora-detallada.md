@@ -1991,5 +1991,21 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - se mantiene la parte de desarrollo sin Docker;
   - se explicó al autor para qué sirve cada script nuevo: ninguno tiene que lanzarlo él. Los de calibración ya se usaron; los de evaluación y costes los lanza Claude tras cada medición; la descarga del modelo solo hace falta fuera de Docker. Sirven también para que el tribunal pueda repetir los resultados.
 - **El repositorio pasa a ser público** (autor, 20-10-2026): el README da la dirección real para clonarlo (<https://github.com/carlosalejoss/Concilia>). Se revisaron los ficheros y todo el historial de git en busca de claves, direcciones internas y ficheros `.env`, y no hay ninguno; solo aparece la contraseña de ejemplo del README.
+- **Auditoría del repositorio público** (petición del autor): revisión de los 631 ficheros y de todo el historial de git (183 commits, incluidos los ficheros borrados).
+  - **Sin problemas:**
+    - ni claves, tokens, contraseñas ni cadenas de conexión;
+    - nunca se han subido `.env`, `data/`, `memoria/` ni `models/`;
+    - los commits usan el correo anónimo de GitHub;
+    - no hay rutas con el usuario de Windows;
+    - correos y URL son ficticios (`.example`, `.invalid`) o públicos;
+    - los datos personales de `ejemplos/` son inventados;
+    - los metadatos de los Word, Excel, PowerPoint y PDF de ejemplo son los de las librerías que los generaron;
+    - las grabaciones de Claude Code de los tests están saneadas;
+    - los documentos internos solo aparecen anonimizados, con cifras agregadas, y ningún nombre de proyecto interno.
+  - **A valorar por el autor (riesgo bajo):**
+    - tres commits (`dec0657`, `d45059f`, `f90664a`) llevan en su mensaje un enlace a una sesión de Claude Code, que solo puede abrir su dueño. Quitarlo exigiría reescribir el historial y forzar el push, y se desaconseja;
+    - el nombre de la empresa, los nombres de los modelos de la pasarela y sus precios por token, que conviene confirmar con la tutora de empresa;
+    - el ejemplo del prompt del mockup (socio, TPV y junta) deja ver el dominio del proyecto de prueba del documento C, sin datos;
+    - la licencia sigue sin definir.
 - **Decisiones:** ninguna nueva.
 - **Pendientes:** las pruebas reales del hito 18; después, el hito 19.
