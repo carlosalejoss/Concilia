@@ -2009,3 +2009,27 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
     - la licencia sigue sin definir.
 - **Decisiones:** ninguna nueva.
 - **Pendientes:** las pruebas reales del hito 18; después, el hito 19.
+
+## 20-10-2026, 10:00 (sesión)
+
+**Resumen para la bitácora (20-10-2026, hito 19, paso 96: el catálogo a Word y PDF)**
+
+- **Contexto:** esta sesión trabajó a la vez que otra que mide las pruebas reales del hito 18 que lanza el autor. Para no pisarse: sin reconstruir ni reiniciar contenedores, sin lanzar trabajos (solo tests y `Fake`) y con cada fichero añadido al commit uno a uno.
+- **Qué se hizo:**
+  - `Concilia.Core/Deliverables/Export`:
+    - `CatalogExport` arma una vez el contenido del documento a partir del catálogo guardado, los fragmentos del plan del trabajo que lo generó y las preguntas del proyecto;
+    - `CatalogDocx` lo escribe en Word con DocumentFormat.OpenXml, que ya estaba en el proyecto;
+    - `CatalogPdf` lo escribe en PDF con MigraDoc, con IBM Plex Sans embebida (`ExportFonts`).
+  - `GET /projects/{id}/catalog.docx` y `.pdf` (`ExportEndpoints`), que solo leen. En la web, «Word» y «PDF» en la barra del catálogo, ocultos mientras hay cambios sin guardar.
+  - Tests: 7 nuevos, más la descarga en el flujo completo (897 en total, todos correctos). El `.docx` pasa `OpenXmlValidator` sin errores y el PDF se vuelve a leer con PdfPig.
+  - Comprobado a mano: Word abre el `.docx` del catálogo de ReservaSalas (5 páginas, 18 títulos en el panel de navegación). Un catálogo de 250 requisitos sale en unos 20 ms en Word y 0,3 s en PDF.
+- **Decisiones del autor** (todas como recomendaba Claude):
+  - PDF con PDFsharp + MigraDoc. Descartadas QuestPDF (licencia gratis solo por debajo de 1 M$ de ingresos), LibreOffice en la imagen (unos 500 MB) e imprimir desde el navegador (sin tests).
+  - El texto de las fuentes y las preguntas con su respuesta, en dos anexos y una sola vez cada uno, no junto a cada requisito.
+  - Se puede exportar el borrador, con «BORRADOR» en la portada y el pie.
+  - Con las marcas «Suposición de la IA» y «Discrepancia sin revisar»; sin el origen A/B ni la explicación del árbitro.
+- **Cambio de criterio:** al implementarlo apareció que PDFsharp y MigraDoc pasaron a AGPL-3.0 en la versión 6.5.0 (14-10-2026). Se preguntó al autor, que eligió quedarse en la 6.2.4, la última MIT, fijada en el `.csproj` con un comentario para que nadie la actualice. La alternativa era escribir el PDF con PdfPig (Apache 2.0, ya en el proyecto), pero con unas 150 líneas propias de maquetación.
+- **Observado, sin tocar:** `dotnet build` avisa de vulnerabilidades en `System.Security.Cryptography.Pkcs` 10.0.12. El aviso ya existía, porque lo traen MimeKit y MsgReader; MigraDoc depende de la misma versión.
+- **Pendientes:**
+  - probar las descargas en Docker cuando no haya tareas en marcha (`GET /jobs/active` da 204) y el autor permita reconstruir la API y la web;
+  - pasos 97 (backlog a Gherkin) y 98 (CSV para Jira y Azure DevOps).

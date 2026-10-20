@@ -66,6 +66,16 @@ public class FullFlowTests
         var catalogJob = await Launch(client, $"/projects/{id}/catalog-jobs", id);
         await ReviewAndValidate(client, id, "catalog");
 
+        // Step 96: the catalog downloads as Word and PDF.
+        var docx = await client.GetAsync($"/projects/{id}/catalog.docx");
+        Assert.Equal(HttpStatusCode.OK, docx.StatusCode);
+        Assert.Equal("catalogo-reservasalas.docx", docx.Content.Headers.ContentDisposition!.FileName);
+        Assert.Equal("PK"u8.ToArray(), (await docx.Content.ReadAsByteArrayAsync())[..2]); // a .docx is a zip
+        var pdf = await client.GetAsync($"/projects/{id}/catalog.pdf");
+        Assert.Equal("application/pdf", pdf.Content.Headers.ContentType!.MediaType);
+        Assert.Equal("%PDF"u8.ToArray(), (await pdf.Content.ReadAsByteArrayAsync())[..4]);
+        Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/projects/{id}/catalog.odt")).StatusCode);
+
         // Step 64: its report. Reviewing the discrepancies is not a change.
         var report = await Json(await client.GetAsync($"/jobs/{catalogJob}/report"));
         Assert.True(report["succeeded"]!.GetValue<bool>());

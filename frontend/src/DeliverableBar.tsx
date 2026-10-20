@@ -1,4 +1,4 @@
-import { CheckCircle2, Lock, RotateCcw, Save, ShieldCheck, Undo2 } from 'lucide-react'
+import { CheckCircle2, Download, Lock, RotateCcw, Save, ShieldCheck, Undo2 } from 'lucide-react'
 import type { useDeliverable } from './useDeliverable.ts'
 import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
@@ -7,7 +7,19 @@ import { formatDate } from './api.ts'
 // The bar of a catalog or backlog, fixed at the top while scrolling: its
 // state, the buttons to save, undo, validate or reopen it, and below it what
 // keeps it from being validated (or why an action failed) and the warnings.
-function DeliverableBar<T>({ state, name, summary }: { state: ReturnType<typeof useDeliverable<T>>; name: string; summary: string }) {
+// downloads (hito 19): links to the files of the saved version; hidden while
+// there are unsaved changes, which they would not include.
+function DeliverableBar<T>({
+  state,
+  name,
+  summary,
+  downloads = [],
+}: {
+  state: ReturnType<typeof useDeliverable<T>>
+  name: string
+  summary: string
+  downloads?: { href: string; label: string }[]
+}) {
   const { deliverable: d, dirty, busy, messages, save, validate, reopen, discard } = state
   if (!d) return null
   const validated = d.status === 'Validated'
@@ -32,6 +44,18 @@ function DeliverableBar<T>({ state, name, summary }: { state: ReturnType<typeof 
             </>
           )}
         </span>
+        {!dirty &&
+          downloads.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              title={`Descargar la versión guardada en ${link.label}`}
+              className="inline-flex h-9 shrink-0 items-center gap-2 rounded px-3.5 text-sm font-medium text-muted transition-colors hover:bg-sunken hover:text-fg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              <Download className="size-4" aria-hidden />
+              {link.label}
+            </a>
+          ))}
         {validated ? (
           <Button icon={RotateCcw} disabled={busy} onClick={reopen}>
             Reabrir

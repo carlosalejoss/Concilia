@@ -17,6 +17,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Hecho el 19-10-2026:** el paso 88, el árbitro con embeddings (prompts v0.10), con su prueba real (la unión es más estable: 202–222 requisitos frente a 209–291). El hito 17 queda completado.
 - **Hecho el 19-10-2026:** el hito 18 entero (pasos 89 a 95), salvo sus pruebas reales con modelos, que lanza el autor: el flujo completo del proyecto grande sin errores internos ni reparaciones que no caben, y el mockup de dos proyectos sin `.zip` con estilos distintos.
 - **Siguiente:** esas pruebas reales y, después, el hito 19 (exportar los entregables).
+- **Hito 19, 20-10-2026:** hecho el paso 96 (el catálogo a Word y PDF); siguen el 97 (Gherkin) y el 98 (CSV para Jira y Azure DevOps).
 
 ## Hito 0: preparación y prueba de humo (completado)
 
@@ -403,7 +404,7 @@ Acordado con el autor el 16-10-2026, tras el paso 65 y el experimento del árbit
 
 Acordado con el autor el 16-10-2026. Hoy todo se queda dentro de la web.
 
-- [ ] 96. Catálogo a Word (`.docx`) y PDF, con los requisitos agrupados por tipo y sus fuentes.
+- [x] 96. Catálogo a Word (`.docx`) y PDF, con los requisitos agrupados por tipo y sus fuentes. (20-10-2026, decisiones del autor, todas como recomendaba Claude: una portada con el estado (validado o borrador, que también se puede exportar, con «BORRADOR» en el pie), una sección por tipo en el orden de la web y, en cada requisito, su texto, notación, obligatoriedad, fuentes y preguntas por id; dos anexos con el texto de cada fragmento citado y cada pregunta citada con su respuesta, una sola vez cada uno; las marcas «Suposición de la IA» y «Discrepancia sin revisar», y sin el origen A/B ni la explicación del árbitro, que son internos. `Concilia.Core/Deliverables/Export`: `CatalogExport` arma el contenido una vez y `CatalogDocx` (DocumentFormat.OpenXml, MIT, que ya estaba) y `CatalogPdf` lo escriben. El PDF usa MigraDoc 6.2.4 (MIT), fijada en el `.csproj`: desde la 6.5.0, del 14-10-2026, PDFsharp y MigraDoc son AGPL-3.0, y el autor eligió quedarse en la última MIT. Lleva dentro IBM Plex Sans (OFL 1.1), la fuente de la web, porque el contenedor no tiene fuentes. Se descarga con `GET /projects/{id}/catalog.docx` y `.pdf`, que solo leen, y en la web con «Word» y «PDF» en la barra del catálogo, ocultos mientras hay cambios sin guardar. Los fragmentos salen del plan del trabajo que generó el catálogo y las preguntas, del proyecto. Tests: el `.docx` pasa `OpenXmlValidator` sin errores, el PDF se vuelve a leer con PdfPig y el flujo completo los descarga. Comprobado además que Word abre el `.docx` (5 páginas y 18 títulos en el panel de navegación con el catálogo de ReservaSalas). Un catálogo de 250 requisitos sale en unos 20 ms en Word y 0,3 s en PDF.)
 - [ ] 97. Backlog a ficheros `.feature` de Gherkin, uno por épica, comprobados con el analizador oficial (`cucumber/gherkin`, MIT, con implementación .NET).
 - [ ] 98. Backlog a CSV que se pueda importar en Jira y en Azure DevOps.
 
