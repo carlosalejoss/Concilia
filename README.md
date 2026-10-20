@@ -6,7 +6,7 @@ El nombre viene de *conciliar* dos versiones. Es el Trabajo Fin de Grado del aut
 
 ## Estado
 
-El flujo funciona de principio a fin: documentos → preguntas → requisitos → backlog → mockup, con prompts básicos (iteración v0, de la v0.1 a la v0.9) probados con los modelos de la pasarela de la empresa. Cada trabajo deja un informe con sus tokens, tiempos, acuerdos y discrepancias entre modelos y los cambios del usuario: es la base de la evaluación. Lo que queda está en la [hoja de ruta](#hoja-de-ruta) y en [`docs/plan-de-construccion.md`](docs/plan-de-construccion.md).
+El flujo funciona de principio a fin: documentos → preguntas → requisitos → backlog → mockup, con prompts básicos (iteración v0, de la v0.1 a la v0.11) probados con los modelos de la pasarela de la empresa. El árbitro parte de un emparejamiento por embeddings calculado en local, y la plataforma corrige sola los errores de formato más comunes. Cada trabajo deja un informe con sus tokens, tiempos, coste, acuerdos y discrepancias entre modelos y los cambios del usuario: es la base de la evaluación. Lo que queda está en la [hoja de ruta](#hoja-de-ruta) y en [`docs/plan-de-construccion.md`](docs/plan-de-construccion.md).
 
 ## La idea
 
@@ -34,7 +34,7 @@ flowchart TD
 
 En las tres fases con árbitro, A y B reciben el mismo prompt y no saben uno del otro. El árbitro recibe las dos propuestas en orden aleatorio, sin saber de qué modelo es cada una, y marca para cada elemento si viene de las dos, de una sola o si hay una discrepancia. Antes, la plataforma empareja las dos propuestas por significado con embeddings calculados en local, sin IA generativa, y el árbitro parte de ese emparejamiento. Si el árbitro se aparta de él (une lo que los números ven distinto o separa lo que ven igual), la plataforma lo marca como discrepancia. Si uno de los dos modelos falla, el trabajo falla: no se acepta la salida de un solo modelo. El usuario revisa cada discrepancia antes de validar, y cada paso solo ve la versión validada del anterior.
 
-Los modelos se ejecutan con Claude Code en modo no interactivo (`claude -p`): leen sus entradas por partes con `Read`, escriben su salida con `Write` y terminan con un veredicto. La plataforma valida cada salida (esquema, referencias, que se haya leído todo) y pide una reparación con la lista de errores si hace falta.
+Los modelos se ejecutan con Claude Code en modo no interactivo (`claude -p`): leen sus entradas por partes con `Read`, escriben su salida con `Write` y terminan con un veredicto. La plataforma valida cada salida (esquema, referencias, que se haya leído todo). Los errores de formato más comunes (un número de línea citado como fragmento, ids mal numerados, un elemento que el árbitro olvidó) los corrige ella sola, con un aviso. Para el resto pide una reparación: el modelo corrige con `Edit` solo las líneas de su salida que tienen errores.
 
 ### Notaciones de requisitos
 
@@ -65,7 +65,7 @@ concilia/
 ├── tests/       # tests de la solución .NET
 ├── frontend/    # aplicación React
 ├── ejemplos/    # dos proyectos ficticios (mediano y grande) con su documentación de análisis
-├── scripts/     # utilidades de desarrollo (descargar el modelo de embeddings)
+├── scripts/     # descarga del modelo de embeddings, su calibración y los scripts de evaluación y costes
 ├── models/      # modelo de embeddings descargado para desarrollo local (ignorado por git)
 └── data/        # archivos de cada proyecto, trabajo y ejecución (ignorado por git)
 ```
@@ -76,10 +76,14 @@ concilia/
 - [x] **Hitos 5 y 6.** Primer catálogo real y catálogo v1.3–v1.4 por lotes (se conserva como experimento).
 - [x] **Hitos 8 a 12b.** Iteración v0: el flujo completo con árbitro, preguntas con sugerencias de la IA, catálogo, backlog y mockup, editables y validables en la web, y lectura de la documentación por partes.
 - [x] **Hitos 14 a 16.** Interfaz organizada por pasos, más tipos de archivo, referencia de estilo del mockup y el mockup como una sola aplicación navegable.
-- [x] **Hito 13, pasos 63, 64 y 66.** Test del flujo completo, informe automático por trabajo y documentación al día.
-- [ ] **Hito 13, paso 65.** Ejecución completa con ReservaSalas y con un segundo documento público.
-- [ ] **Hito 7.** Catálogo v2, de arriba abajo, con los prompts del autor.
-- [ ] **Después.** Mejorar los prompts fase a fase, árbitro con embeddings y evaluación (precisión, recall y F1 frente a listas de referencia).
+- [x] **Hito 13.** Test del flujo completo, informe automático por trabajo, flujo completo con los dos proyectos ficticios de `ejemplos/` y documentación al día.
+- [x] **Hito 17.** Embeddings en local: emparejamiento de A y B por significado, con umbrales calibrados, y árbitro guiado por ese emparejamiento.
+- [x] **Hito 18.** Fiabilidad y calidad: correcciones automáticas de formato, reparación editando, sugerencias prudentes, estilos del mockup, trabajos interrumpidos y tablas de coste en tiempo y dinero.
+- [ ] **Hito 19.** Exportar los entregables.
+- [ ] **Hito 20.** Trazabilidad visual y comparación de A, B y el árbitro.
+- [ ] **Hito 21.** Historial de versiones de los entregables.
+- [ ] **Hito 22.** Evaluación (precisión, recall y F1 frente a listas de referencia).
+- [ ] **Hito 7 (aplazado).** Catálogo v2, de arriba abajo, con los prompts del autor.
 
 ## Puesta en marcha
 
@@ -116,12 +120,12 @@ La API necesita una base de datos PostgreSQL en la cadena de conexión `Connecti
 
 Cada trabajo tiene su informe en la vista de ejecuciones («Informe del trabajo»):
 
-- tokens, duración y reparaciones;
+- tokens (los de las ejecuciones sin dato, estimados aparte), duración y reparaciones;
 - los elementos que propuso cada modelo y qué hizo el árbitro con ellos: de los dos, solo de uno, con discrepancia o descartados;
 - lo que cambió el usuario antes de validar;
 - en las preguntas, quién escribió cada respuesta.
 
-Todos los trabajos de un proyecto se descargan como CSV, un trabajo por fila, desde la misma vista. La evolución de cada versión de los prompts, con sus resultados medidos, está en [`docs/evolucion-prompt-requisitos.md`](docs/evolucion-prompt-requisitos.md).
+Todos los trabajos de un proyecto se descargan como CSV, un trabajo por fila, desde la misma vista. La evolución de cada versión de los prompts, con sus resultados medidos, está en [`docs/evolucion-prompt-requisitos.md`](docs/evolucion-prompt-requisitos.md); el coste en tiempo y dinero de cada fase y versión, en [`docs/costes/costes.md`](docs/costes/costes.md). Un experimento comprobó si el árbitro prefiere la propuesta de su propio modelo, y no la prefiere ([`docs/experimento-sesgo-arbitro.md`](docs/experimento-sesgo-arbitro.md)).
 
 ## Configuración y secretos
 
