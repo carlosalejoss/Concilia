@@ -117,7 +117,15 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
 
   return (
     <div className="space-y-4">
-      <DeliverableBar state={state} name="Catálogo" summary={summary} />
+      <DeliverableBar
+        state={state}
+        name="Catálogo"
+        summary={summary}
+        downloads={[
+          { href: `/projects/${project.id}/catalog.docx`, label: 'Word' },
+          { href: `/projects/${project.id}/catalog.pdf`, label: 'PDF' },
+        ]}
+      />
 
       <div className="flex flex-wrap items-center gap-3">
         <label className="flex min-w-48 flex-1 items-center gap-2 rounded border border-line bg-surface px-2.5 py-1.5 text-sm focus-within:outline-2 focus-within:outline-accent">

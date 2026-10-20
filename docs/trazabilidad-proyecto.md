@@ -33,6 +33,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 19-10 | Hito 18, paso 89 | La plataforma corrige sola cuatro errores de formato que hacían fallar a LUNA, con un aviso |
 | 19-10 | Hito 17, paso 88 | Árbitro con embeddings (prompts v0.10): parte del emparejamiento de la plataforma y lo que hace en contra de los números se marca como discrepancia |
 | 19-10 | Hito 17, paso 87 | Emparejamiento de A y B por significado; umbrales 0,90 y 0,70 calibrados con 48 pares etiquetados por el autor; el árbitro, medido por primera vez frente a un criterio humano |
+| 20-10 | Hito 19, paso 96 | El catálogo se descarga en Word y en PDF, con sus fuentes y preguntas en anexos |
 
 ## Etapas
 
@@ -208,6 +209,18 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Pendiente:** las pruebas reales, que lanza el autor: el flujo completo del proyecto grande sin errores internos ni reparaciones que no caben, y dos mockups sin `.zip` con estilos distintos.
 - **Para la memoria, en palabras sencillas:** el hito 18 hace la plataforma más robusta frente a los fallos de los modelos (corrige lo que tiene una sola corrección, repara cambiando solo lo que está mal y no malgasta ejecuciones perdidas). También la hace más honesta con el usuario: no da por buena una suposición sin que la mire, y los prototipos no salen todos iguales.
 
+### 10. Hito 19: exportar los entregables (20-10, en curso)
+
+- **Paso 96, el catálogo a Word y PDF** (decisiones del autor, todas como recomendaba Claude):
+  - **Contenido:** una portada con el estado, una sección por tipo y, en cada requisito, su texto, notación, obligatoriedad, fuentes y preguntas por id. El texto de los fragmentos y las preguntas con su respuesta van en dos anexos, una sola vez cada uno, para que el documento sea corto y siga siendo trazable.
+  - **Borrador:** también se puede exportar, con «BORRADOR» en la portada y en el pie de cada página.
+  - **Marcas:** sí «Suposición de la IA» y «Discrepancia sin revisar», que importan a quien lee; no el origen A/B ni la explicación del árbitro, que son internos y tendrán su vista en el hito 20.
+  - **Librerías:** Word con DocumentFormat.OpenXml (MIT), que ya se usaba para leer `.docx`. PDF con MigraDoc, que lleva la fuente de la web (IBM Plex Sans, OFL) porque el contenedor no tiene fuentes. Descartadas QuestPDF (gratis solo para empresas con menos de 1 M$ de ingresos, el mismo problema que JsonSchema.Net), convertir con LibreOffice (unos 500 MB más en la imagen) e imprimir desde el navegador (no se puede comprobar con tests).
+  - **Cambio de licencia encontrado al implementarlo:** PDFsharp y MigraDoc pasaron a AGPL-3.0 en la versión 6.5.0, del 14-10-2026. **Decisión del autor:** quedarse en la 6.2.4, la última MIT, fijada en el proyecto para que no se actualice.
+  - **Comprobado:** el `.docx` pasa el validador de OpenXml sin errores y Word lo abre; el PDF se vuelve a leer con PdfPig. Un catálogo de 250 requisitos sale en unos 20 ms en Word y 0,3 s en PDF.
+- **Siguen:** el backlog a ficheros `.feature` de Gherkin (paso 97) y a CSV para Jira y Azure DevOps (paso 98).
+- **Para la memoria, en palabras sencillas:** lo que genera la plataforma ya no se queda dentro de la web. El catálogo se descarga como un documento normal, que se puede enviar al cliente, y cada requisito sigue diciendo de qué parte de la documentación sale y en qué respuesta del cliente se apoya.
+
 ## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
 
 > **Prioridad alta (autor, 16-10-2026).** Afecta al valor de la verificación cruzada, que es la idea central del TFG. Diseño completo del experimento, estado y resultados en [`experimento-sesgo-arbitro.md`](experimento-sesgo-arbitro.md): es material directo para el capítulo de evaluación de la memoria.
@@ -273,7 +286,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
 2. ~~**Hito 17, embeddings en local**~~: modelo multilingüe en la API (paso 86), emparejamiento de A y B con los umbrales calibrados (paso 87) y árbitro con embeddings con su prueba real (paso 88), todo el 19-10-2026. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
 3. ~~**Hito 18, fiabilidad y calidad**~~ (pasos 89 a 95, 19-10-2026, prompts v0.11, con las tablas de coste); faltan sus pruebas reales, que lanza el autor. Siguiente: el hito 19.
-4. **Hito 19, exportar:** el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
+4. **Hito 19, exportar:** el catálogo a Word y PDF (paso 96, hecho el 20-10-2026), y el backlog a Gherkin y a CSV para Jira o Azure DevOps.
 5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
 6. **Hito 21, historial de versiones de los entregables.**
 7. **Hito 22, evaluación:** métricas externas, un documento de PURE y una prueba editando de verdad.
@@ -285,4 +298,4 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 ## Cifras de seguimiento
 
 - **Commits:** 182 entre el 28-09 y el 20-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings).
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings) y 897 (20-10, paso 96).
