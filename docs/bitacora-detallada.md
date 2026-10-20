@@ -1979,3 +1979,16 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - las pruebas reales del hito, que lanza el autor: el flujo completo del proyecto grande sin errores internos ni reparaciones que no caben (unos 22 $ y 2 horas), y dos mockups sin `.zip` con estilos distintos;
   - medir la v0.11 y regenerar las tablas de coste;
   - después, el hito 19.
+
+---
+
+## 20-10-2026, 09:25 (sesión)
+
+**Resumen para la bitácora (20-10-2026, guía para ejecutar el proyecto desde cero)**
+
+- **Qué se hizo:**
+  - a petición del autor, la sección «Puesta en marcha» del README pasa a ser «Ejecutar el proyecto desde cero», una guía paso a paso para un ordenador sin nada instalado: instalar Git y Docker Desktop (con WSL 2 en Windows), clonar, crear `.env` con solo `POSTGRES_PASSWORD`, arrancar con `docker compose up --build -d` y comprobarlo, una primera prueba en modo simulado con los ficheros de `ejemplos/mediano-banco-de-alimentos/`, conectar los modelos reales, parar, arrancar, actualizar y borrar los datos, y una tabla de problemas frecuentes;
+  - se mantiene la parte de desarrollo sin Docker;
+  - se explicó al autor para qué sirve cada script nuevo: ninguno tiene que lanzarlo él. Los de calibración ya se usaron; los de evaluación y costes los lanza Claude tras cada medición; la descarga del modelo solo hace falta fuera de Docker. Sirven también para que el tribunal pueda repetir los resultados.
+- **Decisiones:** ninguna nueva.
+- **Pendientes:** las pruebas reales del hito 18; después, el hito 19.
