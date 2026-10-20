@@ -1,0 +1,299 @@
+/* Swagger UI with the look of Concilia: the palette and the font of the web
+   (frontend/src/index.css), in light and dark mode. Swagger UI keeps its
+   layout; only colours, fonts and a few spacings change. Embedded in the API
+   and injected in the <head> of /swagger, after the stylesheet of Swagger UI
+   (ApiDocumentation.Stylesheet).
+
+   Every rule starts with "html:root": it weighs the same as the
+   "html.dark-mode" that starts the dark rules of Swagger UI, and as it comes
+   later it wins in both modes. The colours are variables, and dark mode
+   (Swagger UI puts the class dark-mode on <html>, from its button or from the
+   system setting) only changes their values. */
+
+:root {
+  --canvas: #f4f6f5;
+  --surface: #ffffff;
+  --sunken: #e9eeec;
+  --line: #d8e0dd;
+  --fg: #1c2421;
+  --muted: #5c6a65;
+  --accent: #0e6e5c;
+  --accent-hover: #0a5a4b;
+  --bar: #1c2421;
+  --code-bg: #1c2421;
+
+  /* One colour per HTTP method: model A blue for GET, validation green for
+     POST, model B plum for PUT and red for DELETE. */
+  --get: #2f5da8;
+  --get-bg: #f5f8fd;
+  --get-line: #c9d6ee;
+  --post: #0e6e5c;
+  --post-bg: #f2f8f6;
+  --post-line: #bfdcd4;
+  --put: #8a4c9c;
+  --put-bg: #faf5fb;
+  --put-line: #e3cdea;
+  --delete: #b42318;
+  --delete-bg: #fdf6f5;
+  --delete-line: #efc6c1;
+
+  --font: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+
+html.dark-mode {
+  --canvas: #121816;
+  --surface: #18201d;
+  --sunken: #1d2622;
+  --line: #2c3833;
+  --fg: #e3e9e6;
+  --muted: #9daaa4;
+  --accent: #4fc1a6;
+  --accent-hover: #7bd5bf;
+  --bar: #0c110f;
+  --code-bg: #0c110f;
+
+  --get-bg: #161e2b;
+  --get-line: #2a3b5c;
+  --post-bg: #14231f;
+  --post-line: #1f4a40;
+  --put-bg: #211a25;
+  --put-line: #4a3355;
+  --delete-bg: #2a1715;
+  --delete-line: #5c2a25;
+}
+
+html:root body,
+html:root {
+  margin: 0;
+  background: var(--canvas);
+}
+
+/* The font of the web everywhere except code. */
+html:root .swagger-ui :not(code, pre, .microlight, .microlight *, .highlight-code *) {
+  font-family: var(--font);
+}
+html:root .swagger-ui code,
+html:root .swagger-ui pre,
+html:root .swagger-ui .microlight {
+  font-family: var(--mono);
+}
+
+/* Top bar: the mark of Concilia (model A and model B that meet in one
+   validated line, as in frontend/public/logo.svg) instead of the Swagger one. */
+html:root .swagger-ui .topbar {
+  background: var(--bar);
+  padding: 12px 0;
+}
+html:root .swagger-ui .topbar .topbar-wrapper .link svg,
+html:root .swagger-ui .topbar .topbar-wrapper .link img,
+html:root .swagger-ui .topbar .download-url-wrapper {
+  display: none;
+}
+html:root .swagger-ui .topbar .topbar-wrapper .link::before {
+  content: "";
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke-width='3' stroke-linecap='round'%3E%3Cpath stroke='%237ea2e6' d='M3 5 C 9 5, 9 12, 13 12'/%3E%3Cpath stroke='%23c895d6' d='M3 19 C 9 19, 9 12, 13 12'/%3E%3Cpath stroke='%234fc1a6' d='M13 12 H 21'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+html:root .swagger-ui .topbar .topbar-wrapper .link::after {
+  content: "Concilia · API";
+  color: #e3e9e6;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Header of the document. */
+html:root .swagger-ui .info {
+  margin: 36px 0 24px;
+}
+html:root .swagger-ui .info .title {
+  color: var(--fg);
+  font-weight: 600;
+}
+html:root .swagger-ui .info .title small {
+  background: var(--sunken);
+}
+html:root .swagger-ui .info .title small pre {
+  color: var(--muted);
+}
+html:root .swagger-ui .info .title small.version-stamp {
+  background: var(--accent);
+}
+html:root .swagger-ui .info .title small.version-stamp pre {
+  color: var(--surface);
+}
+html:root .swagger-ui .info .markdown p,
+html:root .swagger-ui .info .markdown li,
+html:root .swagger-ui .info .info__license {
+  color: var(--fg);
+  font-size: 14px;
+  line-height: 1.6;
+}
+html:root .swagger-ui .info .markdown h3 {
+  margin: 20px 0 6px;
+  color: var(--fg);
+  font-size: 16px;
+}
+html:root .swagger-ui .markdown code,
+html:root .swagger-ui .renderedMarkdown code {
+  background: var(--sunken);
+  color: var(--accent-hover);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+html:root .swagger-ui .info a,
+html:root .swagger-ui .markdown a,
+html:root .swagger-ui .renderedMarkdown a {
+  color: var(--accent);
+}
+
+/* The filter box. */
+html:root .swagger-ui .filter-container .operation-filter-input {
+  background: var(--surface);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+html:root .swagger-ui .filter-container .operation-filter-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Groups (tags). */
+html:root .swagger-ui .opblock-tag {
+  color: var(--fg);
+  border-bottom: 1px solid var(--line);
+  font-size: 20px;
+  font-weight: 600;
+}
+html:root .swagger-ui .opblock-tag small {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* Operations. */
+html:root .swagger-ui .opblock {
+  border-radius: 8px;
+  box-shadow: none;
+}
+html:root .swagger-ui .opblock .opblock-summary-method {
+  border-radius: 5px;
+  min-width: 72px;
+  font-weight: 600;
+}
+html:root .swagger-ui .opblock .opblock-summary-path,
+html:root .swagger-ui .opblock .opblock-summary-path__deprecated {
+  color: var(--fg);
+}
+html:root .swagger-ui .opblock .opblock-summary-description {
+  color: var(--muted);
+}
+html:root .swagger-ui .opblock.opblock-get {
+  background: var(--get-bg);
+  border-color: var(--get-line);
+}
+html:root .swagger-ui .opblock.opblock-get .opblock-summary-method {
+  background: var(--get);
+  color: #ffffff;
+}
+html:root .swagger-ui .opblock.opblock-get .opblock-summary,
+html:root .swagger-ui .opblock.opblock-get .opblock-section-header {
+  border-color: var(--get-line);
+}
+html:root .swagger-ui .opblock.opblock-post {
+  background: var(--post-bg);
+  border-color: var(--post-line);
+}
+html:root .swagger-ui .opblock.opblock-post .opblock-summary-method {
+  background: var(--post);
+  color: #ffffff;
+}
+html:root .swagger-ui .opblock.opblock-post .opblock-summary,
+html:root .swagger-ui .opblock.opblock-post .opblock-section-header {
+  border-color: var(--post-line);
+}
+html:root .swagger-ui .opblock.opblock-put {
+  background: var(--put-bg);
+  border-color: var(--put-line);
+}
+html:root .swagger-ui .opblock.opblock-put .opblock-summary-method {
+  background: var(--put);
+  color: #ffffff;
+}
+html:root .swagger-ui .opblock.opblock-put .opblock-summary,
+html:root .swagger-ui .opblock.opblock-put .opblock-section-header {
+  border-color: var(--put-line);
+}
+html:root .swagger-ui .opblock.opblock-delete {
+  background: var(--delete-bg);
+  border-color: var(--delete-line);
+}
+html:root .swagger-ui .opblock.opblock-delete .opblock-summary-method {
+  background: var(--delete);
+  color: #ffffff;
+}
+html:root .swagger-ui .opblock.opblock-delete .opblock-summary,
+html:root .swagger-ui .opblock.opblock-delete .opblock-section-header {
+  border-color: var(--delete-line);
+}
+html:root .swagger-ui .opblock .opblock-section-header {
+  background: var(--sunken);
+  box-shadow: none;
+}
+html:root .swagger-ui .opblock-description-wrapper p,
+html:root .swagger-ui .opblock-description-wrapper li {
+  color: var(--fg);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Buttons. */
+html:root .swagger-ui .btn {
+  border-radius: 6px;
+  box-shadow: none;
+}
+html:root .swagger-ui .btn.execute {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--surface);
+}
+html:root .swagger-ui .btn.execute:hover {
+  background: var(--accent-hover);
+}
+html:root .swagger-ui .btn.cancel {
+  border-color: var(--delete);
+  color: var(--delete);
+}
+
+/* Responses and code. */
+html:root .swagger-ui .response-col_status {
+  font-weight: 600;
+}
+html:root .swagger-ui .highlight-code > .microlight,
+html:root .swagger-ui .opblock-body pre.microlight {
+  border-radius: 6px;
+  background: var(--code-bg);
+}
+
+/* Schemas. */
+html:root .swagger-ui section.models {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+html:root .swagger-ui section.models h4,
+html:root .swagger-ui .model-title,
+html:root .swagger-ui .model {
+  color: var(--fg);
+}
+html:root .swagger-ui .prop-type {
+  color: var(--get);
+}
+html.dark-mode:root .swagger-ui .prop-type {
+  color: #7ea2e6;
+}

@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Files;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Core.Deliverables;
 using Concilia.Core.Deliverables.Export;
@@ -17,7 +19,8 @@ public static class ExportEndpoints
     public static void MapExportEndpoints(this WebApplication app)
     {
         // Step 96: the catalog as Word or PDF.
-        app.MapGet("/projects/{projectId:int}/catalog.{format}", async (int projectId, string format, AppDbContext db, FileStorage storage) =>
+        app.MapGet("/projects/{projectId:int}/catalog.{format}", async (int projectId,
+            [Description("`docx` (Word) o `pdf`.")] string format, AppDbContext db, FileStorage storage) =>
         {
             if (format is not ("docx" or "pdf"))
             {
@@ -34,7 +37,12 @@ public static class ExportEndpoints
             return format == "docx"
                 ? Results.File(CatalogDocx.Write(export), "application/vnd.openxmlformats-officedocument.wordprocessingml.document", name)
                 : Results.File(CatalogPdf.Write(export), "application/pdf", name);
-        });
+        })
+            .WithTags(ApiTags.Deliverables)
+            .WithSummary("Exporta el catálogo a Word o PDF")
+            .WithDescription("El catálogo guardado, validado o en borrador (con «BORRADOR» en la portada y el pie). Una sección por tipo de requisito, cada uno con sus fuentes y preguntas, y dos anexos con el texto de cada fragmento y cada pregunta citados. Lleva las marcas «Suposición de la IA» y «Discrepancia sin revisar».")
+            .Produces<Stream>(StatusCodes.Status200OK, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/pdf")
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     // The fragments come from the plan of the job that generated the catalog

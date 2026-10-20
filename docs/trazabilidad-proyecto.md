@@ -34,6 +34,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 19-10 | Hito 17, paso 88 | Árbitro con embeddings (prompts v0.10): parte del emparejamiento de la plataforma y lo que hace en contra de los números se marca como discrepancia |
 | 19-10 | Hito 17, paso 87 | Emparejamiento de A y B por significado; umbrales 0,90 y 0,70 calibrados con 48 pares etiquetados por el autor; el árbitro, medido por primera vez frente a un criterio humano |
 | 20-10 | Hito 19, paso 96 | El catálogo se descarga en Word y en PDF, con sus fuentes y preguntas en anexos |
+| 20-10 | Documentación de la API (fuera del plan) | Swagger UI con los 42 endpoints documentados, que se actualiza sola y que los tests mantienen completa |
 
 ## Etapas
 
@@ -221,6 +222,13 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Siguen:** el backlog a ficheros `.feature` de Gherkin (paso 97) y a CSV para Jira y Azure DevOps (paso 98).
 - **Para la memoria, en palabras sencillas:** lo que genera la plataforma ya no se queda dentro de la web. El catálogo se descarga como un documento normal, que se puede enviar al cliente, y cada requisito sigue diciendo de qué parte de la documentación sale y en qué respuesta del cliente se apoya.
 
+### Documentación de la API (20-10, a petición del autor, fuera del plan)
+
+- **Qué hay:** el documento OpenAPI 3.1 de la API (`/openapi/v1.json`), generado por ASP.NET Core, y Swagger UI encima (`/swagger`, también en <http://localhost:8080/swagger> con Docker), con los colores de Concilia en claro y en oscuro. Los 42 endpoints van en 10 grupos en el orden del flujo, cada uno con su resumen, su descripción en español, sus parámetros y lo que devuelve en cada caso (incluidos los `400` con los mensajes de la web, los `404` y los `202` de las tareas en segundo plano).
+- **Se actualiza sola, en tres capas:** el documento sale de los propios endpoints en cada petición; cada compilación en Debug reescribe la copia `docs/api/openapi.json`, así que los cambios de la API se ven en git; y `OpenApiDocumentTests` falla si un endpoint queda sin grupo, sin resumen o sin decir qué devuelve, o si la copia no coincide. CLAUDE.md pide documentar cada endpoint nuevo junto a su código.
+- **Librerías:** `Microsoft.AspNetCore.OpenApi` (la oficial de .NET 10) y `Swashbuckle.AspNetCore.SwaggerUI` 10.2.3 (MIT), solo la interfaz; la 10.3 tenía un día y se descartó por prudencia.
+- **Para la memoria, en palabras sencillas:** cualquiera puede ver qué ofrece la API y probarla desde el navegador sin leer el código, y esa descripción no se queda vieja: está escrita al lado de cada endpoint y los tests no dejan subir uno sin ella.
+
 ## Pregunta clave para la evaluación: ¿el árbitro prefiere a su propio modelo?
 
 > **Prioridad alta (autor, 16-10-2026).** Afecta al valor de la verificación cruzada, que es la idea central del TFG. Diseño completo del experimento, estado y resultados en [`experimento-sesgo-arbitro.md`](experimento-sesgo-arbitro.md): es material directo para el capítulo de evaluación de la memoria.
@@ -297,5 +305,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 182 entre el 28-09 y el 20-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings) y 897 (20-10, paso 96).
+- **Commits:** 187 entre el 28-09 y el 20-10-2026.
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96) y 903 (20-10, con la corrección del paso 92 y los de la documentación de la API).

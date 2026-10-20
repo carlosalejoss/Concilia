@@ -53,6 +53,7 @@ La comparación entre notaciones se apoya en [Großer et al., 2024](https://link
 | Modelos de IA | Pasarela LiteLLM de la empresa; qué modelo hace cada papel (A, B, árbitro, sugerencias, mockup) es configuración |
 | Ejecución de los modelos | Runner en .NET que lanza Claude Code no interactivo (`claude -p`), con salida stream-json y veredicto final obligatorio |
 | Embeddings | `paraphrase-multilingual-MiniLM-L12-v2` (Apache 2.0) en ONNX, con ONNX Runtime dentro de la API: en local, sin enviar datos fuera |
+| Documentación de la API | OpenAPI 3.1 generado por ASP.NET Core (Microsoft.AspNetCore.OpenApi) y Swagger UI (Swashbuckle.AspNetCore.SwaggerUI, MIT) |
 | Exportación | Word con DocumentFormat.OpenXml (MIT) y PDF con MigraDoc 6.2.4 (MIT, la última versión con esa licencia) y la fuente IBM Plex Sans (OFL) |
 | Despliegue | Docker y Docker Compose |
 
@@ -60,7 +61,7 @@ La comparación entre notaciones se apoya en [Großer et al., 2024](https://link
 
 ```text
 concilia/
-├── docs/        # plan de construcción, decisiones por hito y evolución de los prompts
+├── docs/        # plan de construcción, decisiones por hito, evolución de los prompts y api/openapi.json
 ├── prompts/     # prompts versionados: v0/ (el flujo actual) y generacion_requisitos/ (catálogo v1.x y v2)
 ├── src/         # solución .NET: Concilia.Api, Concilia.Core (dominio) y Concilia.Runner
 ├── tests/       # tests de la solución .NET
@@ -160,7 +161,7 @@ docker compose up --build -d
 
 ### 6. Abrir Concilia y hacer una primera prueba
 
-1. Abre <http://localhost:8080>. Si quieres comprobar la API, <http://localhost:8080/health> debe responder `{"status":"ok"}`.
+1. Abre <http://localhost:8080>. Si quieres comprobar la API, <http://localhost:8080/health> debe responder `{"status":"ok"}`. La documentación de la API, con todos sus endpoints y la opción de probarlos, está en <http://localhost:8080/swagger>.
 2. Crea un proyecto y, en **Documentos**, sube los ficheros de [`ejemplos/mediano-banco-de-alimentos/`](ejemplos/).
 3. Sigue los pasos de la barra superior: preguntas, respuestas, catálogo, backlog y mockup. En modo simulado cada tarea termina en segundos, con resultados de prueba.
 
@@ -216,8 +217,22 @@ Con .NET 10 y Node 24 instalados:
 
 - **API:** `dotnet run --project src/Concilia.Api --launch-profile http`, que escucha en <http://localhost:5292>. Necesita una base de datos PostgreSQL en la cadena de conexión `ConnectionStrings__Default`; el endpoint `/health` funciona sin ella.
 - **Web:** `npm install` y `npm run dev` dentro de `frontend/`, en <http://localhost:5173>. Reenvía las llamadas a la API.
+- **Documentación de la API:** Swagger UI en <http://localhost:5292/swagger> (se abre al arrancar la API) y el documento OpenAPI en `/openapi/v1.json`. Ver [La API](#la-api).
 - **Tests:** `dotnet test src/Concilia.slnx`. Ninguno llama a la pasarela; el del flujo completo usa `Fake` y una base de datos en memoria.
 - **Embeddings:** fuera de Docker, `.\scripts\descargar-modelo-embeddings.ps1` deja el modelo en `models/` (470 MB, con el SHA-256 comprobado), y la API lo usa con `Embeddings__Provider=Onnx` y `Embeddings__ModelPath` apuntando a esa carpeta. Sin él, la API usa `Fake` y los tests que necesitan el modelo se saltan (también en GitHub Actions).
+
+## La API
+
+La web habla con la API REST de ASP.NET Core, y la API está documentada con **OpenAPI 3.1** y **Swagger UI**, con los colores de Concilia y modo claro y oscuro:
+
+- **Swagger UI:** `/swagger` (<http://localhost:8080/swagger> en Docker). Los endpoints van agrupados en el orden del flujo (proyectos, documentos, preguntas, catálogo y backlog, entregables, mockup, trabajos, ejecuciones e informes), cada uno con su descripción, sus parámetros, lo que devuelve en cada caso y el esquema de sus datos, y se pueden probar desde la página.
+- **Documento OpenAPI:** `/openapi/v1.json`, y una copia en [`docs/api/openapi.json`](docs/api/openapi.json) para verlo sin arrancar nada.
+
+La documentación se actualiza sola:
+
+1. El documento se genera a partir de los propios endpoints cada vez que se pide, así que un endpoint nuevo o cambiado aparece sin tocar nada más. Su descripción va en el código, junto al endpoint (`WithSummary`, `WithDescription`, `Produces`).
+2. Cada compilación en Debug reescribe `docs/api/openapi.json`, de modo que los cambios de la API se ven en git.
+3. Los tests (`OpenApiDocumentTests`) fallan si un endpoint queda sin grupo, sin resumen o sin decir qué devuelve, o si la copia de `docs/api/` no coincide con la API. En GitHub Actions avisan de un cambio subido sin documentar.
 
 ## Evaluación
 

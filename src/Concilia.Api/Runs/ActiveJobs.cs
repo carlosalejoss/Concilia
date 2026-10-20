@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Core.Phases;
 using Concilia.Core.Runs;
@@ -60,5 +61,10 @@ public static class ActiveJobs
     // GET /jobs/active: the job in progress (200), or 204 if there is none.
     public static void MapActiveJobEndpoint(this WebApplication app) =>
         app.MapGet("/jobs/active", async (AppDbContext db) =>
-            await FindAsync(db) is { } active ? Results.Ok(active) : Results.NoContent());
+            await FindAsync(db) is { } active ? Results.Ok(active) : Results.NoContent())
+            .WithTags(ApiTags.Jobs)
+            .WithSummary("El trabajo en curso")
+            .WithDescription("El que se está ejecutando ahora en cualquier proyecto, con el mensaje que la web muestra al intentar lanzar otra tarea; `204` si no hay ninguno.")
+            .Produces<ActiveJobView>()
+            .Produces(StatusCodes.Status204NoContent);
 }

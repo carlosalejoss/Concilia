@@ -1,0 +1,3735 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Concilia API",
+    "description": "Plataforma que genera **catálogos de requisitos** (EARS/MASTeR), **backlogs ágiles** y un **mockup**\ncon verificación cruzada: dos modelos de IA (A y B) trabajan cada tarea en paralelo y un **árbitro**\nlos compara y fusiona.\n\n### El flujo\n1. **Proyecto** → `POST /projects`\n2. **Documentos** → `POST /projects/{projectId}/files`\n3. **Rondas de preguntas** → `POST /projects/{projectId}/question-rounds` y respuestas en `/questions/{id}/…`\n4. **Catálogo** → `POST /projects/{projectId}/catalog-jobs`, se edita y se valida en `/deliverables/catalog`\n5. **Backlog** → `POST /projects/{projectId}/backlog-jobs`, se edita y se valida en `/deliverables/backlog`\n6. **Mockup** → `POST /projects/{projectId}/mockup-jobs`\n\n`GET /projects/{projectId}/flow` dice en qué estado está cada paso y si se puede lanzar.\n\n### Convenciones\n- **Tareas en segundo plano.** Lanzar una tarea responde `202 Accepted` con el trabajo y sus ejecuciones;\n  su avance se sigue con `GET /jobs/{jobId}` y la consola de cada ejecución con `GET /runs/{runId}/events` (SSE).\n- **Una tarea cada vez** en toda la plataforma: mientras hay una en curso, lanzar otra responde `400` con\n  el mensaje de cuál se está ejecutando (`GET /jobs/active`).\n- **Errores.** Los de validación son `400` con un *ValidationProblem*: `errors` lleva, por campo, los mensajes\n  en español que la web muestra tal cual. Un recurso que no existe es `404` sin cuerpo.\n- Los enumerados viajan como texto (`\"Done\"`, no `2`).\n- Sin autenticación: la API está pensada para un solo usuario, detrás de la web.",
+    "license": {
+      "name": "Trabajo de Fin de Grado"
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Estado de la API",
+        "description": "Responde `ok` si la API está en marcha. No comprueba la base de datos.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthView"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/active": {
+      "get": {
+        "tags": [
+          "Trabajos"
+        ],
+        "summary": "El trabajo en curso",
+        "description": "El que se está ejecutando ahora en cualquier proyecto, con el mensaje que la web muestra al intentar lanzar otra tarea; `204` si no hay ninguno.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveJobView"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/flow": {
+      "get": {
+        "tags": [
+          "Proyectos"
+        ],
+        "summary": "Estado de cada paso del flujo",
+        "description": "Para cada paso (documentos, preguntas, catálogo, backlog y mockup): su estado, si está desactualizado, si se puede lanzar y, si no, por qué. El paso de documentos dice además el tamaño estimado de la documentación frente al límite de las fases.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlowView"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/catalog.{format}": {
+      "get": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Exporta el catálogo a Word o PDF",
+        "description": "El catálogo guardado, validado o en borrador (con «BORRADOR» en la portada y el pie). Una sección por tipo de requisito, cada uno con sus fuentes y preguntas, y dos anexos con el texto de cada fragmento y cada pregunta citados. Lleva las marcas «Suposición de la IA» y «Discrepancia sin revisar».",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "format",
+            "in": "path",
+            "description": "`docx` (Word) o `pdf`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stream"
+                }
+              },
+              "application/pdf": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stream"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/embeddings/similarity": {
+      "post": {
+        "tags": [
+          "Informes y evaluación"
+        ],
+        "summary": "Similitud entre dos textos",
+        "description": "El coseno de sus embeddings, calculados en local (por ejemplo, el mismo requisito en español y en inglés). No se guarda nada.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimilarityRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimilarityView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}/matching": {
+      "get": {
+        "tags": [
+          "Informes y evaluación"
+        ],
+        "summary": "Emparejamiento de A y B por significado",
+        "description": "Calculado con embeddings en local, sin ningún LLM, junto a lo que hizo el árbitro: los pares «mismo» y «parecido», lo que quedó solo en A o en B y dónde se apartó el árbitro del emparejamiento. No se guarda: se calcula en cada llamada (unos segundos con el modelo real). `?same=0.85&similar=0.6` prueba otros umbrales.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "same",
+            "in": "query",
+            "description": "Umbral de «lo mismo» (0,90 por defecto).",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "similar",
+            "in": "query",
+            "description": "Umbral de «parecido» (0,70 por defecto).",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatchingView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "tags": [
+          "Proyectos"
+        ],
+        "summary": "Lista los proyectos",
+        "description": "Del más reciente al más antiguo.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Proyectos"
+        ],
+        "summary": "Crea un proyecto",
+        "description": "Solo pide el nombre. El nombre del sistema empieza como «el sistema {nombre}», el idioma en español y sin glosario; se cambian después con `PUT /projects/{projectId}`.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}": {
+      "put": {
+        "tags": [
+          "Proyectos"
+        ],
+        "summary": "Edita un proyecto",
+        "description": "El nombre y los datos que reciben los modelos: el nombre del sistema (con artículo, se copia en cada requisito), el idioma (`es` o `en`) y el glosario opcional.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Proyectos"
+        ],
+        "summary": "Elimina un proyecto con todo lo que tiene",
+        "description": "Borra sus archivos, preguntas, trabajos, ejecuciones y entregables, en la base de datos y en disco. El cuerpo lleva el nombre del proyecto escrito por el usuario, como confirmación. No se puede mientras tenga un trabajo en curso (`409`).",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/files": {
+      "get": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Lista los archivos del proyecto",
+        "description": "Del más reciente al más antiguo. `textStoredName` es nulo en los que no tienen texto (las referencias de estilo `.zip`).",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectFile"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Sube un archivo",
+        "description": "Formulario `multipart/form-data` con el archivo en el campo `file` (hasta 10 MB).\r\n\r\n- **Documentación:** `.txt`, `.md`, `.docx`, `.pdf`, `.xlsx`, `.csv`, `.pptx`, `.html`/`.htm`, `.eml`, `.msg`, `.vtt`, `.srt`, `.json`, `.yaml`/`.yml` y `.xml`. Se extrae su texto al subirlo; un archivo dañado se rechaza sin guardar nada.\r\n- **Referencia de estilo del mockup:** un `.zip` con páginas u hojas de estilo. No es documentación: solo lo lee el mockup.\r\n\r\nUn documento nuevo deja desactualizados el catálogo, el backlog y el mockup; una referencia de estilo, solo el mockup.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "$ref": "#/components/schemas/IFormFile"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectFile"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/files/{fileId}/text": {
+      "get": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Texto extraído de un archivo",
+        "description": "El texto plano que reciben los modelos, con títulos, elementos y filas de tabla en Markdown. `404` si el archivo no tiene texto.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/runs": {
+      "get": {
+        "tags": [
+          "Ejecuciones"
+        ],
+        "summary": "Lista las ejecuciones del proyecto",
+        "description": "De la más reciente a la más antigua, de todos sus trabajos.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Run"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/runs/{runId}": {
+      "get": {
+        "tags": [
+          "Ejecuciones"
+        ],
+        "summary": "Una ejecución",
+        "description": "Un modelo sobre una tarea: proveedor, modelo, estado, veredicto, tokens, turnos y error, si lo hubo. Nunca guarda claves ni el coste que da Claude Code.",
+        "parameters": [
+          {
+            "name": "runId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Run"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/runs/{runId}/events": {
+      "get": {
+        "tags": [
+          "Ejecuciones"
+        ],
+        "summary": "Consola de una ejecución en directo (SSE)",
+        "description": "Server-Sent Events: un mensaje `data:` por evento de Claude Code (texto, llamadas a herramientas, avisos…) y `event: end` al terminar. Una ejecución terminada repite su consola guardada. Se lee con `EventSource` en el navegador; Swagger UI espera a que termine para mostrarla.",
+        "parameters": [
+          {
+            "name": "runId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/jobs": {
+      "post": {
+        "tags": [
+          "Trabajos"
+        ],
+        "summary": "Lanza el catálogo v1.4 por lotes (experimental)",
+        "description": "El catálogo del hito 5 y 6, anterior al flujo v0: la documentación se divide en lotes de secciones y A y B escriben el catálogo de cada lote. No forma parte del flujo; su resultado se lee en `GET /jobs/{jobId}/catalogs/{slot}`.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Trabajos"
+        ],
+        "summary": "Lista los trabajos del proyecto",
+        "description": "Del más reciente al más antiguo, cada uno con sus ejecuciones ordenadas por lado (`A`, `B`, `ARB`), lote e intento.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobView"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}/result": {
+      "get": {
+        "tags": [
+          "Trabajos"
+        ],
+        "summary": "Resultado de un trabajo de fase",
+        "description": "El resultado congelado del trabajo (`resultado-arbitro.json`): `fuente` (`ARB`, o nulo si no hubo resultado), `verificacion_cruzada`, `salida` (la salida del árbitro tal como la escribió), `mensaje`, `desviaciones` del árbitro respecto al emparejamiento y el tiempo del `emparejamiento`. `404` hasta que el trabajo termina.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonNode"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}": {
+      "get": {
+        "tags": [
+          "Trabajos"
+        ],
+        "summary": "Un trabajo con sus ejecuciones",
+        "description": "Para seguir su avance: el trabajo termina cuando tiene `finishedAt`, y cada ejecución dice su estado (`Queued`, `Running`, `Done`, `Failed`…).",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}/catalogs/{slot}": {
+      "get": {
+        "tags": [
+          "Trabajos"
+        ],
+        "summary": "Catálogo v1.4 de un modelo (experimental)",
+        "description": "La unión de los lotes terminados de A o de B en un trabajo del catálogo v1.4, renumerada y con el informe del validador.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "slot",
+            "in": "path",
+            "description": "`A` o `B`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SlotCatalog"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/jobs/arbiter-models": {
+      "get": {
+        "tags": [
+          "Trabajos"
+        ],
+        "summary": "Modelos que pueden hacer de árbitro",
+        "description": "Los configurados para A, B y el árbitro, sin repetir; los ids van a la pasarela tal cual.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}/rearbitrate": {
+      "post": {
+        "tags": [
+          "Trabajos"
+        ],
+        "summary": "Vuelve a arbitrar un trabajo (experimental)",
+        "description": "Un trabajo nuevo (`rearbitration`) que copia las propuestas de A y B de un trabajo terminado de preguntas, catálogo o backlog, sortea de nuevo su orden y solo ejecuta el árbitro, con el modelo elegido. Deja su resultado y su informe, y no cambia las preguntas, el catálogo ni el backlog del proyecto. Sirve para comprobar si el árbitro prefiere la propuesta de su propio modelo.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RearbitrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/question-rounds": {
+      "post": {
+        "tags": [
+          "Preguntas"
+        ],
+        "summary": "Lanza una ronda de preguntas",
+        "description": "A ‖ B → árbitro sobre toda la documentación y las preguntas ya hechas, para no repetirlas. Al terminar, las preguntas del árbitro se guardan como pendientes, numeradas tras las que ya tiene el proyecto. Exige al menos un documento con texto.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/question-rounds/{jobId}/suggestions": {
+      "post": {
+        "tags": [
+          "Preguntas"
+        ],
+        "summary": "Sugiere la respuesta de las preguntas pendientes de una ronda",
+        "description": "Un solo modelo, sin árbitro, propone la respuesta de cada pregunta pendiente de la ronda. No responde nada: cada pregunta guarda la sugerencia (`suggestedAnswer`) para que el usuario la use, la edite o la ignore; `suggestionBasis` dice si sale de la documentación o es una suposición.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/questions/{id}/suggestion": {
+      "post": {
+        "tags": [
+          "Preguntas"
+        ],
+        "summary": "Sugiere la respuesta de una pregunta pendiente",
+        "description": "Como la de la ronda entera, para una sola pregunta.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/question-rounds/{jobId}/accept-suggestions": {
+      "post": {
+        "tags": [
+          "Preguntas"
+        ],
+        "summary": "Aprueba las sugerencias de la ronda",
+        "description": "Guarda tal cual, con origen `ia`, las sugerencias de las preguntas pendientes que salen de la documentación; las demás siguen pendientes. Todas las pendientes deben tener sugerencia, y no se puede mientras se generan. Devuelve las preguntas de la ronda.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Question"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/questions": {
+      "get": {
+        "tags": [
+          "Preguntas"
+        ],
+        "summary": "Lista las preguntas del proyecto",
+        "description": "Por código (`P-001`, `P-002`…), opcionalmente solo las de un estado: `?status=Pending`.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Solo las de este estado.",
+            "schema": {
+              "$ref": "#/components/schemas/QuestionStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Question"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/questions/{id}/answer": {
+      "put": {
+        "tags": [
+          "Preguntas"
+        ],
+        "summary": "Responde una pregunta o cambia su respuesta",
+        "description": "Cambiar una respuesta deja desactualizados el catálogo, el backlog y el mockup, si existen.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/questions/{id}/discard": {
+      "post": {
+        "tags": [
+          "Preguntas"
+        ],
+        "summary": "Descarta una pregunta",
+        "description": "Porque no hace falta, está fuera de alcance…, con un motivo opcional.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiscardRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/questions/{id}/reopen": {
+      "post": {
+        "tags": [
+          "Preguntas"
+        ],
+        "summary": "Vuelve a dejar pendiente una pregunta",
+        "description": "Quita la respuesta o el descarte.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/catalog-jobs": {
+      "post": {
+        "tags": [
+          "Catálogo y backlog"
+        ],
+        "summary": "Lanza el catálogo de requisitos",
+        "description": "A ‖ B → árbitro sobre toda la documentación y las preguntas respondidas. Solo cuando el paso está disponible: al menos una ronda de preguntas terminada y ninguna pendiente. El resultado es el borrador de `GET /projects/{projectId}/deliverables/catalog`.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/backlog-jobs": {
+      "post": {
+        "tags": [
+          "Catálogo y backlog"
+        ],
+        "summary": "Lanza el backlog",
+        "description": "A ‖ B → árbitro a partir del catálogo validado y las preguntas respondidas: épica → historia → criterios de aceptación en Gherkin → tarea. Solo cuando el catálogo está validado. El resultado es el borrador de `GET /projects/{projectId}/deliverables/backlog`.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/deliverables/{kind}": {
+      "get": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Lee el catálogo, el backlog o el mockup del proyecto",
+        "description": "La versión actual, validada o en borrador. Si es un borrador, `errors` dice lo que impide validarlo y `warnings` los avisos. En el catálogo, `assumedQuestionIds` son las preguntas respondidas con una suposición de la IA aceptada tal cual: los requisitos que las citan se marcan. El contenido del mockup es su resumen (historias, pantallas, tamaño y avisos); la página está en `GET /projects/{projectId}/mockup`.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "description": "`catalog`, `backlog` o `mockup`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverableView"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Guarda los cambios del usuario",
+        "description": "El contenido nuevo sustituye al anterior, normalizado (los ids se renumeran). Solo el catálogo y el backlog, y solo en borrador: el mockup no se edita.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "description": "`catalog`, `backlog` o `mockup`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveDeliverableRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverableView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/deliverables/{kind}/validate": {
+      "post": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Valida el catálogo o el backlog",
+        "description": "Solo si el borrador no tiene errores (si los tiene, `400` con todos ellos). Las fases siguientes solo ven la versión validada; los pasos posteriores quedan desactualizados.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "description": "`catalog`, `backlog` o `mockup`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverableView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/deliverables/{kind}/reopen": {
+      "post": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Vuelve a dejar en borrador el catálogo o el backlog",
+        "description": "Para editarlo otra vez; los pasos posteriores quedan desactualizados.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "description": "`catalog`, `backlog` o `mockup`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverableView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/mockup-jobs": {
+      "post": {
+        "tags": [
+          "Mockup"
+        ],
+        "summary": "Genera el mockup",
+        "description": "Un prototipo navegable de toda la aplicación, en un `.html` autocontenido con datos ficticios, a partir del backlog validado. Se construye en varias ejecuciones del mismo trabajo: el diseño (mapa de pantallas y armazón), una por pantalla y, si hace falta, la corrección de las partes con problemas. Usa su propio proveedor y modelo. Si el proyecto tiene una referencia de estilo (`.zip`), la sigue salvo con `?estilo=false`; si no, recibe una dirección de estilo propia.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "estilo",
+            "in": "query",
+            "description": "`false`: diseño desde cero, sin seguir la referencia de estilo del proyecto.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/mockup-jobs/{jobId}/resume": {
+      "post": {
+        "tags": [
+          "Mockup"
+        ],
+        "summary": "Reanuda un mockup que falló",
+        "description": "Un trabajo nuevo que parte de los pasos que el fallido terminó bien (el diseño, las pantallas aceptadas y su referencia de estilo), de modo que solo se repite lo que falta. Solo si llegó a tener el diseño y el backlog validado no ha cambiado.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/mockup": {
+      "get": {
+        "tags": [
+          "Mockup"
+        ],
+        "summary": "El mockup actual",
+        "description": "Como página, para el iframe de la web, o con `?download=true` como archivo para abrir con doble clic. Se sirve con una política de seguridad que no le deja llegar a la red ni a la aplicación.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "description": "`true`: como archivo para guardar (`mockup-proyecto-{id}.html`).",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}/report": {
+      "get": {
+        "tags": [
+          "Informes y evaluación"
+        ],
+        "summary": "Informe de un trabajo",
+        "description": "La base de la evaluación: tokens (reales y, aparte, estimados para las ejecuciones sin dato), duración, reparaciones, cada ejecución, los elementos de A, de B y de la unión (de ambas, solo de A, solo de B, discrepancias, descartados y desviaciones del árbitro), los cambios del usuario frente al borrador que dejó el trabajo y, en las preguntas, su estado y el origen de cada respuesta.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobReport"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/report.csv": {
+      "get": {
+        "tags": [
+          "Informes y evaluación"
+        ],
+        "summary": "Informes de todos los trabajos del proyecto, en CSV",
+        "description": "Una fila por trabajo, del más reciente al más antiguo, con las cifras del informe. Separado por `;` y con BOM, para que Excel en español lo abra con sus columnas y sus tildes.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stream"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActiveJobView": {
+        "required": [
+          "jobId",
+          "projectId",
+          "projectName",
+          "kind",
+          "task",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "task": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Agreement": {
+        "required": [
+          "bothYes",
+          "onlyEmbeddings",
+          "onlyArbiter",
+          "bothNo"
+        ],
+        "type": "object",
+        "properties": {
+          "bothYes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "onlyEmbeddings": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "onlyArbiter": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bothNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rate": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "AnswerRequest": {
+        "required": [
+          "answer"
+        ],
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "La respuesta del cliente."
+          },
+          "fromSuggestion": {
+            "type": "boolean",
+            "description": "Si se partió de la sugerencia de la IA, para registrar el origen de la respuesta (`ia` si no se cambió, `ia-editada` si sí).",
+            "default": false
+          }
+        }
+      },
+      "ArbiterDeviation": {
+        "required": [
+          "elementId",
+          "kind",
+          "similarity",
+          "explanation"
+        ],
+        "type": "object",
+        "properties": {
+          "elementId": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/DeviationKind"
+          },
+          "similarity": {
+            "type": "number",
+            "format": "double"
+          },
+          "explanation": {
+            "type": "string"
+          }
+        }
+      },
+      "CatalogMetrics": {
+        "required": [
+          "requisitos",
+          "requisitos_escritos",
+          "requisitos_rechazados",
+          "preguntas_rechazadas",
+          "por_tipo",
+          "conformidad_sintactica",
+          "calidad_redaccion",
+          "coherencia_decision",
+          "trazabilidad",
+          "fidelidad_cifras",
+          "requisitos_sin_errores",
+          "citas_literales",
+          "cobertura_fragmentos",
+          "proporcion_master",
+          "ramas",
+          "preguntas_abiertas",
+          "terminos_dominio",
+          "funcionalidades",
+          "cobertura_funcionalidades",
+          "criterios",
+          "criterios_por_requisito",
+          "criterios_por_etiqueta",
+          "correcciones",
+          "autoverificacion_coincide"
+        ],
+        "type": "object",
+        "properties": {
+          "requisitos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requisitos_escritos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requisitos_rechazados": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "preguntas_rechazadas": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "por_tipo": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "conformidad_sintactica": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "calidad_redaccion": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "coherencia_decision": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "trazabilidad": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "fidelidad_cifras": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "requisitos_sin_errores": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "citas_literales": {
+            "type": "string"
+          },
+          "cobertura_fragmentos": {
+            "type": "string"
+          },
+          "proporcion_master": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "ramas": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "preguntas_abiertas": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "terminos_dominio": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "funcionalidades": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cobertura_funcionalidades": {
+            "type": "string"
+          },
+          "criterios": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "criterios_por_requisito": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "criterios_por_etiqueta": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "correcciones": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "autoverificacion_coincide": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CatalogValidationReport": {
+        "required": [
+          "valid",
+          "needs_repair",
+          "repair_reasons",
+          "errors",
+          "rejected",
+          "warnings",
+          "metrics",
+          "ids"
+        ],
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean"
+          },
+          "needs_repair": {
+            "type": "boolean"
+          },
+          "repair_reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rejected": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RejectedElement"
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "metrics": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CatalogMetrics"
+              }
+            ]
+          },
+          "ids": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ComputeTime": {
+        "required": [
+          "seconds",
+          "cpuSeconds"
+        ],
+        "type": "object",
+        "properties": {
+          "seconds": {
+            "type": "number",
+            "format": "double"
+          },
+          "cpuSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "CreateProjectRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "DeleteProjectRequest": {
+        "required": [
+          "confirmation"
+        ],
+        "type": "object",
+        "properties": {
+          "confirmation": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "DeliverableKind": {
+        "enum": [
+          "Catalog",
+          "Backlog",
+          "Mockup"
+        ]
+      },
+      "DeliverableStatus": {
+        "enum": [
+          "Draft",
+          "Validated"
+        ]
+      },
+      "DeliverableView": {
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "outdated",
+          "jobId",
+          "content",
+          "errors",
+          "warnings",
+          "createdAt",
+          "updatedAt",
+          "validatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/DeliverableKind"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DeliverableStatus"
+          },
+          "outdated": {
+            "type": "boolean"
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "content": {
+            "$ref": "#/components/schemas/JsonNode"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "validatedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "assumedQuestionIds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DeviationKind": {
+        "enum": [
+          "JoinedDifferent",
+          "SplitSame"
+        ]
+      },
+      "DiscardRequest": {
+        "required": [
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Por qué se descarta (innecesaria, fuera de alcance…). Opcional."
+          }
+        }
+      },
+      "ElementCounts": {
+        "required": [
+          "a",
+          "b",
+          "merged",
+          "both",
+          "onlyA",
+          "onlyB",
+          "discrepancies",
+          "discarded"
+        ],
+        "type": "object",
+        "properties": {
+          "a": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "b": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "merged": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "both": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "onlyA": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "onlyB": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "discrepancies": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "discarded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deviations": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "ElementMatch": {
+        "required": [
+          "slot",
+          "id",
+          "text",
+          "bestId",
+          "bestText",
+          "similarity",
+          "level",
+          "arbiterJoined"
+        ],
+        "type": "object",
+        "properties": {
+          "slot": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "bestId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "bestText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "similarity": {
+            "type": "number",
+            "format": "double"
+          },
+          "level": {
+            "$ref": "#/components/schemas/MatchLevel"
+          },
+          "arbiterJoined": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          }
+        }
+      },
+      "FlowStep": {
+        "enum": [
+          "Documents",
+          "Questions",
+          "Catalog",
+          "Backlog",
+          "Mockup"
+        ]
+      },
+      "FlowView": {
+        "required": [
+          "steps"
+        ],
+        "type": "object",
+        "properties": {
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StepStatus"
+            }
+          }
+        }
+      },
+      "HealthView": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "HttpValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "IFormFile": {
+        "type": "string",
+        "format": "binary"
+      },
+      "Job": {
+        "required": [
+          "kind"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "JobReport": {
+        "required": [
+          "jobId",
+          "kind",
+          "createdAt",
+          "finishedAt",
+          "succeeded",
+          "message",
+          "inputTokens",
+          "outputTokens",
+          "runsWithoutUsage",
+          "repairs",
+          "seconds",
+          "runs",
+          "elements",
+          "changes",
+          "changesNote",
+          "questions"
+        ],
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "succeeded": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "inputTokens": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "outputTokens": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "runsWithoutUsage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "repairs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seconds": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "runs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RunLine"
+            }
+          },
+          "elements": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ElementCounts"
+              }
+            ]
+          },
+          "changes": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/UserChanges"
+              }
+            ]
+          },
+          "changesNote": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "questions": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/QuestionCounts"
+              }
+            ]
+          },
+          "phase": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "arbiterModel": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "rearbitrationOf": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "estimatedInputTokens": {
+            "type": "integer",
+            "format": "int64",
+            "default": 0
+          },
+          "estimatedOutputTokens": {
+            "type": "integer",
+            "format": "int64",
+            "default": 0
+          },
+          "matchingTime": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ComputeTime"
+              }
+            ]
+          },
+          "assumedRequirements": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "JobView": {
+        "required": [
+          "job",
+          "runs"
+        ],
+        "type": "object",
+        "properties": {
+          "job": {
+            "$ref": "#/components/schemas/Job"
+          },
+          "runs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Run"
+            }
+          }
+        }
+      },
+      "JsonElement": { },
+      "JsonNode": { },
+      "MatchCounts": {
+        "required": [
+          "a",
+          "b",
+          "sameA",
+          "sameB",
+          "similarA",
+          "similarB",
+          "onlyA",
+          "onlyB"
+        ],
+        "type": "object",
+        "properties": {
+          "a": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "b": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sameA": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sameB": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "similarA": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "similarB": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "onlyA": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "onlyB": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MatchingResult": {
+        "required": [
+          "thresholds",
+          "counts",
+          "agreement",
+          "elements",
+          "pairs"
+        ],
+        "type": "object",
+        "properties": {
+          "thresholds": {
+            "$ref": "#/components/schemas/MatchThresholds"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/MatchCounts"
+          },
+          "agreement": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Agreement"
+              }
+            ]
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ElementMatch"
+            }
+          },
+          "pairs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MatchPair"
+            }
+          }
+        }
+      },
+      "MatchingView": {
+        "required": [
+          "jobId",
+          "phase",
+          "rearbitrationOf",
+          "hasArbiter",
+          "arbiterModel",
+          "matching",
+          "deviations",
+          "deviationElements",
+          "time"
+        ],
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "phase": {
+            "type": "string"
+          },
+          "rearbitrationOf": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "hasArbiter": {
+            "type": "boolean"
+          },
+          "arbiterModel": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "matching": {
+            "$ref": "#/components/schemas/MatchingResult"
+          },
+          "deviations": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ArbiterDeviation"
+            }
+          },
+          "deviationElements": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "time": {
+            "$ref": "#/components/schemas/ComputeTime"
+          }
+        }
+      },
+      "MatchLevel": {
+        "enum": [
+          "Same",
+          "Similar",
+          "Different"
+        ]
+      },
+      "MatchPair": {
+        "required": [
+          "aId",
+          "bId",
+          "aText",
+          "bText",
+          "similarity",
+          "level",
+          "arbiterJoined"
+        ],
+        "type": "object",
+        "properties": {
+          "aId": {
+            "type": "string"
+          },
+          "bId": {
+            "type": "string"
+          },
+          "aText": {
+            "type": "string"
+          },
+          "bText": {
+            "type": "string"
+          },
+          "similarity": {
+            "type": "number",
+            "format": "double"
+          },
+          "level": {
+            "$ref": "#/components/schemas/MatchLevel"
+          },
+          "arbiterJoined": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          }
+        }
+      },
+      "MatchThresholds": {
+        "required": [
+          "same",
+          "similar"
+        ],
+        "type": "object",
+        "properties": {
+          "same": {
+            "type": "number",
+            "format": "double"
+          },
+          "similar": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "Project": {
+        "required": [
+          "name",
+          "systemName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "systemName": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "glossary": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProjectFile": {
+        "required": [
+          "fileName",
+          "storedName",
+          "contentType",
+          "sha256"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "storedName": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "textStoredName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "Question": {
+        "required": [
+          "code",
+          "text",
+          "reason",
+          "origin"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "origin": {
+            "type": "string"
+          },
+          "arbiterNote": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/QuestionStatus"
+          },
+          "answer": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "answerOrigin": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "suggestedAnswer": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "suggestionBasis": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "suggestionSources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "suggestionNote": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "suggestedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "discardReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "QuestionCounts": {
+        "required": [
+          "total",
+          "answered",
+          "discarded",
+          "pending",
+          "byUser",
+          "byAi",
+          "byAiEdited"
+        ],
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "answered": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "discarded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pending": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "byUser": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "byAi": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "byAiEdited": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "QuestionStatus": {
+        "enum": [
+          "Pending",
+          "Answered",
+          "Discarded"
+        ]
+      },
+      "RearbitrationRequest": {
+        "required": [
+          "model"
+        ],
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "El modelo del árbitro, uno de `GET /jobs/arbiter-models`."
+          }
+        }
+      },
+      "RejectedElement": {
+        "required": [
+          "id",
+          "element",
+          "errors"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "element": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Run": {
+        "required": [
+          "provider",
+          "model"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "jobId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "slot": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "lotTotal": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "promptVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "promptSha256": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "claudeCodeVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "retryOfRunId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "attempt": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/RunState"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "verdictState": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "verdictReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "resultText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "inputTokens": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "outputTokens": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "numTurns": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "errorMessage": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RunLine": {
+        "required": [
+          "slot",
+          "lot",
+          "attempt",
+          "model",
+          "state",
+          "inputTokens",
+          "outputTokens",
+          "turns",
+          "seconds",
+          "error"
+        ],
+        "type": "object",
+        "properties": {
+          "slot": {
+            "type": "string"
+          },
+          "lot": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "attempt": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "model": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "inputTokens": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "outputTokens": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "turns": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "seconds": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "error": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "estimatedInputTokens": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "estimatedOutputTokens": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          }
+        }
+      },
+      "RunState": {
+        "enum": [
+          "Queued",
+          "Running",
+          "Done",
+          "Blocked",
+          "Failed",
+          "TimedOut",
+          "HeartbeatLost",
+          "Skipped"
+        ]
+      },
+      "SaveDeliverableRequest": {
+        "required": [
+          "content"
+        ],
+        "type": "object",
+        "properties": {
+          "content": {
+            "description": "El catálogo o el backlog entero, con la forma de su esquema.",
+            "$ref": "#/components/schemas/JsonElement"
+          }
+        }
+      },
+      "SimilarityRequest": {
+        "required": [
+          "a",
+          "b"
+        ],
+        "type": "object",
+        "properties": {
+          "a": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "El primer texto."
+          },
+          "b": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "El segundo texto."
+          }
+        }
+      },
+      "SimilarityView": {
+        "required": [
+          "similarity"
+        ],
+        "type": "object",
+        "properties": {
+          "similarity": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "SlotCatalog": {
+        "required": [
+          "slot",
+          "model",
+          "lotTotal",
+          "includedLots",
+          "failedLots",
+          "pendingLots",
+          "report",
+          "catalog"
+        ],
+        "type": "object",
+        "properties": {
+          "slot": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "lotTotal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "includedLots": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "failedLots": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "pendingLots": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "report": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CatalogValidationReport"
+              }
+            ]
+          },
+          "catalog": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JsonNode"
+              }
+            ]
+          }
+        }
+      },
+      "StepState": {
+        "enum": [
+          "Blocked",
+          "Available",
+          "InProgress",
+          "Draft",
+          "Validated"
+        ]
+      },
+      "StepStatus": {
+        "required": [
+          "step",
+          "state",
+          "outdated",
+          "canLaunch",
+          "reason",
+          "detail"
+        ],
+        "type": "object",
+        "properties": {
+          "step": {
+            "$ref": "#/components/schemas/FlowStep"
+          },
+          "state": {
+            "$ref": "#/components/schemas/StepState"
+          },
+          "outdated": {
+            "type": "boolean"
+          },
+          "canLaunch": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "warning": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "Stream": {
+        "type": "string",
+        "format": "binary"
+      },
+      "UpdateProjectRequest": {
+        "required": [
+          "name",
+          "systemName",
+          "language",
+          "glossary"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "systemName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "language": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "glossary": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UserChanges": {
+        "required": [
+          "original",
+          "current",
+          "kept",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "type": "object",
+        "properties": {
+          "original": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "kept": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modified": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "added": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deleted": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Proyectos",
+      "description": "Crear, editar y eliminar proyectos, y el estado de cada paso del flujo."
+    },
+    {
+      "name": "Documentos",
+      "description": "Subir la documentación del proyecto (y la referencia de estilo del mockup, en `.zip`) y leer el texto extraído."
+    },
+    {
+      "name": "Preguntas",
+      "description": "Rondas de preguntas al cliente (A ‖ B → árbitro), sugerencias de respuesta de la IA y respuestas del usuario."
+    },
+    {
+      "name": "Catálogo y backlog",
+      "description": "Lanzar el catálogo de requisitos y el backlog (A ‖ B → árbitro). El resultado llega como borrador a «Entregables»."
+    },
+    {
+      "name": "Entregables",
+      "description": "El catálogo, el backlog y el mockup del proyecto: leer, editar, validar, reabrir y exportar."
+    },
+    {
+      "name": "Mockup",
+      "description": "Generar, reanudar y ver el prototipo navegable a partir del backlog validado."
+    },
+    {
+      "name": "Trabajos",
+      "description": "Los trabajos lanzados (cada uno con sus ejecuciones), su resultado y los nuevos arbitrajes experimentales."
+    },
+    {
+      "name": "Ejecuciones",
+      "description": "Cada ejecución de un modelo y su consola en directo (Server-Sent Events)."
+    },
+    {
+      "name": "Informes y evaluación",
+      "description": "Informe por trabajo, CSV del proyecto, emparejamiento de A y B por embeddings y similitud entre textos."
+    },
+    {
+      "name": "Sistema",
+      "description": "Estado de la API."
+    }
+  ]
+}

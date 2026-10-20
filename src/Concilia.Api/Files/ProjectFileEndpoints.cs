@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Core.Files;
 using Concilia.Core.Mockup;
@@ -12,7 +13,9 @@ public static class ProjectFileEndpoints
     // Registers the /projects/{projectId}/files routes; called from Program.cs.
     public static void MapProjectFileEndpoints(this WebApplication app)
     {
-        app.MapGet("/projects/{projectId:int}/files", async (int projectId, AppDbContext db) =>
+        var group = app.MapGroup("").WithTags(ApiTags.Files);
+
+        group.MapGet("/projects/{projectId:int}/files", async (int projectId, AppDbContext db) =>
         {
             if (!await db.Projects.AnyAsync(p => p.Id == projectId))
             {
@@ -25,10 +28,14 @@ public static class ProjectFileEndpoints
                 .ToListAsync();
 
             return Results.Ok(files);
-        });
+        })
+            .WithSummary("Lista los archivos del proyecto")
+            .WithDescription("Del más reciente al más antiguo. `textStoredName` es nulo en los que no tienen texto (las referencias de estilo `.zip`).")
+            .Produces<List<ProjectFile>>()
+            .Produces(StatusCodes.Status404NotFound);
 
         // The extracted plain text of one file, or 404 if it has none.
-        app.MapGet("/projects/{projectId:int}/files/{fileId:int}/text",
+        group.MapGet("/projects/{projectId:int}/files/{fileId:int}/text",
             async (int projectId, int fileId, AppDbContext db, FileStorage storage) =>
         {
             var file = await db.ProjectFiles
@@ -41,10 +48,14 @@ public static class ProjectFileEndpoints
 
             var path = Path.Combine(storage.ProjectFolder(projectId), file.TextStoredName);
             return Results.Text(await File.ReadAllTextAsync(path), "text/plain; charset=utf-8");
-        });
+        })
+            .WithSummary("Texto extraído de un archivo")
+            .WithDescription("El texto plano que reciben los modelos, con títulos, elementos y filas de tabla en Markdown. `404` si el archivo no tiene texto.")
+            .Produces<string>(contentType: "text/plain")
+            .Produces(StatusCodes.Status404NotFound);
 
         // Expects a multipart/form-data request with the file in a field named "file".
-        app.MapPost("/projects/{projectId:int}/files",
+        group.MapPost("/projects/{projectId:int}/files",
             async (int projectId, IFormFile? file, AppDbContext db, FileStorage storage) =>
         {
             if (!await db.Projects.AnyAsync(p => p.Id == projectId))
@@ -148,6 +159,18 @@ public static class ProjectFileEndpoints
         // ASP.NET Core requires an anti-forgery token for form uploads by default.
         // That protects cookie-authenticated sites; this API has no login or
         // cookies (see CLAUDE.md), so the check is turned off for this endpoint.
-        .DisableAntiforgery();
+        .DisableAntiforgery()
+            .WithSummary("Sube un archivo")
+            .WithDescription("""
+                Formulario `multipart/form-data` con el archivo en el campo `file` (hasta 10 MB).
+
+                - **Documentación:** `.txt`, `.md`, `.docx`, `.pdf`, `.xlsx`, `.csv`, `.pptx`, `.html`/`.htm`, `.eml`, `.msg`, `.vtt`, `.srt`, `.json`, `.yaml`/`.yml` y `.xml`. Se extrae su texto al subirlo; un archivo dañado se rechaza sin guardar nada.
+                - **Referencia de estilo del mockup:** un `.zip` con páginas u hojas de estilo. No es documentación: solo lo lee el mockup.
+
+                Un documento nuevo deja desactualizados el catálogo, el backlog y el mockup; una referencia de estilo, solo el mockup.
+                """)
+            .Produces<ProjectFile>(StatusCodes.Status201Created)
+            .ProducesValidationProblem()
+            .Produces(StatusCodes.Status404NotFound);
     }
 }

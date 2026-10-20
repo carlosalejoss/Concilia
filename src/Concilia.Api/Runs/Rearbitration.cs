@@ -1,5 +1,7 @@
+using System.ComponentModel;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Files;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Core.Phases;
 using Concilia.Core.Runner;
@@ -23,16 +25,21 @@ public static class Rearbitration
     // them from here.
     public static string ProposalFile(string slot) => $"propuesta-{slot}.json";
 
-    public record Request(string Model);
+    public record RearbitrationRequest([property: Description("El modelo del árbitro, uno de `GET /jobs/arbiter-models`.")] string Model);
 
     public static void MapRearbitrationEndpoints(this WebApplication app)
     {
         // The models that can be chosen as the arbiter: those configured for
         // A, B and the arbiter (the ids go to the gateway as they are).
-        app.MapGet("/jobs/arbiter-models", (RunnerOptions options) => Results.Ok(Models(options)));
+        var group = app.MapGroup("").WithTags(ApiTags.Jobs);
 
-        app.MapPost("/jobs/{jobId:guid}/rearbitrate",
-            async (Guid jobId, Request body, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+        group.MapGet("/jobs/arbiter-models", (RunnerOptions options) => Results.Ok(Models(options)))
+            .WithSummary("Modelos que pueden hacer de árbitro")
+            .WithDescription("Los configurados para A, B y el árbitro, sin repetir; los ids van a la pasarela tal cual.")
+            .Produces<IReadOnlyList<string>>();
+
+        group.MapPost("/jobs/{jobId:guid}/rearbitrate",
+            async (Guid jobId, RearbitrationRequest body, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
         {
             var source = await db.Jobs.FindAsync(jobId);
             if (source is null)
@@ -97,7 +104,10 @@ public static class Rearbitration
             await db.SaveChangesAsync();
             queue.Enqueue(job.Id);
             return Results.Accepted($"/jobs/{job.Id}", new JobView(job, [arbiter]));
-        });
+        })
+            .WithSummary("Vuelve a arbitrar un trabajo (experimental)")
+            .WithDescription("Un trabajo nuevo (`rearbitration`) que copia las propuestas de A y B de un trabajo terminado de preguntas, catálogo o backlog, sortea de nuevo su orden y solo ejecuta el árbitro, con el modelo elegido. Deja su resultado y su informe, y no cambia las preguntas, el catálogo ni el backlog del proyecto. Sirve para comprobar si el árbitro prefiere la propuesta de su propio modelo.")
+            .LaunchesJob();
     }
 
     // Called by JobWorker: the arbiter on the copied proposals. The result goes

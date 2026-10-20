@@ -6,6 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -14,8 +15,32 @@
          for an older one, and without this the test project ends up with a
          different EF Core version than the API (build warning MSB3277). -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.12">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- The look of Swagger UI, injected in its page (OpenApi/ApiDocumentation.cs). -->
+    <EmbeddedResource Include="OpenApi\swagger-ui.css" />
+  </ItemGroup>
+
+  <!-- Each Debug build also writes the OpenAPI document to docs/api/openapi.json
+       (Microsoft.Extensions.ApiDescription.Server starts the app without serving
+       and asks it for the document), so the copy in the repository follows the
+       code and its changes show in git. Not in Release: the Docker image and CI
+       do not need it, and docs/ is not in the image. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
+    <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)\..\..\docs\api</OpenApiDocumentsDirectory>
+    <OpenApiGenerateDocumentsOptions>--file-name openapi</OpenApiGenerateDocumentsOptions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
+    <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
+  </PropertyGroup>
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>

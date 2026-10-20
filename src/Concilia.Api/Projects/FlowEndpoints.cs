@@ -1,6 +1,7 @@
 using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Files;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Api.Runs;
 using Concilia.Core.Deliverables;
@@ -34,7 +35,12 @@ public static class FlowEndpoints
             await db.Projects.AnyAsync(p => p.Id == projectId)
                 ? Results.Ok(new FlowView(ProjectFlow.Compute(
                     await ReadFactsAsync(db, storage, projectId) with { MaxDocumentationTokens = options.MaxDocumentationTokens })))
-                : Results.NotFound());
+                : Results.NotFound())
+            .WithTags(ApiTags.Projects)
+            .WithSummary("Estado de cada paso del flujo")
+            .WithDescription("Para cada paso (documentos, preguntas, catálogo, backlog y mockup): su estado, si está desactualizado, si se puede lanzar y, si no, por qué. El paso de documentos dice además el tamaño estimado de la documentación frente al límite de las fases.")
+            .Produces<FlowView>()
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     // What the flow of a project depends on, read from the database and the job folders.

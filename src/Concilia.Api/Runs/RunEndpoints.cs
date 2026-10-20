@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Core.Runs;
 
@@ -13,18 +14,26 @@ public static class RunEndpoints
     {
         // Runs are launched through jobs (POST /projects/{id}/jobs, in
         // JobEndpoints); these endpoints read single runs.
-        app.MapGet("/projects/{projectId:int}/runs", async (int projectId, AppDbContext db) =>
+        var group = app.MapGroup("").WithTags(ApiTags.Runs);
+
+        group.MapGet("/projects/{projectId:int}/runs", async (int projectId, AppDbContext db) =>
             await db.Runs
                 .Where(r => r.ProjectId == projectId)
                 .OrderByDescending(r => r.CreatedAt)
-                .ToListAsync());
+                .ToListAsync())
+            .WithSummary("Lista las ejecuciones del proyecto")
+            .WithDescription("De la más reciente a la más antigua, de todos sus trabajos.");
 
-        app.MapGet("/runs/{runId:guid}", async (Guid runId, AppDbContext db) =>
-            await db.Runs.FindAsync(runId) is { } run ? Results.Ok(run) : Results.NotFound());
+        group.MapGet("/runs/{runId:guid}", async (Guid runId, AppDbContext db) =>
+            await db.Runs.FindAsync(runId) is { } run ? Results.Ok(run) : Results.NotFound())
+            .WithSummary("Una ejecución")
+            .WithDescription("Un modelo sobre una tarea: proveedor, modelo, estado, veredicto, tokens, turnos y error, si lo hubo. Nunca guarda claves ni el coste que da Claude Code.")
+            .Produces<Run>()
+            .Produces(StatusCodes.Status404NotFound);
 
         // Server-Sent Events: one "data:" message per event, then "event: end".
         // The browser's EventSource reads this format directly.
-        app.MapGet("/runs/{runId:guid}/events",
+        group.MapGet("/runs/{runId:guid}/events",
             async (Guid runId, HttpContext http, AppDbContext db, RunEventStore store, IOptions<JsonOptions> json) =>
         {
             var run = await db.Runs.FindAsync(runId);
@@ -51,6 +60,10 @@ public static class RunEndpoints
             }
 
             await http.Response.WriteAsync("event: end\ndata: {}\n\n", http.RequestAborted);
-        });
+        })
+            .WithSummary("Consola de una ejecución en directo (SSE)")
+            .WithDescription("Server-Sent Events: un mensaje `data:` por evento de Claude Code (texto, llamadas a herramientas, avisos…) y `event: end` al terminar. Una ejecución terminada repite su consola guardada. Se lee con `EventSource` en el navegador; Swagger UI espera a que termine para mostrarla.")
+            .Produces<string>(contentType: "text/event-stream")
+            .Produces(StatusCodes.Status404NotFound);
     }
 }
