@@ -284,5 +284,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 180 entre el 28-09 y el 19-10-2026.
+- **Commits:** 182 entre el 28-09 y el 20-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10) y 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings).

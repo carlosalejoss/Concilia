@@ -85,36 +85,138 @@ concilia/
 - [ ] **Hito 22.** Evaluación (precisión, recall y F1 frente a listas de referencia).
 - [ ] **Hito 7 (aplazado).** Catálogo v2, de arriba abajo, con los prompts del autor.
 
-## Puesta en marcha
+## Ejecutar el proyecto desde cero
 
-Requisitos: Docker Desktop.
+Guía paso a paso para ponerlo en marcha en un ordenador sin nada instalado. Con los pasos 1 a 6 la aplicación funciona en **modo simulado**: el proveedor `Fake` imita a los modelos, así que se puede recorrer todo el flujo sin coste y sin credenciales. El paso 7 conecta los modelos reales.
 
-1. Copia `.env.example` a `.env` y rellena los valores:
-   - `POSTGRES_PASSWORD`: cualquier valor en local. Con solo esto la aplicación arranca con el proveedor `Fake`, que simula los modelos sin llamar a ninguno.
-   - Para usar modelos reales: `RUNNER_PROVIDER=LiteLlm`, `LITELLM_BASE_URL` y `LITELLM_API_KEY`. Los modelos de cada papel (`RUNNER_MODEL_A`, `RUNNER_MODEL_B`, `RUNNER_MODEL_ARBITER`, `RUNNER_MODEL_SUGGESTIONS`) tienen valores por defecto.
-   - Para el mockup: `MOCKUP_PROVIDER` (`Fake`, `LiteLlm` o `ClaudeSubscription`) y `MOCKUP_MODEL`. Con `ClaudeSubscription` hace falta `CLAUDE_CODE_OAUTH_TOKEN`, de `claude setup-token`; es solo para uso del autor.
-2. Desde la raíz del repositorio:
+**Qué hace falta:**
+- Windows 10/11, macOS o Linux;
+- unos 8 GB de RAM y unos 10 GB libres en disco: las imágenes de Docker, las de compilación y el modelo de embeddings, de 470 MB;
+- conexión a Internet la primera vez, para descargar las imágenes y el modelo.
+
+### 1. Instalar Git
+
+Descárgalo de <https://git-scm.com/downloads> e instálalo con las opciones por defecto. Compruébalo en una terminal (PowerShell en Windows):
+
+```bash
+git --version
+```
+
+### 2. Instalar Docker Desktop
+
+1. Descárgalo de <https://www.docker.com/products/docker-desktop/> e instálalo. En Windows, acepta usar **WSL 2** cuando el instalador lo proponga y reinicia si te lo pide.
+2. Abre Docker Desktop y espera a que indique que el motor está en marcha (*Engine running*). Tiene que estar abierto siempre que uses Concilia.
+3. Compruébalo:
 
    ```bash
-   docker compose up --build -d
+   docker --version
+   docker compose version
    ```
 
-3. Abre <http://localhost:8080>, crea un proyecto y sigue los pasos.
+### 3. Descargar el código
 
-Los datos se guardan en el volumen de la base de datos y en `data/`, y sobreviven a `docker compose down`. Para borrarlos: `docker compose down -v`.
+El repositorio es privado: pide acceso al autor. Después:
 
-Reconstruir la API (`docker compose up --build -d`) interrumpe los trabajos en curso: conviene hacerlo sin ninguno en marcha. La primera construcción descarga el modelo de embeddings (470 MB); después Docker lo guarda en caché.
+```bash
+git clone <dirección del repositorio> concilia
+cd concilia
+```
+
+Todos los comandos siguientes se ejecutan desde esa carpeta, la raíz del repositorio.
+
+### 4. Crear el fichero de configuración `.env`
+
+Copia la plantilla:
+
+```bash
+# PowerShell (Windows)
+Copy-Item .env.example .env
+
+# Git Bash, macOS o Linux
+cp .env.example .env
+```
+
+Abre `.env` con cualquier editor y escribe una contraseña para la base de datos, la que quieras (solo se usa dentro de Docker):
+
+```text
+POSTGRES_PASSWORD=una-contraseña-cualquiera
+```
+
+Deja el resto vacío por ahora: es el modo simulado. `.env` nunca se sube al repositorio.
+
+### 5. Arrancar la aplicación
+
+```bash
+docker compose up --build -d
+```
+
+- **La primera vez tarda varios minutos:** descarga las imágenes base, compila la API y la web, e incluye el modelo de embeddings. Las siguientes veces es mucho más rápido.
+- Comprueba que los tres servicios están en marcha (`db` debe decir *healthy*):
+
+  ```bash
+  docker compose ps
+  ```
+
+### 6. Abrir Concilia y hacer una primera prueba
+
+1. Abre <http://localhost:8080>. Si quieres comprobar la API, <http://localhost:8080/health> debe responder `{"status":"ok"}`.
+2. Crea un proyecto y, en **Documentos**, sube los ficheros de [`ejemplos/mediano-banco-de-alimentos/`](ejemplos/).
+3. Sigue los pasos de la barra superior: preguntas, respuestas, catálogo, backlog y mockup. En modo simulado cada tarea termina en segundos, con resultados de prueba.
+
+### 7. Usar los modelos reales (opcional)
+
+Añade al `.env` los datos de la pasarela LiteLLM de la empresa. Pídeselos al equipo y no los compartas ni los subas al repositorio:
+
+```text
+RUNNER_PROVIDER=LiteLlm
+LITELLM_BASE_URL=<dirección de la pasarela>
+LITELLM_API_KEY=<clave de la pasarela>
+MOCKUP_PROVIDER=LiteLlm
+MOCKUP_MODEL=SS - GPT-6-SOL
+```
+
+- **Valores por defecto:** los modelos de cada papel (`RUNNER_MODEL_A`, `RUNNER_MODEL_B`, `RUNNER_MODEL_ARBITER`, `RUNNER_MODEL_SUGGESTIONS`) los tienen, y `.env.example` explica cada variable.
+- **Mockup con la suscripción de Claude:** `MOCKUP_PROVIDER=ClaudeSubscription` y `CLAUDE_CODE_OAUTH_TOKEN`, de `claude setup-token`. Es solo para uso del autor.
+- **Aplicar los cambios** (no hace falta volver a compilar):
+
+  ```bash
+  docker compose up -d
+  ```
+
+- **Coste:** con modelos reales cada tarea cuesta dinero. Las cifras de referencia están en [`docs/costes/costes.md`](docs/costes/costes.md); el flujo completo del proyecto grande de ejemplo cuesta unos 22 $.
+
+### 8. Parar, volver a arrancar y actualizar
+
+| Para… | Comando |
+| --- | --- |
+| Parar la aplicación (los datos se conservan) | `docker compose down` |
+| Volver a arrancarla | `docker compose up -d` |
+| Actualizar a una versión nueva del código | `git pull` y después `docker compose up --build -d` |
+| Borrar todos los datos (proyectos, documentos y resultados) | `docker compose down -v` y borrar la carpeta `data/` |
+
+**Los datos se guardan** en el volumen de la base de datos y en la carpeta `data/`, y sobreviven a `docker compose down`.
+
+**Reconstruir la API interrumpe los trabajos en curso:** hazlo sin ninguno en marcha. Si se interrumpe uno, al arrancar queda cerrado como fallido y se puede volver a lanzar; un mockup se puede reanudar.
+
+### 9. Problemas frecuentes
+
+| Problema | Solución |
+| --- | --- |
+| `Cannot connect to the Docker daemon` o un error de *pipe* en Windows | Docker Desktop no está abierto: ábrelo y espera a que diga *Engine running*. |
+| `Set POSTGRES_PASSWORD in .env` | Falta el `.env` o su contraseña (paso 4). |
+| El puerto 8080 está ocupado | Cierra el programa que lo usa, o cambia `"8080:80"` por, por ejemplo, `"8081:80"` en `docker-compose.yml` y abre <http://localhost:8081>. |
+| La primera construcción falla al descargar algo, como el modelo de embeddings | Suele ser la red. Vuelve a lanzar `docker compose up --build -d`. Detrás de un proxy de empresa, configúralo en Docker Desktop (*Settings → Resources → Proxies*). |
+| La web abre, pero no aparece nada o da errores | Mira lo que dice la API con `docker compose logs api`. Los registros nunca muestran la clave ni la dirección de la pasarela. |
+| `Falta el fichero del modelo de embeddings` | La imagen no tiene el modelo: reconstrúyela con `docker compose up --build -d`. Como apaño, `EMBEDDINGS_PROVIDER=Fake` en `.env` arranca sin él, sin el emparejamiento real. |
 
 ### Desarrollo sin Docker
 
 Con .NET 10 y Node 24 instalados:
 
-- API: `dotnet run --project src/Concilia.Api --launch-profile http` (escucha en <http://localhost:5292>).
-- Web: `npm install` y `npm run dev` dentro de `frontend/` (<http://localhost:5173>; reenvía las llamadas a la API).
-- Tests: `dotnet test src/Concilia.slnx`. Ninguno llama a la pasarela; el del flujo completo usa `Fake` y una base de datos en memoria.
-- Embeddings: la imagen de Docker trae el modelo. Fuera de Docker, `.\scripts\descargar-modelo-embeddings.ps1` lo deja en `models/` (470 MB, con el SHA-256 comprobado), y la API lo usa con `Embeddings__Provider=Onnx` y `Embeddings__ModelPath` apuntando a esa carpeta. Sin él, la API usa `Fake` y los tests que necesitan el modelo se saltan (también en GitHub Actions).
-
-La API necesita una base de datos PostgreSQL en la cadena de conexión `ConnectionStrings__Default`; el endpoint `/health` funciona sin ella.
+- **API:** `dotnet run --project src/Concilia.Api --launch-profile http`, que escucha en <http://localhost:5292>. Necesita una base de datos PostgreSQL en la cadena de conexión `ConnectionStrings__Default`; el endpoint `/health` funciona sin ella.
+- **Web:** `npm install` y `npm run dev` dentro de `frontend/`, en <http://localhost:5173>. Reenvía las llamadas a la API.
+- **Tests:** `dotnet test src/Concilia.slnx`. Ninguno llama a la pasarela; el del flujo completo usa `Fake` y una base de datos en memoria.
+- **Embeddings:** fuera de Docker, `.\scripts\descargar-modelo-embeddings.ps1` deja el modelo en `models/` (470 MB, con el SHA-256 comprobado), y la API lo usa con `Embeddings__Provider=Onnx` y `Embeddings__ModelPath` apuntando a esa carpeta. Sin él, la API usa `Fake` y los tests que necesitan el modelo se saltan (también en GitHub Actions).
 
 ## Evaluación
 
