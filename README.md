@@ -115,10 +115,10 @@ git --version
 
 ### 3. Descargar el código
 
-El repositorio es privado: pide acceso al autor. Después:
+El repositorio es público, en <https://github.com/carlosalejoss/Concilia>:
 
 ```bash
-git clone <dirección del repositorio> concilia
+git clone https://github.com/carlosalejoss/Concilia.git concilia
 cd concilia
 ```
 
