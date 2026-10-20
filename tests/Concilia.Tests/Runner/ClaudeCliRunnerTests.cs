@@ -237,6 +237,24 @@ public class ClaudeCliRunnerTests
         Assert.Equal(1, result.Compactions);
     }
 
+    // The real arbiter of 20-10-2026: Claude Code said "compacting" twice for
+    // the same compaction (no compact_boundary in between). That is one
+    // compaction, which is allowed: the run goes on (here, until the time runs out).
+    [Fact]
+    public async Task Two_notices_of_the_same_compaction_do_not_stop_the_run()
+    {
+        using var temp = new TempDirectory();
+        var request = Request(temp.Path, Directive("synthetic-compacta-una-vez.jsonl", sleepAfterMs: 3_000), "output/resumen.md") with
+        {
+            TotalTimeout = TimeSpan.FromSeconds(2),
+        };
+
+        var (result, _) = await Run(request);
+
+        Assert.Equal(RunStatus.TimedOut, result.Status);
+        Assert.NotEqual(ClaudeCliRunner.CompactingBeforeOutput, result.ErrorMessage);
+    }
+
     [Fact]
     public async Task Stderr_is_kept_as_redacted_warnings()
     {

@@ -1,0 +1,3 @@
+{"type":"system","subtype":"init","cwd":"/work","session_id":"00000000-0000-0000-0000-000000000001","tools":["Read","Write"],"mcp_servers":[],"model":"SS - GPT-6-SOL","permissionMode":"default","apiKeySource":"none","claude_code_version":"2.1.283","uuid":"00000000-0000-0000-0000-000000000002"}
+{"type":"system","subtype":"status","status":"compacting","session_id":"00000000-0000-0000-0000-000000000001","uuid":"00000000-0000-0000-0000-000000000020"}
+{"type":"system","subtype":"status","status":"compacting","session_id":"00000000-0000-0000-0000-000000000001","uuid":"00000000-0000-0000-0000-000000000021"}

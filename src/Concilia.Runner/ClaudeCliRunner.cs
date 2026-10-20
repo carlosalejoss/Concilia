@@ -58,7 +58,12 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
         var pendingReads = new Dictionary<string, FileRead>();
         var reads = new List<FileRead>();
         var compactions = 0;
-        var compactingBeforeOutput = 0; // see CompactingBeforeOutput
+        // The compactions started before the output was written (see
+        // CompactingBeforeOutput), and whether one is in progress: Claude Code
+        // may say "compacting" more than once for the same compaction, before
+        // its compact_boundary.
+        var compactingBeforeOutput = 0;
+        var compactionInProgress = false;
 
         // The Write calls waiting for their result, and the files written, to
         // know when every expected output is there (see CompactingAfterOutput).
@@ -87,6 +92,7 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
                         break;
                     case SystemEvent { Subtype: CompactBoundary }:
                         compactions++;
+                        compactionInProgress = false;
                         break;
                 }
 
@@ -112,10 +118,14 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
                         stop.Cancel();
                         break;
                     case SystemEvent system when stopReason is null && IsCompacting(system)
-                                                 && request.ExpectedOutputFiles.Count > 0
-                                                 && ++compactingBeforeOutput >= MaxCompactionsBeforeOutput:
-                        stopReason = CompactingBeforeOutput;
-                        stop.Cancel();
+                                                 && request.ExpectedOutputFiles.Count > 0 && !compactionInProgress:
+                        // A new compaction (not one more notice of the one in progress).
+                        compactionInProgress = true;
+                        if (++compactingBeforeOutput >= MaxCompactionsBeforeOutput)
+                        {
+                            stopReason = CompactingBeforeOutput;
+                            stop.Cancel();
+                        }
                         break;
                 }
 
@@ -187,6 +197,10 @@ public class ClaudeCliRunner(string executable, IModelAccess access) : IRunnerPr
     // valid output. Compacting once before writing happened four times, and
     // three of those ended well, so once is allowed. RetryRunner repeats the
     // stopped run once from scratch, as one lost by inactivity.
+    // Fixed on 20-10-2026: it counted the "compacting" notices, and Claude Code
+    // gives two for the same compaction, so a real arbiter was stopped at its
+    // first one. Now a notice only opens a new compaction after the previous
+    // one ended (compact_boundary).
     public const int MaxCompactionsBeforeOutput = 2;
 
     public const string CompactingBeforeOutput =
