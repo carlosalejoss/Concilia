@@ -2031,7 +2031,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Cambio de criterio:** al implementarlo apareció que PDFsharp y MigraDoc pasaron a AGPL-3.0 en la versión 6.5.0 (14-10-2026). Se preguntó al autor, que eligió quedarse en la 6.2.4, la última MIT, fijada en el `.csproj` con un comentario para que nadie la actualice. La alternativa era escribir el PDF con PdfPig (Apache 2.0, ya en el proyecto), pero con unas 150 líneas propias de maquetación.
 - **Observado, sin tocar:** `dotnet build` avisa de vulnerabilidades en `System.Security.Cryptography.Pkcs` 10.0.12. El aviso ya existía, porque lo traen MimeKit y MsgReader; MigraDoc depende de la misma versión.
 - **Pendientes:**
-  - probar las descargas en Docker cuando no haya tareas en marcha (`GET /jobs/active` da 204) y el autor permita reconstruir la API y la web;
+  - ~~probar las descargas en Docker~~: hecho el mismo día, con permiso del autor y `GET /jobs/active` en 204. Se reconstruyeron la API y la web. Clínicas (209 requisitos) da 62 páginas en PDF y 59 en Word, y el banco de alimentos (100), 28 páginas; ambos en menos de 1 s. La fuente va embebida, los acentos salen bien, la hora es la peninsular y los `.docx` pasan el validador; Word abre el de clínicas;
   - pasos 97 (backlog a Gherkin) y 98 (CSV para Jira y Azure DevOps).
 
 ---
