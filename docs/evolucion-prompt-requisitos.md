@@ -364,11 +364,35 @@ Hito 18b, a partir de la prueba real de la v0.11. Cambian los prompts del árbit
 
 ### Resultados
 
-Pendiente: un nuevo arbitraje del catálogo y otro del backlog de «Clinicas Veterinarias v0.11» con las mismas propuestas, para comparar las líneas de documentación consultadas, los criterios conservados, el coste, el tiempo y la unión.
+**Catálogo (paso 107), 22-10-2026.** Nuevo arbitraje con `SS - GPT-6-SOL` del catálogo de «Clinicas Veterinarias v0.11», con las mismas propuestas de A (280 requisitos) y B (171) que el árbitro de la prueba real de la v0.11.
+
+| | v0.11 (prueba real) | v0.12 |
+| --- | --- | --- |
+| Documentación consultada | 34 tramos de `documentacion.txt`, 1.242 líneas | **15 tramos de `fuentes.txt`, 298 líneas** |
+| Ejecuciones del árbitro | 3: se paró en la segunda compactación sin escribir, se repitió y se reparó un `ARB-FALTA` | **1**, a la primera; se detuvo al empezar a compactar con la salida ya escrita y válida |
+| Coste del árbitro | unos 3,20 $* | **unos 1,43 $*** (370.349* tokens de entrada y 68.682* de salida) |
+| Minutos del árbitro | 11,5 en tres intentos | **7** |
+| Unión | 235 (160 de ambas, 75 solo de A) | 277 (162 de ambas, 115 solo de A) |
+| Desviaciones (elementos marcados) | 15 (12): 14 pares «mismo» separados y 1 unión de cosas distintas | 47 (44): 46 pares «mismo» separados y 1 unión |
+| Discrepancias del árbitro | 0 | 1 |
+
+\* Estimado: el árbitro no tiene dato de consumo cuando se le detiene (paso 95).
+
+- **El objetivo se cumple:** el árbitro consulta 4 veces menos documentación, escribe a la primera y cuesta menos de la mitad. Como referencia, los 7 nuevos arbitrajes del catálogo de clínicas del 16 y el 19-10 (con otras propuestas, las de la v0.9) consultaron entre 264 y 2.948 líneas (mediana 655) y costaron entre 1,39 y 4,53 $.
+- **La unión sale más grande, pero más atómica.** Los 46 pares «mismo» separados son casi todos separaciones correctas que los embeddings no ven:
+  - 13 son pares con cifras distintas, como «cuando la mascota cumpla un año» y «cuando cumpla ocho años» (similitud 0,95). La v0.11 los había juntado en un requisito compuesto («cumpla uno u ocho años… respectivamente», con el aviso al cliente dentro), contra la regla de un comportamiento por requisito;
+  - otros son comportamientos distintos sobre lo mismo, como presupuestar una cirugía de Mascota Protegida y qué pasa si se deniega la autorización (0,95). La v0.11 juntó los tres requisitos de B sobre esa autorización en uno.
+  - Con una sola ejecución no se puede separar este efecto de la variación del árbitro: con la v0.9, la unión del mismo proyecto fue de 209 a 291 según la ejecución.
+- **El coste para el usuario:** cada par «mismo» que el árbitro separa la plataforma lo marca como discrepancia, así que hay 44 para revisar en lugar de 12. La mayoría son falsos avisos, porque el emparejamiento no distingue cifras ni condiciones.
+
+En palabras sencillas: con solo las páginas que tiene que comprobar, el árbitro trabaja la mitad de caro y a la primera, y además separa mejor los requisitos que se parecen pero dicen cosas distintas. El precio es que la plataforma, que no distingue «un año» de «ocho años», le pide al usuario revisar más casos.
+
+**Backlog (paso 108):** pendiente, en marcha.
 
 ### Qué hay que mejorar
 
-Pendiente de los resultados.
+- **Que la plataforma no marque como desviación un par «mismo» con cifras distintas** que el árbitro separa: los embeddings no ven la diferencia entre «un año» y «ocho años», y esos avisos son falsos. Es el mismo criterio de cifras que ya usa `fuentes.txt`.
+- Repetir el arbitraje del catálogo para saber si la unión más atómica se mantiene o es variación del árbitro.
 
 ## v0.11 (19-10-2026)
 
