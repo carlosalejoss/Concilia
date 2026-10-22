@@ -173,7 +173,7 @@ public static class ReportEndpoints
         return new JobReport(job.Id, job.Kind, job.CreatedAt, job.FinishedAt, succeeded, result?["mensaje"]?.GetValue<string>(),
             runs.Sum(r => r.InputTokens ?? 0), runs.Sum(r => r.OutputTokens ?? 0),
             runs.Count(r => r.StartedAt is not null && r.InputTokens is null), runs.Count(r => r.Attempt > 1),
-            job.FinishedAt is { } finished ? (finished - job.CreatedAt).TotalSeconds : null,
+            InterruptedJobs.Seconds(job, runs, result?["mensaje"]?.GetValue<string>()),
             lines, elements, changes, changesNote, questions,
             kind?.ToString(), runs.FirstOrDefault(r => r.Slot == "ARB")?.Model, rearbitrationOf,
             estimates.Values.Sum(e => e.InputTokens), estimates.Values.Sum(e => e.OutputTokens),

@@ -41,6 +41,20 @@ public static class InterruptedJobs
         await db.SaveChangesAsync();
     }
 
+    // The duration of a job, for its report. A job closed here gets the time of
+    // the start-up as its end, which can be days after it stopped working (in
+    // the cost tables of 22-10-2026, 101 hours for a mockup that worked 12
+    // minutes). Its duration ends instead with the last run that ended before
+    // that start-up; the runs closed at the start-up end with the job and do
+    // not count. Without any, it has no duration.
+    public static double? Seconds(Job job, IEnumerable<Run> runs, string? resultMessage)
+    {
+        if (job.FinishedAt is not { } finished) return null;
+        if (resultMessage != Message(job.Kind)) return (finished - job.CreatedAt).TotalSeconds;
+        var lastEnd = runs.Where(r => r.FinishedAt < finished).Max(r => r.FinishedAt);
+        return lastEnd is { } end ? (end - job.CreatedAt).TotalSeconds : null;
+    }
+
     public static string Message(string jobKind) => jobKind == Deliverables.MockupEndpoints.JobKind
         ? "Interrumpido: la API se reinició antes de terminar. Si llegó a tener el diseño, se puede reanudar."
         : "Interrumpido: la API se reinició antes de terminar. Se puede lanzar de nuevo.";
