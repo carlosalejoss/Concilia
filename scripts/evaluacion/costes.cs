@@ -9,7 +9,8 @@
 // aplica los precios de scripts/evaluacion/precios.json. Escribe
 // docs/costes/costes.md con:
 //   1. los precios usados;
-//   2. cada trabajo del proyecto grande de ejemplo (clínicas veterinarias);
+//   2. cada trabajo del proyecto grande de ejemplo (clínicas veterinarias),
+//      también de sus nuevas pruebas («Clinicas Veterinarias v0.11»);
 //   3. el flujo completo de cada proyecto, por fase;
 //   4. antes y después: la misma fase del mismo proyecto con distintas
 //      versiones del prompt;
@@ -69,9 +70,12 @@ foreach (var project in (await http.GetFromJsonAsync<JsonArray>("/projects"))!.O
         if (time is null && report["succeeded"]!.GetValue<bool>() && runCosts.Any(r => r.Slot == "ARB" && string.CompareOrdinal(r.Prompt, "v0.10") >= 0 && r.Prompt.Length >= 5))
         {
             var matching = await http.GetAsync($"/jobs/{job["id"]}/matching");
-            if (matching.IsSuccessStatusCode)
+            // Since step 100 the matching of a job is saved: read again, it is not computed, and its
+            // time says nothing. Those jobs show no time (22-10-2026; measured later they took 15–37 s).
+            var body = matching.IsSuccessStatusCode ? JsonNode.Parse(await matching.Content.ReadAsStringAsync())! : null;
+            if (body is not null && body["fromCache"]?.GetValue<bool>() != true)
             {
-                time = JsonNode.Parse(await matching.Content.ReadAsStringAsync())!["time"];
+                time = body["time"];
                 measuredLater = true;
             }
         }
@@ -103,12 +107,14 @@ foreach (var (model, p) in prices)
     md.AppendLine($"| {model} | {p.In.ToString("F2", es)} | {p.Out.ToString("F2", es)} |");
 md.AppendLine();
 
-md.AppendLine($"## 2. Cada trabajo del proyecto grande de ejemplo ({Main})");
+md.AppendLine($"## 2. Cada trabajo del proyecto grande de ejemplo ({Main}, también en sus nuevas pruebas)");
 md.AppendLine();
-md.AppendLine("| Fecha | Trabajo | Prompt | Resultado | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) | Minutos | Reparaciones | Embeddings (s / s de CPU) |");
-md.AppendLine("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |");
-foreach (var j in jobs.Where(j => j.Project == Main).OrderBy(j => j.Created))
-    md.AppendLine($"| {j.Created.ToLocalTime():dd-MM HH:mm} | {Name(j)} | {Version(j)} | {(j.Succeeded ? "válido" : "fallido")} | {j.Runs.Count} | " +
+md.AppendLine("Los trabajos de un nuevo arbitraje sin tiempo de embeddings son anteriores al paso 100: su emparejamiento se guarda desde entonces y ya no se vuelve a calcular (medido después, tardaba entre 15 y 37 s).");
+md.AppendLine();
+md.AppendLine("| Proyecto | Fecha | Trabajo | Prompt | Resultado | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) | Minutos | Reparaciones | Embeddings (s / s de CPU) |");
+md.AppendLine("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |");
+foreach (var j in jobs.Where(j => j.Project.StartsWith(Main, StringComparison.Ordinal)).OrderBy(j => j.Created))
+    md.AppendLine($"| {j.Project} | {j.Created.ToLocalTime():dd-MM HH:mm} | {Name(j)} | {Version(j)} | {(j.Succeeded ? "válido" : "fallido")} | {j.Runs.Count} | " +
         $"{Tokens(j.Runs, r => r.Input)} | {Tokens(j.Runs, r => r.Output)} | {Money(j.Runs)} | {Minutes(j.Seconds)} | {j.Repairs} | " +
         $"{(j.MatchingSeconds is { } s ? $"{s.ToString("F1", es)} / {j.MatchingCpu!.Value.ToString("F1", es)}{(j.MatchingMeasuredLater ? " (medido después)" : "")}" : "—")} |");
 md.AppendLine();

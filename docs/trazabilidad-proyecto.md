@@ -36,6 +36,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 20-10 | Hito 19, paso 96 | El catálogo se descarga en Word y en PDF, con sus fuentes y preguntas en anexos |
 | 22-10 | Hito 19, paso 97 | El backlog se descarga como ficheros `.feature` de Gherkin, comprobados con el analizador oficial |
 | 22-10 | Hito 19, paso 98 | El backlog se descarga como CSV para importarlo en Jira o en Azure DevOps; el hito 19 queda hecho |
+| 22-10 | Hito 18b, pasos 107 y 108 | El árbitro del catálogo consulta solo las fuentes que necesita y el del backlog cita por su id los criterios que conserva (prompts v0.12): menos de la mitad de coste en el catálogo y el doble de criterios en el backlog |
 | 22-10 | Hito 18, prueba real | Flujo completo de clínicas con los prompts v0.11 sin errores internos y con reparaciones que caben; mockups sin `.zip` con estilos distintos en dos proyectos; el hito 18 queda completado |
 | 20-10 | Documentación de la API (fuera del plan) | Swagger UI con los 42 endpoints documentados, que se actualiza sola y que los tests mantienen completa |
 
@@ -226,12 +227,15 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Mejoras que deja la prueba** para la próxima versión de los prompts: que el árbitro consulte menos documentación y que no pierda criterios de aceptación en los backlogs grandes.
 - **Para la memoria, en palabras sencillas:** el hito 18 hace la plataforma más robusta frente a los fallos de los modelos (corrige lo que tiene una sola corrección, repara cambiando solo lo que está mal y no malgasta ejecuciones perdidas). También la hace más honesta con el usuario: no da por buena una suposición sin que la mire, y los prototipos no salen todos iguales.
 
-### 9b. Hito 18b: el árbitro tras la prueba real (22-10, en curso)
+### 9b. Hito 18b: el árbitro tras la prueba real (22-10, hecho)
 
 - **Por qué:** la prueba real de la v0.11 dejó dos mejoras: el árbitro del catálogo consulta casi toda la documentación (34 tramos, compacta y se repite) y el del backlog se queda con un criterio por historia, porque el contexto se le llena al leer y el backlog entero tiene que caber en una respuesta de 64.000 tokens.
 - **Paso 107 (prompts v0.12):** el árbitro del catálogo recibe `input/fuentes.txt`, con los fragmentos que citan los requisitos que tiene que decidir (sin par «mismo», o «mismo» con cifras distintas), en lugar de la documentación entera.
 - **Paso 108 (prompts v0.12):** el árbitro del backlog cita por su id los criterios y las tareas que conserva tal cual (`1:CA-012`) y escribe enteros solo los que combina; la plataforma pone el texto, numera y avisa de cuántos no cita.
-- **Se mide** con un nuevo arbitraje de los trabajos de clínicas, sobre las mismas propuestas.
+- **Medido el 22-10** con un nuevo arbitraje del catálogo y otro del backlog de clínicas, con SOL y las mismas propuestas:
+  - **catálogo:** 298 líneas de documentación consultadas en lugar de 1.242, a la primera (antes, tres intentos), 1,43 $ en lugar de 3,20 $ y 7 minutos en lugar de 11,5. La unión, 277 requisitos, es más atómica: separa, por ejemplo, el cambio de plan al año y a los ocho años, que la v0.11 había juntado. La plataforma marca 44 desviaciones, casi todas falsas, porque los embeddings no distinguen «un año» de «ocho años»;
+  - **backlog:** 239 criterios en lugar de 121, 152 historias en lugar de 121 y 153 tareas, por 1,23 $ en lugar de 1,05 $. Cita por su id 238 criterios y escribe entero uno.
+- **Mejoras que deja:** no marcar como desviación un par «mismo» con cifras distintas, repetir el arbitraje del catálogo para ver la variación, y que el árbitro no lea su conversación guardada después de compactar.
 - **Para la memoria, en palabras sencillas:** en vez de darle al árbitro toda la biblioteca, la plataforma le da solo las páginas que tiene que comprobar.
 
 ### 10. Hito 19: exportar los entregables (20-10 y 22-10, hecho)
@@ -344,7 +348,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
 2. ~~**Hito 17, embeddings en local**~~: modelo multilingüe en la API (paso 86), emparejamiento de A y B con los umbrales calibrados (paso 87) y árbitro con embeddings con su prueba real (paso 88), todo el 19-10-2026. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
-3. ~~**Hito 18, fiabilidad y calidad**~~ (pasos 89 a 95, 19-10-2026, prompts v0.11, con las tablas de coste), completado el 22-10-2026 con su prueba real.
+3. ~~**Hito 18, fiabilidad y calidad**~~ (pasos 89 a 95, 19-10-2026, prompts v0.11, con las tablas de coste), completado el 22-10-2026 con su prueba real. ~~**Hito 18b**~~ (pasos 107 y 108, prompts v0.12), completado el mismo día.
 4. ~~**Hito 19, exportar**~~: el catálogo a Word y PDF (paso 96, 20-10-2026), y el backlog a Gherkin (paso 97) y a CSV para Jira o Azure DevOps (paso 98), los dos el 22-10-2026. Falta que el autor pruebe la importación en Jira y Azure DevOps.
 5. ~~**Hito 20, trazabilidad visual y comparación de A, B y el árbitro**~~: la trazabilidad en un panel lateral (paso 99) y la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100), los dos el 22-10-2026. Falta que el autor revise la comparación en el navegador.
 6. **Hito 21, historial de versiones de los entregables.**
@@ -357,4 +361,4 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 ## Cifras de seguimiento
 
 - **Commits:** 187 entre el 28-09 y el 20-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99) y 937 (22-10, paso 100).
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99), 937 (22-10, paso 100) y 943 (22-10, pasos 107 y 108).
