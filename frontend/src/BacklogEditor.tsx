@@ -96,7 +96,11 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
         state={state}
         name="Backlog"
         summary={summary}
-        downloads={[{ href: `/projects/${project.id}/backlog-gherkin.zip`, label: 'Gherkin' }]}
+        downloads={[
+          { href: `/projects/${project.id}/backlog-gherkin.zip`, label: 'Gherkin' },
+          { href: `/projects/${project.id}/backlog-jira.csv`, label: 'CSV Jira' },
+          { href: `/projects/${project.id}/backlog-azure-devops.csv`, label: 'CSV Azure DevOps' },
+        ]}
       />
 
       {functional.length > 0 && <Coverage functional={functional} uncovered={uncovered} storiesOf={storiesOf} projectId={project.id} />}

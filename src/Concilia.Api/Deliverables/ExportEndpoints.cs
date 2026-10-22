@@ -55,6 +55,28 @@ public static class ExportEndpoints
             .WithDescription("Un `.zip` con un fichero `.feature` por épica, comprobado con el analizador oficial de Gherkin. Palabras clave en inglés: cada épica es una `Feature`, cada historia una `Rule` (con su «Como… quiero… para…» y sus tareas) y cada criterio de aceptación un `Scenario`. Los ids van como etiquetas (`@EP-01`, `@HU-001 @RF-001`, `@CA-001`), y una historia con una discrepancia sin revisar lleva `@discrepancia-sin-revisar`. Del backlog guardado, validado o en borrador (lo dice la primera línea de cada fichero).")
             .Produces<Stream>(StatusCodes.Status200OK, "application/zip")
             .Produces(StatusCodes.Status404NotFound);
+
+        // Step 98: the backlog as CSV to import into Jira or Azure DevOps.
+        app.MapGet("/projects/{projectId:int}/backlog-{tool}.csv", async (int projectId,
+            [Description("`jira` o `azure-devops`.")] string tool, AppDbContext db) =>
+        {
+            if (tool is not ("jira" or "azure-devops"))
+            {
+                return Results.NotFound();
+            }
+            var (project, backlog) = await BacklogAsync(db, projectId);
+            if (backlog is null)
+            {
+                return Results.NotFound();
+            }
+            var csv = tool == "jira" ? BacklogCsv.Jira(backlog) : BacklogCsv.AzureDevOps(backlog);
+            return Results.File(csv, "text/csv; charset=utf-8", $"backlog-{ExportFiles.Slug(project!)}-{tool}.csv");
+        })
+            .WithTags(ApiTags.Deliverables)
+            .WithSummary("Exporta el backlog a CSV para Jira o Azure DevOps")
+            .WithDescription("Un CSV para importar el backlog guardado en cada herramienta, con una fila por épica, historia y tarea, cada una detrás de su padre. **Jira:** la jerarquía va con `Issue ID` y `Parent ID` (épica → `Story` → `Sub-task`), con `Epic Name` en las épicas y los ids de Concilia en columnas `Labels`; la descripción de cada historia lleva su «Como… quiero… para…», los criterios de aceptación en Gherkin y los requisitos. **Azure DevOps** (proceso Agile): `ID` vacío y el título en `Title 1`, `Title 2` o `Title 3` según el nivel (`Epic` → `User Story` → `Task`), los criterios en `Acceptance Criteria` y los ids en `Tags`. Separado por comas, UTF-8 sin BOM. Una historia con una discrepancia sin revisar lleva también `discrepancia-sin-revisar`.")
+            .Produces<Stream>(StatusCodes.Status200OK, "text/csv")
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     // The saved backlog of a project and the name of the project, or nulls.

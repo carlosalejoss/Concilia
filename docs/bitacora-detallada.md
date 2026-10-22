@@ -2104,3 +2104,28 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Documentación:** resultados parciales de la v0.11 en la evolución del prompt y en la trazabilidad.
 - **Mejora candidata** para la próxima versión de los prompts: que el árbitro consulte menos documentación.
 - **Pendientes de la prueba:** el backlog (en marcha), el mockup sin `.zip` de este proyecto y el del banco de alimentos; al final, regenerar las tablas y cerrar el hito 18.
+
+
+## 22-10-2026, 09:15 (sesión)
+
+**Resumen para la bitácora (22-10-2026, hito 19, pasos 97 y 98: el backlog a Gherkin y a CSV)**
+
+- **Contexto:** continúa la sesión del 20-10 (paso 96), otra vez a la vez que la que mide las pruebas reales del hito 18. Sin reconstruir contenedores ni lanzar trabajos, y con cada fichero añadido al commit uno a uno.
+- **Hecho después del 20-10:** con permiso del autor y `GET /jobs/active` en 204, se reconstruyeron la API y la web y se comprobaron las descargas del catálogo en Docker (anotado en la entrada del 20-10). El autor comprobó en el navegador que el Word y el PDF se descargan bien, y se subieron a GitHub los commits pendientes, entre ellos los de la otra sesión.
+- **Decisiones del autor (22-10):**
+  - Gherkin con las palabras clave siempre en inglés y el texto tal cual (Claude recomendaba las del idioma del proyecto); todos los `.feature` en un `.zip`.
+  - Un CSV por herramienta, Jira y Azure DevOps; en Azure DevOps, el proceso Agile.
+- **Paso 97** (commit `c230161`):
+  - `BacklogExport` arma una vez el contenido del backlog para los formatos de exportación;
+  - `BacklogGherkin` escribe un `.feature` por épica: épica → `Feature`, historia → `Rule` con su narrativa y sus tareas, criterio → `Scenario`, con los ids como etiquetas. Cada fichero se comprueba con el analizador oficial (`Gherkin` 42.0.1, MIT) antes de entregarlo;
+  - **descubierto al probar el analizador:** no rechaza nunca una línea de texto libre, pero `Scenario: …`, `Rule: …` o `Background: …` abren otro elemento, `@…` se vuelve etiqueta y `# …` desaparece como comentario. Esas líneas llevan «- » delante. `Parser.Parse(string)` toma el texto como una ruta de fichero: hay que pasarle un `StringReader`;
+  - `GET /projects/{id}/backlog-gherkin.zip` y «Gherkin» en la barra del backlog. El nombre de fichero sin acentos pasa a Core (`ExportFiles.Slug`).
+- **Paso 98:**
+  - `BacklogCsv`: el CSV de Jira, con `Issue ID`/`Parent ID`, `Epic Name` y `Labels` repetidas, y el de Azure DevOps, con `Title 1/2/3`, `Acceptance Criteria` en HTML y `Tags`. Separados por comas, con todo entre comillas y en UTF-8 sin BOM;
+  - en el HTML de Azure DevOps solo se escapan `&`, `<` y `>`: `WebUtility.HtmlEncode` convertía cada acento en una entidad numérica;
+  - `GET /projects/{id}/backlog-jira.csv` y `backlog-azure-devops.csv`, y «CSV Jira» y «CSV Azure DevOps» en la barra del backlog.
+- **Tests:** 910, todos correctos (5 de Gherkin y 2 de CSV nuevos, y las tres descargas en el flujo completo). Un test del runner (`Compacting_after_writing_the_output_stops_the_run_at_once`) falló una vez y pasó en tres repeticiones y en la batería completa: parece sensible al tiempo con la máquina cargada.
+- **Pendientes:**
+  - que el autor importe los dos CSV en un Jira y un Azure DevOps de verdad (hacen falta cuentas, por ejemplo las gratuitas): es lo único que falta para el «Hecho cuando» del hito 19;
+  - probar las descargas del backlog en Docker cuando no haya tareas en marcha y el autor lo permita;
+  - después, el hito 20.
