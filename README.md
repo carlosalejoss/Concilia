@@ -28,7 +28,7 @@ flowchart TD
 | --- | --- | --- |
 | Documentos | Sube la documentación: Word, PDF, Excel, CSV, PowerPoint, páginas web, correos, transcripciones de reuniones, texto, Markdown, JSON, YAML o XML. Un `.zip` con un mockup del cliente sirve de referencia de estilo. | La plataforma extrae el texto y lo divide en fragmentos citables (`DOC-01#F007`). |
 | Preguntas | Las dudas que hay que aclarar con el cliente, en rondas. La IA puede proponer cada respuesta. | Modelo A ‖ modelo B → árbitro |
-| Requisitos | El catálogo en EARS y MASTeR, con sus fuentes y las preguntas en que se apoya. Se descarga en Word o PDF. | Modelo A ‖ modelo B → árbitro |
+| Requisitos | El catálogo en EARS y MASTeR, con sus fuentes y las preguntas en que se apoya. Desde cada requisito se ve su trazabilidad: el texto de sus fragmentos, las respuestas en que se apoya y las historias que lo cubren (y, desde cada historia, al revés). Se descarga en Word o PDF. | Modelo A ‖ modelo B → árbitro |
 | Backlog | Épicas, historias, criterios de aceptación en Gherkin y tareas. Se descarga como ficheros `.feature` de Gherkin y como CSV para importarlo en Jira o en Azure DevOps. | Modelo A ‖ modelo B → árbitro |
 | Mockup | Un prototipo navegable de toda la aplicación: inicio de sesión con usuarios de prueba, una aplicación por rol y navegación real. | Un modelo, por pasos: el diseño, cada pantalla, y la plataforma junta y corrige lo que no encaja. |
 

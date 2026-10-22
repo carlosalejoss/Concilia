@@ -184,6 +184,40 @@ export type Epic = { id: string; titulo: string; descripcion: string; historias:
 
 export type BacklogContent = { epicas: Epic[] }
 
+// GET /projects/{id}/traceability (step 99), of the saved catalog and backlog.
+// The elements point by id to the fragments and questions, which are there
+// once each. A fragment without text is not in the documentation the catalog
+// came from; missingQuestions and missingRequirements are cited and do not exist.
+export type TraceRequirement = {
+  id: string
+  type: CatalogRequirement['tipo']
+  text: string
+  sources: string[]
+  questions: string[]
+  stories: string[]
+  aiGuess: boolean
+  pendingDiscrepancy: boolean
+}
+export type TraceStory = {
+  id: string
+  title: string
+  narrative: string
+  epicId: string
+  epicTitle: string
+  requirements: string[]
+  pendingDiscrepancy: boolean
+}
+export type TraceFragment = { id: string; document: string; section: string; text: string | null }
+export type TraceQuestion = { id: string; text: string; answer: string | null; aiGuess: boolean }
+export type Traceability = {
+  requirements: TraceRequirement[]
+  stories: TraceStory[]
+  fragments: TraceFragment[]
+  questions: TraceQuestion[]
+  missingQuestions: string[]
+  missingRequirements: string[]
+}
+
 // Every message of an ASP.NET Core "problem details" response (validation can
 // give many), or the HTTP status.
 export async function errorMessages(response: Response): Promise<string[]> {

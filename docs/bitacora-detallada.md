@@ -2203,3 +2203,22 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - CSV: los mismos recuentos de épicas, historias y tareas, cada padre antes que sus hijos (Jira) y cada título en la columna de su nivel (Azure DevOps), sin BOM ni acentos convertidos en entidades.
 - **Observación, no de la exportación:** en los dos backlogs de clínicas cada historia tiene exactamente un criterio y una tarea (109 y 121); en el banco de alimentos, 98 criterios y 88 tareas para 45 historias. Puede venir del prompt o del árbitro del backlog.
 - **Pendientes:** importar los CSV en un Jira y un Azure DevOps de verdad (autor); después, el hito 20.
+
+## 22-10-2026, 12:05 (sesión)
+
+**Resumen para la bitácora (22-10-2026, hito 20, paso 99: trazabilidad)**
+
+- **Qué se hizo:** la trazabilidad del catálogo y el backlog, en la API y en la web.
+  - `Concilia.Core/Deliverables/Traceability`: cada requisito con sus fragmentos, sus preguntas y las historias que lo cubren; cada historia con su épica y sus requisitos; el texto de cada fragmento citado y cada pregunta con su respuesta, una vez cada uno; y lo citado que no existe (fragmento fuera de la documentación, `missingQuestions`, `missingRequirements`).
+  - Se construye con `CatalogExport` y `BacklogExport`, los mismos del hito 19, para que el panel y el Word digan lo mismo. Para ello, `CatalogAsync` y `BacklogAsync` de `ExportEndpoints` pasan a `internal`.
+  - `GET /projects/{id}/traceability`, que solo lee, documentado en OpenAPI (`docs/api/openapi.json` regenerado).
+  - Web: botón «Trazabilidad» en cada requisito y cada historia abiertos, que abre `TracePanel` (sobre el `Drawer` existente). Dentro del panel se navega entre requisitos e historias con «Volver».
+- **Decisiones (el autor las dejó a Claude):**
+  - panel lateral navegable, en lugar de un bloque dentro del requisito, para ir de un requisito a una historia y a otro requisito sin cambiar de paso;
+  - del catálogo y el backlog guardados, con el botón oculto mientras hay cambios sin guardar, como las descargas;
+  - desde una historia, los fragmentos y preguntas de sus requisitos juntos y sin repetir, con los requisitos que citan cada uno;
+  - sin vista de matriz de todo el catálogo por ahora, para que el paso sea pequeño;
+  - sin librerías nuevas.
+- **Tests:** 5 de `Traceability` y comprobaciones en el flujo completo (antes y después del backlog). 918 tests de C# en verde. La web compila con `tsc -b` y pasa `oxlint` sin avisos.
+- **Sin probar:** el panel en el navegador y con los proyectos de ejemplo. Hace falta reconstruir la API y la web, y no se ha hecho para no interrumpir las pruebas reales del hito 18 que había en marcha.
+- **Pendientes:** que el autor reconstruya y lo revise en el navegador; después, el paso 100 (comparación de A, B y el árbitro, con el emparejamiento guardado una sola vez por trabajo).

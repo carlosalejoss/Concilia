@@ -246,6 +246,15 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Para la memoria, en palabras sencillas (Gherkin):** los criterios de aceptación salen en el formato que leen las herramientas de pruebas automáticas, de modo que el equipo de desarrollo puede usarlos como punto de partida de sus pruebas sin copiarlos a mano.
 - **Para la memoria, en palabras sencillas:** lo que genera la plataforma ya no se queda dentro de la web. El catálogo se descarga como un documento normal, que se puede enviar al cliente, y cada requisito sigue diciendo de qué parte de la documentación sale y en qué respuesta del cliente se apoya.
 
+### 11. Hito 20: trazabilidad visual y comparación de A, B y el árbitro (22-10, en curso)
+
+- **Paso 99, la trazabilidad (22-10):** el autor dejó las decisiones a Claude.
+  - **Dónde:** un panel lateral que se abre con «Trazabilidad» en cada requisito del catálogo y cada historia del backlog. Dentro del panel se pasa de un requisito a una historia que lo cubre, y de ahí a otro de sus requisitos, con «Volver», sin salir del paso ni perder lo que se está editando.
+  - **Qué enseña:** desde un requisito, el texto de cada fragmento que cita (con su documento y su sección), cada pregunta con su respuesta y las historias que lo cubren. Desde una historia, sus requisitos y, a través de ellos, sus fragmentos y preguntas, cada uno una vez y con los requisitos que lo citan. Marca lo citado que no existe: un fragmento escrito a mano que no está en la documentación, o una historia que cita un requisito que ya no está en el catálogo.
+  - **Datos:** los que ya había, sin guardar nada nuevo. Se construye con el mismo contenido que las exportaciones del hito 19, así que el panel y el Word dicen lo mismo. Enseña lo guardado, así que el botón se oculta mientras hay cambios sin guardar.
+  - **Fuera, por ahora:** una vista de matriz de todo el catálogo (cuántas fuentes, preguntas e historias tiene cada requisito).
+- **Para la memoria, en palabras sencillas:** de cualquier requisito se llega en un clic a la frase exacta de la documentación de la que sale y a la respuesta del cliente en que se apoya, y de cualquier historia, a los requisitos que la justifican. Es lo que permite a un analista comprobar que nada de lo generado se lo ha inventado la IA.
+
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
 - **Qué hay:** el documento OpenAPI 3.1 de la API (`/openapi/v1.json`), generado por ASP.NET Core, y Swagger UI encima (`/swagger`, también en <http://localhost:8080/swagger> con Docker), con los colores de Concilia en claro y en oscuro. Los 42 endpoints van en 10 grupos en el orden del flujo, cada uno con su resumen, su descripción en español, sus parámetros y lo que devuelve en cada caso (incluidos los `400` con los mensajes de la web, los `404` y los `202` de las tareas en segundo plano).
@@ -319,7 +328,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 2. ~~**Hito 17, embeddings en local**~~: modelo multilingüe en la API (paso 86), emparejamiento de A y B con los umbrales calibrados (paso 87) y árbitro con embeddings con su prueba real (paso 88), todo el 19-10-2026. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
 3. ~~**Hito 18, fiabilidad y calidad**~~ (pasos 89 a 95, 19-10-2026, prompts v0.11, con las tablas de coste); faltan sus pruebas reales, que lanza el autor. Siguiente: el hito 19.
 4. ~~**Hito 19, exportar**~~: el catálogo a Word y PDF (paso 96, 20-10-2026), y el backlog a Gherkin (paso 97) y a CSV para Jira o Azure DevOps (paso 98), los dos el 22-10-2026. Falta que el autor pruebe la importación en Jira y Azure DevOps.
-5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro.**
+5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro:** la trazabilidad en un panel lateral (paso 99, 22-10-2026). Siguiente: la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100).
 6. **Hito 21, historial de versiones de los entregables.**
 7. **Hito 22, evaluación:** métricas externas, un documento de PURE y una prueba editando de verdad.
 8. **Después:** hito 7 (catálogo v2) y redactar la memoria (sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación).
@@ -330,4 +339,4 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 ## Cifras de seguimiento
 
 - **Commits:** 187 entre el 28-09 y el 20-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97) y 912 (22-10, paso 98 con su revisión).
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) y 918 (22-10, paso 99).

@@ -80,7 +80,7 @@ public static class ExportEndpoints
     }
 
     // The saved backlog of a project and the name of the project, or nulls.
-    private static async Task<(string? Project, BacklogExport? Backlog)> BacklogAsync(AppDbContext db, int projectId)
+    internal static async Task<(string? Project, BacklogExport? Backlog)> BacklogAsync(AppDbContext db, int projectId)
     {
         var project = await db.Projects.FindAsync(projectId);
         var backlog = await DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Backlog);
@@ -95,7 +95,7 @@ public static class ExportEndpoints
 
     // The fragments come from the plan of the job that generated the catalog
     // (the documentation it was written from); the questions, from the project.
-    private static async Task<CatalogExport> CatalogAsync(AppDbContext db, FileStorage storage, string projectName, Deliverable catalog)
+    internal static async Task<CatalogExport> CatalogAsync(AppDbContext db, FileStorage storage, string projectName, Deliverable catalog)
     {
         var plan = PhasePlan.Load(storage.JobFolder(catalog.JobId));
         var questions = (await db.Questions.Where(q => q.ProjectId == catalog.ProjectId).ToListAsync())
