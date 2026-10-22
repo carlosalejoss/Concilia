@@ -1,5 +1,16 @@
 # Cambios de los prompts v0
 
+## v0.12, el árbitro consulta solo lo que necesita (2026-10-22)
+
+Hito 18b, a partir de la prueba real de la v0.11. Decidido por el autor a propuesta de Claude:
+
+- **`arbitro_catalogo.md` (paso 107):** el árbitro ya no recibe `input/documentacion.txt`, sino `input/fuentes.txt`, con el mismo formato y solo los fragmentos que citan los requisitos que tiene que decidir:
+  - los que no tienen un par `mismo` en el emparejamiento (los `parecido` y los `sin-par`);
+  - los de un par `mismo` cuyos textos llevan cifras distintas, porque los embeddings ven iguales «1 hora» y «24 horas».
+  - Se sigue consultando por tramos, no se lee entero. El §1 lo explica y la discrepancia se comprueba en las fuentes.
+  - Por qué: en la prueba real, el árbitro consultó 34 tramos de la documentación (1.242 líneas), llenó el contexto, compactó y se repitió desde cero. De los 451 requisitos de las dos propuestas, 298 tenían un par `mismo` y no necesitaban la fuente.
+  - El árbitro de las preguntas sigue consultando la documentación entera.
+
 ## v0.11, reparar editando, sugerencias prudentes y estilo propio del mockup (2026-10-19)
 
 Hito 18, pasos 90, 93 y 94. Decidido por el autor a propuesta de Claude:

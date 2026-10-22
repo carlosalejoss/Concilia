@@ -271,6 +271,23 @@ public class PhaseTaskTests
             Assert.Contains(review.Validation.Errors, e => e.Contains($"REF-FRAG: el fragmento {cited} no existe. La línea {line} de input/documentacion.txt es {lines[line]}:"));
     }
 
+    // Step 107: the arbiter of the catalog sees input/fuentes.txt, and the hint
+    // of a line number cited as a fragment names that file.
+    [Fact]
+    public void The_hint_of_a_line_number_names_the_file_the_model_sees()
+    {
+        var phase = PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Proposal);
+        var lines = DocumentationFile.FragmentAtLine(DocumentationFile.Build(Fragments, new Dictionary<string, string>()));
+        var line = lines.Keys.Max();
+        var cited = $"DOC-09#F{line:000}";
+        var output = File.ReadAllText(Example("catalogo_propuesta_1.json")).Replace("\"DOC-01#F002\"", $"\"{cited}\"");
+        var context = Context() with { FragmentAtLine = lines, LinesFile = SourcesFile.Path };
+
+        var review = PhaseTask.Review(phase, output, context, "PROMPT", 1);
+
+        Assert.Contains(review.Validation.Errors, e => e.Contains($"La línea {line} de input/fuentes.txt es {lines[line]}:"));
+    }
+
     // Step 89: an id that does not match its type (RF-009 of type RNF) is
     // renumbered by type, with a warning; the type is taken as right.
     [Fact]
@@ -326,10 +343,12 @@ public class PhaseTaskTests
     }
 
     // A and B read their input entirely; the arbiter, the two proposals (and
-    // the catalog in the backlog), and may only consult the documentation.
+    // the catalog in the backlog), and may only consult the documentation or,
+    // in the catalog, the sources it needs (step 107).
     [Theory]
     [InlineData(PhaseKind.Questions, PhaseRole.Proposal, "input/documentacion.txt", "")]
-    [InlineData(PhaseKind.Catalog, PhaseRole.Arbiter, "input/propuesta_1.json input/propuesta_2.json", "input/documentacion.txt")]
+    [InlineData(PhaseKind.Questions, PhaseRole.Arbiter, "input/propuesta_1.json input/propuesta_2.json", "input/documentacion.txt")]
+    [InlineData(PhaseKind.Catalog, PhaseRole.Arbiter, "input/propuesta_1.json input/propuesta_2.json", "input/fuentes.txt")]
     [InlineData(PhaseKind.Backlog, PhaseRole.Proposal, "input/catalogo.json", "")]
     [InlineData(PhaseKind.Backlog, PhaseRole.Arbiter, "input/catalogo.json input/propuesta_1.json input/propuesta_2.json", "")]
     [InlineData(PhaseKind.Suggestions, PhaseRole.Proposal, "input/documentacion.txt", "")]
@@ -467,12 +486,14 @@ public class PhaseTaskTests
         Assert.Equal(runId, request.RunId);
         Assert.Equal(["output/catalogo.json"], request.ExpectedOutputFiles);
         Assert.Equal(["Read", "Write"], request.AllowedTools);
-        foreach (var file in new[] { PhaseTask.FragmentsFile, DocumentationFile.Path, PhaseTask.Proposal1File, PhaseTask.Proposal2File })
+        foreach (var file in new[] { PhaseTask.FragmentsFile, SourcesFile.Path, PhaseTask.Proposal1File, PhaseTask.Proposal2File })
             Assert.True(File.Exists(Path.Combine(temp.Path, file)), file);
+        Assert.False(File.Exists(Path.Combine(temp.Path, DocumentationFile.Path))); // step 107: only the sources
         Assert.Equal([PhaseTask.Proposal1File, PhaseTask.Proposal2File], result.RequiredReads);
 
         var context = PhaseTask.LoadContext(temp.Path, new HashSet<string> { "P-001" });
         Assert.Equal(Fragments.Select(f => f.Id).ToHashSet(), context.FragmentIds);
+        Assert.Equal(SourcesFile.Path, context.LinesFile);
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(File.ReadAllText(Example("catalogo_propuesta_1.json"))), JsonNode.Parse(context.Proposal1!)));
     }
 

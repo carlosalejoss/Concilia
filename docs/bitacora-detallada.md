@@ -2241,3 +2241,19 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - que el árbitro consulte menos documentación (explica el sobrecoste del catálogo);
   - que el árbitro del backlog no se quede con un criterio por historia en los backlogs grandes.
 - **Pendientes:** decidir con el autor si esas dos mejoras van antes del hito 20 o después; el hito 20 lo lleva la otra sesión (paso 99 hecho).
+
+## 22-10-2026, 13:33 (sesión)
+
+**Resumen para la bitácora (22-10-2026, hito 18b, paso 107: el árbitro del catálogo consulta solo las fuentes que necesita)**
+
+- **Decisión del autor:** abordar ya las dos mejoras que dejó la prueba real de la v0.11, antes de seguir con el hito 20, con el enfoque que propuso Claude («veo bien el enfoque»). Quedan como hito 18b, pasos 107 y 108, prompts v0.12. El autor pide que se le avise cuando terminen, para cerrar este chat.
+- **Diagnóstico, con la consola guardada de la prueba:**
+  - **catálogo:** el árbitro consultó 34 tramos de `documentacion.txt` (1.242 líneas), compactó, siguió leyendo y se paró en la segunda compactación; su repetición escribió la salida. Del emparejamiento salen 154 + 144 requisitos con par «mismo» (298 de 451) y 153 por decidir (126 de A y 27 de B);
+  - **backlog:** en cuanto terminó de leer el catálogo, las dos propuestas y el emparejamiento (07:04:38), Claude Code intentó compactar y falló (`too_few_groups`): el contexto ya estaba lleno. Luego escribió en una sola respuesta los 120.444 caracteres del backlog (unos 36.000 tokens; 57.000 de salida estimados con el razonamiento, cerca del tope de 64.000), con exactamente un criterio y una tarea en cada una de las 121 historias.
+- **Paso 107** (prompts v0.12):
+  - `SourcesFile` escribe `input/fuentes.txt` con los fragmentos que citan los requisitos sin par «mismo» y los de los pares «mismo» cuyas cifras no coinciden (se comparan como conjunto, con «,» y «.» como la misma marca decimal), con la cabecera de cada documento y sus líneas «sigue». Sin emparejamiento, todos los requisitos necesitan su fuente;
+  - el árbitro del catálogo recibe ese fichero en lugar de `documentacion.txt` (`PhaseTask.DocumentationOf`); el de las preguntas no cambia;
+  - el número de línea que un modelo cita como fragmento se busca en el fichero que ve: el contexto lleva `LinesFile`, y la pista de `REF-FRAG` y la corrección `REF-LINEA` usan `fuentes.txt` en ese árbitro;
+  - `arbitro_catalogo.md`: el §1 describe `fuentes.txt` y la discrepancia se comprueba en las fuentes. `PromptVersion` pasa a v0.12;
+  - tests: `SourcesFileTests` (9 casos) y uno nuevo en `PhaseTaskTests`; 929 en total, todos correctos, ejecutados en un worktree limpio desde `HEAD` con solo estos cambios, porque la otra sesión tiene a medias el paso 100 (`FullFlowTests.cs` no compila en la carpeta compartida).
+- **Pendientes:** el paso 108; reconstruir la API (con permiso del autor y sin tareas en marcha, y cuando la otra sesión haya hecho commit del paso 100) y medir los dos pasos con un nuevo arbitraje del catálogo y del backlog de «Clinicas Veterinarias v0.11».
