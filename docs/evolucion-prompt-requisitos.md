@@ -14,7 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.11 | 19-10-2026 | La reparación corrige con Edit la salida anterior en su fichero, con la línea de cada error, en lugar de llevarla pegada y reescribirla; sugerencias más prudentes; estilo propio del mockup por proyecto | Sí, en curso (proyecto grande de ejemplo, 22-10-2026) | Preguntas a 0,94 $ (antes 2,31 $). Las reparaciones de LUNA y del árbitro caben y corrigen con Edit. Catálogo de 235 requisitos con 12 discrepancias, todas de la plataforma; unos 3,9 $ (antes 2,70 $) porque el árbitro lee demasiada documentación. Backlog de 121 historias sin reparaciones, 1,67 $ (antes 1,43 $), pero con un solo criterio por historia. Mockup de 40 pantallas a la primera, 17,15 $ (0,43 $ por pantalla, como antes) y con estilo propio |
+| v0.11 | 19-10-2026 | La reparación corrige con Edit la salida anterior en su fichero, con la línea de cada error, en lugar de llevarla pegada y reescribirla; sugerencias más prudentes; estilo propio del mockup por proyecto | Sí (proyecto grande de ejemplo y banco de alimentos, 20 a 22-10-2026) | Preguntas a 0,94 $ (antes 2,31 $). Las reparaciones de LUNA y del árbitro caben y corrigen con Edit. Catálogo de 235 requisitos con 12 discrepancias, todas de la plataforma; unos 3,9 $ (antes 2,70 $) porque el árbitro lee demasiada documentación. Backlog de 121 historias sin reparaciones, 1,67 $ (antes 1,43 $), pero con un solo criterio por historia. Mockups de 40 y 24 pantallas a la primera, con el mismo coste por pantalla que antes y estilos distintos en cada proyecto |
 | v0.10 | 19-10-2026 | El árbitro parte del emparejamiento por significado de la plataforma (`input/emparejamiento.txt`, embeddings en local); puede apartarse si la fuente lo justifica, y la plataforma marca como discrepancia en el catálogo y el backlog dónde lo hizo | Sí (proyecto grande de ejemplo, catálogo, 19-10-2026) | Con las mismas propuestas, 3 arbitrajes de SOL válidos de 3: unión de 202 a 222 requisitos (media 212,3), frente a 209–291 (media 240) con la v0.9. Las desviaciones no bajan (7,7 de media, frente a las 7,0 que habría marcado la v0.9) |
 | v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Documento C: 40 min, 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Proyecto grande de ejemplo: 38 pantallas y las 109 historias (1,54 MB), con una pantalla perdida por un 504 de la pasarela y recuperada al reanudar. Al autor le convencen los dos |
 | v0.8 | 15-10-2026 | Mockup: la plataforma junta y revisa el prototipo (ids, globales de JavaScript y navegación) y solo corrige con un modelo las partes con problemas; se puede reanudar un mockup fallido | Pendiente | Pendiente |
@@ -362,7 +362,7 @@ Cambian el anexo de reparación, el prompt de las sugerencias y el §5 de los pr
 
 ### Resultados
 
-**Prueba real en curso** (22-10-2026): flujo completo en un proyecto nuevo con los 21 ficheros del proyecto grande de ejemplo («Clinicas Veterinarias v0.11»). A y árbitro `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA`. Se compara con el flujo del mismo proyecto con los prompts de la v0.9 (15 y 16-10-2026). Cifras de coste en `docs/costes/costes.md`.
+**Prueba real** (20 a 22-10-2026): flujo completo en un proyecto nuevo con los 21 ficheros del proyecto grande de ejemplo («Clinicas Veterinarias v0.11»). A y árbitro `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA`. Se compara con el flujo del mismo proyecto con los prompts de la v0.9 (15 y 16-10-2026). Cifras de coste en `docs/costes/costes.md`.
 
 | Fase | v0.9 | v0.11 |
 | --- | --- | --- |
@@ -402,7 +402,20 @@ En palabras sencillas: con un backlog grande, el árbitro conserva todas las his
 
 En palabras sencillas: el prototipo salió entero a la primera, sin ningún arreglo, cuesta lo mismo por pantalla que antes y ya no tiene el aspecto genérico de siempre, sino uno propio pensado para el sector.
 
-Pendiente: el mockup sin `.zip` del banco de alimentos, al que la plataforma asigna otra dirección («institucional y sobria»), para comprobar que el estilo cambia de un proyecto a otro.
+- **Mockup del banco de alimentos (22-10-2026)**, sin `.zip`, con el mismo backlog validado de 45 historias que con la v0.9:
+  - 25 ejecuciones (el diseño y 24 pantallas), todas válidas a la primera, sin reparaciones, compactaciones ni avisos; página de 0,68 MB;
+  - diseño: 94.669 tokens de entrada, 30.286 de salida y 3,6 min. Pantallas: mediana de 65.924 de entrada, 15.792 de salida y 2,0 min;
+  - **coste:** 7,23 $ y 20 minutos (1,67 M tokens de entrada y 0,39 M de salida), frente a 6,48 $ y 36 minutos con la v0.9, que hizo 20 pantallas. Por pantalla, 0,30 $ frente a 0,32 $;
+  - **estilo:** le toca la dirección «institucional y sobria», y el `.html` la sigue: menú lateral oscuro de 244 px, acento azul petróleo, fondo gris claro, tipografía sans-serif del sistema, esquinas poco redondeadas y tablas. No se parece al de clínicas (crema, terracota, serif y tarjetas redondeadas).
+
+| Mockup sin `.zip` | Dirección de estilo | Pantallas | Coste | Coste por pantalla | Minutos | Reparaciones |
+| --- | --- | --- | --- | --- | --- | --- |
+| Clínicas (121 historias) | cálida y cercana | 40 | 17,15 $ | 0,43 $ | 52 | 0 |
+| Banco de alimentos (45 historias) | institucional y sobria | 24 | 7,23 $ | 0,30 $ | 20 | 0 |
+
+**Con esto se cumple el «Hecho cuando» del hito 18** (22-10-2026): el flujo completo del proyecto grande termina sin errores internos ni reparaciones que no caben, y el mockup sin `.zip` cambia de estilo entre proyectos.
+
+En palabras sencillas: antes, todos los prototipos salían con el mismo aspecto; ahora cada proyecto tiene el suyo, sin coste añadido.
 
 ### Qué hay que mejorar
 

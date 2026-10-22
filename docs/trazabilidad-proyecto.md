@@ -36,6 +36,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 20-10 | Hito 19, paso 96 | El catálogo se descarga en Word y en PDF, con sus fuentes y preguntas en anexos |
 | 22-10 | Hito 19, paso 97 | El backlog se descarga como ficheros `.feature` de Gherkin, comprobados con el analizador oficial |
 | 22-10 | Hito 19, paso 98 | El backlog se descarga como CSV para importarlo en Jira o en Azure DevOps; el hito 19 queda hecho |
+| 22-10 | Hito 18, prueba real | Flujo completo de clínicas con los prompts v0.11 sin errores internos y con reparaciones que caben; mockups sin `.zip` con estilos distintos en dos proyectos; el hito 18 queda completado |
 | 20-10 | Documentación de la API (fuera del plan) | Swagger UI con los 42 endpoints documentados, que se actualiza sola y que los tests mantienen completa |
 
 ## Etapas
@@ -172,7 +173,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
     - **Sin dato de consumo:** las ejecuciones válidas se detuvieron al compactar, igual que en el experimento.
 - **Para la memoria, en palabras sencillas:** ahora el árbitro no empieza de cero. La plataforma le dice primero qué elementos de los dos modelos se parecen, con un criterio fijo y medido. El árbitro decide y redacta, y si contradice a los números, el usuario lo ve y lo revisa.
 
-### 9. Hito 18: fiabilidad y calidad (19-10; faltan sus pruebas reales)
+### 9. Hito 18: fiabilidad y calidad (19-10; completado el 22-10 con su prueba real)
 
 - **Paso 89, correcciones automáticas de formato:**
   - **Por qué:** como árbitro del catálogo, LUNA terminó 2 de 6 intentos, y todos sus fallos fueron de formato, no de criterio. Cada uno obliga a una reparación, que en un catálogo grande es cara o no cabe en el contexto.
@@ -220,7 +221,9 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Hallazgo del backlog:** el árbitro conserva las historias, pero recorta los criterios de aceptación cuanto más grande es el backlog: en el proyecto grande deja uno por historia (121 de los 237 que proponía A). Queda como mejora prioritaria del prompt del árbitro del backlog.
   - **Error de medida corregido (22-10):** los trabajos que cerró `InterruptedJobs` (paso 91) duraban hasta el arranque que los cerró, días después; un mockup que trabajó 12 minutos contaba 101 horas. Ahora duran hasta su última ejecución. En marcha desde la reconstrucción del 22-10 (10:05); las tablas de coste ya salen bien.
   - **Mockup (22-10):** 40 pantallas con las 121 historias, todas a la primera, sin reparaciones ni compactaciones; 17,15 $ y 52 minutos (antes 15,46 $ y 73). Cuesta lo mismo por pantalla (0,43 $) y sigue la dirección de estilo asignada («cálida y cercana»). El autor: «muy buena pinta».
-  - **Pendiente:** el mockup sin `.zip` del banco de alimentos, con otra dirección de estilo («institucional y sobria»); después, cerrar el hito 18.
+  - **Mockup del banco de alimentos (22-10):** con el mismo backlog de 45 historias, 24 pantallas a la primera, sin reparaciones ni compactaciones; 7,23 $ y 20 minutos (antes 20 pantallas, 6,48 $ y 36). Sigue su dirección, «institucional y sobria»: menú lateral oscuro, azul petróleo, fondo gris claro y tablas. Distinto del de clínicas.
+  - **Hito 18 completado (22-10):** se cumplen las dos condiciones, el flujo completo sin errores internos ni reparaciones que no caben y estilos distintos sin `.zip`.
+  - **Mejoras que deja la prueba** para la próxima versión de los prompts: que el árbitro consulte menos documentación y que no pierda criterios de aceptación en los backlogs grandes.
 - **Para la memoria, en palabras sencillas:** el hito 18 hace la plataforma más robusta frente a los fallos de los modelos (corrige lo que tiene una sola corrección, repara cambiando solo lo que está mal y no malgasta ejecuciones perdidas). También la hace más honesta con el usuario: no da por buena una suposición sin que la mire, y los prototipos no salen todos iguales.
 
 ### 10. Hito 19: exportar los entregables (20-10 y 22-10, hecho)
@@ -326,7 +329,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
 2. ~~**Hito 17, embeddings en local**~~: modelo multilingüe en la API (paso 86), emparejamiento de A y B con los umbrales calibrados (paso 87) y árbitro con embeddings con su prueba real (paso 88), todo el 19-10-2026. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
-3. ~~**Hito 18, fiabilidad y calidad**~~ (pasos 89 a 95, 19-10-2026, prompts v0.11, con las tablas de coste); faltan sus pruebas reales, que lanza el autor. Siguiente: el hito 19.
+3. ~~**Hito 18, fiabilidad y calidad**~~ (pasos 89 a 95, 19-10-2026, prompts v0.11, con las tablas de coste), completado el 22-10-2026 con su prueba real.
 4. ~~**Hito 19, exportar**~~: el catálogo a Word y PDF (paso 96, 20-10-2026), y el backlog a Gherkin (paso 97) y a CSV para Jira o Azure DevOps (paso 98), los dos el 22-10-2026. Falta que el autor pruebe la importación en Jira y Azure DevOps.
 5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro:** la trazabilidad en un panel lateral (paso 99, 22-10-2026). Siguiente: la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100).
 6. **Hito 21, historial de versiones de los entregables.**

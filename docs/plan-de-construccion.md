@@ -15,8 +15,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 
 - **Terminado:** los pasos 86 (servicio de embeddings en la API), 87 (emparejamiento de A y B por significado, con los umbrales calibrados con el criterio del autor: 0,90 y 0,70).
 - **Hecho el 19-10-2026:** el paso 88, el árbitro con embeddings (prompts v0.10), con su prueba real (la unión es más estable: 202–222 requisitos frente a 209–291). El hito 17 queda completado.
-- **Hecho el 19-10-2026:** el hito 18 entero (pasos 89 a 95), salvo sus pruebas reales con modelos, que lanza el autor: el flujo completo del proyecto grande sin errores internos ni reparaciones que no caben, y el mockup de dos proyectos sin `.zip` con estilos distintos.
-- **Siguiente:** esas pruebas reales y, después, el hito 19 (exportar los entregables).
+- **Hecho el 19-10-2026:** el hito 18 entero (pasos 89 a 95). **Completado el 22-10-2026** con su prueba real: el flujo completo del proyecto grande sin errores internos ni reparaciones que no caben, y los mockups sin `.zip` de dos proyectos con estilos distintos (resultados en `docs/evolucion-prompt-requisitos.md`, v0.11).
 - **Hito 19, hecho:** pasos 96 (el catálogo a Word y PDF, 20-10-2026), 97 (el backlog a Gherkin) y 98 (el backlog a CSV para Jira y Azure DevOps), los dos el 22-10-2026. Falta que el autor importe los CSV en un Jira y un Azure DevOps reales.
 
 ## Hito 0: preparación y prueba de humo (completado)
@@ -398,7 +397,7 @@ Acordado con el autor el 16-10-2026, tras el paso 65 y el experimento del árbit
 - [x] 94. Variedad del mockup sin `.zip`. Observación del autor (16-10-2026): sin una referencia de estilo, sale siempre con el mismo estilo y la misma organización. Relacionado con la idea aparcada de usar la skill `frontend-design` con la suscripción del autor (ver `docs/trazabilidad-proyecto.md`). (19-10-2026, decisión del autor, prompts v0.11: sin `.zip`, `StyleDirections` asigna a cada proyecto una de 8 direcciones de estilo, guardada en el plan del mockup, que el modelo adapta al sector y a los usuarios. Con `.zip` no cambia nada.)
 - [x] 95. Estimar el consumo de las ejecuciones detenidas antes del final, que hoy no tienen dato. **Por decidir.** (19-10-2026, decisión del autor: estimarlo como se pueda, validando la estimación. `UsageEstimator` reconstruye el contexto turno a turno a partir de la consola guardada (cada Read con su tramo, cada Write y las compactaciones) y lo convierte en tokens con coeficientes ajustados en las 125 ejecuciones con dato real (`scripts/evaluacion/ajustar-estimador.cs`). Error del total: −0,7 % en el mockup y −3,5 % en las fases. El informe, su CSV y la web dan la estimación aparte. Junto con él, a petición del autor, las tablas de coste en tiempo y dinero (`docs/costes/`, `scripts/evaluacion/costes.cs` y `precios.json`) y el tiempo de CPU de los embeddings, guardado con cada arbitraje.)
 
-**Hecho cuando:** el flujo completo del proyecto grande de ejemplo termina sin errores internos ni reparaciones que no caben, y el mockup sin `.zip` cambia de estilo entre proyectos distintos.
+**Hecho cuando:** el flujo completo del proyecto grande de ejemplo termina sin errores internos ni reparaciones que no caben, y el mockup sin `.zip` cambia de estilo entre proyectos distintos. (Cumplido el 22-10-2026, prompts v0.11: en «Clinicas Veterinarias v0.11» terminan preguntas, catálogo, backlog y mockup, y las reparaciones de LUNA y del árbitro caben y corrigen con Edit. El primer catálogo falló por un error del paso 92, corregido el 20-10-2026. Los mockups de clínicas («cálida y cercana») y del banco de alimentos («institucional y sobria») salen a la primera y con estilos distintos.)
 
 ## Hito 19: exportar los entregables
 
