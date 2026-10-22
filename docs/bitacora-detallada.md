@@ -2190,3 +2190,16 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Tablas de coste regeneradas** con el mockup y con las duraciones corregidas: los minutos del proyecto interno 1 pasan de 8.997 a 37, y los del 3, de 14.713 a 1.343. Lo que queda en el 3 es el mockup del 14-10, que siguió abierto mientras el equipo estaba suspendido por la noche: es una limitación ya conocida.
 - **Siguiente prueba:** el mockup sin `.zip` del banco de alimentos (proyecto 32), al que le toca la dirección 0, «institucional y sobria», para comprobar que el estilo cambia de un proyecto a otro. Después, cerrar el hito 18.
 - **Criterio de cierre del hito 18 en este proyecto:** el flujo completo terminó sin errores internos y todas las reparaciones cupieron. El único fallo, el primer catálogo, se debió al error del paso 92, corregido el 20-10.
+
+## 22-10-2026, 10:15 (sesión)
+
+**Resumen para la bitácora (22-10-2026, contraste de las exportaciones con la web)**
+
+- **Qué se hizo:** se descargaron de la API (solo lectura, sin lanzar tareas) el catálogo y el backlog de los tres proyectos de ejemplo validados (clínicas, banco de alimentos y clínicas v0.11), con sus cinco exportaciones, y un script comparó cada fichero con lo que la API da a la web.
+- **Resultado: sin diferencias.**
+  - Word: los mismos ids en el mismo orden, todos los textos, tantas marcas de suposición y de discrepancia como en la web, y tantas fuentes y preguntas en los anexos como las citadas. Valida sin errores.
+  - PDF: todos los ids y el pie «página N de M» en cada página (62, 28 y 67 páginas).
+  - Gherkin: un fichero por épica que el analizador oficial acepta, una `Rule` por historia con sus etiquetas y un `Scenario` por criterio.
+  - CSV: los mismos recuentos de épicas, historias y tareas, cada padre antes que sus hijos (Jira) y cada título en la columna de su nivel (Azure DevOps), sin BOM ni acentos convertidos en entidades.
+- **Observación, no de la exportación:** en los dos backlogs de clínicas cada historia tiene exactamente un criterio y una tarea (109 y 121); en el banco de alimentos, 98 criterios y 88 tareas para 45 historias. Puede venir del prompt o del árbitro del backlog.
+- **Pendientes:** importar los CSV en un Jira y un Azure DevOps de verdad (autor); después, el hito 20.
