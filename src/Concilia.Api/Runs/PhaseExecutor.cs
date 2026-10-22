@@ -26,7 +26,8 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // v0.10 (19-10-2026): the arbiter starts from the matching of the platform (input/emparejamiento.txt).
     // v0.11 (19-10-2026): the repair edits the previous output in its file; prudent suggestions;
     // a direction of style per project for the mockup without a style reference.
-    public const string PromptVersion = "v0.11";
+    // v0.12 (22-10-2026): the arbiter of the catalog consults only the sources it needs (input/fuentes.txt).
+    public const string PromptVersion = "v0.12";
 
     // The matching of A and B by meaning that the arbiter gets (step 88).
     public ArbiterMatching Matching => matching;
@@ -58,6 +59,10 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
 
         var context = plan.Context(input.Proposal1.Length > 0 ? input.Proposal1 : null, input.Proposal2.Length > 0 ? input.Proposal2 : null,
             input.Matching.Length > 0 ? input.Matching : null);
+        // The line numbers a model may cite are those of the documentation it sees
+        // (input/fuentes.txt for the arbiter of the catalog, step 107).
+        if (plan.Kind != PhaseKind.Backlog && PhaseTask.DocumentationOf(phase, input) is { Path: not DocumentationFile.Path } seen)
+            context = context with { FragmentAtLine = DocumentationFile.FragmentAtLine(seen.Content), LinesFile = seen.Path };
         var original = built.Request.Prompt;
         var reads = new List<FileRead>(); // of every attempt: a repair only has to read what was missing
         return await new RetryRunner(provider, MaxRepairs).RunAsync(

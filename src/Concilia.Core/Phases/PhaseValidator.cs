@@ -15,6 +15,8 @@ public record PhaseContext
     // The fragment of each line of input/documentacion.txt, to tell a model
     // that cites a line number as a fragment (DocumentationFile.FragmentAtLine).
     public IReadOnlyDictionary<int, string> FragmentAtLine { get; init; } = new Dictionary<int, string>();
+    // The file those lines are of: input/fuentes.txt for the arbiter of the catalog (step 107).
+    public string LinesFile { get; init; } = DocumentationFile.Path;
     public IReadOnlySet<string> AnsweredQuestionIds { get; init; } = new HashSet<string>();
     public IReadOnlyList<string> PendingQuestionIds { get; init; } = []; // suggestions, in order
     public string? Catalog { get; init; }
@@ -212,7 +214,7 @@ public static class PhaseValidator
         var hash = fragment.IndexOf("#F", StringComparison.Ordinal);
         if (hash < 0 || !int.TryParse(fragment[(hash + 2)..], out var line) || !context.FragmentAtLine.TryGetValue(line, out var atLine))
             return "";
-        return $" La línea {line} de {DocumentationFile.Path} es {atLine}: el id de un fragmento es el que va entre corchetes al principio de la línea, no el número de línea que muestra Read.";
+        return $" La línea {line} de {context.LinesFile} es {atLine}: el id de un fragmento es el que va entre corchetes al principio de la línea, no el número de línea que muestra Read.";
     }
 
     // Every element of each proposal ends in some `de` or in the discards, and

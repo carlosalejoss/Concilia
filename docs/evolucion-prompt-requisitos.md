@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.12 | 22-10-2026 | El árbitro del catálogo consulta solo las fuentes de los requisitos que tiene que decidir (`input/fuentes.txt`), en lugar de la documentación entera | Pendiente | Pendiente |
 | v0.11 | 19-10-2026 | La reparación corrige con Edit la salida anterior en su fichero, con la línea de cada error, en lugar de llevarla pegada y reescribirla; sugerencias más prudentes; estilo propio del mockup por proyecto | Sí (proyecto grande de ejemplo y banco de alimentos, 20 a 22-10-2026) | Preguntas a 0,94 $ (antes 2,31 $). Las reparaciones de LUNA y del árbitro caben y corrigen con Edit. Catálogo de 235 requisitos con 12 discrepancias, todas de la plataforma; unos 3,9 $ (antes 2,70 $) porque el árbitro lee demasiada documentación. Backlog de 121 historias sin reparaciones, 1,67 $ (antes 1,43 $), pero con un solo criterio por historia. Mockups de 40 y 24 pantallas a la primera, con el mismo coste por pantalla que antes y estilos distintos en cada proyecto |
 | v0.10 | 19-10-2026 | El árbitro parte del emparejamiento por significado de la plataforma (`input/emparejamiento.txt`, embeddings en local); puede apartarse si la fuente lo justifica, y la plataforma marca como discrepancia en el catálogo y el backlog dónde lo hizo | Sí (proyecto grande de ejemplo, catálogo, 19-10-2026) | Con las mismas propuestas, 3 arbitrajes de SOL válidos de 3: unión de 202 a 222 requisitos (media 212,3), frente a 209–291 (media 240) con la v0.9. Las desviaciones no bajan (7,7 de media, frente a las 7,0 que habría marcado la v0.9) |
 | v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Documento C: 40 min, 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Proyecto grande de ejemplo: 38 pantallas y las 109 historias (1,54 MB), con una pantalla perdida por un 504 de la pasarela y recuperada al reanudar. Al autor le convencen los dos |
@@ -344,6 +345,25 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.12 (22-10-2026)
+
+Hito 18b, a partir de la prueba real de la v0.11. Cambia el prompt del árbitro del catálogo. Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- **El árbitro del catálogo consulta solo las fuentes que necesita (paso 107).** En la prueba real de la v0.11 consultó 34 tramos de la documentación (1.242 líneas), llenó su contexto, compactó y tuvo que repetirse desde cero, aunque el prompt le decía que no la leyera entera. El problema es que no sabe qué fragmentos le hacen falta.
+  - Ahora la plataforma le da `input/fuentes.txt` en lugar de la documentación. Lleva solo los fragmentos que citan los requisitos que tiene que decidir: los que no tienen un par «mismo» y los de los pares «mismo» con cifras distintas («1 hora» y «24 horas» salen «mismo», porque los embeddings miden cuánto se parecen dos textos, no si se contradicen).
+  - De los 451 requisitos propuestos en la prueba, 298 tenían un par «mismo»: para esos no hace falta consultar nada.
+  - En palabras sencillas: en vez de darle al árbitro toda la biblioteca para que busque, la plataforma le da solo las páginas que tiene que comprobar.
+
+### Resultados
+
+Pendiente: un nuevo arbitraje del catálogo de «Clinicas Veterinarias v0.11» con las mismas propuestas, para comparar las líneas de documentación consultadas, el coste, el tiempo y la unión.
+
+### Qué hay que mejorar
+
+Pendiente de los resultados.
 
 ## v0.11 (19-10-2026)
 

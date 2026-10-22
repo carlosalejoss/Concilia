@@ -62,7 +62,7 @@ public static class PhaseTask
         if (phase.Kind == PhaseKind.Backlog)
             files.Add(new InputFile(CatalogFile, ReadingPlan.OnePerLine(input.Catalog), Required: true));
         else
-            files.Add(new InputFile(DocumentationFile.Path, input.Documentation, Required: !phase.IsArbiter));
+            files.Add(DocumentationOf(phase, input));
         if (phase.IsArbiter)
         {
             // With "1:" and "2:" before the ids, so the arbiter cannot mix them (ProposalIds).
@@ -74,6 +74,15 @@ public static class PhaseTask
         }
         return files;
     }
+
+    // The documentation a phase sees (not the backlog, which reads the catalog):
+    // A and B read it entirely and the arbiter of the questions consults it.
+    // Step 107 (prompts v0.12): the arbiter of the catalog consults only the
+    // fragments cited by the requirements it has to decide (SourcesFile).
+    public static InputFile DocumentationOf(PhaseDefinition phase, PhaseInput input) =>
+        phase.IsArbiter && phase.Kind == PhaseKind.Catalog
+            ? new InputFile(SourcesFile.Path, SourcesFile.Build(input.Documentation, input.Proposal1, input.Proposal2, input.Matching), Required: false)
+            : new InputFile(DocumentationFile.Path, input.Documentation, Required: !phase.IsArbiter);
 
     // Builds the prompt and checks it fits in InputTokenBudget BEFORE writing
     // anything. The prompt carries the small inputs and the reading plan; the
@@ -226,10 +235,13 @@ public static class PhaseTask
             .Select(f => f.GetProperty("id").GetString()!).ToHashSet();
         var kind = Enum.Parse<PhaseKind>(JsonDocument.Parse(File.ReadAllText(Path.Combine(workDirectory, PhaseFile))).RootElement.GetProperty("kind").GetString()!);
         string? Proposal(string file) => ReadIfExists(workDirectory, file) is { } p ? ProposalIds.Unprefix(kind, p) : null;
+        // The arbiter of the catalog has input/fuentes.txt instead (step 107).
+        var linesFile = File.Exists(Path.Combine(workDirectory, SourcesFile.Path)) ? SourcesFile.Path : DocumentationFile.Path;
         return new PhaseContext
         {
             FragmentIds = fragments,
-            FragmentAtLine = DocumentationFile.FragmentAtLine(ReadIfExists(workDirectory, DocumentationFile.Path) ?? ""),
+            FragmentAtLine = DocumentationFile.FragmentAtLine(ReadIfExists(workDirectory, linesFile) ?? ""),
+            LinesFile = linesFile,
             AnsweredQuestionIds = answeredQuestionIds,
             Catalog = ReadIfExists(workDirectory, CatalogFile),
             Proposal1 = Proposal(Proposal1File),

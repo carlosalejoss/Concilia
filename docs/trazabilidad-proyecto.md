@@ -226,6 +226,14 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Mejoras que deja la prueba** para la próxima versión de los prompts: que el árbitro consulte menos documentación y que no pierda criterios de aceptación en los backlogs grandes.
 - **Para la memoria, en palabras sencillas:** el hito 18 hace la plataforma más robusta frente a los fallos de los modelos (corrige lo que tiene una sola corrección, repara cambiando solo lo que está mal y no malgasta ejecuciones perdidas). También la hace más honesta con el usuario: no da por buena una suposición sin que la mire, y los prototipos no salen todos iguales.
 
+### 9b. Hito 18b: el árbitro tras la prueba real (22-10, en curso)
+
+- **Por qué:** la prueba real de la v0.11 dejó dos mejoras: el árbitro del catálogo consulta casi toda la documentación (34 tramos, compacta y se repite) y el del backlog se queda con un criterio por historia, porque el contexto se le llena al leer y el backlog entero tiene que caber en una respuesta de 64.000 tokens.
+- **Paso 107 (prompts v0.12):** el árbitro del catálogo recibe `input/fuentes.txt`, con los fragmentos que citan los requisitos que tiene que decidir (sin par «mismo», o «mismo» con cifras distintas), en lugar de la documentación entera.
+- **Paso 108:** el árbitro del backlog citará por su id los criterios y las tareas que conserva, y la plataforma pondrá el texto.
+- **Se mide** con un nuevo arbitraje de los trabajos de clínicas, sobre las mismas propuestas.
+- **Para la memoria, en palabras sencillas:** en vez de darle al árbitro toda la biblioteca, la plataforma le da solo las páginas que tiene que comprobar.
+
 ### 10. Hito 19: exportar los entregables (20-10 y 22-10, hecho)
 
 - **Paso 96, el catálogo a Word y PDF** (decisiones del autor, todas como recomendaba Claude):
@@ -249,7 +257,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Para la memoria, en palabras sencillas (Gherkin):** los criterios de aceptación salen en el formato que leen las herramientas de pruebas automáticas, de modo que el equipo de desarrollo puede usarlos como punto de partida de sus pruebas sin copiarlos a mano.
 - **Para la memoria, en palabras sencillas:** lo que genera la plataforma ya no se queda dentro de la web. El catálogo se descarga como un documento normal, que se puede enviar al cliente, y cada requisito sigue diciendo de qué parte de la documentación sale y en qué respuesta del cliente se apoya.
 
-### 11. Hito 20: trazabilidad visual y comparación de A, B y el árbitro (22-10, en curso)
+### 11. Hito 20: trazabilidad visual y comparación de A, B y el árbitro (22-10, hecho)
 
 - **Paso 99, la trazabilidad (22-10):** el autor dejó las decisiones a Claude.
   - **Dónde:** un panel lateral que se abre con «Trazabilidad» en cada requisito del catálogo y cada historia del backlog. Dentro del panel se pasa de un requisito a una historia que lo cubre, y de ahí a otro de sus requisitos, con «Volver», sin salir del paso ni perder lo que se está editando.
@@ -257,6 +265,12 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Datos:** los que ya había, sin guardar nada nuevo. Se construye con el mismo contenido que las exportaciones del hito 19, así que el panel y el Word dicen lo mismo. Enseña lo guardado, así que el botón se oculta mientras hay cambios sin guardar.
   - **Fuera, por ahora:** una vista de matriz de todo el catálogo (cuántas fuentes, preguntas e historias tiene cada requisito).
 - **Para la memoria, en palabras sencillas:** de cualquier requisito se llega en un clic a la frase exacta de la documentación de la que sale y a la respuesta del cliente en que se apoya, y de cualquier historia, a los requisitos que la justifican. Es lo que permite a un analista comprobar que nada de lo generado se lo ha inventado la IA.
+
+- **Paso 100, la comparación de A, B y el árbitro (22-10):** decisiones del autor, todas como recomendaba Claude.
+  - **Qué se ve:** en «Ejecuciones», bajo el informe de cada trabajo con árbitro, una tabla de tres columnas, A | árbitro | B. Cada fila es un elemento de la unión con lo que juntó de cada modelo, un elemento descartado con el motivo del árbitro o algo que el árbitro no clasificó. Junto a cada elemento de A y de B, lo más parecido de la otra propuesta según los embeddings («mismo», «parecido» o «distinto», con la similitud). Se marcan las filas en las que el árbitro no coincide con los embeddings, y se puede filtrar y buscar.
+  - **Informe y CSV:** junto a las cifras del árbitro, las de los embeddings: lo que solo está en A, lo que solo está en B y el porcentaje de elementos en que coinciden con el árbitro.
+  - **El cálculo, una sola vez:** la parte lenta (los embeddings) se guarda con cada trabajo, sin los umbrales ni el árbitro, que se aplican al usarla. Los trabajos nuevos la guardan al arbitrar, donde ya se calculaba; los antiguos, la primera vez que se pide (unos segundos cada uno). Si cambia el modelo de embeddings, se recalcula.
+- **Para la memoria, en palabras sencillas (paso 100):** en cada trabajo se ve, elemento por elemento, qué propuso cada modelo y qué hizo el árbitro con ello, y al lado lo que dice una medida independiente del árbitro (la cercanía de significado). Así se puede comprobar, caso por caso, si el árbitro ha juntado lo que es igual y separado lo que es distinto.
 
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
@@ -315,6 +329,7 @@ A propone mucho más que B, y la unión se parece mucho a A: lo que aporta solo 
 | v0.8 y v0.9 | 15-10 | La plataforma junta y revisa el mockup; mockup navegable con inicio de sesión |
 | v0.11 | 19-10 | Reparar editando, sugerencias prudentes y estilo propio del mockup por proyecto |
 | v0.10 | 19-10 | El árbitro parte del emparejamiento por significado de la plataforma, y sus desviaciones se marcan como discrepancia |
+| v0.12 | 22-10 | El árbitro del catálogo consulta solo las fuentes que necesita (paso 107) |
 
 El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-requisitos.md`.
 
@@ -331,7 +346,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 2. ~~**Hito 17, embeddings en local**~~: modelo multilingüe en la API (paso 86), emparejamiento de A y B con los umbrales calibrados (paso 87) y árbitro con embeddings con su prueba real (paso 88), todo el 19-10-2026. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
 3. ~~**Hito 18, fiabilidad y calidad**~~ (pasos 89 a 95, 19-10-2026, prompts v0.11, con las tablas de coste), completado el 22-10-2026 con su prueba real.
 4. ~~**Hito 19, exportar**~~: el catálogo a Word y PDF (paso 96, 20-10-2026), y el backlog a Gherkin (paso 97) y a CSV para Jira o Azure DevOps (paso 98), los dos el 22-10-2026. Falta que el autor pruebe la importación en Jira y Azure DevOps.
-5. **Hito 20, trazabilidad visual y comparación de A, B y el árbitro:** la trazabilidad en un panel lateral (paso 99, 22-10-2026). Siguiente: la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100).
+5. ~~**Hito 20, trazabilidad visual y comparación de A, B y el árbitro**~~: la trazabilidad en un panel lateral (paso 99) y la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100), los dos el 22-10-2026. Falta que el autor revise la comparación en el navegador.
 6. **Hito 21, historial de versiones de los entregables.**
 7. **Hito 22, evaluación:** métricas externas, un documento de PURE y una prueba editando de verdad.
 8. **Después:** hito 7 (catálogo v2) y redactar la memoria (sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación).
@@ -342,4 +357,4 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 ## Cifras de seguimiento
 
 - **Commits:** 187 entre el 28-09 y el 20-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) y 918 (22-10, paso 99).
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99) y 937 (22-10, paso 100).
