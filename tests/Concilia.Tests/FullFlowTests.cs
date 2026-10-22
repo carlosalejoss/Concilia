@@ -103,6 +103,14 @@ public class FullFlowTests
         using (var zip = new System.IO.Compression.ZipArchive(await gherkin.Content.ReadAsStreamAsync()))
             Assert.All(zip.Entries, e => Assert.EndsWith(".feature", e.FullName));
 
+        // Step 98: and as CSV for Jira and Azure DevOps.
+        var jira = await client.GetAsync($"/projects/{id}/backlog-jira.csv");
+        Assert.Equal("backlog-reservasalas-jira.csv", jira.Content.Headers.ContentDisposition!.FileName);
+        Assert.StartsWith("\"Issue ID\",\"Parent ID\"", await jira.Content.ReadAsStringAsync());
+        var azure = await client.GetAsync($"/projects/{id}/backlog-azure-devops.csv");
+        Assert.StartsWith("\"ID\",\"Work Item Type\"", await azure.Content.ReadAsStringAsync());
+        Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/projects/{id}/backlog-trello.csv")).StatusCode);
+
         // The mockup, which opens as a page.
         await Launch(client, $"/projects/{id}/mockup-jobs", id);
         var page = await client.GetAsync($"/projects/{id}/mockup");
