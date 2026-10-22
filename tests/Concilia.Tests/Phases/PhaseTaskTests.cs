@@ -394,15 +394,18 @@ public class PhaseTaskTests
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(proposal), JsonNode.Parse(ProposalIds.Unprefix(PhaseKind.Catalog, prefixed.ToJsonString()))));
     }
 
+    // Step 108: the criteria and the tasks get it too, because the arbiter
+    // cites them by their id; the epics do not.
     [Fact]
-    public void In_a_backlog_only_the_stories_get_the_prefix()
+    public void In_a_backlog_the_stories_criteria_and_tasks_get_the_prefix()
     {
         var prefixed = JsonNode.Parse(ProposalIds.Prefix(PhaseKind.Backlog, File.ReadAllText(Example("backlog_propuesta_1.json")), 1))!;
 
         var epic = prefixed["epicas"]![0]!;
         Assert.StartsWith("EP-", epic["id"]!.GetValue<string>());
         Assert.StartsWith("1:HU-", epic["historias"]![0]!["id"]!.GetValue<string>());
-        Assert.StartsWith("CA-", epic["historias"]![0]!["criterios"]![0]!["id"]!.GetValue<string>());
+        Assert.StartsWith("1:CA-", epic["historias"]![0]!["criterios"]![0]!["id"]!.GetValue<string>());
+        Assert.StartsWith("1:T-", epic["historias"]![0]!["tareas"]![0]!["id"]!.GetValue<string>());
     }
 
     [Fact]
