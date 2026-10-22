@@ -169,14 +169,16 @@ public static class PhaseTask
         // (FragmentCitations), with the fixes of the platform (PlatformFixes)
         // and, in the arbiter, without the prefix of the proposal in its ids
         // (ProposalIds): the platform does all of it by itself.
-        var fixes = joined is null ? null : PlatformFixes.Apply(phase, FragmentCitations.Clean(joined), context);
+        // The backlog arbiter's criteria and tasks cited by their id get their text (CriteriaReferences, step 108).
+        var references = joined is null ? null : CriteriaReferences.Apply(phase, FragmentCitations.Clean(joined), context);
+        var fixes = references is null ? null : PlatformFixes.Apply(phase, references.Output, context);
         var cleaned = fixes?.Output;
         var checkedOutput = cleaned is null
             ? new PhaseValidation([$"{phase.OutputFile} FICHERO: no se ha escrito el fichero."], [])
             : PhaseValidator.Validate(phase, phase.IsArbiter ? ProposalIds.Strip(cleaned) : cleaned, context);
         var wrongPrefixes = phase.IsArbiter && cleaned is not null ? ProposalIds.WrongPrefixes(cleaned) : [];
-        var validation = new PhaseValidation([.. wrongPrefixes, .. checkedOutput.Errors, .. extraErrors ?? []],
-            [.. joinedWarnings, .. fixes?.Warnings ?? [], .. checkedOutput.Warnings]);
+        var validation = new PhaseValidation([.. wrongPrefixes, .. references?.Errors ?? [], .. checkedOutput.Errors, .. extraErrors ?? []],
+            [.. joinedWarnings, .. references?.Warnings ?? [], .. fixes?.Warnings ?? [], .. checkedOutput.Warnings]);
         return validation.Valid
             ? new PhaseReview(validation, null)
             : Repair(phase, cleaned ?? output, validation, originalPrompt, attempt);
@@ -222,10 +224,12 @@ public static class PhaseTask
 
     // What the platform fixes by itself in an output before checking it and
     // keeping it: repeated keys whose values are lists (JsonDuplicates), the
-    // "sigue" mark of the cited fragments (FragmentCitations) and the
-    // mistakes of format with only one fix (PlatformFixes, step 89).
+    // "sigue" mark of the cited fragments (FragmentCitations), the criteria and
+    // tasks the backlog arbiter cites by their id (CriteriaReferences, step 108)
+    // and the mistakes of format with only one fix (PlatformFixes, step 89).
     public static string? Clean(PhaseDefinition phase, string? output, PhaseContext context) =>
-        output is null ? null : PlatformFixes.Apply(phase, FragmentCitations.Clean(JsonDuplicates.Merge(output) ?? output), context).Output;
+        output is null ? null : PlatformFixes.Apply(phase,
+            CriteriaReferences.Apply(phase, FragmentCitations.Clean(JsonDuplicates.Merge(output) ?? output), context).Output, context).Output;
 
     // The context of the validator from the run folder (what BuildRequest wrote).
     public static PhaseContext LoadContext(string workDirectory, IReadOnlySet<string> answeredQuestionIds)

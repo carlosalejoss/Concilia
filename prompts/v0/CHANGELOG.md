@@ -10,6 +10,11 @@ Hito 18b, a partir de la prueba real de la v0.11. Decidido por el autor a propue
   - Se sigue consultando por tramos, no se lee entero. El §1 lo explica y la discrepancia se comprueba en las fuentes.
   - Por qué: en la prueba real, el árbitro consultó 34 tramos de la documentación (1.242 líneas), llenó el contexto, compactó y se repitió desde cero. De los 451 requisitos de las dos propuestas, 298 tenían un par `mismo` y no necesitaban la fuente.
   - El árbitro de las preguntas sigue consultando la documentación entera.
+- **`arbitro_backlog.md` (paso 108):** el árbitro cita por su id los criterios y las tareas que conserva tal cual (`"1:CA-012"`, `"2:T-030"`) y escribe enteros solo los que combina o redacta de nuevo, sin `id`. El §2 le pide conservar todos los de las historias que une, salvo los repetidos.
+  - En `input/propuesta_1.json` y `input/propuesta_2.json`, los criterios y las tareas llevan el número de su propuesta, como ya lo llevaban las historias.
+  - La plataforma pone el texto de cada uno citado y numera todos (`CA-001`…, `T-001`…) antes de comprobar el backlog (`CriteriaReferences`). El formato que se guarda no cambia.
+  - Un aviso `ARB-CITA` dice cuántos se citaron, cuántos escribió enteros y cuántos de las historias unidas no cita. Un id que no está en su propuesta es un error `ARB-CITA`.
+  - Por qué: en la prueba real, el contexto del árbitro ya estaba lleno al terminar de leer y el backlog entero tenía que caber en una respuesta de 64.000 tokens; dejó exactamente un criterio y una tarea por historia (121 de los 237 criterios de la propuesta más larga). Un criterio escrito entero ocupa unos 120 tokens; citado por su id, unos 5.
 
 ## v0.11, reparar editando, sugerencias prudentes y estilo propio del mockup (2026-10-19)
 

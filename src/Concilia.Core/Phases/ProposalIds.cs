@@ -18,7 +18,8 @@ public static class ProposalIds
         id.Length > 2 && char.IsDigit(id[0]) && id[1] == ':' ? id[2..] : id;
 
     // The proposal written for the arbiter, with "n:" before the id of each
-    // element it compares (questions, requirements or stories). Ids that point
+    // element it compares (questions, requirements or stories) and, in the
+    // backlog, of each criterion and task (step 108). Ids that point
     // elsewhere (the answers a requirement cites, the requirements of a story)
     // keep their form. Text that is not JSON is kept as it is.
     public static string Prefix(PhaseKind kind, string proposal, int n) =>
@@ -146,8 +147,16 @@ public static class ProposalIds
         if (root is null)
             return proposal;
         foreach (var element in Elements(kind, root))
+        {
             if (element["id"] is JsonValue v && v.TryGetValue<string>(out var id))
                 element["id"] = map(id);
+            // Step 108: in the backlog, also the criteria and the tasks of each
+            // story, which the arbiter cites by their id (CriteriaReferences).
+            if (kind == PhaseKind.Backlog)
+                foreach (var item in Items(element["criterios"]).Concat(Items(element["tareas"])))
+                    if (item["id"] is JsonValue itemId && itemId.TryGetValue<string>(out var value))
+                        item["id"] = map(value);
+        }
         return ReadingPlan.OnePerLine(root.ToJsonString());
     }
 

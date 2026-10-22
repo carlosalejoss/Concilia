@@ -230,7 +230,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 
 - **Por qué:** la prueba real de la v0.11 dejó dos mejoras: el árbitro del catálogo consulta casi toda la documentación (34 tramos, compacta y se repite) y el del backlog se queda con un criterio por historia, porque el contexto se le llena al leer y el backlog entero tiene que caber en una respuesta de 64.000 tokens.
 - **Paso 107 (prompts v0.12):** el árbitro del catálogo recibe `input/fuentes.txt`, con los fragmentos que citan los requisitos que tiene que decidir (sin par «mismo», o «mismo» con cifras distintas), en lugar de la documentación entera.
-- **Paso 108:** el árbitro del backlog citará por su id los criterios y las tareas que conserva, y la plataforma pondrá el texto.
+- **Paso 108 (prompts v0.12):** el árbitro del backlog cita por su id los criterios y las tareas que conserva tal cual (`1:CA-012`) y escribe enteros solo los que combina; la plataforma pone el texto, numera y avisa de cuántos no cita.
 - **Se mide** con un nuevo arbitraje de los trabajos de clínicas, sobre las mismas propuestas.
 - **Para la memoria, en palabras sencillas:** en vez de darle al árbitro toda la biblioteca, la plataforma le da solo las páginas que tiene que comprobar.
 
@@ -329,7 +329,7 @@ A propone mucho más que B, y la unión se parece mucho a A: lo que aporta solo 
 | v0.8 y v0.9 | 15-10 | La plataforma junta y revisa el mockup; mockup navegable con inicio de sesión |
 | v0.11 | 19-10 | Reparar editando, sugerencias prudentes y estilo propio del mockup por proyecto |
 | v0.10 | 19-10 | El árbitro parte del emparejamiento por significado de la plataforma, y sus desviaciones se marcan como discrepancia |
-| v0.12 | 22-10 | El árbitro del catálogo consulta solo las fuentes que necesita (paso 107) |
+| v0.12 | 22-10 | El árbitro del catálogo consulta solo las fuentes que necesita (paso 107) y el del backlog cita por su id los criterios y las tareas (paso 108) |
 
 El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-requisitos.md`.
 

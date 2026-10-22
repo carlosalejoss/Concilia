@@ -2272,3 +2272,15 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Tests:** 3 de la caché (mismo resultado que calcular de nuevo, otros umbrales sin embeddings, otro modelo o fichero dañado), 5 de `JobComparison` y comprobaciones en el flujo completo (fichero guardado al arbitrar, `fromCache`, `embeddings` en el informe, filas de la comparación y columnas del CSV). 937 tests de C# en verde (con los cambios de la otra sesión en el árbol). La web pasa `tsc -b` y `oxlint` sin avisos.
 - **Sin probar todavía:** la comparación en el navegador y con los trabajos reales; hace falta reconstruir la API y la web. La primera descarga del CSV de un proyecto con muchos trabajos tardará unos segundos por trabajo, mientras guarda su emparejamiento.
 - **Pendientes:** que el autor reconstruya y revise la comparación; después, el hito 21.
+
+## 22-10-2026, 13:40 (sesión)
+
+**Resumen para la bitácora (22-10-2026, hito 18b, paso 108: el árbitro del backlog cita los criterios y las tareas por su id)**
+
+- **Paso 108** (prompts v0.12, decisión del autor como recomendaba Claude):
+  - `ProposalIds.Prefix` pone también el número de propuesta a los criterios y las tareas del backlog (`1:CA-012`, `2:T-030`);
+  - `arbitro_backlog.md`: el §2 pide conservar todos los criterios y tareas de las historias que se unen, salvo los repetidos, citar por su id los que se conservan tal cual y escribir enteros solo los combinados o nuevos; el §4 muestra el formato (`"criterios": ["1:CA-012", {…}]`);
+  - `CriteriaReferences` (antes de comprobar y en lo que se guarda, como `PlatformFixes`) pone el texto de los citados, numera de nuevo `CA-` y `T-` en todo el backlog y deja un aviso `ARB-CITA` con lo citado, lo escrito entero y lo que no se cita de las historias unidas. Un id que no está en su propuesta, o sin el número delante, es un error `ARB-CITA` y se quita, para que el esquema no lo cuente otra vez;
+  - el formato del backlog que se guarda no cambia: la web, las exportaciones y el informe siguen igual.
+- **Tests:** `CriteriaReferencesTests` (6) y uno de `PhaseTaskTests` cambiado (los criterios y las tareas sí llevan ahora el prefijo); 943 en total, todos correctos, en el worktree limpio desde `HEAD` con estos cambios.
+- **Pendientes:** reconstruir la API cuando la otra sesión haya hecho commit del paso 100 y no haya tareas en marcha, con permiso del autor; medir los pasos 107 y 108 con un nuevo arbitraje del catálogo y otro del backlog de «Clinicas Veterinarias v0.11»; documentar los resultados y cerrar el hito 18b.

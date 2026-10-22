@@ -26,7 +26,8 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // v0.10 (19-10-2026): the arbiter starts from the matching of the platform (input/emparejamiento.txt).
     // v0.11 (19-10-2026): the repair edits the previous output in its file; prudent suggestions;
     // a direction of style per project for the mockup without a style reference.
-    // v0.12 (22-10-2026): the arbiter of the catalog consults only the sources it needs (input/fuentes.txt).
+    // v0.12 (22-10-2026): the arbiter of the catalog consults only the sources it needs (input/fuentes.txt),
+    // and the arbiter of the backlog cites by their id the criteria and tasks it keeps.
     public const string PromptVersion = "v0.12";
 
     // The matching of A and B by meaning that the arbiter gets (step 88).
