@@ -2172,3 +2172,21 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Qué se hizo:** el autor subió a GitHub los commits de los pasos 97 y 98 y su revisión, reconstruyó la API y la web (`docker compose up --build -d api web`) y comprobó en el navegador que «Gherkin», «CSV Jira» y «CSV Azure DevOps» aparecen en la barra del backlog y descargan.
 - **Decisiones:** ninguna nueva.
 - **Pendientes:** importar los dos CSV en un Jira y un Azure DevOps de verdad (autor); después, el hito 20.
+
+## 22-10-2026, 10:15 (sesión)
+
+**Resumen para la bitácora (22-10-2026, hito 18: mockup de la prueba real)**
+
+- **Mockup de «Clinicas Veterinarias v0.11»** (prompts v0.11, `SS - GPT-6-SOL` por la pasarela, sin `.zip`), lanzado por el autor tras validar el backlog:
+  - 40 pantallas con las 121 historias del backlog validado; página de 1,74 MB (aviso a partir de 2 MB);
+  - 41 ejecuciones (diseño y 40 pantallas), **todas válidas a la primera**: 0 reparaciones, 0 compactaciones, ninguna corrección `FRAGMENTO` y ninguna parte que corregir después de juntar las pantallas. Único aviso: `MAPA-PANTALLAS` (más de 25 pantallas). Entre 6 y 8 turnos por ejecución;
+  - diseño: 157.645 tokens de entrada, 38.012 de salida, 9,6 min. Pantallas: mediana de 77.498 de entrada (de 68.937 a 244.353), 21.834 de salida (de 14.667 a 53.350) y 2,8 min (de 1,9 a 12,0), hasta 3 a la vez;
+  - total: 3.696.191 tokens de entrada y 975.684 de salida, **17,15 $ y 52 minutos**, todos con dato real.
+- **Comparación con la v0.9** (mismo proyecto, 15 y 16-10-2026): 38 pantallas con 109 historias, 1,54 MB, 15,46 $ y 73 minutos en dos trabajos, porque una pantalla falló por errores 504 de la pasarela y hubo que reanudar.
+  - Por pantalla, 0,43 $ frente a 0,41 $; por historia, 0,14 $ en los dos. El coste sube porque hay más historias, no porque cada pantalla cueste más.
+  - Esta vez no hubo fallos de la pasarela.
+- **Estilo (paso 94):** al proyecto 33 le toca la dirección 1 de 8, «cálida y cercana». El `.html` la sigue: variables `--crema` y `--terracota`, títulos en serif (Georgia), esquinas de 26 px y navegación con pestañas. El autor: «el diseño del mockup tiene muy buena pinta».
+- **Reconstrucción a las 10:05:** la API y la web se reiniciaron con una imagen nueva mientras se medía el mockup, ya terminado (`GET /jobs/active` en 204). No fue desde esta sesión; probablemente la otra, que tenía pendiente probar en Docker las descargas del backlog. La imagen lleva la corrección de las duraciones (commit `fdfb58a`): el mockup interrumpido que contaba 101 horas cuenta ahora 11,7 minutos.
+- **Tablas de coste regeneradas** con el mockup y con las duraciones corregidas: los minutos del proyecto interno 1 pasan de 8.997 a 37, y los del 3, de 14.713 a 1.343. Lo que queda en el 3 es el mockup del 14-10, que siguió abierto mientras el equipo estaba suspendido por la noche: es una limitación ya conocida.
+- **Siguiente prueba:** el mockup sin `.zip` del banco de alimentos (proyecto 32), al que le toca la dirección 0, «institucional y sobria», para comprobar que el estilo cambia de un proyecto a otro. Después, cerrar el hito 18.
+- **Criterio de cierre del hito 18 en este proyecto:** el flujo completo terminó sin errores internos y todas las reparaciones cupieron. El único fallo, el primer catálogo, se debió al error del paso 92, corregido el 20-10.
