@@ -29,17 +29,17 @@ public static class BacklogCsv
         foreach (var epic in backlog.Epics)
         {
             var epicId = (++next).ToString();
-            rows.Add((epicId, "", "Epic", epic.Title, epic.Title, epic.Description, [epic.Id]));
+            rows.Add((epicId, "", "Epic", OneLine(epic.Title), OneLine(epic.Title), epic.Description, [epic.Id]));
             foreach (var story in epic.Stories)
             {
                 var storyId = (++next).ToString();
-                rows.Add((storyId, epicId, "Story", story.Title, "", JiraStory(story), StoryLabels(story)));
+                rows.Add((storyId, epicId, "Story", OneLine(story.Title), "", JiraStory(story), StoryLabels(story)));
                 foreach (var task in story.Tasks)
-                    rows.Add(((++next).ToString(), storyId, "Sub-task", task.Title, "", "", [task.Id]));
+                    rows.Add(((++next).ToString(), storyId, "Sub-task", OneLine(task.Title), "", "", [task.Id]));
             }
         }
 
-        var labels = rows.Max(r => r.Labels.Count);
+        var labels = rows.Select(r => r.Labels.Count).DefaultIfEmpty(0).Max(); // 0 with an empty backlog (a draft can be)
         var csv = new StringBuilder();
         Row(csv, ["Issue ID", "Parent ID", "Issue Type", "Summary", "Epic Name", "Description", .. Enumerable.Repeat("Labels", labels)]);
         foreach (var r in rows)
@@ -58,13 +58,13 @@ public static class BacklogCsv
         Row(csv, ["ID", "Work Item Type", "Title 1", "Title 2", "Title 3", "Description", "Acceptance Criteria", "Tags"]);
         foreach (var epic in backlog.Epics)
         {
-            Row(csv, ["", "Epic", epic.Title, "", "", Html([epic.Description]), "", epic.Id]);
+            Row(csv, ["", "Epic", OneLine(epic.Title), "", "", Html([epic.Description]), "", epic.Id]);
             foreach (var story in epic.Stories)
             {
-                Row(csv, ["", "User Story", "", story.Title, "", Html([story.Narrative, "", Requirements(story)]),
+                Row(csv, ["", "User Story", "", OneLine(story.Title), "", Html([story.Narrative, "", Requirements(story)]),
                     Html(story.Criteria.SelectMany(Criterion).ToList()), string.Join("; ", StoryLabels(story))]);
                 foreach (var task in story.Tasks)
-                    Row(csv, ["", "Task", "", "", task.Title, "", "", task.Id]);
+                    Row(csv, ["", "Task", "", "", OneLine(task.Title), "", "", task.Id]);
             }
         }
         return Utf8(csv);
@@ -95,6 +95,11 @@ public static class BacklogCsv
     private static string Html(IReadOnlyList<string> lines) =>
         string.Join("<br>", lines.SelectMany(l => l.ReplaceLineEndings("\n").Split('\n'))
             .Select(l => l.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")));
+
+    // A title in one line: neither Jira nor Azure DevOps accepts a summary or
+    // a title with line breaks.
+    private static string OneLine(string text) =>
+        string.Join(' ', text.ReplaceLineEndings("\n").Split('\n').Select(l => l.Trim()).Where(l => l.Length > 0));
 
     // A CSV row: every field in quotes, the quotes inside doubled, CRLF at the end.
     private static void Row(StringBuilder csv, IEnumerable<string> fields) =>
