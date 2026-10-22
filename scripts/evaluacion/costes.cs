@@ -40,7 +40,8 @@ var internalNumber = 0;
 foreach (var project in (await http.GetFromJsonAsync<JsonArray>("/projects"))!.OrderBy(p => p!["id"]!.GetValue<int>()))
 {
     var name = project!["name"]!.GetValue<string>();
-    var shown = examples.Contains(name) ? name : $"Proyecto interno {++internalNumber}";
+    // A project of the examples, also a new run of one ("Clinicas Veterinarias v0.11"), keeps its name.
+    var shown = examples.Any(e => name.StartsWith(e, StringComparison.Ordinal)) ? name : $"Proyecto interno {++internalNumber}";
     foreach (var item in (await http.GetFromJsonAsync<JsonArray>($"/projects/{project["id"]}/jobs"))!)
     {
         var job = item!["job"]!;

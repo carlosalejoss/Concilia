@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 19-10-2026 13:01, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 22-10-2026 09:05, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -29,9 +29,9 @@ Generado por `scripts/evaluacion/costes.cs` el 19-10-2026 13:01, con los datos g
 | 16-10 09:42 | Nuevo arbitraje (catálogo) | v0.9 | válido | 2 | 726.818* | 98.122* | 0,12* | 27 | 1 | — |
 | 16-10 10:11 | Nuevo arbitraje (preguntas) | v0.9 | válido | 1 | 299.163 | 49.664 | 0,05 | 7 | 0 | — |
 | 16-10 10:20 | Nuevo arbitraje (catálogo) | v0.9 | fallido | 1 | 382.753* | 42.261* | 0,06* | 10 | 0 | — |
-| 16-10 10:39 | Nuevo arbitraje (catálogo) | v0.9 | fallido | 1 | 557.206* | 41.757* | 0,08* | — | 0 | — |
+| 16-10 10:39 | Nuevo arbitraje (catálogo) | v0.9 | fallido | 1 | 557.206* | 41.757* | 0,08* | 4528 | 0 | — |
 | 16-10 12:10 | Nuevo arbitraje (preguntas) | v0.9 | válido | 2 | 254.668 | 38.570 | 0,04 | 5 | 1 | — |
-| 16-10 12:15 | Nuevo arbitraje (preguntas) | v0.9 | fallido | 1 | 23.614* | 1.742* | 0,06* | — | 0 | — |
+| 16-10 12:15 | Nuevo arbitraje (preguntas) | v0.9 | fallido | 1 | 23.614* | 1.742* | 0,06* | 4432 | 0 | — |
 | 16-10 12:16 | Nuevo arbitraje (preguntas) | v0.9 | válido | 1 | 175.635 | 17.602 | 0,53 | 2 | 0 | — |
 | 16-10 12:19 | Nuevo arbitraje (preguntas) | v0.9 | válido | 1 | 208.313 | 17.970 | 0,60 | 3 | 0 | — |
 | 16-10 12:22 | Nuevo arbitraje (catálogo) | v0.9 | válido | 1 | 681.916* | 61.261* | 1,98* | 6 | 0 | — |
@@ -39,9 +39,9 @@ Generado por `scripts/evaluacion/costes.cs` el 19-10-2026 13:01, con los datos g
 | 16-10 12:39 | Nuevo arbitraje (catálogo) | v0.9 | válido | 2 | 567.402* | 96.231* | 0,10* | 12 | 1 | — |
 | 16-10 13:05 | Nuevo arbitraje (catálogo) | v0.9 | fallido | 3 | 665.013* | 86.438* | 0,11* | 27 | 2 | — |
 | 16-10 13:36 | Nuevo arbitraje (catálogo) | v0.9 | fallido | 2 | 492.460* | 47.693* | 0,07* | 15 | 1 | — |
-| 19-10 12:10 | Nuevo arbitraje (catálogo) | v0.10 | válido | 1 | 413.825* | 57.650* | 1,40* | 5 | 0 | 13,4 / 53,9 (medido después) |
-| 19-10 12:15 | Nuevo arbitraje (catálogo) | v0.10 | válido | 1 | 414.181* | 56.086* | 1,39* | 5 | 0 | 14,2 / 57,1 (medido después) |
-| 19-10 12:20 | Nuevo arbitraje (catálogo) | v0.10 | válido | 2 | 1.879.107* | 77.418* | 4,53* | 11 | 1 | 11,5 / 46,4 (medido después) |
+| 19-10 12:10 | Nuevo arbitraje (catálogo) | v0.10 | válido | 1 | 413.825* | 57.650* | 1,40* | 5 | 0 | 37,0 / 149,3 (medido después) |
+| 19-10 12:15 | Nuevo arbitraje (catálogo) | v0.10 | válido | 1 | 414.181* | 56.086* | 1,39* | 5 | 0 | 29,3 / 125,1 (medido después) |
+| 19-10 12:20 | Nuevo arbitraje (catálogo) | v0.10 | válido | 2 | 1.879.107* | 77.418* | 4,53* | 11 | 1 | 15,3 / 61,7 (medido después) |
 
 ## 3. El flujo completo de cada proyecto, por fase
 
@@ -58,8 +58,8 @@ Solo los trabajos del flujo, no los nuevos arbitrajes de los experimentos. Si un
 | Proyecto interno 1 | Sugerencias de respuesta | 1 | 142.409 | 7.741 | 0,36 | 1 |
 | Proyecto interno 1 | Catálogo | 1 | 723.409 | 97.995 | 1,67 | 8 |
 | Proyecto interno 1 | Backlog | 1 | 397.380 | 77.418 | 0,99 | 5 |
-| Proyecto interno 1 | Mockup | 2 | ≥ 0 | ≥ 0 | sin precio | 15 |
-| **Proyecto interno 1** | **Total** | 6 | **≥ 1.671.130** | **≥ 233.479** | **sin precio** | **33** |
+| Proyecto interno 1 | Mockup | 2 | ≥ 0 | ≥ 0 | sin precio | 8978 |
+| **Proyecto interno 1** | **Total** | 6 | **≥ 1.671.130** | **≥ 233.479** | **sin precio** | **8997** |
 | Proyecto interno 2 | Preguntas | 1 | 308.410 | 28.475 | 0,66 | 3 |
 | Proyecto interno 2 | Sugerencias de respuesta | 1 | 148.823 | 11.840 | 0,42 | 2 |
 | Proyecto interno 2 | Catálogo | 1 | 840.777 | 82.604 | 2,04 | 8 |
@@ -68,10 +68,10 @@ Solo los trabajos del flujo, no los nuevos arbitrajes de los experimentos. Si un
 | **Proyecto interno 2** | **Total** | 7 | **4.380.908** | **842.642** | **sin precio** | **96** |
 | Proyecto interno 3 | Preguntas | 1 | 527.092 | 42.163 | 1,12 | 5 |
 | Proyecto interno 3 | Sugerencias de respuesta | 1 | 209.329 | 11.014 | 0,53 | 4 |
-| Proyecto interno 3 | Catálogo | 6 | ≥ 5.122.926 | ≥ 412.411 | ≥ 8,98 | 88 |
+| Proyecto interno 3 | Catálogo | 6 | ≥ 5.122.926 | ≥ 412.411 | ≥ 8,98 | 7419 |
 | Proyecto interno 3 | Backlog | 1 | ≥ 163.988 | ≥ 52.756 | ≥ 0,53 | 17 |
-| Proyecto interno 3 | Mockup | 5 | ≥ 6.844.663 | ≥ 1.070.277 | ≥ 24,39 | 1203 |
-| **Proyecto interno 3** | **Total** | 14 | **≥ 12.867.998** | **≥ 1.588.621** | **≥ 35,55** | **1317** |
+| Proyecto interno 3 | Mockup | 5 | ≥ 6.844.663 | ≥ 1.070.277 | ≥ 24,39 | 7268 |
+| **Proyecto interno 3** | **Total** | 14 | **≥ 12.867.998** | **≥ 1.588.621** | **≥ 35,55** | **14713** |
 | Clinicas Veterinarias | Preguntas | 1 | 1.092.194 | 62.659 | 2,31 | 8 |
 | Clinicas Veterinarias | Sugerencias de respuesta | 1 | 97.511 | 15.900 | 0,35 | 3 |
 | Clinicas Veterinarias | Catálogo | 1 | 1.016.590* | 181.689* | 2,70* | 12 |
@@ -84,6 +84,11 @@ Solo los trabajos del flujo, no los nuevos arbitrajes de los experimentos. Si un
 | Banco De Alimentos | Backlog | 1 | 212.321 | 63.142 | 0,78 | 5 |
 | Banco De Alimentos | Mockup | 1 | 1.568.036 | 333.966 | 6,48 | 36 |
 | **Banco De Alimentos** | **Total** | 5 | **2.226.839** | **503.694** | **8,76** | **55** |
+| Clinicas Veterinarias v0.11 | Preguntas | 1 | 374.678 | 57.613 | 0,94 | 8 |
+| Clinicas Veterinarias v0.11 | Sugerencias de respuesta | 1 | 155.133 | 18.696 | 0,50 | 3 |
+| Clinicas Veterinarias v0.11 | Catálogo | 2 | 2.604.656* | 197.613* | 5,99* | 25 |
+| Clinicas Veterinarias v0.11 | Backlog | 1 | ≥ 204.118 | ≥ 63.612 | ≥ 0,61 | 0 |
+| **Clinicas Veterinarias v0.11** | **Total** | 5 | **≥ 3.338.585** | **≥ 337.534** | **≥ 8,04** | **35** |
 
 ## 4. Antes y después: la misma fase con distintas versiones del prompt
 
@@ -92,13 +97,13 @@ Medias por trabajo, para la misma fase del mismo proyecto. Los nuevos arbitrajes
 | Proyecto | Fase | Modelos | Prompt | Trabajos (válidos) | Entrada (media) | Salida (media) | Coste medio (USD) | Coste (mín.–máx.) | Minutos (media) | Reparaciones (media) | Embeddings (s de CPU, media) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Clinicas Veterinarias | Nuevo arbitraje (catálogo) | Árbitro 6-SOL | v0.9 | 2 (2) | 565.296* | 64.840* | 1,78 | 1,58–1,98 | 6 | 0,0 | — |
-| Clinicas Veterinarias | Nuevo arbitraje (catálogo) | Árbitro 6-SOL | v0.10 | 3 (3) | 902.371* | 63.718* | 2,44 | 1,39–4,53 | 7 | 0,3 | 52,4 |
+| Clinicas Veterinarias | Nuevo arbitraje (catálogo) | Árbitro 6-SOL | v0.10 | 3 (3) | 902.371* | 63.718* | 2,44 | 1,39–4,53 | 7 | 0,3 | 112,0 |
 | Proyecto interno 1 | Mockup | Mockup claude-sonnet-5-5 | v0.1 | 1 (0) | ≥ 0 | ≥ 0 | sin precio | — | 15 | 0,0 | — |
-| Proyecto interno 1 | Mockup | Mockup claude-sonnet-5-5 | v0.2 | 1 (0) | ≥ 0 | ≥ 0 | sin precio | — | 0 | 0,0 | — |
+| Proyecto interno 1 | Mockup | Mockup claude-sonnet-5-5 | v0.2 | 1 (0) | ≥ 0 | ≥ 0 | sin precio | — | 8963 | 0,0 | — |
 | Proyecto interno 2 | Mockup | Mockup claude-sonnet-5-5 | v0.3 | 1 (0) | 220.862 | 256.408 | sin precio | — | 32 | 0,0 | — |
 | Proyecto interno 2 | Mockup | Mockup claude-sonnet-5-5 | v0.4 | 2 (1) | 1.119.134 | 194.246 | sin precio | — | 22 | 0,0 | — |
 | Proyecto interno 3 | Mockup | Mockup 6-SOL | v0.7 | 1 (0) | 2.757.262 | 419.506 | 9,71 | 9,71–9,71 | 1115 | 0,0 | — |
-| Proyecto interno 3 | Mockup | Mockup 6-SOL | v0.8 | 2 (1) | 311.039* | 51.346* | 1,14 | 0,47–1,80 | 1 | 0,0 | — |
+| Proyecto interno 3 | Mockup | Mockup 6-SOL | v0.8 | 2 (1) | 311.039* | 51.346* | 1,14 | 0,47–1,80 | 3034 | 0,0 | — |
 | Proyecto interno 3 | Mockup | Mockup 6-SOL | v0.9 | 1 (1) | 3.465.323 | 548.080 | 12,41 | 12,41–12,41 | 40 | 1,0 | — |
 
 ## 5. Coste por papel y modelo (Clinicas Veterinarias, flujo completo)

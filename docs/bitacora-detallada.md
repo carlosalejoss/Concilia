@@ -2078,3 +2078,29 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Pendientes:**
   - ver `/swagger` en Docker cuando no haya tareas en marcha y el autor permita reconstruir la API y la web;
   - los textos propios de Swagger UI («Try it out», «Filter by tag») siguen en inglés.
+
+---
+
+## 22-10-2026, 09:10 (sesión)
+
+**Resumen para la bitácora (22-10-2026, prueba real del hito 18: el catálogo, relanzado, funciona)**
+
+- **Catálogo relanzado** en «Clinicas Veterinarias v0.11» tras la corrección del paso 92. Terminó bien en 17 minutos:
+  - **A (SOL):** bien a la primera.
+  - **B (LUNA):** citó `DOC-14#F057`, que no existe. La corrección `REF-LINEA` no actuó, con razón: la línea 57 es de otro documento (DOC-01). La reparación editando corrigió solo esa línea (unos 42.000 tokens de entrada y 700 de salida).
+  - **Árbitro, primer intento:** leyó 21 tramos de documentación, compactó una vez (`SSB`: los dos avisos de la misma compactación ya no lo cortan), leyó 13 tramos más y empezó a compactar por segunda vez sin haber escrito. Se detuvo, como debe, con unos 716.000 tokens de entrada estimados.
+  - **Árbitro, repetición desde cero:** escribió el catálogo, pero dejó 2 requisitos de A sin clasificar (`ARB-FALTA`). La corrección automática no actuó porque no tenían un par «mismo» claro.
+  - **Árbitro, reparación editando:** dos Edit, con 247.000 tokens de entrada y 4.700 de salida. Es la primera vez que la reparación de un árbitro de catálogo grande cabe en 128k: era el problema principal del hito 18.
+- **Resultado:**
+  - 235 requisitos (160 de ambas propuestas, 75 solo de A, 0 solo de B) y 4 descartados;
+  - **12 discrepancias, todas de la plataforma** (desviaciones del emparejamiento) y ninguna del propio árbitro;
+  - **55 requisitos marcados como «Suposición de la IA»**, a partir de las 23 respuestas aceptadas tal cual;
+  - emparejamiento de 12,5 s (45,6 s de CPU).
+- **Coste:**
+  - el catálogo, unos 3,9 $ frente a 2,70 $ con la v0.9, porque el árbitro consulta casi toda la documentación aunque el prompt le dice que no;
+  - las preguntas, 0,94 $ frente a 2,31 $;
+  - el catálogo fallido del 20-10, unos 2,1 $ más.
+- **Tablas de coste regeneradas.** El script reconoce ahora como proyecto de ejemplo uno cuyo nombre empieza por el de un ejemplo («Clinicas Veterinarias v0.11»), en vez de anonimizarlo.
+- **Documentación:** resultados parciales de la v0.11 en la evolución del prompt y en la trazabilidad.
+- **Mejora candidata** para la próxima versión de los prompts: que el árbitro consulte menos documentación.
+- **Pendientes de la prueba:** el backlog (en marcha), el mockup sin `.zip` de este proyecto y el del banco de alimentos; al final, regenerar las tablas y cerrar el hito 18.

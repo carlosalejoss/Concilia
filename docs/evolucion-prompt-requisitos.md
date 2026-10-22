@@ -14,7 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.11 | 19-10-2026 | La reparación corrige con Edit la salida anterior en su fichero, con la línea de cada error, en lugar de llevarla pegada y reescribirla; sugerencias más prudentes; estilo propio del mockup por proyecto | Pendiente | Pendiente |
+| v0.11 | 19-10-2026 | La reparación corrige con Edit la salida anterior en su fichero, con la línea de cada error, en lugar de llevarla pegada y reescribirla; sugerencias más prudentes; estilo propio del mockup por proyecto | Sí, en curso (proyecto grande de ejemplo, 22-10-2026) | Preguntas a 0,94 $ (antes 2,31 $). Las reparaciones de LUNA y del árbitro caben y corrigen con Edit. Catálogo de 235 requisitos con 12 discrepancias, todas de la plataforma; unos 3,9 $ (antes 2,70 $) porque el árbitro lee demasiada documentación |
 | v0.10 | 19-10-2026 | El árbitro parte del emparejamiento por significado de la plataforma (`input/emparejamiento.txt`, embeddings en local); puede apartarse si la fuente lo justifica, y la plataforma marca como discrepancia en el catálogo y el backlog dónde lo hizo | Sí (proyecto grande de ejemplo, catálogo, 19-10-2026) | Con las mismas propuestas, 3 arbitrajes de SOL válidos de 3: unión de 202 a 222 requisitos (media 212,3), frente a 209–291 (media 240) con la v0.9. Las desviaciones no bajan (7,7 de media, frente a las 7,0 que habría marcado la v0.9) |
 | v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Documento C: 40 min, 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Proyecto grande de ejemplo: 38 pantallas y las 109 historias (1,54 MB), con una pantalla perdida por un 504 de la pasarela y recuperada al reanudar. Al autor le convencen los dos |
 | v0.8 | 15-10-2026 | Mockup: la plataforma junta y revisa el prototipo (ids, globales de JavaScript y navegación) y solo corrige con un modelo las partes con problemas; se puede reanudar un mockup fallido | Pendiente | Pendiente |
@@ -362,14 +362,28 @@ Cambian el anexo de reparación, el prompt de las sugerencias y el §5 de los pr
 
 ### Resultados
 
-Pendiente. Medir:
-- en una ejecución real con reparaciones, el consumo de la reparación frente a la v0.10 (tablas de `docs/costes/`);
-- el número de sugerencias «A decidir por el cliente» y de requisitos marcados;
-- que el mockup de dos proyectos distintos sin `.zip` cambia de estilo.
+**Prueba real en curso** (22-10-2026): flujo completo en un proyecto nuevo con los 21 ficheros del proyecto grande de ejemplo («Clinicas Veterinarias v0.11»). A y árbitro `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA`. Se compara con el flujo del mismo proyecto con los prompts de la v0.9 (15 y 16-10-2026). Cifras de coste en `docs/costes/costes.md`.
+
+| Fase | v0.9 | v0.11 |
+| --- | --- | --- |
+| Preguntas | 50 + 17 propuestas, 55 en la unión; 1,09 M tokens de entrada, 2,31 $, 8 min | 63 en la unión; 0,37 M tokens de entrada, **0,94 $**, 8 min |
+| Sugerencias | Casi todas suposiciones, aprobadas todas de golpe | **Las 63 son suposiciones, 40 de ellas «A decidir por el cliente»** con opciones: ninguna se puede aprobar de golpe |
+| Catálogo | 299 y 192 propuestos, unión de 209; 2,70 $, 12 min | 280 y 171 propuestos, **unión de 235** (160 de ambas, 75 solo de A, 0 solo de B); 12 discrepancias, **todas de la plataforma**; 55 requisitos marcados como suposición; **unos 3,9 $, 17 min** |
+
+- **Respuestas:** a petición del autor, y solo para la prueba, Claude dio una respuesta concreta a las que seguían sin decidir. Quedaron 39 editadas, 23 aceptadas tal cual y 1 del autor.
+- **Reparar editando funciona en los dos casos que antes fallaban:**
+  - LUNA citó un fragmento inexistente y su reparación corrigió solo esa línea con Edit (unos 42.000 tokens de entrada y 700 de salida);
+  - el árbitro dejó 2 requisitos sin clasificar y su reparación los resolvió con dos Edit (247.000 de entrada y 4.700 de salida). Antes, la reparación de un árbitro de catálogo grande no cabía en 128k.
+- **El primer catálogo falló por un error del paso 92:** contaba avisos de compactación y Claude Code da dos por la misma, así que cortó al árbitro en su primera compactación. Se corrigió el mismo día (20-10-2026). En el segundo, el árbitro compactó una vez, leyó más y se paró en la segunda compactación, como debe; su repetición desde cero escribió la salida.
+- **El árbitro lee demasiada documentación:** entre 21 y 34 tramos, casi todo el documento, aunque el prompt le dice que no la lea entera. Llena el contexto y explica casi todo el sobrecoste del catálogo (unos 3,9 $ frente a 2,70 $).
+- **Correcciones automáticas:** la de `REF-LINEA` no actuó con LUNA (citó `DOC-14#F057`, pero la línea 57 es de otro documento), y la de `ARB-FALTA` no actuó con el árbitro (sus 2 olvidos no tenían un par «mismo» claro). Las dos situaciones acabaron en reparación, como está previsto.
+
+Pendiente: el backlog, el mockup sin `.zip` de este proyecto y el del banco de alimentos, para comprobar que cambia el estilo.
 
 ### Qué hay que mejorar
 
-Pendiente de la prueba.
+- **Que el árbitro consulte menos documentación** (candidato para la próxima versión de los prompts): solo los tramos de las discrepancias, con un límite, o dándole los fragmentos que citan los elementos en duda.
+- Lo demás, pendiente del resto de la prueba.
 
 ## v0.10 (19-10-2026)
 

@@ -209,6 +209,13 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
     - el catálogo marca, sin bloquear, los requisitos que se apoyan en una suposición de la IA aceptada tal cual.
   - **94, estilo del mockup:** sin `.zip`, cada proyecto recibe una de 8 direcciones de estilo, que el modelo adapta al sector.
   - **Pendiente:** las pruebas reales, que lanza el autor: el flujo completo del proyecto grande sin errores internos ni reparaciones que no caben, y dos mockups sin `.zip` con estilos distintos.
+- **Prueba real (en curso, 20 a 22-10-2026):** flujo completo en un proyecto nuevo con los ficheros del proyecto grande de ejemplo.
+  - **Preguntas:** 0,94 $, frente a 2,31 $ con la v0.9. Las 63 sugerencias salen como suposición, 40 de ellas «A decidir por el cliente».
+  - **El primer catálogo falló por un error del paso 92:** contaba avisos de compactación en lugar de compactaciones. Se corrigió el 20-10.
+  - **El segundo catálogo terminó:** 235 requisitos, 12 discrepancias (todas de la plataforma) y 55 marcados como suposición.
+  - **Las reparaciones editando de LUNA y del árbitro funcionan:** la del árbitro de un catálogo grande, que antes no cabía, gastó 4.700 tokens de salida.
+  - **Coste del catálogo:** unos 3,9 $, frente a 2,70 $, porque el árbitro consulta casi toda la documentación. Queda como mejora del prompt.
+  - **Pendientes:** el backlog y los dos mockups sin `.zip`.
 - **Para la memoria, en palabras sencillas:** el hito 18 hace la plataforma más robusta frente a los fallos de los modelos (corrige lo que tiene una sola corrección, repara cambiando solo lo que está mal y no malgasta ejecuciones perdidas). También la hace más honesta con el usuario: no da por buena una suposición sin que la mire, y los prototipos no salen todos iguales.
 
 ### 10. Hito 19: exportar los entregables (20-10 y 22-10, en curso)
