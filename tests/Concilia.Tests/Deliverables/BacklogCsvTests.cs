@@ -94,4 +94,36 @@ public class BacklogCsvTests
         Assert.Equal("HU-002; RF-002", items[5][7]);
         Assert.Equal("T-002", items[3][7]);
     }
+
+    // What the user can type in a draft: a title in two lines, a requirement
+    // with a space or left empty, and a backlog without epics.
+    [Fact]
+    public void Titles_go_in_one_line_and_ids_without_spaces()
+    {
+        const string edited = """
+            {"epicas": [{"id": "EP-01", "titulo": "Reserva\nde salas", "descripcion": "",
+              "historias": [{"id": "HU-001", "titulo": "Reservar", "como": "a", "quiero": "b", "para": "c", "requisitos": ["RF 001", "  "],
+                             "criterios": [], "tareas": [{"id": "T-001", "titulo": "Primera línea\nsegunda línea"}]}]}]}
+            """;
+        var backlog = BacklogExport.Build("P", false, DateTimeOffset.Now, null, edited);
+
+        var jira = Read(BacklogCsv.Jira(backlog));
+        Assert.Equal("Reserva de salas", jira[1][3]);
+        Assert.Equal("Primera línea segunda línea", jira[3][3]);
+        Assert.Equal(["HU-001", "RF001"], jira[2][6..]);
+        var azure = Read(BacklogCsv.AzureDevOps(backlog));
+        Assert.Equal("Reserva de salas", azure[1][2]);
+        Assert.Equal("HU-001; RF001", azure[2][7]);
+        Assert.Equal(["@HU-001", "@RF001"], new Gherkin.Parser().Parse(new StringReader(BacklogGherkin.Features(backlog)[0].Content))
+            .Feature.Children.OfType<Gherkin.Ast.Rule>().Single().Tags.Select(t => t.Name));
+    }
+
+    [Fact]
+    public void An_empty_backlog_gives_only_the_header()
+    {
+        var empty = BacklogExport.Build("P", false, DateTimeOffset.Now, null, """{"epicas": []}""");
+
+        Assert.Equal(["Issue ID", "Parent ID", "Issue Type", "Summary", "Epic Name", "Description"], Assert.Single(Read(BacklogCsv.Jira(empty))));
+        Assert.Single(Read(BacklogCsv.AzureDevOps(empty)));
+    }
 }

@@ -2129,3 +2129,8 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - que el autor importe los dos CSV en un Jira y un Azure DevOps de verdad (hacen falta cuentas, por ejemplo las gratuitas): es lo único que falta para el «Hecho cuando» del hito 19;
   - probar las descargas del backlog en Docker cuando no haya tareas en marcha y el autor lo permita;
   - después, el hito 20.
+- **Revisión tras el parón (petición del autor):** se comprobó el estado (árbol limpio, 910 tests correctos, `openapi.json` al día, la web sin avisos) y se releyó el código de los pasos 97 y 98. Aparecieron tres casos límite que no salen con lo que generan los modelos, pero sí con lo que puede escribir el usuario en un borrador:
+  - el CSV de Jira de un backlog sin épicas daba un error 500 (`Max` de una lista vacía); ahora sale solo la cabecera;
+  - un título con saltos de línea iba tal cual a `Summary` o `Title`, que no los admiten; ahora va en una línea;
+  - un requisito con espacios («RF 001») daba una etiqueta de Jira no válida, y uno solo con espacios, una etiqueta `@` vacía que el analizador de Gherkin rechaza (otro error 500). `BacklogExport` limpia los ids una vez para todos los formatos.
+  - 2 tests nuevos (912 en total).

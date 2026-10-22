@@ -36,13 +36,24 @@ public record BacklogExport(string Project, bool Validated, DateTimeOffset Date,
             .Select(e => new ExportEpic(Text(e, "id"), Text(e, "titulo"), Text(e, "descripcion"),
                 Items(e, "historias").Select(h => new ExportStory(
                     Text(h, "id"), Text(h, "titulo"), Text(h, "como"), Text(h, "quiero"), Text(h, "para"),
-                    h["requisitos"] is JsonArray r ? r.OfType<JsonValue>().Select(v => v.TryGetValue<string>(out var s) ? s : "").Where(s => s.Length > 0).ToList() : [],
+                    RequirementIds(h),
                     Items(h, "criterios").Select(c => new ExportCriterion(Text(c, "id"), Text(c, "escenario"), Text(c, "dado"), Text(c, "cuando"), Text(c, "entonces"))).ToList(),
                     Items(h, "tareas").Select(t => new ExportTask(Text(t, "id"), Text(t, "titulo"))).ToList(),
                     PendingDiscrepancy: Flag(h, "discrepancia") && !Flag(h, "revisada"))).ToList()))
             .ToList();
         return new BacklogExport(project, validated, date, validatedAt, epics);
     }
+
+    // The requirements of a story, without spaces: they become tags (Gherkin)
+    // and labels (Jira), which cannot have them. A user may have typed
+    // "RF 001"; one left empty is dropped.
+    private static List<string> RequirementIds(JsonObject story) =>
+        story["requisitos"] is JsonArray list
+            ? list.OfType<JsonValue>()
+                .Select(v => v.TryGetValue<string>(out var s) ? string.Concat(s.Where(ch => !char.IsWhiteSpace(ch))) : "")
+                .Where(s => s.Length > 0)
+                .ToList()
+            : [];
 
     private static IEnumerable<JsonObject> Items(JsonObject parent, string list) =>
         parent[list] is JsonArray items ? items.OfType<JsonObject>() : [];
