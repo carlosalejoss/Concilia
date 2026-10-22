@@ -32,6 +32,12 @@ type Report = {
   matchingTime: { seconds: number; cpuSeconds: number } | null
   // Step 93: requirements that cite a question answered with a guess of the AI taken as it was.
   assumedRequirements: number | null
+  // Step 100: what the embeddings say of the same proposals (null without valid proposals of A and B).
+  embeddings: {
+    onlyA: number
+    onlyB: number
+    agreement: { total: number; rate: number } | null
+  } | null
 }
 
 const number = (n: number | null | undefined) => (n ?? 0).toLocaleString('es-ES')
@@ -95,6 +101,14 @@ function JobReport({ jobId, finished }: { jobId: string; finished: boolean }) {
             {report.assumedRequirements !== null &&
               report.assumedRequirements > 0 &&
               ` ${report.assumedRequirements} se apoyan en una suposición de la IA aceptada tal cual.`}
+          </Line>
+        )}
+        {report.embeddings && (
+          <Line label="Embeddings">
+            Sin nada «mismo» ni «parecido» en la otra propuesta: {report.embeddings.onlyA} de A y {report.embeddings.onlyB} de B.
+            {report.embeddings.agreement &&
+              report.embeddings.agreement.total > 0 &&
+              ` Coinciden con el árbitro en el ${(report.embeddings.agreement.rate * 100).toLocaleString('es-ES', { maximumFractionDigits: 0 })} % de los elementos (si cada uno está también en la otra propuesta).`}
           </Line>
         )}
         {changes && (

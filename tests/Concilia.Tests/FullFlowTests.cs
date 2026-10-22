@@ -102,6 +102,21 @@ public class FullFlowTests
         Assert.NotNull(matching["deviationElements"]); // step 88: where the arbiter went against this matching
         Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"/jobs/{catalogJob}/matching?same=0.5&similar=0.9")).StatusCode);
 
+        // Step 100: the matching computed for the arbiter was saved with the
+        // job, so neither the matching nor the report compute it again.
+        Assert.True(File.Exists(Path.Combine(temp.Path, "jobs", $"{catalogJob}", "emparejamiento.json")));
+        Assert.True(matching["fromCache"]!.GetValue<bool>());
+        var embeddings = report["embeddings"]!;
+        Assert.InRange(embeddings["onlyA"]!.GetValue<int>(), 0, report["elements"]!["a"]!.GetValue<int>());
+        Assert.NotNull(embeddings["agreement"]);
+
+        // Step 100: A, B and the arbiter side by side, a row per element of the merge.
+        var comparison = await Json(await client.GetAsync($"/jobs/{catalogJob}/comparison"));
+        var compared = comparison["rows"]!.AsArray();
+        Assert.Equal(report["elements"]!["merged"]!.GetValue<int>(), compared.Count(r => r!["kind"]!.GetValue<string>() == "Merged"));
+        Assert.Equal(report["elements"]!["discarded"]!.GetValue<int>(), compared.Count(r => r!["kind"]!.GetValue<string>() == "Discarded"));
+        Assert.All(compared.Where(r => r!["kind"]!.GetValue<string>() == "Merged"), r => Assert.False(string.IsNullOrEmpty(r!["arbiterId"]!.GetValue<string>())));
+
         await Launch(client, $"/projects/{id}/backlog-jobs", id);
         await ReviewAndValidate(client, id, "backlog");
 
@@ -136,6 +151,7 @@ public class FullFlowTests
         Assert.Equal(Encoding.UTF8.GetPreamble(), csv[..3]); // for Excel
         var rows = Encoding.UTF8.GetString(csv[3..]).Trim().Split('\n');
         Assert.StartsWith("fecha;trabajo;tipo;resultado", rows[0]);
+        Assert.EndsWith(";emb_solo_A;emb_solo_B;emb_acuerdo_arbitro_pct", rows[0].TrimEnd()); // step 100
         Assert.Equal(1 + 4, rows.Length); // the header, and the questions, the catalog, the backlog and the mockup
 
         var flow = await Flow(client, id);

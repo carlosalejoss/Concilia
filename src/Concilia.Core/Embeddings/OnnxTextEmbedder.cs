@@ -21,6 +21,13 @@ public sealed class OnnxTextEmbedder : ITextEmbedder, IDisposable
     public const int MaxTokens = 128;
     private const int VectorSize = 384;
 
+    // The model and the Hugging Face commit that the Dockerfile and
+    // scripts/descargar-modelo-embeddings.ps1 download. If they change, this
+    // name must change too, so the saved matchings are computed again.
+    public const string ModelName = "paraphrase-multilingual-MiniLM-L12-v2@e8f8c21 (ONNX fp32)";
+
+    public string Name => ModelName;
+
     // Texts per call to the model. Larger batches go a little faster but
     // use more memory; 32 is the default of sentence-transformers.
     private const int BatchSize = 32;

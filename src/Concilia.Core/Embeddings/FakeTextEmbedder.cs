@@ -12,6 +12,8 @@ public sealed class FakeTextEmbedder(int dimensions = 384) : ITextEmbedder
 {
     public int Dimensions => dimensions;
 
+    public string Name => $"fake-{dimensions}";
+
     public IReadOnlyList<float[]> Embed(IReadOnlyList<string> texts) => texts.Select(EmbedOne).ToList();
 
     private float[] EmbedOne(string text)

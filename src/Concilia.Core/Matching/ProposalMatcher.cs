@@ -54,6 +54,14 @@ public record Agreement(int BothYes, int OnlyEmbeddings, int OnlyArbiter, int Bo
 
 public record MatchCounts(int A, int B, int SameA, int SameB, int SimilarA, int SimilarB, int OnlyA, int OnlyB);
 
+// The slow part of the matching (step 100): each element with its most
+// similar element in the other proposal (null if the other is empty) and their
+// similarity, A first and then B, in the order of each proposal. Embedder:
+// the model that computed it (ITextEmbedder.Name).
+public record ElementSimilarity(string Slot, string Id, string Text, string? BestId, string? BestText, double Similarity);
+
+public record ProposalSimilarities(string Embedder, IReadOnlyList<ElementSimilarity> Elements);
+
 public record MatchingResult(MatchThresholds Thresholds, MatchCounts Counts, Agreement? Agreement,
     IReadOnlyList<ElementMatch> Elements, IReadOnlyList<MatchPair> Pairs);
 
@@ -100,7 +108,14 @@ public static class ProposalMatcher
     }
 
     public static MatchingResult Match(IReadOnlyList<MatchElement> a, IReadOnlyList<MatchElement> b,
-        ITextEmbedder embedder, MatchThresholds thresholds, HashSet<(string A, string B)>? arbiterPairs = null)
+        ITextEmbedder embedder, MatchThresholds thresholds, HashSet<(string A, string B)>? arbiterPairs = null) =>
+        Classify(Similarities(a, b, embedder), thresholds, arbiterPairs);
+
+    // The slow part of the matching, the only one that needs the embeddings
+    // (step 100): each element of A with its most similar element of B, and
+    // the other way round. It does not depend on the thresholds nor on the
+    // arbiter, so it is computed once per job and saved (MatchingCache).
+    public static ProposalSimilarities Similarities(IReadOnlyList<MatchElement> a, IReadOnlyList<MatchElement> b, ITextEmbedder embedder)
     {
         // One call for all the texts: the embedder works in batches.
         var vectors = embedder.Embed(a.Concat(b).Select(e => e.Text).ToList());
@@ -109,34 +124,46 @@ public static class ProposalMatcher
             for (var j = 0; j < b.Count; j++)
                 similarity[i, j] = VectorMath.Cosine(vectors[i], vectors[a.Count + j]);
 
-        var joinedA = arbiterPairs?.Select(p => p.A).ToHashSet();
-        var joinedB = arbiterPairs?.Select(p => p.B).ToHashSet();
-
-        var elements = new List<ElementMatch>();
-        var pairs = new Dictionary<(int, int), MatchPair>();
-        void AddPair(int i, int j) => pairs.TryAdd((i, j), new MatchPair(a[i].Id, b[j].Id, a[i].Text, b[j].Text, similarity[i, j],
-            thresholds.LevelOf(similarity[i, j]), arbiterPairs?.Contains((a[i].Id, b[j].Id))));
-
-        // The best match of each element of A among those of B, and the other way round.
+        var elements = new List<ElementSimilarity>();
         for (var i = 0; i < a.Count; i++)
         {
             var j = Best(b.Count, k => similarity[i, k]);
             elements.Add(j < 0
-                ? Element("A", a[i], null, 0, thresholds, joinedA)
-                : Element("A", a[i], b[j], similarity[i, j], thresholds, joinedA));
-            if (j >= 0) AddPair(i, j);
+                ? new ElementSimilarity("A", a[i].Id, a[i].Text, null, null, 0)
+                : new ElementSimilarity("A", a[i].Id, a[i].Text, b[j].Id, b[j].Text, similarity[i, j]));
         }
         for (var j = 0; j < b.Count; j++)
         {
             var i = Best(a.Count, k => similarity[k, j]);
             elements.Add(i < 0
-                ? Element("B", b[j], null, 0, thresholds, joinedB)
-                : Element("B", b[j], a[i], similarity[i, j], thresholds, joinedB));
-            if (i >= 0) AddPair(i, j);
+                ? new ElementSimilarity("B", b[j].Id, b[j].Text, null, null, 0)
+                : new ElementSimilarity("B", b[j].Id, b[j].Text, a[i].Id, a[i].Text, similarity[i, j]));
+        }
+        return new ProposalSimilarities(embedder.Name, elements);
+    }
+
+    // The fast part: with the thresholds, how close each element is to its
+    // best match, and with the arbiter's pairs, whether the arbiter joined it.
+    public static MatchingResult Classify(ProposalSimilarities similarities, MatchThresholds thresholds, HashSet<(string A, string B)>? arbiterPairs = null)
+    {
+        var joinedA = arbiterPairs?.Select(p => p.A).ToHashSet();
+        var joinedB = arbiterPairs?.Select(p => p.B).ToHashSet();
+
+        var elements = similarities.Elements.Select(e => new ElementMatch(e.Slot, e.Id, e.Text, e.BestId, e.BestText, e.Similarity,
+            e.BestId is null ? MatchLevel.Different : thresholds.LevelOf(e.Similarity),
+            (e.Slot == "A" ? joinedA : joinedB)?.Contains(e.Id))).ToList();
+
+        // The pairs: the best match of each element, once each (as A, B).
+        var pairs = new Dictionary<(string, string), MatchPair>();
+        foreach (var e in similarities.Elements.Where(e => e.BestId is not null))
+        {
+            var (aId, aText, bId, bText) = e.Slot == "A" ? (e.Id, e.Text, e.BestId!, e.BestText!) : (e.BestId!, e.BestText!, e.Id, e.Text);
+            pairs.TryAdd((aId, bId), new MatchPair(aId, bId, aText, bText, e.Similarity, thresholds.LevelOf(e.Similarity),
+                arbiterPairs?.Contains((aId, bId))));
         }
 
         int Count(string slot, MatchLevel level) => elements.Count(e => e.Slot == slot && e.Level == level);
-        var counts = new MatchCounts(a.Count, b.Count,
+        var counts = new MatchCounts(elements.Count(e => e.Slot == "A"), elements.Count(e => e.Slot == "B"),
             Count("A", MatchLevel.Same), Count("B", MatchLevel.Same),
             Count("A", MatchLevel.Similar), Count("B", MatchLevel.Similar),
             Count("A", MatchLevel.Different), Count("B", MatchLevel.Different));
@@ -165,11 +192,6 @@ public static class ProposalMatcher
                 best = k;
         return best;
     }
-
-    private static ElementMatch Element(string slot, MatchElement element, MatchElement? best, double similarity,
-        MatchThresholds thresholds, HashSet<string>? joined) =>
-        new(slot, element.Id, element.Text, best?.Id, best?.Text, similarity,
-            best is null ? MatchLevel.Different : thresholds.LevelOf(similarity), joined?.Contains(element.Id));
 
     private static string Text(JsonObject element, string field) =>
         element[field] is JsonValue v && v.TryGetValue<string>(out var text) ? text : "";

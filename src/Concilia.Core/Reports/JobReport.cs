@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using Concilia.Core.Matching;
 using Concilia.Core.Phases;
 using Concilia.Core.Runs;
 
@@ -24,6 +25,13 @@ public record RunLine(string Slot, int? Lot, int Attempt, string Model, string S
 // matching of the platform; null in the jobs from before it.
 public record ElementCounts(int? A, int? B, int Merged, int Both, int OnlyA, int OnlyB, int Discrepancies, int Discarded, int? Deviations = null);
 
+// Step 100: what the embeddings say of the same proposals, next to the
+// arbiter's figures (ProposalMatcher, with the thresholds of the
+// configuration): the elements of A and of B with nothing "mismo" or
+// "parecido" in the other proposal, and the agreement with the arbiter on
+// whether each element is also in the other (null if the arbiter did not end well).
+public record EmbeddingCounts(int OnlyA, int OnlyB, Agreement? Agreement);
+
 // The user's changes to the deliverable, against the draft the job left:
 // kept as they were, modified, added and deleted.
 public record UserChanges(int Original, int Current, int Kept, int Modified, int Added, int Deleted);
@@ -45,12 +53,14 @@ public record QuestionCounts(int Total, int Answered, int Discarded, int Pending
 // MatchingTime, what the matching of the arbiter cost the platform.
 // AssumedRequirements (step 93, catalog): the requirements of the merge that
 // cite a question answered with a guess of the AI taken as it was.
+// Embeddings (step 100): null if the job has no valid proposals of A and B.
 public record JobReport(
     Guid JobId, string Kind, DateTimeOffset CreatedAt, DateTimeOffset? FinishedAt, bool Succeeded, string? Message,
     long InputTokens, long OutputTokens, int RunsWithoutUsage, int Repairs, double? Seconds,
     IReadOnlyList<RunLine> Runs, ElementCounts? Elements, UserChanges? Changes, string? ChangesNote, QuestionCounts? Questions,
     string? Phase = null, string? ArbiterModel = null, Guid? RearbitrationOf = null,
-    long EstimatedInputTokens = 0, long EstimatedOutputTokens = 0, ComputeTime? MatchingTime = null, int? AssumedRequirements = null);
+    long EstimatedInputTokens = 0, long EstimatedOutputTokens = 0, ComputeTime? MatchingTime = null, int? AssumedRequirements = null,
+    EmbeddingCounts? Embeddings = null);
 
 public static class JobReports
 {

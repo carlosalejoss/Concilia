@@ -82,7 +82,7 @@ concilia/
 - [x] **Hito 17.** Embeddings en local: emparejamiento de A y B por significado, con umbrales calibrados, y árbitro guiado por ese emparejamiento.
 - [x] **Hito 18.** Fiabilidad y calidad: correcciones automáticas de formato, reparación editando, sugerencias prudentes, estilos del mockup, trabajos interrumpidos y tablas de coste en tiempo y dinero, probados con el flujo completo del proyecto grande de ejemplo.
 - [x] **Hito 19.** Exportar los entregables: el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira y Azure DevOps.
-- [ ] **Hito 20.** Trazabilidad visual y comparación de A, B y el árbitro.
+- [x] **Hito 20.** Trazabilidad visual (de cada requisito a su origen en la documentación) y comparación lado a lado de A, B y el árbitro en cada trabajo, con el emparejamiento por embeddings.
 - [ ] **Hito 21.** Historial de versiones de los entregables.
 - [ ] **Hito 22.** Evaluación (precisión, recall y F1 frente a listas de referencia).
 - [ ] **Hito 7 (aplazado).** Catálogo v2, de arriba abajo, con los prompts del autor.

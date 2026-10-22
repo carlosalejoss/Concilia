@@ -2,11 +2,14 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json.Nodes;
 using Microsoft.EntityFrameworkCore;
+using Concilia.Api.Embeddings;
 using Concilia.Api.Files;
 using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
 using Concilia.Api.Runs;
 using Concilia.Core.Deliverables;
+using Concilia.Core.Embeddings;
+using Concilia.Core.Matching;
 using Concilia.Core.Phases;
 using Concilia.Core.Questions;
 using Concilia.Core.Reports;
@@ -22,19 +25,19 @@ public static class ReportEndpoints
     {
         var group = app.MapGroup("").WithTags(ApiTags.Reports);
 
-        group.MapGet("/jobs/{jobId:guid}/report", async (Guid jobId, AppDbContext db, FileStorage storage) =>
+        group.MapGet("/jobs/{jobId:guid}/report", async (Guid jobId, AppDbContext db, FileStorage storage, ITextEmbedder embedder, EmbeddingOptions options) =>
         {
             var job = await db.Jobs.FindAsync(jobId);
-            return job is null ? Results.NotFound() : Results.Ok(await BuildAsync(db, storage, job));
+            return job is null ? Results.NotFound() : Results.Ok(await BuildAsync(db, storage, embedder, options, job));
         })
             .WithSummary("Informe de un trabajo")
-            .WithDescription("La base de la evaluación: tokens (reales y, aparte, estimados para las ejecuciones sin dato), duración, reparaciones, cada ejecución, los elementos de A, de B y de la unión (de ambas, solo de A, solo de B, discrepancias, descartados y desviaciones del árbitro), los cambios del usuario frente al borrador que dejó el trabajo y, en las preguntas, su estado y el origen de cada respuesta.")
+            .WithDescription("La base de la evaluación: tokens (reales y, aparte, estimados para las ejecuciones sin dato), duración, reparaciones, cada ejecución, los elementos de A, de B y de la unión (de ambas, solo de A, solo de B, discrepancias, descartados y desviaciones del árbitro), lo que dicen los embeddings de las mismas propuestas (`embeddings`: solo de A y solo de B sin nada «mismo» ni «parecido» en la otra, y el acuerdo con el árbitro; se calculan una vez por trabajo y se guardan), los cambios del usuario frente al borrador que dejó el trabajo y, en las preguntas, su estado y el origen de cada respuesta.")
             .Produces<JobReport>()
             .Produces(StatusCodes.Status404NotFound);
 
         // One row per job, newest first, separated by ";" and with a BOM so
         // Excel in Spanish opens it with its columns and accents.
-        group.MapGet("/projects/{projectId:int}/report.csv", async (int projectId, AppDbContext db, FileStorage storage) =>
+        group.MapGet("/projects/{projectId:int}/report.csv", async (int projectId, AppDbContext db, FileStorage storage, ITextEmbedder embedder, EmbeddingOptions options) =>
         {
             if (!await db.Projects.AnyAsync(p => p.Id == projectId))
             {
@@ -44,12 +47,12 @@ public static class ReportEndpoints
             var csv = new StringBuilder();
             csv.AppendLine(string.Join(';', Columns));
             foreach (var job in jobs)
-                csv.AppendLine(string.Join(';', Row(await BuildAsync(db, storage, job)).Select(Cell)));
+                csv.AppendLine(string.Join(';', Row(await BuildAsync(db, storage, embedder, options, job)).Select(Cell)));
             return Results.File(Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv.ToString())).ToArray(),
                 "text/csv; charset=utf-8", $"informe-proyecto-{projectId}.csv");
         })
             .WithSummary("Informes de todos los trabajos del proyecto, en CSV")
-            .WithDescription("Una fila por trabajo, del más reciente al más antiguo, con las cifras del informe. Separado por `;` y con BOM, para que Excel en español lo abra con sus columnas y sus tildes.")
+            .WithDescription("Una fila por trabajo, del más reciente al más antiguo, con las cifras del informe; al final, las de los embeddings (`emb_solo_A`, `emb_solo_B` y `emb_acuerdo_arbitro_pct`, el acuerdo con el árbitro en %). La primera vez calcula los embeddings de los trabajos que no los tienen guardados (unos segundos cada uno). Separado por `;` y con BOM, para que Excel en español lo abra con sus columnas y sus tildes.")
             .Produces<Stream>(contentType: "text/csv")
             .Produces(StatusCodes.Status404NotFound);
     }
@@ -63,6 +66,8 @@ public static class ReportEndpoints
         "preguntas", "respondidas", "descartadas", "pendientes", "respuestas_usuario", "respuestas_ia", "respuestas_ia_editadas",
         "fase", "modelo_arbitro", "arbitraje_de", "emparejamiento_segundos", "emparejamiento_segundos_cpu",
         "mensaje",
+        // Step 100, at the end so the columns before keep their place.
+        "emb_solo_A", "emb_solo_B", "emb_acuerdo_arbitro_pct",
     ];
 
     private static IEnumerable<object?> Row(JobReport r) =>
@@ -78,6 +83,8 @@ public static class ReportEndpoints
         r.Phase, r.ArbiterModel, r.RearbitrationOf,
         r.MatchingTime is { } m ? Math.Round(m.Seconds, 1) : null, r.MatchingTime is { } mc ? Math.Round(mc.CpuSeconds, 1) : null,
         r.Message,
+        r.Embeddings?.OnlyA, r.Embeddings?.OnlyB,
+        r.Embeddings?.Agreement is { Total: > 0 } agreement ? Math.Round(agreement.Rate * 100, 1) : null,
     ];
 
     private static string Cell(object? value)
@@ -86,7 +93,7 @@ public static class ReportEndpoints
         return text.IndexOfAny([';', '"', '\n', '\r']) >= 0 ? $"\"{text.Replace("\"", "\"\"")}\"" : text;
     }
 
-    public static async Task<JobReport> BuildAsync(AppDbContext db, FileStorage storage, Job job)
+    public static async Task<JobReport> BuildAsync(AppDbContext db, FileStorage storage, ITextEmbedder embedder, EmbeddingOptions options, Job job)
     {
         var runs = await db.Runs.Where(r => r.JobId == job.Id)
             .OrderBy(r => r.Slot).ThenBy(r => r.LotNumber).ThenBy(r => r.Attempt).ToListAsync();
@@ -114,6 +121,7 @@ public static class ReportEndpoints
         var kind = PhasePlan.KindOfJob(job.Kind) ?? (rearbitration && hasPlan ? PhasePlan.Load(folder).Kind : null);
         Guid? rearbitrationOf = null;
         int? assumedRequirements = null;
+        EmbeddingCounts? embeddings = null;
         if (kind is { } phase && hasPlan)
         {
             var plan = PhasePlan.Load(folder);
@@ -128,6 +136,15 @@ public static class ReportEndpoints
                         ? deviations.Select(d => d!["id"]!.GetValue<string>()).Distinct().Count()
                         : null,
                 };
+
+            // Step 100: the figures of the embeddings, saved once per job.
+            if (JobMatching.Load(storage, job, runs).Input is { } input)
+            {
+                var similarities = JobMatching.Similarities(storage, input, embedder).Similarities;
+                var matching = ProposalMatcher.Classify(similarities,
+                    new MatchThresholds(options.SameThreshold, options.SimilarThreshold), input.ArbiterPairs);
+                embeddings = new EmbeddingCounts(matching.Counts.OnlyA, matching.Counts.OnlyB, matching.Agreement);
+            }
 
             if (rearbitration)
             {
@@ -180,7 +197,7 @@ public static class ReportEndpoints
             result?["emparejamiento"] is JsonObject time
                 ? new ComputeTime(time["segundos"]!.GetValue<double>(), time["segundos_cpu"]!.GetValue<double>())
                 : null,
-            assumedRequirements);
+            assumedRequirements, embeddings);
     }
 
     public static JsonNode? ReadResult(string jobFolder)
