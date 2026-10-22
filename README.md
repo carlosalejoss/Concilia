@@ -80,7 +80,7 @@ concilia/
 - [x] **Hitos 14 a 16.** Interfaz organizada por pasos, más tipos de archivo, referencia de estilo del mockup y el mockup como una sola aplicación navegable.
 - [x] **Hito 13.** Test del flujo completo, informe automático por trabajo, flujo completo con los dos proyectos ficticios de `ejemplos/` y documentación al día.
 - [x] **Hito 17.** Embeddings en local: emparejamiento de A y B por significado, con umbrales calibrados, y árbitro guiado por ese emparejamiento.
-- [x] **Hito 18.** Fiabilidad y calidad: correcciones automáticas de formato, reparación editando, sugerencias prudentes, estilos del mockup, trabajos interrumpidos y tablas de coste en tiempo y dinero.
+- [x] **Hito 18.** Fiabilidad y calidad: correcciones automáticas de formato, reparación editando, sugerencias prudentes, estilos del mockup, trabajos interrumpidos y tablas de coste en tiempo y dinero, probados con el flujo completo del proyecto grande de ejemplo.
 - [x] **Hito 19.** Exportar los entregables: el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira y Azure DevOps.
 - [ ] **Hito 20.** Trazabilidad visual y comparación de A, B y el árbitro.
 - [ ] **Hito 21.** Historial de versiones de los entregables.

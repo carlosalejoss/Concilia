@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 22-10-2026 10:11, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 22-10-2026 12:12, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -39,9 +39,9 @@ Generado por `scripts/evaluacion/costes.cs` el 22-10-2026 10:11, con los datos g
 | 16-10 12:39 | Nuevo arbitraje (catálogo) | v0.9 | válido | 2 | 567.402* | 96.231* | 0,10* | 12 | 1 | — |
 | 16-10 13:05 | Nuevo arbitraje (catálogo) | v0.9 | fallido | 3 | 665.013* | 86.438* | 0,11* | 27 | 2 | — |
 | 16-10 13:36 | Nuevo arbitraje (catálogo) | v0.9 | fallido | 2 | 492.460* | 47.693* | 0,07* | 15 | 1 | — |
-| 19-10 12:10 | Nuevo arbitraje (catálogo) | v0.10 | válido | 1 | 413.825* | 57.650* | 1,40* | 5 | 0 | 53,9 / 213,7 (medido después) |
-| 19-10 12:15 | Nuevo arbitraje (catálogo) | v0.10 | válido | 1 | 414.181* | 56.086* | 1,39* | 5 | 0 | 32,6 / 134,7 (medido después) |
-| 19-10 12:20 | Nuevo arbitraje (catálogo) | v0.10 | válido | 2 | 1.879.107* | 77.418* | 4,53* | 11 | 1 | — |
+| 19-10 12:10 | Nuevo arbitraje (catálogo) | v0.10 | válido | 1 | 413.825* | 57.650* | 1,40* | 5 | 0 | 15,3 / 61,9 (medido después) |
+| 19-10 12:15 | Nuevo arbitraje (catálogo) | v0.10 | válido | 1 | 414.181* | 56.086* | 1,39* | 5 | 0 | 18,0 / 77,7 (medido después) |
+| 19-10 12:20 | Nuevo arbitraje (catálogo) | v0.10 | válido | 2 | 1.879.107* | 77.418* | 4,53* | 11 | 1 | 24,6 / 97,9 (medido después) |
 
 ## 3. El flujo completo de cada proyecto, por fase
 
@@ -82,8 +82,8 @@ Solo los trabajos del flujo, no los nuevos arbitrajes de los experimentos. Si un
 | Banco De Alimentos | Sugerencias de respuesta | 1 | 38.430 | 10.232 | 0,18 | 2 |
 | Banco De Alimentos | Catálogo | 1 | 269.279 | 62.410 | 0,91 | 8 |
 | Banco De Alimentos | Backlog | 1 | 212.321 | 63.142 | 0,78 | 5 |
-| Banco De Alimentos | Mockup | 1 | 1.568.036 | 333.966 | 6,48 | 36 |
-| **Banco De Alimentos** | **Total** | 5 | **2.226.839** | **503.694** | **8,76** | **55** |
+| Banco De Alimentos | Mockup | 2 | 3.234.706 | 723.197 | 13,70 | 56 |
+| **Banco De Alimentos** | **Total** | 6 | **3.893.509** | **892.925** | **15,99** | **75** |
 | Clinicas Veterinarias v0.11 | Preguntas | 1 | 374.678 | 57.613 | 0,94 | 8 |
 | Clinicas Veterinarias v0.11 | Sugerencias de respuesta | 1 | 155.133 | 18.696 | 0,50 | 3 |
 | Clinicas Veterinarias v0.11 | Catálogo | 2 | 2.604.656* | 197.613* | 5,99* | 25 |
@@ -97,8 +97,10 @@ Medias por trabajo, para la misma fase del mismo proyecto. Los nuevos arbitrajes
 
 | Proyecto | Fase | Modelos | Prompt | Trabajos (válidos) | Entrada (media) | Salida (media) | Coste medio (USD) | Coste (mín.–máx.) | Minutos (media) | Reparaciones (media) | Embeddings (s de CPU, media) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Banco De Alimentos | Mockup | Mockup 6-SOL | v0.9 | 1 (1) | 1.568.036 | 333.966 | 6,48 | 6,48–6,48 | 36 | 0,0 | — |
+| Banco De Alimentos | Mockup | Mockup 6-SOL | v0.11 | 1 (1) | 1.666.670 | 389.231 | 7,23 | 7,23–7,23 | 20 | 0,0 | — |
 | Clinicas Veterinarias | Nuevo arbitraje (catálogo) | Árbitro 6-SOL | v0.9 | 2 (2) | 565.296* | 64.840* | 1,78 | 1,58–1,98 | 6 | 0,0 | — |
-| Clinicas Veterinarias | Nuevo arbitraje (catálogo) | Árbitro 6-SOL | v0.10 | 3 (3) | 902.371* | 63.718* | 2,44 | 1,39–4,53 | 7 | 0,3 | 174,2 |
+| Clinicas Veterinarias | Nuevo arbitraje (catálogo) | Árbitro 6-SOL | v0.10 | 3 (3) | 902.371* | 63.718* | 2,44 | 1,39–4,53 | 7 | 0,3 | 79,2 |
 | Proyecto interno 1 | Mockup | Mockup claude-sonnet-5-5 | v0.1 | 1 (0) | ≥ 0 | ≥ 0 | sin precio | — | 15 | 0,0 | — |
 | Proyecto interno 1 | Mockup | Mockup claude-sonnet-5-5 | v0.2 | 1 (0) | ≥ 0 | ≥ 0 | sin precio | — | 3 | 0,0 | — |
 | Proyecto interno 2 | Mockup | Mockup claude-sonnet-5-5 | v0.3 | 1 (0) | 220.862 | 256.408 | sin precio | — | 32 | 0,0 | — |

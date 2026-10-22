@@ -2222,3 +2222,22 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Tests:** 5 de `Traceability` y comprobaciones en el flujo completo (antes y después del backlog). 918 tests de C# en verde. La web compila con `tsc -b` y pasa `oxlint` sin avisos.
 - **Sin probar:** el panel en el navegador y con los proyectos de ejemplo. Hace falta reconstruir la API y la web, y no se ha hecho para no interrumpir las pruebas reales del hito 18 que había en marcha.
 - **Pendientes:** que el autor reconstruya y lo revise en el navegador; después, el paso 100 (comparación de A, B y el árbitro, con el emparejamiento guardado una sola vez por trabajo).
+
+## 22-10-2026, 12:14 (sesión)
+
+**Resumen para la bitácora (22-10-2026, hito 18 completado: mockup del banco de alimentos)**
+
+- **Mockup de «Banco De Alimentos»** (proyecto 32, prompts v0.11, `SS - GPT-6-SOL` por la pasarela, sin `.zip`), lanzado por el autor con el mismo backlog validado de 45 historias que el mockup de la v0.9 del 16-10:
+  - 24 pantallas; página de 0,68 MB;
+  - 25 ejecuciones (diseño y 24 pantallas), **todas válidas a la primera**: 0 reparaciones, 0 compactaciones y ningún aviso ni corrección;
+  - diseño: 94.669 tokens de entrada, 30.286 de salida, 5 turnos, 3,6 min. Pantallas: entrada de 58.379 a 74.250 (mediana 65.924), salida de 6.807 a 23.707 (mediana 15.792), de 1,1 a 2,7 min (mediana 2,0);
+  - total: 1.666.670 tokens de entrada y 389.231 de salida, todos con dato real: **7,23 $ y 20 minutos**.
+- **Comparación con la v0.9** (16-10): 20 pantallas, 6,48 $ y 36 minutos. Con la v0.11 hace 4 pantallas más con el mismo backlog; por pantalla, 0,30 $ frente a 0,32 $.
+- **Estilo:** al proyecto 32 le toca la dirección 0, «institucional y sobria». El `.html` la sigue: menú lateral oscuro (`--lateral`, 244 px), acento azul petróleo (`--petroleo`), fondo gris claro, sans-serif del sistema, ninguna esquina de 12 px o más y 20 tablas. El de clínicas lleva crema, terracota, serif y esquinas de 26 px: **los dos estilos son claramente distintos.**
+- **Hito 18 completado:** se cumplen las dos condiciones del «Hecho cuando», el flujo completo del proyecto grande sin errores internos ni reparaciones que no caben (clínicas) y el cambio de estilo sin `.zip` entre proyectos (clínicas y banco). Marcado en el plan, `CLAUDE.md`, el README, la trazabilidad y la evolución del prompt (v0.11).
+- **Coste total de la prueba real de la v0.11 en clínicas:** 26,24 $* y 96 minutos (preguntas, sugerencias, dos catálogos, backlog y mockup; * con la parte estimada), más 7,23 $ del mockup del banco.
+- **Tablas de coste regeneradas** con el mockup del banco.
+- **Mejoras que deja la prueba** para la próxima versión de los prompts, sin cambiar nada ahora:
+  - que el árbitro consulte menos documentación (explica el sobrecoste del catálogo);
+  - que el árbitro del backlog no se quede con un criterio por historia en los backlogs grandes.
+- **Pendientes:** decidir con el autor si esas dos mejoras van antes del hito 20 o después; el hito 20 lo lleva la otra sesión (paso 99 hecho).
