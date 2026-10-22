@@ -216,7 +216,10 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **El segundo catálogo terminó:** 235 requisitos, 12 discrepancias (todas de la plataforma) y 55 marcados como suposición.
   - **Las reparaciones editando de LUNA y del árbitro funcionan:** la del árbitro de un catálogo grande, que antes no cabía, gastó 4.700 tokens de salida.
   - **Coste del catálogo:** unos 3,9 $, frente a 2,70 $, porque el árbitro consulta casi toda la documentación. Queda como mejora del prompt.
-  - **Pendientes:** el backlog y los dos mockups sin `.zip`.
+  - **Backlog (22-10):** 121 historias en 13 épicas, sin reparaciones, 8 minutos y 1,67 $ (antes 1,43 $). 17 discrepancias, 16 de ellas de la plataforma. El autor lo validó sin cambios.
+  - **Hallazgo del backlog:** el árbitro conserva las historias, pero recorta los criterios de aceptación cuanto más grande es el backlog: en el proyecto grande deja uno por historia (121 de los 237 que proponía A). Queda como mejora prioritaria del prompt del árbitro del backlog.
+  - **Error de medida corregido (22-10):** los trabajos que cerró `InterruptedJobs` (paso 91) duraban hasta el arranque que los cerró, días después; un mockup que trabajó 12 minutos contaba 101 horas. Ahora duran hasta su última ejecución. Llega a la API en la próxima reconstrucción.
+  - **Pendientes:** los dos mockups sin `.zip` (el de este proyecto, en marcha).
 - **Para la memoria, en palabras sencillas:** el hito 18 hace la plataforma más robusta frente a los fallos de los modelos (corrige lo que tiene una sola corrección, repara cambiando solo lo que está mal y no malgasta ejecuciones perdidas). También la hace más honesta con el usuario: no da por buena una suposición sin que la mire, y los prototipos no salen todos iguales.
 
 ### 10. Hito 19: exportar los entregables (20-10 y 22-10, hecho)

@@ -2134,3 +2134,33 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - un título con saltos de línea iba tal cual a `Summary` o `Title`, que no los admiten; ahora va en una línea;
   - un requisito con espacios («RF 001») daba una etiqueta de Jira no válida, y uno solo con espacios, una etiqueta `@` vacía que el analizador de Gherkin rechaza (otro error 500). `BacklogExport` limpia los ids una vez para todos los formatos.
   - 2 tests nuevos (912 en total).
+
+
+## 22-10-2026, 09:50 (sesión)
+
+**Resumen para la bitácora (22-10-2026, hito 18: backlog de la prueba real y error en la duración de los trabajos interrumpidos)**
+
+- **Contexto:** sigue la prueba real del hito 18 en «Clinicas Veterinarias v0.11» (prompts v0.11, A y árbitro `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA`). El autor lanzó el backlog desde la web y lo validó sin cambios; el mockup está en marcha. A la vez trabaja la otra sesión (hito 19), que ya hizo commit de lo suyo.
+- **Backlog, resultados** (informe del trabajo):
+  - A propuso 152 historias y B 56; la unión tiene 121 (52 de ambas, 68 solo de A, 1 solo de B) en 13 épicas, con 2 descartadas;
+  - 17 discrepancias para revisar: 16 de la plataforma (desviaciones del árbitro respecto al emparejamiento) y 1 del árbitro. Con la v0.9, la plataforma habría marcado 20;
+  - sin reparaciones; A, 5 turnos y 3,7 min; B, 5 turnos y 3,0 min; árbitro, 4,1 min;
+  - el árbitro escribió el backlog y se detuvo al empezar a compactar, con la salida ya escrita y válida, y se aceptó (regla del 14-10-2026). Por eso no tiene dato de consumo: se estima en 243.000 tokens de entrada y 57.000 de salida;
+  - emparejamiento: 7,1 s de reloj y 35,7 s de CPU;
+  - coste: 447.072* tokens de entrada y 120.292* de salida, **1,67 $*** y 8 minutos, frente a 1,43 $* y 9 minutos con la v0.9 (* con la parte estimada).
+- **Hallazgo: el árbitro recorta los criterios de aceptación en los backlogs grandes.** Contados en todos los backlogs arbitrados:
+  - ReservaSalas: A 33, B 27, unión 34;
+  - banco de alimentos: A 140, B 66, unión 98 (un 30 % menos que A);
+  - clínicas, v0.9: A 193, B 97, unión 109 para 109 historias;
+  - clínicas, v0.11: A 237, B 56, unión 121 para 121 historias.
+  - En el proyecto grande queda un criterio por historia. Las tareas también quedan en una por historia, aunque ahí A y B ya proponían una. Explicación más probable: el árbitro resume para que todo el backlog quepa en una escritura.
+  - No se cambia nada durante la prueba. Queda como **mejora prioritaria**: que el árbitro escriba el backlog por épicas, o que la plataforma cuente los criterios que se pierden y lo marque.
+  - En palabras sencillas: con un backlog grande, el árbitro conserva las historias, pero de cada una deja solo una condición de «terminada», y se pierde detalle que A y B habían propuesto.
+- **Error de medida encontrado al regenerar las tablas de coste (es del paso 91):**
+  - `InterruptedJobs` cierra los trabajos que un reinicio dejó abiertos con la hora del arranque, y el informe medía la duración como «creado → cerrado». Cinco trabajos antiguos, del 13 al 16-10 (dos nuevos arbitrajes, dos mockups y un catálogo), contaban entre 74 y 149 horas; un mockup que trabajó 12 minutos, 101 horas. Los minutos de dos proyectos internos pasaron de 33 a 8.997 y de 1.317 a 14.713 en las tablas del 21-10;
+  - **corrección:** un trabajo cerrado por `InterruptedJobs` (lo dice su mensaje) dura hasta la última ejecución que terminó antes del arranque; si no hay ninguna, no tiene duración. Los demás trabajos no cambian. `InterruptedJobs.Seconds` y un test nuevo (913 tests, todos correctos);
+  - llega a la API en la próxima reconstrucción, que no se hace con el mockup en marcha; después se regeneran las tablas de coste. Hasta entonces, `docs/costes/costes.md` sigue con esos minutos inflados;
+  - queda fuera un caso distinto, ya conocido: un mockup del 14-10 que dura 19 horas porque el equipo se suspendió por la noche con el trabajo abierto.
+- **Otra observación de las tablas:** el tiempo del emparejamiento de los nuevos arbitrajes del 19-10, que se mide después (en cada petición del informe), salió ahora de 15,7 a 17,0 s, frente a 15,3–37,0 s en la regeneración anterior: depende de la carga del equipo en ese momento (ahora con el mockup en marcha). Las cifras medidas con el trabajo, las de los trabajos nuevos, no tienen ese problema.
+- **Documentación:** resultados del backlog y hallazgo de los criterios en la evolución del prompt (v0.11) y en la trazabilidad; tablas de coste regeneradas con el backlog.
+- **Pendientes:** medir y documentar el mockup en cuanto termine; reconstruir la API (con permiso del autor y sin tareas en marcha) y regenerar las tablas; el mockup sin `.zip` del banco de alimentos; cerrar el hito 18.

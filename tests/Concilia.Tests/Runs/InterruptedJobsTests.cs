@@ -45,4 +45,22 @@ public class InterruptedJobsTests
         Assert.StartsWith("Interrumpido", result["mensaje"]!.GetValue<string>());
         Assert.Contains("reanudar", JsonNode.Parse(File.ReadAllText(Path.Combine(storage.JobFolder(mockup.Id), PhaseJobResult.FileName)))!["mensaje"]!.GetValue<string>());
     }
+
+    // 22-10-2026: a job closed at start-up lasted until its last run ended,
+    // not until the start-up, which can be days later.
+    [Fact]
+    public void An_interrupted_job_lasts_until_its_last_run_ended()
+    {
+        var created = DateTimeOffset.UtcNow.AddDays(-4);
+        var startUp = DateTimeOffset.UtcNow;
+        var job = new Job { Id = Guid.NewGuid(), ProjectId = 1, Kind = "mockup", CreatedAt = created, FinishedAt = startUp };
+        Run RunEnding(DateTimeOffset? end) => new() { Id = Guid.NewGuid(), ProjectId = 1, JobId = job.Id, Provider = "Fake", Model = "m", CreatedAt = created, FinishedAt = end };
+        var runs = new[] { RunEnding(created.AddMinutes(6)), RunEnding(created.AddMinutes(12)), RunEnding(startUp), RunEnding(null) };
+        var message = InterruptedJobs.Message(job.Kind);
+
+        Assert.Equal(12 * 60, InterruptedJobs.Seconds(job, runs, message)!.Value, precision: 3);
+        Assert.Null(InterruptedJobs.Seconds(job, [RunEnding(startUp)], message)); // nothing ended before the start-up
+        Assert.Equal((startUp - created).TotalSeconds, InterruptedJobs.Seconds(job, runs, "otro mensaje")); // a job that ended by itself
+        Assert.Null(InterruptedJobs.Seconds(new Job { Id = Guid.NewGuid(), ProjectId = 1, Kind = "mockup", CreatedAt = created }, runs, null)); // not ended
+    }
 }
