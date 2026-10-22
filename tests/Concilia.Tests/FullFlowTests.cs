@@ -97,6 +97,12 @@ public class FullFlowTests
         await Launch(client, $"/projects/{id}/backlog-jobs", id);
         await ReviewAndValidate(client, id, "backlog");
 
+        // Step 97: the backlog downloads as Gherkin, a .feature file per epic in a .zip.
+        var gherkin = await client.GetAsync($"/projects/{id}/backlog-gherkin.zip");
+        Assert.Equal("application/zip", gherkin.Content.Headers.ContentType!.MediaType);
+        using (var zip = new System.IO.Compression.ZipArchive(await gherkin.Content.ReadAsStreamAsync()))
+            Assert.All(zip.Entries, e => Assert.EndsWith(".feature", e.FullName));
+
         // The mockup, which opens as a page.
         await Launch(client, $"/projects/{id}/mockup-jobs", id);
         var page = await client.GetAsync($"/projects/{id}/mockup");

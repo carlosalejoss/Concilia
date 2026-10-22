@@ -138,6 +138,41 @@
         }
       }
     },
+    "/projects/{projectId}/backlog-gherkin.zip": {
+      "get": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Exporta el backlog a Gherkin",
+        "description": "Un `.zip` con un fichero `.feature` por épica, comprobado con el analizador oficial de Gherkin. Palabras clave en inglés: cada épica es una `Feature`, cada historia una `Rule` (con su «Como… quiero… para…» y sus tareas) y cada criterio de aceptación un `Scenario`. Los ids van como etiquetas (`@EP-01`, `@HU-001 @RF-001`, `@CA-001`), y una historia con una discrepancia sin revisar lleva `@discrepancia-sin-revisar`. Del backlog guardado, validado o en borrador (lo dice la primera línea de cada fichero).",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stream"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/embeddings/similarity": {
       "post": {
         "tags": [

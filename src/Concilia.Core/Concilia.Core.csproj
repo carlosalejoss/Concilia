@@ -18,6 +18,8 @@
     <!-- PDF of the catalog (step 96). Pinned to 6.2.4, the last MIT version:
          from 6.5.0 (14-10-2026) PDFsharp and MigraDoc are AGPL-3.0. Do not update. -->
     <PackageReference Include="PDFsharp-MigraDoc" Version="[6.2.4]" />
+    <!-- The official Gherkin parser (cucumber/gherkin, MIT): checks the .feature files of the backlog (step 97). -->
+    <PackageReference Include="Gherkin" Version="42.0.1" />
   </ItemGroup>
 
   <ItemGroup>

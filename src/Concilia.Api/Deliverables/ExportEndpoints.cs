@@ -1,6 +1,4 @@
 using System.ComponentModel;
-using System.Globalization;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Concilia.Api.Files;
 using Concilia.Api.OpenApi;
@@ -33,7 +31,7 @@ public static class ExportEndpoints
                 return Results.NotFound();
             }
             var export = await CatalogAsync(db, storage, project.Name, catalog);
-            var name = $"catalogo-{FileName(project.Name)}.{format}";
+            var name = $"catalogo-{ExportFiles.Slug(project.Name)}.{format}";
             return format == "docx"
                 ? Results.File(CatalogDocx.Write(export), "application/vnd.openxmlformats-officedocument.wordprocessingml.document", name)
                 : Results.File(CatalogPdf.Write(export), "application/pdf", name);
@@ -43,6 +41,34 @@ public static class ExportEndpoints
             .WithDescription("El catálogo guardado, validado o en borrador (con «BORRADOR» en la portada y el pie). Una sección por tipo de requisito, cada uno con sus fuentes y preguntas, y dos anexos con el texto de cada fragmento y cada pregunta citados. Lleva las marcas «Suposición de la IA» y «Discrepancia sin revisar».")
             .Produces<Stream>(StatusCodes.Status200OK, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/pdf")
             .Produces(StatusCodes.Status404NotFound);
+
+        // Step 97: the backlog as Gherkin, a .feature file per epic in a .zip.
+        app.MapGet("/projects/{projectId:int}/backlog-gherkin.zip", async (int projectId, AppDbContext db) =>
+        {
+            var (project, backlog) = await BacklogAsync(db, projectId);
+            return backlog is null
+                ? Results.NotFound()
+                : Results.File(BacklogGherkin.Write(backlog), "application/zip", $"backlog-{ExportFiles.Slug(project!)}-gherkin.zip");
+        })
+            .WithTags(ApiTags.Deliverables)
+            .WithSummary("Exporta el backlog a Gherkin")
+            .WithDescription("Un `.zip` con un fichero `.feature` por épica, comprobado con el analizador oficial de Gherkin. Palabras clave en inglés: cada épica es una `Feature`, cada historia una `Rule` (con su «Como… quiero… para…» y sus tareas) y cada criterio de aceptación un `Scenario`. Los ids van como etiquetas (`@EP-01`, `@HU-001 @RF-001`, `@CA-001`), y una historia con una discrepancia sin revisar lleva `@discrepancia-sin-revisar`. Del backlog guardado, validado o en borrador (lo dice la primera línea de cada fichero).")
+            .Produces<Stream>(StatusCodes.Status200OK, "application/zip")
+            .Produces(StatusCodes.Status404NotFound);
+    }
+
+    // The saved backlog of a project and the name of the project, or nulls.
+    private static async Task<(string? Project, BacklogExport? Backlog)> BacklogAsync(AppDbContext db, int projectId)
+    {
+        var project = await db.Projects.FindAsync(projectId);
+        var backlog = await DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Backlog);
+        if (project is null || backlog is null)
+        {
+            return (null, null);
+        }
+        return (project.Name, BacklogExport.Build(
+            project.Name, backlog.Status == DeliverableStatus.Validated, Spain(DateTimeOffset.UtcNow),
+            backlog.ValidatedAt is { } validated ? Spain(validated) : null, backlog.Content));
     }
 
     // The fragments come from the plan of the job that generated the catalog
@@ -63,18 +89,4 @@ public static class ExportEndpoints
     // system does not know the time zone.
     private static DateTimeOffset Spain(DateTimeOffset date) =>
         TimeZoneInfo.TryFindSystemTimeZoneById("Europe/Madrid", out var zone) ? TimeZoneInfo.ConvertTime(date, zone) : date;
-
-    // "Clínicas Veterinarias" → "clinicas-veterinarias", for the name of the file.
-    public static string FileName(string projectName)
-    {
-        var plain = new StringBuilder();
-        foreach (var ch in projectName.Normalize(NormalizationForm.FormD))
-        {
-            if (CharUnicodeInfo.GetUnicodeCategory(ch) == UnicodeCategory.NonSpacingMark)
-                continue;
-            plain.Append(char.IsAsciiLetterOrDigit(ch) ? char.ToLowerInvariant(ch) : '-');
-        }
-        var name = string.Join('-', plain.ToString().Split('-', StringSplitOptions.RemoveEmptyEntries));
-        return name.Length > 0 ? name : "proyecto";
-    }
 }
