@@ -140,7 +140,8 @@ function JobComparison({ jobId }: { jobId: string }) {
                   setShown(PAGE)
                 }}
                 aria-label="Filtrar las filas"
-                className="rounded border border-line bg-surface px-2.5 py-1.5"
+                // max-w-full: on a narrow screen the longest option would push it out of the box.
+                className="max-w-full rounded border border-line bg-surface px-2.5 py-1.5"
               >
                 {FILTERS.map(([id, label, test]) => (
                   <option key={id} value={id}>

@@ -156,6 +156,10 @@ function StoryTrace({ trace, id, onGo }: { trace: Traceability; id: string; onGo
   )
 }
 
+// "DOC-01 · requisitos.docx" → "requisitos.docx": the id of the fragment
+// already says DOC-01.
+const documentName = (f: TraceFragment) => f.document.replace(`${f.id.split('#')[0]} · `, '')
+
 // A cited fragment that is not in the trace has no text either.
 const fragmentOf = (trace: Traceability, id: string): TraceFragment =>
   trace.fragments.find((f) => f.id === id) ?? { id, document: id.split('#')[0], section: '', text: null }
@@ -192,7 +196,7 @@ function FragmentItem({ fragment: f, citedBy }: { fragment: TraceFragment; cited
         <span className="font-medium text-muted">{f.id}</span>
         <span className="text-muted">
           {' '}
-          · {f.document}
+          · {documentName(f)}
           {f.section && ` · ${f.section}`}
         </span>
         <CitedBy ids={citedBy} />

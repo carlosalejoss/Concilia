@@ -2330,3 +2330,13 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Hito 18b completado:** se cumple su «Hecho cuando». Marcado en el plan, `CLAUDE.md`, el README, la trazabilidad y la evolución del prompt (v0.12).
 - **Mejoras que deja, sin hacer:** no marcar como desviación un par «mismo» con cifras distintas que el árbitro separa (falsos avisos); repetir el arbitraje del catálogo para medir la variación de la unión; que el árbitro no lea su conversación guardada tras compactar.
 - **Cierre de este chat (petición del autor):** con el hito 18b terminado, el trabajo de esta conversación (hitos 17, 18 y 18b) queda cerrado. Lo siguiente (hito 21) lo lleva la otra sesión.
+
+## 22-10-2026, 14:15 (sesión)
+
+**Resumen para la bitácora (22-10-2026, pasos 99 y 100 revisados en el navegador por Claude)**
+
+- **Cómo:** con el Edge instalado, manejado desde un script con `puppeteer-core` (Apache-2.0, fuera del repositorio), solo con peticiones GET (el script avisa de cualquier otra), en clínicas v0.11: informe y comparación de su catálogo, backlog y preguntas, todos los filtros, la búsqueda, «Mostrar más», las explicaciones, el modo oscuro con el botón de la web, una ventana de 390 px con la barra lateral minimizada y el panel de trazabilidad de RF-001 (ir a HU-001 y «Volver»). Sin errores de página ni de consola ni peticiones fallidas.
+- **Cifras que se ven en la comparación del catálogo:** 239 filas (235 de la unión y 4 descartados), 160 de ambas, 75 solo de A y 0 solo de B, 12 con desviación (las 12 discrepancias del borrador, todas de la plataforma), ninguna con discrepancia del propio árbitro, y 73 en que el árbitro no coincide con los embeddings. Backlog: 121 de la unión y 2 descartadas, 1 discrepancia. Preguntas: 63 de la unión y 1 descartada.
+- **Corregido:** en una ventana estrecha, el desplegable de filtros de la comparación se salía del recuadro por la derecha (`max-w-full`). En el panel de trazabilidad, cada fragmento repetía el id del documento («DOC-01#F034 · DOC-01 · …»); ahora solo lleva el nombre del fichero.
+- **Visto, no es del paso 100:** a 390 px la barra lateral abierta tapa casi toda la página en cualquier paso. La web está pensada para escritorio y la barra se puede minimizar.
+- **Sin probar:** que el botón «Trazabilidad» se oculte con cambios sin guardar. Todos los catálogos y backlogs están validados y reabrir uno cambiaría el proyecto. Queda para el autor.
