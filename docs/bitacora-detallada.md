@@ -2298,3 +2298,19 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - **CSV del proyecto:** con las tres columnas al final (`emb_solo_A`, `emb_solo_B` y `emb_acuerdo_arbitro_pct`). El de clínicas (23 trabajos) tarda 7,5 s, pero no por los embeddings: lo que pesa es estimar el consumo de las ejecuciones sin dato (paso 95), unos 0,4 s por nuevo arbitraje.
   - **Web:** el paquete servido trae la vista «Comparación de A, B y el árbitro» y la línea «Embeddings» del informe.
 - **Pendiente:** que el autor revise la comparación en el navegador.
+
+## 22-10-2026, 13:55 (sesión)
+
+**Resumen para la bitácora (22-10-2026, hito 18b: medida del paso 107 con un nuevo arbitraje del catálogo)**
+
+- **Puesta en marcha:** sin tareas en marcha (`GET /jobs/active` en 204) y con el árbol limpio, después del commit del paso 100 de la otra sesión, se reconstruyó solo la API con los pasos 107 y 108; 943 tests correctos con todo junto. Claude lanzó por la API el nuevo arbitraje del catálogo de «Clinicas Veterinarias v0.11» con SOL (trabajo `bb3493e4`, prompts v0.12), sobre las mismas propuestas que el árbitro de la prueba real.
+- **Resultados (comparados con el árbitro de la prueba real, v0.11):**
+  - documentación consultada: 15 tramos de `fuentes.txt` y 298 líneas, frente a 34 tramos y 1.242 líneas de `documentacion.txt`;
+  - una sola ejecución, válida a la primera: se detuvo al empezar a compactar con la salida ya escrita (antes, tres: parada en la segunda compactación, repetición y una reparación `ARB-FALTA`);
+  - unos 1,43 $* (370.349* y 68.682* tokens) y 7 minutos, frente a unos 3,20 $* y 11,5 minutos;
+  - unión de 277 requisitos (162 de ambas, 115 solo de A), frente a 235 (160 y 75); 1 discrepancia del árbitro;
+  - desviaciones: 47 en 44 elementos (46 pares «mismo» separados y 1 unión de cosas distintas), frente a 15 en 12; emparejamiento de 30,2 s (130,8 s de CPU).
+- **Análisis de las 46 separaciones:** 13 son pares «mismo» con cifras distintas (por ejemplo, el cambio de plan al cumplir un año y al cumplir ocho, con similitud 0,95) y el resto, sobre todo, comportamientos distintos de lo mismo (presupuestar una cirugía de Mascota Protegida y qué pasa si se deniega la autorización). La v0.11 los había juntado en requisitos compuestos («cumpla uno u ocho años… respectivamente», con el aviso dentro; tres requisitos de B en uno sobre la autorización). La unión de la v0.12 es más atómica, que es lo que piden las reglas; con una sola ejecución no se separa este efecto de la variación del árbitro (209–291 con la v0.9).
+- **Referencia:** los 7 nuevos arbitrajes del catálogo de clínicas del 16 y el 19-10 (propuestas de la v0.9) consultaron entre 264 y 2.948 líneas de la documentación (mediana 655) y costaron entre 1,39 y 4,53 $.
+- **Mejora que deja:** que la plataforma no marque como desviación un par «mismo» con cifras distintas que el árbitro separa (falsos avisos, porque los embeddings no ven las cifras). No se cambia todavía: se anota.
+- **En marcha:** el nuevo arbitraje del backlog (trabajo `257d6b65`).
