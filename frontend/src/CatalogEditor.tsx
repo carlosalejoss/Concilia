@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { ChevronRight, ListChecks, Plus, Search, Trash2 } from 'lucide-react'
+import { ChevronRight, ListChecks, Plus, Search, Trash2, Waypoints } from 'lucide-react'
 import type { CatalogContent, CatalogRequirement, Project } from './api.ts'
 import DeliverableBar from './DeliverableBar.tsx'
 import ListInput from './ListInput.tsx'
+import TracePanel, { type TraceTarget } from './TracePanel.tsx'
 import { useDeliverable } from './useDeliverable.ts'
 import Badge from './ui/Badge.tsx'
 import Button from './ui/Button.tsx'
@@ -46,6 +47,8 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
   const [onlyAssumed, setOnlyAssumed] = useState(false)
   // The requirements open, by their position in the list.
   const [open, setOpen] = useState<Set<number>>(new Set())
+  // Step 99: the requirement whose traceability is shown in the panel.
+  const [trace, setTrace] = useState<TraceTarget | null>(null)
 
   if (!deliverable || !draft) {
     return (
@@ -197,6 +200,8 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
                       readOnly={readOnly}
                       assumed={isAssumed(r)}
                       open={open.has(index)}
+                      // The panel shows what is saved: hidden while there are changes.
+                      onTrace={state.dirty ? undefined : () => setTrace({ kind: 'requirement', id: r.id })}
                       onToggle={() => toggle(index)}
                       onUpdate={(change) => update(index, change)}
                       onRemove={() => remove(index)}
@@ -214,6 +219,8 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
           Añadir un requisito
         </Button>
       )}
+
+      {trace && <TracePanel projectId={project.id} start={trace} onClose={() => setTrace(null)} />}
     </div>
   )
 }
@@ -225,6 +232,7 @@ function RequirementItem({
   readOnly,
   assumed,
   open,
+  onTrace,
   onToggle,
   onUpdate,
   onRemove,
@@ -233,6 +241,7 @@ function RequirementItem({
   readOnly: boolean
   assumed: boolean
   open: boolean
+  onTrace?: () => void
   onToggle: () => void
   onUpdate: (change: Partial<CatalogRequirement>) => void
   onRemove: () => void
@@ -264,6 +273,11 @@ function RequirementItem({
 
       {open && (
         <div className="space-y-3 pb-4 pl-[5.75rem]">
+          {onTrace && (
+            <Button variant="secondary" size="sm" icon={Waypoints} onClick={onTrace}>
+              Trazabilidad
+            </Button>
+          )}
           {r.discrepancia && (
             <div className={`rounded px-3 py-2 text-sm ${discrepancy ? 'bg-danger-soft' : 'bg-ok-soft'}`}>
               <p>

@@ -76,6 +76,7 @@ app.MapFlowEndpoints();
 app.MapQuestionEndpoints();
 app.MapDeliverableEndpoints();
 app.MapExportEndpoints();
+app.MapTraceabilityEndpoints();
 app.MapMockupEndpoints();
 app.MapReportEndpoints();
 app.MapEmbeddingEndpoints();

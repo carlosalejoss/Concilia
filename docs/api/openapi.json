@@ -217,6 +217,41 @@
         }
       }
     },
+    "/projects/{projectId}/traceability": {
+      "get": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Trazabilidad del catálogo y el backlog",
+        "description": "Del catálogo y el backlog guardados (validados o en borrador). Cada requisito con sus fragmentos de la documentación (`sources`), las preguntas en que se apoya y las historias que lo cubren; cada historia con su épica y sus requisitos. El texto de cada fragmento citado está una sola vez en `fragments` (sin `text` si no está en la documentación de la que salió el catálogo) y cada pregunta citada, con su respuesta, en `questions`. `missingQuestions` y `missingRequirements` son las que se citan y no existen. Sin backlog, `stories` va vacío. `404` si el proyecto no tiene catálogo.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Traceability"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/embeddings/similarity": {
       "post": {
         "tags": [
@@ -2509,6 +2544,58 @@
           }
         }
       },
+      "ExportQuestion": {
+        "required": [
+          "id",
+          "text",
+          "answer",
+          "aiGuess"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "answer": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "aiGuess": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ExportSource": {
+        "required": [
+          "id",
+          "document",
+          "section",
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "document": {
+            "type": "string"
+          },
+          "section": {
+            "type": "string"
+          },
+          "text": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "FlowStep": {
         "enum": [
           "Documents",
@@ -3694,6 +3781,141 @@
       "Stream": {
         "type": "string",
         "format": "binary"
+      },
+      "Traceability": {
+        "required": [
+          "requirements",
+          "stories",
+          "fragments",
+          "questions",
+          "missingQuestions",
+          "missingRequirements"
+        ],
+        "type": "object",
+        "properties": {
+          "requirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TraceRequirement"
+            }
+          },
+          "stories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TraceStory"
+            }
+          },
+          "fragments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExportSource"
+            }
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExportQuestion"
+            }
+          },
+          "missingQuestions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missingRequirements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "TraceRequirement": {
+        "required": [
+          "id",
+          "type",
+          "text",
+          "sources",
+          "questions",
+          "stories",
+          "aiGuess",
+          "pendingDiscrepancy"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "stories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "aiGuess": {
+            "type": "boolean"
+          },
+          "pendingDiscrepancy": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TraceStory": {
+        "required": [
+          "id",
+          "title",
+          "narrative",
+          "epicId",
+          "epicTitle",
+          "requirements",
+          "pendingDiscrepancy"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "narrative": {
+            "type": "string"
+          },
+          "epicId": {
+            "type": "string"
+          },
+          "epicTitle": {
+            "type": "string"
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pendingDiscrepancy": {
+            "type": "boolean"
+          }
+        }
       },
       "UpdateProjectRequest": {
         "required": [

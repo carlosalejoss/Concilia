@@ -76,6 +76,14 @@ public class FullFlowTests
         Assert.Equal("%PDF"u8.ToArray(), (await pdf.Content.ReadAsByteArrayAsync())[..4]);
         Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/projects/{id}/catalog.odt")).StatusCode);
 
+        // Step 99: its traceability, before there is a backlog: each requirement
+        // with its fragments, whose text comes from the documentation.
+        var trace = await Json(await client.GetAsync($"/projects/{id}/traceability"));
+        Assert.NotEmpty(trace["requirements"]!.AsArray());
+        Assert.Empty(trace["stories"]!.AsArray());
+        Assert.NotEmpty(trace["fragments"]!.AsArray());
+        Assert.All(trace["fragments"]!.AsArray(), f => Assert.False(string.IsNullOrEmpty(f!["text"]?.GetValue<string>())));
+
         // Step 64: its report. Reviewing the discrepancies is not a change.
         var report = await Json(await client.GetAsync($"/jobs/{catalogJob}/report"));
         Assert.True(report["succeeded"]!.GetValue<bool>());
@@ -110,6 +118,12 @@ public class FullFlowTests
         var azure = await client.GetAsync($"/projects/{id}/backlog-azure-devops.csv");
         Assert.StartsWith("\"ID\",\"Work Item Type\"", await azure.Content.ReadAsStringAsync());
         Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/projects/{id}/backlog-trello.csv")).StatusCode);
+
+        // Step 99: with the backlog, the requirements know their stories.
+        trace = await Json(await client.GetAsync($"/projects/{id}/traceability"));
+        Assert.NotEmpty(trace["stories"]!.AsArray());
+        Assert.Contains(trace["requirements"]!.AsArray(), r => r!["stories"]!.AsArray().Count > 0);
+        Assert.Empty(trace["missingRequirements"]!.AsArray());
 
         // The mockup, which opens as a page.
         await Launch(client, $"/projects/{id}/mockup-jobs", id);

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { ChevronRight, ChevronsDownUp, ChevronsUpDown, Layers, Plus, Search, Trash2 } from 'lucide-react'
+import { ChevronRight, ChevronsDownUp, ChevronsUpDown, Layers, Plus, Search, Trash2, Waypoints } from 'lucide-react'
 import type { BacklogContent, CatalogContent, Criterion, Deliverable, Epic, Project, Story } from './api.ts'
 import DeliverableBar from './DeliverableBar.tsx'
 import ListInput from './ListInput.tsx'
+import TracePanel, { type TraceTarget } from './TracePanel.tsx'
 import { useDeliverable } from './useDeliverable.ts'
 import { usePersistentState } from './hooks/usePersistentState.ts'
 import Badge from './ui/Badge.tsx'
@@ -43,6 +44,8 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
   const [onlyPending, setOnlyPending] = useState(false)
   // Open epics ("0") and stories ("0.3"), by position.
   const [openKeys, setOpenKeys] = usePersistentState<string[]>(`concilia.open.p${project.id}.backlog`, ['0'])
+  // Step 99: the story whose traceability is shown in the panel.
+  const [trace, setTrace] = useState<TraceTarget | null>(null)
 
   useEffect(() => {
     fetch(`/projects/${project.id}/deliverables/catalog`)
@@ -166,6 +169,8 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
                         story={h}
                         readOnly={readOnly}
                         open={isOpen(`${i}.${j}`)}
+                        // The panel shows what is saved: hidden while there are changes.
+                        onTrace={state.dirty ? undefined : () => setTrace({ kind: 'story', id: h.id })}
                         onToggle={() => toggle(`${i}.${j}`)}
                         onChange={(s) => setEpic(i, { ...epic, historias: epic.historias.map((x, k) => (k === j ? s : x)) })}
                         onRemove={() => setEpic(i, { ...epic, historias: epic.historias.filter((_, k) => k !== j) })}
@@ -203,6 +208,8 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
           Añadir una épica
         </Button>
       )}
+
+      {trace && <TracePanel projectId={project.id} start={trace} onClose={() => setTrace(null)} />}
     </div>
   )
 }
@@ -260,6 +267,7 @@ function StoryItem({
   story: h,
   readOnly,
   open,
+  onTrace,
   onToggle,
   onChange,
   onRemove,
@@ -267,6 +275,7 @@ function StoryItem({
   story: Story
   readOnly: boolean
   open: boolean
+  onTrace?: () => void
   onToggle: () => void
   onChange: (s: Story) => void
   onRemove: () => void
@@ -295,6 +304,11 @@ function StoryItem({
 
       {open && (
         <div className="space-y-4 pb-4 pl-[7.25rem]">
+          {onTrace && (
+            <Button variant="secondary" size="sm" icon={Waypoints} onClick={onTrace}>
+              Trazabilidad
+            </Button>
+          )}
           {h.discrepancia && (
             <div className={`rounded px-3 py-2 text-sm ${discrepancy ? 'bg-danger-soft' : 'bg-ok-soft'}`}>
               <p>
