@@ -92,7 +92,12 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
 
   return (
     <div className="space-y-4">
-      <DeliverableBar state={state} name="Backlog" summary={summary} />
+      <DeliverableBar
+        state={state}
+        name="Backlog"
+        summary={summary}
+        downloads={[{ href: `/projects/${project.id}/backlog-gherkin.zip`, label: 'Gherkin' }]}
+      />
 
       {functional.length > 0 && <Coverage functional={functional} uncovered={uncovered} storiesOf={storiesOf} projectId={project.id} />}
 

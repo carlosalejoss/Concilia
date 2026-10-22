@@ -29,7 +29,7 @@ flowchart TD
 | Documentos | Sube la documentación: Word, PDF, Excel, CSV, PowerPoint, páginas web, correos, transcripciones de reuniones, texto, Markdown, JSON, YAML o XML. Un `.zip` con un mockup del cliente sirve de referencia de estilo. | La plataforma extrae el texto y lo divide en fragmentos citables (`DOC-01#F007`). |
 | Preguntas | Las dudas que hay que aclarar con el cliente, en rondas. La IA puede proponer cada respuesta. | Modelo A ‖ modelo B → árbitro |
 | Requisitos | El catálogo en EARS y MASTeR, con sus fuentes y las preguntas en que se apoya. Se descarga en Word o PDF. | Modelo A ‖ modelo B → árbitro |
-| Backlog | Épicas, historias, criterios de aceptación en Gherkin y tareas. | Modelo A ‖ modelo B → árbitro |
+| Backlog | Épicas, historias, criterios de aceptación en Gherkin y tareas. Se descarga como ficheros `.feature` de Gherkin. | Modelo A ‖ modelo B → árbitro |
 | Mockup | Un prototipo navegable de toda la aplicación: inicio de sesión con usuarios de prueba, una aplicación por rol y navegación real. | Un modelo, por pasos: el diseño, cada pantalla, y la plataforma junta y corrige lo que no encaja. |
 
 En las tres fases con árbitro, A y B reciben el mismo prompt y no saben uno del otro. El árbitro recibe las dos propuestas en orden aleatorio, sin saber de qué modelo es cada una, y marca para cada elemento si viene de las dos, de una sola o si hay una discrepancia. Antes, la plataforma empareja las dos propuestas por significado con embeddings calculados en local, sin IA generativa, y el árbitro parte de ese emparejamiento. Si el árbitro se aparta de él (une lo que los números ven distinto o separa lo que ven igual), la plataforma lo marca como discrepancia. Si uno de los dos modelos falla, el trabajo falla: no se acepta la salida de un solo modelo. El usuario revisa cada discrepancia antes de validar, y cada paso solo ve la versión validada del anterior.
@@ -54,7 +54,7 @@ La comparación entre notaciones se apoya en [Großer et al., 2024](https://link
 | Ejecución de los modelos | Runner en .NET que lanza Claude Code no interactivo (`claude -p`), con salida stream-json y veredicto final obligatorio |
 | Embeddings | `paraphrase-multilingual-MiniLM-L12-v2` (Apache 2.0) en ONNX, con ONNX Runtime dentro de la API: en local, sin enviar datos fuera |
 | Documentación de la API | OpenAPI 3.1 generado por ASP.NET Core (Microsoft.AspNetCore.OpenApi) y Swagger UI (Swashbuckle.AspNetCore.SwaggerUI, MIT) |
-| Exportación | Word con DocumentFormat.OpenXml (MIT) y PDF con MigraDoc 6.2.4 (MIT, la última versión con esa licencia) y la fuente IBM Plex Sans (OFL) |
+| Exportación | Word con DocumentFormat.OpenXml (MIT), PDF con MigraDoc 6.2.4 (MIT, la última versión con esa licencia) y la fuente IBM Plex Sans (OFL), y Gherkin comprobado con el analizador oficial de Cucumber (MIT) |
 | Despliegue | Docker y Docker Compose |
 
 ## Estructura del repositorio
@@ -81,7 +81,7 @@ concilia/
 - [x] **Hito 13.** Test del flujo completo, informe automático por trabajo, flujo completo con los dos proyectos ficticios de `ejemplos/` y documentación al día.
 - [x] **Hito 17.** Embeddings en local: emparejamiento de A y B por significado, con umbrales calibrados, y árbitro guiado por ese emparejamiento.
 - [x] **Hito 18.** Fiabilidad y calidad: correcciones automáticas de formato, reparación editando, sugerencias prudentes, estilos del mockup, trabajos interrumpidos y tablas de coste en tiempo y dinero.
-- [ ] **Hito 19.** Exportar los entregables: el catálogo a Word y PDF (hecho); el backlog a Gherkin y a CSV para Jira y Azure DevOps.
+- [ ] **Hito 19.** Exportar los entregables: el catálogo a Word y PDF y el backlog a Gherkin (hechos); el backlog a CSV para Jira y Azure DevOps.
 - [ ] **Hito 20.** Trazabilidad visual y comparación de A, B y el árbitro.
 - [ ] **Hito 21.** Historial de versiones de los entregables.
 - [ ] **Hito 22.** Evaluación (precisión, recall y F1 frente a listas de referencia).

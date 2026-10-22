@@ -2,7 +2,6 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Validation;
 using Concilia.Core.Catalog;
 using Concilia.Core.Deliverables.Export;
-using Concilia.Api.Deliverables;
 using UglyToad.PdfPig;
 
 namespace Concilia.Tests.Deliverables;
@@ -132,7 +131,7 @@ public class CatalogExportTests
     [Fact]
     public void The_file_name_is_plain()
     {
-        Assert.Equal("clinicas-veterinarias-2", ExportEndpoints.FileName("Clínicas Veterinarias (2)"));
-        Assert.Equal("proyecto", ExportEndpoints.FileName("¿?"));
+        Assert.Equal("clinicas-veterinarias-2", ExportFiles.Slug("Clínicas Veterinarias (2)"));
+        Assert.Equal("proyecto", ExportFiles.Slug("¿?"));
     }
 }
