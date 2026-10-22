@@ -2164,3 +2164,11 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Otra observación de las tablas:** el tiempo del emparejamiento de los nuevos arbitrajes del 19-10, que se mide después (en cada petición del informe), salió ahora de 15,7 a 17,0 s, frente a 15,3–37,0 s en la regeneración anterior: depende de la carga del equipo en ese momento (ahora con el mockup en marcha). Las cifras medidas con el trabajo, las de los trabajos nuevos, no tienen ese problema.
 - **Documentación:** resultados del backlog y hallazgo de los criterios en la evolución del prompt (v0.11) y en la trazabilidad; tablas de coste regeneradas con el backlog.
 - **Pendientes:** medir y documentar el mockup en cuanto termine; reconstruir la API (con permiso del autor y sin tareas en marcha) y regenerar las tablas; el mockup sin `.zip` del banco de alimentos; cerrar el hito 18.
+
+## 22-10-2026, 10:08 (sesión)
+
+**Resumen para la bitácora (22-10-2026, hito 19 comprobado en Docker)**
+
+- **Qué se hizo:** el autor subió a GitHub los commits de los pasos 97 y 98 y su revisión, reconstruyó la API y la web (`docker compose up --build -d api web`) y comprobó en el navegador que «Gherkin», «CSV Jira» y «CSV Azure DevOps» aparecen en la barra del backlog y descargan.
+- **Decisiones:** ninguna nueva.
+- **Pendientes:** importar los dos CSV en un Jira y un Azure DevOps de verdad (autor); después, el hito 20.
