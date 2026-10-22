@@ -292,7 +292,7 @@
           "Informes y evaluación"
         ],
         "summary": "Emparejamiento de A y B por significado",
-        "description": "Calculado con embeddings en local, sin ningún LLM, junto a lo que hizo el árbitro: los pares «mismo» y «parecido», lo que quedó solo en A o en B y dónde se apartó el árbitro del emparejamiento. No se guarda: se calcula en cada llamada (unos segundos con el modelo real). `?same=0.85&similar=0.6` prueba otros umbrales.",
+        "description": "Calculado con embeddings en local, sin ningún LLM, junto a lo que hizo el árbitro: los pares «mismo» y «parecido», lo que quedó solo en A o en B y dónde se apartó el árbitro del emparejamiento. Los embeddings se calculan una vez por trabajo y se guardan (unos segundos con el modelo real la primera vez; `fromCache` dice si ya estaban), y los umbrales y el árbitro se aplican en cada llamada: `?same=0.85&similar=0.6` prueba otros umbrales sin recalcularlos.",
         "parameters": [
           {
             "name": "jobId",
@@ -329,6 +329,51 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MatchingView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}/comparison": {
+      "get": {
+        "tags": [
+          "Informes y evaluación"
+        ],
+        "summary": "Comparación de A, B y el árbitro",
+        "description": "Lo que propuso cada modelo y lo que hizo el árbitro con cada elemento, lado a lado: una fila por elemento de la unión (`Merged`, con los elementos de A y de B que junta, su origen, su discrepancia y las desviaciones respecto al emparejamiento), una por cada elemento descartado (`Discarded`, con el motivo del árbitro) y una por cada elemento que el árbitro no clasificó (`Unclassified`). Cada elemento de A y de B lleva su par más parecido en la otra propuesta, su nivel («mismo», «parecido» o «distinto») y si el árbitro lo juntó con algo de la otra; `agreesWithEmbeddings` dice si los dos coinciden. Con los umbrales de la configuración; los embeddings se calculan una vez por trabajo y se guardan. Los ids del árbitro son los de su salida, antes de que la plataforma renumere el borrador.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobComparison"
                 }
               }
             }
@@ -1883,7 +1928,7 @@
           "Informes y evaluación"
         ],
         "summary": "Informe de un trabajo",
-        "description": "La base de la evaluación: tokens (reales y, aparte, estimados para las ejecuciones sin dato), duración, reparaciones, cada ejecución, los elementos de A, de B y de la unión (de ambas, solo de A, solo de B, discrepancias, descartados y desviaciones del árbitro), los cambios del usuario frente al borrador que dejó el trabajo y, en las preguntas, su estado y el origen de cada respuesta.",
+        "description": "La base de la evaluación: tokens (reales y, aparte, estimados para las ejecuciones sin dato), duración, reparaciones, cada ejecución, los elementos de A, de B y de la unión (de ambas, solo de A, solo de B, discrepancias, descartados y desviaciones del árbitro), lo que dicen los embeddings de las mismas propuestas (`embeddings`: solo de A y solo de B sin nada «mismo» ni «parecido» en la otra, y el acuerdo con el árbitro; se calculan una vez por trabajo y se guardan), los cambios del usuario frente al borrador que dejó el trabajo y, en las preguntas, su estado y el origen de cada respuesta.",
         "parameters": [
           {
             "name": "jobId",
@@ -1918,7 +1963,7 @@
           "Informes y evaluación"
         ],
         "summary": "Informes de todos los trabajos del proyecto, en CSV",
-        "description": "Una fila por trabajo, del más reciente al más antiguo, con las cifras del informe. Separado por `;` y con BOM, para que Excel en español lo abra con sus columnas y sus tildes.",
+        "description": "Una fila por trabajo, del más reciente al más antiguo, con las cifras del informe; al final, las de los embeddings (`emb_solo_A`, `emb_solo_B` y `emb_acuerdo_arbitro_pct`, el acuerdo con el árbitro en %). La primera vez calcula los embeddings de los trabajos que no los tienen guardados (unos segundos cada uno). Separado por `;` y con BOM, para que Excel en español lo abra con sus columnas y sus tildes.",
         "parameters": [
           {
             "name": "projectId",
@@ -2279,6 +2324,125 @@
           }
         }
       },
+      "ComparedElement": {
+        "required": [
+          "id",
+          "text",
+          "bestId",
+          "similarity",
+          "level",
+          "arbiterJoined"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "bestId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "similarity": {
+            "type": "number",
+            "format": "double"
+          },
+          "level": {
+            "$ref": "#/components/schemas/MatchLevel"
+          },
+          "arbiterJoined": {
+            "type": "boolean"
+          },
+          "agreesWithEmbeddings": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ComparisonRow": {
+        "required": [
+          "kind",
+          "arbiterId",
+          "arbiterText",
+          "origin",
+          "a",
+          "b",
+          "discrepancy",
+          "explanation",
+          "deviations",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/ComparisonRowKind"
+          },
+          "arbiterId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "arbiterText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "origin": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "a": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComparedElement"
+            }
+          },
+          "b": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComparedElement"
+            }
+          },
+          "discrepancy": {
+            "type": "boolean"
+          },
+          "explanation": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "deviations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "agreesWithEmbeddings": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ComparisonRowKind": {
+        "enum": [
+          "Merged",
+          "Discarded",
+          "Unclassified"
+        ]
+      },
       "ComputeTime": {
         "required": [
           "seconds",
@@ -2544,6 +2708,34 @@
           }
         }
       },
+      "EmbeddingCounts": {
+        "required": [
+          "onlyA",
+          "onlyB",
+          "agreement"
+        ],
+        "type": "object",
+        "properties": {
+          "onlyA": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "onlyB": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "agreement": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Agreement"
+              }
+            ]
+          }
+        }
+      },
       "ExportQuestion": {
         "required": [
           "id",
@@ -2709,6 +2901,43 @@
           }
         }
       },
+      "JobComparison": {
+        "required": [
+          "phase",
+          "thresholds",
+          "counts",
+          "agreement",
+          "rows"
+        ],
+        "type": "object",
+        "properties": {
+          "phase": {
+            "type": "string"
+          },
+          "thresholds": {
+            "$ref": "#/components/schemas/MatchThresholds"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/MatchCounts"
+          },
+          "agreement": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Agreement"
+              }
+            ]
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComparisonRow"
+            }
+          }
+        }
+      },
       "JobReport": {
         "required": [
           "jobId",
@@ -2867,6 +3096,16 @@
               "integer"
             ],
             "format": "int32"
+          },
+          "embeddings": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/EmbeddingCounts"
+              }
+            ]
           }
         }
       },
@@ -2987,7 +3226,8 @@
           "matching",
           "deviations",
           "deviationElements",
-          "time"
+          "time",
+          "fromCache"
         ],
         "type": "object",
         "properties": {
@@ -3035,6 +3275,9 @@
           },
           "time": {
             "$ref": "#/components/schemas/ComputeTime"
+          },
+          "fromCache": {
+            "type": "boolean"
           }
         }
       },

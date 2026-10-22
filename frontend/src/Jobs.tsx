@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Download, FlaskConical, Scale, Terminal } from 'lucide-react'
 import { errorMessage, formatDate, isPhaseJob, JOB_KIND_NAMES, REARBITRABLE_KINDS, type JobView, type PhaseResult, type Project, type Run, type RunEvent } from './api.ts'
 import CatalogView from './CatalogView.tsx'
+import JobComparison from './JobComparison.tsx'
 import JobReport from './JobReport.tsx'
 import { isFinished, lotsOfSlot, mockupStepName, RUN_STATE_NAMES, RUN_STATE_TONES, SLOT_NAMES, SLOTS, slotsOf, slotSummary } from './jobs.ts'
 import Badge from './ui/Badge.tsx'
@@ -137,6 +138,10 @@ function Jobs({ project, initialJobId }: { project: Project; initialJobId?: stri
         <div className="space-y-4">
           <JobResult key={`${selected.job.id}-${selected.runs.filter(isFinished).length}`} jobId={selected.job.id} finished={!selectedUnfinished} />
           <JobReport key={`report-${selected.job.id}-${selected.runs.filter(isFinished).length}`} jobId={selected.job.id} finished={!selectedUnfinished} />
+          {/* Step 100: the jobs with A, B and an arbiter, once they have ended. */}
+          {[...REARBITRABLE_KINDS, 'rearbitration'].includes(selected.job.kind) && !selectedUnfinished && (
+            <JobComparison key={`comparison-${selected.job.id}`} jobId={selected.job.id} />
+          )}
           {REARBITRABLE_KINDS.includes(selected.job.kind) && !selectedUnfinished && (
             <Rearbitrate
               jobId={selected.job.id}

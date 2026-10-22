@@ -81,6 +81,7 @@ app.MapMockupEndpoints();
 app.MapReportEndpoints();
 app.MapEmbeddingEndpoints();
 app.MapMatchingEndpoints();
+app.MapComparisonEndpoints();
 
 app.Run();
 

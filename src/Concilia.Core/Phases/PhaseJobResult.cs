@@ -19,4 +19,8 @@ public record PhaseJobResult(string? Source, bool CrossChecked, string? Output, 
     // What the matching and the deviations cost the platform (step 95): the
     // embeddings are local, so their cost is time, not money. Null without arbiter.
     public ComputeTime? MatchingTime { get; init; }
+
+    // The slow part of the matching computed for the arbiter (step 100), saved
+    // with the result (MatchingCache) so nothing computes it again. Null without arbiter.
+    public ProposalSimilarities? Similarities { get; init; }
 }

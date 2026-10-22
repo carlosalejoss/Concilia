@@ -134,6 +134,9 @@ public static class PhaseJobs
                 ? new JsonObject { ["segundos"] = Math.Round(time.Seconds, 2), ["segundos_cpu"] = Math.Round(time.CpuSeconds, 2) }
                 : null,
         };
+        // Step 100: the matching computed for the arbiter, so nothing computes it again.
+        if (result.Similarities is not null)
+            MatchingCache.Write(jobFolder, result.Similarities);
         File.WriteAllText(Path.Combine(jobFolder, PhaseJobResult.FileName),
             content.ToJsonString(new JsonSerializerOptions { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping }));
     }

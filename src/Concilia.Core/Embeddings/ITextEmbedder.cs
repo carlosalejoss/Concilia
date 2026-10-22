@@ -9,6 +9,10 @@ public interface ITextEmbedder
     // Length of every vector this embedder returns (384 for the real model).
     int Dimensions { get; }
 
+    // Which model gives the vectors, saved with the matching of each job
+    // (step 100) so it is computed again if the model changes.
+    string Name { get; }
+
     // One vector per text, in the same order. Computing many texts in one
     // call is faster than one by one: the model processes them in batches.
     IReadOnlyList<float[]> Embed(IReadOnlyList<string> texts);
