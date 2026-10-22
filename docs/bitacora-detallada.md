@@ -2284,3 +2284,17 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - el formato del backlog que se guarda no cambia: la web, las exportaciones y el informe siguen igual.
 - **Tests:** `CriteriaReferencesTests` (6) y uno de `PhaseTaskTests` cambiado (los criterios y las tareas sí llevan ahora el prefijo); 943 en total, todos correctos, en el worktree limpio desde `HEAD` con estos cambios.
 - **Pendientes:** reconstruir la API cuando la otra sesión haya hecho commit del paso 100 y no haya tareas en marcha, con permiso del autor; medir los pasos 107 y 108 con un nuevo arbitraje del catálogo y otro del backlog de «Clinicas Veterinarias v0.11»; documentar los resultados y cerrar el hito 18b.
+
+## 22-10-2026, 13:55 (sesión)
+
+**Resumen para la bitácora (22-10-2026, paso 100 comprobado en Docker)**
+
+- **Reconstrucción:** la API ya se había reconstruido a las 13:44 (otra sesión), con todo hasta el paso 108, mi paso 100 incluido. La web se reconstruyó sola (`--no-deps web`) cuando no había ninguna tarea en marcha; durante la espera hubo un nuevo arbitraje de clínicas v0.11.
+- **Comprobaciones de solo lectura, con los 42 trabajos de preguntas, catálogo, backlog y nuevos arbitrajes de los 7 proyectos que tienen A y B válidos:**
+  - **Primera vez:** calcular y guardar el emparejamiento de los 42 costó 344 s en total, unos 8 s por trabajo.
+  - **Segunda vez, desde lo guardado:** 9,6 s en total (0,2 s por trabajo con la petición; el cálculo dentro de la API, unos 25 ms). El emparejamiento, las desviaciones y las cifras del informe son idénticos a los de la primera vez en los 41 trabajos que estaban terminados. El único distinto es el nuevo arbitraje que seguía en marcha en la primera pasada, que entonces no tenía salida del árbitro.
+  - **Comparación:** en todos los trabajos con árbitro coincide con el informe: las filas de la unión, de ambas, solo de A y solo de B, los descartados y las desviaciones. Ningún elemento de A ni de B se queda sin fila. Las 42 comparaciones tardan 4,1 s en total.
+  - **Elementos en varias filas:** en 9 trabajos, algunos elementos aparecen en más de una fila; por ejemplo, el `RF-071` de B repartido por el árbitro en dos requisitos de la unión. Es el emparejamiento de varios a varios del árbitro, no un error. Por eso contar «no coincide con los embeddings» por filas da algo más que por elementos (30 frente a 27 en un trabajo): la cifra del informe es por elemento.
+  - **CSV del proyecto:** con las tres columnas al final (`emb_solo_A`, `emb_solo_B` y `emb_acuerdo_arbitro_pct`). El de clínicas (23 trabajos) tarda 7,5 s, pero no por los embeddings: lo que pesa es estimar el consumo de las ejecuciones sin dato (paso 95), unos 0,4 s por nuevo arbitraje.
+  - **Web:** el paquete servido trae la vista «Comparación de A, B y el árbitro» y la línea «Embeddings» del informe.
+- **Pendiente:** que el autor revise la comparación en el navegador.
