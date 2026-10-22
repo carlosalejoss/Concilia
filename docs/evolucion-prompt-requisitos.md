@@ -14,7 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.12 | 22-10-2026 | El árbitro del catálogo consulta solo las fuentes de los requisitos que tiene que decidir (`input/fuentes.txt`); el del backlog cita por su id los criterios y las tareas que conserva, y la plataforma pone su texto | Pendiente | Pendiente |
+| v0.12 | 22-10-2026 | El árbitro del catálogo consulta solo las fuentes de los requisitos que tiene que decidir (`input/fuentes.txt`); el del backlog cita por su id los criterios y las tareas que conserva, y la plataforma pone su texto | Sí (nuevos arbitrajes del proyecto grande de ejemplo, 22-10-2026) | Catálogo: 298 líneas de documentación consultadas en lugar de 1.242, a la primera y por 1,43 $ en lugar de 3,20 $. Backlog: 239 criterios en lugar de 121, por 1,23 $ en lugar de 1,05 $ |
 | v0.11 | 19-10-2026 | La reparación corrige con Edit la salida anterior en su fichero, con la línea de cada error, en lugar de llevarla pegada y reescribirla; sugerencias más prudentes; estilo propio del mockup por proyecto | Sí (proyecto grande de ejemplo y banco de alimentos, 20 a 22-10-2026) | Preguntas a 0,94 $ (antes 2,31 $). Las reparaciones de LUNA y del árbitro caben y corrigen con Edit. Catálogo de 235 requisitos con 12 discrepancias, todas de la plataforma; unos 3,9 $ (antes 2,70 $) porque el árbitro lee demasiada documentación. Backlog de 121 historias sin reparaciones, 1,67 $ (antes 1,43 $), pero con un solo criterio por historia. Mockups de 40 y 24 pantallas a la primera, con el mismo coste por pantalla que antes y estilos distintos en cada proyecto |
 | v0.10 | 19-10-2026 | El árbitro parte del emparejamiento por significado de la plataforma (`input/emparejamiento.txt`, embeddings en local); puede apartarse si la fuente lo justifica, y la plataforma marca como discrepancia en el catálogo y el backlog dónde lo hizo | Sí (proyecto grande de ejemplo, catálogo, 19-10-2026) | Con las mismas propuestas, 3 arbitrajes de SOL válidos de 3: unión de 202 a 222 requisitos (media 212,3), frente a 209–291 (media 240) con la v0.9. Las desviaciones no bajan (7,7 de media, frente a las 7,0 que habría marcado la v0.9) |
 | v0.9 | 15-10-2026 | Mockup como aplicación que funciona: inicio de sesión con usuarios de prueba, una aplicación por rol, menús solo con las secciones principales y navegación por acciones, comprobada por la plataforma | Sí (documento C, 15-10-2026) | Documento C: 40 min, 25 pantallas, las 46 historias, 866 KB, una sola corrección; 3,47 M tokens de entrada y 548.000 de salida. Proyecto grande de ejemplo: 38 pantallas y las 109 historias (1,54 MB), con una pantalla perdida por un 504 de la pasarela y recuperada al reanudar. Al autor le convencen los dos |
@@ -387,12 +387,35 @@ Hito 18b, a partir de la prueba real de la v0.11. Cambian los prompts del árbit
 
 En palabras sencillas: con solo las páginas que tiene que comprobar, el árbitro trabaja la mitad de caro y a la primera, y además separa mejor los requisitos que se parecen pero dicen cosas distintas. El precio es que la plataforma, que no distingue «un año» de «ocho años», le pide al usuario revisar más casos.
 
-**Backlog (paso 108):** pendiente, en marcha.
+**Backlog (paso 108), 22-10-2026.** Nuevo arbitraje con `SS - GPT-6-SOL` del backlog de «Clinicas Veterinarias v0.11», con las mismas propuestas de A (152 historias y 237 criterios) y B (56 historias y 56 criterios) que el árbitro de la prueba real.
+
+| | v0.11 (prueba real) | v0.12 |
+| --- | --- | --- |
+| Historias en la unión | 121 (52 de ambas, 68 solo de A, 1 solo de B), 2 descartadas | **152** (55 de ambas, 97 solo de A), ninguna descartada |
+| Épicas | 13 | 15 |
+| Criterios de aceptación | 121, uno por historia | **239**, de 1 a 3 por historia |
+| Tareas | 121, una por historia | 153 |
+| Cómo los escribió | todos enteros | **238 criterios y 153 tareas citados por su id**; 1 criterio escrito entero |
+| Criterios de las historias unidas que no cita | — | 55 de 293 (y 55 tareas de 208): repetidos o combinados, según el aviso |
+| Desviaciones (elementos) | 16 | 13 |
+| Discrepancias del árbitro | 1 | 4 |
+| Reparaciones | 0 | 0 |
+| Coste del árbitro | 1,05 $* (243.000* de entrada y 57.000* de salida) | 1,23 $* (233.175* y 76.711*) |
+| Minutos del árbitro | 4,1 | 5,5 |
+
+- **El objetivo se cumple:** el árbitro conserva casi el doble de criterios (239 frente a 121), y también más historias y tareas. Con la v0.11 no solo recortaba criterios: juntaba historias de A entre sí para que el backlog le cupiera (de 152 a 120).
+- **El contexto sigue lleno al leer:** Claude Code compactó una vez nada más terminar la lectura (esta vez con éxito) y, después, el árbitro leyó su propia conversación guardada (`claude-config/projects/…jsonl`) para recuperar lo que había resumido. Así sacó bien los ids que citó: ningún `ARB-CITA` fue un error. Ya había pasado con el árbitro del catálogo de la v0.11.
+- **Coste:** sube unos 0,18 $ (un 17 %) y 1,4 minutos, por escribir y razonar un backlog más grande. La estimación de la salida (76.711) incluye el razonamiento y supera el tope de una respuesta, así que es aproximada.
+
+En palabras sencillas: antes, el árbitro tenía que copiar a mano cada condición de «terminada» y, para que le cupiera, se quedaba con una por historia. Ahora dice «esta, esta y esta» y la plataforma las copia, así que conserva casi todas por unos céntimos más.
+
+**Con esto se cumple el «Hecho cuando» del hito 18b** (22-10-2026): con las mismas propuestas, el árbitro del catálogo consulta cuatro veces menos documentación, y la unión no empeora (es más atómica, aunque con más avisos de la plataforma), y el del backlog conserva los criterios de las historias que une.
 
 ### Qué hay que mejorar
 
 - **Que la plataforma no marque como desviación un par «mismo» con cifras distintas** que el árbitro separa: los embeddings no ven la diferencia entre «un año» y «ocho años», y esos avisos son falsos. Es el mismo criterio de cifras que ya usa `fuentes.txt`.
 - Repetir el arbitraje del catálogo para saber si la unión más atómica se mantiene o es variación del árbitro.
+- Que el árbitro no lea su propia conversación guardada después de compactar (`claude-config/`): no es un fichero de `LECTURA`. Hoy le ayuda a recuperar lo resumido, pero no está previsto ni medido.
 
 ## v0.11 (19-10-2026)
 

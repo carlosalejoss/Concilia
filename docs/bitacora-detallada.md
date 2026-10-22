@@ -2314,3 +2314,19 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Referencia:** los 7 nuevos arbitrajes del catálogo de clínicas del 16 y el 19-10 (propuestas de la v0.9) consultaron entre 264 y 2.948 líneas de la documentación (mediana 655) y costaron entre 1,39 y 4,53 $.
 - **Mejora que deja:** que la plataforma no marque como desviación un par «mismo» con cifras distintas que el árbitro separa (falsos avisos, porque los embeddings no ven las cifras). No se cambia todavía: se anota.
 - **En marcha:** el nuevo arbitraje del backlog (trabajo `257d6b65`).
+
+## 22-10-2026, 14:03 (sesión)
+
+**Resumen para la bitácora (22-10-2026, hito 18b completado: medida del paso 108 y cierre)**
+
+- **Nuevo arbitraje del backlog** de «Clinicas Veterinarias v0.11» con SOL (trabajo `257d6b65`, prompts v0.12), lanzado por Claude por la API, sobre las mismas propuestas que el árbitro de la prueba real:
+  - unión de 152 historias (55 de ambas, 97 solo de A), ninguna descartada, en 15 épicas; antes, 121 (52, 68 y 1) con 2 descartadas, en 13;
+  - **239 criterios** (de 1 a 3 por historia) y 153 tareas, frente a 121 y 121. Aviso `ARB-CITA`: 238 criterios y 153 tareas citados por su id, 1 criterio escrito entero; de los 293 criterios y 208 tareas de las historias unidas no cita 55 y 55, que pueden ser repetidos o combinados;
+  - desviaciones en 13 elementos (antes 16) y 4 discrepancias del árbitro (antes 1); sin reparaciones;
+  - unos 1,23 $* (233.175* y 76.711* tokens) y 5,5 minutos, frente a 1,05 $* y 4,1; emparejamiento de 4,9 s (20,5 s de CPU);
+  - **incidencia:** Claude Code compactó una vez en cuanto terminó la lectura (con éxito) y el árbitro leyó después su propia conversación guardada (`claude-config/projects/…jsonl`), que no es un fichero de `LECTURA`, para recuperar lo resumido. Ya había pasado con el árbitro del catálogo de la v0.11. Se anota como mejora.
+- **Lectura:** con la v0.11, el árbitro no solo recortaba criterios: también juntaba historias de A entre sí (152 → 120) para que el backlog le cupiera. Con la v0.12 conserva las 152.
+- **Tablas de coste:** al regenerarlas, los tiempos de embeddings «medidos después» de los nuevos arbitrajes del 19-10 salían a 0,0, porque desde el paso 100 (de la otra sesión) el emparejamiento se guarda y no se vuelve a calcular. `costes.cs` usa ahora `fromCache` y no muestra ese tiempo, con una nota (medido después tardaba entre 15 y 37 s). La sección 2 incluye también la nueva prueba de clínicas, con una columna de proyecto, para que salgan los arbitrajes de la v0.12.
+- **Hito 18b completado:** se cumple su «Hecho cuando». Marcado en el plan, `CLAUDE.md`, el README, la trazabilidad y la evolución del prompt (v0.12).
+- **Mejoras que deja, sin hacer:** no marcar como desviación un par «mismo» con cifras distintas que el árbitro separa (falsos avisos); repetir el arbitraje del catálogo para medir la variación de la unión; que el árbitro no lea su conversación guardada tras compactar.
+- **Cierre de este chat (petición del autor):** con el hito 18b terminado, el trabajo de esta conversación (hitos 17, 18 y 18b) queda cerrado. Lo siguiente (hito 21) lo lleva la otra sesión.

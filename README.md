@@ -81,6 +81,7 @@ concilia/
 - [x] **Hito 13.** Test del flujo completo, informe automático por trabajo, flujo completo con los dos proyectos ficticios de `ejemplos/` y documentación al día.
 - [x] **Hito 17.** Embeddings en local: emparejamiento de A y B por significado, con umbrales calibrados, y árbitro guiado por ese emparejamiento.
 - [x] **Hito 18.** Fiabilidad y calidad: correcciones automáticas de formato, reparación editando, sugerencias prudentes, estilos del mockup, trabajos interrumpidos y tablas de coste en tiempo y dinero, probados con el flujo completo del proyecto grande de ejemplo.
+- [x] **Hito 18b.** El árbitro tras la prueba real: el del catálogo consulta solo las fuentes que necesita y el del backlog conserva los criterios citándolos por su id (prompts v0.12).
 - [x] **Hito 19.** Exportar los entregables: el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira y Azure DevOps.
 - [x] **Hito 20.** Trazabilidad visual (de cada requisito a su origen en la documentación) y comparación lado a lado de A, B y el árbitro en cada trabajo, con el emparejamiento por embeddings.
 - [ ] **Hito 21.** Historial de versiones de los entregables.
