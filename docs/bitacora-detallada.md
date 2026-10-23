@@ -2360,3 +2360,10 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Resultado:** 251 de 255 creados sin ningún error, con la jerarquía, los acentos, la descripción y las etiquetas correctos. Se paró por un límite de ese importador, 250 elementos por fichero, no por el CSV. Las 4 subtareas que faltaban (T-118 a T-121) entraron con un segundo CSV que preparó Claude, con la clave de Jira de su historia en `Parent`. El autor lo da por bueno.
 - **Mejora posible, sin decidir:** que Concilia reparta el CSV de Jira en ficheros de 250 elementos como máximo, por épicas completas, en un `.zip`. Claude la recomendaba, porque un usuario normal de Jira no es administrador; el autor cerró la prueba sin elegir.
 - **Pendientes:** importar el CSV en un Azure DevOps real (autor); después, el hito 21.
+
+## 23-10-2026, 13:05 (sesión)
+
+**Resumen para la bitácora (23-10-2026, hito 19 cerrado)**
+
+- **Decisión del autor:** el hito 19 queda cerrado sin importar el CSV en un Azure DevOps real. El de Azure DevOps solo se ha comprobado con los tests (lector estándar de CSV y flujo completo) y con la descarga en Docker. El de Jira sí se importó en un Jira real.
+- **Pendientes:** el hito 21 (historial de versiones de los entregables). Sigue sin decidir la mejora de repartir el CSV de Jira en ficheros de 250 elementos como máximo.
