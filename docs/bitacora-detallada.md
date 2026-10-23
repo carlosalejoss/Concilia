@@ -2340,3 +2340,11 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Corregido:** en una ventana estrecha, el desplegable de filtros de la comparación se salía del recuadro por la derecha (`max-w-full`). En el panel de trazabilidad, cada fragmento repetía el id del documento («DOC-01#F034 · DOC-01 · …»); ahora solo lleva el nombre del fichero.
 - **Visto, no es del paso 100:** a 390 px la barra lateral abierta tapa casi toda la página en cualquier paso. La web está pensada para escritorio y la barra se puede minimizar.
 - **Sin probar:** que el botón «Trazabilidad» se oculte con cambios sin guardar. Todos los catálogos y backlogs están validados y reabrir uno cambiaría el proyecto. Queda para el autor.
+
+## 23-10-2026, 10:00 (sesión)
+
+**Resumen para la bitácora (23-10-2026, hito 20 cerrado)**
+
+- **Qué se hizo:** el autor comprobó en el navegador lo único que Claude no pudo probar sin cambiar un proyecto: el botón «Trazabilidad» desaparece mientras hay cambios sin guardar. Funciona.
+- **Estado:** hito 20 cerrado (pasos 99 y 100), revisado en el navegador por Claude (Edge sin ventana, 22-10-2026) y por el autor (23-10-2026).
+- **Pendientes:** el hito 21 (historial de versiones de los entregables). Siguen abiertas, de antes, la importación de los CSV en un Jira y un Azure DevOps reales (autor).
