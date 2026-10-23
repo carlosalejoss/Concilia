@@ -2367,3 +2367,24 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 
 - **Decisión del autor:** el hito 19 queda cerrado sin importar el CSV en un Azure DevOps real. El de Azure DevOps solo se ha comprobado con los tests (lector estándar de CSV y flujo completo) y con la descarga en Docker. El de Jira sí se importó en un Jira real.
 - **Pendientes:** el hito 21 (historial de versiones de los entregables). Sigue sin decidir la mejora de repartir el CSV de Jira en ficheros de 250 elementos como máximo.
+
+## 23-10-2026, 13:30 (sesión)
+
+**Resumen para la bitácora (23-10-2026, paso 101: guardar cada versión de los entregables)**
+
+- **Qué se hizo:** cada versión del catálogo, el backlog y el mockup queda guardada con su fecha y su origen. Antes, generar de nuevo o guardar cambios sustituía el contenido y el anterior se perdía (solo quedaba la salida congelada del árbitro, para las métricas).
+  - Tabla nueva `DeliverableVersions` (migración `AddDeliverableVersions`): proyecto, tipo, número por tipo y proyecto, origen, trabajo, estado, contenido, número de elementos y fecha. Se borra en cascada con el proyecto.
+  - `DeliverableHistory` (Core) decide si un cambio crea versión. La API la llama al generar el catálogo, el backlog y el mockup, al guardar cambios y al validar.
+  - Del mockup se copia su página a `data/projects/{id}/mockup/versiones/{n}.html`.
+  - Al arrancar, cada entregable sin versiones recibe la versión 1 con origen `Existing`.
+  - `GET /projects/{id}/deliverables/{kind}/versions`, documentado en OpenAPI, y en la web «Historial de versiones», plegable, solo para leer.
+- **Decisiones del autor (23-10-2026), todas como recomendaba Claude:**
+  1. Un guardado que deja el entregable igual que su última versión (mismo contenido, estado y trabajo) no crea versión.
+  2. Validar sí crea una, con origen «validada», aunque el contenido sea el mismo; reabrir no.
+  3. Se guardan todas las versiones, sin límite.
+  4. Los entregables que ya existían reciben su primera versión al arrancar la API.
+  5. Para el paso 102: volver a una versión la deja en borrador aunque estuviera validada, y los pasos siguientes quedan desactualizados, como al generar.
+- **Por qué cada versión guarda su trabajo:** las comprobaciones de un borrador usan el plan del trabajo que lo generó (el del backlog lleva el catálogo validado del que salió). Al volver a una versión en el paso 102 habrá que recuperar también ese trabajo.
+- **Cambio de criterio:** el comentario de `Deliverable` decía que lo sustituido al guardar «ya no existe». Sigue sin existir para el resto del flujo, que lee solo la copia de trabajo, pero queda una copia en el historial.
+- **Comprobado:** 948 tests de C# (5 nuevos, más las comprobaciones del historial en el flujo completo), la web compila y pasa el lint. No se ha revisado en el navegador: hace falta reconstruir la API en Docker para aplicar la migración, y no se ha hecho sin preguntar.
+- **Pendientes:** paso 102 (ver una versión, compararla con la actual y volver a ella). Sigue sin decidir la mejora de repartir el CSV de Jira en ficheros de 250 elementos.

@@ -62,11 +62,13 @@ public static class DeliverableEndpoints
             {
                 return Problem($"El contenido no tiene la forma de un {Name(d.Kind)}: {e.Message}");
             }
-            var change = DeliverableRules.Save(d, content, DateTimeOffset.UtcNow);
+            var now = DateTimeOffset.UtcNow;
+            var change = DeliverableRules.Save(d, content, now);
             if (!change.Done)
             {
                 return Problem(change.Errors[0]);
             }
+            await DeliverableVersions.RecordAsync(db, storage, d, VersionOrigin.Edited, now);
             await db.SaveChangesAsync();
             return Results.Ok(await ViewAsync(db, storage, d));
         })
@@ -87,11 +89,13 @@ public static class DeliverableEndpoints
             {
                 return Problem(MockupIsNotEdited);
             }
-            var change = DeliverableRules.Validate(d, await CheckAsync(db, storage, d), DateTimeOffset.UtcNow);
+            var now = DateTimeOffset.UtcNow;
+            var change = DeliverableRules.Validate(d, await CheckAsync(db, storage, d), now);
             if (!change.Done)
             {
                 return Results.ValidationProblem(new Dictionary<string, string[]> { ["deliverable"] = [.. change.Errors] });
             }
+            await DeliverableVersions.RecordAsync(db, storage, d, VersionOrigin.Validated, now);
             await ApplyChangeAsync(db, projectId, change.Change!.Value);
             await db.SaveChangesAsync();
             return Results.Ok(await ViewAsync(db, storage, d));
@@ -134,8 +138,9 @@ public static class DeliverableEndpoints
         .Produces(StatusCodes.Status404NotFound);
 
     // Called by JobWorker when a catalog or backlog job ends with a result:
-    // the working copy becomes the current draft, and the later steps outdated.
-    public static async Task StoreResultAsync(AppDbContext db, Guid jobId, int projectId, PhasePlan plan, PhaseJobResult result)
+    // the working copy becomes the current draft (a new version), and the
+    // later steps outdated.
+    public static async Task StoreResultAsync(AppDbContext db, FileStorage storage, Guid jobId, int projectId, PhasePlan plan, PhaseJobResult result)
     {
         if (result.Source is null)
         {
@@ -144,11 +149,13 @@ public static class DeliverableEndpoints
         var kind = plan.Kind == PhaseKind.Catalog ? DeliverableKind.Catalog : DeliverableKind.Backlog;
         var content = kind == DeliverableKind.Catalog ? CatalogDraft.FromResult(result, plan) : BacklogDraft.FromResult(result, plan);
         var current = await db.Deliverables.SingleOrDefaultAsync(d => d.ProjectId == projectId && d.Kind == kind);
-        var (deliverable, change) = DeliverableRules.Generated(current, projectId, kind, jobId, content, DateTimeOffset.UtcNow);
+        var now = DateTimeOffset.UtcNow;
+        var (deliverable, change) = DeliverableRules.Generated(current, projectId, kind, jobId, content, now);
         if (current is null)
         {
             db.Deliverables.Add(deliverable);
         }
+        await DeliverableVersions.RecordAsync(db, storage, deliverable, VersionOrigin.Generated, now);
         await ApplyChangeAsync(db, projectId, change);
         await db.SaveChangesAsync();
     }

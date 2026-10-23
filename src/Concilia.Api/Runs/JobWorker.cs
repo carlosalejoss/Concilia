@@ -105,7 +105,7 @@ public class JobWorker(
             }
             else
             {
-                await Deliverables.DeliverableEndpoints.StoreResultAsync(db, jobId, job.ProjectId, phasePlan, result);
+                await Deliverables.DeliverableEndpoints.StoreResultAsync(db, storage, jobId, job.ProjectId, phasePlan, result);
             }
             job.FinishedAt = DateTimeOffset.UtcNow;
             await db.SaveChangesAsync(CancellationToken.None);
@@ -296,7 +296,8 @@ public class JobWorker(
         }
     }
 
-    // At start-up, what a restart of the API left half done (InterruptedJobs).
+    // At start-up, what a restart of the API left half done (InterruptedJobs),
+    // and the first version of the deliverables from before the history.
     private async Task MarkInterruptedRunsAsync()
     {
         // Only what existed before this start: the API may already accept a
@@ -305,12 +306,15 @@ public class JobWorker(
         try
         {
             using var scope = scopes.CreateScope();
-            await InterruptedJobs.CloseAsync(scope.ServiceProvider.GetRequiredService<AppDbContext>(), storage, start);
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            await InterruptedJobs.CloseAsync(db, storage, start);
+            // Step 101: the deliverables from before the history get their first version.
+            await Deliverables.DeliverableVersions.RecordExistingAsync(db, storage);
         }
         catch (Exception e)
         {
             // Without a database (e.g. in the /health test) there is nothing to mark.
-            logger.LogWarning(e, "Could not check for interrupted runs");
+            logger.LogWarning(e, "Could not check for interrupted runs or record the existing deliverables");
         }
     }
 

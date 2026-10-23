@@ -20,6 +20,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Question> Questions => Set<Question>();
 
     public DbSet<Deliverable> Deliverables => Set<Deliverable>();
+    public DbSet<DeliverableVersion> DeliverableVersions => Set<DeliverableVersion>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -117,6 +118,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             // Stored as text ("Catalog", "Draft"...) so the table is readable.
             deliverable.Property(d => d.Kind).HasConversion<string>().HasMaxLength(20);
             deliverable.Property(d => d.Status).HasConversion<string>().HasMaxLength(20);
+        });
+
+        // Step 101: the versions of each deliverable, deleted with the project.
+        modelBuilder.Entity<DeliverableVersion>(version =>
+        {
+            version.HasOne<Project>()
+                .WithMany()
+                .HasForeignKey(v => v.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
+            version.HasOne<Job>()
+                .WithMany()
+                .HasForeignKey(v => v.JobId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One number per version, kind and project.
+            version.HasIndex(v => new { v.ProjectId, v.Kind, v.Number }).IsUnique();
+            version.Property(v => v.Kind).HasConversion<string>().HasMaxLength(20);
+            version.Property(v => v.Origin).HasConversion<string>().HasMaxLength(20);
+            version.Property(v => v.Status).HasConversion<string>().HasMaxLength(20);
         });
     }
 }

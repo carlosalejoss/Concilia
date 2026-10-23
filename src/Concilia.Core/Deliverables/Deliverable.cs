@@ -6,9 +6,9 @@ public enum DeliverableStatus { Draft, Validated }
 
 // The current catalog, backlog or mockup of a project: the working copy the
 // user edits and validates (one per kind and project). Saving replaces its
-// content: what is replaced no longer exists for the rest of the flow. The
-// original output of the arbiter stays frozen in data/jobs/{JobId}/, only for
-// the metrics.
+// content: what is replaced no longer exists for the rest of the flow, but a
+// copy stays in its history (DeliverableVersion, step 101). The original
+// output of the arbiter stays frozen in data/jobs/{JobId}/, only for the metrics.
 public class Deliverable
 {
     public int Id { get; set; }

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { ChevronRight, ChevronsDownUp, ChevronsUpDown, Layers, Plus, Search, Trash2, Waypoints } from 'lucide-react'
-import type { BacklogContent, CatalogContent, Criterion, Deliverable, Epic, Project, Story } from './api.ts'
+import { historyKey, type BacklogContent, type CatalogContent, type Criterion, type Deliverable, type Epic, type Project, type Story } from './api.ts'
 import DeliverableBar from './DeliverableBar.tsx'
+import VersionHistory from './VersionHistory.tsx'
 import ListInput from './ListInput.tsx'
 import TracePanel, { type TraceTarget } from './TracePanel.tsx'
 import { useDeliverable } from './useDeliverable.ts'
@@ -105,6 +106,8 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
           { href: `/projects/${project.id}/backlog-azure-devops.csv`, label: 'CSV Azure DevOps' },
         ]}
       />
+
+      <VersionHistory projectId={project.id} kind="backlog" refreshKey={historyKey(state.deliverable)} />
 
       {functional.length > 0 && <Coverage functional={functional} uncovered={uncovered} storiesOf={storiesOf} projectId={project.id} />}
 

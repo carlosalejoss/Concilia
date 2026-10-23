@@ -75,6 +75,7 @@ app.MapRearbitrationEndpoints();
 app.MapFlowEndpoints();
 app.MapQuestionEndpoints();
 app.MapDeliverableEndpoints();
+app.MapDeliverableVersionEndpoints();
 app.MapExportEndpoints();
 app.MapTraceabilityEndpoints();
 app.MapMockupEndpoints();

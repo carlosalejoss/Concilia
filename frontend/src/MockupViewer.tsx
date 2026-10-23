@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { Download, ExternalLink, Maximize2, MonitorSmartphone, Palette } from 'lucide-react'
-import { errorMessage, formatDate, type Deliverable, type JobView, type PhaseResult, type Project, type ProjectFile } from './api.ts'
+import { errorMessage, formatDate, historyKey, type Deliverable, type JobView, type PhaseResult, type Project, type ProjectFile } from './api.ts'
 import { isStyleFile } from './uploadRules.ts'
 import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
 import LaunchButton from './ui/LaunchButton.tsx'
 import { useActiveJob } from './hooks/useActiveJob.ts'
 import EmptyState from './ui/EmptyState.tsx'
+import VersionHistory from './VersionHistory.tsx'
 
 // What the platform keeps about the current mockup (the .html itself is served
 // apart, in GET /projects/{id}/mockup).
@@ -163,6 +164,7 @@ function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange,
             </div>
             <iframe ref={frame} key={stamp} src={`${pageUrl}?v=${stamp}`} sandbox="allow-scripts" title={`Mockup de ${project.name}`} className="h-[75vh] w-full bg-white" />
           </div>
+          <VersionHistory projectId={project.id} kind="mockup" refreshKey={historyKey(mockup)} />
         </>
       )}
     </div>

@@ -141,6 +141,26 @@ export type Deliverable<T> = {
   assumedQuestionIds?: string[] | null
 }
 
+// GET /projects/{id}/deliverables/{kind}/versions (step 101): the history of a
+// deliverable, the newest first, without the contents.
+export type DeliverableVersion = {
+  number: number
+  origin: 'Existing' | 'Generated' | 'Edited' | 'Validated'
+  status: 'Draft' | 'Validated'
+  jobId: string
+  createdAt: string
+  // Requirements of a catalog, stories of a backlog or screens of a mockup.
+  elements: number | null
+  // It is the version the deliverable has now.
+  current: boolean
+}
+
+// What changes in a deliverable each time a version may have been recorded,
+// so the history is read again.
+export function historyKey(d: Deliverable<unknown> | null): string {
+  return d ? `${d.jobId}.${d.status}.${d.updatedAt ?? d.createdAt}` : ''
+}
+
 // One requirement of the catalog v0 working copy (prompts/v0/esquemas/catalogo.schema.json
 // plus the fields of the platform: origen, discrepancia, explicacion, revisada).
 export type CatalogRequirement = {

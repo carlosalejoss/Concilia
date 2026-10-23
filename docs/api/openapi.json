@@ -1772,6 +1772,53 @@
         }
       }
     },
+    "/projects/{projectId}/deliverables/{kind}/versions": {
+      "get": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Lista las versiones del catálogo, el backlog o el mockup",
+        "description": "De la más reciente a la más antigua, sin su contenido. Se guarda una versión cada vez que el entregable se genera (`Generated`), se guardan cambios que lo dejan distinto (`Edited`) o se valida (`Validated`); al reabrirlo no, porque el contenido no cambia. `Existing` es la que tenía al empezar el historial. `current` marca la versión que tiene ahora.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "description": "`catalog`, `backlog` o `mockup`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeliverableVersionView"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/projects/{projectId}/mockup-jobs": {
       "post": {
         "tags": [
@@ -2500,6 +2547,50 @@
           "Draft",
           "Validated"
         ]
+      },
+      "DeliverableVersionView": {
+        "required": [
+          "number",
+          "origin",
+          "status",
+          "jobId",
+          "createdAt",
+          "elements",
+          "current"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/VersionOrigin"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DeliverableStatus"
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "elements": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "Requisitos del catálogo, historias del backlog o pantallas del mockup.",
+            "format": "int32"
+          },
+          "current": {
+            "type": "boolean",
+            "description": "Es la versión que tiene ahora el entregable."
+          }
+        }
       },
       "DeliverableView": {
         "required": [
@@ -4231,6 +4322,14 @@
             "format": "int32"
           }
         }
+      },
+      "VersionOrigin": {
+        "enum": [
+          "Existing",
+          "Generated",
+          "Edited",
+          "Validated"
+        ]
       }
     }
   },

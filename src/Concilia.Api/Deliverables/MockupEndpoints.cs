@@ -232,11 +232,14 @@ public static class MockupEndpoints
             $"{result.Message} Con las {plan.StoryIds.Count} historias del backlog validado."));
 
         var current = await DeliverableEndpoints.CurrentAsync(db, job.ProjectId, DeliverableKind.Mockup);
-        var (deliverable, change) = DeliverableRules.Generated(current, job.ProjectId, DeliverableKind.Mockup, job.Id, summary.ToJsonString(), DateTimeOffset.UtcNow);
+        var now = DateTimeOffset.UtcNow;
+        var (deliverable, change) = DeliverableRules.Generated(current, job.ProjectId, DeliverableKind.Mockup, job.Id, summary.ToJsonString(), now);
         if (current is null)
         {
             db.Deliverables.Add(deliverable);
         }
+        // Step 101: the page of each mockup is kept, not only the current one.
+        await DeliverableVersions.RecordAsync(db, storage, deliverable, VersionOrigin.Generated, now);
         await DeliverableEndpoints.ApplyChangeAsync(db, job.ProjectId, change);
         await db.SaveChangesAsync();
     }

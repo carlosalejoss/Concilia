@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { ChevronRight, ListChecks, Plus, Search, Trash2, Waypoints } from 'lucide-react'
-import type { CatalogContent, CatalogRequirement, Project } from './api.ts'
+import { historyKey, type CatalogContent, type CatalogRequirement, type Project } from './api.ts'
 import DeliverableBar from './DeliverableBar.tsx'
+import VersionHistory from './VersionHistory.tsx'
 import ListInput from './ListInput.tsx'
 import TracePanel, { type TraceTarget } from './TracePanel.tsx'
 import { useDeliverable } from './useDeliverable.ts'
@@ -129,6 +130,8 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
           { href: `/projects/${project.id}/catalog.pdf`, label: 'PDF' },
         ]}
       />
+
+      <VersionHistory projectId={project.id} kind="catalog" refreshKey={historyKey(state.deliverable)} />
 
       <div className="flex flex-wrap items-center gap-3">
         <label className="flex min-w-48 flex-1 items-center gap-2 rounded border border-line bg-surface px-2.5 py-1.5 text-sm focus-within:outline-2 focus-within:outline-accent">
