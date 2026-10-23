@@ -2348,3 +2348,15 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Qué se hizo:** el autor comprobó en el navegador lo único que Claude no pudo probar sin cambiar un proyecto: el botón «Trazabilidad» desaparece mientras hay cambios sin guardar. Funciona.
 - **Estado:** hito 20 cerrado (pasos 99 y 100), revisado en el navegador por Claude (Edge sin ventana, 22-10-2026) y por el autor (23-10-2026).
 - **Pendientes:** el hito 21 (historial de versiones de los entregables). Siguen abiertas, de antes, la importación de los CSV en un Jira y un Azure DevOps reales (autor).
+
+## 23-10-2026, 13:00 (sesión)
+
+**Resumen para la bitácora (23-10-2026, el CSV de Jira importado en un Jira real)**
+
+- **Qué se hizo:** el autor importó el CSV de Jira del backlog de clínicas v0.11 (13 épicas, 121 historias y 121 subtareas) en un Jira Cloud real, con la ayuda paso a paso de Claude.
+  - El espacio es gestionado por el equipo (*team-managed*), y la cuenta del autor no es administradora del sitio, así que no tiene el importador de administración (*External System Import*). Se usó el de quien no es administrador, en `/secure/BulkCreateSetupPage!default.jspa?externalSystem=com.atlassian.jira.plugins.jim-plugin:bulkCreateCsv`.
+  - Columnas: `Issue ID` → Id de Incidencia, `Parent ID` → Principal, `Issue Type` → Tipo de Incidencia (Epic → Epic, Story → Historia, Sub-task → Subtask), `Summary` → Resumen, `Description` → Descripción, las cuatro `Labels` → Etiquetas y `Epic Name` sin asignar, porque ese tipo de espacio no lo tiene.
+  - La validación dio 134 elementos sin errores: cuenta solo épicas e historias y crea las subtareas después.
+- **Resultado:** 251 de 255 creados sin ningún error, con la jerarquía, los acentos, la descripción y las etiquetas correctos. Se paró por un límite de ese importador, 250 elementos por fichero, no por el CSV. Las 4 subtareas que faltaban (T-118 a T-121) entraron con un segundo CSV que preparó Claude, con la clave de Jira de su historia en `Parent`. El autor lo da por bueno.
+- **Mejora posible, sin decidir:** que Concilia reparta el CSV de Jira en ficheros de 250 elementos como máximo, por épicas completas, en un `.zip`. Claude la recomendaba, porque un usuario normal de Jira no es administrador; el autor cerró la prueba sin elegir.
+- **Pendientes:** importar el CSV en un Azure DevOps real (autor); después, el hito 21.
