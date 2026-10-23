@@ -25,7 +25,8 @@ type MockupViewerProps = {
   // Whether the next mockup follows the style reference, when there is one.
   useStyle: boolean
   onUseStyleChange: (useStyle: boolean) => void
-  // A job was launched from here (resuming a failed one): reload the flow.
+  // A job was launched from here (resuming a failed one), or a version was
+  // brought back: reload the flow.
   onLaunched: () => void
 }
 
@@ -164,7 +165,7 @@ function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange,
             </div>
             <iframe ref={frame} key={stamp} src={`${pageUrl}?v=${stamp}`} sandbox="allow-scripts" title={`Mockup de ${project.name}`} className="h-[75vh] w-full bg-white" />
           </div>
-          <VersionHistory projectId={project.id} kind="mockup" refreshKey={historyKey(mockup)} />
+          <VersionHistory projectId={project.id} kind="mockup" refreshKey={historyKey(mockup)} onRestored={onLaunched} />
         </>
       )}
     </div>

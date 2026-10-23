@@ -5,7 +5,8 @@ namespace Concilia.Core.Deliverables;
 //   Generated  a job generated it (a new draft)
 //   Edited     the user saved changes
 //   Validated  the user validated it
-public enum VersionOrigin { Existing, Generated, Edited, Validated }
+//   Restored   the user went back to an earlier version (step 102)
+public enum VersionOrigin { Existing, Generated, Edited, Validated, Restored }
 
 // A copy of a deliverable as it was at one moment (milestone 21): its content,
 // its state and the job it came from. The Deliverable stays the working copy
@@ -30,6 +31,15 @@ public class DeliverableVersion
     public Guid JobId { get; set; }
 
     public DeliverableStatus Status { get; set; }
+
+    // Something it was built on changed after it was generated (step 102):
+    // when a change of the flow outdates a deliverable, all its versions are
+    // outdated too, since they are all from before it. Going back to a version
+    // brings back its warning.
+    public bool Outdated { get; set; }
+
+    // Restored: the number of the version it went back to.
+    public int? RestoredFrom { get; set; }
 
     public required string Content { get; set; }
 

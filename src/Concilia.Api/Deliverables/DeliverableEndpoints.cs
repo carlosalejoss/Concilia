@@ -161,13 +161,18 @@ public static class DeliverableEndpoints
     }
 
     // Marks as outdated the deliverables of the project that the change
-    // affects (the caller saves). Called on a new file, an answer changed or a
-    // question discarded, and when a catalog or backlog is generated, validated
-    // or reopened.
+    // affects, and their versions (the caller saves). Called on a new file, an
+    // answer changed or a question discarded, and when a catalog or backlog is
+    // generated, validated, reopened or taken back to a version.
     public static async Task ApplyChangeAsync(AppDbContext db, int projectId, FlowChange change)
     {
         var all = await db.Deliverables.Where(d => d.ProjectId == projectId).ToListAsync();
-        DeliverableRules.MarkOutdated(all, change);
+        // Only the versions not yet outdated: after the first change, few or none.
+        var kinds = DeliverableRules.OutdatedKinds(change);
+        var versions = await db.DeliverableVersions
+            .Where(v => v.ProjectId == projectId && kinds.Contains(v.Kind) && !v.Outdated)
+            .ToListAsync();
+        DeliverableRules.MarkOutdated(all, change, versions);
     }
 
     public static async Task<Deliverable?> CurrentAsync(AppDbContext db, int projectId, DeliverableKind kind) =>
@@ -208,7 +213,7 @@ public static class DeliverableEndpoints
 
     private static NotSupportedException NotYet(DeliverableKind kind) => new($"{kind}: no tiene comprobaciones de borrador.");
 
-    private static async Task<DeliverableView> ViewAsync(AppDbContext db, FileStorage storage, Deliverable d)
+    internal static async Task<DeliverableView> ViewAsync(AppDbContext db, FileStorage storage, Deliverable d)
     {
         var check = d.Status == DeliverableStatus.Draft && d.Kind != DeliverableKind.Mockup
             ? await CheckAsync(db, storage, d)

@@ -1778,7 +1778,7 @@
           "Entregables"
         ],
         "summary": "Lista las versiones del catálogo, el backlog o el mockup",
-        "description": "De la más reciente a la más antigua, sin su contenido. Se guarda una versión cada vez que el entregable se genera (`Generated`), se guardan cambios que lo dejan distinto (`Edited`) o se valida (`Validated`); al reabrirlo no, porque el contenido no cambia. `Existing` es la que tenía al empezar el historial. `current` marca la versión que tiene ahora.",
+        "description": "De la más reciente a la más antigua, sin su contenido. Se guarda una versión cada vez que el entregable se genera (`Generated`), se guardan cambios que lo dejan distinto (`Edited`), se valida (`Validated`) o se vuelve a una versión anterior (`Restored`); al reabrirlo no, porque el contenido no cambia. `Existing` es la que tenía al empezar el historial. `current` marca la versión que tiene ahora.",
         "parameters": [
           {
             "name": "projectId",
@@ -1809,6 +1809,185 @@
                   "items": {
                     "$ref": "#/components/schemas/DeliverableVersionView"
                   }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/deliverables/{kind}/versions/{number}": {
+      "get": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Lee una versión del catálogo, el backlog o el mockup",
+        "description": "Con su contenido, para verla. La página de una versión del mockup está en `GET /projects/{projectId}/mockup/versions/{number}`.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "description": "`catalog`, `backlog` o `mockup`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverableVersionView"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/deliverables/{kind}/versions/{number}/comparison": {
+      "get": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Compara una versión con el catálogo o el backlog actual",
+        "description": "De la versión (`original`) a lo que hay ahora (`current`): los requisitos o historias que siguen igual se cuentan (`kept`); los que tienen el mismo id y otro contenido (`modified`) van como eran y como son; `added` son los que hay ahora y no estaban, y `deleted`, los que estaban y ya no. Se emparejan por contenido, sin ids ni campos de la plataforma, porque los ids se renumeran al guardar. Solo el catálogo y el backlog.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "description": "`catalog` o `backlog`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ElementDiff"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/deliverables/{kind}/versions/{number}/restore": {
+      "post": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Vuelve a una versión anterior",
+        "description": "El entregable recupera el contenido de esa versión y el trabajo del que salió, siempre en borrador (aunque la versión estuviera validada, porque las respuestas pueden haber cambiado) y con su aviso de desactualizado si lo tenía. Es una versión nueva (`Restored`): la que había queda en el historial y se puede volver a ella. Los pasos siguientes quedan desactualizados, como al generarlo. Del mockup se recupera también su página.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "path",
+            "description": "`catalog`, `backlog` o `mockup`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverableView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
                 }
               }
             }
@@ -1947,6 +2126,58 @@
             "name": "download",
             "in": "query",
             "description": "`true`: como archivo para guardar (`mockup-proyecto-{id}.html`).",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/mockup/versions/{number}": {
+      "get": {
+        "tags": [
+          "Mockup"
+        ],
+        "summary": "Una versión anterior del mockup",
+        "description": "La página que se guardó con esa versión del historial, como página o con `?download=true` como archivo, con la misma política de seguridad que el mockup actual.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "description": "`true`: como archivo para guardar (`mockup-proyecto-{id}-v{n}.html`).",
             "schema": {
               "type": "boolean"
             }
@@ -2556,7 +2787,9 @@
           "jobId",
           "createdAt",
           "elements",
-          "current"
+          "current",
+          "outdated",
+          "restoredFrom"
         ],
         "type": "object",
         "properties": {
@@ -2589,7 +2822,20 @@
           "current": {
             "type": "boolean",
             "description": "Es la versión que tiene ahora el entregable."
-          }
+          },
+          "outdated": {
+            "type": "boolean",
+            "description": "Algo en lo que se basaba cambió después de generarla."
+          },
+          "restoredFrom": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "En una versión `Restored`, el número de la versión a la que se volvió.",
+            "format": "int32"
+          },
+          "content": { }
         }
       },
       "DeliverableView": {
@@ -2747,6 +2993,49 @@
               "integer"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "ElementDiff": {
+        "required": [
+          "original",
+          "current",
+          "kept",
+          "modified",
+          "added",
+          "deleted"
+        ],
+        "type": "object",
+        "properties": {
+          "original": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "kept": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modified": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModifiedElement"
+            }
+          },
+          "added": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonObject"
+            }
+          },
+          "deleted": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonObject"
+            }
           }
         }
       },
@@ -3220,6 +3509,9 @@
       },
       "JsonElement": { },
       "JsonNode": { },
+      "JsonObject": {
+        "type": "object"
+      },
       "MatchCounts": {
         "required": [
           "a",
@@ -3432,6 +3724,21 @@
           "similar": {
             "type": "number",
             "format": "double"
+          }
+        }
+      },
+      "ModifiedElement": {
+        "required": [
+          "before",
+          "after"
+        ],
+        "type": "object",
+        "properties": {
+          "before": {
+            "$ref": "#/components/schemas/JsonObject"
+          },
+          "after": {
+            "$ref": "#/components/schemas/JsonObject"
           }
         }
       },
@@ -4328,7 +4635,8 @@
           "Existing",
           "Generated",
           "Edited",
-          "Validated"
+          "Validated",
+          "Restored"
         ]
       }
     }

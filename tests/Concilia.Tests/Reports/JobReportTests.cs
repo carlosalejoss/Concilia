@@ -47,6 +47,22 @@ public class JobReportTests
         Assert.Equal(new UserChanges(Original: 3, Current: 3, Kept: 1, Modified: 1, Added: 1, Deleted: 1), changes);
     }
 
+    // Step 102: the same pairing, with the elements, to compare two versions.
+    [Fact]
+    public void The_comparison_gives_the_elements_that_changed()
+    {
+        var original = Catalog(("RF-001", "reservar"), ("RF-002", "cancelar"), ("RF-003", "consultar"));
+        var current = Catalog(("RF-001", "reservar una sala"), ("RF-002", "consultar"), ("RF-003", "valorar"));
+
+        var diff = JobReports.Compare(PhaseKind.Catalog, original, current);
+
+        Assert.Equal((3, 3, 1), (diff.Original, diff.Current, diff.Kept));
+        var modified = Assert.Single(diff.Modified);
+        Assert.Equal(("reservar", "reservar una sala"), (modified.Before["texto"]!.GetValue<string>(), modified.After["texto"]!.GetValue<string>()));
+        Assert.Equal("valorar", Assert.Single(diff.Added)["texto"]!.GetValue<string>());
+        Assert.Equal("cancelar", Assert.Single(diff.Deleted)["texto"]!.GetValue<string>());
+    }
+
     [Fact]
     public void Reviewing_a_discrepancy_is_not_a_change()
     {

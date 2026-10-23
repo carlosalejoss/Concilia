@@ -143,9 +143,9 @@ export type Deliverable<T> = {
 
 // GET /projects/{id}/deliverables/{kind}/versions (step 101): the history of a
 // deliverable, the newest first, without the contents.
-export type DeliverableVersion = {
+export type DeliverableVersion<T = unknown> = {
   number: number
-  origin: 'Existing' | 'Generated' | 'Edited' | 'Validated'
+  origin: 'Existing' | 'Generated' | 'Edited' | 'Validated' | 'Restored'
   status: 'Draft' | 'Validated'
   jobId: string
   createdAt: string
@@ -153,6 +153,23 @@ export type DeliverableVersion = {
   elements: number | null
   // It is the version the deliverable has now.
   current: boolean
+  // Step 102: something it was built on changed after it was generated.
+  outdated: boolean
+  // Restored: the version it went back to.
+  restoredFrom: number | null
+  // Only when one version is read alone (GET …/versions/{n}).
+  content?: T | null
+}
+
+// GET …/versions/{n}/comparison (step 102): from that version to the current
+// deliverable, paired by content; the elements are requirements or stories.
+export type ElementDiff<E> = {
+  original: number
+  current: number
+  kept: number
+  modified: { before: E; after: E }[]
+  added: E[]
+  deleted: E[]
 }
 
 // What changes in a deliverable each time a version may have been recorded,

@@ -78,12 +78,45 @@ public static class DeliverableRules
         return new DeliverableChange([], d.Kind == DeliverableKind.Catalog ? FlowChange.CatalogReopened : FlowChange.BacklogReopened);
     }
 
-    // Marks as outdated the deliverables that the change affects (ProjectFlow.OutdatedBy).
-    public static void MarkOutdated(IEnumerable<Deliverable> deliverables, FlowChange change)
+    // Back to an earlier version (step 102, decision of the author of
+    // 23-10-2026): its content and its job come back, always as a draft (the
+    // answers it rests on may have changed since it was validated) and with
+    // its outdated warning. The later steps become outdated, as when it is
+    // generated. The version it has now is refused: nothing would change.
+    public static DeliverableChange Restore(Deliverable d, DeliverableVersion version, DateTimeOffset now)
+    {
+        if (version.Content == d.Content && version.JobId == d.JobId)
+            return DeliverableChange.Fail("Es la versión que tiene ahora.");
+        d.Content = version.Content;
+        d.JobId = version.JobId;
+        d.Status = DeliverableStatus.Draft;
+        d.Outdated = version.Outdated;
+        d.ValidatedAt = null;
+        d.UpdatedAt = now;
+        return new DeliverableChange([], d.Kind switch
+        {
+            DeliverableKind.Catalog => FlowChange.CatalogGenerated,
+            DeliverableKind.Backlog => FlowChange.BacklogGenerated,
+            _ => FlowChange.MockupGenerated,
+        });
+    }
+
+    // The kinds of deliverable that the change outdates (ProjectFlow.OutdatedBy).
+    public static IReadOnlyList<DeliverableKind> OutdatedKinds(FlowChange change)
     {
         var steps = ProjectFlow.OutdatedBy(change);
-        foreach (var d in deliverables.Where(d => steps.Contains(StepOf(d.Kind))))
+        return Enum.GetValues<DeliverableKind>().Where(k => steps.Contains(StepOf(k))).ToList();
+    }
+
+    // Marks as outdated the deliverables that the change affects, and their
+    // versions (step 102), which are all from before the change.
+    public static void MarkOutdated(IEnumerable<Deliverable> deliverables, FlowChange change, IEnumerable<DeliverableVersion>? versions = null)
+    {
+        var kinds = OutdatedKinds(change);
+        foreach (var d in deliverables.Where(d => kinds.Contains(d.Kind)))
             d.Outdated = true;
+        foreach (var v in (versions ?? []).Where(v => kinds.Contains(v.Kind)))
+            v.Outdated = true;
     }
 
     public static DeliverableFacts? Facts(Deliverable? d) => d is null ? null : new DeliverableFacts(d.Status == DeliverableStatus.Validated, d.Outdated);

@@ -107,7 +107,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
         ]}
       />
 
-      <VersionHistory projectId={project.id} kind="backlog" refreshKey={historyKey(state.deliverable)} />
+      <VersionHistory projectId={project.id} kind="backlog" refreshKey={historyKey(state.deliverable)} dirty={state.dirty} onRestored={onChange} />
 
       {functional.length > 0 && <Coverage functional={functional} uncovered={uncovered} storiesOf={storiesOf} projectId={project.id} />}
 

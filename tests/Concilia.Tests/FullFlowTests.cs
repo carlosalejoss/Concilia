@@ -160,6 +160,13 @@ public class FullFlowTests
         Assert.Equal("Generated", mockupVersion["origin"]!.GetValue<string>());
         Assert.Equal(await (await client.GetAsync($"/projects/{id}/mockup")).Content.ReadAsStringAsync(),
             File.ReadAllText(Path.Combine(temp.Path, "projects", $"{id}", "mockup", "versiones", "1.html")));
+        // Step 102: served like the current one, and it is the current one, so there is nothing to go back to.
+        var mockupPage = await client.GetAsync($"/projects/{id}/mockup/versions/1");
+        Assert.Equal(HttpStatusCode.OK, mockupPage.StatusCode);
+        Assert.NotNull(mockupPage.Headers.GetValues("Content-Security-Policy").Single());
+        Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/projects/{id}/mockup/versions/2")).StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsync($"/projects/{id}/deliverables/mockup/versions/1/restore", null)).StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.GetAsync($"/projects/{id}/deliverables/mockup/versions/1/comparison")).StatusCode);
 
         // The report of the project, as a CSV: a header and one row per job.
         var csv = await (await client.GetAsync($"/projects/{id}/report.csv")).Content.ReadAsByteArrayAsync();
@@ -188,6 +195,27 @@ public class FullFlowTests
         Assert.True(after[0]!["current"]!.GetValue<bool>());
         Assert.False(after[1]!["current"]!.GetValue<bool>());
         Assert.Equal("Validated", after[1]!["status"]!.GetValue<string>());
+
+        // Step 102: the validated one can be read, compared with the new one and brought back.
+        var validatedNumber = after[1]!["number"]!.GetValue<int>();
+        var old = await Json(await client.GetAsync($"/projects/{id}/deliverables/catalog/versions/{validatedNumber}"));
+        Assert.NotEmpty(old["content"]!["requisitos"]!.AsArray());
+        Assert.False(old["current"]!.GetValue<bool>());
+        var diff = await Json(await client.GetAsync($"/projects/{id}/deliverables/catalog/versions/{validatedNumber}/comparison"));
+        Assert.Equal(old["elements"]!.GetValue<int>(), diff["original"]!.GetValue<int>());
+        Assert.Equal(diff["current"]!.GetValue<int>(), diff["kept"]!.GetValue<int>() + diff["modified"]!.AsArray().Count + diff["added"]!.AsArray().Count);
+
+        var restored = await Json(await client.PostAsync($"/projects/{id}/deliverables/catalog/versions/{validatedNumber}/restore", null));
+        Assert.Equal("Draft", restored["status"]!.GetValue<string>()); // a draft, though it was validated
+        Assert.Equal(catalogJob, restored["jobId"]!.GetValue<string>()); // with the job it came from
+        Assert.Equal(old["content"]!.ToJsonString(), restored["content"]!.ToJsonString());
+        var history = (await Json(await client.GetAsync($"/projects/{id}/deliverables/catalog/versions"))).AsArray();
+        Assert.Equal(("Restored", validatedNumber, true), (history[0]!["origin"]!.GetValue<string>(), history[0]!["restoredFrom"]!.GetValue<int>(), history[0]!["current"]!.GetValue<bool>()));
+        Assert.Equal(after.Count + 1, history.Count); // the new catalog stays in the history
+        flow = await Flow(client, id);
+        Assert.Equal("Draft", flow[2]!["state"]!.GetValue<string>());
+        Assert.Equal([false, false, false, true, true], flow.Select(s => s!["outdated"]!.GetValue<bool>()));
+        Assert.Equal(HttpStatusCode.NotFound, (await client.PostAsync($"/projects/{id}/deliverables/catalog/versions/999/restore", null)).StatusCode);
     }
 
     // One task at a time in the whole platform (15-10-2026): while a round runs

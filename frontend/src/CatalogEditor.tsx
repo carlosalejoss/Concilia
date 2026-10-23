@@ -131,7 +131,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
         ]}
       />
 
-      <VersionHistory projectId={project.id} kind="catalog" refreshKey={historyKey(state.deliverable)} />
+      <VersionHistory projectId={project.id} kind="catalog" refreshKey={historyKey(state.deliverable)} dirty={state.dirty} onRestored={onChange} />
 
       <div className="flex flex-wrap items-center gap-3">
         <label className="flex min-w-48 flex-1 items-center gap-2 rounded border border-line bg-surface px-2.5 py-1.5 text-sm focus-within:outline-2 focus-within:outline-accent">

@@ -110,6 +110,24 @@ public static class MockupEndpoints
             .WithDescription("Como página, para el iframe de la web, o con `?download=true` como archivo para abrir con doble clic. Se sirve con una política de seguridad que no le deja llegar a la red ni a la aplicación.")
             .Produces<string>(contentType: "text/html")
             .Produces(StatusCodes.Status404NotFound);
+
+        // Step 102: the page of a version of the mockup, served like the current one.
+        group.MapGet("/projects/{projectId:int}/mockup/versions/{number:int}", async (int projectId, int number,
+            [Description("`true`: como archivo para guardar (`mockup-proyecto-{id}-v{n}.html`).")] bool? download, AppDbContext db, FileStorage storage, HttpContext http) =>
+        {
+            var path = storage.MockupVersionFile(projectId, number);
+            if (!await db.DeliverableVersions.AnyAsync(v => v.ProjectId == projectId && v.Kind == DeliverableKind.Mockup && v.Number == number) || !File.Exists(path))
+            {
+                return Results.NotFound();
+            }
+            http.Response.Headers.ContentSecurityPolicy = ContentSecurityPolicy;
+            http.Response.Headers.XContentTypeOptions = "nosniff";
+            return Results.File(path, "text/html; charset=utf-8", download == true ? $"mockup-proyecto-{projectId}-v{number}.html" : null);
+        })
+            .WithSummary("Una versión anterior del mockup")
+            .WithDescription("La página que se guardó con esa versión del historial, como página o con `?download=true` como archivo, con la misma política de seguridad que el mockup actual.")
+            .Produces<string>(contentType: "text/html")
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     // A mockup job: its design run (lot 1, the first of the steps; the rest

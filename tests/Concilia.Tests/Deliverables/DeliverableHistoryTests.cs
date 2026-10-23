@@ -1,10 +1,12 @@
 using Concilia.Core.Deliverables;
+using Concilia.Core.Flow;
 using Concilia.Core.Phases;
 
 namespace Concilia.Tests.Deliverables;
 
 // Step 101: each change of a deliverable records a version, numbered for its
-// kind and project, unless it leaves it as the last version was.
+// kind and project, unless it leaves it as the last version was. Step 102:
+// going back to one of them.
 public class DeliverableHistoryTests
 {
     private static readonly DateTimeOffset Now = new(2026, 10, 23, 10, 0, 0, TimeSpan.Zero);
@@ -72,5 +74,51 @@ public class DeliverableHistoryTests
         Assert.Equal(12, DeliverableHistory.Elements(DeliverableKind.Mockup, """{"historias":5,"pantallas":12,"bytes":1,"avisos":[]}"""));
         // A mockup of the prompts v0.4, a view per epic, has no screens.
         Assert.Null(DeliverableHistory.Elements(DeliverableKind.Mockup, """{"historias":5,"bytes":1,"avisos":[]}"""));
+    }
+
+    // Step 102: going back to a version brings back its content and job as a
+    // draft, with its outdated warning, and outdates the later steps.
+    [Fact]
+    public void Going_back_to_a_version_brings_back_its_content_and_job_as_a_draft()
+    {
+        var oldJob = Guid.NewGuid();
+        var d = NewCatalog(oldJob);
+        DeliverableRules.Validate(d, Clean, Now);
+        var validated = DeliverableHistory.Next(d, null, VersionOrigin.Validated, Now)!;
+        DeliverableRules.Generated(d, 7, DeliverableKind.Catalog, Guid.NewGuid(), """{"requisitos":[]}""", Now);
+
+        var later = Now.AddHours(1);
+        var change = DeliverableRules.Restore(d, validated, later);
+
+        Assert.True(change.Done);
+        Assert.Equal(FlowChange.CatalogGenerated, change.Change);
+        Assert.Equal((TwoRequirements, oldJob, DeliverableStatus.Draft), (d.Content, d.JobId, d.Status));
+        Assert.Null(d.ValidatedAt);
+        Assert.Equal(later, d.UpdatedAt);
+        var restored = DeliverableHistory.Next(d, validated, VersionOrigin.Restored, later, validated.Number)!;
+        Assert.Equal((2, VersionOrigin.Restored, 1), (restored.Number, restored.Origin, restored.RestoredFrom));
+
+        // The version it has now cannot be brought back: nothing would change.
+        Assert.False(DeliverableRules.Restore(d, restored, later).Done);
+    }
+
+    [Fact]
+    public void A_change_of_the_flow_outdates_the_versions_and_going_back_brings_it_back()
+    {
+        var catalog = NewCatalog(Guid.NewGuid());
+        var backlog = DeliverableRules.Generated(null, 7, DeliverableKind.Backlog, Guid.NewGuid(), """{"epicas":[]}""", Now).Deliverable;
+        var catalogVersion = DeliverableHistory.Next(catalog, null, VersionOrigin.Generated, Now)!;
+        var backlogVersion = DeliverableHistory.Next(backlog, null, VersionOrigin.Generated, Now)!;
+
+        DeliverableRules.MarkOutdated([catalog, backlog], FlowChange.CatalogValidated, [catalogVersion, backlogVersion]);
+
+        Assert.False(catalogVersion.Outdated); // validating the catalog does not outdate it
+        Assert.True(backlogVersion.Outdated);
+
+        // A new backlog is up to date; going back to the old one brings its warning back.
+        DeliverableRules.Generated(backlog, 7, DeliverableKind.Backlog, Guid.NewGuid(), """{"epicas":[{"historias":[]}]}""", Now);
+        Assert.False(backlog.Outdated);
+        DeliverableRules.Restore(backlog, backlogVersion, Now);
+        Assert.True(backlog.Outdated);
     }
 }

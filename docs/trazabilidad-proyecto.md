@@ -39,6 +39,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 22-10 | Hito 18b, pasos 107 y 108 | El árbitro del catálogo consulta solo las fuentes que necesita y el del backlog cita por su id los criterios que conserva (prompts v0.12): menos de la mitad de coste en el catálogo y el doble de criterios en el backlog |
 | 22-10 | Hito 18, prueba real | Flujo completo de clínicas con los prompts v0.11 sin errores internos y con reparaciones que caben; mockups sin `.zip` con estilos distintos en dos proyectos; el hito 18 queda completado |
 | 23-10 | Hito 21, paso 101 | Cada versión del catálogo, el backlog y el mockup se guarda con su fecha y su origen, y se ve en un historial |
+| 23-10 | Hito 21, paso 102 | Cada versión se puede ver, comparar con la actual y recuperar; el hito 21 queda hecho |
 | 20-10 | Documentación de la API (fuera del plan) | Swagger UI con los 42 endpoints documentados, que se actualiza sola y que los tests mantienen completa |
 
 ## Etapas
@@ -278,14 +279,19 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **El cálculo, una sola vez:** la parte lenta (los embeddings) se guarda con cada trabajo, sin los umbrales ni el árbitro, que se aplican al usarla. Los trabajos nuevos la guardan al arbitrar, donde ya se calculaba; los antiguos, la primera vez que se pide (unos segundos cada uno). Si cambia el modelo de embeddings, se recalcula.
 - **Para la memoria, en palabras sencillas (paso 100):** en cada trabajo se ve, elemento por elemento, qué propuso cada modelo y qué hizo el árbitro con ello, y al lado lo que dice una medida independiente del árbitro (la cercanía de significado). Así se puede comprobar, caso por caso, si el árbitro ha juntado lo que es igual y separado lo que es distinto.
 
-### 12. Hito 21: historial de versiones de los entregables (23-10, en curso)
+### 12. Hito 21: historial de versiones de los entregables (23-10, hecho)
 
 - **Paso 101, guardar cada versión (23-10):** decisiones del autor, todas como recomendaba Claude.
   - **Qué se guarda:** cada vez que el catálogo, el backlog o el mockup se genera, se guardan cambios o se valida, una copia entera, con su número, su origen (generada, editada, validada), su estado, el trabajo del que sale y la fecha. Del mockup, también su página. Un guardado que no cambia nada no crea versión, ni tampoco reabrir. Se guardan todas.
   - **Lo que ya había:** cada entregable que existía antes del historial recibe su primera versión al arrancar la API («anterior al historial»). La copia de trabajo no cambia, así que las exportaciones, la trazabilidad, la comparación y el informe siguen igual.
   - **Dónde se ve:** «Historial de versiones», plegable, en el catálogo, el backlog y el mockup, con la versión actual marcada.
-  - **Falta (paso 102):** ver una versión anterior, compararla con la actual y volver a ella.
 - **Para la memoria, en palabras sencillas:** antes, generar de nuevo o editar un entregable borraba el anterior para siempre; ahora cada estado por el que pasa queda guardado con su fecha y su motivo, como el historial de un documento compartido.
+- **Paso 102, ver, comparar y volver (23-10):** decisiones del autor como recomendaba Claude.
+  - **Ver:** cada versión anterior se abre en un panel lateral, solo para leer; la de un mockup, en una pestaña aparte.
+  - **Comparar:** de la versión a lo que hay ahora, los requisitos o historias iguales, modificados (como eran y como son), añadidos y borrados. Se emparejan por su contenido, igual que en el informe de cambios del usuario, porque los ids se renumeran al guardar.
+  - **Volver:** el entregable recupera esa versión en borrador, aunque estuviera validada, porque las respuestas pueden haber cambiado; hay que validarlo de nuevo. Es una versión nueva, así que la que había queda en el historial y se puede deshacer. Los pasos siguientes quedan desactualizados, como al generarlo.
+  - **Desactualizada:** cada versión recuerda si algo en lo que se basaba cambió después; al volver a ella, vuelve su aviso.
+- **Para la memoria, en palabras sencillas (paso 102):** si una nueva generación sale peor o una edición se equivoca, se compara con lo anterior y se recupera en un clic, sin perder nada: también lo que se deja atrás queda guardado.
 
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
@@ -362,7 +368,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 3. ~~**Hito 18, fiabilidad y calidad**~~ (pasos 89 a 95, 19-10-2026, prompts v0.11, con las tablas de coste), completado el 22-10-2026 con su prueba real. ~~**Hito 18b**~~ (pasos 107 y 108, prompts v0.12), completado el mismo día.
 4. ~~**Hito 19, exportar**~~: el catálogo a Word y PDF (paso 96, 20-10-2026), y el backlog a Gherkin (paso 97) y a CSV para Jira o Azure DevOps (paso 98), los dos el 22-10-2026. Importado en un Jira real por el autor (23-10-2026); Azure DevOps sin probar en real, y el hito, cerrado por el autor el mismo día.
 5. ~~**Hito 20, trazabilidad visual y comparación de A, B y el árbitro**~~: la trazabilidad en un panel lateral (paso 99) y la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100), los dos el 22-10-2026. Revisado en el navegador por Claude y por el autor (23-10-2026): cerrado.
-6. **Hito 21, historial de versiones de los entregables:** cada versión se guarda con su fecha y su origen (paso 101, 23-10-2026); sigue el paso 102, ver una versión, compararla con la actual y volver a ella.
+6. ~~**Hito 21, historial de versiones de los entregables**~~: cada versión se guarda con su fecha y su origen (paso 101) y se puede ver, comparar con la actual y recuperar (paso 102), los dos el 23-10-2026. Pendiente de revisar en el navegador.
 7. **Hito 22, evaluación:** métricas externas, un documento de PURE y una prueba editando de verdad.
 8. **Después:** hito 7 (catálogo v2) y redactar la memoria (sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación).
 
@@ -372,4 +378,4 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 ## Cifras de seguimiento
 
 - **Commits:** 187 entre el 28-09 y el 20-10-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99), 937 (22-10, paso 100), 943 (22-10, pasos 107 y 108) y 948 (23-10, paso 101).
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99), 937 (22-10, paso 100), 943 (22-10, pasos 107 y 108), 948 (23-10, paso 101) y 951 (23-10, paso 102).

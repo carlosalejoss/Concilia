@@ -2388,3 +2388,20 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Cambio de criterio:** el comentario de `Deliverable` decía que lo sustituido al guardar «ya no existe». Sigue sin existir para el resto del flujo, que lee solo la copia de trabajo, pero queda una copia en el historial.
 - **Comprobado:** 948 tests de C# (5 nuevos, más las comprobaciones del historial en el flujo completo), la web compila y pasa el lint. No se ha revisado en el navegador: hace falta reconstruir la API en Docker para aplicar la migración, y no se ha hecho sin preguntar.
 - **Pendientes:** paso 102 (ver una versión, compararla con la actual y volver a ella). Sigue sin decidir la mejora de repartir el CSV de Jira en ficheros de 250 elementos.
+
+## 23-10-2026, 14:00 (sesión)
+
+**Resumen para la bitácora (23-10-2026, paso 102: ver, comparar y volver a una versión; hito 21 hecho)**
+
+- **Qué se hizo:**
+  - **Ver:** `GET /projects/{id}/deliverables/{kind}/versions/{n}` devuelve una versión con su contenido. `GET /projects/{id}/mockup/versions/{n}` sirve la página de una versión del mockup, con la misma política de seguridad que el actual.
+  - **Comparar:** `GET …/versions/{n}/comparison` compara la versión con lo que hay ahora. Usa el emparejamiento por contenido del informe de cambios del usuario, que ahora devuelve también los elementos (`JobReports.Compare`; `Diff` los cuenta). No se aplica al mockup.
+  - **Volver:** `POST …/versions/{n}/restore` (`DeliverableRules.Restore`).
+  - **Web:** en «Historial de versiones», «Ver», «Comparar con la actual» y «Volver a esta versión», con una confirmación.
+- **Cómo vuelve una versión (decisión 5 del autor, 23-10-2026):** en borrador aunque estuviera validada; con el trabajo del que salió, porque las comprobaciones usan su plan; como versión nueva `Restored`, que dice a cuál se volvió, así que se puede deshacer. Los pasos siguientes quedan desactualizados, como al generar. No se puede volver a la versión actual, ni con cambios sin guardar (en la web).
+- **Decisión de Claude, para que la revise el autor: el aviso de desactualizada de cada versión.** Una versión antigua puede venir de respuestas o documentos que ya han cambiado. Sin guardarlo, al recuperarla se perdería el aviso. Ahora cada versión tiene `Outdated`: cuando un cambio del flujo desactualiza un entregable, desactualiza también todas sus versiones, que son de antes del cambio. Al volver a una, el entregable recupera su aviso. La migración `AddVersionRestore` marca así las versiones del paso 101 de los entregables que ya estaban desactualizados.
+- **Comprobado:** 951 tests de C#, la web compila y pasa el lint.
+  - En una de cuatro pasadas falló `ClaudeCliRunnerTests.Compacting_after_writing_the_output_stops_the_run_at_once`. Depende de tiempos y está en el runner, que no se ha tocado; en las demás pasa.
+  - No se ha revisado en el navegador, porque hace falta reconstruir la API en Docker para aplicar las dos migraciones.
+- **Estado:** hito 21 hecho (pasos 101 y 102), pendiente de revisarlo en el navegador.
+- **Pendientes:** la revisión en el navegador del hito 21, y después el hito 22 (evaluación). Sigue sin decidir la mejora de repartir el CSV de Jira en ficheros de 250 elementos.

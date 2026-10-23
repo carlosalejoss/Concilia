@@ -107,7 +107,13 @@ namespace Concilia.Api.Persistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<bool>("Outdated")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("RestoredFrom")
                         .HasColumnType("integer");
 
                     b.Property<string>("Status")

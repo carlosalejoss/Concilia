@@ -36,6 +36,14 @@ public record EmbeddingCounts(int OnlyA, int OnlyB, Agreement? Agreement);
 // kept as they were, modified, added and deleted.
 public record UserChanges(int Original, int Current, int Kept, int Modified, int Added, int Deleted);
 
+// The elements that changed from one content to another (JobReports.Compare):
+// the modified ones (the same id, another content) as they were and as they
+// are, the added ones and the deleted ones; the kept ones are only counted.
+public record ElementDiff(int Original, int Current, int Kept, IReadOnlyList<ModifiedElement> Modified,
+    IReadOnlyList<JsonObject> Added, IReadOnlyList<JsonObject> Deleted);
+
+public record ModifiedElement(JsonObject Before, JsonObject After);
+
 // The questions of a round: how they ended and who wrote each answer.
 public record QuestionCounts(int Total, int Answered, int Discarded, int Pending, int ByUser, int ByAi, int ByAiEdited);
 
@@ -96,13 +104,21 @@ public static class JobReports
     private static readonly HashSet<string> PlatformFields = ["id", "origen", "discrepancia", "explicacion", "revisada"];
 
     // The user's changes: the elements of the current deliverable against
-    // those of the draft the job left. Ids do not help, since the platform
-    // renumbers after each edit (deleting RF-002 turns RF-003 into RF-002).
-    // So first the elements with the same content (without ids nor the
-    // platform's fields) are paired: kept. Of the rest, those that keep their
-    // id are modified; what is left in the current one was added, and what is
-    // left in the draft, deleted.
+    // those of the draft the job left (Compare), counted.
     public static UserChanges Diff(PhaseKind kind, string original, string current)
+    {
+        var c = Compare(kind, original, current);
+        return new UserChanges(c.Original, c.Current, c.Kept, c.Modified.Count, c.Added.Count, c.Deleted.Count);
+    }
+
+    // What changed from one content to another, element by element. Ids do
+    // not help, since the platform renumbers after each edit (deleting RF-002
+    // turns RF-003 into RF-002). So first the elements with the same content
+    // (without ids nor the platform's fields) are paired: kept. Of the rest,
+    // those that keep their id are modified; what is left in the current one
+    // was added, and what is left in the original, deleted. Also compares two
+    // versions of a deliverable (step 102).
+    public static ElementDiff Compare(PhaseKind kind, string original, string current)
     {
         var before = Elements(kind, JsonNode.Parse(original));
         var after = Elements(kind, JsonNode.Parse(current));
@@ -119,17 +135,17 @@ public static class JobReports
         }
         var kept = after.Count - leftAfter.Count;
 
-        var modified = 0;
+        var modified = new List<ModifiedElement>();
         foreach (var element in leftAfter.ToList())
         {
             var same = leftBefore.FindIndex(b => Id(b) is { } id && id == Id(element));
             if (same < 0)
                 continue;
+            modified.Add(new ModifiedElement(leftBefore[same], element));
             leftBefore.RemoveAt(same);
             leftAfter.Remove(element);
-            modified++;
         }
-        return new UserChanges(before.Count, after.Count, kept, modified, leftAfter.Count, leftBefore.Count);
+        return new ElementDiff(before.Count, after.Count, kept, modified, leftAfter, leftBefore);
     }
 
     // The content of an element as the user sees it: without ids (also those

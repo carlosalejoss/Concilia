@@ -13,8 +13,9 @@ namespace Concilia.Core.Deliverables;
 public static class DeliverableHistory
 {
     // The version to record after a change of d, or null if it would be the
-    // same as the last one. last: the last version of its kind and project.
-    public static DeliverableVersion? Next(Deliverable d, DeliverableVersion? last, VersionOrigin origin, DateTimeOffset now)
+    // same as the last one. last: the last version of its kind and project;
+    // restoredFrom: the version it went back to, if it did.
+    public static DeliverableVersion? Next(Deliverable d, DeliverableVersion? last, VersionOrigin origin, DateTimeOffset now, int? restoredFrom = null)
     {
         if (last is not null && last.Content == d.Content && last.Status == d.Status && last.JobId == d.JobId)
             return null;
@@ -26,6 +27,8 @@ public static class DeliverableHistory
             Origin = origin,
             JobId = d.JobId,
             Status = d.Status,
+            Outdated = d.Outdated,
+            RestoredFrom = restoredFrom,
             Content = d.Content,
             Elements = Elements(d.Kind, d.Content),
             CreatedAt = now,
