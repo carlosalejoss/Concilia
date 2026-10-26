@@ -2535,3 +2535,12 @@ Paso 111 del hito 22: la iteración de cada elemento y la cobertura de cada entr
   - copia de la base de datos antes de aplicar `AddDeliverableIterations` en Docker, reconstruir la API y la web con permiso del autor y su revisión en el navegador, que cierra el paso 111;
   - después, el paso 112 (preguntas centradas, prompts v0.13), que empieza por el test de que los modos de siempre dan el mismo prompt y las mismas entradas que la v0.12, y en el que Claude mide el tope de fragmentos relacionados y lo propone al autor.
 
+## 26-10-2026, 13:15 (sesión)
+
+Cierre del paso 111.
+
+- El autor hizo la copia de la base de datos (`concilia-antes-111.dump`) y, con su permiso, se reconstruyeron la API y la web. La migración `AddDeliverableIterations` se aplicó sin errores; los 20 entregables y las 27 versiones recibieron al arrancar su cobertura («Iteración 1») y a ninguno le falta nada.
+- Para la revisión, Claude creó el proyecto «Prueba paso 111», con dos iteraciones cerradas y tres preguntas puestas a mano en la base de datos (de la iteración 1, de la 2 y de las dos), sin lanzar fases para no llamar a los modelos. Se borró después de la revisión.
+- El autor revisó en el navegador los pasos 110 y 111: sus proyectos se ven como antes, los ids no se renumeran al guardar, y en el proyecto de prueba se ven las dos iteraciones, las etiquetas «It. N» y el filtro por iteración. Paso 111 cerrado.
+- **Siguiente:** el paso 112 (preguntas centradas, prompts v0.13).
+
