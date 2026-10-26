@@ -38,4 +38,28 @@ public class DeliverableVersionsTests
         Assert.Equal(created, versions.Single(v => v.Kind == DeliverableKind.Mockup).CreatedAt);
         Assert.Equal("<!doctype html><p>mockup</p>", File.ReadAllText(storage.MockupVersionFile(1, 1)));
     }
+
+    // Step 110: the ids given in the history of a draft are those of its
+    // versions with the same job; a new generation numbers from 1 again.
+    [Fact]
+    public async Task The_ids_of_the_history_are_those_of_the_versions_of_the_same_job()
+    {
+        using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+        var job = Guid.NewGuid();
+        var older = Guid.NewGuid();
+        DeliverableVersion Version(int number, Guid of, string content) =>
+            new() { ProjectId = 1, Kind = DeliverableKind.Catalog, Number = number, JobId = of, Origin = VersionOrigin.Edited, Content = content };
+        db.DeliverableVersions.AddRange(
+            Version(1, older, """{"requisitos":[{"id":"RF-040","tipo":"RF"}]}"""),
+            Version(2, job, """{"requisitos":[{"id":"RF-001","tipo":"RF"},{"id":"RF-002","tipo":"RF"}]}"""),
+            Version(3, job, """{"requisitos":[{"id":"RF-001","tipo":"RF"}]}"""));
+        await db.SaveChangesAsync();
+        var catalog = new Deliverable { ProjectId = 1, Kind = DeliverableKind.Catalog, JobId = job, Content = """{"requisitos":[{"id":"RF-001","tipo":"RF"}]}""" };
+
+        var used = await DeliverableVersions.IdsOfJobAsync(db, catalog);
+
+        Assert.Equal(["RF-001", "RF-002"], used.Order());
+        var saved = CatalogDraft.Normalize("""{"requisitos":[{"id":"RF-001","tipo":"RF"},{"id":"nuevo","tipo":"RF"}]}""", catalog.Content, used);
+        Assert.Equal(["RF-001", "RF-003"], CatalogDraft.Ids(saved)); // RF-002 was given before
+    }
 }

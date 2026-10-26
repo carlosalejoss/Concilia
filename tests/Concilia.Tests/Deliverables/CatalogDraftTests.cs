@@ -55,19 +55,45 @@ public class CatalogDraftTests
         });
     }
 
+    // Step 110: stable ids. Deleting leaves a gap, a new requirement takes the
+    // next number of its type, and changing the type gives a new id of that type.
     [Fact]
-    public void Ids_are_renumbered_by_type_after_deleting_or_adding()
+    public void Ids_stay_after_deleting_adding_or_changing_the_type()
     {
-        var root = JsonNode.Parse(FromArbiter())!;
+        var draft = FromArbiter();
+        var before = Requirements(draft).Select(r => r!["id"]!.GetValue<string>()).ToList();
+        var root = JsonNode.Parse(draft)!;
         var list = root["requisitos"]!.AsArray();
         list.RemoveAt(0); // RF-001 out
+        list[0]!["tipo"] = "RNF"; // RF-002 becomes a non-functional one
         list.Add(new JsonObject { ["id"] = "nuevo", ["tipo"] = "RNF", ["notacion"] = "MASTeR", ["obligatoriedad"] = "should", ["texto"] = "x", ["fuentes"] = new JsonArray("DOC-01#F010"), ["preguntas"] = new JsonArray() });
 
-        var ids = Requirements(CatalogDraft.Normalize(root.ToJsonString())).Select(r => r!["id"]!.GetValue<string>()).ToList();
+        var ids = Requirements(CatalogDraft.Normalize(root.ToJsonString(), draft, before)).Select(r => r!["id"]!.GetValue<string>()).ToList();
 
-        Assert.Equal("RF-001", ids[0]);
-        Assert.Equal("RNF-002", ids[^1]);
+        var lastRnf = before.Where(id => id.StartsWith("RNF-")).Max()!;
+        var next = int.Parse(lastRnf[4..]);
+        Assert.DoesNotContain("RF-001", ids); // a gap, not renumbered
+        Assert.Equal($"RNF-{next + 1:000}", ids[0]); // the old RF-002
+        Assert.Equal(before.Skip(2), ids.Skip(1).Take(before.Count - 2)); // the rest keep their ids
+        Assert.Equal($"RNF-{next + 2:000}", ids[^1]);
         Assert.Equal(ids.Count, ids.Distinct().Count());
+    }
+
+    // With gaps the draft can still be validated: ID-SEQ is only for the models.
+    [Fact]
+    public void A_draft_with_gaps_in_its_ids_can_be_validated()
+    {
+        var draft = FromArbiter();
+        var root = JsonNode.Parse(draft)!;
+        root["requisitos"]!.AsArray().RemoveAt(1); // RF-002 out
+        foreach (var r in root["requisitos"]!.AsArray())
+            r!["revisada"] = true;
+        var saved = CatalogDraft.Normalize(root.ToJsonString(), draft, CatalogDraft.Ids(draft));
+
+        var check = CatalogDraft.Check(saved, Context);
+        Assert.True(check.Valid, string.Join("\n", check.Errors));
+        Assert.Contains(PhaseValidator.Validate(PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Proposal), CatalogDraft.ForNextPhase(saved), Context).Errors,
+            e => e.Contains("ID-SEQ")); // the same catalog from a model would be repaired
     }
 
     [Fact]

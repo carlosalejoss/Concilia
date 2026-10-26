@@ -43,13 +43,13 @@ public static class BacklogDraft
             epic["historias"] = stories;
             epics.Add(epic);
         }
-        return Normalize(new JsonObject { ["epicas"] = epics }.ToJsonString());
+        return Renumber(new JsonObject { ["epicas"] = epics }.ToJsonString());
     }
 
     // Consecutive ids in order of appearance: EP-01…, HU-001…, CA-001… and
     // T-001… (criteria and tasks are numbered across the whole backlog, as the
-    // validator expects), so the user can add and delete freely.
-    public static string Normalize(string json)
+    // validator expects from a model), for what a job generates.
+    public static string Renumber(string json)
     {
         var root = JsonNode.Parse(json)!.AsObject();
         int epics = 0, stories = 0, criteria = 0, tasks = 0;
@@ -68,6 +68,48 @@ public static class BacklogDraft
         return root.ToJsonString(Indented);
     }
 
+    // The user's changes, with stable ids (step 110): each epic, story,
+    // criterion and task keeps the id it had in the draft being replaced
+    // (previous); a new one takes the next number of its prefix, never one
+    // given before in the history of the draft (used). Deleting leaves a gap.
+    public static string Normalize(string json, string previous, IEnumerable<string> used)
+    {
+        var root = JsonNode.Parse(json)!.AsObject();
+        var ids = new StableIds(Ids(previous), used);
+        foreach (var e in Epics(root))
+        {
+            e["id"] = ids.Assign(IdOf(e), "EP", 2);
+            foreach (var h in Items(e, "historias"))
+            {
+                h["id"] = ids.Assign(IdOf(h), "HU", 3);
+                foreach (var c in Items(h, "criterios"))
+                    c["id"] = ids.Assign(IdOf(c), "CA", 3);
+                foreach (var t in Items(h, "tareas"))
+                    t["id"] = ids.Assign(IdOf(t), "T", 3);
+            }
+        }
+        return root.ToJsonString(Indented);
+    }
+
+    // Every id of a backlog: epics, stories, criteria and tasks.
+    public static IReadOnlyList<string> Ids(string json)
+    {
+        var ids = new List<string?>();
+        foreach (var e in Epics(JsonNode.Parse(json)!.AsObject()))
+        {
+            ids.Add(IdOf(e));
+            foreach (var h in Items(e, "historias"))
+            {
+                ids.Add(IdOf(h));
+                ids.AddRange(Items(h, "criterios").Select(IdOf));
+                ids.AddRange(Items(h, "tareas").Select(IdOf));
+            }
+        }
+        return ids.OfType<string>().ToList();
+    }
+
+    private static string? IdOf(JsonObject item) => item["id"] is JsonValue v && v.TryGetValue<string>(out var id) ? id : null;
+
     // Errors that keep it from being validated (the v0 validator on the schema
     // fields, with the validated catalog of the context, plus each discrepancy
     // not reviewed yet) and warnings (functional requirements without a story).
@@ -82,7 +124,8 @@ public static class BacklogDraft
         {
             return new PhaseValidation([$"JSON no válido: {e.Message}"], []);
         }
-        var result = PhaseValidator.Validate(PhaseDefinition.For(PhaseKind.Backlog, PhaseRole.Proposal), ForNextPhase(root), context);
+        // Stable ids (step 110): gaps are allowed in the draft; ID-SEQ is only for the models.
+        var result = PhaseValidator.Validate(PhaseDefinition.For(PhaseKind.Backlog, PhaseRole.Proposal), ForNextPhase(root), context with { GapsInIds = true });
         var pending = Epics(root).SelectMany(e => Items(e, "historias"))
             .Where(h => h["discrepancia"] is JsonValue d && d.GetValue<bool>() && !(h["revisada"] is JsonValue rv && rv.GetValue<bool>()))
             .Select(h => $"{h["id"]} DISC: hay una discrepancia sin revisar.");

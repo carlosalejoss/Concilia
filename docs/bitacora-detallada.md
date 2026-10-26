@@ -2497,3 +2497,18 @@ Paso 109 del hito 22: iteraciones en Documentos.
   - la revisión del autor en el navegador;
   - el paso 110 (ids estables).
 
+## 26-10-2026, 11:30 (sesión)
+
+El autor revisó en el navegador el paso 109 y pidió seguir con los pasos siguientes sin parar mientras no haya nada que preguntarle. Paso 110: ids estables en el catálogo y el backlog.
+
+- **Qué se hizo:**
+  - `StableIds` (Core): al guardar, cada elemento conserva el id que tenía en el borrador que se sustituye (con el prefijo de su tipo y una sola vez); lo nuevo, una copia o un id escrito a mano toma el siguiente número de su prefijo;
+  - `CatalogDraft` y `BacklogDraft` separan `Renumber` (lo que genera un trabajo, numerado seguido como antes, y la corrección `TIPO` de `PlatformFixes`) de `Normalize` (lo que guarda el usuario, con ids estables);
+  - `DeliverableVersions.IdsOfJobAsync`: los ids de todas las versiones del mismo trabajo, que no se vuelven a dar;
+  - `PhaseContext.GapsInIds`: las comprobaciones del borrador no aplican `ID-SEQ`; las salidas de los modelos, sí (el validador de los modelos no cambia, así que `docs/evolucion-prompt-requisitos.md` no se toca);
+  - web y descripciones de la API: ya no dicen que los ids se renumeran al guardar.
+- **Decisión de Claude (detalle de una decisión cerrada):** «lo nuevo toma el siguiente número» se interpreta como el siguiente que no se haya dado nunca en el historial del borrador, no el siguiente al mayor de ahora; si no, borrar RF-010, guardar y añadir otro requisito volvería a dar RF-010 a algo distinto, y el historial de cada elemento del paso 113 mezclaría dos requisitos. Una generación nueva (otro trabajo) vuelve a empezar en 1, como decía el plan.
+- **Cambio de criterio:** sustituye a «la plataforma renumera tras cada edición» (pasos 51 y 55).
+- **Tests:** 974 en verde (966 + 8). Cambian los dos tests de la renumeración (`CatalogDraftTests` y `BacklogDraftTests`), que ahora comprueban los ids estables; nuevos `StableIdsTests` (6), un borrador con huecos que se valida mientras la misma salida de un modelo daría `ID-SEQ`, y los ids del historial del mismo trabajo.
+- **Pendientes:** reconstruir la API y la web en Docker (no hay migración: solo código), con permiso del autor; el paso 111.
+

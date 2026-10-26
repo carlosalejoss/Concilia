@@ -99,7 +99,7 @@ export function VersionDiff({ projectId, kind, number }: { projectId: number; ki
     <div className="space-y-5">
       <p className="text-sm text-muted">
         La versión {number} tiene {data.original} {unit} y la actual, {data.current}: {data.kept} iguales, {data.modified.length} modificados,{' '}
-        {data.added.length} añadidos y {data.deleted.length} borrados. Se emparejan por su contenido, porque los ids se renumeran al guardar.
+        {data.added.length} añadidos y {data.deleted.length} borrados. Se emparejan por su contenido, sin mirar los ids.
       </p>
       {nothing && <Banner tone="ok">Tienen el mismo contenido.</Banner>}
       {data.modified.length > 0 && (

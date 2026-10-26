@@ -40,7 +40,7 @@ public static class DeliverableEndpoints
             .Produces<DeliverableView>()
             .Produces(StatusCodes.Status404NotFound);
 
-        // The user's changes replace the content (normalized: ids renumbered).
+        // The user's changes replace the content, with stable ids (step 110).
         group.MapPut("/projects/{projectId:int}/deliverables/{kind}",
             async (int projectId, [Description("`catalog`, `backlog` o `mockup`.")] string kind, SaveDeliverableRequest body, AppDbContext db, FileStorage storage) =>
         {
@@ -56,7 +56,7 @@ public static class DeliverableEndpoints
             string content;
             try
             {
-                content = Normalize(d.Kind, body.Content.GetRawText());
+                content = Normalize(d, body.Content.GetRawText(), await DeliverableVersions.IdsOfJobAsync(db, d));
             }
             catch (Exception e) when (e is JsonException or InvalidOperationException or NullReferenceException)
             {
@@ -73,7 +73,7 @@ public static class DeliverableEndpoints
             return Results.Ok(await ViewAsync(db, storage, d));
         })
             .WithSummary("Guarda los cambios del usuario")
-            .WithDescription("El contenido nuevo sustituye al anterior, normalizado (los ids se renumeran). Solo el catálogo y el backlog, y solo en borrador: el mockup no se edita.")
+            .WithDescription("El contenido nuevo sustituye al anterior. Los ids son estables: cada elemento conserva el que tenía; uno nuevo (o un requisito que cambia de tipo) toma el siguiente número de su tipo que no se haya dado antes en el historial del borrador, y borrar deja un hueco. Solo el catálogo y el backlog, y solo en borrador: el mockup no se edita.")
             .ChangesDeliverable();
 
         // Validates it if it has no errors; the later steps become outdated.
@@ -200,11 +200,12 @@ public static class DeliverableEndpoints
         };
     }
 
-    private static string Normalize(DeliverableKind kind, string content) => kind switch
+    // The user's changes over the current draft, with stable ids (step 110).
+    private static string Normalize(Deliverable d, string content, IReadOnlyList<string> used) => d.Kind switch
     {
-        DeliverableKind.Catalog => CatalogDraft.Normalize(content),
-        DeliverableKind.Backlog => BacklogDraft.Normalize(content),
-        _ => throw NotYet(kind),
+        DeliverableKind.Catalog => CatalogDraft.Normalize(content, d.Content, used),
+        DeliverableKind.Backlog => BacklogDraft.Normalize(content, d.Content, used),
+        _ => throw NotYet(d.Kind),
     };
 
     // The mockup is a view of the analysis: it is not edited or validated, it

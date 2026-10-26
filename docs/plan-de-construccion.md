@@ -15,7 +15,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 ## Dónde estamos (26-10-2026)
 
 - **Hechos:** los hitos 17 (embeddings en local), 18 y 18b (fiabilidad y calidad, prompts v0.11 y v0.12), 19 (exportar), 20 (trazabilidad y comparación) y 21 (historial de versiones), revisados por el autor.
-- **En curso:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026. Hecho el paso 109 (iteraciones en Documentos); siguiente, el paso 110 (ids estables). Después, el hito 23 (evaluación).
+- **En curso:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026. Hechos los pasos 109 (iteraciones en Documentos, revisado por el autor en el navegador) y 110 (ids estables); siguiente, el paso 111 (la iteración de cada elemento). Después, el hito 23 (evaluación).
 
 ## Hito 0: preparación y prueba de humo (completado)
 
@@ -478,10 +478,12 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
   - Flujo: `FlowFacts.OpenIteration`; con una iteración abierta y algún documento, rondas, catálogo y backlog dan «Cierra la documentación de la iteración N.» (`ProjectFlow.DocumentationOpen`), y las sugerencias también (`FlowView.documentationOpen`). Sin documentos, los pasos dicen lo mismo que antes. El mockup no cambia. El catálogo v1.4 experimental y el nuevo arbitraje no se bloquean (autor).
   - Web: Documentos agrupados por iteración, de la más reciente a la más antigua, con el nombre y las notas editables, «Cerrar documentación», «Reabrir» (con confirmación), «Eliminar» (la vacía) y «Nueva iteración»; los `.zip`, aparte. Las sugerencias se apagan con el motivo.
   - Tests: las reglas (`IterationRulesTests`) y el flujo (`ProjectFlowTests`); los endpoints, reabrir que desactualiza y las sugerencias bloqueadas (`IterationTests`); el arranque sobre un proyecto ya hecho, que da los mismos documentos (`DOC-01`…, mismos nombres y texto) y el mismo flujo que antes; y el flujo completo con el clic de cerrar (los tres tests de `FullFlowTests` que lanzan una ronda). 966 tests en verde (951 + 15).
-- [ ] 110. Ids estables en el catálogo y el backlog.
-  - El borrador ya no se renumera al guardar: lo nuevo toma el siguiente número libre de su tipo, borrar deja hueco y cambiar el tipo da un id nuevo. Al generar desde cero se sigue numerando seguido.
-  - `ID-SEQ` solo en las salidas de los modelos. Los ids siguen siendo únicos y con el prefijo de su tipo.
-  - Tests: los de la renumeración pasan a comprobar los ids estables; las referencias de una historia sobreviven al borrar otro requisito; las exportaciones y la trazabilidad con huecos.
+- [x] 110. Ids estables en el catálogo y el backlog. (26-10-2026.)
+  - El borrador ya no se renumera al guardar (`CatalogDraft.Normalize` y `BacklogDraft.Normalize`, con `StableIds`): cada elemento conserva el id que tenía en el borrador que se sustituye; lo nuevo (o una copia, o un id escrito a mano) toma el siguiente número de su prefijo, borrar deja hueco y cambiar el tipo de un requisito le da un id nuevo de ese tipo. Al generar desde cero se sigue numerando seguido (`Renumber`, también en la corrección `TIPO`, que no cambia).
+  - **Un número ya dado no se vuelve a dar** (detalle de Claude, para que «RF-012» sea siempre el mismo requisito): cuentan todos los ids de las versiones del historial con el mismo trabajo (`DeliverableVersions.IdsOfJobAsync`); tras borrar RF-010 y guardar, el siguiente requisito nuevo es RF-011. Una generación nueva vuelve a empezar en 1.
+  - `ID-SEQ` solo en las salidas de los modelos: el validador recibe `GapsInIds` en las comprobaciones del borrador. Los ids siguen siendo únicos y, en el catálogo, con el prefijo de su tipo. El validador de las salidas de los modelos no cambia.
+  - Web: los textos que decían que los ids se renumeran al guardar.
+  - Tests: los dos de la renumeración pasan a comprobar los ids estables; `StableIdsTests` (asignación, números del historial, generar desde cero, la referencia de una historia que sobrevive al borrar otro requisito, la trazabilidad y las exportaciones con huecos); un borrador con huecos se valida y la misma salida de un modelo daría `ID-SEQ`; los ids del historial son los del mismo trabajo. 974 tests en verde.
 - [ ] 111. La iteración de cada elemento y la cobertura de cada entregable.
   - La plataforma calcula la iteración de cada pregunta, requisito e historia (fragmento → documento → iteración) y la muestra en las tres fases, con filtro, y en el panel de trazabilidad (la iteración de cada fragmento).
   - Cada entregable y cada versión guardan las iteraciones que incluyen; la web dice cuáles faltan.

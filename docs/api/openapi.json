@@ -1914,7 +1914,7 @@
           "Entregables"
         ],
         "summary": "Guarda los cambios del usuario",
-        "description": "El contenido nuevo sustituye al anterior, normalizado (los ids se renumeran). Solo el catálogo y el backlog, y solo en borrador: el mockup no se edita.",
+        "description": "El contenido nuevo sustituye al anterior. Los ids son estables: cada elemento conserva el que tenía; uno nuevo (o un requisito que cambia de tipo) toma el siguiente número de su tipo que no se haya dado antes en el historial del borrador, y borrar deja un hueco. Solo el catálogo y el backlog, y solo en borrador: el mockup no se edita.",
         "parameters": [
           {
             "name": "projectId",
@@ -2186,7 +2186,7 @@
           "Entregables"
         ],
         "summary": "Compara una versión con el catálogo o el backlog actual",
-        "description": "De la versión (`original`) a lo que hay ahora (`current`): los requisitos o historias que siguen igual se cuentan (`kept`); los que tienen el mismo id y otro contenido (`modified`) van como eran y como son; `added` son los que hay ahora y no estaban, y `deleted`, los que estaban y ya no. Se emparejan por contenido, sin ids ni campos de la plataforma, porque los ids se renumeran al guardar. Solo el catálogo y el backlog.",
+        "description": "De la versión (`original`) a lo que hay ahora (`current`): los requisitos o historias que siguen igual se cuentan (`kept`); los que tienen el mismo id y otro contenido (`modified`) van como eran y como son; `added` son los que hay ahora y no estaban, y `deleted`, los que estaban y ya no. Se emparejan por contenido, sin ids ni campos de la plataforma (las versiones de antes de los ids estables, del paso 110, se renumeraban al guardar). Solo el catálogo y el backlog.",
         "parameters": [
           {
             "name": "projectId",

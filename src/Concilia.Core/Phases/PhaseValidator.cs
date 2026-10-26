@@ -24,6 +24,10 @@ public record PhaseContext
     public string? Proposal2 { get; init; }
     // Arbiter: the matching of the platform (MatchingFile), for PlatformFixes.
     public string? Matching { get; init; }
+    // The working copy of the catalog or the backlog, whose ids are stable
+    // (step 110): deleting leaves gaps, so ID-SEQ does not apply. Ids are
+    // still unique and, in the catalog, with the prefix of their type.
+    public bool GapsInIds { get; init; }
 }
 
 // Errors cause the repair (each line goes to the annex); warnings are shown
@@ -89,7 +93,7 @@ public static class PhaseValidator
         if (errors.Count > 0)
             return new PhaseValidation(errors, []);
         var questions = Items(data!, "preguntas");
-        errors.AddRange(IdErrors(questions.Select(q => Str(q, "id")!).ToList(), "P", 3));
+        errors.AddRange(IdErrors(questions.Select(q => Str(q, "id")!).ToList(), "P", 3, context.GapsInIds));
         foreach (var q in questions)
             errors.AddRange(FragmentErrors(Str(q, "id")!, StrList(q, "fuentes"), context));
         if (proposals is var (p1, p2))
@@ -120,7 +124,7 @@ public static class PhaseValidator
                 errors.Add($"{id} REF-PREG: la pregunta {p} no existe o no está respondida.");
         }
         foreach (var type in Types)
-            errors.AddRange(IdErrors(requirements.Where(r => Str(r, "tipo") == type).Select(r => Str(r, "id")!).ToList(), type, 3));
+            errors.AddRange(IdErrors(requirements.Where(r => Str(r, "tipo") == type).Select(r => Str(r, "id")!).ToList(), type, 3, context.GapsInIds));
         if (proposals is var (p1, p2))
             errors.AddRange(ArbiterErrors(requirements, (Ids(Items(p1, "requisitos")), Ids(Items(p2, "requisitos"))), Items(data!, "descartados"), "descartados"));
         return new PhaseValidation(errors, []);
@@ -132,10 +136,10 @@ public static class PhaseValidator
         if (errors.Count > 0)
             return new PhaseValidation(errors, []);
         var stories = StoriesOf(data!);
-        errors.AddRange(IdErrors(Ids(Items(data!, "epicas")), "EP", 2));
-        errors.AddRange(IdErrors(Ids(stories), "HU", 3));
-        errors.AddRange(IdErrors(stories.SelectMany(h => Items(h, "criterios")).Select(c => Str(c, "id")!).ToList(), "CA", 3));
-        errors.AddRange(IdErrors(stories.SelectMany(h => Items(h, "tareas")).Select(t => Str(t, "id")!).ToList(), "T", 3));
+        errors.AddRange(IdErrors(Ids(Items(data!, "epicas")), "EP", 2, context.GapsInIds));
+        errors.AddRange(IdErrors(Ids(stories), "HU", 3, context.GapsInIds));
+        errors.AddRange(IdErrors(stories.SelectMany(h => Items(h, "criterios")).Select(c => Str(c, "id")!).ToList(), "CA", 3, context.GapsInIds));
+        errors.AddRange(IdErrors(stories.SelectMany(h => Items(h, "tareas")).Select(t => Str(t, "id")!).ToList(), "T", 3, context.GapsInIds));
 
         var catalog = Items(JsonNode.Parse(context.Catalog ?? "{\"requisitos\":[]}")!, "requisitos");
         var existing = catalog.Select(r => Str(r, "id")!).ToHashSet();
@@ -187,7 +191,8 @@ public static class PhaseValidator
     // --- Shared checks -----------------------------------------------------
 
     // Unique ids, consecutive from 1: P-001, P-002… (digits = width of the number).
-    private static List<string> IdErrors(List<string> ids, string prefix, int digits)
+    // gaps: the working copy, with stable ids (step 110): only unique.
+    private static List<string> IdErrors(List<string> ids, string prefix, int digits, bool gaps)
     {
         var errors = new List<string>();
         var seen = new HashSet<string>();
@@ -197,7 +202,7 @@ public static class PhaseValidator
                 errors.Add($"{id} ID-DUP: id repetido.");
         }
         var expected = Enumerable.Range(1, ids.Count).Select(n => $"{prefix}-{n.ToString().PadLeft(digits, '0')}").ToList();
-        if (!ids.SequenceEqual(expected) && seen.Count == ids.Count)
+        if (!gaps && !ids.SequenceEqual(expected) && seen.Count == ids.Count)
             errors.Add($"{prefix} ID-SEQ: los ids deben ir seguidos desde {(expected.Count > 0 ? expected[0] : prefix)}; llegan {string.Join(", ", ids)}.");
         return errors;
     }

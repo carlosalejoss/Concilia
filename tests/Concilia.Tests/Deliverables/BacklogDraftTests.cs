@@ -60,18 +60,29 @@ public class BacklogDraftTests
         Assert.Empty(check.Warnings);
     }
 
+    // Step 110: stable ids. Deleting a story leaves a gap in stories,
+    // criteria and tasks, and what is new takes the next number.
     [Fact]
-    public void Ids_are_renumbered_after_deleting_a_story()
+    public void Ids_stay_after_deleting_a_story_and_new_ones_take_the_next_number()
     {
-        var root = JsonNode.Parse(FromArbiter())!;
+        var draft = FromArbiter();
+        var root = JsonNode.Parse(draft)!;
+        var second = Stories(draft).ElementAt(1);
         root["epicas"]![0]!["historias"]!.AsArray().RemoveAt(0);
+        var story = root["epicas"]![0]!["historias"]![0]!;
+        story["criterios"]!.AsArray().Add(new JsonObject { ["id"] = "nuevo", ["escenario"] = "x", ["dado"] = "x", ["cuando"] = "x", ["entonces"] = "x" });
 
-        var normalized = BacklogDraft.Normalize(root.ToJsonString());
+        var normalized = BacklogDraft.Normalize(root.ToJsonString(), draft, BacklogDraft.Ids(draft));
 
-        Assert.Equal("HU-001", Stories(normalized).First()["id"]!.GetValue<string>());
-        Assert.Equal("CA-001", Stories(normalized).First()["criterios"]![0]!["id"]!.GetValue<string>());
+        var first = Stories(normalized).First();
+        Assert.Equal(second["id"]!.GetValue<string>(), first["id"]!.GetValue<string>()); // HU-002 stays HU-002
+        Assert.Equal(second["criterios"]![0]!["id"]!.GetValue<string>(), first["criterios"]![0]!["id"]!.GetValue<string>());
+        var lastCriterion = BacklogDraft.Ids(draft).Where(id => id.StartsWith("CA-")).Max()!;
+        Assert.Equal($"CA-{int.Parse(lastCriterion[3..]) + 1:000}", first["criterios"]!.AsArray()[^1]!["id"]!.GetValue<string>());
         // Deleting the only story of RF-001…RF-004 leaves them without a story: a warning, not an error.
-        Assert.Contains(BacklogDraft.Check(Reviewed(normalized), Context).Warnings, w => w.Contains("COB"));
+        var check = BacklogDraft.Check(Reviewed(normalized), Context);
+        Assert.Contains(check.Warnings, w => w.Contains("COB"));
+        Assert.DoesNotContain(check.Errors, e => e.Contains("ID-SEQ"));
     }
 
     [Fact]

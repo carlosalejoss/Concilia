@@ -92,7 +92,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
   const summary =
     `${epics.length} épicas, ${stories.length} historias` +
     (discrepancies > 0 ? `, ${discrepancies - pending} de ${discrepancies} discrepancias revisadas` : '') +
-    '. Los ids se renumeran al guardar.'
+    '. Los ids no cambian al guardar: lo nuevo toma el siguiente número.'
 
   return (
     <div className="space-y-4">

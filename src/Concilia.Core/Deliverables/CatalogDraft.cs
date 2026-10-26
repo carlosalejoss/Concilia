@@ -40,24 +40,49 @@ public static class CatalogDraft
             copy["revisada"] = false;
             requirements.Add(copy);
         }
-        return Normalize(new JsonObject { ["requisitos"] = requirements }.ToJsonString());
+        return Renumber(new JsonObject { ["requisitos"] = requirements }.ToJsonString());
     }
 
     // Ids by type in order of appearance (RF-001, RF-002…, RNF-001…), as the
-    // validator expects them: after the user adds or deletes requirements the
-    // platform renumbers. A requirement with an unknown type keeps its id (the
-    // validator reports it).
-    public static string Normalize(string json)
+    // validator expects them from a model: for what a job generates (and the
+    // TIPO correction of PlatformFixes). A requirement with an unknown type
+    // keeps its id (the validator reports it).
+    public static string Renumber(string json)
     {
         var root = JsonNode.Parse(json)!.AsObject();
         var counters = Types.ToDictionary(t => t, _ => 0);
         foreach (var r in Requirements(root))
         {
-            if (r["tipo"] is JsonValue v && v.TryGetValue<string>(out var type) && counters.ContainsKey(type))
+            if (TypeOf(r) is { } type)
                 r["id"] = $"{type}-{++counters[type]:000}";
         }
         return root.ToJsonString(Indented);
     }
+
+    // The user's changes, with stable ids (step 110): each requirement keeps
+    // the id it had in the draft being replaced (previous); a new one, or one
+    // whose type changed, takes the next number of its type, never one given
+    // before in the history of the draft (used). Deleting leaves a gap.
+    public static string Normalize(string json, string previous, IEnumerable<string> used)
+    {
+        var root = JsonNode.Parse(json)!.AsObject();
+        var ids = new StableIds(Ids(previous), used);
+        foreach (var r in Requirements(root))
+        {
+            if (TypeOf(r) is { } type)
+                r["id"] = ids.Assign(IdOf(r), type, 3);
+        }
+        return root.ToJsonString(Indented);
+    }
+
+    // The ids of the requirements of a catalog.
+    public static IReadOnlyList<string> Ids(string json) =>
+        Requirements(JsonNode.Parse(json)!.AsObject()).Select(IdOf).OfType<string>().ToList();
+
+    private static string? IdOf(JsonObject r) => r["id"] is JsonValue v && v.TryGetValue<string>(out var id) ? id : null;
+
+    private static string? TypeOf(JsonObject r) =>
+        r["tipo"] is JsonValue v && v.TryGetValue<string>(out var type) && Types.Contains(type) ? type : null;
 
     // Errors that keep it from being validated (the checks of the v0 validator
     // on the schema fields, plus each discrepancy not reviewed yet) and warnings.
@@ -72,7 +97,8 @@ public static class CatalogDraft
         {
             return new PhaseValidation([$"JSON no válido: {e.Message}"], []);
         }
-        var result = PhaseValidator.Validate(PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Proposal), ForNextPhase(root), context);
+        // Stable ids (step 110): gaps are allowed in the draft; ID-SEQ is only for the models.
+        var result = PhaseValidator.Validate(PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Proposal), ForNextPhase(root), context with { GapsInIds = true });
         var pending = Requirements(root)
             .Where(r => r["discrepancia"] is JsonValue d && d.GetValue<bool>() && !(r["revisada"] is JsonValue rv && rv.GetValue<bool>()))
             .Select(r => $"{r["id"]} DISC: hay una discrepancia sin revisar.");

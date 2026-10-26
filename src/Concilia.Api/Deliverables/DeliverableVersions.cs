@@ -85,7 +85,7 @@ public static class DeliverableVersions
             return Results.Ok(JobReports.Compare(phase, v.Content, d.Content));
         })
             .WithSummary("Compara una versión con el catálogo o el backlog actual")
-            .WithDescription("De la versión (`original`) a lo que hay ahora (`current`): los requisitos o historias que siguen igual se cuentan (`kept`); los que tienen el mismo id y otro contenido (`modified`) van como eran y como son; `added` son los que hay ahora y no estaban, y `deleted`, los que estaban y ya no. Se emparejan por contenido, sin ids ni campos de la plataforma, porque los ids se renumeran al guardar. Solo el catálogo y el backlog.")
+            .WithDescription("De la versión (`original`) a lo que hay ahora (`current`): los requisitos o historias que siguen igual se cuentan (`kept`); los que tienen el mismo id y otro contenido (`modified`) van como eran y como son; `added` son los que hay ahora y no estaban, y `deleted`, los que estaban y ya no. Se emparejan por contenido, sin ids ni campos de la plataforma (las versiones de antes de los ids estables, del paso 110, se renumeraban al guardar). Solo el catálogo y el backlog.")
             .Produces<ElementDiff>()
             .ProducesValidationProblem()
             .Produces(StatusCodes.Status404NotFound);
@@ -155,6 +155,21 @@ public static class DeliverableVersions
         {
             Add(db, storage, version);
         }
+    }
+
+    // Every id given in the history of a draft: those of its versions with the
+    // same job (a new generation numbers from 1 again). A new element never
+    // takes one of them (stable ids, step 110).
+    public static async Task<IReadOnlyList<string>> IdsOfJobAsync(AppDbContext db, Deliverable d)
+    {
+        var contents = await db.DeliverableVersions
+            .Where(v => v.ProjectId == d.ProjectId && v.Kind == d.Kind && v.JobId == d.JobId)
+            .Select(v => v.Content)
+            .ToListAsync();
+        return contents
+            .SelectMany(c => d.Kind == DeliverableKind.Catalog ? CatalogDraft.Ids(c) : BacklogDraft.Ids(c))
+            .Distinct()
+            .ToList();
     }
 
     // At start-up: each deliverable without versions gets its first one, as

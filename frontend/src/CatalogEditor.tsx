@@ -117,7 +117,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
   const summary =
     `${requirements.length} requisitos` +
     (discrepancies > 0 ? `, ${discrepancies - pending} de ${discrepancies} discrepancias revisadas` : '') +
-    '. Los ids se renumeran por tipo al guardar.'
+    '. Los ids no cambian al guardar: un requisito nuevo, o que cambia de tipo, toma el siguiente número de su tipo.'
 
   return (
     <div className="space-y-4">

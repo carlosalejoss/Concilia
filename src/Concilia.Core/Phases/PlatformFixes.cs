@@ -109,7 +109,7 @@ public static partial class PlatformFixes
         if (wrong.Count == 0)
             return json;
         warnings.Add($"requisitos TIPO: el prefijo del id no coincidía con el tipo en {string.Join(", ", wrong)}; la plataforma renumera el catálogo por tipo.");
-        return CatalogDraft.Normalize(json);
+        return CatalogDraft.Renumber(json);
     }
 
     // ARB-FALTA: the elements of each proposal that are in no `de` and in no
