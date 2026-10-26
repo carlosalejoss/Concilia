@@ -489,7 +489,7 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
 - [ ] 112. Preguntas centradas en unas iteraciones (prompts v0.13).
   - Antes que nada, el test de que «Todas las iteraciones» y «Desde cero» generan exactamente el mismo prompt y las mismas entradas que la v0.12.
   - Al lanzar una ronda: «Todas las iteraciones» o «Centrarse en…», con casillas por iteración. La ronda guarda su foco.
-  - Fragmentos relacionados (`RelatedFragments`): los anteriores parecidos a los de las iteraciones elegidas, desde 0,70 y con un tope (**por decidir**, se mide aquí y en el paso 116). Lectura obligatoria: la documentación elegida y los relacionados; el resto, consultable por tramos.
+  - Fragmentos relacionados (`RelatedFragments`): los anteriores parecidos a los de las iteraciones elegidas, desde 0,70 y con un tope (**por decidir**: Claude lo mide aquí con el proyecto de clínicas y propone un valor con datos; el autor lo aprueba el 26-10-2026). Lectura obligatoria: la documentación elegida y los relacionados; el resto, consultable por tramos.
   - Prompts nuevos del modo centrado (pregunta y árbitro), sin tocar los de siempre. Salida: preguntas nuevas y revisiones (reformular, resuelta, obsoleta, contradice una respuesta, contradice un requisito validado), con motivo y fuentes. El árbitro alinea las revisiones por la pregunta a la que se refieren, sin IA.
   - `Questions`: la pregunta o el requisito con que se enlaza, y el historial de reformulaciones (texto anterior, iteración y motivo).
   - Web: el foco de cada ronda, la iteración de cada pregunta, sus enlaces y su historial, y las propuestas «resuelta» y «obsoleta» para responder o descartar.
@@ -507,7 +507,7 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
   - Tras generar el catálogo o el backlog desde cero, la plataforma empareja con embeddings el resultado con la versión anterior y marca cada elemento como igual, cambiado o nuevo, y lo que ha desaparecido.
   - El informe y su CSV, con las columnas nuevas al final.
 - [ ] 116. Prueba real con clínicas en dos iteraciones.
-  - Una segunda iteración de documentos ficticios para el proyecto de clínicas, sobre el flujo ya validado de la v0.11, con novedades, cambios y contradicciones con la iteración 1 puestos a propósito y listados como referencia, como en `ejemplos/README.md`.
+  - Una segunda iteración de documentos ficticios para el proyecto de clínicas, sobre el flujo ya validado de la v0.11, con novedades, cambios y contradicciones con la iteración 1 puestos a propósito y listados como referencia, como en `ejemplos/README.md`. (Aprobado por el autor el 26-10-2026, frente a partir en dos tandas los documentos que ya hay.)
   - Ronda centrada, actualización del catálogo y del backlog, y lo mismo desde cero. Se mide el coste y el tiempo, cuánto de lo validado se conserva igual y cuántos de los cambios puestos a propósito se detectan. La ronda centrada se mide también leyéndolo todo (opción A) frente a la opción C.
   - Resultados en `docs/evolucion-prompt-requisitos.md` (v0.13) y `docs/costes/costes.md`.
 

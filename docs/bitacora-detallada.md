@@ -2466,3 +2466,9 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - el paso 109;
   - por decidir: el tope de fragmentos relacionados (se mide en los pasos 112 y 116) y un CSV solo con lo nuevo de una iteración;
   - los documentos ficticios de la segunda iteración de clínicas para el paso 116.
+- **Más decisiones del autor, el mismo día:**
+  - la segunda iteración de clínicas serán documentos ficticios nuevos, sobre el flujo ya validado, con los cambios puestos a propósito y listados;
+  - Claude mide el tope de fragmentos relacionados en el paso 112 y propone un valor;
+  - se mantienen todas las propuestas de Claude incluidas en el hito;
+  - antes de cada reconstrucción en Docker, copia de la base de datos y aviso.
+  - El hito se empezará en otra sesión.
