@@ -15,7 +15,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 ## Dónde estamos (26-10-2026)
 
 - **Hechos:** los hitos 17 (embeddings en local), 18 y 18b (fiabilidad y calidad, prompts v0.11 y v0.12), 19 (exportar), 20 (trazabilidad y comparación) y 21 (historial de versiones), revisados por el autor.
-- **Siguiente:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026 y sin código todavía. Después, el hito 23 (evaluación).
+- **En curso:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026. Hecho el paso 109 (iteraciones en Documentos); siguiente, el paso 110 (ids estables). Después, el hito 23 (evaluación).
 
 ## Hito 0: preparación y prueba de humo (completado)
 
@@ -471,12 +471,13 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
 
 ### Pasos
 
-- [ ] 109. Iteraciones en Documentos.
-  - Tabla `Iterations` (proyecto, número, nombre, notas, estado, fechas de creación y cierre) y `ProjectFile.IterationId`. La migración crea en cada proyecto la «Iteración 1», cerrada, con todos sus archivos.
-  - Endpoints para crear una iteración (con la anterior cerrada), renombrarla, cerrarla y reabrir la última. Solo se sube a la abierta.
-  - Flujo: con una iteración abierta no se lanzan rondas, sugerencias, catálogo ni backlog, con el motivo «Cierra la documentación de la iteración N». Reabrir es `FileAdded`.
-  - Web: Documentos agrupados por iteración, con «Cerrar documentación», «Nueva iteración» y «Reabrir».
-  - Tests: las reglas del flujo, la migración de un proyecto ya hecho (queda igual que antes, en la «Iteración 1») y el flujo completo con el cierre.
+- [x] 109. Iteraciones en Documentos. (26-10-2026, diseño aprobado por el autor; los tres huecos del plan, como proponía Claude.)
+  - Tabla `Iterations` (proyecto, número, nombre, notas, estado `Open`/`Closed`, fechas de creación y cierre; migración `AddIterations`, que solo añade) y `ProjectFile.IterationId`, nulo en el `.zip` de estilo. Un índice único filtrado asegura una sola abierta por proyecto. Las reglas están en `IterationRules` (Core).
+  - **La «Iteración 1» de los proyectos que ya existen se crea al arrancar la API** (`IterationEndpoints.CreateFirstForExistingAsync`, como `RecordExistingAsync`), no en la migración: así se prueba con los tests, que usan la base de datos en memoria y no ejecutan migraciones; la migración se queda en esquema; y solo toca los proyectos sin iteraciones creados antes del arranque. Cerrada, con todos sus documentos y la fecha de su última subida. **Cambio frente al plan (autor):** un proyecto que ya existe sin documentos la recibe abierta, como uno nuevo, para no tener que subir su primer documento a una «Iteración 2».
+  - Endpoints (grupo «Documentos»): `GET` y `POST /projects/{id}/iterations`, `PUT …/{n}` (nombre y notas), `POST …/{n}/close` (exige al menos un documento), `POST …/{n}/reopen` (solo la última; `FileAdded`) y **`DELETE …/{n}`** (añadido, autor: la última, abierta, sin documentos y nunca la 1, para una iteración creada por error). Un documento va a la iteración abierta y, si no hay, se rechaza; el `.zip` se sube siempre. `POST /projects` crea la «Iteración 1» abierta.
+  - Flujo: `FlowFacts.OpenIteration`; con una iteración abierta y algún documento, rondas, catálogo y backlog dan «Cierra la documentación de la iteración N.» (`ProjectFlow.DocumentationOpen`), y las sugerencias también (`FlowView.documentationOpen`). Sin documentos, los pasos dicen lo mismo que antes. El mockup no cambia. El catálogo v1.4 experimental y el nuevo arbitraje no se bloquean (autor).
+  - Web: Documentos agrupados por iteración, de la más reciente a la más antigua, con el nombre y las notas editables, «Cerrar documentación», «Reabrir» (con confirmación), «Eliminar» (la vacía) y «Nueva iteración»; los `.zip`, aparte. Las sugerencias se apagan con el motivo.
+  - Tests: las reglas (`IterationRulesTests`) y el flujo (`ProjectFlowTests`); los endpoints, reabrir que desactualiza y las sugerencias bloqueadas (`IterationTests`); el arranque sobre un proyecto ya hecho, que da los mismos documentos (`DOC-01`…, mismos nombres y texto) y el mismo flujo que antes; y el flujo completo con el clic de cerrar (los tres tests de `FullFlowTests` que lanzan una ronda). 966 tests en verde (951 + 15).
 - [ ] 110. Ids estables en el catálogo y el backlog.
   - El borrador ya no se renumera al guardar: lo nuevo toma el siguiente número libre de su tipo, borrar deja hueco y cambiar el tipo da un id nuevo. Al generar desde cero se sigue numerando seguido.
   - `ID-SEQ` solo en las salidas de los modelos. Los ids siguen siendo únicos y con el prefijo de su tipo.

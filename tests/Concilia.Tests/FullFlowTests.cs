@@ -55,6 +55,18 @@ public class FullFlowTests
         using (var form = new MultipartFormDataContent { { new ByteArrayContent(document), "file", "DOC-01.txt" } })
             Assert.Equal(HttpStatusCode.Created, (await client.PostAsync($"/projects/{id}/files", form)).StatusCode);
 
+        // Step 109: the document went to the "Iteración 1", open since the
+        // project was created; until its documentation is closed, no round.
+        var iteration = (await Json(await client.GetAsync($"/projects/{id}/iterations"))).AsArray().Single()!;
+        Assert.Equal(("Iteración 1", "Open"), (iteration["name"]!.GetValue<string>(), iteration["status"]!.GetValue<string>()));
+        Assert.Equal(iteration["id"]!.GetValue<int>(), (await Json(await client.GetAsync($"/projects/{id}/files"))).AsArray().Single()!["iterationId"]!.GetValue<int>());
+        var waiting = await Step(client, id, "Questions");
+        Assert.False(waiting["canLaunch"]!.GetValue<bool>());
+        Assert.Equal("Cierra la documentación de la iteración 1.", waiting["reason"]!.GetValue<string>());
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsync($"/projects/{id}/question-rounds", null)).StatusCode);
+        await CloseDocumentation(client, id, 1);
+        Assert.True((await Step(client, id, "Questions"))["canLaunch"]!.GetValue<bool>());
+
         // A round of questions, and an answer to each one.
         await Launch(client, $"/projects/{id}/question-rounds", id);
         var questions = (await Json(await client.GetAsync($"/projects/{id}/questions"))).AsArray();
@@ -231,8 +243,11 @@ public class FullFlowTests
         var second = (await Json(await client.PostAsJsonAsync("/projects", new { name = "Banco de alimentos" })))["id"]!.GetValue<int>();
         var document = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "prompts", "ejemplo", "fuentes", "DOC-01.txt"));
         foreach (var id in new[] { first, second })
+        {
             using (var form = new MultipartFormDataContent { { new ByteArrayContent(document), "file", "DOC-01.txt" } })
                 (await client.PostAsync($"/projects/{id}/files", form)).EnsureSuccessStatusCode();
+            await CloseDocumentation(client, id, 1);
+        }
         Assert.Equal(HttpStatusCode.NoContent, (await client.GetAsync("/jobs/active")).StatusCode);
 
         var round = await client.PostAsync($"/projects/{first}/question-rounds", null);
@@ -272,6 +287,7 @@ public class FullFlowTests
         var document = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "prompts", "ejemplo", "fuentes", "DOC-01.txt"));
         using (var form = new MultipartFormDataContent { { new ByteArrayContent(document), "file", "DOC-01.txt" } })
             (await client.PostAsync($"/projects/{id}/files", form)).EnsureSuccessStatusCode();
+        await CloseDocumentation(client, id, 1);
         var round = await Launch(client, $"/projects/{id}/question-rounds", id);
         var questions = (await Json(await client.GetAsync($"/projects/{id}/questions"))).AsArray().Count;
 
@@ -298,6 +314,10 @@ public class FullFlowTests
         Assert.Contains($"{again};rearbitration;ok", csv);
         Assert.Contains($";Questions;SS - GPT-6-LUNA;{round};", csv);
     }
+
+    // "Cerrar documentación" of an iteration (step 109).
+    private static async Task CloseDocumentation(HttpClient client, int projectId, int number) =>
+        Assert.Equal("Closed", (await Json(await client.PostAsync($"/projects/{projectId}/iterations/{number}/close", null)))["status"]!.GetValue<string>());
 
     // Launches a job and waits until it ends; it must end with a result.
     private static async Task<string> Launch(HttpClient client, string url, int projectId, object? body = null)

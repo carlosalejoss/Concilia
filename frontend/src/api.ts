@@ -13,6 +13,7 @@ export type Project = {
 export type ProjectFile = {
   id: number
   projectId: number
+  iterationId: number | null // null: the style reference (.zip), which belongs to the project
   fileName: string
   storedName: string
   contentType: string
@@ -20,6 +21,19 @@ export type ProjectFile = {
   sha256: string
   uploadedAt: string
   textStoredName: string | null // null: no text extracted for this type
+}
+
+// GET /projects/{id}/iterations: the batches of documentation (step 109).
+// Documents go to the open one; only one is open at a time.
+export type Iteration = {
+  id: number
+  projectId: number
+  number: number
+  name: string
+  notes: string | null
+  status: 'Open' | 'Closed'
+  createdAt: string
+  closedAt: string | null
 }
 
 // Skipped: a run that was not launched (the arbiter, when A or B did not end well).
@@ -282,7 +296,9 @@ export type StepStatus = {
   warning: string | null // e.g. documentation too big to read at once
 }
 
-export type FlowView = { steps: StepStatus[] }
+// documentationOpen: why nothing that reads the documentation can be
+// launched (an open iteration), or null; it also greys out the suggestions.
+export type FlowView = { steps: StepStatus[]; documentationOpen: string | null }
 
 // A job with all its runs: slot A and slot B, plus their retries.
 export type JobView = {

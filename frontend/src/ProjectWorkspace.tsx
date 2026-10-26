@@ -177,7 +177,7 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
     const info = STEP_INFO[stepId]
     const bodies: Record<FlowStep, ReactNode> = {
       Documents: <ProjectFiles project={project} onChange={reload} />,
-      Questions: <QuestionsPanel project={project} version={version} onChange={reload} onShowJob={showJob} />,
+      Questions: <QuestionsPanel project={project} version={version} documentationOpen={flow.documentationOpen} onChange={reload} onShowJob={showJob} />,
       Catalog: <CatalogEditor project={project} version={version} onChange={reload} />,
       Backlog: <BacklogEditor project={project} version={version} onChange={reload} />,
       Mockup: (

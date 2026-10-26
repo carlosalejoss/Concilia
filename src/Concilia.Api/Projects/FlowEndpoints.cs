@@ -13,7 +13,9 @@ using Concilia.Core.Runs;
 
 namespace Concilia.Api.Projects;
 
-public record FlowView(IReadOnlyList<StepStatus> Steps);
+// DocumentationOpen: why nothing that reads the documentation can be launched
+// (an open iteration, step 109), or null; the web greys out the suggestions with it.
+public record FlowView(IReadOnlyList<StepStatus> Steps, string? DocumentationOpen = null);
 
 public static class FlowEndpoints
 {
@@ -32,13 +34,17 @@ public static class FlowEndpoints
         // The state of each step of the project (ProjectFlow).
         // The documents step also says the size of the documentation, against the limit of the phases.
         app.MapGet("/projects/{projectId:int}/flow", async (int projectId, AppDbContext db, FileStorage storage, RunnerOptions options) =>
-            await db.Projects.AnyAsync(p => p.Id == projectId)
-                ? Results.Ok(new FlowView(ProjectFlow.Compute(
-                    await ReadFactsAsync(db, storage, projectId) with { MaxDocumentationTokens = options.MaxDocumentationTokens })))
-                : Results.NotFound())
+        {
+            if (!await db.Projects.AnyAsync(p => p.Id == projectId))
+            {
+                return Results.NotFound();
+            }
+            var facts = await ReadFactsAsync(db, storage, projectId) with { MaxDocumentationTokens = options.MaxDocumentationTokens };
+            return Results.Ok(new FlowView(ProjectFlow.Compute(facts), ProjectFlow.DocumentationOpen(facts)));
+        })
             .WithTags(ApiTags.Projects)
             .WithSummary("Estado de cada paso del flujo")
-            .WithDescription("Para cada paso (documentos, preguntas, catálogo, backlog y mockup): su estado, si está desactualizado, si se puede lanzar y, si no, por qué. El paso de documentos dice además el tamaño estimado de la documentación frente al límite de las fases.")
+            .WithDescription("Para cada paso (documentos, preguntas, catálogo, backlog y mockup): su estado, si está desactualizado, si se puede lanzar y, si no, por qué. El paso de documentos dice además el tamaño estimado de la documentación frente al límite de las fases. `documentationOpen` dice, si hay una iteración abierta, por qué no se puede lanzar nada que lea la documentación (también las sugerencias).")
             .Produces<FlowView>()
             .Produces(StatusCodes.Status404NotFound);
     }
@@ -72,6 +78,7 @@ public static class FlowEndpoints
         var statuses = await db.Questions.Where(q => q.ProjectId == projectId).Select(q => q.Status).ToListAsync();
         var deliverables = await db.Deliverables.Where(d => d.ProjectId == projectId).ToListAsync();
         DeliverableFacts? Of(DeliverableKind kind) => DeliverableRules.Facts(deliverables.SingleOrDefault(d => d.Kind == kind));
+        var open = await IterationEndpoints.OpenAsync(db, projectId);
 
         return new FlowFacts
         {
@@ -84,6 +91,7 @@ public static class FlowEndpoints
             Backlog = Of(DeliverableKind.Backlog),
             Mockup = Of(DeliverableKind.Mockup),
             Running = running,
+            OpenIteration = open?.Number,
         };
     }
 

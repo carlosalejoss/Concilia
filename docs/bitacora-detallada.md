@@ -2472,3 +2472,27 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - se mantienen todas las propuestas de Claude incluidas en el hito;
   - antes de cada reconstrucción en Docker, copia de la base de datos y aviso.
   - El hito se empezará en otra sesión.
+
+## 26-10-2026, 09:45 (sesión)
+
+Paso 109 del hito 22: iteraciones en Documentos.
+
+- **Qué se hizo:**
+  - tabla `Iterations` (proyecto, número, nombre, notas, estado `Open`/`Closed`, fechas de creación y cierre) y `ProjectFile.IterationId`, con la migración `AddIterations`, que solo añade (tabla, columna nulable, clave ajena e índices; un índice único filtrado asegura una sola iteración abierta por proyecto);
+  - reglas en `IterationRules` (Core): crear con las demás cerradas, cerrar con al menos un documento, reabrir solo la última, eliminar la última abierta y vacía (nunca la 1), nombre y notas;
+  - endpoints en el grupo «Documentos»: listar, crear, renombrar y editar notas, cerrar, reabrir (aplica `FileAdded`) y eliminar; la subida manda cada documento a la iteración abierta y lo rechaza si no hay ninguna; el `.zip` de estilo se sube siempre, sin iteración; un proyecto nuevo nace con la «Iteración 1» abierta;
+  - flujo: `FlowFacts.OpenIteration` y `ProjectFlow.DocumentationOpen`; con una iteración abierta, rondas, sugerencias, catálogo y backlog dan «Cierra la documentación de la iteración N.»; el mockup no cambia; `FlowView.documentationOpen` lleva el motivo a la web para las sugerencias;
+  - web: Documentos agrupados por iteración, con nombre y notas editables, «Cerrar documentación», «Reabrir» con confirmación, «Eliminar» y «Nueva iteración»; los `.zip` en una sección aparte; los botones de sugerencias se apagan con el motivo.
+- **Decisiones (autor, 26-10-2026):**
+  - la «Iteración 1» de los proyectos que ya existen se crea al arrancar la API (`IterationEndpoints.CreateFirstForExistingAsync`, como `RecordExistingAsync`) y no en la migración. Motivos: se prueba con los tests, que usan la base de datos en memoria y no ejecutan migraciones; la migración se queda en esquema; y solo toca los proyectos sin iteraciones creados antes del arranque, para no cruzarse con uno que se esté creando;
+  - se puede eliminar una iteración creada por error (la última, abierta, sin documentos y que no sea la 1);
+  - el catálogo v1.4 experimental y el nuevo arbitraje no se bloquean con una iteración abierta: el primero no es parte del flujo y el segundo reutiliza las entradas de un trabajo ya terminado.
+- **Cambios de criterio:**
+  - frente al plan, un proyecto que ya existe y no tiene documentos recibe la «Iteración 1» abierta, no cerrada: si no, su primer documento tendría que ir a una «Iteración 2»;
+  - la iteración abierta solo bloquea cuando ya hay algún documento: el test del arranque descubrió que, en un proyecto vacío, el catálogo pasaba a pedir «Cierra la documentación» en lugar de «Termina al menos una ronda»; ahora un proyecto sin documentos ve los pasos igual que antes.
+- **Lo que no cambia:** la numeración de los documentos (`DOC-01`… por orden de subida en todo el proyecto), las cabeceras de la documentación, los prompts y las entradas de las fases. Un test comprueba que, tras crear la «Iteración 1», un proyecto ya hecho da los mismos documentos y el mismo flujo que antes.
+- **Tests:** 966 en verde (951 + 15 nuevos: `IterationRulesTests`, `IterationTests` y tres en `ProjectFlowTests`). Cambian solo los tres de `FullFlowTests` que suben un archivo y lanzan una ronda, que ahora cierran antes la documentación; el primero comprueba además el motivo y la iteración del archivo.
+- **Pendientes:**
+  - aplicar la migración en Docker, después de que el autor haga la copia de la base de datos, y revisar la página de Documentos en el navegador;
+  - el paso 110 (ids estables).
+

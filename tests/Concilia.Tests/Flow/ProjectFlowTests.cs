@@ -166,4 +166,44 @@ public class ProjectFlowTests
         Assert.True(step.Outdated);
         Assert.True(step.CanLaunch);
     }
+
+    // Step 109: while an iteration is open, nothing that reads the
+    // documentation is launched: rounds, suggestions, catalog and backlog.
+    [Fact]
+    public void An_open_iteration_stops_what_reads_the_documentation_but_not_the_mockup()
+    {
+        var facts = ReadyForCatalog with { Catalog = new(true, false), Backlog = new(true, false), OpenIteration = 2 };
+
+        foreach (var step in new[] { FlowStep.Questions, FlowStep.Catalog, FlowStep.Backlog })
+        {
+            Assert.False(Step(facts, step).CanLaunch);
+            Assert.Equal("Cierra la documentación de la iteración 2.", Step(facts, step).Reason);
+        }
+        Assert.Equal("Cierra la documentación de la iteración 2.", ProjectFlow.DocumentationOpen(facts));
+        Assert.True(Step(facts, FlowStep.Mockup).CanLaunch);
+        // What exists keeps its state: the rounds done, the validated catalog and backlog.
+        Assert.Equal([StepState.Draft, StepState.Draft, StepState.Validated, StepState.Validated, StepState.Available],
+            ProjectFlow.Compute(facts).Select(s => s.State));
+    }
+
+    [Fact]
+    public void With_every_iteration_closed_the_flow_is_as_before()
+    {
+        Assert.Null(ProjectFlow.DocumentationOpen(ReadyForCatalog));
+        Assert.True(Step(ReadyForCatalog, FlowStep.Questions).CanLaunch);
+        Assert.True(Step(ReadyForCatalog, FlowStep.Catalog).CanLaunch);
+    }
+
+    [Fact]
+    public void A_new_project_first_asks_for_a_document_then_for_closing_its_documentation()
+    {
+        // Without documents, the steps say what they said before the iterations.
+        Assert.Equal(ProjectFlow.Compute(new FlowFacts()), ProjectFlow.Compute(new FlowFacts { OpenIteration = 1 }));
+        Assert.Equal("Sube al menos un archivo con texto.", Step(new FlowFacts { OpenIteration = 1 }, FlowStep.Questions).Reason);
+
+        var step = Step(new FlowFacts { TextFiles = 1, OpenIteration = 1 }, FlowStep.Questions);
+        Assert.Equal(StepState.Blocked, step.State);
+        Assert.Equal("Cierra la documentación de la iteración 1.", step.Reason);
+        Assert.Equal("Cierra la documentación de la iteración 1.", Step(new FlowFacts { TextFiles = 1, OpenIteration = 1 }, FlowStep.Catalog).Reason);
+    }
 }

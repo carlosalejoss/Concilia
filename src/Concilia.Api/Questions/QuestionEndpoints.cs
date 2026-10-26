@@ -306,6 +306,11 @@ public static class QuestionEndpoints
         {
             return busy; // one task at a time in the whole platform
         }
+        // Step 109: not while an iteration is open (they read the documentation).
+        if (ProjectFlow.DocumentationOpen(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)) is { } open)
+        {
+            return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [open] });
+        }
         if (pending.Count == 0)
         {
             return Results.ValidationProblem(new Dictionary<string, string[]> { ["questions"] = ["No hay preguntas pendientes para sugerir."] });

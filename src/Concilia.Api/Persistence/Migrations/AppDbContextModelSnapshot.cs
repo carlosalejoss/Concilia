@@ -131,6 +131,53 @@ namespace Concilia.Api.Persistence.Migrations
                     b.ToTable("DeliverableVersions");
                 });
 
+            modelBuilder.Entity("Concilia.Core.Projects.Iteration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset?>("ClosedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Iterations_ProjectId_Open")
+                        .HasFilter("\"Status\" = 'Open'");
+
+                    b.HasIndex("ProjectId", "Number")
+                        .IsUnique();
+
+                    b.ToTable("Iterations");
+                });
+
             modelBuilder.Entity("Concilia.Core.Projects.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -183,6 +230,9 @@ namespace Concilia.Api.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<int?>("IterationId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
@@ -208,6 +258,8 @@ namespace Concilia.Api.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IterationId");
 
                     b.HasIndex("ProjectId");
 
@@ -452,8 +504,22 @@ namespace Concilia.Api.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Concilia.Core.Projects.Iteration", b =>
+                {
+                    b.HasOne("Concilia.Core.Projects.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Concilia.Core.Projects.ProjectFile", b =>
                 {
+                    b.HasOne("Concilia.Core.Projects.Iteration", null)
+                        .WithMany()
+                        .HasForeignKey("IterationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Concilia.Core.Projects.Project", null)
                         .WithMany()
                         .HasForeignKey("ProjectId")

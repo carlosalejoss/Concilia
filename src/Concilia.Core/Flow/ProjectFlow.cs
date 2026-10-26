@@ -24,6 +24,10 @@ public record FlowFacts
     public DeliverableFacts? Mockup { get; init; }
     public IReadOnlySet<FlowStep> Running { get; init; } = new HashSet<FlowStep>();
 
+    // The number of the iteration whose documentation is still open, or null
+    // if all are closed (step 109).
+    public int? OpenIteration { get; init; }
+
     // Estimated tokens of the text of every file, and the most a phase
     // accepts (RunnerOptions.MaxDocumentationTokens), for the size warning.
     public long DocumentationTokens { get; init; }
@@ -105,6 +109,14 @@ public static class ProjectFlow
         };
     }
 
+    // Step 109: while an iteration is open, nothing that reads the
+    // documentation is launched (rounds, suggestions, catalog and backlog), so
+    // as not to work with half of it. The mockup does not read it. Null if
+    // all the iterations are closed, and also without any document yet: then
+    // the first thing to do is to upload one, and the steps say so as before.
+    public static string? DocumentationOpen(FlowFacts f) =>
+        f.OpenIteration is { } number && f.TextFiles > 0 ? $"Cierra la documentación de la iteración {number}." : null;
+
     private static StepStatus Questions(FlowFacts f)
     {
         var detail = $"{Plural(f.FinishedQuestionRounds, "ronda terminada", "rondas terminadas")}, {Plural(f.PendingQuestions, "pendiente", "pendientes")}";
@@ -112,6 +124,9 @@ public static class ProjectFlow
             return new(FlowStep.Questions, StepState.Blocked, false, false, "Sube al menos un archivo con texto.", detail);
         if (f.Running.Contains(FlowStep.Questions))
             return new(FlowStep.Questions, StepState.InProgress, false, false, "Hay una ronda en curso.", detail);
+        // With an open iteration, the rounds already done stay as a draft; with none, the step waits.
+        if (DocumentationOpen(f) is { } open)
+            return new(FlowStep.Questions, f.FinishedQuestionRounds > 0 ? StepState.Draft : StepState.Blocked, false, false, open, detail);
         return new(FlowStep.Questions, f.FinishedQuestionRounds > 0 ? StepState.Draft : StepState.Available, false, true, null, detail);
     }
 
@@ -122,11 +137,11 @@ public static class ProjectFlow
             reason = "Termina al menos una ronda de preguntas.";
         else if (f.PendingQuestions > 0)
             reason = $"Contesta o descarta {Plural(f.PendingQuestions, "pregunta pendiente", "preguntas pendientes")}.";
-        return Deliverable(FlowStep.Catalog, f.Catalog, f.Running, reason);
+        return Deliverable(FlowStep.Catalog, f.Catalog, f.Running, DocumentationOpen(f) ?? reason);
     }
 
     private static StepStatus Backlog(FlowFacts f) =>
-        Deliverable(FlowStep.Backlog, f.Backlog, f.Running, f.Catalog is { Validated: true } ? null : "Valida el catálogo.");
+        Deliverable(FlowStep.Backlog, f.Backlog, f.Running, DocumentationOpen(f) ?? (f.Catalog is { Validated: true } ? null : "Valida el catálogo."));
 
     private static StepStatus Mockup(FlowFacts f) =>
         Deliverable(FlowStep.Mockup, f.Mockup, f.Running, f.Backlog is { Validated: true } ? null : "Valida el backlog.");

@@ -69,14 +69,17 @@ async function send(url: string, method: string, body?: unknown): Promise<string
 // answer box, but nothing is saved until the user saves it, edited or not.
 // version changes when the page reloads the flow; onChange tells the page that
 // a question changed (the catalog depends on the pending ones).
+// documentationOpen: why no suggestion can be asked now (an open iteration), or null.
 function QuestionsPanel({
   project,
   version,
+  documentationOpen,
   onChange,
   onShowJob,
 }: {
   project: Project
   version: number
+  documentationOpen: string | null
   onChange: () => void
   onShowJob: (jobId: string) => void
 }) {
@@ -255,9 +258,9 @@ function QuestionsPanel({
                       size="sm"
                       variant={allSuggested ? 'ghost' : undefined}
                       icon={Sparkles}
-                      disabled={suggesting}
+                      disabled={suggesting || documentationOpen !== null}
                       onClick={() => suggest(`/question-rounds/${view.job.id}/suggestions`)}
-                      title="Pide a la IA una respuesta para cada pregunta pendiente de la ronda; no se guarda nada hasta que la guardes tú"
+                      title={documentationOpen ?? 'Pide a la IA una respuesta para cada pregunta pendiente de la ronda; no se guarda nada hasta que la guardes tú'}
                     >
                       Sugerir respuestas
                     </LaunchButton>
@@ -283,6 +286,7 @@ function QuestionsPanel({
                       question={q}
                       act={act}
                       suggesting={suggesting}
+                      documentationOpen={documentationOpen}
                       onSuggest={() => suggest(`/questions/${q.id}/suggestion`)}
                     />
                   ))}
@@ -322,11 +326,13 @@ function QuestionItem({
   question: q,
   act,
   suggesting,
+  documentationOpen,
   onSuggest,
 }: {
   question: Question
   act: Act
   suggesting: boolean
+  documentationOpen: string | null
   onSuggest: () => void
 }) {
   const suggestion = q.status === 'Pending' ? q.suggestedAnswer : null
@@ -471,7 +477,14 @@ function QuestionItem({
                   </Button>
                 )}
                 {q.status === 'Pending' && (
-                  <LaunchButton size="sm" variant="ghost" icon={Sparkles} disabled={suggesting} onClick={onSuggest}>
+                  <LaunchButton
+                    size="sm"
+                    variant="ghost"
+                    icon={Sparkles}
+                    disabled={suggesting || documentationOpen !== null}
+                    title={documentationOpen ?? undefined}
+                    onClick={onSuggest}
+                  >
                     {suggestion === null ? 'Sugerir con IA' : 'Pedir otra sugerencia'}
                   </LaunchButton>
                 )}

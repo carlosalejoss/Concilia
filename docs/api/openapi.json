@@ -60,7 +60,7 @@
           "Proyectos"
         ],
         "summary": "Estado de cada paso del flujo",
-        "description": "Para cada paso (documentos, preguntas, catálogo, backlog y mockup): su estado, si está desactualizado, si se puede lanzar y, si no, por qué. El paso de documentos dice además el tamaño estimado de la documentación frente al límite de las fases.",
+        "description": "Para cada paso (documentos, preguntas, catálogo, backlog y mockup): su estado, si está desactualizado, si se puede lanzar y, si no, por qué. El paso de documentos dice además el tamaño estimado de la documentación frente al límite de las fases. `documentationOpen` dice, si hay una iteración abierta, por qué no se puede lanzar nada que lea la documentación (también las sugerencias).",
         "parameters": [
           {
             "name": "projectId",
@@ -422,7 +422,7 @@
           "Proyectos"
         ],
         "summary": "Crea un proyecto",
-        "description": "Solo pide el nombre. El nombre del sistema empieza como «el sistema {nombre}», el idioma en español y sin glosario; se cambian después con `PUT /projects/{projectId}`.",
+        "description": "Solo pide el nombre. El nombre del sistema empieza como «el sistema {nombre}», el idioma en español y sin glosario; se cambian después con `PUT /projects/{projectId}`. Empieza con la «Iteración 1» abierta, para subir su documentación.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -610,7 +610,7 @@
           "Documentos"
         ],
         "summary": "Sube un archivo",
-        "description": "Formulario `multipart/form-data` con el archivo en el campo `file` (hasta 10 MB).\r\n\r\n- **Documentación:** `.txt`, `.md`, `.docx`, `.pdf`, `.xlsx`, `.csv`, `.pptx`, `.html`/`.htm`, `.eml`, `.msg`, `.vtt`, `.srt`, `.json`, `.yaml`/`.yml` y `.xml`. Se extrae su texto al subirlo; un archivo dañado se rechaza sin guardar nada.\r\n- **Referencia de estilo del mockup:** un `.zip` con páginas u hojas de estilo. No es documentación: solo lo lee el mockup.\r\n\r\nUn documento nuevo deja desactualizados el catálogo, el backlog y el mockup; una referencia de estilo, solo el mockup.",
+        "description": "Formulario `multipart/form-data` con el archivo en el campo `file` (hasta 10 MB).\r\n\r\n- **Documentación:** `.txt`, `.md`, `.docx`, `.pdf`, `.xlsx`, `.csv`, `.pptx`, `.html`/`.htm`, `.eml`, `.msg`, `.vtt`, `.srt`, `.json`, `.yaml`/`.yml` y `.xml`. Se extrae su texto al subirlo; un archivo dañado se rechaza sin guardar nada. Va a la iteración abierta; si no hay ninguna, se rechaza.\r\n- **Referencia de estilo del mockup:** un `.zip` con páginas u hojas de estilo. No es documentación: solo lo lee el mockup. Es del proyecto, no de una iteración, y se sube siempre.\r\n\r\nUn documento nuevo deja desactualizados el catálogo, el backlog y el mockup; una referencia de estilo, solo el mockup.",
         "parameters": [
           {
             "name": "projectId",
@@ -698,6 +698,314 @@
               "text/plain": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/iterations": {
+      "get": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Lista las iteraciones del proyecto",
+        "description": "De la primera a la última. Cada archivo dice en `iterationId` a cuál pertenece (nulo en la referencia de estilo `.zip`, que es del proyecto).",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Iteration"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Crea una iteración nueva",
+        "description": "Detrás de la última, abierta, para subir su documentación. Solo si las demás están cerradas.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IterationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iteration"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/iterations/{number}": {
+      "put": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Renombra una iteración y edita sus notas",
+        "description": "Abierta o cerrada. No cambia nada del flujo.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IterationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iteration"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Elimina una iteración creada por error",
+        "description": "Solo la última, abierta y sin documentos, y nunca la primera.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/iterations/{number}/close": {
+      "post": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Cierra la documentación de una iteración",
+        "description": "Desde entonces no se le suben más documentos y, si no hay otra abierta, se pueden lanzar las rondas de preguntas, las sugerencias, el catálogo y el backlog. Exige al menos un documento.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iteration"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/iterations/{number}/reopen": {
+      "post": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "Reabre la última iteración",
+        "description": "Solo la última. Vuelve a admitir documentos y, mientras está abierta, no se lanzan las fases que leen la documentación. Deja desactualizados el catálogo, el backlog y el mockup, como subir un archivo.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iteration"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
                 }
               }
             }
@@ -3188,6 +3496,12 @@
             "items": {
               "$ref": "#/components/schemas/StepStatus"
             }
+          },
+          "documentationOpen": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -3250,6 +3564,78 @@
       "IFormFile": {
         "type": "string",
         "format": "binary"
+      },
+      "Iteration": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/IterationStatus"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "closedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "IterationRequest": {
+        "required": [
+          "name",
+          "notes"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Nombre de la iteración. Al crearla, si se deja vacío, «Iteración N»."
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Notas opcionales («Reunión del 15-11»)."
+          }
+        }
+      },
+      "IterationStatus": {
+        "enum": [
+          "Open",
+          "Closed"
+        ]
       },
       "Job": {
         "required": [
@@ -3789,6 +4175,13 @@
           },
           "projectId": {
             "type": "integer",
+            "format": "int32"
+          },
+          "iterationId": {
+            "type": [
+              "null",
+              "integer"
+            ],
             "format": "int32"
           },
           "fileName": {

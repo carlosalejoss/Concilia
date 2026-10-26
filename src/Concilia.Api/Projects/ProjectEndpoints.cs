@@ -47,11 +47,14 @@ public static class ProjectEndpoints
             };
             db.Projects.Add(project);
             await db.SaveChangesAsync();
+            // Step 109: it starts with the "Iteración 1" open, for its first documents.
+            db.Iterations.Add(IterationRules.First(project.Id, project.CreatedAt));
+            await db.SaveChangesAsync();
 
             return Results.Created($"/projects/{project.Id}", project);
         })
             .WithSummary("Crea un proyecto")
-            .WithDescription("Solo pide el nombre. El nombre del sistema empieza como «el sistema {nombre}», el idioma en español y sin glosario; se cambian después con `PUT /projects/{projectId}`.")
+            .WithDescription("Solo pide el nombre. El nombre del sistema empieza como «el sistema {nombre}», el idioma en español y sin glosario; se cambian después con `PUT /projects/{projectId}`. Empieza con la «Iteración 1» abierta, para subir su documentación.")
             .Produces<Project>(StatusCodes.Status201Created)
             .ProducesValidationProblem();
 

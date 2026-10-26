@@ -8,6 +8,10 @@ public class ProjectFile
 
     public int ProjectId { get; set; }
 
+    // The iteration it was uploaded to (step 109); null for the style
+    // reference of the mockup (.zip), which belongs to the project.
+    public int? IterationId { get; set; }
+
     // Name as uploaded by the user (shown in the web).
     public required string FileName { get; set; }
 

@@ -68,6 +68,7 @@ app.MapGet("/health", () => TypedResults.Ok(new HealthView("ok")))
     .WithDescription("Responde `ok` si la API está en marcha. No comprueba la base de datos.");
 app.MapProjectEndpoints();
 app.MapProjectFileEndpoints();
+app.MapIterationEndpoints();
 app.MapRunEndpoints();
 app.MapJobEndpoints();
 app.MapActiveJobEndpoint();

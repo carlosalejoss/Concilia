@@ -26,7 +26,7 @@ flowchart TD
 
 | Paso | Qué hace | Cómo |
 | --- | --- | --- |
-| Documentos | Sube la documentación: Word, PDF, Excel, CSV, PowerPoint, páginas web, correos, transcripciones de reuniones, texto, Markdown, JSON, YAML o XML. Un `.zip` con un mockup del cliente sirve de referencia de estilo. | La plataforma extrae el texto y lo divide en fragmentos citables (`DOC-01#F007`). |
+| Documentos | Sube la documentación: Word, PDF, Excel, CSV, PowerPoint, páginas web, correos, transcripciones de reuniones, texto, Markdown, JSON, YAML o XML. La documentación se agrupa en iteraciones (las tandas en que la manda el cliente) y cada una se cierra con «Cerrar documentación» antes de lanzar las fases que la leen. Un `.zip` con un mockup del cliente sirve de referencia de estilo. | La plataforma extrae el texto y lo divide en fragmentos citables (`DOC-01#F007`). |
 | Preguntas | Las dudas que hay que aclarar con el cliente, en rondas. La IA puede proponer cada respuesta. | Modelo A ‖ modelo B → árbitro |
 | Requisitos | El catálogo en EARS y MASTeR, con sus fuentes y las preguntas en que se apoya. Desde cada requisito se ve su trazabilidad: el texto de sus fragmentos, las respuestas en que se apoya y las historias que lo cubren (y, desde cada historia, al revés). Se descarga en Word o PDF. | Modelo A ‖ modelo B → árbitro |
 | Backlog | Épicas, historias, criterios de aceptación en Gherkin y tareas. Se descarga como ficheros `.feature` de Gherkin y como CSV para importarlo en Jira o en Azure DevOps. | Modelo A ‖ modelo B → árbitro |
@@ -85,7 +85,7 @@ concilia/
 - [x] **Hito 19.** Exportar los entregables: el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira y Azure DevOps.
 - [x] **Hito 20.** Trazabilidad visual (de cada requisito a su origen en la documentación) y comparación lado a lado de A, B y el árbitro en cada trabajo, con el emparejamiento por embeddings.
 - [x] **Hito 21.** Historial de versiones de los entregables: cada versión se guarda con su fecha y su origen, y se puede ver, comparar con la actual y recuperar.
-- [ ] **Hito 22.** Iteraciones del proyecto: la documentación se agrupa en iteraciones, y las preguntas, el catálogo y el backlog se rehacen con todas o se actualizan solo con las nuevas, conservando lo validado y diciendo de qué iteración viene cada elemento y qué cambió y por qué.
+- [ ] **Hito 22 (en curso).** Iteraciones del proyecto: la documentación se agrupa en iteraciones (hecho: paso 109), y las preguntas, el catálogo y el backlog se rehacen con todas o se actualizan solo con las nuevas, conservando lo validado y diciendo de qué iteración viene cada elemento y qué cambió y por qué.
 - [ ] **Hito 23.** Evaluación (precisión, recall y F1 frente a listas de referencia, y actualizar frente a empezar de cero).
 - [ ] **Hito 7 (aplazado).** Catálogo v2, de arriba abajo, con los prompts del autor.
 

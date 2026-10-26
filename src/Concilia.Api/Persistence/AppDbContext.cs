@@ -13,6 +13,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<ProjectFile> ProjectFiles => Set<ProjectFile>();
 
+    public DbSet<Iteration> Iterations => Set<Iteration>();
+
     public DbSet<Run> Runs => Set<Run>();
 
     public DbSet<Job> Jobs => Set<Job>();
@@ -44,6 +46,35 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             file.Property(f => f.TextStoredName).HasMaxLength(100);
             file.Property(f => f.ContentType).HasMaxLength(255);
             file.Property(f => f.Sha256).HasMaxLength(64).IsFixedLength();
+
+            // Step 109: the iteration it was uploaded to (null for the style .zip).
+            // Only an iteration without files is ever deleted, so the cascade
+            // only matters when the whole project is deleted.
+            file.HasOne<Iteration>()
+                .WithMany()
+                .HasForeignKey(f => f.IterationId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Step 109: the iterations of each project, deleted with the project.
+        modelBuilder.Entity<Iteration>(iteration =>
+        {
+            iteration.HasOne<Project>()
+                .WithMany()
+                .HasForeignKey(i => i.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One number per iteration and project.
+            iteration.HasIndex(i => new { i.ProjectId, i.Number }).IsUnique();
+            // At most one open iteration per project, guaranteed by the database too.
+            iteration.HasIndex(i => i.ProjectId)
+                .IsUnique()
+                .HasFilter("\"Status\" = 'Open'")
+                .HasDatabaseName("IX_Iterations_ProjectId_Open");
+            iteration.Property(i => i.Name).HasMaxLength(IterationRules.MaxNameLength);
+            iteration.Property(i => i.Notes).HasMaxLength(IterationRules.MaxNotesLength);
+            // Stored as text ("Open", "Closed") so the table is readable.
+            iteration.Property(i => i.Status).HasConversion<string>().HasMaxLength(20);
         });
 
         modelBuilder.Entity<Run>(run =>

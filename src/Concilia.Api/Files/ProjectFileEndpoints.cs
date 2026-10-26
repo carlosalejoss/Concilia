@@ -106,6 +106,21 @@ public static class ProjectFileEndpoints
                 });
             }
 
+            // Step 109: a document goes to the open iteration, and only there;
+            // the style reference belongs to the project, with no iteration.
+            Iteration? iteration = null;
+            if (IterationRules.BelongsToIteration(fileName))
+            {
+                iteration = await IterationEndpoints.OpenAsync(db, projectId);
+                if (iteration is null)
+                {
+                    return Results.ValidationProblem(new Dictionary<string, string[]>
+                    {
+                        ["file"] = ["La documentación está cerrada: crea una iteración nueva para subir documentos."],
+                    });
+                }
+            }
+
             // A damaged PDF or DOCX is rejected here, and nothing is stored.
             string? text;
             try
@@ -139,6 +154,7 @@ public static class ProjectFileEndpoints
             var record = new ProjectFile
             {
                 ProjectId = projectId,
+                IterationId = iteration?.Id,
                 FileName = fileName,
                 StoredName = storedName,
                 ContentType = string.IsNullOrEmpty(file.ContentType) ? "application/octet-stream" : file.ContentType,
@@ -164,8 +180,8 @@ public static class ProjectFileEndpoints
             .WithDescription("""
                 Formulario `multipart/form-data` con el archivo en el campo `file` (hasta 10 MB).
 
-                - **Documentación:** `.txt`, `.md`, `.docx`, `.pdf`, `.xlsx`, `.csv`, `.pptx`, `.html`/`.htm`, `.eml`, `.msg`, `.vtt`, `.srt`, `.json`, `.yaml`/`.yml` y `.xml`. Se extrae su texto al subirlo; un archivo dañado se rechaza sin guardar nada.
-                - **Referencia de estilo del mockup:** un `.zip` con páginas u hojas de estilo. No es documentación: solo lo lee el mockup.
+                - **Documentación:** `.txt`, `.md`, `.docx`, `.pdf`, `.xlsx`, `.csv`, `.pptx`, `.html`/`.htm`, `.eml`, `.msg`, `.vtt`, `.srt`, `.json`, `.yaml`/`.yml` y `.xml`. Se extrae su texto al subirlo; un archivo dañado se rechaza sin guardar nada. Va a la iteración abierta; si no hay ninguna, se rechaza.
+                - **Referencia de estilo del mockup:** un `.zip` con páginas u hojas de estilo. No es documentación: solo lo lee el mockup. Es del proyecto, no de una iteración, y se sube siempre.
 
                 Un documento nuevo deja desactualizados el catálogo, el backlog y el mockup; una referencia de estilo, solo el mockup.
                 """)
