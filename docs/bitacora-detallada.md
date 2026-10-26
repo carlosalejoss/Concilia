@@ -2405,3 +2405,19 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - No se ha revisado en el navegador, porque hace falta reconstruir la API en Docker para aplicar las dos migraciones.
 - **Estado:** hito 21 hecho (pasos 101 y 102), pendiente de revisarlo en el navegador.
 - **Pendientes:** la revisión en el navegador del hito 21, y después el hito 22 (evaluación). Sigue sin decidir la mejora de repartir el CSV de Jira en ficheros de 250 elementos.
+
+## 26-10-2026, 09:30 (sesión)
+
+**Resumen para la bitácora (26-10-2026, hito 21 cerrado)**
+
+- **Qué se hizo:** el autor reconstruyó la API en Docker, con las migraciones `AddDeliverableVersions` y `AddVersionRestore`, y revisó en el navegador lo que Claude le pidió. Todo funciona:
+  - la primera versión «Anterior al historial» de los proyectos que ya existían;
+  - las versiones al editar y al validar, y que ni guardar sin cambios ni reabrir crean ninguna;
+  - la copia de la página de cada mockup;
+  - ver y comparar una versión anterior;
+  - volver a una versión de un catálogo validado: queda en borrador, el backlog y el mockup quedan desactualizados y se puede deshacer;
+  - el botón desactivado con cambios sin guardar;
+  - ver y volver a una versión del mockup.
+- **Decisión:** se queda como la hizo Claude que cada versión recuerde si estaba desactualizada y recupere el aviso al volver a ella. El autor la revisó junto con lo demás y no pidió cambiarla.
+- **Estado:** hito 21 cerrado (pasos 101 y 102).
+- **Pendientes:** el hito 22 (evaluación). Sigue sin decidir la mejora de repartir el CSV de Jira en ficheros de 250 elementos. Queda anotado el test intermitente del runner (`Compacting_after_writing_the_output_stops_the_run_at_once`), que falló una vez de cuatro el 23-10-2026.
