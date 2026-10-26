@@ -103,6 +103,26 @@ public static class IterationRules
         return null;
     }
 
+    // The focus of a round centred on some iterations (step 112): one or
+    // more, each one closed and with documents. withDocuments: the numbers of
+    // the iterations that have documents with text.
+    public static string? ValidateFocus(IReadOnlyList<int> focus, IReadOnlyList<Iteration> all, IReadOnlySet<int> withDocuments)
+    {
+        if (focus.Count == 0)
+            return "Elige al menos una iteración en la que centrarse.";
+        foreach (var number in focus)
+        {
+            var iteration = all.FirstOrDefault(i => i.Number == number);
+            if (iteration is null)
+                return $"La iteración {number} no existe.";
+            if (iteration.Status == IterationStatus.Open)
+                return $"Cierra la documentación de la iteración {number}.";
+            if (!withDocuments.Contains(number))
+                return $"La iteración {number} no tiene documentos con texto.";
+        }
+        return null;
+    }
+
     // An iteration created by mistake: the last one, open and without
     // documents. The first one is never deleted (documents need somewhere to go).
     public static string? Delete(Iteration iteration, IReadOnlyList<Iteration> all, int documents)

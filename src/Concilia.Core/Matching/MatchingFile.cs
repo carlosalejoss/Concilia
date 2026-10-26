@@ -45,5 +45,15 @@ public static class MatchingFile
         return text.ToString();
     }
 
+    // Step 112: the lines "previa" of a centred round, after the others: a new
+    // question like one already asked ("1:P-005 previa:P-014 parecido 0.83").
+    public static string WithPrevious(string matching, IReadOnlyList<PreviousMatch> previous)
+    {
+        var text = new StringBuilder(matching);
+        foreach (var p in previous.OrderBy(p => p.Proposal).ThenBy(p => p.Id, StringComparer.Ordinal))
+            text.Append($"{p.Proposal}:{p.Id} previa:{p.PreviousCode} {Name(p.Level)} {p.Similarity.ToString("F2", CultureInfo.InvariantCulture)}").Append('\n');
+        return text.ToString();
+    }
+
     private static string Name(MatchLevel level) => level == MatchLevel.Same ? "mismo" : "parecido";
 }

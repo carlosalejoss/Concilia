@@ -28,6 +28,11 @@ public record PhaseContext
     // (step 110): deleting leaves gaps, so ID-SEQ does not apply. Ids are
     // still unique and, in the catalog, with the prefix of their type.
     public bool GapsInIds { get; init; }
+    // A round centred on some iterations (step 112): the documents of the
+    // focus (every new question and revision cites one) and the pending
+    // questions, the only ones that can be revised.
+    public IReadOnlySet<string> NewDocumentIds { get; init; } = new HashSet<string>();
+    public IReadOnlySet<string> RevisableQuestionIds { get; init; } = new HashSet<string>();
 }
 
 // Errors cause the repair (each line goes to the annex); warnings are shown
@@ -77,6 +82,7 @@ public static class PhaseValidator
             : ((JsonNode, JsonNode)?)null;
         return phase.Kind switch
         {
+            PhaseKind.Questions when phase.Focused => ValidateFocusedQuestions(phase, data, context, proposals),
             PhaseKind.Questions => ValidateQuestions(phase, data, context, proposals),
             PhaseKind.Catalog => ValidateCatalog(phase, data, context, proposals),
             PhaseKind.Backlog => ValidateBacklog(phase, data, context, proposals),
@@ -100,6 +106,88 @@ public static class PhaseValidator
             errors.AddRange(ArbiterErrors(questions, (Ids(Items(p1, "preguntas")), Ids(Items(p2, "preguntas"))), Items(data!, "descartadas"), "descartadas"));
         return new PhaseValidation(errors, []);
     }
+
+    // Step 112 (prompts v0.13): a round centred on some iterations. What a
+    // round of always checks, and also (new codes, not in validar_v0.py):
+    //   SIN-NUEVA  a new question or a revision that cites nothing of the documentation of the focus
+    //   REF-PREG   `contradice` with a question that is not answered, or a revision of one that is not pending
+    //   REF-REQ    `contradice` with a requirement that is not in the validated catalog
+    //   REV-DUP    two revisions of the same question
+    //   REV-TEXTO  `texto` only in `reformular`, and always in it
+    //   ARB-REV    the arbiter: one decision per revised question, `de` with the proposals whose
+    //              revision it keeps (the same action), and none in `ninguna`
+    private static PhaseValidation ValidateFocusedQuestions(PhaseDefinition phase, JsonNode? data, PhaseContext context, (JsonNode, JsonNode)? proposals)
+    {
+        var errors = SchemaErrorsOf(phase, data);
+        if (errors.Count > 0)
+            return new PhaseValidation(errors, []);
+        var questions = Items(data!, "preguntas");
+        errors.AddRange(IdErrors(questions.Select(q => Str(q, "id")!).ToList(), "P", 3, context.GapsInIds));
+        var catalog = Items(JsonNode.Parse(context.Catalog ?? "{\"requisitos\":[]}")!, "requisitos").Select(r => Str(r, "id")).ToHashSet();
+        foreach (var q in questions)
+        {
+            var id = Str(q, "id")!;
+            var sources = StrList(q, "fuentes");
+            errors.AddRange(FragmentErrors(id, sources, context));
+            if (!CitesNew(sources, context))
+                errors.Add($"{id} SIN-NUEVA: cita al menos un fragmento de la documentación nueva ({string.Join(", ", context.NewDocumentIds.Order())}).");
+            if (q["contradice"] is JsonObject contradicts)
+            {
+                if (Str(contradicts, "pregunta") is { } answered && !context.AnsweredQuestionIds.Contains(answered))
+                    errors.Add($"{id} REF-PREG: `contradice` cita {answered}, que no existe o no está respondida.");
+                if (Str(contradicts, "requisito") is { } requirement && !catalog.Contains(requirement))
+                    errors.Add($"{id} REF-REQ: `contradice` cita {requirement}, que no está en el catálogo validado.");
+            }
+        }
+
+        var revisions = Items(data!, "revisiones");
+        var revised = new HashSet<string>();
+        foreach (var r in revisions)
+        {
+            var target = Str(r, "pregunta")!;
+            var action = Str(r, "accion");
+            if (!revised.Add(target))
+                errors.Add($"{target} REV-DUP: hay más de una revisión de la pregunta.");
+            if (proposals is null)
+            {
+                if (!context.RevisableQuestionIds.Contains(target))
+                    errors.Add($"{target} REF-PREG: solo se revisan las preguntas pendientes, y {target} no lo es o no existe.");
+                if (!CitesNew(StrList(r, "fuentes"), context))
+                    errors.Add($"{target} SIN-NUEVA: la revisión cita al menos un fragmento de la documentación nueva.");
+            }
+            if ((action == "reformular") != (r["texto"] is not null))
+                errors.Add($"{target} REV-TEXTO: `texto` va en `reformular`, con la pregunta entera, y en ninguna otra acción.");
+            errors.AddRange(FragmentErrors(target, StrList(r, "fuentes"), context));
+        }
+
+        if (proposals is var (p1, p2))
+        {
+            errors.AddRange(ArbiterErrors(questions, (Ids(Items(p1, "preguntas")), Ids(Items(p2, "preguntas"))), Items(data!, "descartadas"), "descartadas"));
+            var byProposal = new[] { Items(p1, "revisiones"), Items(p2, "revisiones") };
+            var targets = byProposal.SelectMany(list => list).Select(r => Str(r, "pregunta")!).ToHashSet();
+            foreach (var t in targets.Where(t => !revised.Contains(t)).Order(StringComparer.Ordinal))
+                errors.Add($"{t} ARB-REV: falta la decisión sobre la revisión de {t} (una por cada pregunta de input/revisiones.txt; `ninguna` si se queda como está).");
+            foreach (var r in revisions)
+            {
+                var target = Str(r, "pregunta")!;
+                var action = Str(r, "accion");
+                var de = r["de"]!.AsArray().Select(n => n!.GetValue<int>()).ToList();
+                if (!targets.Contains(target))
+                    errors.Add($"{target} ARB-REV: ninguna propuesta revisa {target}.");
+                else if (action == "ninguna" && de.Count > 0)
+                    errors.Add($"{target} ARB-REV: con `ninguna`, `de` va vacío.");
+                else if (action != "ninguna" && de.Count == 0)
+                    errors.Add($"{target} ARB-REV: `de` dice de qué propuestas es la revisión que mantienes.");
+                foreach (var n in de.Where(n => byProposal[n - 1].All(x => Str(x, "pregunta") != target || Str(x, "accion") != action)))
+                    errors.Add($"{target} ARB-REV: la propuesta {n} no propone `{action}` para {target}.");
+            }
+        }
+        return new PhaseValidation(errors, []);
+    }
+
+    // At least one fragment of the documents of the focus.
+    private static bool CitesNew(List<string> sources, PhaseContext context) =>
+        sources.Any(f => context.NewDocumentIds.Contains(f.Split('#')[0]));
 
     private static PhaseValidation ValidateCatalog(PhaseDefinition phase, JsonNode? data, PhaseContext context, (JsonNode, JsonNode)? proposals)
     {

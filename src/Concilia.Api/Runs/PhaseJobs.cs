@@ -43,10 +43,12 @@ public static class PhaseJobs
     // the input budget, and the documentation (read by parts from input/) must
     // not pass RunnerOptions.MaxDocumentationTokens: if not, the job is not
     // created.
+    // focus: a round of questions centred on some iterations (step 112); its
+    // input already carries the files of the focus (FocusedRoundInput).
     public static NewPhaseJob Create(
         Project project, IReadOnlyList<CatalogDocument> documents, PhaseKind kind, PhaseInput input,
         IReadOnlyList<string> answeredQuestionIds, RunnerOptions options, string providerName, Random random,
-        IReadOnlyList<string>? pendingQuestionIds = null)
+        IReadOnlyList<string>? pendingQuestionIds = null, FocusPlan? focus = null)
     {
         if (documents.Count == 0)
             return new NewPhaseJob(null, [], null, "El proyecto no tiene archivos con texto. Sube algún documento con texto.");
@@ -64,16 +66,17 @@ public static class PhaseJobs
             return new NewPhaseJob(null, [], null,
                 $"La documentación del proyecto es demasiado grande: unos {documentationTokens:N0} tokens estimados, y el máximo es " +
                 $"{options.MaxDocumentationTokens:N0}. Quita archivos o deja solo las partes que describen el sistema.");
-        var prompt = PhasePrompt.Build(PhaseDefinition.For(kind, PhaseRole.Proposal), fullInput);
+        var prompt = PhasePrompt.Build(PhaseDefinition.For(kind, PhaseRole.Proposal, focus is not null), fullInput);
         var budgetError = InputBudget.Check(prompt, new PhaseOptions().InputTokenBudget);
         if (budgetError is not null)
             return new NewPhaseJob(null, [], null, budgetError);
 
         var now = DateTimeOffset.UtcNow;
-        var job = new Job { Id = Guid.NewGuid(), ProjectId = project.Id, Kind = PhasePlan.JobKind(kind), CreatedAt = now };
+        var job = new Job { Id = Guid.NewGuid(), ProjectId = project.Id, Kind = PhasePlan.JobKind(kind), CreatedAt = now, Focus = focus?.Iterations.ToList() };
         var plan = new PhasePlan(kind, fullInput, fragments, answeredQuestionIds, PhasePlan.RandomOrder(random))
         {
             PendingQuestionIds = pendingQuestionIds ?? [],
+            Focus = focus,
         };
         Run NewRun(string slot, string model) => new()
         {
@@ -85,7 +88,7 @@ public static class PhaseJobs
             Model = model,
             State = RunState.Queued,
             CreatedAt = now,
-            PromptVersion = PhaseExecutor.PromptVersion,
+            PromptVersion = focus is null ? PhaseExecutor.PromptVersion : FocusedRound.PromptVersion,
         };
         // The suggestions of answers are a single run (SUG), without arbiter.
         IReadOnlyList<Run> runs = kind == PhaseKind.Suggestions

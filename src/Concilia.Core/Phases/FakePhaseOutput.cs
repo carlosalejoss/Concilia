@@ -1,6 +1,7 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 
 namespace Concilia.Core.Phases;
 
@@ -11,7 +12,7 @@ namespace Concilia.Core.Phases;
 //   of the first ones, or one story per functional requirement of the catalog.
 // - Arbiter: proposal 1 element by element, each paired with the element of
 //   proposal 2 in the same position; what proposal 2 has left over is discarded.
-public static class FakePhaseOutput
+public static partial class FakePhaseOutput
 {
     // The title of the repair annex (prompts/v0/anexo_reparacion.md).
     public const string RepairMarker = "# REPARACIÓN (intento";
@@ -28,12 +29,21 @@ public static class FakePhaseOutput
 
     // broken: the first attempt with simulateRepair, cut in half like a Write
     // that reached the output cap, so the repair can be seen working.
-    public static string For(string workDirectory, bool broken)
+    // prompt: a round centred on some iterations (step 112) takes from it the
+    // pending questions it may revise.
+    public static string For(string workDirectory, bool broken, string prompt = "")
     {
         var phase = JsonNode.Parse(Read(workDirectory, PhaseTask.PhaseFile))!;
         var kind = Enum.Parse<PhaseKind>(phase["kind"]!.GetValue<string>());
         var role = Enum.Parse<PhaseRole>(phase["role"]!.GetValue<string>());
-        var output = role == PhaseRole.Proposal ? Proposal(kind, workDirectory) : Arbiter(kind, workDirectory);
+        var focused = phase["focused"] is JsonValue f && f.GetValue<bool>();
+        var output = (role, focused) switch
+        {
+            (PhaseRole.Proposal, true) => FocusedProposal(workDirectory, prompt),
+            (PhaseRole.Proposal, false) => Proposal(kind, workDirectory),
+            (_, true) => FocusedArbiter(workDirectory),
+            _ => Arbiter(kind, workDirectory),
+        };
         var text = output.ToJsonString(Indented);
         return broken ? text[..(text.Length / 2)] : text;
     }
@@ -173,6 +183,65 @@ public static class FakePhaseOutput
         }));
         return output;
     }
+
+    // A centred round: a question about the first fragment of the new
+    // documentation and, if there is a pending question, the proposal that the
+    // new documentation solves it.
+    private static JsonObject FocusedProposal(string workDirectory, string prompt)
+    {
+        var fragment = Read(workDirectory, FocusedRound.NewDocumentationFile).Split('\n')
+            .Select(line => NewFragment().Match(line)).First(m => m.Success).Groups[1].Value;
+        var pending = PendingQuestion().Match(prompt);
+        return new JsonObject
+        {
+            ["preguntas"] = new JsonArray(new JsonObject
+            {
+                ["id"] = "P-001",
+                ["pregunta"] = $"¿Puedes concretar lo que dice el fragmento nuevo {fragment}?",
+                ["motivo"] = Note,
+                ["fuentes"] = new JsonArray(fragment),
+            }),
+            ["revisiones"] = pending.Success
+                ? new JsonArray(new JsonObject
+                {
+                    ["pregunta"] = pending.Groups[1].Value,
+                    ["accion"] = "resuelta",
+                    ["motivo"] = Note,
+                    ["fuentes"] = new JsonArray(fragment),
+                })
+                : new JsonArray(),
+        };
+    }
+
+    // The arbiter of a centred round: the new questions as in a round of
+    // always, and for each revised question the revision of proposal 1 (or of
+    // proposal 2 if 1 has none), with both proposals in `de` if they agree.
+    private static JsonObject FocusedArbiter(string workDirectory)
+    {
+        var output = Arbiter(PhaseKind.Questions, workDirectory);
+        var p1 = Read(workDirectory, PhaseTask.Proposal1File);
+        var p2 = Read(workDirectory, PhaseTask.Proposal2File);
+        var byProposal = new[] { FocusedRound.RevisionsOf(p1), FocusedRound.RevisionsOf(p2) };
+        output["revisiones"] = Array(FocusedRound.Targets(p1, p2).Select(target =>
+        {
+            var mine = byProposal[0].FirstOrDefault(r => r["pregunta"]!.GetValue<string>() == target)
+                       ?? byProposal[1].First(r => r["pregunta"]!.GetValue<string>() == target);
+            var de = Enumerable.Range(1, 2).Where(n => byProposal[n - 1].Any(r =>
+                r["pregunta"]!.GetValue<string>() == target && r["accion"]!.GetValue<string>() == mine["accion"]!.GetValue<string>()));
+            var decision = mine.DeepClone().AsObject();
+            decision["de"] = new JsonArray(de.Select(n => (JsonNode)n).ToArray());
+            decision["discrepancia"] = false;
+            decision["explicacion"] = Note;
+            return decision;
+        }));
+        return output;
+    }
+
+    [GeneratedRegex(@"^\[(DOC-[0-9]{2,}#F[0-9]{3,}) ")]
+    private static partial Regex NewFragment();
+
+    [GeneratedRegex("<pregunta id=\"(P-[0-9]{3,})\" estado=\"pendiente\">")]
+    private static partial Regex PendingQuestion();
 
     private static JsonArray Array(IEnumerable<JsonObject> items) => new(items.Select(x => (JsonNode)x).ToArray());
 

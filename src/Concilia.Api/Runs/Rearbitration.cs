@@ -97,7 +97,7 @@ public static class Rearbitration
                 Model = body.Model,
                 State = RunState.Queued,
                 CreatedAt = now,
-                PromptVersion = PhaseExecutor.PromptVersion,
+                PromptVersion = plan.Focus is null ? PhaseExecutor.PromptVersion : FocusedRound.PromptVersion,
             };
             db.Jobs.Add(job);
             db.Runs.Add(arbiter);

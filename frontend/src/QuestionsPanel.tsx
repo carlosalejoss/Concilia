@@ -21,7 +21,7 @@ import EmptyState from './ui/EmptyState.tsx'
 import Provenance from './ui/Provenance.tsx'
 import IterationBadge from './ui/IterationBadge.tsx'
 import IterationFilter from './ui/IterationFilter.tsx'
-import { iterationsOf, showIterations, useElementIterations } from './iterations.ts'
+import { iterationsOf, iterationsText, showIterations, useElementIterations } from './iterations.ts'
 import type { Tone } from './ui/tones.ts'
 
 const ANSWER_ORIGIN_NAMES: Record<string, string> = {
@@ -245,6 +245,12 @@ function QuestionsPanel({
                   </span>
                   {pendingOfRound > 0 && <Badge tone="warn">{pendingOfRound} pendientes</Badge>}
                   {finished ? <RoundResult jobId={view.job.id} /> : <Badge tone="info">En curso</Badge>}
+                  {/* Step 112: a round centred on some iterations says which. */}
+                  {(view.job.focus?.length ?? 0) > 0 && (
+                    <span title="La ronda se centró en la documentación de estas iteraciones y revisó las preguntas pendientes">
+                      <Badge tone="accent">Centrada en {iterationsText(view.job.focus!)}</Badge>
+                    </span>
+                  )}
                 </>
               }
               actions={
@@ -389,6 +395,12 @@ function QuestionItem({
           {q.text}
         </span>
         <IterationBadge numbers={iterations} />
+        {(q.contradictsQuestion || q.contradictsRequirement) && (
+          <span title="La documentación nueva contradice una respuesta del cliente o un requisito validado">
+            <Badge tone="warn">Contradice {q.contradictsQuestion ?? q.contradictsRequirement}</Badge>
+          </span>
+        )}
+        {q.status === 'Pending' && q.proposedAction && <Badge tone="info">{q.proposedAction === 'resuelta' ? 'Resuelta, según lo nuevo' : 'Obsoleta, según lo nuevo'}</Badge>}
         <status.icon className={`mt-1 size-4 shrink-0 ${status.color}`} aria-label={status.label} />
         <span className="sr-only">{status.label}</span>
       </button>
@@ -417,7 +429,42 @@ function QuestionItem({
                 <span className="font-medium">Motivo del descarte:</span> {q.discardReason}
               </p>
             )}
+            {q.contradictsQuestion && (
+              <p>
+                <span className="font-medium">Contradice:</span> la respuesta a {q.contradictsQuestion}. Esa respuesta no se cambia: contesta aquí cuál vale.
+              </p>
+            )}
+            {q.contradictsRequirement && (
+              <p>
+                <span className="font-medium">Contradice:</span> el requisito validado {q.contradictsRequirement}.
+              </p>
+            )}
           </div>
+
+          {/* Step 112: only a proposal; the user answers it or discards it. */}
+          {q.status === 'Pending' && q.proposedAction && (
+            <Banner tone="info">
+              {q.proposedAction === 'resuelta'
+                ? 'La documentación nueva parece resolverla: respóndela con lo que dice, o mantenla si no es así.'
+                : 'La documentación nueva parece dejarla sin sentido: descártala si estás de acuerdo.'}{' '}
+              {q.proposedReason} {(q.proposedSources?.length ?? 0) > 0 && <span className="text-xs">({q.proposedSources!.join(', ')})</span>}
+            </Banner>
+          )}
+          {(q.history?.length ?? 0) > 0 && (
+            <div className="space-y-1 text-xs text-muted">
+              <p className="font-medium">Cambios por documentación nueva</p>
+              <ul className="space-y-1">
+                {q.history!.map((h, i) => (
+                  <li key={i}>
+                    {h.action === 'reformulada' ? 'Reformulada' : h.action === 'propuesta-resuelta' ? 'Propuesta como resuelta' : 'Propuesta como obsoleta'} en{' '}
+                    {iterationsText(h.iterations)}: {h.reason}
+                    {h.previousText && <span className="font-serif"> Antes: «{h.previousText}»</span>}
+                    {h.discrepancy && <span className="text-warn"> Los dos modelos no coincidían.</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {q.status === 'Answered' && mode === 'view' && (
             <div className="border-l-2 border-ok pl-3">

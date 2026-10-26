@@ -76,6 +76,7 @@ export type Job = {
   kind: string // "catalog" (v1.4, experimental) or a v0 phase: "questions", "catalog-v0", "backlog", "answer-suggestions"
   createdAt: string
   finishedAt: string | null
+  focus?: number[] | null // step 112: a round centred on these iterations; null with all of them
 }
 
 // The job kinds of the v0 flow (A ‖ B → arbiter, or a single run for the
@@ -135,6 +136,29 @@ export type Question = {
   discardReason: string | null
   createdAt: string
   updatedAt: string | null
+  // Step 112 (a round centred on some iterations): what a new question
+  // contradicts (the answer of a question, or a validated requirement), the
+  // proposal that the new documentation solves it or leaves it obsolete, and
+  // what the centred rounds changed in it.
+  contradictsQuestion?: string | null
+  contradictsRequirement?: string | null
+  proposedAction?: 'resuelta' | 'obsoleta' | null
+  proposedReason?: string | null
+  proposedSources?: string[]
+  history?: QuestionRevision[]
+}
+
+export type QuestionRevision = {
+  action: 'reformulada' | 'propuesta-resuelta' | 'propuesta-obsoleta'
+  iterations: number[]
+  previousText: string | null
+  reason: string
+  sources: string[]
+  origin: 'A' | 'B' | 'ambas'
+  discrepancy: boolean
+  arbiterNote: string | null
+  jobId: string
+  date: string
 }
 
 // A catalog or backlog of the project (GET /projects/{id}/deliverables/{kind}):

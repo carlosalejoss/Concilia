@@ -1433,7 +1433,7 @@
           "Preguntas"
         ],
         "summary": "Lanza una ronda de preguntas",
-        "description": "A ‖ B → árbitro sobre toda la documentación y las preguntas ya hechas, para no repetirlas. Al terminar, las preguntas del árbitro se guardan como pendientes, numeradas tras las que ya tiene el proyecto. Exige al menos un documento con texto.",
+        "description": "A ‖ B → árbitro sobre toda la documentación y las preguntas ya hechas, para no repetirlas. Al terminar, las preguntas del árbitro se guardan como pendientes, numeradas tras las que ya tiene el proyecto. Exige al menos un documento con texto. Con `focus` (paso 112), la ronda se centra en esas iteraciones, cerradas y con documentos: lee entera su documentación, los fragmentos anteriores relacionados y los requisitos validados relacionados, y además de preguntas nuevas (también por contradicciones con una respuesta o con un requisito validado) propone revisiones de las pendientes: reformularlas, o que la documentación nueva las resuelve o las deja obsoletas.",
         "parameters": [
           {
             "name": "projectId",
@@ -1445,6 +1445,22 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/QuestionRoundRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "202": {
             "description": "Accepted",
@@ -3783,6 +3799,16 @@
               "string"
             ],
             "format": "date-time"
+          },
+          "focus": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -4428,6 +4454,42 @@
               "string"
             ]
           },
+          "contradictsQuestion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contradictsRequirement": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "proposedAction": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "proposedReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "proposedSources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionRevision"
+            }
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
@@ -4480,6 +4542,87 @@
           "byAiEdited": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "QuestionRevision": {
+        "required": [
+          "action",
+          "iterations",
+          "previousText",
+          "reason",
+          "sources",
+          "origin",
+          "discrepancy",
+          "arbiterNote",
+          "jobId",
+          "date"
+        ],
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "iterations": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "previousText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "origin": {
+            "type": "string"
+          },
+          "discrepancy": {
+            "type": "boolean"
+          },
+          "arbiterNote": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "QuestionRoundRequest": {
+        "required": [
+          "focus"
+        ],
+        "type": "object",
+        "properties": {
+          "focus": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Las iteraciones en las que se centra la ronda (`Centrarse en…`). Vacío o sin cuerpo: con todas, como siempre."
           }
         }
       },

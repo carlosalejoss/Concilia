@@ -16,4 +16,8 @@ public class Job
 
     // Set when both runs have finished.
     public DateTimeOffset? FinishedAt { get; set; }
+
+    // A round of questions centred on some iterations (step 112): the numbers
+    // of those iterations. Null in every other job, also in a round with all of them.
+    public List<int>? Focus { get; set; }
 }

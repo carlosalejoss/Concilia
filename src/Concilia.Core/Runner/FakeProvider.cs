@@ -94,7 +94,7 @@ public class FakeProvider(TimeSpan stepDelay = default, bool simulateRepair = fa
         if (FakePhaseOutput.IsPhaseRun(request.WorkDirectory))
         {
             var first = !request.Prompt.Contains(FakePhaseOutput.RepairMarker, StringComparison.Ordinal);
-            return FakePhaseOutput.For(request.WorkDirectory, broken: simulateRepair && first);
+            return FakePhaseOutput.For(request.WorkDirectory, broken: simulateRepair && first, request.Prompt);
         }
 
         var isCatalog = Path.GetFileName(relativePath) == "catalogo.json"

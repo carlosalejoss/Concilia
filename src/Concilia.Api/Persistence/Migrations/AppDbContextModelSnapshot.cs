@@ -295,10 +295,22 @@ namespace Concilia.Api.Persistence.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<string>("ContradictsQuestion")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("ContradictsRequirement")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DiscardReason")
+                        .HasColumnType("text");
+
+                    b.Property<string>("History")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("JobId")
@@ -311,6 +323,17 @@ namespace Concilia.Api.Persistence.Migrations
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ProposedAction")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("ProposedReason")
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<List<string>>("ProposedSources")
+                        .IsRequired()
+                        .HasColumnType("text[]");
 
                     b.Property<string>("Reason")
                         .IsRequired()
@@ -370,6 +393,9 @@ namespace Concilia.Api.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("FinishedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.PrimitiveCollection<List<int>>("Focus")
+                        .HasColumnType("integer[]");
 
                     b.Property<string>("Kind")
                         .IsRequired()

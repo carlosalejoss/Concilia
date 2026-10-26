@@ -23,6 +23,13 @@ public record PhaseInput
     public string Matching { get; init; } = "";          // arbiter: MatchingFile of the two proposals (input/emparejamiento.txt)
     public string PendingQuestions { get; init; } = "";  // suggestions: PhasePrompt.PendingQuestionsBlock
     public string Reading { get; init; } = "";           // ReadingPlan.Block of the files of input/ (set by PhaseTask)
+
+    // Only in a round centred on some iterations (step 112, FocusedRound); empty in the rest.
+    public string Iterations { get; init; } = "";          // {{ITERACIONES}}: the focus and the iteration of each document
+    public string NewDocumentation { get; init; } = "";    // DocumentationFile of the documents of the focus (input/documentacion_nueva.txt)
+    public string RelatedFragments { get; init; } = "";    // the earlier fragments related to them (input/relacionados.txt)
+    public string RelatedRequirements { get; init; } = ""; // the related requirements of the validated catalog (input/requisitos_relacionados.json)
+    public string Revisions { get; init; } = "";           // arbiter: the revisions grouped by question (input/revisiones.txt)
 }
 
 // Builds the prompts of the v0 phases from their templates.
@@ -45,6 +52,7 @@ public static class PhasePrompt
         ["RESPUESTAS"] = input.Answers,
         ["PREGUNTAS"] = input.PendingQuestions,
         ["LECTURA"] = input.Reading,
+        ["ITERACIONES"] = input.Iterations,
     });
 
     // The repair is the ORIGINAL prompt plus the annex with the previous output

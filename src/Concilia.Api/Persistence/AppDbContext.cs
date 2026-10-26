@@ -1,4 +1,6 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Concilia.Core.Deliverables;
 using Concilia.Core.Projects;
 using Concilia.Core.Questions;
@@ -130,6 +132,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             question.Property(q => q.SuggestionBasis).HasMaxLength(20);
             // Stored as text ("Pending", "Answered", "Discarded") so the table is readable.
             question.Property(q => q.Status).HasConversion<string>().HasMaxLength(20);
+
+            // Step 112: what a centred round changed in it.
+            question.Property(q => q.ContradictsQuestion).HasMaxLength(20);
+            question.Property(q => q.ContradictsRequirement).HasMaxLength(20);
+            question.Property(q => q.ProposedAction).HasMaxLength(20);
+            // The history as JSON text: it is only read and written whole, with the question.
+            question.Property(q => q.History)
+                .HasConversion(
+                    history => JsonSerializer.Serialize(history, (JsonSerializerOptions?)null),
+                    json => JsonSerializer.Deserialize<List<QuestionRevision>>(json, (JsonSerializerOptions?)null) ?? new List<QuestionRevision>(),
+                    new ValueComparer<List<QuestionRevision>>(
+                        (a, b) => JsonSerializer.Serialize(a, (JsonSerializerOptions?)null) == JsonSerializer.Serialize(b, (JsonSerializerOptions?)null),
+                        history => JsonSerializer.Serialize(history, (JsonSerializerOptions?)null).GetHashCode(),
+                        history => JsonSerializer.Deserialize<List<QuestionRevision>>(JsonSerializer.Serialize(history, (JsonSerializerOptions?)null), (JsonSerializerOptions?)null)!));
         });
 
         modelBuilder.Entity<Deliverable>(deliverable =>

@@ -8,6 +8,8 @@ Prompts muy básicos de la iteración v0 (D-65, D-73): sirven para tener el fluj
 |---|---|---|---|---|---|
 | Preguntas, A y B | `preguntas.md` | `documentacion.txt` | `output/preguntas.json` | `esquemas/preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `PREGUNTAS_PREVIAS`, `LECTURA` |
 | Preguntas, árbitro | `arbitro_preguntas.md` | `propuesta_1.json`, `propuesta_2.json`, `emparejamiento.txt` · `documentacion.txt` | `output/preguntas.json` | `esquemas/arbitro_preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `PREGUNTAS_PREVIAS`, `LECTURA` |
+| Preguntas centradas en unas iteraciones, A y B (v0.13) | `preguntas_centradas.md` | `documentacion_nueva.txt`, `relacionados.txt`, `requisitos_relacionados.json` · `documentacion.txt`, `catalogo.json` | `output/preguntas.json` | `esquemas/preguntas_centradas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `ITERACIONES`, `PREGUNTAS_PREVIAS`, `LECTURA` |
+| Preguntas centradas, árbitro (v0.13) | `arbitro_preguntas_centradas.md` | `propuesta_1.json`, `propuesta_2.json`, `emparejamiento.txt`, `revisiones.txt` · `documentacion.txt` | `output/preguntas.json` | `esquemas/arbitro_preguntas_centradas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `ITERACIONES`, `PREGUNTAS_PREVIAS`, `LECTURA` |
 | Catálogo, A y B | `catalogo.md` | `documentacion.txt` | `output/catalogo.json` | `esquemas/catalogo.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `LECTURA` |
 | Catálogo, árbitro | `arbitro_catalogo.md` | `propuesta_1.json`, `propuesta_2.json`, `emparejamiento.txt` · `fuentes.txt` | `output/catalogo.json` | `esquemas/arbitro_catalogo.schema.json` | los del catálogo |
 | Backlog, A y B | `backlog.md` | `catalogo.json` | `output/backlog.json` | `esquemas/backlog.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `LECTURA` |
@@ -37,7 +39,7 @@ Cada fichero es su versión vigente: no hay una copia por subversión, porque la
 | `mockup_correccion.md` | v0.8 | v0.9 | v0.9 |
 | `esquemas/preguntas`, `arbitro_preguntas`, `catalogo`, `arbitro_catalogo`, `backlog` y `arbitro_backlog` `.schema.json` | v0 | — | v0 |
 | `esquemas/sugerencias.schema.json` | v0 (09-10, sugerencias) | — | v0 |
-| `preguntas_centradas.md`, `arbitro_preguntas_centradas.md` y sus esquemas | v0.13 (26-10-2026, revisados por el autor; todavía no los usa ningún código) | — | — |
+| `preguntas_centradas.md`, `arbitro_preguntas_centradas.md` y sus esquemas | v0.13 | — | v0.13 |
 
 Ficheros que ya no existen: `mockup.md` (de la v0 a la v0.5; en la v0.6 lo sustituyen `mockup_diseno.md` y `mockup_pantalla.md`) y `mockup_integracion.md` (v0.6 y v0.7; en la v0.8 lo sustituye la revisión de la plataforma con `mockup_correccion.md`). Desde la v0.11, la dirección de estilo del mockup sin `.zip` la pone la plataforma (`StyleDirections`), no un prompt.
 
@@ -59,6 +61,13 @@ Los valores se insertan en una sola pasada, como en `PromptBuilder.Fill`: un doc
 - Desde la v0.12, en el backlog, los criterios y las tareas de las propuestas también llevan el número de su propuesta (`1:CA-012`), y el árbitro cita por su id los que conserva; la plataforma pone su texto y los numera (`CriteriaReferences`).
 - `input/fuentes.txt` (desde la v0.12, solo el árbitro del catálogo, `SourcesFile`): los fragmentos de la documentación que citan los requisitos sin par `mismo` y los de los pares `mismo` con cifras distintas, con el formato de `documentacion.txt`. Se consulta por tramos.
 - Los ficheros JSON van indentados, un valor por línea, para que `Read` no corte ninguna línea larga.
+- **Ronda centrada en unas iteraciones (v0.13, `FocusedRound`; las rondas de siempre no cambian y siguen con la v0.12):**
+  - `ITERACIONES`: `<foco>2</foco>` y la iteración de cada documento, `<documento id="DOC-08" iteracion="2"/>`. Las cabeceras `=== DOC-08 · nombre ===` no la llevan.
+  - `input/documentacion_nueva.txt`: los fragmentos de los documentos del foco, con el formato de `documentacion.txt`. Se lee entero.
+  - `input/relacionados.txt` (si hay): los fragmentos anteriores parecidos a los nuevos desde 0,70, elegidos con embeddings (`RelatedContext`), los más parecidos primero hasta 20.000 tokens estimados, en el orden de la documentación. Se lee entero.
+  - `input/requisitos_relacionados.json` (si el catálogo está validado): los requisitos validados que citan un fragmento relacionado o se parecen a lo nuevo desde 0,70, con el mismo tope. Se lee entero; `input/catalogo.json`, el catálogo validado entero, solo se consulta.
+  - `PREGUNTAS_PREVIAS` lleva también las pendientes, que son las que se pueden revisar.
+  - Árbitro: `input/emparejamiento.txt` añade una línea `1:P-005 previa:P-014 parecido 0.83` por cada pregunta nueva parecida a una ya hecha, e `input/revisiones.txt` agrupa las revisiones de las dos propuestas por la pregunta a la que se refieren, alineadas por su id sin IA.
 - `LECTURA` (`ReadingPlan.Block`): qué ficheros de `input/` lee el modelo y cómo. De los que tiene que leer enteros da el número de líneas y los argumentos exactos de cada llamada a `Read` (`offset` y `limit`, desde la línea 1). Cada tramo tiene como mucho unos 40.000 caracteres o 1.000 líneas, para que quepa en una llamada. Los demás, solo para consultar.
 - Anexo de reparación: `FICHERO` es la ruta de salida de la fase, `SALIDA_PREVIA` una nota que dice dónde está la salida anterior y cómo corregirla, y `ERRORES` una línea por error de las comprobaciones. Desde la v0.11 la salida anterior no va en el prompt: se queda en su fichero, con un elemento por línea, cada error dice en qué línea está su elemento y la reparación la corrige con Edit.
 
@@ -78,6 +87,8 @@ Los esquemas solo describen la estructura. Las reglas entre campos están en `va
 | `COB` (aviso) | Requisitos `RF` o `RI` sin historia | backlog |
 | `LECTURA` | El modelo leyó todas las líneas de los ficheros que tiene que leer enteros, sumando los intentos del run (lo mira la plataforma en las llamadas a `Read`, no está en `validar_v0.py`) | todas, también el mockup |
 | `REF-PREG`, `ID-DUP`, `FALTA` | Una sugerencia por cada pregunta pendiente, sin repetir ni sugerir para otras | sugerencias |
+| `SIN-NUEVA`, `REF-PREG`, `REF-REQ`, `REV-DUP`, `REV-TEXTO` (v0.13, solo en C#) | Cada pregunta nueva y cada revisión cita la documentación nueva; `contradice` apunta a una pregunta respondida o a un requisito del catálogo validado; solo se revisan las pendientes, una vez cada una; `texto` solo en `reformular` | preguntas centradas |
+| `ARB-REV` (v0.13, solo en C#) | Una decisión por cada pregunta revisada, con `de` de las propuestas que proponen esa misma acción, y vacío en `ninguna` | árbitro de las preguntas centradas |
 | `SIN-ORIGEN`, `REF-FRAG` | Una sugerencia `documentacion` cita al menos un fragmento, y todos existen | sugerencias |
 
 Mockup (`MockupMap` y `MockupTask.Check` en C#, sin referencia en Python). Desde la v0.6 se comprueba cada paso:

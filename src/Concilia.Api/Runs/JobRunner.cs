@@ -169,7 +169,7 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
             var reason = succeeded.Count == 1
                 ? $"No se llama al árbitro: solo {succeeded[0]} terminó con una salida válida, y sin las dos propuestas no hay verificación cruzada. El trabajo falla; se puede lanzar de nuevo."
                 : "No se llama al árbitro: ni A ni B terminaron con una salida válida. El trabajo falla; se puede lanzar de nuevo.";
-            await onRunFinished(new RunOutcome(arbiter, null, null, PhaseExecutor.PromptVersion, reason));
+            await onRunFinished(new RunOutcome(arbiter, null, null, arbiter.PromptVersion ?? PhaseExecutor.PromptVersion, reason));
             return new PhaseJobResult(null, false, null, reason);
         }
 
@@ -198,7 +198,12 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
             var similarities = phases.Matching.Similarities(plan.Kind, outputA, outputB);
             return (similarities, phases.Matching.Classify(similarities));
         });
-        var input = (Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]), MatchingFile.Write(matching, plan.ProposalOrder));
+        var matchingText = MatchingFile.Write(matching, plan.ProposalOrder);
+        // Step 112: in a centred round, also the new questions like one already asked ("previa").
+        if (plan.Focus is not null)
+            matchingText = MatchingFile.WithPrevious(matchingText,
+                phases.Matching.AgainstPrevious(Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]), plan.Focus.Questions));
+        var input = (Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]), matchingText);
         var final = await RunOneAsync(arbiter, () => phases.ExecuteAsync(arbiter, plan, input, cancellationToken), onRunStarting, onRunFinished, cancellationToken);
         if (!final.Succeeded)
             return new PhaseJobResult(null, false, null, "El árbitro no terminó con una salida válida. El trabajo falla; se puede lanzar de nuevo.")
@@ -243,7 +248,8 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
         RunOutcome outcome;
         try
         {
-            outcome = new RunOutcome(run, await execute(), null, PhaseExecutor.PromptVersion);
+            // The version the run was created with: v0.13 in a centred round (step 112), v0.12 in the rest.
+            outcome = new RunOutcome(run, await execute(), null, run.PromptVersion ?? PhaseExecutor.PromptVersion);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
@@ -251,7 +257,7 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
         }
         catch (Exception e)
         {
-            outcome = new RunOutcome(run, null, e, PhaseExecutor.PromptVersion);
+            outcome = new RunOutcome(run, null, e, run.PromptVersion ?? PhaseExecutor.PromptVersion);
         }
         await onRunFinished(outcome);
         return outcome;

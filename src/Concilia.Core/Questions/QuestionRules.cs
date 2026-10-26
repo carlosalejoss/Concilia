@@ -52,9 +52,53 @@ public static class QuestionRules
                     : $"Sin verificación cruzada: solo terminó bien {result.Source}.",
                 Status = QuestionStatus.Pending,
                 CreatedAt = now,
+                // Step 112: the answer or the requirement a new question contradicts.
+                ContradictsQuestion = item["contradice"]?["pregunta"]?.GetValue<string>(),
+                ContradictsRequirement = item["contradice"]?["requisito"]?.GetValue<string>(),
             });
         }
         return questions;
+    }
+
+    // Step 112: the revisions the arbiter of a centred round kept, applied to
+    // the pending questions of the project. A reformulation changes the text
+    // (the earlier one stays in History, and the suggestion of the AI, made for
+    // it, is dropped); "resuelta" and "obsoleta" are only proposals. A question
+    // that is no longer pending (answered while the round ran) is left alone.
+    public static void ApplyRevisions(IEnumerable<Question> questions, PhaseJobResult result, PhasePlan plan, Guid jobId, DateTimeOffset now)
+    {
+        if (result.Output is null || plan.Focus is null || JsonNode.Parse(result.Output)?["revisiones"] is not JsonArray revisions)
+            return;
+        var byCode = questions.ToDictionary(q => q.Code);
+        foreach (var r in revisions.OfType<JsonObject>())
+        {
+            var action = r["accion"]!.GetValue<string>();
+            if (action == "ninguna" || !byCode.TryGetValue(r["pregunta"]!.GetValue<string>(), out var q) || q.Status != QuestionStatus.Pending)
+                continue;
+            var from = r["de"]!.AsArray().Select(n => plan.ProposalOrder[n!.GetValue<int>() - 1]).ToList();
+            var revision = new QuestionRevision(
+                action == "reformular" ? "reformulada" : $"propuesta-{action}", plan.Focus.Iterations,
+                action == "reformular" ? q.Text : null, r["motivo"]!.GetValue<string>(),
+                r["fuentes"]!.AsArray().Select(f => f!.GetValue<string>()).ToList(),
+                from.Count == 2 ? "ambas" : from.Single(), r["discrepancia"]!.GetValue<bool>(), r["explicacion"]?.GetValue<string>(), jobId, now);
+            q.History = [.. q.History, revision];
+            if (action == "reformular")
+            {
+                q.Text = r["texto"]!.GetValue<string>();
+                q.SuggestedAnswer = null;
+                q.SuggestionBasis = null;
+                q.SuggestionNote = null;
+                q.SuggestionSources = [];
+                q.SuggestedAt = null;
+            }
+            else
+            {
+                q.ProposedAction = action;
+                q.ProposedReason = revision.Reason;
+                q.ProposedSources = [.. revision.Sources];
+            }
+            q.UpdatedAt = now;
+        }
     }
 
     // The question as a previous question of the next round. All of them go,

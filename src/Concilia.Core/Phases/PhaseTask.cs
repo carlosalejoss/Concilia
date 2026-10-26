@@ -58,6 +58,8 @@ public static class PhaseTask
     // consult the documentation or, in the backlog, must read the catalog.
     public static IReadOnlyList<InputFile> InputFilesOf(PhaseDefinition phase, PhaseInput input)
     {
+        if (phase.Focused)
+            return FocusedRound.InputFilesOf(phase, input);
         var files = new List<InputFile>();
         if (phase.Kind == PhaseKind.Backlog)
             files.Add(new InputFile(CatalogFile, ReadingPlan.OnePerLine(input.Catalog), Required: true));
@@ -79,10 +81,14 @@ public static class PhaseTask
     // A and B read it entirely and the arbiter of the questions consults it.
     // Step 107 (prompts v0.12): the arbiter of the catalog consults only the
     // fragments cited by the requirements it has to decide (SourcesFile).
+    // Step 112: in a centred round, A and B read entirely the documentation of
+    // the focus, so the line numbers they may cite are those of that file.
     public static InputFile DocumentationOf(PhaseDefinition phase, PhaseInput input) =>
-        phase.IsArbiter && phase.Kind == PhaseKind.Catalog
-            ? new InputFile(SourcesFile.Path, SourcesFile.Build(input.Documentation, input.Proposal1, input.Proposal2, input.Matching), Required: false)
-            : new InputFile(DocumentationFile.Path, input.Documentation, Required: !phase.IsArbiter);
+        phase.Focused && !phase.IsArbiter
+            ? new InputFile(FocusedRound.NewDocumentationFile, input.NewDocumentation, Required: true)
+            : phase.IsArbiter && phase.Kind == PhaseKind.Catalog
+                ? new InputFile(SourcesFile.Path, SourcesFile.Build(input.Documentation, input.Proposal1, input.Proposal2, input.Matching), Required: false)
+                : new InputFile(DocumentationFile.Path, input.Documentation, Required: !phase.IsArbiter);
 
     // Builds the prompt and checks it fits in InputTokenBudget BEFORE writing
     // anything. The prompt carries the small inputs and the reading plan; the
@@ -102,7 +108,10 @@ public static class PhaseTask
         if (budgetError is not null)
             return new PhaseRequest(null, budgetError);
 
-        Write(workDirectory, PhaseFile, JsonSerializer.Serialize(new { Kind = phase.Kind.ToString(), Role = phase.Role.ToString(), phase.OutputFile }, Json));
+        // A centred round says so (FakeProvider answers as one); the rest keep the file of v0.12.
+        Write(workDirectory, PhaseFile, phase.Focused
+            ? JsonSerializer.Serialize(new { Kind = phase.Kind.ToString(), Role = phase.Role.ToString(), phase.OutputFile, Focused = true }, Json)
+            : JsonSerializer.Serialize(new { Kind = phase.Kind.ToString(), Role = phase.Role.ToString(), phase.OutputFile }, Json));
         Write(workDirectory, FragmentsFile, JsonSerializer.Serialize(new { input.SystemName, input.Language, Fragments = fragments }, Json));
         if (pendingQuestionIds is not null)
             Write(workDirectory, PendingFile, JsonSerializer.Serialize(pendingQuestionIds, Json));

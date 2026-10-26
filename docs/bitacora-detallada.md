@@ -2586,3 +2586,16 @@ Revisión del autor de los borradores de los prompts v0.13 del modo centrado.
   4. una revisión de un solo modelo la decide el árbitro, aprobado.
 - **Siguiente:** el código del paso 112.
 
+## 26-10-2026, 17:00 (sesión)
+
+Paso 112: el código de las preguntas centradas en unas iteraciones (prompts v0.13).
+
+- **Qué se hizo:**
+  - Core: `PhaseDefinition.For(…, focused)`, con los prompts y esquemas v0.13; campos nuevos de `PhaseInput` (`Iterations`, `NewDocumentation`, `RelatedFragments`, `RelatedRequirements`, `Revisions`) y el marcador `{{ITERACIONES}}`; `FocusedRound` (ficheros de `input/`, bloque de iteraciones y revisiones agrupadas por pregunta sin IA); `FocusPlan` en el plan, que no se escribe en las rondas de siempre; `RelatedContext` (fragmentos y requisitos relacionados con embeddings, tope de 20.000 tokens); `ArbiterMatching.AgainstPrevious` y `MatchingFile.WithPrevious` (líneas `previa`); `PhaseValidator.ValidateFocusedQuestions` (`SIN-NUEVA`, `REF-PREG`, `REF-REQ`, `REV-DUP`, `REV-TEXTO`, `ARB-REV`); `QuestionRules.ApplyRevisions` y el enlace `contradice` en `FromRound`; `IterationRules.ValidateFocus`; `FakePhaseOutput` responde como una ronda centrada.
+  - API: `POST /projects/{id}/question-rounds` con `{ "focus": [...] }` opcional; `FocusedRoundInput` construye las entradas al lanzarla; el árbitro recibe las revisiones agrupadas y las líneas `previa`; al terminar se aplican las revisiones. Las ejecuciones guardan la versión con la que se crearon (antes, `JobRunner` ponía siempre `v0.12` al terminar), y el nuevo arbitraje de una ronda centrada usa la `v0.13`.
+  - Datos: migración `AddFocusedQuestions`, que solo añade (en `Questions`, el enlace, la propuesta y el historial, este como JSON; en `Jobs`, el foco), con valores por defecto para las filas que ya existen.
+  - Web: «Todas las iteraciones» o «Centrarse en…» junto al botón de la ronda (en cuanto hay más de una iteración); «Centrada en la iteración N» en la ronda; y en cada pregunta, «Contradice P-003», la propuesta «Resuelta/Obsoleta, según lo nuevo» con su motivo, y el historial de cambios.
+- **Detalles decididos por Claude:** la ronda centrada no es un tipo de trabajo nuevo, para que el flujo, la web y los informes la traten como cualquier ronda; las entradas se construyen al lanzarla (los embeddings de clínicas tardan unos 30 s en local); la línea `previa` no se confunde con un par en la corrección `ARB-FALTA`, que solo lee `1:… 2:… mismo`.
+- **Tests:** 1.002 en verde (990 + 12): `FocusedRoundTests` (11) y `FocusedRoundFlowTests` (la ronda centrada por la API con `Fake`: foco guardado, `v0.13`, ficheros de A y del árbitro, pregunta nueva que cita lo nuevo y propuesta «resuelta» en una pendiente con su historial; y una ronda con todas las iteraciones sigue en `v0.12`). Ningún test anterior cambia; la instantánea de la v0.12 sigue igual.
+- **Pendientes:** copia de la base de datos y migración en Docker, revisión del autor en el navegador; el paso 113.
+

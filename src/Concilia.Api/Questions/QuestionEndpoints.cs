@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc;
+using Concilia.Core.Embeddings;
 using Concilia.Api.Files;
 using Concilia.Api.OpenApi;
 using Concilia.Api.Persistence;
@@ -17,6 +19,10 @@ namespace Concilia.Api.Questions;
 public record AnswerRequest(
     [property: Description("La respuesta del cliente.")] string? Answer,
     [property: Description("Si se partió de la sugerencia de la IA, para registrar el origen de la respuesta (`ia` si no se cambió, `ia-editada` si sí).")] bool FromSuggestion = false);
+// Step 112: the iterations a round centres on; none (or no body) for a round with all of them, as always.
+public record QuestionRoundRequest(
+    [property: Description("Las iteraciones en las que se centra la ronda (`Centrarse en…`). Vacío o sin cuerpo: con todas, como siempre.")] List<int>? Focus);
+
 public record DiscardRequest([property: Description("Por qué se descarta (innecesaria, fuera de alcance…). Opcional.")] string? Reason);
 
 public static class QuestionEndpoints
@@ -30,7 +36,8 @@ public static class QuestionEndpoints
         // the questions already asked (so they are not asked again). When the
         // arbiter ends, JobWorker stores its questions as pending (StoreRoundAsync).
         questions.MapPost("/projects/{projectId:int}/question-rounds",
-            async (int projectId, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+            async (int projectId, [FromBody] QuestionRoundRequest? request, AppDbContext db, JobQueue queue, IRunnerProvider provider,
+                RunnerOptions options, FileStorage storage, ITextEmbedder embedder) =>
         {
             var project = await db.Projects.FindAsync(projectId);
             if (project is null)
@@ -56,11 +63,23 @@ public static class QuestionEndpoints
                 PreviousQuestions = PhasePrompt.PreviousQuestionsBlock(previous.Select(QuestionRules.ForPrompt)),
             };
             var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
-            var created = PhaseJobs.Create(project, documents, PhaseKind.Questions, input, [], options, provider.Name, Random.Shared);
+            // Step 112: centred on some iterations, with the prompts v0.13 and the reading of option C.
+            FocusPlan? focus = null;
+            var focusNumbers = request?.Focus?.Distinct().Order().ToList() ?? [];
+            if (focusNumbers.Count > 0)
+            {
+                var (focusedInput, plan, error) = await FocusedRoundInput.BuildAsync(db, embedder, projectId, focusNumbers, documents, previous, input);
+                if (error is not null)
+                {
+                    return Results.ValidationProblem(new Dictionary<string, string[]> { ["focus"] = [error] });
+                }
+                (input, focus) = (focusedInput!, plan);
+            }
+            var created = PhaseJobs.Create(project, documents, PhaseKind.Questions, input, [], options, provider.Name, Random.Shared, focus: focus);
             return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
         })
             .WithSummary("Lanza una ronda de preguntas")
-            .WithDescription("A ‖ B → árbitro sobre toda la documentación y las preguntas ya hechas, para no repetirlas. Al terminar, las preguntas del árbitro se guardan como pendientes, numeradas tras las que ya tiene el proyecto. Exige al menos un documento con texto.")
+            .WithDescription("A ‖ B → árbitro sobre toda la documentación y las preguntas ya hechas, para no repetirlas. Al terminar, las preguntas del árbitro se guardan como pendientes, numeradas tras las que ya tiene el proyecto. Exige al menos un documento con texto. Con `focus` (paso 112), la ronda se centra en esas iteraciones, cerradas y con documentos: lee entera su documentación, los fragmentos anteriores relacionados y los requisitos validados relacionados, y además de preguntas nuevas (también por contradicciones con una respuesta o con un requisito validado) propone revisiones de las pendientes: reformularlas, o que la documentación nueva las resuelve o las deja obsoletas.")
             .LaunchesJob();
 
         // The catalog v0: A ‖ B → arbiter over all the documentation and the
@@ -348,11 +367,14 @@ public static class QuestionEndpoints
     }
 
     // Called by JobWorker when a round ends: its questions, renumbered after
-    // those the project already has, are stored as pending.
+    // those the project already has, are stored as pending. Step 112: a round
+    // centred on some iterations also applies the revisions its arbiter kept.
     public static async Task StoreRoundAsync(AppDbContext db, Guid jobId, int projectId, PhasePlan plan, PhaseJobResult result)
     {
-        var codes = await db.Questions.Where(q => q.ProjectId == projectId).Select(q => q.Code).ToListAsync();
-        db.Questions.AddRange(QuestionRules.FromRound(result, plan, projectId, jobId, codes, DateTimeOffset.UtcNow));
+        var existing = await db.Questions.Where(q => q.ProjectId == projectId).ToListAsync();
+        var now = DateTimeOffset.UtcNow;
+        db.Questions.AddRange(QuestionRules.FromRound(result, plan, projectId, jobId, existing.Select(q => q.Code), now));
+        QuestionRules.ApplyRevisions(existing, result, plan, jobId, now);
         await db.SaveChangesAsync();
     }
 }

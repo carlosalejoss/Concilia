@@ -39,6 +39,11 @@ public record PhasePlan(
     // of A and B are arbitrated again. Null in every other job.
     public Guid? RearbitrationOf { get; init; }
 
+    // A round centred on some iterations (step 112); null in the rounds of
+    // always, which are written without it, so their plan stays as with v0.12.
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public FocusPlan? Focus { get; init; }
+
     public static PhaseKind? KindOfJob(string jobKind) =>
         Enum.GetValues<PhaseKind>().Cast<PhaseKind?>().FirstOrDefault(k => JobKind(k!.Value) == jobKind);
 
@@ -53,6 +58,8 @@ public record PhasePlan(
         AnsweredQuestionIds = AnsweredQuestionIds.ToHashSet(),
         Catalog = Input.Catalog.Length > 0 ? Input.Catalog : null,
         PendingQuestionIds = PendingQuestionIds,
+        NewDocumentIds = Focus?.NewDocuments.ToHashSet() ?? [],
+        RevisableQuestionIds = Focus?.PendingCodes ?? new HashSet<string>(),
         Proposal1 = proposal1,
         Proposal2 = proposal2,
         Matching = matching,

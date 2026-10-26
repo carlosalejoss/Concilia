@@ -39,8 +39,11 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     public async Task<IReadOnlyList<RunAttempt>> ExecuteAsync(
         Run run, PhasePlan plan, (string P1, string P2, string Matching)? arbiter, CancellationToken cancellationToken)
     {
-        var phase = PhaseDefinition.For(plan.Kind, arbiter is null ? PhaseRole.Proposal : PhaseRole.Arbiter);
+        var phase = PhaseDefinition.For(plan.Kind, arbiter is null ? PhaseRole.Proposal : PhaseRole.Arbiter, plan.Focus is not null);
         var input = arbiter is var (p1, p2, pairs) ? plan.Input with { Proposal1 = p1, Proposal2 = p2, Matching = pairs } : plan.Input;
+        // Step 112: the arbiter of a centred round gets the revisions grouped by question, aligned without AI.
+        if (arbiter is not null && plan.Focus is not null)
+            input = input with { Revisions = FocusedRound.Revisions(input.Proposal1, input.Proposal2, plan.Focus.Questions) };
         var options = new PhaseOptions
         {
             MaxContextTokens = runnerOptions.MaxContextTokens,

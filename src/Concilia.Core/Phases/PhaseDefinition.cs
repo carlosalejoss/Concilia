@@ -14,7 +14,22 @@ public record PhaseDefinition(PhaseKind Kind, PhaseRole Role, string PromptResou
 {
     public bool IsArbiter => Role == PhaseRole.Arbiter;
 
-    public static PhaseDefinition For(PhaseKind kind, PhaseRole role)
+    // A round of questions centred on some iterations (step 112, prompts v0.13).
+    public bool Focused { get; init; }
+
+    // focused: only for the questions; the prompts and schemas of the centred
+    // round, with the same output file. The rounds of always do not change.
+    public static PhaseDefinition For(PhaseKind kind, PhaseRole role, bool focused = false)
+    {
+        if (focused && kind == PhaseKind.Questions)
+        {
+            var name = role == PhaseRole.Arbiter ? "arbitro_preguntas_centradas" : "preguntas_centradas";
+            return new PhaseDefinition(kind, role, $"v0/{name}.md", $"v0/esquemas/{name}.schema.json", "output/preguntas.json") { Focused = true };
+        }
+        return Standard(kind, role);
+    }
+
+    private static PhaseDefinition Standard(PhaseKind kind, PhaseRole role)
     {
         if (kind == PhaseKind.Suggestions)
             return new PhaseDefinition(kind, PhaseRole.Proposal, "v0/sugerir_respuestas.md", "v0/esquemas/sugerencias.schema.json", "output/sugerencias.json");

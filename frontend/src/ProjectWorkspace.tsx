@@ -19,6 +19,7 @@ import Button from './ui/Button.tsx'
 import LaunchButton from './ui/LaunchButton.tsx'
 import { useActiveJob } from './hooks/useActiveJob.ts'
 import Drawer from './ui/Drawer.tsx'
+import RoundFocus from './RoundFocus.tsx'
 
 // What each step does, and the button that launches its job.
 type LaunchOptions = { mockupStyle: boolean }
@@ -84,6 +85,8 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
   const [firstStep, setFirstStep] = useState<FlowStep | null>(null)
   // Mockup: follow the style reference (.zip) or design from scratch.
   const [mockupStyle, setMockupStyle] = useState(true)
+  // Step 112: the iterations the next round of questions centres on (none: all of them).
+  const [questionFocus, setQuestionFocus] = useState<number[]>([])
   const activeJob = useActiveJob()
 
   const reload = useCallback(() => {
@@ -113,11 +116,16 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
   const showJob = (jobId: string) => navigate({ kind: 'runs', projectId: project.id, jobId })
   const closeSettings = useCallback(() => setSettingsOpen(false), [])
 
-  async function launch(url: string) {
+  // body: only a round centred on some iterations sends one ({ focus }).
+  async function launch(url: string, body?: unknown) {
     setLaunching(true)
     setError(null)
     try {
-      const response = await fetch(url, { method: 'POST' })
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+        body: body === undefined ? undefined : JSON.stringify(body),
+      })
       if (!response.ok) {
         setError(await errorMessage(response))
         return
@@ -204,12 +212,18 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
                 icon={launching ? Loader2 : Play}
                 disabled={!step.canLaunch || launching}
                 title={step.canLaunch ? undefined : (step.reason ?? undefined)}
-                onClick={() => launch(info.launch!.url(project.id, { mockupStyle }))}
+                onClick={() =>
+                  launch(info.launch!.url(project.id, { mockupStyle }), stepId === 'Questions' && questionFocus.length > 0 ? { focus: questionFocus } : undefined)
+                }
               >
                 {info.launch.label}
               </LaunchButton>
             )}
           </div>
+
+          {stepId === 'Questions' && step.canLaunch && (
+            <RoundFocus projectId={project.id} version={version} value={questionFocus} onChange={setQuestionFocus} />
+          )}
 
           {step.outdated && <Banner tone="stale">Desactualizado: ha cambiado algo de un paso anterior. Puedes generarlo de nuevo.</Banner>}
           {info.launch && !step.canLaunch && step.reason && step.state !== 'InProgress' && <Banner tone="info">{step.reason}</Banner>}
