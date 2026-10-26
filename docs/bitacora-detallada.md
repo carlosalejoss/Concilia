@@ -2492,7 +2492,8 @@ Paso 109 del hito 22: iteraciones en Documentos.
   - la iteración abierta solo bloquea cuando ya hay algún documento: el test del arranque descubrió que, en un proyecto vacío, el catálogo pasaba a pedir «Cierra la documentación» en lugar de «Termina al menos una ronda»; ahora un proyecto sin documentos ve los pasos igual que antes.
 - **Lo que no cambia:** la numeración de los documentos (`DOC-01`… por orden de subida en todo el proyecto), las cabeceras de la documentación, los prompts y las entradas de las fases. Un test comprueba que, tras crear la «Iteración 1», un proyecto ya hecho da los mismos documentos y el mismo flujo que antes.
 - **Tests:** 966 en verde (951 + 15 nuevos: `IterationRulesTests`, `IterationTests` y tres en `ProjectFlowTests`). Cambian solo los tres de `FullFlowTests` que suben un archivo y lanzan una ronda, que ahora cierran antes la documentación; el primero comprueba además el motivo y la iteración del archivo.
+- **En Docker (mismo día):** el autor hizo la copia de la base de datos (`pg_dump`, formato propio, en `concilia-antes-109.dump`, fuera de git con `*.dump` en `.gitignore`) y, con su permiso, se reconstruyeron la API y la web. La migración se aplicó sin errores y los 7 proyectos tienen su «Iteración 1» cerrada con todos sus documentos; el único archivo sin iteración es el `.zip` de estilo de un proyecto. Ningún flujo quedó bloqueado. Claude revisó Documentos y Preguntas en Edge sin ventana, con un proyecto de prueba que después borró: la iteración abierta con sus notas y «Cerrar documentación», y Preguntas bloqueada con «Cierra la documentación de la iteración 2.».
 - **Pendientes:**
-  - aplicar la migración en Docker, después de que el autor haga la copia de la base de datos, y revisar la página de Documentos en el navegador;
+  - la revisión del autor en el navegador;
   - el paso 110 (ids estables).
 
