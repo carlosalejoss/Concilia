@@ -18,6 +18,29 @@ Prompts muy básicos de la iteración v0 (D-65, D-73): sirven para tener el fluj
 | Mockup, corrección de una parte (solo si la plataforma encuentra problemas) | `mockup_correccion.md` | `original.html` (la parte), `mapa.json` y, si es una pantalla, `app.html` | la parte corregida, entera, en su fichero de `output/prototipo/` | comprobaciones propias (abajo) | los del diseño, `PARTE`, `FICHERO`, `PROBLEMAS` |
 | Reparación, todas | `anexo_reparacion.md` | — | el mismo fichero | — | `INTENTO`, `FICHERO`, `SALIDA_PREVIA`, `ERRORES` |
 
+## Versión de cada fichero
+
+Cada fichero es su versión vigente: no hay una copia por subversión, porque la plataforma los incluye en la DLL por su ruta (`prompts/v0/*.md`) y la referencia en Python y los tests los leen ahí. Esta tabla dice en qué subversión nació cada uno y en cuáles cambió; qué cambió está en `CHANGELOG.md`. El texto de una versión anterior sigue en git: `git log --follow -- prompts/v0/preguntas.md` da sus commits, y `git show <commit>:prompts/v0/preguntas.md`, su texto en ese commit.
+
+| Fichero | Nace | Cambia en | Vigente desde |
+|---|---|---|---|
+| `preguntas.md` | v0 | v0.1, v0.2, v0.7 | v0.7 |
+| `arbitro_preguntas.md` | v0 | v0.1, v0.2, v0.3, v0.7, v0.10 | v0.10 |
+| `catalogo.md` | v0 | v0.1, v0.2, v0.7 | v0.7 |
+| `arbitro_catalogo.md` | v0 | v0.1, v0.2, v0.3, v0.7, v0.10, v0.12 | v0.12 |
+| `backlog.md` | v0 | v0.1, v0.2 | v0.2 |
+| `arbitro_backlog.md` | v0 | v0.1, v0.2, v0.3, v0.10, v0.12 | v0.12 |
+| `sugerir_respuestas.md` | v0 (09-10, sugerencias) | v0.1, v0.2, v0.7, v0.11 | v0.11 |
+| `anexo_reparacion.md` | v0 | v0.11 | v0.11 |
+| `mockup_diseno.md` | v0.6 | v0.9 | v0.9 |
+| `mockup_pantalla.md` | v0.6 | v0.9 | v0.9 |
+| `mockup_correccion.md` | v0.8 | v0.9 | v0.9 |
+| `esquemas/preguntas`, `arbitro_preguntas`, `catalogo`, `arbitro_catalogo`, `backlog` y `arbitro_backlog` `.schema.json` | v0 | — | v0 |
+| `esquemas/sugerencias.schema.json` | v0 (09-10, sugerencias) | — | v0 |
+| `preguntas_centradas.md`, `arbitro_preguntas_centradas.md` y sus esquemas | v0.13 (borrador del 26-10-2026, pendiente de la revisión del autor; no los usa todavía ningún código) | — | — |
+
+Ficheros que ya no existen: `mockup.md` (de la v0 a la v0.5; en la v0.6 lo sustituyen `mockup_diseno.md` y `mockup_pantalla.md`) y `mockup_integracion.md` (v0.6 y v0.7; en la v0.8 lo sustituye la revisión de la plataforma con `mockup_correccion.md`). Desde la v0.11, la dirección de estilo del mockup sin `.zip` la pone la plataforma (`StyleDirections`), no un prompt.
+
 Todos los prompts terminan con la línea `VEREDICTO:` que ya lee `VerdictParser`, y piden una sola llamada a Write. Desde la v0.1 (09-10-2026) el modelo tiene `Read` y `Write`: lee por partes los ficheros grandes de `input/` y escribe su salida.
 
 ## Lo que monta la plataforma
