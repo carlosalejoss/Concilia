@@ -2574,3 +2574,15 @@ Paso 112, tercera parte: borradores de los prompts v0.13 del modo centrado, para
 - **Árbitro:** une las preguntas nuevas como siempre, con el emparejamiento (y una línea `previa` cuando una nueva se parece a una ya hecha), y decide cada revisión a partir de `input/revisiones.txt`, donde la plataforma las agrupa por la pregunta a la que se refieren, sin IA.
 - **Pendiente:** la revisión del autor; después, el código del paso.
 
+## 26-10-2026, 15:15 (sesión)
+
+Revisión del autor de los borradores de los prompts v0.13 del modo centrado.
+
+- Organización de las versiones de los prompts (pedido del autor): no se mueven a carpetas por subversión, porque la plataforma los incluye en la DLL por su ruta y el validador de Python y los tests los leen ahí; en su lugar, `prompts/v0/README.md` tiene una tabla con la subversión en que nació cada fichero, en cuáles cambió y cómo ver una versión anterior en git.
+- **Decisiones del autor sobre los cuatro puntos:**
+  1. el catálogo validado: tras profundizar, con datos, el autor elige que la plataforma dé **los requisitos relacionados de lectura obligatoria** (`input/requisitos_relacionados.json`) y el catálogo entero solo para consultar. Medición con clínicas (235 requisitos, unos 24.900 tokens): eligiendo los que citan un fragmento relacionado (a) o se parecen a lo nuevo desde 0,70 (b), con un documento nuevo salen de 0 a 24 requisitos (hasta unos 2.600 tokens) y con las tandas, 28 y 31 (unos 3.000); a y b se complementan (con el DOC-07 nuevo, 4 y 19). Tope de 20.000 tokens, como los fragmentos;
+  2. la línea `previa` en el emparejamiento, aprobada;
+  3. la reformulación que mantiene el árbitro se aplica con su historial, y `resuelta` y `obsoleta` son propuestas, aprobado;
+  4. una revisión de un solo modelo la decide el árbitro, aprobado.
+- **Siguiente:** el código del paso 112.
+
