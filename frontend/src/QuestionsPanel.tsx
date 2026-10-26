@@ -19,6 +19,9 @@ import { useActiveJob } from './hooks/useActiveJob.ts'
 import Collapsible from './ui/Collapsible.tsx'
 import EmptyState from './ui/EmptyState.tsx'
 import Provenance from './ui/Provenance.tsx'
+import IterationBadge from './ui/IterationBadge.tsx'
+import IterationFilter from './ui/IterationFilter.tsx'
+import { iterationsOf, showIterations, useElementIterations } from './iterations.ts'
 import type { Tone } from './ui/tones.ts'
 
 const ANSWER_ORIGIN_NAMES: Record<string, string> = {
@@ -87,6 +90,9 @@ function QuestionsPanel({
   const [suggestionJobs, setSuggestionJobs] = useState<JobView[]>([])
   const [questions, setQuestions] = useState<Question[]>([])
   const [filter, setFilter] = useState<Filter>('all')
+  // Step 111: the iteration of each question (those of its sources), with a filter.
+  const [iteration, setIteration] = useState<number | null>(null)
+  const iterationMap = useElementIterations(project.id, version)
   const [search, setSearch] = useState('')
   const [error, setError] = useState<string | null>(null)
   const activeJob = useActiveJob()
@@ -147,8 +153,10 @@ function QuestionsPanel({
 
   const count = (status: QuestionStatus) => questions.filter((q) => q.status === status).length
   const needle = search.trim().toLowerCase()
+  const iterationsOfQuestion = (q: Question) => (showIterations(iterationMap) ? iterationsOf(iterationMap, q.sources) : [])
   const visible = (q: Question) =>
     (filter === 'all' || q.status === filter) &&
+    (iteration === null || iterationsOfQuestion(q).includes(iteration)) &&
     (needle === '' || `${q.code} ${q.text} ${q.reason} ${q.answer ?? ''}`.toLowerCase().includes(needle))
   // The jobs come newest first: if the last suggestions failed, it is told.
   const lastSuggestions = suggestionJobs[0]
@@ -188,6 +196,7 @@ function QuestionsPanel({
             className="w-full bg-transparent placeholder:text-faint focus:outline-none"
           />
         </label>
+        {showIterations(iterationMap) && <IterationFilter count={iterationMap.count} value={iteration} onChange={setIteration} />}
       </div>
 
       {count('Pending') > 0 && (
@@ -284,6 +293,7 @@ function QuestionsPanel({
                     <QuestionItem
                       key={`${q.id}-${q.suggestedAt ?? ''}`}
                       question={q}
+                      iterations={iterationsOfQuestion(q)}
                       act={act}
                       suggesting={suggesting}
                       documentationOpen={documentationOpen}
@@ -324,12 +334,14 @@ type Act = (url: string, method: string, body?: unknown) => Promise<boolean>
 // suggestion opens with the answer box filled with it.
 function QuestionItem({
   question: q,
+  iterations,
   act,
   suggesting,
   documentationOpen,
   onSuggest,
 }: {
   question: Question
+  iterations: number[]
   act: Act
   suggesting: boolean
   documentationOpen: string | null
@@ -376,6 +388,7 @@ function QuestionItem({
         <span className={`min-w-0 flex-1 font-serif ${open ? '' : 'line-clamp-1'} ${q.status === 'Discarded' ? 'text-muted line-through decoration-faint' : ''}`}>
           {q.text}
         </span>
+        <IterationBadge numbers={iterations} />
         <status.icon className={`mt-1 size-4 shrink-0 ${status.color}`} aria-label={status.label} />
         <span className="sr-only">{status.label}</span>
       </button>

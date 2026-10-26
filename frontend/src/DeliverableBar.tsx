@@ -3,12 +3,15 @@ import type { useDeliverable } from './useDeliverable.ts'
 import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
 import { formatDate } from './api.ts'
+import { iterationsText } from './iterations.ts'
 
 // The bar of a catalog or backlog, fixed at the top while scrolling: its
 // state, the buttons to save, undo, validate or reopen it, and below it what
 // keeps it from being validated (or why an action failed) and the warnings.
 // downloads (hito 19): links to the files of the saved version; hidden while
-// there are unsaved changes, which they would not include.
+// there are unsaved changes, which they would not include. Step 111: the
+// iterations whose documentation it includes, once there is more than one,
+// and those it lacks.
 function DeliverableBar<T>({
   state,
   name,
@@ -24,6 +27,8 @@ function DeliverableBar<T>({
   if (!d) return null
   const validated = d.status === 'Validated'
   const shown = messages.length > 0 ? messages : validated ? [] : d.errors
+  const iterations = d.iterations ?? []
+  const missing = d.missingIterations ?? []
 
   return (
     <div className="sticky top-0 z-10 -mx-8 space-y-2 border-b border-line bg-canvas/95 px-8 py-3 backdrop-blur">
@@ -74,6 +79,12 @@ function DeliverableBar<T>({
           </>
         )}
       </div>
+      {(iterations.length > 1 || missing.length > 0) && iterations.length > 0 && (
+        <p className="text-xs text-muted">Incluye la documentación de {iterationsText(iterations)}.</p>
+      )}
+      {missing.length > 0 && (
+        <Banner tone="stale">No incluye la documentación de {iterationsText(missing)}: genéralo de nuevo para incluirla.</Banner>
+      )}
       {shown.length > 0 && (
         <Banner tone="danger">
           <p className="font-medium">{messages.length > 0 ? 'No se ha podido hacer:' : 'Antes de validar hay que corregir:'}</p>

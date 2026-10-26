@@ -19,7 +19,8 @@ public record DeliverableVersionView(
     [property: Description("Es la versión que tiene ahora el entregable.")] bool Current,
     [property: Description("Algo en lo que se basaba cambió después de generarla.")] bool Outdated,
     [property: Description("En una versión `Restored`, el número de la versión a la que se volvió.")] int? RestoredFrom,
-    [property: Description("El contenido, con la forma del entregable; solo al leer una versión sola. Del mockup, su resumen.")] JsonNode? Content = null);
+    [property: Description("El contenido, con la forma del entregable; solo al leer una versión sola. Del mockup, su resumen.")] JsonNode? Content = null,
+    [property: Description("Las iteraciones del proyecto cuya documentación incluye.")] IReadOnlyList<int>? Iterations = null);
 
 // The history of the deliverables (step 101): each change of a catalog,
 // backlog or mockup records a version (DeliverableHistory), and the
@@ -43,7 +44,7 @@ public static class DeliverableVersions
             var current = await versions.Where(v => v.Content == d.Content && v.JobId == d.JobId).MaxAsync(v => (int?)v.Number);
             var list = await versions
                 .OrderByDescending(v => v.Number)
-                .Select(v => new DeliverableVersionView(v.Number, v.Origin, v.Status, v.JobId, v.CreatedAt, v.Elements, v.Number == current, v.Outdated, v.RestoredFrom, null))
+                .Select(v => new DeliverableVersionView(v.Number, v.Origin, v.Status, v.JobId, v.CreatedAt, v.Elements, v.Number == current, v.Outdated, v.RestoredFrom, null, v.Iterations))
                 .ToListAsync();
             return Results.Ok(list);
         })
@@ -61,7 +62,7 @@ public static class DeliverableVersions
                 return Results.NotFound();
             }
             return Results.Ok(new DeliverableVersionView(v.Number, v.Origin, v.Status, v.JobId, v.CreatedAt, v.Elements,
-                v.Content == d.Content && v.JobId == d.JobId, v.Outdated, v.RestoredFrom, JsonNode.Parse(v.Content)));
+                v.Content == d.Content && v.JobId == d.JobId, v.Outdated, v.RestoredFrom, JsonNode.Parse(v.Content), v.Iterations));
         })
             .WithSummary("Lee una versión del catálogo, el backlog o el mockup")
             .WithDescription("Con su contenido, para verla. La página de una versión del mockup está en `GET /projects/{projectId}/mockup/versions/{number}`.")

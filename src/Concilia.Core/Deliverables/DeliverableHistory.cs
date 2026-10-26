@@ -30,6 +30,7 @@ public static class DeliverableHistory
             Outdated = d.Outdated,
             RestoredFrom = restoredFrom,
             Content = d.Content,
+            Iterations = d.Iterations is null ? null : [.. d.Iterations],
             Elements = Elements(d.Kind, d.Content),
             CreatedAt = now,
         };

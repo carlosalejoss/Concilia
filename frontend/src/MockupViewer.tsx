@@ -8,6 +8,7 @@ import LaunchButton from './ui/LaunchButton.tsx'
 import { useActiveJob } from './hooks/useActiveJob.ts'
 import EmptyState from './ui/EmptyState.tsx'
 import VersionHistory from './VersionHistory.tsx'
+import { iterationsText } from './iterations.ts'
 
 // What the platform keeps about the current mockup (the .html itself is served
 // apart, in GET /projects/{id}/mockup).
@@ -136,6 +137,9 @@ function MockupViewer({ project, version, onShowJob, useStyle, onUseStyleChange,
       ) : (
         <>
           {mockup.outdated && <Banner tone="stale">El backlog ha cambiado después de generar este mockup. Genéralo de nuevo para verlo al día.</Banner>}
+          {(mockup.missingIterations?.length ?? 0) > 0 && (
+            <Banner tone="stale">No incluye la documentación de {iterationsText(mockup.missingIterations!)}: genéralo de nuevo con el backlog que la incluya.</Banner>
+          )}
           {mockup.content.avisos.length > 0 && (
             <Banner tone="warn">
               <ul className="list-disc pl-4">

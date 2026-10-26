@@ -6,6 +6,7 @@ import Banner from './ui/Banner.tsx'
 import Button from './ui/Button.tsx'
 import Collapsible from './ui/Collapsible.tsx'
 import Drawer from './ui/Drawer.tsx'
+import IterationBadge from './ui/IterationBadge.tsx'
 import { VersionContent, VersionDiff } from './VersionDetails.tsx'
 
 function originLabel(v: DeliverableVersion): string {
@@ -107,6 +108,8 @@ function VersionHistory({ projectId, kind, refreshKey, dirty = false, onRestored
                   {v.elements} {v.elements === 1 ? one : many}
                 </span>
               )}
+              {/* Step 111: what it includes, once some version goes beyond the first iteration. */}
+              {versions.some((x) => (x.iterations ?? []).some((n) => n > 1)) && <IterationBadge numbers={v.iterations ?? []} coverage />}
               <span className="mr-auto text-muted">{formatDate(v.createdAt)}</span>
               {v.current ? (
                 <Badge tone="accent">Actual</Badge>

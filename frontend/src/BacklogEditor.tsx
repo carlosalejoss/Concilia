@@ -11,6 +11,9 @@ import Badge from './ui/Badge.tsx'
 import Button from './ui/Button.tsx'
 import EmptyState from './ui/EmptyState.tsx'
 import Provenance from './ui/Provenance.tsx'
+import IterationBadge from './ui/IterationBadge.tsx'
+import IterationFilter from './ui/IterationFilter.tsx'
+import { iterationsOf, showIterations, storyIterations, useElementIterations } from './iterations.ts'
 
 const field = 'w-full rounded border border-line bg-surface px-2.5 py-1.5 text-sm focus:outline-2 focus:outline-accent'
 const label = 'text-xs font-medium text-muted'
@@ -37,12 +40,16 @@ const pendingDiscrepancy = (h: Story) => !!h.discrepancia && !h.revisada
 // The backlog step: the working copy as a tree that folds, Épica → Historia →
 // Criterios (Gherkin) and Tareas, with a search, a filter of unreviewed
 // discrepancies, "open all" and "fold all", and the coverage of the functional
-// requirements of the validated catalog. What is open is remembered.
+// requirements of the validated catalog. What is open is remembered. With
+// more than one iteration, each story says those it comes from (those of its
+// requirements), with a filter (step 111).
 function BacklogEditor({ project, version, onChange }: { project: Project; version: number; onChange: () => void }) {
   const state = useDeliverable<BacklogContent>(project.id, 'backlog', version, onChange)
   const [catalog, setCatalog] = useState<CatalogContent | null>(null)
   const [search, setSearch] = useState('')
   const [onlyPending, setOnlyPending] = useState(false)
+  const [iteration, setIteration] = useState<number | null>(null)
+  const iterationMap = useElementIterations(project.id, version)
   // Open epics ("0") and stories ("0.3"), by position.
   const [openKeys, setOpenKeys] = usePersistentState<string[]>(`concilia.open.p${project.id}.backlog`, ['0'])
   // Step 99: the story whose traceability is shown in the panel.
@@ -82,12 +89,18 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
   const uncovered = functional.filter((r) => storiesOf(r.id).length === 0)
   const discrepancies = stories.filter((h) => h.discrepancia).length
   const pending = stories.filter(pendingDiscrepancy).length
+  // Step 111: the iterations of each requirement of the catalog, for those of each story.
+  const requirementIterations = new Map(
+    showIterations(iterationMap) ? (catalog?.requisitos ?? []).map((r) => [r.id, iterationsOf(iterationMap, r.fuentes, r.preguntas)] as const) : [],
+  )
+  const iterationsOfStory = (h: Story) => storyIterations(requirementIterations, h.requisitos)
 
   const needle = search.trim().toLowerCase()
   const visible = (h: Story) =>
     (!onlyPending || pendingDiscrepancy(h)) &&
+    (iteration === null || iterationsOfStory(h).includes(iteration)) &&
     (needle === '' || `${h.id} ${h.titulo} ${h.como} ${h.quiero} ${h.para} ${h.requisitos.join(' ')}`.toLowerCase().includes(needle))
-  const filtering = onlyPending || needle !== ''
+  const filtering = onlyPending || needle !== '' || iteration !== null
 
   const summary =
     `${epics.length} épicas, ${stories.length} historias` +
@@ -121,6 +134,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
             className="w-full bg-transparent placeholder:text-faint focus:outline-none"
           />
         </label>
+        {showIterations(iterationMap) && <IterationFilter count={iterationMap.count} value={iteration} onChange={setIteration} />}
         {discrepancies > 0 && (
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={onlyPending} onChange={(e) => setOnlyPending(e.target.checked)} className="accent-accent" />
@@ -170,6 +184,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
                       <StoryItem
                         key={j}
                         story={h}
+                        iterations={iterationsOfStory(h)}
                         readOnly={readOnly}
                         open={isOpen(`${i}.${j}`)}
                         // The panel shows what is saved: hidden while there are changes.
@@ -268,6 +283,7 @@ function Coverage({
 // the acceptance criteria in Gherkin and the tasks.
 function StoryItem({
   story: h,
+  iterations,
   readOnly,
   open,
   onTrace,
@@ -276,6 +292,7 @@ function StoryItem({
   onRemove,
 }: {
   story: Story
+  iterations: number[]
   readOnly: boolean
   open: boolean
   onTrace?: () => void
@@ -300,6 +317,7 @@ function StoryItem({
           {!open && h.quiero && <span className="line-clamp-1 font-serif text-sm text-muted">Como {h.como}, quiero {h.quiero}</span>}
         </span>
         <span className="flex shrink-0 flex-wrap justify-end gap-1">
+          <IterationBadge numbers={iterations} />
           <Badge>{h.criterios.length} criterios</Badge>
           {h.discrepancia && <Badge tone={discrepancy ? 'danger' : 'ok'}>{discrepancy ? 'Discrepancia' : 'Revisada'}</Badge>}
         </span>

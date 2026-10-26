@@ -38,6 +38,9 @@ namespace Concilia.Api.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.PrimitiveCollection<List<int>>("Iterations")
+                        .HasColumnType("integer[]");
+
                     b.Property<Guid>("JobId")
                         .HasColumnType("uuid");
 
@@ -90,6 +93,9 @@ namespace Concilia.Api.Persistence.Migrations
 
                     b.Property<int?>("Elements")
                         .HasColumnType("integer");
+
+                    b.PrimitiveCollection<List<int>>("Iterations")
+                        .HasColumnType("integer[]");
 
                     b.Property<Guid>("JobId")
                         .HasColumnType("uuid");

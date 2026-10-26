@@ -14,10 +14,13 @@ using Concilia.Api.Files;
 using Concilia.Api.Persistence;
 using Concilia.Api.Projects;
 using Concilia.Api.Runs;
+using Concilia.Core.Catalog;
 using Concilia.Core.Deliverables;
 using Concilia.Core.Flow;
+using Concilia.Core.Phases;
 using Concilia.Core.Projects;
 using Concilia.Core.Questions;
+using Concilia.Core.Runs;
 
 namespace Concilia.Tests.Projects;
 
@@ -194,6 +197,82 @@ public class IterationTests
         Assert.Equal(documentsBefore, documentsAfter);
         Assert.Equal(flowBefore, ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, done.Id)));
         Assert.Equal(emptyFlowBefore, ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, empty.Id)));
+    }
+
+    // Step 111: the iteration of each document and question, and what each
+    // deliverable includes and lacks.
+    [Fact]
+    public async Task Each_document_and_question_says_its_iteration_and_each_deliverable_what_it_lacks()
+    {
+        using var temp = new TempDirectory();
+        await using var api = Api(temp.Path);
+        var client = api.CreateClient();
+        var id = (await Json(await client.PostAsJsonAsync("/projects", new { name = "Clínicas" })))["id"]!.GetValue<int>();
+        await Upload(client, id, "acta.md", "# Acta");
+        (await client.PostAsync($"/projects/{id}/iterations/1/close", null)).EnsureSuccessStatusCode();
+        await using (var scope = api.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var job = Guid.NewGuid();
+            db.Deliverables.Add(new Deliverable { ProjectId = id, Kind = DeliverableKind.Catalog, JobId = job, Status = DeliverableStatus.Validated, Content = "{}", Iterations = [1] });
+            db.Questions.Add(new Question { ProjectId = id, JobId = job, Code = "P-001", Text = "¿Recordatorios?", Reason = "RF-001", Origin = "ambas", Sources = ["DOC-02#F001", "DOC-01#F003"] });
+            await db.SaveChangesAsync();
+        }
+        Assert.Empty((await Json(await client.GetAsync($"/projects/{id}/deliverables/catalog")))["missingIterations"]!.AsArray());
+
+        (await client.PostAsJsonAsync($"/projects/{id}/iterations", new { name = (string?)null })).EnsureSuccessStatusCode();
+        await Upload(client, id, "acta-2.md", "# Acta 2");
+        // While it is open, it is not what the catalog lacks yet: nothing can be generated with it.
+        Assert.Empty((await Json(await client.GetAsync($"/projects/{id}/deliverables/catalog")))["missingIterations"]!.AsArray());
+        (await client.PostAsync($"/projects/{id}/iterations/2/close", null)).EnsureSuccessStatusCode();
+
+        var catalog = await Json(await client.GetAsync($"/projects/{id}/deliverables/catalog"));
+        Assert.Equal([1], catalog["iterations"]!.AsArray().Select(n => n!.GetValue<int>()));
+        Assert.Equal([2], catalog["missingIterations"]!.AsArray().Select(n => n!.GetValue<int>()));
+        var elements = await Json(await client.GetAsync($"/projects/{id}/element-iterations"));
+        Assert.Equal((1, 2), (elements["documents"]!["DOC-01"]!.GetValue<int>(), elements["documents"]!["DOC-02"]!.GetValue<int>()));
+        Assert.Equal([1, 2], elements["questions"]!["P-001"]!.AsArray().Select(n => n!.GetValue<int>()));
+        Assert.Equal(2, elements["count"]!.GetValue<int>());
+    }
+
+    // Step 111: at start-up, the deliverables and versions from before say
+    // what they include: a catalog, by the documents of the plan of its job; a
+    // mockup, by the documents uploaded before its job. Only once.
+    [Fact]
+    public async Task The_deliverables_from_before_get_the_iterations_they_include()
+    {
+        using var temp = new TempDirectory();
+        var storage = new FileStorage(new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["Storage:RootPath"] = temp.Path }).Build(),
+            new HostingEnvironment { ContentRootPath = temp.Path });
+        using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
+        var start = new DateTimeOffset(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
+        var project = new Project { Name = "Clínicas", SystemName = "el sistema Clínicas", CreatedAt = start.AddDays(-10) };
+        db.Projects.Add(project);
+        await db.SaveChangesAsync();
+        var first = new Iteration { ProjectId = project.Id, Number = 1, Name = "Iteración 1", Status = IterationStatus.Closed };
+        var second = new Iteration { ProjectId = project.Id, Number = 2, Name = "Iteración 2", Status = IterationStatus.Closed };
+        db.Iterations.AddRange(first, second);
+        await db.SaveChangesAsync();
+        db.ProjectFiles.AddRange(
+            new ProjectFile { ProjectId = project.Id, IterationId = first.Id, FileName = "a.md", StoredName = "a.md", ContentType = "text/markdown", Sha256 = "", UploadedAt = start.AddDays(-9), TextStoredName = "a.txt" },
+            new ProjectFile { ProjectId = project.Id, IterationId = second.Id, FileName = "b.md", StoredName = "b.md", ContentType = "text/markdown", Sha256 = "", UploadedAt = start.AddDays(-2), TextStoredName = "b.txt" });
+        var catalogJob = new Job { Id = Guid.NewGuid(), ProjectId = project.Id, Kind = "catalog-v0", CreatedAt = start.AddDays(-8) };
+        var mockupJob = new Job { Id = Guid.NewGuid(), ProjectId = project.Id, Kind = "mockup", CreatedAt = start.AddDays(-1) };
+        db.Jobs.AddRange(catalogJob, mockupJob);
+        new PhasePlan(PhaseKind.Catalog, new PhaseInput { SystemName = "", Language = "" },
+            [new Fragment("DOC-01#F001", "DOC-01", Fragmenter.DocumentKind, "§1", "Texto.", null)], [], ["A", "B"]).Save(storage.JobFolder(catalogJob.Id));
+        db.Deliverables.AddRange(
+            new Deliverable { ProjectId = project.Id, Kind = DeliverableKind.Catalog, JobId = catalogJob.Id, Content = "{}" },
+            new Deliverable { ProjectId = project.Id, Kind = DeliverableKind.Mockup, JobId = mockupJob.Id, Content = "{}" });
+        db.DeliverableVersions.Add(new DeliverableVersion { ProjectId = project.Id, Kind = DeliverableKind.Catalog, Number = 1, JobId = catalogJob.Id, Content = "{}" });
+        await db.SaveChangesAsync();
+
+        await ProjectIterations.RecordExistingCoverageAsync(db, storage);
+        await ProjectIterations.RecordExistingCoverageAsync(db, storage); // the next start-up changes nothing
+
+        Assert.Equal([1], (await db.Deliverables.SingleAsync(d => d.Kind == DeliverableKind.Catalog)).Iterations!);
+        Assert.Equal([1, 2], (await db.Deliverables.SingleAsync(d => d.Kind == DeliverableKind.Mockup)).Iterations!);
+        Assert.Equal([1], (await db.DeliverableVersions.SingleAsync()).Iterations!);
     }
 
     private static async Task<JsonNode> Upload(HttpClient client, int projectId, string name, string text) =>

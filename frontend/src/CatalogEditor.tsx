@@ -11,6 +11,9 @@ import Button from './ui/Button.tsx'
 import Collapsible from './ui/Collapsible.tsx'
 import EmptyState from './ui/EmptyState.tsx'
 import Provenance from './ui/Provenance.tsx'
+import IterationBadge from './ui/IterationBadge.tsx'
+import IterationFilter from './ui/IterationFilter.tsx'
+import { iterationsOf, showIterations, useElementIterations } from './iterations.ts'
 
 type ReqType = CatalogRequirement['tipo']
 
@@ -37,8 +40,9 @@ const pendingDiscrepancy = (r: CatalogRequirement) => !!r.discrepancia && !r.rev
 // The catalog step: the working copy grouped by type in folding groups, with
 // a search and filters (origin, pending discrepancies). Each requirement is a
 // line that opens to edit it; a discrepancy of the arbiter is marked in red
-// until the user reviews it. Saving replaces the content (the platform
-// renumbers the ids by type); a validated catalog is read-only until reopened.
+// until the user reviews it. Saving replaces the content (the ids stay, step
+// 110); a validated catalog is read-only until reopened. With more than one
+// iteration, each requirement says those it comes from, with a filter (step 111).
 function CatalogEditor({ project, version, onChange }: { project: Project; version: number; onChange: () => void }) {
   const state = useDeliverable<CatalogContent>(project.id, 'catalog', version, onChange)
   const { deliverable, draft, edit } = state
@@ -46,6 +50,8 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
   const [origin, setOrigin] = useState<(typeof ORIGINS)[number][0]>('all')
   const [onlyPending, setOnlyPending] = useState(false)
   const [onlyAssumed, setOnlyAssumed] = useState(false)
+  const [iteration, setIteration] = useState<number | null>(null)
+  const iterationMap = useElementIterations(project.id, version)
   // The requirements open, by their position in the list.
   const [open, setOpen] = useState<Set<number>>(new Set())
   // Step 99: the requirement whose traceability is shown in the panel.
@@ -67,6 +73,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
   const assumedQuestions = new Set(deliverable.assumedQuestionIds ?? [])
   const isAssumed = (r: CatalogRequirement) => r.preguntas.some((p) => assumedQuestions.has(p))
   const assumed = requirements.filter(isAssumed).length
+  const iterationsOfRequirement = (r: CatalogRequirement) => (showIterations(iterationMap) ? iterationsOf(iterationMap, r.fuentes, r.preguntas) : [])
 
   function update(index: number, change: Partial<CatalogRequirement>) {
     edit({ requisitos: requirements.map((r, i) => (i === index ? { ...r, ...change } : r)) })
@@ -111,6 +118,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
     (origin === 'all' || r.origen === origin) &&
     (!onlyPending || pendingDiscrepancy(r)) &&
     (!onlyAssumed || isAssumed(r)) &&
+    (iteration === null || iterationsOfRequirement(r).includes(iteration)) &&
     (needle === '' || `${r.id} ${r.texto} ${r.fuentes.join(' ')} ${r.preguntas.join(' ')}`.toLowerCase().includes(needle))
   const indexed = requirements.map((r, index) => ({ r, index }))
 
@@ -155,6 +163,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
             </option>
           ))}
         </select>
+        {showIterations(iterationMap) && <IterationFilter count={iterationMap.count} value={iteration} onChange={setIteration} />}
         {discrepancies > 0 && (
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={onlyPending} onChange={(e) => setOnlyPending(e.target.checked)} className="accent-accent" />
@@ -202,6 +211,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
                       requirement={r}
                       readOnly={readOnly}
                       assumed={isAssumed(r)}
+                      iterations={iterationsOfRequirement(r)}
                       open={open.has(index)}
                       // The panel shows what is saved: hidden while there are changes.
                       onTrace={state.dirty ? undefined : () => setTrace({ kind: 'requirement', id: r.id })}
@@ -234,6 +244,7 @@ function RequirementItem({
   requirement: r,
   readOnly,
   assumed,
+  iterations,
   open,
   onTrace,
   onToggle,
@@ -243,6 +254,7 @@ function RequirementItem({
   requirement: CatalogRequirement
   readOnly: boolean
   assumed: boolean
+  iterations: number[]
   open: boolean
   onTrace?: () => void
   onToggle: () => void
@@ -263,6 +275,7 @@ function RequirementItem({
           {r.texto || 'Requisito sin texto'}
         </span>
         <span className="flex shrink-0 flex-wrap justify-end gap-1">
+          <IterationBadge numbers={iterations} />
           {r.notacion === 'MASTeR' && <Badge>MASTeR</Badge>}
           {r.obligatoriedad !== 'shall' && <Badge tone="info">{r.obligatoriedad}</Badge>}
           {r.discrepancia && <Badge tone={discrepancy ? 'danger' : 'ok'}>{discrepancy ? 'Discrepancia' : 'Revisada'}</Badge>}

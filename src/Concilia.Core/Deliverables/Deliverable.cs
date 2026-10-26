@@ -29,6 +29,11 @@ public class Deliverable
     // The working copy as JSON (CatalogDraft, BacklogDraft).
     public required string Content { get; set; }
 
+    // The iterations of the project whose documentation it includes (step
+    // 111): those its job read (the mockup, those of its backlog). Null only
+    // until the start-up gives it to those from before.
+    public List<int>? Iterations { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? UpdatedAt { get; set; }
     public DateTimeOffset? ValidatedAt { get; set; }

@@ -11,7 +11,9 @@ namespace Concilia.Core.Deliverables.Export;
 // (a BOM would become part of the first column name), a row per epic, story
 // and task, each one after its parent. The ids of Concilia go as labels or
 // tags, so every item can be traced back; a story with a discrepancy not
-// reviewed gets one more, "discrepancia-sin-revisar".
+// reviewed gets one more, "discrepancia-sin-revisar". Step 111: each item also
+// gets "iteracion-N" for each iteration of the project it comes from (an epic,
+// those of its stories; a task, those of its story).
 public static class BacklogCsv
 {
     public const string PendingDiscrepancyLabel = "discrepancia-sin-revisar";
@@ -29,13 +31,13 @@ public static class BacklogCsv
         foreach (var epic in backlog.Epics)
         {
             var epicId = (++next).ToString();
-            rows.Add((epicId, "", "Epic", OneLine(epic.Title), OneLine(epic.Title), epic.Description, [epic.Id]));
+            rows.Add((epicId, "", "Epic", OneLine(epic.Title), OneLine(epic.Title), epic.Description, [epic.Id, .. IterationLabels(epic.Iterations)]));
             foreach (var story in epic.Stories)
             {
                 var storyId = (++next).ToString();
                 rows.Add((storyId, epicId, "Story", OneLine(story.Title), "", JiraStory(story), StoryLabels(story)));
                 foreach (var task in story.Tasks)
-                    rows.Add(((++next).ToString(), storyId, "Sub-task", OneLine(task.Title), "", "", [task.Id]));
+                    rows.Add(((++next).ToString(), storyId, "Sub-task", OneLine(task.Title), "", "", [task.Id, .. IterationLabels(story.Iterations)]));
             }
         }
 
@@ -58,13 +60,13 @@ public static class BacklogCsv
         Row(csv, ["ID", "Work Item Type", "Title 1", "Title 2", "Title 3", "Description", "Acceptance Criteria", "Tags"]);
         foreach (var epic in backlog.Epics)
         {
-            Row(csv, ["", "Epic", OneLine(epic.Title), "", "", Html([epic.Description]), "", epic.Id]);
+            Row(csv, ["", "Epic", OneLine(epic.Title), "", "", Html([epic.Description]), "", string.Join("; ", [epic.Id, .. IterationLabels(epic.Iterations)])]);
             foreach (var story in epic.Stories)
             {
                 Row(csv, ["", "User Story", "", OneLine(story.Title), "", Html([story.Narrative, "", Requirements(story)]),
                     Html(story.Criteria.SelectMany(Criterion).ToList()), string.Join("; ", StoryLabels(story))]);
                 foreach (var task in story.Tasks)
-                    Row(csv, ["", "Task", "", "", OneLine(task.Title), "", "", task.Id]);
+                    Row(csv, ["", "Task", "", "", OneLine(task.Title), "", "", string.Join("; ", [task.Id, .. IterationLabels(story.Iterations)])]);
             }
         }
         return Utf8(csv);
@@ -87,7 +89,10 @@ public static class BacklogCsv
     private static string Requirements(ExportStory story) => $"Requisitos: {string.Join(", ", story.Requirements)}";
 
     private static List<string> StoryLabels(ExportStory story) =>
-        [story.Id, .. story.Requirements, .. story.PendingDiscrepancy ? new[] { PendingDiscrepancyLabel } : []];
+        [story.Id, .. story.Requirements, .. story.PendingDiscrepancy ? new[] { PendingDiscrepancyLabel } : [], .. IterationLabels(story.Iterations)];
+
+    // "iteracion-2": without accents or spaces, as labels and tags need.
+    public static IEnumerable<string> IterationLabels(IReadOnlyList<int> iterations) => iterations.Select(n => $"iteracion-{n}");
 
     // Lines as HTML, one per line; an empty line separates paragraphs. Only
     // &, < and > are escaped: WebUtility.HtmlEncode would also turn every

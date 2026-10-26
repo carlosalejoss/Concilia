@@ -4,14 +4,15 @@ namespace Concilia.Core.Deliverables;
 
 // A requirement with what traces it: the fragments of the documentation and
 // the questions it rests on, and the stories of the backlog that cover it.
+// Iterations: those of the project it comes from (step 111).
 public record TraceRequirement(
     string Id, string Type, string Text, IReadOnlyList<string> Sources, IReadOnlyList<string> Questions,
-    IReadOnlyList<string> Stories, bool AiGuess, bool PendingDiscrepancy);
+    IReadOnlyList<string> Stories, bool AiGuess, bool PendingDiscrepancy, IReadOnlyList<int> Iterations);
 
 // A story with its epic and the requirements it covers.
 public record TraceStory(
     string Id, string Title, string Narrative, string EpicId, string EpicTitle,
-    IReadOnlyList<string> Requirements, bool PendingDiscrepancy);
+    IReadOnlyList<string> Requirements, bool PendingDiscrepancy, IReadOnlyList<int> Iterations);
 
 // The traceability of a project (step 99): from a requirement to its
 // fragments (with their text), its questions and its stories, and from a
@@ -34,14 +35,14 @@ public record Traceability(
     public static Traceability Build(CatalogExport catalog, BacklogExport? backlog)
     {
         var stories = (backlog?.Epics ?? [])
-            .SelectMany(e => e.Stories.Select(h => new TraceStory(h.Id, h.Title, h.Narrative, e.Id, e.Title, h.Requirements, h.PendingDiscrepancy)))
+            .SelectMany(e => e.Stories.Select(h => new TraceStory(h.Id, h.Title, h.Narrative, e.Id, e.Title, h.Requirements, h.PendingDiscrepancy, h.Iterations)))
             .ToList();
 
         var requirements = catalog.Sections
             .SelectMany(s => s.Requirements.Select(r => new TraceRequirement(
                 r.Id, s.Type, r.Text, r.Sources, r.Questions,
                 stories.Where(h => h.Requirements.Contains(r.Id)).Select(h => h.Id).ToList(),
-                r.AiGuess, r.PendingDiscrepancy)))
+                r.AiGuess, r.PendingDiscrepancy, r.Iterations)))
             .ToList();
 
         var known = requirements.Select(r => r.Id).ToHashSet();

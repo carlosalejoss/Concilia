@@ -95,7 +95,7 @@
           "Entregables"
         ],
         "summary": "Exporta el catálogo a Word o PDF",
-        "description": "El catálogo guardado, validado o en borrador (con «BORRADOR» en la portada y el pie). Una sección por tipo de requisito, cada uno con sus fuentes y preguntas, y dos anexos con el texto de cada fragmento y cada pregunta citados. Lleva las marcas «Suposición de la IA» y «Discrepancia sin revisar».",
+        "description": "El catálogo guardado, validado o en borrador (con «BORRADOR» en la portada y el pie). Una sección por tipo de requisito, cada uno con sus fuentes, sus preguntas y las iteraciones del proyecto de las que sale, y dos anexos con el texto de cada fragmento y cada pregunta citados. Lleva las marcas «Suposición de la IA» y «Discrepancia sin revisar».",
         "parameters": [
           {
             "name": "projectId",
@@ -179,7 +179,7 @@
           "Entregables"
         ],
         "summary": "Exporta el backlog a CSV para Jira o Azure DevOps",
-        "description": "Un CSV para importar el backlog guardado en cada herramienta, con una fila por épica, historia y tarea, cada una detrás de su padre. **Jira:** la jerarquía va con `Issue ID` y `Parent ID` (épica → `Story` → `Sub-task`), con `Epic Name` en las épicas y los ids de Concilia en columnas `Labels`; la descripción de cada historia lleva su «Como… quiero… para…», los criterios de aceptación en Gherkin y los requisitos. **Azure DevOps** (proceso Agile): `ID` vacío y el título en `Title 1`, `Title 2` o `Title 3` según el nivel (`Epic` → `User Story` → `Task`), los criterios en `Acceptance Criteria` y los ids en `Tags`. Separado por comas, UTF-8 sin BOM. Una historia con una discrepancia sin revisar lleva también `discrepancia-sin-revisar`.",
+        "description": "Un CSV para importar el backlog guardado en cada herramienta, con una fila por épica, historia y tarea, cada una detrás de su padre. **Jira:** la jerarquía va con `Issue ID` y `Parent ID` (épica → `Story` → `Sub-task`), con `Epic Name` en las épicas y los ids de Concilia en columnas `Labels`; la descripción de cada historia lleva su «Como… quiero… para…», los criterios de aceptación en Gherkin y los requisitos. **Azure DevOps** (proceso Agile): `ID` vacío y el título en `Title 1`, `Title 2` o `Title 3` según el nivel (`Epic` → `User Story` → `Task`), los criterios en `Acceptance Criteria` y los ids en `Tags`. Separado por comas, UTF-8 sin BOM. Una historia con una discrepancia sin revisar lleva también `discrepancia-sin-revisar`, y cada elemento, `iteracion-N` por cada iteración del proyecto de la que sale (una épica, las de sus historias; una tarea, las de su historia).",
         "parameters": [
           {
             "name": "projectId",
@@ -789,6 +789,41 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/element-iterations": {
+      "get": {
+        "tags": [
+          "Documentos"
+        ],
+        "summary": "La iteración de cada documento y de cada pregunta",
+        "description": "La calcula la plataforma, no el modelo: un fragmento es de la iteración de su documento, y una pregunta, de las de sus fuentes. Con esto la web calcula las de cada requisito (sus fuentes y sus preguntas) y cada historia (sus requisitos), también mientras se editan.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ElementIterationsView"
                 }
               }
             }
@@ -3143,7 +3178,18 @@
             "description": "En una versión `Restored`, el número de la versión a la que se volvió.",
             "format": "int32"
           },
-          "content": { }
+          "content": { },
+          "iterations": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Las iteraciones del proyecto cuya documentación incluye."
+          }
         }
       },
       "DeliverableView": {
@@ -3220,6 +3266,28 @@
             "items": {
               "type": "string"
             }
+          },
+          "iterations": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Las iteraciones del proyecto cuya documentación incluye (las que leyó su trabajo; el mockup, las de su backlog)."
+          },
+          "missingIterations": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Las iteraciones cerradas con documentos que no incluye."
           }
         }
       },
@@ -3347,6 +3415,40 @@
           }
         }
       },
+      "ElementIterationsView": {
+        "required": [
+          "documents",
+          "questions",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "documents": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "La iteración de cada documento, por su id (`DOC-01`)."
+          },
+          "questions": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "description": "Las iteraciones de cada pregunta, por su código: las de sus fuentes, en orden."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Cuántas iteraciones tiene el proyecto.",
+            "format": "int32"
+          }
+        }
+      },
       "ElementMatch": {
         "required": [
           "slot",
@@ -3447,6 +3549,16 @@
           },
           "aiGuess": {
             "type": "boolean"
+          },
+          "iterations": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -3473,6 +3585,13 @@
               "null",
               "string"
             ]
+          },
+          "iteration": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -4874,7 +4993,8 @@
           "questions",
           "stories",
           "aiGuess",
-          "pendingDiscrepancy"
+          "pendingDiscrepancy",
+          "iterations"
         ],
         "type": "object",
         "properties": {
@@ -4910,6 +5030,13 @@
           },
           "pendingDiscrepancy": {
             "type": "boolean"
+          },
+          "iterations": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -4921,7 +5048,8 @@
           "epicId",
           "epicTitle",
           "requirements",
-          "pendingDiscrepancy"
+          "pendingDiscrepancy",
+          "iterations"
         ],
         "type": "object",
         "properties": {
@@ -4948,6 +5076,13 @@
           },
           "pendingDiscrepancy": {
             "type": "boolean"
+          },
+          "iterations": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },

@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using Concilia.Core.Projects;
 
 namespace Concilia.Core.Deliverables.Export;
 
@@ -10,13 +11,19 @@ public record ExportStory(
     string Id, string Title, string As, string Want, string SoThat,
     IReadOnlyList<string> Requirements, IReadOnlyList<ExportCriterion> Criteria, IReadOnlyList<ExportTask> Tasks,
     // A discrepancy the user has not reviewed (only in a draft).
-    bool PendingDiscrepancy)
+    bool PendingDiscrepancy,
+    // The iterations of the project it comes from (step 111): those of its requirements.
+    IReadOnlyList<int> Iterations)
 {
     // "Como empleado, quiero reservar una sala, para tenerla asegurada."
     public string Narrative => $"Como {As}, quiero {Want}, para {SoThat}.";
 }
 
-public record ExportEpic(string Id, string Title, string Description, IReadOnlyList<ExportStory> Stories);
+public record ExportEpic(string Id, string Title, string Description, IReadOnlyList<ExportStory> Stories)
+{
+    // Those of its stories (step 111).
+    public IReadOnlyList<int> Iterations => Stories.SelectMany(h => h.Iterations).Distinct().Order().ToList();
+}
 
 // The backlog as the export files show it (hito 19): the .feature files of
 // Gherkin and the CSV for Jira and Azure DevOps. Built once from the working
@@ -30,7 +37,10 @@ public record BacklogExport(string Project, bool Validated, DateTimeOffset Date,
 
     public string Generated => $"exportado desde Concilia el {Date:dd-MM-yyyy} a las {Date:HH:mm}";
 
-    public static BacklogExport Build(string project, bool validated, DateTimeOffset date, DateTimeOffset? validatedAt, string backlogJson)
+    // requirementIterations: the iterations of each requirement of the catalog
+    // (step 111); without them, no story says its iteration.
+    public static BacklogExport Build(string project, bool validated, DateTimeOffset date, DateTimeOffset? validatedAt, string backlogJson,
+        IReadOnlyDictionary<string, IReadOnlyList<int>>? requirementIterations = null)
     {
         var epics = Items(JsonNode.Parse(backlogJson)!.AsObject(), "epicas")
             .Select(e => new ExportEpic(Text(e, "id"), Text(e, "titulo"), Text(e, "descripcion"),
@@ -39,7 +49,8 @@ public record BacklogExport(string Project, bool Validated, DateTimeOffset Date,
                     RequirementIds(h),
                     Items(h, "criterios").Select(c => new ExportCriterion(Text(c, "id"), Text(c, "escenario"), Text(c, "dado"), Text(c, "cuando"), Text(c, "entonces"))).ToList(),
                     Items(h, "tareas").Select(t => new ExportTask(Text(t, "id"), Text(t, "titulo"))).ToList(),
-                    PendingDiscrepancy: Flag(h, "discrepancia") && !Flag(h, "revisada"))).ToList()))
+                    PendingDiscrepancy: Flag(h, "discrepancia") && !Flag(h, "revisada"),
+                    Iterations: requirementIterations is null ? [] : ElementIterations.OfStory(RequirementIds(h), requirementIterations))).ToList()))
             .ToList();
         return new BacklogExport(project, validated, date, validatedAt, epics);
     }

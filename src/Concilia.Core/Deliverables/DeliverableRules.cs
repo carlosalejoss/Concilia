@@ -25,12 +25,14 @@ public static class DeliverableRules
 
     // A job generated it: a new deliverable or, if there is one, its draft is
     // replaced (also a validated one: generating again starts a new draft).
+    // iterations: those whose documentation the job read (step 111).
     public static (Deliverable Deliverable, FlowChange Change) Generated(
-        Deliverable? current, int projectId, DeliverableKind kind, Guid jobId, string content, DateTimeOffset now)
+        Deliverable? current, int projectId, DeliverableKind kind, Guid jobId, string content, DateTimeOffset now, IReadOnlyList<int>? iterations = null)
     {
         var d = current ?? new Deliverable { ProjectId = projectId, Kind = kind, Content = content, CreatedAt = now };
         d.JobId = jobId;
         d.Content = content;
+        d.Iterations = iterations is null ? null : [.. iterations];
         d.Status = DeliverableStatus.Draft;
         d.Outdated = false;
         d.ValidatedAt = null;
@@ -89,6 +91,7 @@ public static class DeliverableRules
             return DeliverableChange.Fail("Es la versión que tiene ahora.");
         d.Content = version.Content;
         d.JobId = version.JobId;
+        d.Iterations = version.Iterations is null ? null : [.. version.Iterations];
         d.Status = DeliverableStatus.Draft;
         d.Outdated = version.Outdated;
         d.ValidatedAt = null;

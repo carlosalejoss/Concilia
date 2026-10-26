@@ -20,7 +20,9 @@ public record DeliverableView(
     int Id, DeliverableKind Kind, DeliverableStatus Status, bool Outdated, Guid JobId,
     JsonNode Content, IReadOnlyList<string> Errors, IReadOnlyList<string> Warnings,
     DateTimeOffset CreatedAt, DateTimeOffset? UpdatedAt, DateTimeOffset? ValidatedAt,
-    IReadOnlyList<string>? AssumedQuestionIds = null);
+    IReadOnlyList<string>? AssumedQuestionIds = null,
+    [property: Description("Las iteraciones del proyecto cuya documentación incluye (las que leyó su trabajo; el mockup, las de su backlog).")] IReadOnlyList<int>? Iterations = null,
+    [property: Description("Las iteraciones cerradas con documentos que no incluye.")] IReadOnlyList<int>? MissingIterations = null);
 
 public record SaveDeliverableRequest([property: Description("El catálogo o el backlog entero, con la forma de su esquema.")] JsonElement Content);
 
@@ -150,7 +152,9 @@ public static class DeliverableEndpoints
         var content = kind == DeliverableKind.Catalog ? CatalogDraft.FromResult(result, plan) : BacklogDraft.FromResult(result, plan);
         var current = await db.Deliverables.SingleOrDefaultAsync(d => d.ProjectId == projectId && d.Kind == kind);
         var now = DateTimeOffset.UtcNow;
-        var (deliverable, change) = DeliverableRules.Generated(current, projectId, kind, jobId, content, now);
+        // Step 111: the iterations whose documentation the job read.
+        var iterations = ProjectIterations.OfPlan(plan, await ProjectIterations.DocumentsAsync(db, projectId));
+        var (deliverable, change) = DeliverableRules.Generated(current, projectId, kind, jobId, content, now, iterations);
         if (current is null)
         {
             db.Deliverables.Add(deliverable);
@@ -226,7 +230,8 @@ public static class DeliverableEndpoints
             assumed = answered.Where(QuestionRules.IsAcceptedGuess).Select(q => q.Code).Order().ToList();
         }
         return new DeliverableView(d.Id, d.Kind, d.Status, d.Outdated, d.JobId, JsonNode.Parse(d.Content)!,
-            check.Errors, check.Warnings, d.CreatedAt, d.UpdatedAt, d.ValidatedAt, assumed);
+            check.Errors, check.Warnings, d.CreatedAt, d.UpdatedAt, d.ValidatedAt, assumed,
+            d.Iterations, await ProjectIterations.MissingAsync(db, d));
     }
 
     private static string Name(DeliverableKind kind) => kind == DeliverableKind.Catalog ? "catálogo" : "backlog";

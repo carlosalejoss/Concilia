@@ -1,25 +1,30 @@
 using System.Text.Json.Nodes;
 using Concilia.Core.Catalog;
+using Concilia.Core.Projects;
 
 namespace Concilia.Core.Deliverables.Export;
 
 // A question of the project as the export shows it: its answer and whether
-// that answer is a guess of the AI accepted as it was (step 93).
-public record ExportQuestion(string Id, string Text, string? Answer, bool AiGuess);
+// that answer is a guess of the AI accepted as it was (step 93). Iterations:
+// those of its sources (step 111), filled by CatalogExport.Build.
+public record ExportQuestion(string Id, string Text, string? Answer, bool AiGuess, IReadOnlyList<int>? Iterations = null);
 
 public record ExportRequirement(
     string Id, string Notation, string Obligation, string Text,
     IReadOnlyList<string> Sources, IReadOnlyList<string> Questions,
     // Marks for whoever reads the document: it cites a guess of the AI, or it
     // still has a discrepancy the user has not reviewed (only in a draft).
-    bool AiGuess, bool PendingDiscrepancy);
+    bool AiGuess, bool PendingDiscrepancy,
+    // The iterations of the project it comes from (step 111): those of its sources and questions.
+    IReadOnlyList<int> Iterations);
 
 public record ExportSection(string Type, string Title, IReadOnlyList<ExportRequirement> Requirements);
 
 // A cited fragment for the annex of sources, with the name of its document.
 // Text is null if the fragment is not in the documentation the catalog was
-// generated from (a citation the user typed by hand).
-public record ExportSource(string Id, string Document, string Section, string? Text);
+// generated from (a citation the user typed by hand). Iteration: that of its
+// document (step 111), if known.
+public record ExportSource(string Id, string Document, string Section, string? Text, int? Iteration = null);
 
 // The catalog as the Word and PDF files show it (step 96, decisions of the
 // author of 20-10-2026): a section per type, each requirement with its
@@ -76,12 +81,25 @@ public record CatalogExport(
 
     public static string Details(ExportRequirement r) => $"{r.Notation} · {Obligation(r.Obligation)}";
 
-    // "Fuentes: DOC-01#F003, DOC-01#F007 · Preguntas: P-002" (what it has).
+    // "Fuentes: DOC-01#F003, DOC-01#F007 · Preguntas: P-002 · Iteración: 1" (what it has).
     public static string References(ExportRequirement r) => string.Join(" · ", new[]
     {
         r.Sources.Count > 0 ? $"Fuentes: {string.Join(", ", r.Sources)}" : null,
         r.Questions.Count > 0 ? $"Preguntas: {string.Join(", ", r.Questions)}" : null,
+        Iterations(r.Iterations),
     }.Where(s => s is not null));
+
+    // "Iteración: 2" or "Iteraciones: 1, 2" (step 111); null without any.
+    public static string? Iterations(IReadOnlyList<int> numbers) => numbers.Count switch
+    {
+        0 => null,
+        1 => $"Iteración: {numbers[0]}",
+        _ => $"Iteraciones: {string.Join(", ", numbers)}",
+    };
+
+    // The iterations of each requirement, by id: those of the stories of the backlog.
+    public IReadOnlyDictionary<string, IReadOnlyList<int>> IterationsById =>
+        Sections.SelectMany(s => s.Requirements).GroupBy(r => r.Id).ToDictionary(g => g.Key, g => g.First().Iterations);
 
     public static string Answer(ExportQuestion q) =>
         q.Answer is { Length: > 0 } answer
@@ -90,11 +108,15 @@ public record CatalogExport(
 
     // catalogJson: the working copy (CatalogDraft). fragments and
     // documentation: those of the plan of the job that generated it.
-    // questions: all those of the project.
+    // questions: all those of the project. iterations: those of the elements
+    // of the project (step 111); without them, no element says its iteration.
     public static CatalogExport Build(
         string project, bool validated, DateTimeOffset date, DateTimeOffset? validatedAt, string catalogJson,
-        IReadOnlyList<Fragment> fragments, string documentation, IReadOnlyList<ExportQuestion> questions)
+        IReadOnlyList<Fragment> fragments, string documentation, IReadOnlyList<ExportQuestion> questions,
+        ElementIterations? iterations = null)
     {
+        if (iterations is not null)
+            questions = questions.Select(q => q with { Iterations = iterations.OfQuestion(q.Id) }).ToList();
         var guesses = questions.Where(q => q.AiGuess).Select(q => q.Id).ToHashSet();
         var requirements = (JsonNode.Parse(catalogJson)!["requisitos"] as JsonArray ?? []).OfType<JsonObject>().ToList();
 
@@ -107,7 +129,8 @@ public record CatalogExport(
                     Text(r, "id"), Text(r, "notacion"), Text(r, "obligatoriedad"), Text(r, "texto"),
                     List(r, "fuentes"), List(r, "preguntas"),
                     AiGuess: List(r, "preguntas").Any(guesses.Contains),
-                    PendingDiscrepancy: Flag(r, "discrepancia") && !Flag(r, "revisada")))
+                    PendingDiscrepancy: Flag(r, "discrepancia") && !Flag(r, "revisada"),
+                    Iterations: iterations?.OfRequirement(List(r, "fuentes"), List(r, "preguntas")) ?? []))
                 .ToList();
             if (ofType.Count > 0)
                 sections.Add(new ExportSection(type, title, ofType));
@@ -119,9 +142,9 @@ public record CatalogExport(
         var names = DocumentNames(documentation);
         var known = fragments.Where(f => cited.Contains(f.Id)).ToList();
         var sources = known
-            .Select(f => new ExportSource(f.Id, names.GetValueOrDefault(f.Source, f.Source), f.Section, f.Text))
+            .Select(f => new ExportSource(f.Id, names.GetValueOrDefault(f.Source, f.Source), f.Section, f.Text, iterations?.OfFragment(f.Id)))
             .Concat(cited.Except(known.Select(f => f.Id)).Order(StringComparer.Ordinal)
-                .Select(id => new ExportSource(id, DocumentOf(id, names), "", null)))
+                .Select(id => new ExportSource(id, DocumentOf(id, names), "", null, iterations?.OfFragment(id))))
             .ToList();
 
         var citedQuestions = sections.SelectMany(s => s.Requirements).SelectMany(r => r.Questions).ToHashSet();

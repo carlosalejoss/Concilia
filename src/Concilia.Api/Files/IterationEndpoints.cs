@@ -7,6 +7,13 @@ using Concilia.Core.Projects;
 
 namespace Concilia.Api.Files;
 
+// Step 111: the iteration of each document ("DOC-03" → 2) and of each question
+// ("P-004" → [1, 2]), and how many iterations the project has.
+public record ElementIterationsView(
+    [property: Description("La iteración de cada documento, por su id (`DOC-01`).")] IReadOnlyDictionary<string, int> Documents,
+    [property: Description("Las iteraciones de cada pregunta, por su código: las de sus fuentes, en orden.")] IReadOnlyDictionary<string, IReadOnlyList<int>> Questions,
+    [property: Description("Cuántas iteraciones tiene el proyecto.")] int Count);
+
 public record IterationRequest(
     [property: Description("Nombre de la iteración. Al crearla, si se deja vacío, «Iteración N».")] string? Name,
     [property: Description("Notas opcionales («Reunión del 15-11»).")] string? Notes);
@@ -27,6 +34,26 @@ public static class IterationEndpoints
             .WithSummary("Lista las iteraciones del proyecto")
             .WithDescription("De la primera a la última. Cada archivo dice en `iterationId` a cuál pertenece (nulo en la referencia de estilo `.zip`, que es del proyecto).")
             .Produces<List<Iteration>>()
+            .Produces(StatusCodes.Status404NotFound);
+
+        // Step 111: what the web needs to show the iteration of each element,
+        // also of what the user is editing and has not saved yet.
+        group.MapGet("/projects/{projectId:int}/element-iterations", async (int projectId, AppDbContext db) =>
+        {
+            if (!await db.Projects.AnyAsync(p => p.Id == projectId))
+            {
+                return Results.NotFound();
+            }
+            var elements = await ProjectIterations.ElementsAsync(db, projectId);
+            var questions = await db.Questions.Where(q => q.ProjectId == projectId).Select(q => q.Code).ToListAsync();
+            return Results.Ok(new ElementIterationsView(
+                elements.Documents,
+                questions.ToDictionary(code => code, elements.OfQuestion),
+                await db.Iterations.CountAsync(i => i.ProjectId == projectId)));
+        })
+            .WithSummary("La iteración de cada documento y de cada pregunta")
+            .WithDescription("La calcula la plataforma, no el modelo: un fragmento es de la iteración de su documento, y una pregunta, de las de sus fuentes. Con esto la web calcula las de cada requisito (sus fuentes y sus preguntas) y cada historia (sus requisitos), también mientras se editan.")
+            .Produces<ElementIterationsView>()
             .Produces(StatusCodes.Status404NotFound);
 
         group.MapPost("/projects/{projectId:int}/iterations", async (int projectId, IterationRequest request, AppDbContext db) =>

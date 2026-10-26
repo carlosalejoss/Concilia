@@ -251,7 +251,9 @@ public static class MockupEndpoints
 
         var current = await DeliverableEndpoints.CurrentAsync(db, job.ProjectId, DeliverableKind.Mockup);
         var now = DateTimeOffset.UtcNow;
-        var (deliverable, change) = DeliverableRules.Generated(current, job.ProjectId, DeliverableKind.Mockup, job.Id, summary.ToJsonString(), now);
+        // Step 111: the mockup includes the iterations of the backlog it was generated from.
+        var backlog = await DeliverableEndpoints.CurrentAsync(db, job.ProjectId, DeliverableKind.Backlog);
+        var (deliverable, change) = DeliverableRules.Generated(current, job.ProjectId, DeliverableKind.Mockup, job.Id, summary.ToJsonString(), now, backlog?.Iterations);
         if (current is null)
         {
             db.Deliverables.Add(deliverable);

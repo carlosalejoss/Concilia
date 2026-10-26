@@ -153,6 +153,9 @@ export type Deliverable<T> = {
   validatedAt: string | null
   // Step 93 (catalog): the questions answered with a guess of the AI taken as it was.
   assumedQuestionIds?: string[] | null
+  // Step 111: the iterations whose documentation it includes, and the closed ones it lacks.
+  iterations?: number[] | null
+  missingIterations?: number[] | null
 }
 
 // GET /projects/{id}/deliverables/{kind}/versions (step 101): the history of a
@@ -173,6 +176,8 @@ export type DeliverableVersion<T = unknown> = {
   restoredFrom: number | null
   // Only when one version is read alone (GET …/versions/{n}).
   content?: T | null
+  // Step 111: the iterations whose documentation it includes.
+  iterations?: number[] | null
 }
 
 // GET …/versions/{n}/comparison (step 102): from that version to the current
@@ -248,6 +253,7 @@ export type TraceRequirement = {
   stories: string[]
   aiGuess: boolean
   pendingDiscrepancy: boolean
+  iterations: number[] // step 111: those of its sources and questions
 }
 export type TraceStory = {
   id: string
@@ -257,9 +263,10 @@ export type TraceStory = {
   epicTitle: string
   requirements: string[]
   pendingDiscrepancy: boolean
+  iterations: number[] // step 111: those of its requirements
 }
-export type TraceFragment = { id: string; document: string; section: string; text: string | null }
-export type TraceQuestion = { id: string; text: string; answer: string | null; aiGuess: boolean }
+export type TraceFragment = { id: string; document: string; section: string; text: string | null; iteration: number | null }
+export type TraceQuestion = { id: string; text: string; answer: string | null; aiGuess: boolean; iterations: number[] | null }
 export type Traceability = {
   requirements: TraceRequirement[]
   stories: TraceStory[]
@@ -294,6 +301,15 @@ export type StepStatus = {
   reason: string | null
   detail: string | null
   warning: string | null // e.g. documentation too big to read at once
+}
+
+// GET /projects/{id}/element-iterations (step 111): the iteration of each
+// document and of each question, computed by the platform; with them the web
+// computes those of each requirement and story (iterations.ts).
+export type ElementIterations = {
+  documents: Record<string, number>
+  questions: Record<string, number[]>
+  count: number // how many iterations the project has
 }
 
 // documentationOpen: why nothing that reads the documentation can be

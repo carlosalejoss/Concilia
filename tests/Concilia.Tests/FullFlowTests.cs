@@ -87,6 +87,11 @@ public class FullFlowTests
         Assert.Equal(1, versions[^1]!["number"]!.GetValue<int>());
         Assert.All(versions, v => Assert.Equal(catalogJob, v!["jobId"]!.GetValue<string>()));
         Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/projects/{id}/deliverables/backlog/versions")).StatusCode);
+        // Step 111: the catalog and its versions include the documentation of the "Iteración 1".
+        var generated = await Json(await client.GetAsync($"/projects/{id}/deliverables/catalog"));
+        Assert.Equal([1], generated["iterations"]!.AsArray().Select(n => n!.GetValue<int>()));
+        Assert.Empty(generated["missingIterations"]!.AsArray());
+        Assert.All(versions, v => Assert.Equal([1], v!["iterations"]!.AsArray().Select(n => n!.GetValue<int>())));
 
         // Step 96: the catalog downloads as Word and PDF.
         var docx = await client.GetAsync($"/projects/{id}/catalog.docx");

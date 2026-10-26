@@ -313,6 +313,8 @@ public class JobWorker(
             await Deliverables.DeliverableVersions.RecordExistingAsync(db, storage);
             // Step 109: the projects from before the iterations get their "Iteración 1".
             await Files.IterationEndpoints.CreateFirstForExistingAsync(db, start);
+            // Step 111: and the deliverables and versions from before, the iterations they include.
+            await Files.ProjectIterations.RecordExistingCoverageAsync(db, storage);
         }
         catch (Exception e)
         {

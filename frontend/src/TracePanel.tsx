@@ -4,6 +4,8 @@ import type { TraceFragment, TraceQuestion, Traceability } from './api.ts'
 import Badge from './ui/Badge.tsx'
 import Button from './ui/Button.tsx'
 import Drawer from './ui/Drawer.tsx'
+import IterationBadge from './ui/IterationBadge.tsx'
+import { showIterations, useElementIterations } from './iterations.ts'
 
 // What the panel shows: a requirement (RF-001) or a story (HU-001).
 export type TraceTarget = { kind: 'requirement' | 'story'; id: string }
@@ -15,12 +17,14 @@ export type TraceTarget = { kind: 'requirement' | 'story'; id: string }
 // own traceability, and "Volver" goes back. It shows the saved catalog and
 // backlog, so the editors hide its button while there are unsaved changes.
 // The editors mount it only while it is open, so each time it starts again
-// from `start` and loads what was saved last.
+// from `start` and loads what was saved last. With more than one iteration,
+// each requirement, story and fragment says its iteration (step 111).
 function TracePanel({ projectId, start, onClose }: { projectId: number; start: TraceTarget; onClose: () => void }) {
   const [trace, setTrace] = useState<Traceability | null>(null)
   const [error, setError] = useState<string | null>(null)
   // The elements visited, the one shown last.
   const [path, setPath] = useState<TraceTarget[]>([start])
+  const show = showIterations(useElementIterations(projectId, 0))
 
   useEffect(() => {
     fetch(`/projects/${projectId}/traceability`)
@@ -50,13 +54,14 @@ function TracePanel({ projectId, start, onClose }: { projectId: number; start: T
       )}
       {error && <p className="text-sm text-danger">No se pudo cargar la trazabilidad: {error}</p>}
       {!error && !trace && <p className="text-sm text-muted">Cargando…</p>}
-      {trace && current.kind === 'requirement' && <RequirementTrace trace={trace} id={current.id} onGo={go} />}
-      {trace && current.kind === 'story' && <StoryTrace trace={trace} id={current.id} onGo={go} />}
+      {trace && current.kind === 'requirement' && <RequirementTrace trace={trace} id={current.id} show={show} onGo={go} />}
+      {trace && current.kind === 'story' && <StoryTrace trace={trace} id={current.id} show={show} onGo={go} />}
     </Drawer>
   )
 }
 
-function RequirementTrace({ trace, id, onGo }: { trace: Traceability; id: string; onGo: (t: TraceTarget) => void }) {
+// show: whether to say the iterations (the project has more than one).
+function RequirementTrace({ trace, id, show, onGo }: { trace: Traceability; id: string; show: boolean; onGo: (t: TraceTarget) => void }) {
   const r = trace.requirements.find((x) => x.id === id)
   if (!r) return <p className="text-sm text-muted">{id} no está en el catálogo guardado.</p>
   const hasBacklog = trace.stories.length > 0
@@ -65,12 +70,12 @@ function RequirementTrace({ trace, id, onGo }: { trace: Traceability; id: string
     <div className="space-y-6">
       <header className="space-y-2">
         <p className="font-serif">{r.text || 'Requisito sin texto'}</p>
-        <Marks aiGuess={r.aiGuess} pendingDiscrepancy={r.pendingDiscrepancy} />
+        <Marks aiGuess={r.aiGuess} pendingDiscrepancy={r.pendingDiscrepancy} iterations={show ? r.iterations : []} />
       </header>
 
       <Section title="Fragmentos de la documentación" count={r.sources.length} empty="No cita ningún fragmento.">
         {r.sources.map((f) => (
-          <FragmentItem key={f} fragment={fragmentOf(trace, f)} />
+          <FragmentItem key={f} fragment={fragmentOf(trace, f)} show={show} />
         ))}
       </Section>
 
@@ -101,7 +106,7 @@ function RequirementTrace({ trace, id, onGo }: { trace: Traceability; id: string
   )
 }
 
-function StoryTrace({ trace, id, onGo }: { trace: Traceability; id: string; onGo: (t: TraceTarget) => void }) {
+function StoryTrace({ trace, id, show, onGo }: { trace: Traceability; id: string; show: boolean; onGo: (t: TraceTarget) => void }) {
   const h = trace.stories.find((x) => x.id === id)
   if (!h) return <p className="text-sm text-muted">{id} no está en el backlog guardado.</p>
   const requirements = h.requirements.map((rid) => trace.requirements.find((x) => x.id === rid))
@@ -123,7 +128,7 @@ function StoryTrace({ trace, id, onGo }: { trace: Traceability; id: string; onGo
         </p>
         <p className="font-medium">{h.title || 'Historia sin título'}</p>
         <p className="font-serif">{h.narrative}</p>
-        <Marks aiGuess={false} pendingDiscrepancy={h.pendingDiscrepancy} />
+        <Marks aiGuess={false} pendingDiscrepancy={h.pendingDiscrepancy} iterations={show ? h.iterations : []} />
       </header>
 
       <Section title="Requisitos que cubre" count={h.requirements.length} empty="No cita ningún requisito.">
@@ -143,7 +148,7 @@ function StoryTrace({ trace, id, onGo }: { trace: Traceability; id: string; onGo
 
       <Section title="Fragmentos de la documentación" count={fragments.length} empty="Sus requisitos no citan ningún fragmento.">
         {fragments.map(([f, by]) => (
-          <FragmentItem key={f} fragment={fragmentOf(trace, f)} citedBy={by} />
+          <FragmentItem key={f} fragment={fragmentOf(trace, f)} citedBy={by} show={show} />
         ))}
       </Section>
 
@@ -162,12 +167,13 @@ const documentName = (f: TraceFragment) => f.document.replace(`${f.id.split('#')
 
 // A cited fragment that is not in the trace has no text either.
 const fragmentOf = (trace: Traceability, id: string): TraceFragment =>
-  trace.fragments.find((f) => f.id === id) ?? { id, document: id.split('#')[0], section: '', text: null }
+  trace.fragments.find((f) => f.id === id) ?? { id, document: id.split('#')[0], section: '', text: null, iteration: null }
 
-function Marks({ aiGuess, pendingDiscrepancy }: { aiGuess: boolean; pendingDiscrepancy: boolean }) {
-  if (!aiGuess && !pendingDiscrepancy) return null
+function Marks({ aiGuess, pendingDiscrepancy, iterations }: { aiGuess: boolean; pendingDiscrepancy: boolean; iterations: number[] }) {
+  if (!aiGuess && !pendingDiscrepancy && iterations.length === 0) return null
   return (
     <p className="flex flex-wrap gap-1">
+      <IterationBadge numbers={iterations} />
       {pendingDiscrepancy && <Badge tone="danger">Discrepancia sin revisar</Badge>}
       {aiGuess && <Badge tone="warn">Suposición de la IA</Badge>}
     </p>
@@ -189,7 +195,7 @@ function CitedBy({ ids }: { ids?: string[] }) {
   return ids ? <span className="text-xs text-muted"> · citado por {ids.join(', ')}</span> : null
 }
 
-function FragmentItem({ fragment: f, citedBy }: { fragment: TraceFragment; citedBy?: string[] }) {
+function FragmentItem({ fragment: f, citedBy, show }: { fragment: TraceFragment; citedBy?: string[]; show: boolean }) {
   return (
     <li className="space-y-1 py-2.5">
       <p className="text-xs">
@@ -198,6 +204,7 @@ function FragmentItem({ fragment: f, citedBy }: { fragment: TraceFragment; cited
           {' '}
           · {documentName(f)}
           {f.section && ` · ${f.section}`}
+          {show && f.iteration !== null && ` · Iteración ${f.iteration}`}
         </span>
         <CitedBy ids={citedBy} />
       </p>

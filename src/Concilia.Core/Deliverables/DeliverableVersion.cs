@@ -43,6 +43,9 @@ public class DeliverableVersion
 
     public required string Content { get; set; }
 
+    // The iterations whose documentation it includes, as the deliverable had them (step 111).
+    public List<int>? Iterations { get; set; }
+
     // Its requirements, stories or screens (DeliverableHistory.Elements),
     // counted once so the list does not read every content.
     public int? Elements { get; set; }

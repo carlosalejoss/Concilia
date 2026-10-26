@@ -2512,3 +2512,26 @@ El autor revisó en el navegador el paso 109 y pidió seguir con los pasos sigui
 - **Tests:** 974 en verde (966 + 8). Cambian los dos tests de la renumeración (`CatalogDraftTests` y `BacklogDraftTests`), que ahora comprueban los ids estables; nuevos `StableIdsTests` (6), un borrador con huecos que se valida mientras la misma salida de un modelo daría `ID-SEQ`, y los ids del historial del mismo trabajo.
 - **Pendientes:** reconstruir la API y la web en Docker (no hay migración: solo código), con permiso del autor; el paso 111.
 
+## 26-10-2026, 12:45 (sesión)
+
+Paso 111 del hito 22: la iteración de cada elemento y la cobertura de cada entregable (código; el paso lo cierra la revisión del autor en el navegador, que el plan pide antes de los prompts nuevos).
+
+- **Qué se hizo:**
+  - `ElementIterations` (Core): fragmento → documento → iteración; una pregunta, las de sus fuentes; un requisito, las de sus fuentes y sus preguntas; una historia, las de sus requisitos;
+  - `ProjectIterations` (API): la iteración de cada documento con la numeración de `LoadDocumentsAsync`, la cobertura del plan de un trabajo, las iteraciones que faltan y la cobertura de lo que ya existía al arrancar;
+  - `GET /projects/{id}/element-iterations`: la iteración de cada documento y cada pregunta, y cuántas iteraciones hay;
+  - `Deliverable.Iterations` y `DeliverableVersion.Iterations` (migración `AddDeliverableIterations`, que solo añade): se rellenan al generar (catálogo y backlog, por el plan; mockup, por su backlog), se copian en cada versión y vuelven al recuperar una; `DeliverableView` lleva `iterations` y `missingIterations`;
+  - exportaciones: «Iteración: N» o «Iteraciones: 1, 2» en Word y PDF junto a cada requisito; `iteracion-N` en Jira y Azure DevOps (épica, historia y tarea); la trazabilidad, con la iteración de cada requisito, historia, fragmento y pregunta;
+  - web: etiqueta «It. 1, 2» y filtro por iteración en preguntas, catálogo y backlog, la iteración en el panel de trazabilidad, lo que incluye y le falta a cada entregable (también el mockup) y lo que incluye cada versión del historial.
+- **Detalles decididos por Claude (dentro de decisiones cerradas):**
+  - un elemento tiene una lista de iteraciones, no una sola, porque puede citar documentación de varias;
+  - la web recalcula las de los requisitos y las historias con el mapa de documentos y preguntas, para que sigan a lo que el usuario edita antes de guardar;
+  - las iteraciones solo se muestran, con su filtro, cuando el proyecto tiene más de una, y en el historial cuando alguna versión pasa de la primera: un proyecto de una sola iteración se ve igual que antes;
+  - «le falta» cuenta solo las iteraciones cerradas con documentos: con una abierta no se puede generar nada;
+  - Gherkin no lleva la iteración (el plan solo la pide en Word, PDF, Jira y Azure DevOps);
+  - el parámetro de las iteraciones en `DeliverableRules.Generated` es opcional, para no tocar los tests que no tienen que ver con este paso.
+- **Tests:** 983 en verde (974 + 9): `ElementIterationsTests` (7), dos en `IterationTests` y comprobaciones nuevas en el flujo completo. Ningún test anterior cambia.
+- **Pendientes:**
+  - copia de la base de datos antes de aplicar `AddDeliverableIterations` en Docker, reconstruir la API y la web con permiso del autor y su revisión en el navegador, que cierra el paso 111;
+  - después, el paso 112 (preguntas centradas, prompts v0.13), que empieza por el test de que los modos de siempre dan el mismo prompt y las mismas entradas que la v0.12, y en el que Claude mide el tope de fragmentos relacionados y lo propone al autor.
+
