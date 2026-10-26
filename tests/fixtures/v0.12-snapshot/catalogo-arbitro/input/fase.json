@@ -1,0 +1,5 @@
+{
+  "kind": "Catalog",
+  "role": "Arbiter",
+  "output_file": "output/catalogo.json"
+}

@@ -1,0 +1,5 @@
+{
+  "kind": "Backlog",
+  "role": "Arbiter",
+  "output_file": "output/backlog.json"
+}

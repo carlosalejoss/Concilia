@@ -1,0 +1,2 @@
+<pregunta id="P-001"><texto>¿Puedes concretar lo que dice el fragmento DOC-01#F001?</texto><respuesta>Sí, como describe el documento.</respuesta></pregunta>
+<pregunta id="P-002"><texto>¿Puedes concretar lo que dice el fragmento DOC-01#F002?</texto><respuesta>Sí, como describe el documento.</respuesta></pregunta>

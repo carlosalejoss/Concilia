@@ -1,0 +1,11 @@
+1:HU-004 2:HU-005 parecido 0.76
+1:HU-006 2:HU-006 parecido 0.80
+1:HU-001 sin-par
+1:HU-002 sin-par
+1:HU-003 sin-par
+1:HU-005 sin-par
+2:HU-001 sin-par
+2:HU-002 sin-par
+2:HU-003 sin-par
+2:HU-004 sin-par
+2:HU-007 sin-par

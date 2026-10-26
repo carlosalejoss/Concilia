@@ -2544,3 +2544,14 @@ Cierre del paso 111.
 - El autor revisó en el navegador los pasos 110 y 111: sus proyectos se ven como antes, los ids no se renumeran al guardar, y en el proyecto de prueba se ven las dos iteraciones, las etiquetas «It. N» y el filtro por iteración. Paso 111 cerrado.
 - **Siguiente:** el paso 112 (preguntas centradas, prompts v0.13).
 
+## 26-10-2026, 13:45 (sesión)
+
+Paso 112, primera parte: el test de que los modos de siempre no cambian, antes de tocar nada.
+
+- **Qué se hizo:** `V012SnapshotTests` guarda en `tests/fixtures/v0.12-snapshot/` lo que da hoy la v0.12 y lo compara en cada ejecución:
+  - el prompt y todos los ficheros de `input/` de cada fase y papel (preguntas, catálogo y backlog, propuesta y árbitro, y sugerencias), con unas entradas fijas (el documento de ReservaSalas, preguntas y respuestas de ejemplo, las propuestas de `prompts/v0/ejemplo/` y el emparejamiento con el embedder `Fake`);
+  - en el flujo completo (`FullFlowTests`), las entradas que guarda en su plan la ronda, el catálogo y el backlog lanzados como siempre (documentación, preguntas anteriores, respuestas, catálogo y datos del proyecto).
+- **Regla:** si uno de estos tests falla, ha cambiado un modo de siempre y se corrige el código, nunca la instantánea. Solo una versión nueva de los prompts de siempre la volvería a grabar (`CONCILIA_UPDATE_SNAPSHOTS=1`).
+- **Tests:** 990 en verde (983 + 7 casos de la instantánea; las comprobaciones del flujo completo van dentro de su test).
+- **Siguiente:** medir con el proyecto de clínicas el tope de fragmentos relacionados (`RelatedFragments`) y proponerlo al autor con datos; después, los prompts del modo centrado.
+

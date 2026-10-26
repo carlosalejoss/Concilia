@@ -1,0 +1,5 @@
+{
+  "kind": "Questions",
+  "role": "Proposal",
+  "output_file": "output/preguntas.json"
+}

@@ -1,0 +1,15 @@
+=== DOC-01 · DOC-01.txt ===
+[DOC-01#F001 §1] El objetivo del proyecto es reducir los conflictos de uso de las salas.
+[DOC-01#F002 §2.1] El empleado puede reservar una sala indicando fecha, hora de inicio, hora de fin y número de asistentes.
+[DOC-01#F003 §2.1] Al confirmar la reserva, el sistema envía un correo de confirmación al empleado en menos de 1 minuto.
+[DOC-01#F004 §2.2] Si la sala ya está reservada en esa franja, se rechaza la reserva y se informa al empleado.
+[DOC-01#F005 §2.3] Mientras una sala esté en mantenimiento, no se podrá reservar.
+[DOC-01#F006 §2.4] Si la empresa contrata el módulo de catering, los empleados podrán añadir catering a la reserva.
+[DOC-01#F007 §2.5] Mientras el modo festivo esté activado, cuando un empleado intente reservar una sala, el sistema mostrará un aviso de día festivo.
+[DOC-01#F008 §2.6] Si la reserva dura más de 4 horas y tiene más de 20 asistentes, deberá aprobarla el administrador.
+[DOC-01#F009 §2.7] Mientras el empleado tenga una sesión iniciada y el calendario corporativo esté sincronizado, el sistema mostrará al empleado sus reservas del día.
+[DOC-01#F010 §3.1] La aplicación debe ser rápida.
+[DOC-01#F011 §3.2] Sería deseable que el administrador pudiera exportar el histórico de reservas a CSV.
+[DOC-01#F012 §3.3] La aplicación debe funcionar en Chrome y Edge.
+[DOC-01#F013 §3.4] En una versión futura, el sistema se integrará con Outlook.
+[DOC-01#F014 §3.5] El administrador revisará cada mes las reservas que no se hayan utilizado.

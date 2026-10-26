@@ -1,0 +1,13 @@
+1:RF-001 2:RF-001 parecido 0.85
+1:RF-002 2:RF-003 parecido 0.89
+1:RF-003 2:RF-002 mismo 0.91
+1:RF-004 2:RF-004 parecido 0.82
+1:RF-005 2:RF-005 parecido 0.86
+1:RF-006 2:RF-006 mismo 0.94
+1:RF-007 2:RF-007 parecido 0.81
+1:RF-008 2:RF-009 mismo 0.94
+1:RF-009 2:RF-010 parecido 0.80
+1:RNF-001 2:RNF-001 parecido 0.77
+1:RT-001 2:RT-001 parecido 0.87
+2:RF-008 sin-par
+2:RF-011 sin-par

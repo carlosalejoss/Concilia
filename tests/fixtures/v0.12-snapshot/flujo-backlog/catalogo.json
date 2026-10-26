@@ -1,0 +1,37 @@
+{
+  "requisitos": [
+    {
+      "id": "RF-001",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "El sistema DEBERÁ hacer lo que describe el fragmento DOC-01#F001 (simulado).",
+      "fuentes": [
+        "DOC-01#F001"
+      ],
+      "preguntas": []
+    },
+    {
+      "id": "RF-002",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "El sistema DEBERÁ hacer lo que describe el fragmento DOC-01#F002 (simulado).",
+      "fuentes": [
+        "DOC-01#F002"
+      ],
+      "preguntas": []
+    },
+    {
+      "id": "RF-003",
+      "tipo": "RF",
+      "notacion": "EARS",
+      "obligatoriedad": "shall",
+      "texto": "El sistema DEBERÁ hacer lo que describe el fragmento DOC-01#F003 (simulado).",
+      "fuentes": [
+        "DOC-01#F003"
+      ],
+      "preguntas": []
+    }
+  ]
+}
