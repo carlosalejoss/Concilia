@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tfg/v0/arbitro_preguntas_centradas.schema.json",
+  "title": "Preguntas centradas en unas iteraciones v0.13, unidas por el árbitro",
+  "$comment": "Solo la estructura. Las reglas entre campos (las de una ronda de siempre para `preguntas` y `descartadas`, una revisión por cada pregunta de input/revisiones.txt, `de` con propuestas que de verdad proponen esa revisión, `texto` solo en `reformular`, `motivo` y `fuentes` vacíos solo en `ninguna`…) las comprueba la plataforma.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "preguntas",
+    "descartadas",
+    "revisiones"
+  ],
+  "properties": {
+    "preguntas": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/pregunta"
+      }
+    },
+    "descartadas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "propuesta",
+          "id",
+          "motivo"
+        ],
+        "properties": {
+          "propuesta": {
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^P-[0-9]{3,}$"
+          },
+          "motivo": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "revisiones": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/revision"
+      }
+    }
+  },
+  "$defs": {
+    "fuentes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DOC-[0-9]{2,}#F[0-9]{3,}$"
+      }
+    },
+    "contradice": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pregunta"
+          ],
+          "properties": {
+            "pregunta": {
+              "type": "string",
+              "pattern": "^P-[0-9]{3,}$"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "requisito"
+          ],
+          "properties": {
+            "requisito": {
+              "type": "string",
+              "pattern": "^(RF|RNF|RA|RT|RI)-[0-9]{3,}$"
+            }
+          }
+        }
+      ]
+    },
+    "pregunta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "pregunta",
+        "motivo",
+        "fuentes",
+        "de",
+        "explicacion"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^P-[0-9]{3,}$"
+        },
+        "pregunta": {
+          "type": "string",
+          "minLength": 1
+        },
+        "motivo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fuentes": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/fuentes"
+            }
+          ],
+          "minItems": 1
+        },
+        "contradice": {
+          "$ref": "#/$defs/contradice"
+        },
+        "de": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "propuesta_1",
+            "propuesta_2"
+          ],
+          "properties": {
+            "propuesta_1": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^P-[0-9]{3,}$"
+              }
+            },
+            "propuesta_2": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^P-[0-9]{3,}$"
+              }
+            }
+          }
+        },
+        "explicacion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pregunta",
+        "accion",
+        "motivo",
+        "fuentes",
+        "de",
+        "discrepancia",
+        "explicacion"
+      ],
+      "properties": {
+        "pregunta": {
+          "type": "string",
+          "pattern": "^P-[0-9]{3,}$"
+        },
+        "accion": {
+          "enum": [
+            "reformular",
+            "resuelta",
+            "obsoleta",
+            "ninguna"
+          ]
+        },
+        "texto": {
+          "type": "string",
+          "minLength": 1
+        },
+        "motivo": {
+          "type": "string"
+        },
+        "fuentes": {
+          "$ref": "#/$defs/fuentes"
+        },
+        "de": {
+          "type": "array",
+          "items": {
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "uniqueItems": true
+        },
+        "discrepancia": {
+          "type": "boolean"
+        },
+        "explicacion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

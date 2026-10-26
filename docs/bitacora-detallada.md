@@ -2565,3 +2565,12 @@ Paso 112, segunda parte: medición del tope de fragmentos relacionados (opción 
 - **Propuesta al autor:** un tope de 20.000 tokens estimados de fragmentos relacionados, tomando primero los más parecidos (unas 8 veces el máximo medido y en torno a la sexta parte de la ventana de 128k); lo que no entre sigue consultable por tramos. Pendiente de su aprobación.
 - **Decisiones del autor (26-10-2026):** el tope de fragmentos relacionados es de 20.000 tokens estimados, los más parecidos primero (la propuesta de Claude); y los prompts v0.13 del modo centrado los revisa antes de que se escriba el código que los usa.
 
+## 26-10-2026, 14:45 (sesión)
+
+Paso 112, tercera parte: borradores de los prompts v0.13 del modo centrado, para la revisión del autor antes del código.
+
+- `prompts/v0/preguntas_centradas.md` (A y B) y `prompts/v0/arbitro_preguntas_centradas.md`, con sus esquemas en `prompts/v0/esquemas/`. No los usa nada todavía: los modos de siempre no cambian (lo comprueba la instantánea de la v0.12).
+- **A y B:** reciben las iteraciones del foco y la de cada documento (`{{ITERACIONES}}`, fuera de las cabeceras de la documentación), las preguntas ya hechas con su estado, la documentación nueva y los fragmentos relacionados (lectura obligatoria), y la documentación entera y el catálogo validado (para consultar). Escriben preguntas nuevas (con `contradice` si contradicen una respuesta o un requisito validado) y revisiones de las pendientes (`reformular`, `resuelta`, `obsoleta`).
+- **Árbitro:** une las preguntas nuevas como siempre, con el emparejamiento (y una línea `previa` cuando una nueva se parece a una ya hecha), y decide cada revisión a partir de `input/revisiones.txt`, donde la plataforma las agrupa por la pregunta a la que se refieren, sin IA.
+- **Pendiente:** la revisión del autor; después, el código del paso.
+

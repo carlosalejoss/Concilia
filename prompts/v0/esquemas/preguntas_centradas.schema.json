@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tfg/v0/preguntas_centradas.schema.json",
+  "title": "Preguntas centradas en unas iteraciones v0.13 (salida de Modelo A / Modelo B)",
+  "$comment": "Solo la estructura. Las reglas entre campos (ids únicos y consecutivos, que cada revisión sea de una pregunta pendiente y como mucho una por pregunta, que `contradice` apunte a una pregunta respondida o a un requisito del catálogo validado, que las fuentes incluyan la documentación nueva, que `texto` vaya solo en `reformular`…) las comprueba la plataforma.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "preguntas",
+    "revisiones"
+  ],
+  "properties": {
+    "preguntas": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/pregunta"
+      }
+    },
+    "revisiones": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/revision"
+      }
+    }
+  },
+  "$defs": {
+    "fuentes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DOC-[0-9]{2,}#F[0-9]{3,}$"
+      },
+      "minItems": 1
+    },
+    "contradice": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pregunta"
+          ],
+          "properties": {
+            "pregunta": {
+              "type": "string",
+              "pattern": "^P-[0-9]{3,}$"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "requisito"
+          ],
+          "properties": {
+            "requisito": {
+              "type": "string",
+              "pattern": "^(RF|RNF|RA|RT|RI)-[0-9]{3,}$"
+            }
+          }
+        }
+      ]
+    },
+    "pregunta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "pregunta",
+        "motivo",
+        "fuentes"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^P-[0-9]{3,}$"
+        },
+        "pregunta": {
+          "type": "string",
+          "minLength": 1
+        },
+        "motivo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fuentes": {
+          "$ref": "#/$defs/fuentes"
+        },
+        "contradice": {
+          "$ref": "#/$defs/contradice"
+        }
+      }
+    },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pregunta",
+        "accion",
+        "motivo",
+        "fuentes"
+      ],
+      "properties": {
+        "pregunta": {
+          "type": "string",
+          "pattern": "^P-[0-9]{3,}$"
+        },
+        "accion": {
+          "enum": [
+            "reformular",
+            "resuelta",
+            "obsoleta"
+          ]
+        },
+        "texto": {
+          "type": "string",
+          "minLength": 1
+        },
+        "motivo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fuentes": {
+          "$ref": "#/$defs/fuentes"
+        }
+      }
+    }
+  }
+}
