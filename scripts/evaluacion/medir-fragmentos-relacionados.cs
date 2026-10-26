@@ -89,6 +89,44 @@ foreach (var (name, newDocs, previousDocs) in cases)
         related.ToDictionary(r => r.Key, r => (r.Value.Count, r.Value.Sum(id => tokens[id])))));
 }
 
+// ---------------------------------------------------------------- El catálogo validado (punto 1 de la revisión del autor)
+
+// Qué requisitos del catálogo validado tendría que leer el modelo para ver si
+// lo nuevo los contradice. Como el catálogo salió de toda la documentación, en
+// cada caso cuenta como «catálogo anterior» lo que no cita nada de lo nuevo.
+// Dos formas de elegirlos: a) los que citan algún fragmento relacionado (sin
+// embeddings nuevos); b) los que se parecen a algún fragmento nuevo desde 0,70.
+var catalogRows = new List<CatalogRow>();
+var catalog = (await http.GetFromJsonAsync<JsonObject>($"/projects/{project["id"]}/deliverables/catalog"))?["content"]?["requisitos"]?.AsArray()
+    .OfType<JsonObject>()
+    .Select(r => (Id: r["id"]!.GetValue<string>(), Text: r["texto"]!.GetValue<string>(),
+        Sources: r["fuentes"]!.AsArray().Select(s => s!.GetValue<string>()).ToList(),
+        // Su línea en input/catalogo.json: los campos del esquema, en una línea.
+        Tokens: InputBudget.EstimateTokens(new JsonObject
+        {
+            ["id"] = r["id"]!.DeepClone(), ["tipo"] = r["tipo"]!.DeepClone(), ["notacion"] = r["notacion"]!.DeepClone(),
+            ["obligatoriedad"] = r["obligatoriedad"]!.DeepClone(), ["texto"] = r["texto"]!.DeepClone(),
+            ["fuentes"] = r["fuentes"]!.DeepClone(), ["preguntas"] = r["preguntas"]!.DeepClone(),
+        }.ToJsonString())))
+    .ToList() ?? [];
+if (catalog.Count > 0)
+{
+    var requirementVectors = catalog.Zip(embedder.Embed(catalog.Select(r => r.Text).ToList())).ToDictionary(p => p.First.Id, p => p.Second);
+    foreach (var (name, newDocs, previousDocs) in cases)
+    {
+        var newIds = newDocs.Select(d => documents[d].Id).ToHashSet();
+        var fresh = newDocs.SelectMany(d => documents[d].Fragments).ToList();
+        var previous = previousDocs.SelectMany(d => documents[d].Fragments).ToList();
+        var relatedFragments = previous.Where(p => fresh.Max(n => VectorMath.Cosine(vectors[p.Id], vectors[n.Id])) >= 0.70).Select(p => p.Id).ToHashSet();
+        var before = catalog.Where(r => !r.Sources.Any(s => newIds.Contains(s.Split('#')[0]))).ToList();
+        var bySources = before.Where(r => r.Sources.Any(relatedFragments.Contains)).ToList();
+        var byMeaning = before.Where(r => fresh.Max(n => VectorMath.Cosine(requirementVectors[r.Id], vectors[n.Id])) >= 0.70).ToList();
+        var both = bySources.Union(byMeaning).ToList();
+        catalogRows.Add(new CatalogRow(name, newDocs.Count == 1, before.Count, before.Sum(r => r.Tokens),
+            (bySources.Count, bySources.Sum(r => r.Tokens)), (byMeaning.Count, byMeaning.Sum(r => r.Tokens)), (both.Count, both.Sum(r => r.Tokens))));
+    }
+}
+
 // ---------------------------------------------------------------- El informe
 
 var md = new StringBuilder();
@@ -132,10 +170,25 @@ foreach (var (label, selected) in new[] { ("Un documento nuevo", rows.Where(r =>
 }
 md.AppendLine();
 
+if (catalogRows.Count > 0)
+{
+    md.AppendLine("## Requisitos del catálogo validado relacionados con lo nuevo");
+    md.AppendLine();
+    md.AppendLine($"Para el punto 1 de la revisión de los prompts v0.13: qué requisitos del catálogo validado ({catalog.Count} requisitos, unos {catalog.Sum(r => r.Tokens):N0} tokens en `input/catalogo.json`) tendría que leer el modelo para ver si la documentación nueva los contradice. En cada caso, el «catálogo anterior» son los requisitos que no citan nada de lo nuevo. **a)** los que citan algún fragmento relacionado (desde 0,70); **b)** los que se parecen por significado a algún fragmento nuevo (desde 0,70); **a o b**, cualquiera de los dos.");
+    md.AppendLine();
+    md.AppendLine("| Caso | Catálogo anterior (tokens) | a) por sus fuentes (tokens) | b) por significado (tokens) | a o b (tokens) | % de lo anterior |");
+    md.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: |");
+    foreach (var r in catalogRows)
+        md.AppendLine(string.Create(es, $"| {r.Name} | {r.Before} ({r.BeforeTokens:N0}) | {r.BySources.Count} ({r.BySources.Tokens:N0}) | {r.ByMeaning.Count} ({r.ByMeaning.Tokens:N0}) | {r.Both.Count} ({r.Both.Tokens:N0}) | {(r.Before == 0 ? 0 : 100.0 * r.Both.Count / r.Before):F0} % |"));
+    md.AppendLine();
+}
+
 Directory.CreateDirectory("docs");
 File.WriteAllText(Path.Combine("docs", "fragmentos-relacionados.md"), md.ToString());
 Console.WriteLine(md.ToString());
 
 static int Percentile(List<int> sorted, double p) => sorted.Count == 0 ? 0 : sorted[Math.Min(sorted.Count - 1, (int)Math.Ceiling(p * sorted.Count) - 1)];
+
+record CatalogRow(string Name, bool OneDocument, int Before, int BeforeTokens, (int Count, int Tokens) BySources, (int Count, int Tokens) ByMeaning, (int Count, int Tokens) Both);
 
 record Row(string Name, bool OneDocument, int New, int NewTokens, int Previous, int PreviousTokens, Dictionary<double, (int Count, int Tokens)> Related);
