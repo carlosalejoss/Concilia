@@ -2555,3 +2555,12 @@ Paso 112, primera parte: el test de que los modos de siempre no cambian, antes d
 - **Tests:** 990 en verde (983 + 7 casos de la instantánea; las comprobaciones del flujo completo van dentro de su test).
 - **Siguiente:** medir con el proyecto de clínicas el tope de fragmentos relacionados (`RelatedFragments`) y proponerlo al autor con datos; después, los prompts del modo centrado.
 
+## 26-10-2026, 14:15 (sesión)
+
+Paso 112, segunda parte: medición del tope de fragmentos relacionados (opción C), para proponerlo al autor.
+
+- **Cómo:** `scripts/evaluacion/medir-fragmentos-relacionados.cs`, con la documentación de «Clinicas Veterinarias v0.11» (21 documentos, 896 fragmentos, unos 28.051 tokens estimados) y los embeddings en local (29 s para todos los fragmentos). Como aún no hay una segunda iteración real (la del paso 116), se simula: cada documento como si llegara tras los anteriores, y dos tandas (DOC-15 a 21 tras 1 a 14; DOC-11 a 21 tras 1 a 10). Un fragmento anterior está relacionado si su parecido con algún fragmento nuevo llega a 0,70. Resultados en `docs/fragmentos-relacionados.md`.
+- **Resultados (desde 0,70):** con un documento nuevo, mediana de 9 fragmentos relacionados (unos 270 tokens), percentil 90 de 21 (unos 580) y máximo de 26 (unos 610). Con las tandas, 57 fragmentos (unos 1.360 tokens, el 9 % de lo anterior) y 90 (unos 2.430, el 18 %). Con 0,80 salen entre la mitad y la cuarta parte.
+- **Lectura:** en clínicas, lo relacionado es poco y barato; el ahorro de la opción C frente a leerlo todo (A) viene de no leer el resto: en la tanda grande, unos 12.400 + 2.430 tokens obligatorios frente a los 28.051 de todo. El tope solo protege a proyectos mucho más grandes (el máximo de documentación es de 300.000 tokens).
+- **Propuesta al autor:** un tope de 20.000 tokens estimados de fragmentos relacionados, tomando primero los más parecidos (unas 8 veces el máximo medido y en torno a la sexta parte de la ventana de 128k); lo que no entre sigue consultable por tramos. Pendiente de su aprobación.
+
