@@ -382,7 +382,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 - ~~Umbral de «discrepancia grave»~~: cerrado por el autor el 19-10-2026. Dos umbrales del emparejamiento (0,90 y 0,70, paso 87), y la discrepancia la marcan las desviaciones del árbitro respecto al emparejamiento (paso 88). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
 - Abaratar las pantallas del mockup. (El historial de mockups lo trae el hito 21: desde el paso 101 se guarda la página de cada mockup generado.)
-- Del hito 22 (26-10-2026): el tope de fragmentos relacionados de la opción C, que se mide antes de fijarlo, y si se hace un CSV solo con lo nuevo de una iteración.
+- Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración. ~~El tope de fragmentos relacionados~~: cerrado por el autor el mismo día, 20.000 tokens, tras medirlo con clínicas (`docs/fragmentos-relacionados.md`).
 
 ## Siguientes pasos
 
