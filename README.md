@@ -85,7 +85,8 @@ concilia/
 - [x] **Hito 19.** Exportar los entregables: el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira y Azure DevOps.
 - [x] **Hito 20.** Trazabilidad visual (de cada requisito a su origen en la documentación) y comparación lado a lado de A, B y el árbitro en cada trabajo, con el emparejamiento por embeddings.
 - [x] **Hito 21.** Historial de versiones de los entregables: cada versión se guarda con su fecha y su origen, y se puede ver, comparar con la actual y recuperar.
-- [ ] **Hito 22.** Evaluación (precisión, recall y F1 frente a listas de referencia).
+- [ ] **Hito 22.** Iteraciones del proyecto: la documentación se agrupa en iteraciones, y las preguntas, el catálogo y el backlog se rehacen con todas o se actualizan solo con las nuevas, conservando lo validado y diciendo de qué iteración viene cada elemento y qué cambió y por qué.
+- [ ] **Hito 23.** Evaluación (precisión, recall y F1 frente a listas de referencia, y actualizar frente a empezar de cero).
 - [ ] **Hito 7 (aplazado).** Catálogo v2, de arriba abajo, con los prompts del autor.
 
 ## Ejecutar el proyecto desde cero

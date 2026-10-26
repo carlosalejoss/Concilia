@@ -1,6 +1,6 @@
 # Trazabilidad del proyecto (Concilia)
 
-Visión de alto nivel de cómo se ha construido el TFG, del 28-09-2026 al 19-10-2026: qué se hizo en cada etapa, qué se decidió y qué cambió de criterio. El detalle de cada día está en `bitacora-detallada.md`; el estado vigente, en `CLAUDE.md` del repositorio.
+Visión de alto nivel de cómo se ha construido el TFG, del 28-09-2026 al 26-10-2026: qué se hizo en cada etapa, qué se decidió y qué cambió de criterio. El detalle de cada día está en `bitacora-detallada.md`; el estado vigente, en `CLAUDE.md` del repositorio.
 
 ## El proyecto en una frase
 
@@ -41,6 +41,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 23-10 | Hito 21, paso 101 | Cada versión del catálogo, el backlog y el mockup se guarda con su fecha y su origen, y se ve en un historial |
 | 23-10 | Hito 21, paso 102 | Cada versión se puede ver, comparar con la actual y recuperar; el hito 21 queda hecho |
 | 26-10 | Cierre del hito 21 | El autor revisa en el navegador el historial de versiones (ver, comparar y volver, también del mockup): funciona todo |
+| 26-10 | Diseño del hito 22 | Iteraciones del proyecto: se acuerdan con el autor las decisiones y los pasos 109 a 116, sin código; la evaluación pasa a ser el hito 23 |
 | 20-10 | Documentación de la API (fuera del plan) | Swagger UI con los 42 endpoints documentados, que se actualiza sola y que los tests mantienen completa |
 
 ## Etapas
@@ -294,6 +295,22 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Desactualizada:** cada versión recuerda si algo en lo que se basaba cambió después; al volver a ella, vuelve su aviso.
 - **Para la memoria, en palabras sencillas (paso 102):** si una nueva generación sale peor o una edición se equivoca, se compara con lo anterior y se recupera en un clic, sin perder nada: también lo que se deja atrás queda guardado.
 
+### 13. Hito 22: iteraciones del proyecto (diseño, 26-10)
+
+- **El problema:** cuando a un proyecto ya analizado le llega documentación nueva, hoy solo se puede generar todo de nuevo. Se pierde lo que el usuario editó y validó, y se paga otra vez todo el análisis.
+- **La idea del autor:** la documentación se agrupa en iteraciones («Iteración 1», «Iteración 2»…, con nombre), que se cierran con «Cerrar documentación». En preguntas, catálogo y backlog se elige entre rehacerlo con todas o trabajar solo sobre las iteraciones marcadas, y cada elemento dice de qué iteración viene y qué cambió y por qué. El mockup se sigue generando con todo.
+- **Decisiones del autor (26-10-2026), con las propuestas de Claude que aprobó:**
+  - con una iteración abierta no se lanzan las fases; solo se reabre la última, y reabrirla desactualiza como subir un archivo;
+  - ids estables en el catálogo y el backlog: hasta ahora se renumeraban al guardar, y sin ids estables no se puede seguir un requisito de una iteración a otra;
+  - la iteración de cada elemento la calcula la plataforma por sus fuentes, no el modelo;
+  - lectura con la **opción C**: obligatoria la documentación nueva y los fragmentos antiguos que se le parecen según los embeddings; el resto, consultable. Se eligió frente a leerlo todo (A, cada vez más caro) y frente a leer solo lo nuevo (B, puede pasar por alto contradicciones con lo antiguo);
+  - la actualización es un conjunto de cambios (nuevos, modificados y eliminados, con motivo), y lo que modifica o elimina la IA es una propuesta que el usuario revisa antes de validar;
+  - una respuesta del cliente nunca se reescribe: si la nueva documentación la contradice, se crea una pregunta nueva enlazada;
+  - actualizar el catálogo exige el catálogo validado, una ronda de preguntas sobre las iteraciones elegidas y ninguna pendiente;
+  - el hito va antes de la evaluación, que pasa a ser el hito 23.
+- **Requisito del autor:** nada de lo que ya funciona deja de funcionar. Los modos de siempre usan exactamente el mismo prompt y las mismas entradas (lo comprobará un test), los proyectos existentes pasan a una «Iteración 1» cerrada y lo único que cambia a la vista es la numeración estable y el clic de cerrar la documentación.
+- **Para la memoria, en palabras sencillas:** un análisis real no llega de una vez: el cliente manda documentos en varias tandas. Con las iteraciones, Concilia trabaja como un analista que recibe información nueva: se centra en lo nuevo, comprueba si choca con lo que ya se sabía y propone qué añadir, cambiar o quitar, sin tocar lo que el cliente ya validó y sin decidir nada por su cuenta.
+
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
 - **Qué hay:** el documento OpenAPI 3.1 de la API (`/openapi/v1.json`), generado por ASP.NET Core, y Swagger UI encima (`/swagger`, también en <http://localhost:8080/swagger> con Docker), con los colores de Concilia en claro y en oscuro. Los 42 endpoints van en 10 grupos en el orden del flujo, cada uno con su resumen, su descripción en español, sus parámetros y lo que devuelve en cada caso (incluidos los `400` con los mensajes de la web, los `404` y los `202` de las tareas en segundo plano).
@@ -359,10 +376,11 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 - ~~Umbral de «discrepancia grave»~~: cerrado por el autor el 19-10-2026. Dos umbrales del emparejamiento (0,90 y 0,70, paso 87), y la discrepancia la marcan las desviaciones del árbitro respecto al emparejamiento (paso 88). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
 - Abaratar las pantallas del mockup. (El historial de mockups lo trae el hito 21: desde el paso 101 se guarda la página de cada mockup generado.)
+- Del hito 22 (26-10-2026): el tope de fragmentos relacionados de la opción C, que se mide antes de fijarlo, y si se hace un CSV solo con lo nuevo de una iteración.
 
 ## Siguientes pasos
 
-Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.md` como hitos 17 a 22:
+Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.md` como hitos 17 a 22; el 26-10-2026 el autor añade las iteraciones del proyecto como hito 22 y la evaluación pasa a ser el 23:
 
 1. ~~Terminar el experimento del árbitro~~ Cerrado el 16-10-2026: no hay preferencia (paso 103).
 2. ~~**Hito 17, embeddings en local**~~: modelo multilingüe en la API (paso 86), emparejamiento de A y B con los umbrales calibrados (paso 87) y árbitro con embeddings con su prueba real (paso 88), todo el 19-10-2026. Cierra la decisión abierta del origen de los embeddings y da una referencia objetiva al experimento del sesgo.
@@ -370,13 +388,14 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 4. ~~**Hito 19, exportar**~~: el catálogo a Word y PDF (paso 96, 20-10-2026), y el backlog a Gherkin (paso 97) y a CSV para Jira o Azure DevOps (paso 98), los dos el 22-10-2026. Importado en un Jira real por el autor (23-10-2026); Azure DevOps sin probar en real, y el hito, cerrado por el autor el mismo día.
 5. ~~**Hito 20, trazabilidad visual y comparación de A, B y el árbitro**~~: la trazabilidad en un panel lateral (paso 99) y la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100), los dos el 22-10-2026. Revisado en el navegador por Claude y por el autor (23-10-2026): cerrado.
 6. ~~**Hito 21, historial de versiones de los entregables**~~: cada versión se guarda con su fecha y su origen (paso 101) y se puede ver, comparar con la actual y recuperar (paso 102), los dos el 23-10-2026. Revisado en el navegador por el autor (26-10-2026): cerrado.
-7. **Hito 22, evaluación:** métricas externas, un documento de PURE y una prueba editando de verdad.
-8. **Después:** hito 7 (catálogo v2) y redactar la memoria (sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación).
+7. **Hito 22, iteraciones del proyecto** (pasos 109 a 116): iteraciones en Documentos, ids estables, la iteración de cada elemento, preguntas centradas, actualizar el catálogo y el backlog, desde cero frente a lo anterior y una prueba real con clínicas en dos iteraciones.
+8. **Hito 23, evaluación:** métricas externas, un documento de PURE, una prueba editando de verdad y la comparación entre actualizar y empezar de cero.
+9. **Después:** hito 7 (catálogo v2) y redactar la memoria (sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación).
 
 - **Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub (detalle en la bitácora): embeddings multilingües en local (árbitro y prueba del sesgo), AQUSA para las historias, el analizador de Gherkin, `vale-ears` para EARS en inglés y el dataset PURE como documento público.
 - **Aparcado (15-10-2026):** rehacer el mockup del proyecto grande de ejemplo con la suscripción del autor (Sonnet 5.5) y la skill `frontend-design`, para ver si mejora la calidad; se retoma tras el paso 65. Riesgos: agotar el límite de 5 horas de la suscripción (se puede reanudar) y cambiar dos cosas a la vez, el modelo y las skills.
 
 ## Cifras de seguimiento
 
-- **Commits:** 187 entre el 28-09 y el 20-10-2026.
+- **Commits:** 212 entre el 28-09 y el 26-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99), 937 (22-10, paso 100), 943 (22-10, pasos 107 y 108), 948 (23-10, paso 101) y 951 (23-10, paso 102).

@@ -10,13 +10,12 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - Decisiones abiertas que afectan al plan: ninguna del hito 17. Los umbrales del emparejamiento (0,90 y 0,70) los fijó el autor el 19-10-2026 tras calibrarlos en el paso 87, y cómo marcan la discrepancia grave, en el paso 88. La jerarquía del backlog y el modelo del árbitro se cerraron el 08-10-2026 (ver la iteración v0), y el origen de los embeddings el 16-10-2026 (hito 17).
 - Desde el 08-10-2026 se trabaja en la iteración v0 (hitos 8 a 13) antes que en el hito 7.
 - Desde el 16-10-2026, con los hitos 8 a 16 terminados, se sigue con los hitos 17 a 22 en su orden, acordado con el autor: 17 embeddings, 18 fiabilidad y calidad, 19 exportar, 20 trazabilidad y comparación, 21 historial y 22 evaluación. Los pasos marcados «por decidir» esperan a que el autor elija antes de empezarlos. El experimento del árbitro (paso 103) se cerró el mismo día.
+- Desde el 26-10-2026 (autor): el hito 22 son las iteraciones del proyecto (pasos 109 a 116), y la evaluación pasa a ser el hito 23, el último. Los pasos 103 a 106 de la evaluación conservan su número.
 
-## Dónde estamos (19-10-2026)
+## Dónde estamos (26-10-2026)
 
-- **Terminado:** los pasos 86 (servicio de embeddings en la API), 87 (emparejamiento de A y B por significado, con los umbrales calibrados con el criterio del autor: 0,90 y 0,70).
-- **Hecho el 19-10-2026:** el paso 88, el árbitro con embeddings (prompts v0.10), con su prueba real (la unión es más estable: 202–222 requisitos frente a 209–291). El hito 17 queda completado.
-- **Hecho el 19-10-2026:** el hito 18 entero (pasos 89 a 95). **Completado el 22-10-2026** con su prueba real: el flujo completo del proyecto grande sin errores internos ni reparaciones que no caben, y los mockups sin `.zip` de dos proyectos con estilos distintos (resultados en `docs/evolucion-prompt-requisitos.md`, v0.11).
-- **Hito 19, hecho:** pasos 96 (el catálogo a Word y PDF, 20-10-2026), 97 (el backlog a Gherkin) y 98 (el backlog a CSV para Jira y Azure DevOps), los dos el 22-10-2026. Falta que el autor importe los CSV en un Jira y un Azure DevOps reales.
+- **Hechos:** los hitos 17 (embeddings en local), 18 y 18b (fiabilidad y calidad, prompts v0.11 y v0.12), 19 (exportar), 20 (trazabilidad y comparación) y 21 (historial de versiones), revisados por el autor.
+- **Siguiente:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026 y sin código todavía. Después, el hito 23 (evaluación).
 
 ## Hito 0: preparación y prueba de humo (completado)
 
@@ -436,16 +435,94 @@ Acordado con el autor el 16-10-2026.
 
 **Hecho cuando:** después de regenerar o editar un entregable, se puede volver a la versión anterior. (Cumplido el 23-10-2026 en los tests, incluido el flujo completo: se regenera el catálogo validado y se vuelve a él. Revisado en el navegador por el autor el 26-10-2026, con la API reconstruida en Docker: funciona todo. Hito 21 cerrado.)
 
-## Hito 22: evaluación
+## Hito 22: iteraciones del proyecto
 
-Material para el capítulo de evaluación de la memoria.
+Pedido por el autor el 26-10-2026. Hoy, si a un proyecto ya analizado le llega documentación nueva, el catálogo, el backlog y el mockup quedan desactualizados y la única salida es generarlo todo de nuevo: se pierde lo que el usuario editó y validó, y se paga otra vez todo el análisis. Con las iteraciones, la documentación se agrupa en tandas, y en preguntas, catálogo y backlog se elige entre rehacerlo con todas o trabajar solo sobre las que se marquen, conservando lo demás.
+
+En la documentación se habla de **iteraciones del proyecto**, para no confundirlas con la «iteración v0» del desarrollo y de los prompts. En la web son «Iteración 1», «Iteración 2»…, y en el código, `Iteration`.
+
+### Decisiones (26-10-2026)
+
+| Decisión | Origen |
+|---|---|
+| La documentación se agrupa en iteraciones, con número, nombre editable y notas opcionales («Reunión del 15-11»). Cada una está abierta o cerrada. Solo hay una abierta a la vez y solo se sube a la abierta; se cierra con «Cerrar documentación». Un proyecto nuevo empieza con la «Iteración 1» abierta. | Autor; nombre, notas y la primera abierta, propuesta de Claude |
+| Mientras haya una iteración abierta no se lanzan rondas de preguntas, sugerencias, catálogo ni backlog, para no trabajar con la mitad de la documentación. Sí se edita, se valida y se genera el mockup, que no lee la documentación. | Autor (el mockup y las sugerencias, propuesta de Claude) |
+| Solo se puede reabrir la última iteración, y reabrirla desactualiza lo mismo que subir un archivo. | Autor |
+| El `.zip` de estilo del mockup es del proyecto, no de una iteración. | Propuesta de Claude |
+| Los proyectos que ya existen pasan a tener una «Iteración 1», cerrada, con todos sus archivos, preguntas, requisitos e historias: se comportan como hoy. | Propuesta de Claude, aprobada por el autor |
+| Los documentos siguen numerándose por orden de subida en todo el proyecto (los de la iteración 2 siguen a los de la 1: `DOC-08`, `DOC-09`…) y no se pueden borrar, así que lo que ya cita `DOC-03#F010` sigue valiendo. La iteración de un fragmento se deduce de su documento; el formato de los ids no cambia. | Claude (lo que ya hace la plataforma) |
+| **Ids estables** en el catálogo y el backlog. Al generar desde cero se numeran seguidos, como ahora. Después, borrar deja un hueco, lo nuevo toma el siguiente número de su tipo (o el siguiente `EP`, `HU`, `CA` o `T`) y cambiar el tipo de un requisito le da un id nuevo de ese tipo. `ID-SEQ` deja de aplicarse al borrador, pero sigue en lo que escriben los modelos, y la corrección `TIPO` no cambia. Sustituye a «la plataforma renumera tras cada edición» (pasos 51 y 55): sin ids estables no se puede decir «RF-012, modificado en la iteración 2» ni saber qué historias afecta un cambio. | Autor (propuesta de Claude) |
+| **La iteración de cada elemento la calcula la plataforma**, no el modelo: la de una pregunta o un requisito, por sus fuentes (y las preguntas que cita); la de una historia, por sus requisitos. Sale siempre bien, no cuesta tokens y vale también para lo que se añade a mano. Aparte, cada elemento guarda su historial: en qué iteración se creó, se modificó o se eliminó, con el motivo. | Propuesta de Claude, aprobada por el autor |
+| **Dos modos** en preguntas, catálogo y backlog. «Todas las iteraciones» (preguntas) y «Desde cero» (catálogo y backlog) son lo de hoy: el mismo prompt v0.12, las mismas entradas y el mismo árbitro. «Centrarse en…» (preguntas) y «Actualizar con…» (catálogo y backlog) trabajan sobre las iteraciones que se marquen, teniendo en cuenta todo el contexto. | Autor |
+| **Qué se lee en los modos nuevos: opción C.** Es obligatorio leer la documentación de las iteraciones elegidas y los fragmentos anteriores relacionados con ella, que elige la plataforma con embeddings (desde «parecido», 0,70, con un tope, **por decidir**). El resto de la documentación se puede consultar por tramos. Además, el modelo recibe lo que ya se sabe: las preguntas con su respuesta y, si existe, el catálogo validado. Descartadas: A (leerlo todo, como ahora), porque cada ronda centrada costaría lo mismo que una completa, más en cada iteración, y con más compactaciones; y B (solo lo nuevo, con lo anterior opcional), porque puede pasar por alto contradicciones con detalles antiguos y lo que consulta el modelo es impredecible. Es la idea que funcionó en el paso 107 (`fuentes.txt`). En la prueba real se mide frente a A. | Autor (opción C de Claude) |
+| La iteración no va en las cabeceras `=== DOC-01 · nombre ===` de la documentación, que leen `FragmentAtLine`, `SourcesFile` y `CatalogExport`: en los modos nuevos va en un bloque aparte. Así los modos de siempre reciben exactamente las mismas entradas. | Claude |
+| **Preguntas.** Cada ronda guarda en qué iteraciones se centró, y cada pregunta muestra las iteraciones de sus fuentes, con filtro. Las preguntas centradas se fijan sobre todo en lo nuevo, pero también se muestran las de otras iteraciones. En el modo centrado, el modelo puede proponer, además de preguntas nuevas, **revisiones** de las anteriores: reformular una pendiente (se guarda el texto anterior, la iteración y el motivo) o marcarla como resuelta u obsoleta por la nueva documentación. «Resuelta» y «obsoleta» son propuestas: nunca se cierra una pregunta sola, la responde o la descarta el usuario. | Autor; las revisiones, propuesta de Claude |
+| Una respuesta nunca se reescribe. Si la nueva documentación la contradice, se crea una **pregunta nueva enlazada** («La respuesta a P-003 decía X, pero DOC-09 dice Y: ¿cuál vale?»). Si hay catálogo validado, el modelo lo recibe y pregunta también por las contradicciones entre la nueva documentación y los requisitos validados, con la pregunta enlazada al requisito. | Autor; las del catálogo, propuesta de Claude |
+| **Cuándo se puede actualizar.** El catálogo: con el catálogo validado, al menos una ronda de preguntas terminada después de cerrar las iteraciones elegidas y que las cubra (centrada en ellas o con todas), y ninguna pregunta pendiente. El backlog: con el backlog validado y el catálogo validado con esas iteraciones. | Autor (propuesta de Claude) |
+| **La actualización es un conjunto de cambios.** A y B escriben los requisitos nuevos, los modificados (id, contenido nuevo y motivo) y los eliminados (id y motivo). El árbitro une los cambios de los dos: modificaciones y eliminaciones se alinean por id sin IA (si A modifica RF-012 y B lo elimina, es una discrepancia directa); lo nuevo se empareja con embeddings entre A y B y **también contra el catálogo existente**, para avisar de un requisito «nuevo» que ya existía. La plataforma aplica los cambios sobre la copia de trabajo, así que las ediciones del usuario se conservan. | Propuesta de Claude, aprobada por el autor |
+| **Lo que modifica o elimina la IA es una propuesta.** Queda marcado como las discrepancias, con lo que había antes y el motivo, y no se valida sin revisarlo: aceptar una eliminación quita el elemento, rechazarla lo deja; rechazar una modificación devuelve el contenido anterior. | Autor |
+| **Backlog: análisis de impacto sin IA.** La plataforma calcula las historias que citan requisitos modificados o eliminados y los requisitos nuevos que aún no tienen historia, y el modelo solo trabaja sobre eso: historias nuevas, modificadas (criterios y tareas añadidos o quitados) y eliminadas, con motivo e historial, como en el catálogo. | Propuesta de Claude, aprobada por el autor |
+| **Cobertura por entregable.** Cada catálogo, backlog y versión guarda qué iteraciones incluye («Catálogo: iteraciones 1–2»). La web dice qué iteración falta en cada uno y la marca por defecto al actualizar. | Propuesta de Claude |
+| **Desde cero, frente a lo anterior.** Tras generar desde cero, la plataforma empareja con embeddings el nuevo catálogo o backlog con la versión anterior y marca cada elemento como igual, cambiado o nuevo, y lo que ha desaparecido. | Propuesta de Claude |
+| Las exportaciones llevan la iteración: en Word y PDF, junto a cada requisito; en Jira y Azure DevOps, como etiqueta (`iteracion-2`). Un CSV solo con lo nuevo de una iteración, para no duplicar lo ya importado, queda como mejora posible, sin decidir. | Propuesta de Claude |
+| El mockup no cambia: se genera siempre con toda la información, para que no quede fuera ninguna funcionalidad. | Autor |
+| **Lo que ya funciona sigue igual:** trazabilidad, discrepancias dentro de una misma iteración (sigue pudiendo haber información contradictoria), emparejamiento y árbitro con embeddings, correcciones automáticas, reparación editando, comparación A \| árbitro \| B, nuevo arbitraje, informe y su CSV (columnas nuevas al final, como en el paso 100), historial de versiones, exportaciones y mockup. Se comprueba con todos los tests actuales y con un test que asegura que los modos de siempre generan exactamente el mismo prompt y los mismos ficheros de entrada que la v0.12. Antes de aplicar las migraciones en Docker se hace una copia de la base de datos. | Autor (requisito); cómo comprobarlo, propuesta de Claude |
+| El hito va antes de la evaluación, que pasa a ser el hito 23: la comparación entre actualizar y empezar de cero es un experimento más para la memoria. | Autor |
+
+### Pasos
+
+- [ ] 109. Iteraciones en Documentos.
+  - Tabla `Iterations` (proyecto, número, nombre, notas, estado, fechas de creación y cierre) y `ProjectFile.IterationId`. La migración crea en cada proyecto la «Iteración 1», cerrada, con todos sus archivos.
+  - Endpoints para crear una iteración (con la anterior cerrada), renombrarla, cerrarla y reabrir la última. Solo se sube a la abierta.
+  - Flujo: con una iteración abierta no se lanzan rondas, sugerencias, catálogo ni backlog, con el motivo «Cierra la documentación de la iteración N». Reabrir es `FileAdded`.
+  - Web: Documentos agrupados por iteración, con «Cerrar documentación», «Nueva iteración» y «Reabrir».
+  - Tests: las reglas del flujo, la migración de un proyecto ya hecho (queda igual que antes, en la «Iteración 1») y el flujo completo con el cierre.
+- [ ] 110. Ids estables en el catálogo y el backlog.
+  - El borrador ya no se renumera al guardar: lo nuevo toma el siguiente número libre de su tipo, borrar deja hueco y cambiar el tipo da un id nuevo. Al generar desde cero se sigue numerando seguido.
+  - `ID-SEQ` solo en las salidas de los modelos. Los ids siguen siendo únicos y con el prefijo de su tipo.
+  - Tests: los de la renumeración pasan a comprobar los ids estables; las referencias de una historia sobreviven al borrar otro requisito; las exportaciones y la trazabilidad con huecos.
+- [ ] 111. La iteración de cada elemento y la cobertura de cada entregable.
+  - La plataforma calcula la iteración de cada pregunta, requisito e historia (fragmento → documento → iteración) y la muestra en las tres fases, con filtro, y en el panel de trazabilidad (la iteración de cada fragmento).
+  - Cada entregable y cada versión guardan las iteraciones que incluyen; la web dice cuáles faltan.
+  - Exportaciones: la iteración en Word y PDF, y la etiqueta `iteracion-N` en Jira y Azure DevOps.
+  - Revisión del autor en el navegador antes de los prompts nuevos.
+- [ ] 112. Preguntas centradas en unas iteraciones (prompts v0.13).
+  - Antes que nada, el test de que «Todas las iteraciones» y «Desde cero» generan exactamente el mismo prompt y las mismas entradas que la v0.12.
+  - Al lanzar una ronda: «Todas las iteraciones» o «Centrarse en…», con casillas por iteración. La ronda guarda su foco.
+  - Fragmentos relacionados (`RelatedFragments`): los anteriores parecidos a los de las iteraciones elegidas, desde 0,70 y con un tope (**por decidir**, se mide aquí y en el paso 116). Lectura obligatoria: la documentación elegida y los relacionados; el resto, consultable por tramos.
+  - Prompts nuevos del modo centrado (pregunta y árbitro), sin tocar los de siempre. Salida: preguntas nuevas y revisiones (reformular, resuelta, obsoleta, contradice una respuesta, contradice un requisito validado), con motivo y fuentes. El árbitro alinea las revisiones por la pregunta a la que se refieren, sin IA.
+  - `Questions`: la pregunta o el requisito con que se enlaza, y el historial de reformulaciones (texto anterior, iteración y motivo).
+  - Web: el foco de cada ronda, la iteración de cada pregunta, sus enlaces y su historial, y las propuestas «resuelta» y «obsoleta» para responder o descartar.
+- [ ] 113. Actualizar el catálogo con unas iteraciones (prompts v0.13).
+  - Prompts y esquemas del conjunto de cambios (nuevos, modificados con motivo y eliminados con motivo) y de su árbitro. Entradas: el catálogo validado, la lectura de la opción C y las respuestas, marcando las nuevas desde el catálogo de partida.
+  - Árbitro de cambios: alineación por id sin IA y emparejamiento con embeddings de lo nuevo entre A y B y contra el catálogo existente.
+  - La plataforma aplica los cambios a la copia de trabajo, con el historial de cada requisito (iteración, acción, lo que había antes, motivo, origen A/B/ambas y explicación del árbitro) y las propuestas de modificación y eliminación por revisar. No se valida sin revisarlas.
+  - Trabajo nuevo (`catalog-update`), con su versión en el historial, su informe (modo, iteraciones y cuántos se crean, modifican y eliminan, de A, de B y del árbitro), la comparación A | árbitro | B y el nuevo arbitraje.
+  - Web: «Desde cero» o «Actualizar con…» al generar; el historial y los cambios por revisar de cada requisito.
+- [ ] 114. Actualizar el backlog con unas iteraciones (prompts v0.13).
+  - `BacklogImpact`: del catálogo del que salió el backlog al validado de ahora, las historias que citan requisitos modificados o eliminados y los requisitos nuevos sin historia.
+  - Prompts y esquemas del conjunto de cambios del backlog (historias nuevas, modificadas y eliminadas, y criterios y tareas por id, como en el paso 108) y de su árbitro.
+  - La plataforma los aplica con su historial y sus propuestas por revisar, como en el catálogo. Trabajo `backlog-update`, con versión, informe, comparación y nuevo arbitraje.
+- [ ] 115. Desde cero, frente a lo anterior.
+  - Tras generar el catálogo o el backlog desde cero, la plataforma empareja con embeddings el resultado con la versión anterior y marca cada elemento como igual, cambiado o nuevo, y lo que ha desaparecido.
+  - El informe y su CSV, con las columnas nuevas al final.
+- [ ] 116. Prueba real con clínicas en dos iteraciones.
+  - Una segunda iteración de documentos ficticios para el proyecto de clínicas, sobre el flujo ya validado de la v0.11, con novedades, cambios y contradicciones con la iteración 1 puestos a propósito y listados como referencia, como en `ejemplos/README.md`.
+  - Ronda centrada, actualización del catálogo y del backlog, y lo mismo desde cero. Se mide el coste y el tiempo, cuánto de lo validado se conserva igual y cuántos de los cambios puestos a propósito se detectan. La ronda centrada se mide también leyéndolo todo (opción A) frente a la opción C.
+  - Resultados en `docs/evolucion-prompt-requisitos.md` (v0.13) y `docs/costes/costes.md`.
+
+**Hecho cuando:** en un proyecto con el catálogo y el backlog validados, se añade una segunda iteración, se lanza una ronda centrada en ella y se actualizan el catálogo y el backlog. Cada elemento dice de qué iteración viene, lo modificado y lo eliminado llevan su motivo y se revisan antes de validar, lo que no cambia sigue igual, y los modos de siempre dan exactamente lo mismo que antes.
+
+## Hito 23: evaluación
+
+Material para el capítulo de evaluación de la memoria. Era el hito 22 hasta el 26-10-2026, cuando el autor puso delante las iteraciones del proyecto. Sus pasos conservan su número. Incluye también los resultados del paso 116 (actualizar frente a empezar de cero).
 
 - [x] 103. Terminar el experimento de si el árbitro prefiere a su propio modelo (`docs/experimento-sesgo-arbitro.md`). (16-10-2026: no hay preferencia; la unión se parece a A porque A propone más y casi todo lo de B ya está en A. LUNA, 2 arbitrajes válidos de 6 en el catálogo.)
 - [ ] 104. Métricas externas sobre el catálogo y el backlog generados en inglés: AQUSA (`RELabUU/aqusa-core`) para las historias y `vale-ears` para EARS.
 - [ ] 105. El flujo completo con un documento público del dataset PURE, que el tribunal pueda reproducir.
 - [ ] 106. Una prueba editando de verdad el catálogo y el backlog, como un analista, para que la métrica de cambios del usuario tenga datos. Incluye los pasos 49 (segunda ronda de preguntas) y 53 (editar el catálogo), que siguen pendientes.
 
-**Hecho cuando:** el capítulo de evaluación tiene datos de los tres experimentos (sesgo del árbitro, calidad con métricas externas y cambios del usuario) y de al menos un documento público.
+**Hecho cuando:** el capítulo de evaluación tiene datos de los tres experimentos (sesgo del árbitro, calidad con métricas externas y cambios del usuario), de la actualización por iteraciones (paso 116) y de al menos un documento público.
 
 ## Después
 

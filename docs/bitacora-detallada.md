@@ -2421,3 +2421,48 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisión:** se queda como la hizo Claude que cada versión recuerde si estaba desactualizada y recupere el aviso al volver a ella. El autor la revisó junto con lo demás y no pidió cambiarla.
 - **Estado:** hito 21 cerrado (pasos 101 y 102).
 - **Pendientes:** el hito 22 (evaluación). Sigue sin decidir la mejora de repartir el CSV de Jira en ficheros de 250 elementos. Queda anotado el test intermitente del runner (`Compacting_after_writing_the_output_stops_the_run_at_once`), que falló una vez de cuatro el 23-10-2026.
+
+## 26-10-2026, 08:30 (sesión)
+
+**Resumen para la bitácora (26-10-2026, diseño del hito 22: iteraciones del proyecto)**
+
+- **Qué se hizo:** el autor propone una funcionalidad grande nueva: las iteraciones del proyecto, para añadir documentación a un proyecto ya analizado sin rehacerlo todo. Claude analiza el código y propone un diseño, y el autor decide. Solo documentación, sin código: el plan (hito 22, pasos 109 a 116), `CLAUDE.md`, el README y la trazabilidad.
+- **Lo que pide el autor:**
+  - la documentación se agrupa en iteraciones con nombre, que se cierran con «Cerrar documentación»;
+  - preguntas: «todas las iteraciones» o centrarse en unas, mostrando de qué iteración viene cada pregunta y qué cambió de una anterior y por qué;
+  - catálogo y backlog: «desde cero» o actualizar con unas iteraciones (crear, modificar y eliminar), con la iteración de cada elemento y el motivo de cada cambio;
+  - el mockup, como está;
+  - la trazabilidad, las discrepancias y lo demás siguen funcionando.
+- **Lo que vio Claude en el código y condiciona el diseño:**
+  - los documentos se numeran por orden de subida y no se borran, así que las citas siguen valiendo al añadir una iteración;
+  - el catálogo y el backlog se renumeran al guardar y el validador exige ids seguidos (`ID-SEQ`), lo que impide seguir un requisito entre iteraciones;
+  - leer siempre toda la documentación hace que cada ronda centrada cueste lo mismo que una completa;
+  - «iteración» ya nombra la iteración v0 del desarrollo.
+- **Decisiones del autor (26-10-2026):**
+  1. Con una iteración abierta no se lanzan las fases.
+  2. Solo se reabre la última iteración, y reabrirla desactualiza lo mismo que subir un archivo.
+  3. Lectura en los modos nuevos con la opción C: obligatoria la documentación de las iteraciones elegidas y los fragmentos anteriores relacionados por embeddings; el resto, consultable por tramos. Se descartan A (leerlo todo) y B (solo lo nuevo, con lo anterior opcional), tras ver los pros y los contras de cada una.
+  4. Ids estables en el catálogo y el backlog.
+  5. Actualizar el catálogo exige el catálogo validado, una ronda de preguntas terminada después de cerrar las iteraciones elegidas y ninguna pendiente; el backlog, el backlog y el catálogo validados.
+  6. Lo que modifica o elimina la IA son propuestas que revisa el usuario.
+  7. Una respuesta contradicha por la nueva documentación no se reescribe: se crea una pregunta nueva enlazada.
+  8. El hito va antes de la evaluación, que pasa a ser el hito 23 (sus pasos 103 a 106 conservan el número).
+- **Propuestas de Claude incluidas en el hito:**
+  - la iteración de cada elemento la calcula la plataforma por sus fuentes, y cada elemento guarda su historial;
+  - revisiones de preguntas anteriores;
+  - preguntas por contradicciones con requisitos validados;
+  - análisis de impacto del backlog sin IA;
+  - qué iteraciones incluye cada entregable;
+  - emparejar un «desde cero» con la versión anterior;
+  - la iteración en las exportaciones;
+  - la iteración fuera de las cabeceras de la documentación;
+  - el nombre «iteraciones del proyecto» en la documentación.
+- **Lo que ya funciona (requisito del autor):** los modos de siempre usan exactamente el mismo prompt v0.12 y las mismas entradas, y lo comprobará un test. Los proyectos que ya existen pasan a una «Iteración 1» cerrada, y antes de las migraciones se hace una copia de la base de datos. Lo único que cambia a la vista es la numeración estable (huecos al borrar) y el clic de cerrar la documentación.
+- **Cambios de criterio (cuando se implementen):**
+  - «la plataforma renumera tras cada edición» (pasos 51 y 55) pasa a ids estables;
+  - `ID-SEQ` deja de aplicarse al borrador;
+  - el antiguo hito 22 (evaluación) pasa a ser el 23.
+- **Pendientes:**
+  - el paso 109;
+  - por decidir: el tope de fragmentos relacionados (se mide en los pasos 112 y 116) y un CSV solo con lo nuevo de una iteración;
+  - los documentos ficticios de la segunda iteración de clínicas para el paso 116.
