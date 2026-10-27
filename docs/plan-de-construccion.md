@@ -28,28 +28,25 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tiene el detalle en su hito.
 
 **Hito 22, iteraciones del proyecto:**
-1. **Revisar el 113 en el navegador.** Claude recomienda hacerlo junto con el 114, con un proyecto de prueba, para separar los fallos de la web de los de los modelos del 116.
-2. **114, actualizar el backlog.**
-   - Primero, revisar los borradores `prompts/v0/backlog_actualizacion.md` y `prompts/v0/arbitro_backlog_actualizacion.md`.
-   - Después, el código y su revisión en el navegador.
-3. **115,** desde cero frente a lo anterior.
-4. **116,** la prueba real con clínicas en dos iteraciones, con su lista de cambios puestos a propósito.
+1. **Revisar en el navegador los pasos 113 y 114** (actualizar el catálogo y el backlog), con un proyecto de prueba. El código de los dos está hecho; falta reconstruir Docker con el 114.
+2. **115,** desde cero frente a lo anterior: código de Claude, sin modelos.
+3. **116,** la prueba real con clínicas en dos iteraciones. Claude escribe los documentos ficticios de la segunda iteración y su lista de cambios puestos a propósito, y el autor la revisa en el paso 118. Coste estimado: unos 15–20 $, porque son la ronda centrada, la actualización del catálogo y del backlog, y lo mismo desde cero.
 
 **Hito 23, evaluación** (en este orden; cada paso dice qué hace el autor y qué hace Claude):
 
-5. 117, congelar la versión.
-6. 105, el flujo con un documento de PURE, en inglés.
-7. 104, AQUSA y `vale-ears` sobre lo del 105.
-8. 106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53).
-9. 118, la referencia: revisar las trampas y hacer la lista de funcionalidades.
-10. 119, las 9 ejecuciones de clínicas.
-11. 120, las hojas de revisión y la comparación con un solo modelo.
-12. 121, SOL ‖ SOL.
+4. 117, congelar la versión, con una prueba barata en inglés antes.
+5. 105, el flujo con un documento de PURE, en inglés.
+6. 104, AQUSA y `vale-ears` sobre lo del 105.
+7. 106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53).
+8. 118, la referencia: revisar las trampas y hacer la lista de funcionalidades.
+9. 119, las 9 ejecuciones de clínicas.
+10. 120, las hojas de revisión y la comparación con un solo modelo.
+11. 121, SOL ‖ SOL.
 
 **Después del plan:**
 
-13. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. El esqueleto está en `memoria/tfg/memoria.tex`, fuera de git.
-14. Lo que queda en «Después», al final de este plan: el hito 7 (catálogo v2, aplazado) y la aprobación por umbral.
+12. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. El esqueleto está en `memoria/tfg/memoria.tex`, fuera de git. En el equipo no hay LaTeX instalado: para compilarla hace falta Overleaf o instalar MiKTeX, y conviene probarlo antes de empezar a redactar.
+13. Lo que queda en «Después», al final de este plan: el hito 7 (catálogo v2, aplazado) y la aprobación por umbral.
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
 - si se hace un CSV solo con lo nuevo de una iteración;
@@ -571,16 +568,20 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
 - [x] 103. Terminar el experimento de si el árbitro prefiere a su propio modelo (`docs/experimento-sesgo-arbitro.md`). (16-10-2026: no hay preferencia; la unión se parece a A porque A propone más y casi todo lo de B ya está en A. LUNA, 2 arbitrajes válidos de 6 en el catálogo.)
 - [ ] 117. Congelar la versión que se evalúa (27-10-2026, autor). Así los resultados son comparables entre sí y el tribunal puede repetir el paso 105 con la misma versión. Unos 15 minutos, sin coste. Se hace con el hito 22 cerrado y antes de la primera ejecución de la evaluación.
   **Qué haces tú** (o Claude, si se lo pides):
-  1. **Comprueba que todo está guardado:** `git status` debe salir limpio, todos los tests en verde y Docker reconstruido con ese código.
-  2. **Crea la etiqueta:** `git tag evaluacion-1`, sin push.
-  3. **Rellena `docs/evaluacion/version.md`** con:
+  1. **Antes de congelar, haz una prueba barata en inglés** (añadido el 27-10-2026). El flujo en inglés no se ha probado nunca con modelos: los prompts lo admiten (`idioma`), pero ningún test ni ninguna ejecución real lo ha usado.
+     - Crea el proyecto del paso 105 con el idioma en inglés, sube el documento de PURE y lanza solo la ronda de preguntas. Cuesta en torno a 1 $.
+     - Si algo falla, se corrige ahora y no a mitad de la evaluación.
+     - Ese proyecto se borra después, y el 105 se hace ya con la versión congelada.
+  2. **Comprueba que todo está guardado:** `git status` debe salir limpio, todos los tests en verde y Docker reconstruido con ese código.
+  3. **Crea la etiqueta:** `git tag evaluacion-1`, sin push.
+  4. **Rellena `docs/evaluacion/version.md`** con:
      - el commit (`git rev-parse HEAD`);
      - la versión de los prompts (la v0.12 en los modos de siempre y la v0.13 en los centrados y las actualizaciones);
      - los modelos de cada papel: A, B, árbitro, sugerencias y mockup;
      - los umbrales del emparejamiento (0,90 y 0,70);
      - `Catalog:MaxParallelLots`;
      - la versión de Claude Code, con `claude --version` dentro del contenedor de la API (es el único comando que se lanza ahí; nada que imprima variables de entorno).
-  4. **Si durante la evaluación un error obliga a cambiar código o prompts:** se crea `evaluacion-2`, se anota en el mismo fichero qué cambió y por qué, y se repiten las ejecuciones afectadas. Cada resultado dice con qué etiqueta se obtuvo.
+  5. **Si durante la evaluación un error obliga a cambiar código o prompts:** se crea `evaluacion-2`, se anota en el mismo fichero qué cambió y por qué, y se repiten las ejecuciones afectadas. Cada resultado dice con qué etiqueta se obtuvo.
 - [ ] 105. El flujo completo con un documento público del dataset PURE (27-10-2026, detalles de Claude). Hasta ahora todo se ha probado con documentos que hizo Claude o que son internos. Un documento público, ajeno al proyecto, es una prueba que el tribunal puede repetir. Coste: como un flujo de clínicas, unos 7–9 $, y algo más si el documento es más largo.
   **Qué es PURE:** 79 documentos de requisitos públicos (sobre todo especificaciones SRS en inglés), de Ferrari, Spagnolo y Gnesi, RE 2017. Están en [Zenodo](https://zenodo.org/records/1414117); hay una versión más reciente, que es la que se usa.
   **Qué haces tú:**
@@ -605,14 +606,25 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
   - Regenera `docs/costes/costes.md`.
 - [ ] 104. Métricas externas de calidad (27-10-2026, detalles de Claude). Mide la calidad con herramientas de otros y no solo con las de Concilia. Las dos trabajan en inglés: se aplican al catálogo y al backlog del paso 105, y a las tres propuestas de cada fase (SOL, LUNA y la unión), lo que completa la comparación del paso 120. Unas 3–4 horas, la mayor parte en instalar y probar las herramientas; sin coste.
   - **AQUSA** (Lucassen, Dalpiaz y otros, Universidad de Utrecht, revista *Requirements Engineering*, 2016) revisa historias de usuario con parte de los 13 criterios del marco QUS: bien formadas («As a… I want… so that…»), atómicas (una sola cosa), mínimas (sin texto de más), únicas, uniformes… Es una herramienta en Python.
-  - **`vale-ears`** (`tbhb/vale-ears`, MIT) es un estilo para el corrector Vale que comprueba que cada frase con *shall* sigue un patrón EARS (`ears.Syntax`) y que no usa *must*, *will*, *should* o *may* en lugar de *shall* (`ears.Shall`).
-  **Antes de empezar, dos avisos** (comprobado por Claude el 27-10-2026):
-  - **El repositorio `RELabUU/aqusa-core` del plan no se ha podido confirmar.** El que citan los artículos es `gglucass/AQUSA`.
-  - **`vale-ears` es muy nuevo** (junio de 2026) y casi no lo usa nadie.
-  Por eso lo primero es probar que funcionan. Si alguna no funciona, se anota y se busca otra en la lista `nlp4re-tools`; no se escribe una propia.
+  - **`vale-ears`** (`tbhb/vale-ears`, MIT) es un estilo para el corrector Vale con cuatro reglas:
+    - `ears.Syntax`: cada frase con *shall* sigue uno de los cinco patrones EARS;
+    - `ears.Shall`: no se usa *must*, *will*, *should* o *may* en lugar de *shall*;
+    - `ears.PassiveVoice`: sin voz pasiva;
+    - `ears.WeakWords`: sin palabras vagas como *fast* o *usually*.
+  **Cómo son las herramientas** (comprobado por Claude en sus repositorios el 27-10-2026; corrige un aviso de la mañana, que decía que no se encontraba `RELabUU/aqusa-core`):
+  - **`RELabUU/aqusa-core`** existe: es la versión de línea de comandos de AQUSA, con licencia MIT.
+    - Lee un fichero de texto con una historia por línea, en `./input`.
+    - Se ejecuta con `python aqusacore.py -i <fichero> -o <salida> -f txt` (o `html`).
+    - Se instala con `pip install -r requirements.txt`.
+    - Está probado con Python 3.7, que ya no tiene soporte, así que puede no funcionar con un Python actual. Si falla, se usa un entorno con Python 3.7 (por ejemplo, con `uv` o con una imagen de Docker `python:3.7`).
+  - **`vale-ears`** se instala:
+    - añadiendo el paquete (`ears.zip` de su última versión) en `Packages` de un `.vale.ini`, con `BasedOnStyles = ears`;
+    - ejecutando `vale sync`.
+    Vale es un único ejecutable que se descarga para Windows. Es de junio de 2026 y casi no lo usa nadie, y su página no dice si reconoce las palabras clave en mayúsculas, que es como las escribe Concilia.
+  Por eso lo primero es probar que funcionan, en una hora como mucho. Si alguna no funciona, se anota y se busca otra en la lista `nlp4re-tools`; no se escribe una propia.
   **Qué haces tú** (o Claude, si se lo pides):
-  1. **Instala AQUSA** en un entorno de Python aparte, fuera del repositorio, siguiendo su README, y pruébalo con las historias de ejemplo que traiga.
-  2. **Instala Vale y `vale-ears`** siguiendo su README, y pruébalo con dos frases: una EARS buena («WHEN the user cancels an appointment, the system shall…») y una mala.
+  1. **Instala AQUSA** en un entorno de Python aparte, fuera del repositorio, y pruébalo con tres historias escritas a mano: una buena, una con dos cosas a la vez y una sin «so that».
+  2. **Instala Vale y `vale-ears`** y pruébalo con dos frases: una EARS buena («WHEN the user cancels an appointment, the system shall…») y una mala.
   3. **Comprueba si Vale distingue mayúsculas.** Concilia escribe las palabras clave de EARS en mayúsculas («WHEN», «IF … THEN»).
   4. **Anota las versiones y los comandos** en `docs/evaluacion/metricas-externas.md`.
   **Qué hace Claude:**

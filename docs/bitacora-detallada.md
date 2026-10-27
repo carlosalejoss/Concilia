@@ -2711,3 +2711,20 @@ Paso 114: actualizar el backlog validado con unas iteraciones (prompts v0.13).
 - **Tests:** 1.020 en verde (1.015 + 5): `BacklogUpdateTests` (5); `CatalogUpdateFlowTests` ahora genera y valida el backlog, actualiza el catálogo y después el backlog, acepta la historia modificada y lo valida. Ningún test anterior cambia.
 - **Pendientes:** reconstruir en Docker y preparar el proyecto de prueba para la revisión del autor de los pasos 113 y 114; el paso 115.
 
+
+## 27-10-2026, 09:53 (sesión)
+
+Comprobación de que lo que queda se puede hacer, a petición del autor. Sin código.
+
+- **Comprobado:**
+  - el repositorio y la plataforma: el código de los pasos 113 y 114 ya está;
+  - `data/` se monta en el contenedor (`./data:/data`), así que los scripts de evaluación pueden leer las propuestas de A y B sin un endpoint nuevo;
+  - el catálogo y el backlog se pueden volver a generar sin restricciones, que es lo que necesitan las repeticiones del paso 119;
+  - el modelo de embeddings está en `models/`;
+  - fuera del repositorio: `RELabUU/aqusa-core` (MIT, línea de comandos, una historia por línea, probado con Python 3.7), `tbhb/vale-ears` (MIT; reglas Syntax, Shall, PassiveVoice y WeakWords; no dice si reconoce las palabras clave en mayúsculas) y PURE en Zenodo (CC BY 4.0, en inglés, con un subconjunto en XML que Concilia admite y una versión más reciente).
+- **Corrección:** el aviso de la mañana de que `RELabUU/aqusa-core` no se encontraba era erróneo. Se corrige en el plan y en la trazabilidad; la entrada anterior se deja como estaba.
+- **Riesgos que se añaden al plan:**
+  - el flujo en inglés no se ha probado nunca con modelos (ningún test ni ejecución real usa `en`): el paso 117 empieza con una ronda de preguntas en inglés, de en torno a 1 $;
+  - AQUSA puede necesitar Python 3.7;
+  - para la memoria no hay LaTeX en el equipo (Overleaf o MiKTeX).
+- **Plan:** «Lo que queda, en orden» al día (113 y 114 hechos, falta revisarlos en el navegador) y el coste estimado del 116 (unos 15–20 $).

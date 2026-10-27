@@ -341,7 +341,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Los pasos que ya existían** (104 a 106) pasan a explicar también qué hace el autor y qué hace Claude:
   - 105, PURE, se hace en inglés y antes que el 104, que mide sobre él AQUSA y `vale-ears`, solo en los requisitos EARS, porque los MASTeR usan *should* y *may* a propósito;
   - 106, la prueba como analista, va con ReservaSalas y cierra los pasos 49 y 53.
-  Al comprobarlas, Claude vio dos cosas de las herramientas: no se pudo confirmar el repositorio de AQUSA del plan (el que citan los artículos es `gglucass/AQUSA`), y `vale-ears` es de junio de 2026. Por eso el paso 104 empieza probando que funcionan.
+  Al comprobarlas, Claude vio dos riesgos: AQUSA (`RELabUU/aqusa-core`, que existe; un primer aviso del mismo día decía que no se encontraba) está probado con Python 3.7, y `vale-ears` es de junio de 2026. Por eso el paso 104 empieza probando que funcionan. Y como el flujo en inglés no se ha probado nunca con modelos, el paso 117 empieza con una ronda de preguntas en inglés (unos 1 $).
 - **Coste estimado:** unos 20–30 $ las repeticiones, unos 30–50 $ SOL ‖ SOL y unos 7–9 $ PURE. En horas del autor, unas 3–4 h de referencia, unas 5 h de revisión y 2–3 h como analista.
 - **Para la memoria, en palabras sencillas:** hasta ahora se sabía qué propone cada modelo y qué se queda el árbitro, pero no si el resultado es mejor que el de un solo modelo. Para saberlo hace falta una lista de lo que debería salir, hecha por una persona, y contar cuánto de esa lista encuentra cada uno, cuánto de lo que propone está bien y cuánto cuesta.
 
