@@ -200,9 +200,14 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
         });
         var matchingText = MatchingFile.Write(matching, plan.ProposalOrder);
         // Step 112: in a centred round, also the new questions like one already asked ("previa").
-        if (plan.Focus is not null)
+        if (plan.Focus is not null && plan.Kind == PhaseKind.Questions)
             matchingText = MatchingFile.WithPrevious(matchingText,
                 phases.Matching.AgainstPrevious(Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]), plan.Focus.Questions));
+        // Step 113: in an update, also the new requirements like one of the catalog ("existente").
+        if (plan.Kind == PhaseKind.CatalogUpdate)
+            matchingText = MatchingFile.WithPrevious(matchingText,
+                phases.Matching.AgainstExisting(plan.Kind, Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]), CatalogRequirements(plan.Input.Catalog)),
+                "existente");
         var input = (Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]), matchingText);
         var final = await RunOneAsync(arbiter, () => phases.ExecuteAsync(arbiter, plan, input, cancellationToken), onRunStarting, onRunFinished, cancellationToken);
         if (!final.Succeeded)
@@ -219,6 +224,15 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
             Similarities = similarities,
         };
     }
+
+    // The id and text of each requirement of a catalog.
+    private static IReadOnlyList<(string Id, string Text)> CatalogRequirements(string catalog) =>
+        catalog.Length == 0
+            ? []
+            : (System.Text.Json.Nodes.JsonNode.Parse(catalog)?["requisitos"] as System.Text.Json.Nodes.JsonArray ?? [])
+                .OfType<System.Text.Json.Nodes.JsonObject>()
+                .Select(r => (r["id"]?.GetValue<string>() ?? "", r["texto"]?.GetValue<string>() ?? ""))
+                .ToList();
 
     // A job of a single run (the suggestions of answers, slot SUG): its output
     // is the result, without cross-check.

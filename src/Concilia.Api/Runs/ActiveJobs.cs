@@ -51,6 +51,7 @@ public static class ActiveJobs
         _ when kind == PhasePlan.JobKind(PhaseKind.Questions) => "una ronda de preguntas",
         _ when kind == PhasePlan.JobKind(PhaseKind.Suggestions) => "las sugerencias de respuesta",
         _ when kind == PhasePlan.JobKind(PhaseKind.Catalog) => "el catálogo de requisitos",
+        _ when kind == PhasePlan.JobKind(PhaseKind.CatalogUpdate) => "la actualización del catálogo",
         _ when kind == PhasePlan.JobKind(PhaseKind.Backlog) => "el backlog",
         Deliverables.MockupEndpoints.JobKind => "el mockup",
         CatalogTask.Kind => "el catálogo v1.4 (experimental)",

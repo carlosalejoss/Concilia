@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { iterationsText } from './iterations.ts'
 
 // The report of a job (step 64), as the API builds it from what the job
 // left: the base of the evaluation of the TFG.
@@ -38,7 +39,13 @@ type Report = {
     onlyB: number
     agreement: { total: number; rate: number } | null
   } | null
+  // Step 113: an update of the catalog, what A, B and the arbiter proposed.
+  update?: { iterations: number[]; a: ChangeCounts | null; b: ChangeCounts | null; arbiter: ChangeCounts | null } | null
 }
+
+type ChangeCounts = { new: number; modified: number; deleted: number }
+
+const changeText = (c: ChangeCounts | null) => (c ? `${c.new} nuevos, ${c.modified} modificados y ${c.deleted} eliminados` : 'sin salida válida')
 
 const number = (n: number | null | undefined) => (n ?? 0).toLocaleString('es-ES')
 
@@ -109,6 +116,12 @@ function JobReport({ jobId, finished }: { jobId: string; finished: boolean }) {
             {report.embeddings.agreement &&
               report.embeddings.agreement.total > 0 &&
               ` Coinciden con el árbitro en el ${(report.embeddings.agreement.rate * 100).toLocaleString('es-ES', { maximumFractionDigits: 0 })} % de los elementos (si cada uno está también en la otra propuesta).`}
+          </Line>
+        )}
+        {report.update && (
+          <Line label="Actualización">
+            Con {iterationsText(report.update.iterations)}. A: {changeText(report.update.a)}. B: {changeText(report.update.b)}. Árbitro:{' '}
+            {changeText(report.update.arbiter)}.
           </Line>
         )}
         {changes && (

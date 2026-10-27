@@ -42,8 +42,8 @@ public static class JobMatching
         if (!File.Exists(Path.Combine(folder, PhasePlan.FileName)))
             return (null, "El trabajo no es de preguntas, catálogo o backlog.");
         var plan = PhasePlan.Load(folder);
-        if (plan.Kind is not (PhaseKind.Questions or PhaseKind.Catalog or PhaseKind.Backlog))
-            return (null, "Solo se emparejan las propuestas de preguntas, catálogo o backlog.");
+        if (plan.Kind is not (PhaseKind.Questions or PhaseKind.Catalog or PhaseKind.Backlog or PhaseKind.CatalogUpdate))
+            return (null, "Solo se emparejan las propuestas de preguntas, catálogo, actualización del catálogo o backlog.");
 
         var a = JobProposals.Read(storage, job, runs, plan.Kind, "A");
         var b = JobProposals.Read(storage, job, runs, plan.Kind, "B");

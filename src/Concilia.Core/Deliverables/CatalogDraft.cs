@@ -67,6 +67,10 @@ public static class CatalogDraft
     {
         var root = JsonNode.Parse(json)!.AsObject();
         var ids = new StableIds(Ids(previous), used);
+        // Step 113: the requirements deleted by an update, with their history,
+        // stay although the web does not send them back.
+        if (root["eliminados"] is null && JsonNode.Parse(previous)?["eliminados"] is JsonArray deleted)
+            root["eliminados"] = deleted.DeepClone();
         foreach (var r in Requirements(root))
         {
             if (TypeOf(r) is { } type)
@@ -102,7 +106,9 @@ public static class CatalogDraft
         var pending = Requirements(root)
             .Where(r => r["discrepancia"] is JsonValue d && d.GetValue<bool>() && !(r["revisada"] is JsonValue rv && rv.GetValue<bool>()))
             .Select(r => $"{r["id"]} DISC: hay una discrepancia sin revisar.");
-        return new PhaseValidation([.. result.Errors, .. pending], result.Warnings);
+        // Step 113: what an update modifies or deletes is a proposal, reviewed before validating.
+        var changes = CatalogUpdate.Pending(root).Select(id => $"{id} CAMBIO: hay un cambio propuesto por la IA sin revisar; acéptalo o recházalo.");
+        return new PhaseValidation([.. result.Errors, .. pending, .. changes], result.Warnings);
     }
 
     // The validated catalog as the next phases receive it ({{CATALOGO}} of the

@@ -122,6 +122,7 @@ public static class ReportEndpoints
         Guid? rearbitrationOf = null;
         int? assumedRequirements = null;
         EmbeddingCounts? embeddings = null;
+        UpdateCounts? update = null;
         if (kind is { } phase && hasPlan)
         {
             var plan = PhasePlan.Load(folder);
@@ -174,6 +175,13 @@ public static class ReportEndpoints
                     .Count(r => (r["preguntas"] as JsonArray ?? []).Any(p => p is JsonValue v && v.TryGetValue<string>(out var id) && guesses.Contains(id)));
             }
 
+            // Step 113: what A, B and the arbiter of an update proposed.
+            if (phase == PhaseKind.CatalogUpdate)
+                update = new UpdateCounts(plan.Focus?.Iterations ?? [],
+                    JobReports.Changes(JobProposals.Read(storage, job, runs, phase, "A")),
+                    JobReports.Changes(JobProposals.Read(storage, job, runs, phase, "B")),
+                    result?["fuente"]?.GetValue<string>() == "ARB" ? JobReports.Changes(output) : null);
+
             if (phase == PhaseKind.Questions && !rearbitration)
             {
                 var round = await db.Questions.Where(q => q.JobId == job.Id).ToListAsync();
@@ -197,7 +205,7 @@ public static class ReportEndpoints
             result?["emparejamiento"] is JsonObject time
                 ? new ComputeTime(time["segundos"]!.GetValue<double>(), time["segundos_cpu"]!.GetValue<double>())
                 : null,
-            assumedRequirements, embeddings);
+            assumedRequirements, embeddings, update);
     }
 
     public static JsonNode? ReadResult(string jobFolder)

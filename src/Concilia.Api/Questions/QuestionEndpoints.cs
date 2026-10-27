@@ -23,6 +23,10 @@ public record AnswerRequest(
 public record QuestionRoundRequest(
     [property: Description("Las iteraciones en las que se centra la ronda (`Centrarse en…`). Vacío o sin cuerpo: con todas, como siempre.")] List<int>? Focus);
 
+// Step 113: the iterations the validated catalog is updated with.
+public record CatalogUpdateRequest(
+    [property: Description("Las iteraciones con las que se actualiza el catálogo (`Actualizar con…`): cerradas, con documentos y cubiertas por una ronda de preguntas.")] List<int>? Iterations);
+
 public record DiscardRequest([property: Description("Por qué se descarta (innecesaria, fuera de alcance…). Opcional.")] string? Reason);
 
 public static class QuestionEndpoints
@@ -120,6 +124,63 @@ public static class QuestionEndpoints
         })
             .WithSummary("Lanza el catálogo de requisitos")
             .WithDescription("A ‖ B → árbitro sobre toda la documentación y las preguntas respondidas. Solo cuando el paso está disponible: al menos una ronda de preguntas terminada y ninguna pendiente. El resultado es el borrador de `GET /projects/{projectId}/deliverables/catalog`.")
+            .LaunchesJob();
+
+        // Step 113: update the validated catalog with some iterations (prompts
+        // v0.13). A ‖ B write a set of changes, with the reading of option C and
+        // the answers marked as new when given after validating the catalog; the
+        // arbiter joins them, and the platform applies them to the working copy.
+        phases.MapPost("/projects/{projectId:int}/catalog-update-jobs",
+            async (int projectId, CatalogUpdateRequest request, AppDbContext db, JobQueue queue, IRunnerProvider provider,
+                RunnerOptions options, FileStorage storage, ITextEmbedder embedder) =>
+        {
+            var project = await db.Projects.FindAsync(projectId);
+            if (project is null)
+            {
+                return Results.NotFound();
+            }
+            if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
+            {
+                return busy; // one task at a time in the whole platform
+            }
+            var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Catalog);
+            if (!step.CanLaunch)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [step.Reason!] });
+            }
+            var catalog = await Deliverables.DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Catalog);
+            if (catalog is not { Status: DeliverableStatus.Validated })
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["project"] = ["Para actualizar el catálogo hace falta el catálogo validado; si no, genéralo desde cero."],
+                });
+            }
+            var iterations = request.Iterations?.Distinct().Order().ToList() ?? [];
+            if (await CatalogUpdateInput.CoverageErrorAsync(db, storage, projectId, iterations) is { } uncovered)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["iterations"] = [uncovered] });
+            }
+
+            var all = await db.Questions.Where(q => q.ProjectId == projectId).OrderBy(q => q.Code).ToListAsync();
+            var answered = all.Where(q => q.Status == QuestionStatus.Answered).ToList();
+            var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
+            var baseInput = new PhaseInput { SystemName = project.SystemName, Language = project.Language };
+            var (input, focus, error) = await FocusedRoundInput.BuildAsync(db, embedder, projectId, iterations, documents, all, baseInput);
+            if (error is not null)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["iterations"] = [error] });
+            }
+            // The answers given (or changed) after validating the catalog it starts from.
+            var newAnswers = answered.Where(q => (q.UpdatedAt ?? q.CreatedAt) > catalog.ValidatedAt).Select(q => q.Code).ToList();
+            input = input! with { Answers = CatalogUpdateRound.AnswersBlock(answered.Select(QuestionRules.ForPrompt), newAnswers.ToHashSet()) };
+            focus = focus! with { Questions = [], NewAnswers = newAnswers };
+            var created = PhaseJobs.Create(project, documents, PhaseKind.CatalogUpdate, input, answered.Select(q => q.Code).ToList(),
+                options, provider.Name, Random.Shared, focus: focus);
+            return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
+        })
+            .WithSummary("Actualiza el catálogo validado con unas iteraciones")
+            .WithDescription("A ‖ B → árbitro (prompts v0.13) sobre la documentación de esas iteraciones, los fragmentos anteriores relacionados y los requisitos validados relacionados, con las respuestas (marcadas como nuevas las contestadas después de validar el catálogo). El resultado es un conjunto de cambios que la plataforma aplica a la copia de trabajo: los requisitos nuevos se añaden con su historial, y lo que se modifica o elimina queda como propuesta por revisar antes de validar. Exige el catálogo validado, lo que exige cualquier catálogo (ninguna iteración abierta, una ronda terminada y ninguna pregunta pendiente) y, para cada iteración, una ronda de preguntas terminada después de cerrar su documentación, centrada en ella o con todas.")
             .LaunchesJob();
 
         // The backlog v0: A ‖ B → arbiter from the validated catalog (only the

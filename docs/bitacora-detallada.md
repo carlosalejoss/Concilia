@@ -2617,3 +2617,17 @@ Paso 113, primera parte: borradores de los prompts v0.13 para actualizar el cat�
 - **Árbitro:** une los nuevos con el emparejamiento entre A y B y contra el catálogo (líneas `existente:`), y decide cada modificación y eliminación a partir de `input/cambios.txt`, donde la plataforma las agrupa por requisito sin IA; consulta `input/fuentes.txt`, con los fragmentos que citan los cambios.
 - **Pendiente:** la revisión del autor; después, el código del paso.
 
+## 27-10-2026, 10:30 (sesión)
+
+Paso 113: actualizar el catálogo validado con unas iteraciones (prompts v0.13).
+
+- **Revisión del autor de los borradores:** aprobados los cuatro detalles de Claude (cambiar el tipo es eliminar y proponer uno nuevo; una contradicción sin aclarar no se cambia, porque ya se preguntó; una respuesta es «nueva» si se contestó o se cambió después de validar el catálogo; la salida es `output/cambios.json`).
+- **Qué se hizo:**
+  - Core: `PhaseKind.CatalogUpdate` (trabajo `catalog-update`) recorrido por la definición de la fase, el plan, los ids con prefijo, el emparejamiento y los informes; `CatalogUpdateRound` (ficheros de `input/`, respuestas con `nueva="si"`, cambios agrupados por requisito y fuentes del árbitro); `ValidateCatalogUpdate` (`REF-REQ`, `CAMBIO-DUP`, `SIN-NUEVA`, `TIPO`, `ARB-CAMBIO`); corrección `CAMBIO-DISC`; `ArbiterMatching.AgainstExisting` (la línea `existente`, que generaliza la `previa` del paso 112); `CatalogUpdate` (aplicar, aceptar y rechazar) y el error `CAMBIO` en las comprobaciones del borrador; guardar conserva `eliminados`; versión `Updated`; `FakePhaseOutput` responde como una actualización.
+  - API: `POST /projects/{id}/catalog-update-jobs`, con la condición de la ronda que cubre cada iteración (`CatalogUpdateInput`); `StoreUpdateAsync` aplica los cambios a la copia de trabajo; `accept-change` y `reject-change`; los ids que no se reutilizan siguen las actualizaciones hasta la última generación desde cero; informe con `update`; comparación y nuevo arbitraje también para este trabajo.
+  - Web: «Actualizar con…» en el paso Catálogo, cuando el catálogo validado no incluye alguna iteración cerrada; en cada requisito, el cambio propuesto con aceptar o rechazar y su historial; filtro «Solo cambios propuestos»; la actualización en el informe y en el historial de versiones («Actualizada con iteraciones nuevas»).
+- **Detalles decididos por Claude:** el árbitro no puede tapar un desacuerdo directo (modificar frente a eliminar): la plataforma lo marca como discrepancia con un aviso, en lugar de pedir una reparación; aceptar o rechazar un cambio se hace sobre lo guardado (con cambios sin guardar, los botones se desactivan), con un endpoint, para que las reglas del historial estén en la plataforma y no en la web; un requisito eliminado sigue con su historial en `eliminados`, que la plataforma conserva al guardar porque la web no lo conoce.
+- **Sin migración:** el origen `Updated` se guarda como texto y el tipo de trabajo es una cadena.
+- **Tests:** 1.013 en verde (1.004 + 9): `CatalogUpdateTests` (8) y `CatalogUpdateFlowTests`. Ningún test anterior cambia.
+- **Pendientes:** reconstruir la API y la web en Docker (sin migración) y la revisión del autor; el paso 114 (actualizar el backlog), con sus prompts revisados antes del código.
+

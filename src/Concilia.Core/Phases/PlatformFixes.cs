@@ -56,6 +56,8 @@ public static partial class PlatformFixes
         FixLineCitations(root, context, phase.OutputFile, warnings);
         if (phase.IsArbiter)
             FixMissing(phase.Kind, root, context, warnings);
+        if (phase.IsArbiter && phase.Kind == PhaseKind.CatalogUpdate)
+            FixChangeDiscrepancies(root, context, warnings);
         var json = root.ToJsonString(Indented);
         if (phase.Kind == PhaseKind.Catalog)
             json = FixTypes(json, warnings);
@@ -119,7 +121,7 @@ public static partial class PlatformFixes
         if (string.IsNullOrEmpty(context.Matching) || context.Proposal1 is null || context.Proposal2 is null)
             return;
         var elements = JobReports.Elements(kind, root);
-        var discardsField = kind == PhaseKind.Catalog ? "descartados" : "descartadas";
+        var discardsField = kind is PhaseKind.Catalog or PhaseKind.CatalogUpdate ? "descartados" : "descartadas";
 
         // Which arbiter element cites each id of each proposal ("1:" and "2:" may be there or not).
         var citedIn = new Dictionary<(int, string), JsonObject>();
@@ -155,6 +157,26 @@ public static partial class PlatformFixes
                 citedIn[(n, id)] = target;
                 warnings.Add($"{n}:{id} ARB-FALTA: no estaba en ningún `de` ni en `{discardsField}`; la plataforma lo añade a {target["id"]}, " +
                              "donde está su par «mismo» del emparejamiento.");
+            }
+        }
+    }
+
+    // CAMBIO-DISC (step 113): if A modifies a requirement and B deletes it (or
+    // the other way round), it is a discrepancy whatever the arbiter says
+    // (decision of the author, 26-10-2026): the platform marks it.
+    private static void FixChangeDiscrepancies(JsonNode root, PhaseContext context, List<string> warnings)
+    {
+        if (context.Proposal1 is null || context.Proposal2 is null)
+            return;
+        var actions = new[] { CatalogUpdateRound.ChangesOf(context.Proposal1), CatalogUpdateRound.ChangesOf(context.Proposal2) };
+        foreach (var change in (root["cambios"] as JsonArray ?? []).OfType<JsonObject>())
+        {
+            var id = change["id"]?.GetValue<string>();
+            var proposed = actions.Select(list => list.FirstOrDefault(c => c.Id == id).Action).OfType<string>().ToList();
+            if (proposed.Count == 2 && proposed[0] != proposed[1] && change["discrepancia"] is JsonValue d && !d.GetValue<bool>())
+            {
+                change["discrepancia"] = true;
+                warnings.Add($"{id} CAMBIO-DISC: una propuesta lo modifica y la otra lo elimina; la plataforma lo marca como discrepancia.");
             }
         }
     }

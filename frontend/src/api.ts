@@ -81,11 +81,11 @@ export type Job = {
 
 // The job kinds of the v0 flow (A ‖ B → arbiter, or a single run for the
 // answer suggestions and the mockup).
-export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'backlog', 'answer-suggestions', 'mockup', 'rearbitration']
+export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'catalog-update', 'backlog', 'answer-suggestions', 'mockup', 'rearbitration']
 // A new arbitration of a finished job (16-10-2026): only the arbiter, on the
 // same proposals of A and B; an experiment that changes nothing of the project.
 export const REARBITRATION_KIND = 'rearbitration'
-export const REARBITRABLE_KINDS = ['questions', 'catalog-v0', 'backlog']
+export const REARBITRABLE_KINDS = ['questions', 'catalog-v0', 'catalog-update', 'backlog']
 export const SUGGESTIONS_KIND = 'answer-suggestions'
 
 export function isPhaseJob(job: Job): boolean {
@@ -95,6 +95,7 @@ export function isPhaseJob(job: Job): boolean {
 export const JOB_KIND_NAMES: Record<string, string> = {
   questions: 'Ronda de preguntas',
   'catalog-v0': 'Catálogo',
+  'catalog-update': 'Actualización del catálogo',
   backlog: 'Backlog',
   'answer-suggestions': 'Sugerencias de respuesta',
   mockup: 'Mockup',
@@ -186,7 +187,7 @@ export type Deliverable<T> = {
 // deliverable, the newest first, without the contents.
 export type DeliverableVersion<T = unknown> = {
   number: number
-  origin: 'Existing' | 'Generated' | 'Edited' | 'Validated' | 'Restored'
+  origin: 'Existing' | 'Generated' | 'Edited' | 'Validated' | 'Restored' | 'Updated'
   status: 'Draft' | 'Validated'
   jobId: string
   createdAt: string
@@ -235,6 +236,32 @@ export type CatalogRequirement = {
   discrepancia?: boolean
   explicacion?: string
   revisada?: boolean
+  // Step 113: what the updates did to it, and a change still to review.
+  historial?: RequirementChange[]
+  cambio?: PendingChange | null
+}
+
+// An entry of the history of a requirement (step 113): created, modified or
+// deleted by an update with some iterations, with why and where it came from.
+export type RequirementChange = {
+  accion: 'creado' | 'modificado' | 'eliminado'
+  iteraciones: number[]
+  antes: Partial<CatalogRequirement> | null
+  motivo: string
+  origen: 'A' | 'B' | 'ambas'
+  explicacion: string
+  fecha: string
+}
+
+// What an update proposes to modify or delete: the user accepts or rejects it.
+export type PendingChange = {
+  accion: 'modificar' | 'eliminar'
+  antes: Partial<CatalogRequirement> | null
+  motivo: string
+  origen: 'A' | 'B' | 'ambas'
+  discrepancia: boolean
+  explicacion: string
+  iteraciones: number[]
 }
 
 export type CatalogContent = { requisitos: CatalogRequirement[] }

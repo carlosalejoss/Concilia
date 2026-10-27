@@ -22,7 +22,13 @@ public sealed class ArbiterMatching(ITextEmbedder embedder, MatchThresholds thre
     // two proposals (in the order of the plan, as "Propuesta 1" and
     // "Propuesta 2") that are "parecido" or more to a question already asked,
     // with the most similar one: the lines "previa" of the matching file.
-    public IReadOnlyList<PreviousMatch> AgainstPrevious(string proposal1, string proposal2, IReadOnlyList<FocusQuestion> previous)
+    public IReadOnlyList<PreviousMatch> AgainstPrevious(string proposal1, string proposal2, IReadOnlyList<FocusQuestion> previous) =>
+        AgainstExisting(PhaseKind.Questions, proposal1, proposal2, previous.Select(q => (q.Code, q.Text)).ToList());
+
+    // Step 113 (an update of the catalog): the new requirements of the two
+    // proposals like a requirement already in the catalog (the lines
+    // "existente"). The same for the questions of a centred round.
+    public IReadOnlyList<PreviousMatch> AgainstExisting(PhaseKind kind, string proposal1, string proposal2, IReadOnlyList<(string Id, string Text)> previous)
     {
         if (previous.Count == 0)
             return [];
@@ -30,16 +36,16 @@ public sealed class ArbiterMatching(ITextEmbedder embedder, MatchThresholds thre
         var matches = new List<PreviousMatch>();
         foreach (var (proposal, number) in new[] { (proposal1, 1), (proposal2, 2) })
         {
-            var elements = ProposalMatcher.ElementsOf(PhaseKind.Questions, proposal);
+            var elements = ProposalMatcher.ElementsOf(kind, proposal);
             if (elements.Count == 0)
                 continue;
             var vectors = embedder.Embed(elements.Select(e => e.Text).ToList());
             for (var i = 0; i < elements.Count; i++)
             {
-                var best = previous.Select((q, j) => (q.Code, Similarity: VectorMath.Cosine(vectors[i], previousVectors[j])))
+                var best = previous.Select((q, j) => (q.Id, Similarity: VectorMath.Cosine(vectors[i], previousVectors[j])))
                     .MaxBy(m => m.Similarity);
                 if (thresholds.LevelOf(best.Similarity) != MatchLevel.Different)
-                    matches.Add(new PreviousMatch(number, elements[i].Id, best.Code, thresholds.LevelOf(best.Similarity), best.Similarity));
+                    matches.Add(new PreviousMatch(number, elements[i].Id, best.Id, thresholds.LevelOf(best.Similarity), best.Similarity));
             }
         }
         return matches;

@@ -160,13 +160,23 @@ public static class DeliverableVersions
 
     // Every id given in the history of a draft: those of its versions with the
     // same job (a new generation numbers from 1 again). A new element never
-    // takes one of them (stable ids, step 110).
+    // takes one of them (stable ids, step 110). Step 113: an update keeps the
+    // ids of the catalog it updates, so the history goes back, through the
+    // updates, to the last version generated from scratch.
     public static async Task<IReadOnlyList<string>> IdsOfJobAsync(AppDbContext db, Deliverable d)
     {
-        var contents = await db.DeliverableVersions
-            .Where(v => v.ProjectId == d.ProjectId && v.Kind == d.Kind && v.JobId == d.JobId)
-            .Select(v => v.Content)
+        var versions = await db.DeliverableVersions
+            .Where(v => v.ProjectId == d.ProjectId && v.Kind == d.Kind)
+            .OrderByDescending(v => v.Number)
+            .Select(v => new { v.JobId, v.Origin, v.Content })
             .ToListAsync();
+        // From the newest: each version of an update adds the job of the version
+        // before it, the catalog it started from (which may be an update too).
+        var jobs = new HashSet<Guid> { d.JobId };
+        for (var i = 0; i < versions.Count - 1; i++)
+            if (versions[i].Origin == VersionOrigin.Updated && jobs.Contains(versions[i].JobId))
+                jobs.Add(versions[i + 1].JobId);
+        var contents = versions.Where(v => jobs.Contains(v.JobId)).Select(v => v.Content).ToList();
         return contents
             .SelectMany(c => d.Kind == DeliverableKind.Catalog ? CatalogDraft.Ids(c) : BacklogDraft.Ids(c))
             .Distinct()

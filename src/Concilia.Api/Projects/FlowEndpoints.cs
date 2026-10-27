@@ -23,7 +23,7 @@ public static class FlowEndpoints
     public static FlowStep? StepOfJob(string kind) => kind switch
     {
         "questions" => FlowStep.Questions,
-        "catalog-v0" => FlowStep.Catalog,
+        "catalog-v0" or "catalog-update" => FlowStep.Catalog,
         "backlog" => FlowStep.Backlog,
         "mockup" => FlowStep.Mockup,
         _ => null,

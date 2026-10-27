@@ -21,6 +21,8 @@ function originLabel(v: DeliverableVersion): string {
       return 'Validada'
     case 'Restored':
       return `Vuelta a la versión ${v.restoredFrom}`
+    case 'Updated':
+      return 'Actualizada con iteraciones nuevas'
   }
 }
 

@@ -67,10 +67,12 @@ export function useDeliverable<T>(projectId: number, kind: string, version: numb
   const validate = () =>
     run(async () => (dirty ? await send('', 'PUT', { content: draft }) : true) && (await send('/validate', 'POST')))
   const reopen = () => run(() => send('/reopen', 'POST'))
+  // Step 113: an action on the saved deliverable (accept or reject a proposed change).
+  const post = (path: string) => run(() => send(path, 'POST'))
   const discard = () => {
     setDraft(deliverable?.content ?? null)
     setDirty(false)
   }
 
-  return { deliverable, draft, dirty, busy, messages, edit, save, validate, reopen, discard }
+  return { deliverable, draft, dirty, busy, messages, edit, save, validate, reopen, discard, post }
 }

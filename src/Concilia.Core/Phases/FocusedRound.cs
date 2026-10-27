@@ -14,7 +14,10 @@ public record FocusQuestion(string Code, string Text, string Status);
 //   NewDocuments: the documents of those iterations ("DOC-08").
 //   Questions: every question already asked, for the revisions (only of the
 //   pending ones) and for the matching of the new ones against them ("previa").
-public record FocusPlan(IReadOnlyList<int> Iterations, IReadOnlyList<string> NewDocuments, IReadOnlyList<FocusQuestion> Questions)
+//   NewAnswers (step 113, an update of the catalog): the answers given after
+//   validating the catalog it starts from, the ones that may ask for changes.
+public record FocusPlan(IReadOnlyList<int> Iterations, IReadOnlyList<string> NewDocuments, IReadOnlyList<FocusQuestion> Questions,
+    IReadOnlyList<string>? NewAnswers = null)
 {
     public IReadOnlySet<string> PendingCodes => Questions.Where(q => q.Status == "pendiente").Select(q => q.Code).ToHashSet();
 }

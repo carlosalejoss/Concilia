@@ -106,6 +106,31 @@ public static class DeliverableEndpoints
             .WithDescription("Solo si el borrador no tiene errores (si los tiene, `400` con todos ellos). Las fases siguientes solo ven la versión validada; los pasos posteriores quedan desactualizados.")
             .ChangesDeliverable();
 
+        // Step 113: the user accepts or rejects a change that an update proposed
+        // for a requirement (CatalogUpdate). Only in a draft; a new version.
+        group.MapPost("/projects/{projectId:int}/deliverables/catalog/requirements/{requirementId}/{decision}",
+            async (int projectId, [Description("El id del requisito (`RF-012`).")] string requirementId,
+                [Description("`accept-change` o `reject-change`.")] string decision, AppDbContext db, FileStorage storage) =>
+        {
+            var d = await CurrentAsync(db, projectId, DeliverableKind.Catalog);
+            if (d is null || decision is not ("accept-change" or "reject-change"))
+            {
+                return Results.NotFound();
+            }
+            var now = DateTimeOffset.UtcNow;
+            var change = decision == "accept-change" ? CatalogUpdate.Accept(d, requirementId, now) : CatalogUpdate.Reject(d, requirementId, now);
+            if (!change.Done)
+            {
+                return Problem(change.Errors[0]);
+            }
+            await DeliverableVersions.RecordAsync(db, storage, d, VersionOrigin.Edited, now);
+            await db.SaveChangesAsync();
+            return Results.Ok(await ViewAsync(db, storage, d));
+        })
+            .WithSummary("Acepta o rechaza el cambio propuesto para un requisito")
+            .WithDescription("Lo que una actualización del catálogo modifica o elimina es una propuesta, y el catálogo no se valida hasta revisarla. `accept-change`: una modificación se queda y una eliminación quita el requisito (pasa a `eliminados`, con su historial); las dos van al historial del requisito. `reject-change`: una modificación devuelve el contenido anterior y una eliminación deja el requisito como estaba. Solo en borrador.")
+            .ChangesDeliverable();
+
         // Back to draft; the later steps become outdated.
         group.MapPost("/projects/{projectId:int}/deliverables/{kind}/reopen",
             async (int projectId, [Description("`catalog`, `backlog` o `mockup`.")] string kind, AppDbContext db, FileStorage storage) =>
@@ -160,6 +185,27 @@ public static class DeliverableEndpoints
             db.Deliverables.Add(deliverable);
         }
         await DeliverableVersions.RecordAsync(db, storage, deliverable, VersionOrigin.Generated, now);
+        await ApplyChangeAsync(db, projectId, change);
+        await db.SaveChangesAsync();
+    }
+
+    // Step 113: called by JobWorker when an update of the catalog ends with a
+    // result: its changes are applied to the working copy (CatalogUpdate),
+    // which becomes a draft of the update job, a new version (Updated), with
+    // the iterations it had plus those of the update; the later steps outdated.
+    public static async Task StoreUpdateAsync(AppDbContext db, FileStorage storage, Guid jobId, int projectId, PhasePlan plan, PhaseJobResult result)
+    {
+        var current = await CurrentAsync(db, projectId, DeliverableKind.Catalog);
+        if (result.Source is null || current is null)
+        {
+            return;
+        }
+        var now = DateTimeOffset.UtcNow;
+        var used = await DeliverableVersions.IdsOfJobAsync(db, current);
+        var content = CatalogUpdate.Apply(current.Content, result, plan, jobId, used, now);
+        var iterations = (current.Iterations ?? []).Concat(plan.Focus?.Iterations ?? []).Distinct().Order().ToList();
+        var (deliverable, change) = DeliverableRules.Generated(current, projectId, DeliverableKind.Catalog, jobId, content, now, iterations);
+        await DeliverableVersions.RecordAsync(db, storage, deliverable, VersionOrigin.Updated, now);
         await ApplyChangeAsync(db, projectId, change);
         await db.SaveChangesAsync();
     }

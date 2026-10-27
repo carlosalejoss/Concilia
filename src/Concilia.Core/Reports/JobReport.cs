@@ -62,13 +62,18 @@ public record QuestionCounts(int Total, int Answered, int Discarded, int Pending
 // AssumedRequirements (step 93, catalog): the requirements of the merge that
 // cite a question answered with a guess of the AI taken as it was.
 // Embeddings (step 100): null if the job has no valid proposals of A and B.
+// Step 113: an update of the catalog with some iterations, what each one
+// proposed: new, modified and deleted requirements (the arbiter's, what it kept).
+public record ChangeCounts(int New, int Modified, int Deleted);
+public record UpdateCounts(IReadOnlyList<int> Iterations, ChangeCounts? A, ChangeCounts? B, ChangeCounts? Arbiter);
+
 public record JobReport(
     Guid JobId, string Kind, DateTimeOffset CreatedAt, DateTimeOffset? FinishedAt, bool Succeeded, string? Message,
     long InputTokens, long OutputTokens, int RunsWithoutUsage, int Repairs, double? Seconds,
     IReadOnlyList<RunLine> Runs, ElementCounts? Elements, UserChanges? Changes, string? ChangesNote, QuestionCounts? Questions,
     string? Phase = null, string? ArbiterModel = null, Guid? RearbitrationOf = null,
     long EstimatedInputTokens = 0, long EstimatedOutputTokens = 0, ComputeTime? MatchingTime = null, int? AssumedRequirements = null,
-    EmbeddingCounts? Embeddings = null);
+    EmbeddingCounts? Embeddings = null, UpdateCounts? Update = null);
 
 public static class JobReports
 {
@@ -79,11 +84,25 @@ public static class JobReports
     {
         PhaseKind.Questions or PhaseKind.Suggestions => Items(root?["preguntas"]),
         PhaseKind.Catalog => Items(root?["requisitos"]),
+        PhaseKind.CatalogUpdate => Items(root?["nuevos"]), // step 113: the new requirements of an update
         PhaseKind.Backlog => Items(root?["epicas"]).SelectMany(e => Items(e["historias"])).ToList(),
         _ => [],
     };
 
     public static int? Count(PhaseKind kind, string? json) => json is null ? null : Elements(kind, JsonNode.Parse(json)).Count;
+
+    // Step 113: the changes of an output of an update (A, B or the arbiter).
+    public static ChangeCounts? Changes(string? json)
+    {
+        if (json is null)
+            return null;
+        var root = JsonNode.Parse(json);
+        int Of(string list) => Items(root?[list]).Count;
+        int Decided(string action) => Items(root?["cambios"]).Count(c => c["accion"]?.GetValue<string>() == action);
+        return root?["cambios"] is null
+            ? new ChangeCounts(Of("nuevos"), Of("modificados"), Of("eliminados"))
+            : new ChangeCounts(Of("nuevos"), Decided("modificar"), Decided("eliminar"));
+    }
 
     // What the arbiter made of the two proposals: each element of its output
     // comes from A, B or both (its `de`, in the order of the plan), may have a

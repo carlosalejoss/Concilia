@@ -6,7 +6,8 @@ namespace Concilia.Core.Deliverables;
 //   Edited     the user saved changes
 //   Validated  the user validated it
 //   Restored   the user went back to an earlier version (step 102)
-public enum VersionOrigin { Existing, Generated, Edited, Validated, Restored }
+//   Updated    an update with some iterations applied its changes (step 113)
+public enum VersionOrigin { Existing, Generated, Edited, Validated, Restored, Updated }
 
 // A copy of a deliverable as it was at one moment (milestone 21): its content,
 // its state and the job it came from. The Deliverable stays the working copy

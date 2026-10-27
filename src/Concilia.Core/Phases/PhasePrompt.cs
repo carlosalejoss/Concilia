@@ -30,6 +30,7 @@ public record PhaseInput
     public string RelatedFragments { get; init; } = "";    // the earlier fragments related to them (input/relacionados.txt)
     public string RelatedRequirements { get; init; } = ""; // the related requirements of the validated catalog (input/requisitos_relacionados.json)
     public string Revisions { get; init; } = "";           // arbiter: the revisions grouped by question (input/revisiones.txt)
+    public string Changes { get; init; } = "";             // arbiter of an update of the catalog (step 113): input/cambios.txt
 }
 
 // Builds the prompts of the v0 phases from their templates.

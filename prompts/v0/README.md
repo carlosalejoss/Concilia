@@ -9,6 +9,8 @@ Prompts muy básicos de la iteración v0 (D-65, D-73): sirven para tener el fluj
 | Preguntas, A y B | `preguntas.md` | `documentacion.txt` | `output/preguntas.json` | `esquemas/preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `PREGUNTAS_PREVIAS`, `LECTURA` |
 | Preguntas, árbitro | `arbitro_preguntas.md` | `propuesta_1.json`, `propuesta_2.json`, `emparejamiento.txt` · `documentacion.txt` | `output/preguntas.json` | `esquemas/arbitro_preguntas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `PREGUNTAS_PREVIAS`, `LECTURA` |
 | Preguntas centradas en unas iteraciones, A y B (v0.13) | `preguntas_centradas.md` | `documentacion_nueva.txt`, `relacionados.txt`, `requisitos_relacionados.json` · `documentacion.txt`, `catalogo.json` | `output/preguntas.json` | `esquemas/preguntas_centradas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `ITERACIONES`, `PREGUNTAS_PREVIAS`, `LECTURA` |
+| Actualizar el catálogo con unas iteraciones, A y B (v0.13) | `catalogo_actualizacion.md` | `documentacion_nueva.txt`, `relacionados.txt`, `requisitos_relacionados.json` · `catalogo.json`, `documentacion.txt` | `output/cambios.json` | `esquemas/catalogo_actualizacion.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `ITERACIONES`, `RESPUESTAS`, `LECTURA` |
+| Actualizar el catálogo, árbitro (v0.13) | `arbitro_catalogo_actualizacion.md` | `propuesta_1.json`, `propuesta_2.json`, `emparejamiento.txt`, `cambios.txt` · `fuentes.txt` | `output/cambios.json` | `esquemas/arbitro_catalogo_actualizacion.schema.json` | los de A y B |
 | Preguntas centradas, árbitro (v0.13) | `arbitro_preguntas_centradas.md` | `propuesta_1.json`, `propuesta_2.json`, `emparejamiento.txt`, `revisiones.txt` · `documentacion.txt` | `output/preguntas.json` | `esquemas/arbitro_preguntas_centradas.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `ITERACIONES`, `PREGUNTAS_PREVIAS`, `LECTURA` |
 | Catálogo, A y B | `catalogo.md` | `documentacion.txt` | `output/catalogo.json` | `esquemas/catalogo.schema.json` | `NOMBRE_SISTEMA`, `IDIOMA`, `GLOSARIO`, `RESPUESTAS`, `LECTURA` |
 | Catálogo, árbitro | `arbitro_catalogo.md` | `propuesta_1.json`, `propuesta_2.json`, `emparejamiento.txt` · `fuentes.txt` | `output/catalogo.json` | `esquemas/arbitro_catalogo.schema.json` | los del catálogo |
@@ -40,7 +42,7 @@ Cada fichero es su versión vigente: no hay una copia por subversión, porque la
 | `esquemas/preguntas`, `arbitro_preguntas`, `catalogo`, `arbitro_catalogo`, `backlog` y `arbitro_backlog` `.schema.json` | v0 | — | v0 |
 | `esquemas/sugerencias.schema.json` | v0 (09-10, sugerencias) | — | v0 |
 | `preguntas_centradas.md`, `arbitro_preguntas_centradas.md` y sus esquemas | v0.13 | — | v0.13 |
-| `catalogo_actualizacion.md`, `arbitro_catalogo_actualizacion.md` y sus esquemas | v0.13 (borrador del 27-10-2026, pendiente de la revisión del autor; todavía no los usa ningún código) | — | — |
+| `catalogo_actualizacion.md`, `arbitro_catalogo_actualizacion.md` y sus esquemas | v0.13 | — | v0.13 |
 
 Ficheros que ya no existen: `mockup.md` (de la v0 a la v0.5; en la v0.6 lo sustituyen `mockup_diseno.md` y `mockup_pantalla.md`) y `mockup_integracion.md` (v0.6 y v0.7; en la v0.8 lo sustituye la revisión de la plataforma con `mockup_correccion.md`). Desde la v0.11, la dirección de estilo del mockup sin `.zip` la pone la plataforma (`StyleDirections`), no un prompt.
 
@@ -69,6 +71,7 @@ Los valores se insertan en una sola pasada, como en `PromptBuilder.Fill`: un doc
   - `input/requisitos_relacionados.json` (si el catálogo está validado): los requisitos validados que citan un fragmento relacionado o se parecen a lo nuevo desde 0,70, con el mismo tope. Se lee entero; `input/catalogo.json`, el catálogo validado entero, solo se consulta.
   - `PREGUNTAS_PREVIAS` lleva también las pendientes, que son las que se pueden revisar.
   - Árbitro: `input/emparejamiento.txt` añade una línea `1:P-005 previa:P-014 parecido 0.83` por cada pregunta nueva parecida a una ya hecha, e `input/revisiones.txt` agrupa las revisiones de las dos propuestas por la pregunta a la que se refieren, alineadas por su id sin IA.
+- **Actualizar el catálogo con unas iteraciones (v0.13, paso 113, `CatalogUpdateRound`):** A y B leen como en una ronda centrada; `RESPUESTAS` marca con `nueva="si"` las contestadas (o cambiadas) después de validar el catálogo. El árbitro recibe `input/emparejamiento.txt` con una línea `1:N-005 existente:RF-014 parecido 0.83` por cada requisito «nuevo» parecido a uno del catálogo, `input/cambios.txt` con las modificaciones y eliminaciones agrupadas por requisito (alineadas por su id, sin IA) e `input/fuentes.txt` con los fragmentos que citan los cambios, para consultar.
 - `LECTURA` (`ReadingPlan.Block`): qué ficheros de `input/` lee el modelo y cómo. De los que tiene que leer enteros da el número de líneas y los argumentos exactos de cada llamada a `Read` (`offset` y `limit`, desde la línea 1). Cada tramo tiene como mucho unos 40.000 caracteres o 1.000 líneas, para que quepa en una llamada. Los demás, solo para consultar.
 - Anexo de reparación: `FICHERO` es la ruta de salida de la fase, `SALIDA_PREVIA` una nota que dice dónde está la salida anterior y cómo corregirla, y `ERRORES` una línea por error de las comprobaciones. Desde la v0.11 la salida anterior no va en el prompt: se queda en su fichero, con un elemento por línea, cada error dice en qué línea está su elemento y la reparación la corrige con Edit.
 
@@ -89,6 +92,8 @@ Los esquemas solo describen la estructura. Las reglas entre campos están en `va
 | `LECTURA` | El modelo leyó todas las líneas de los ficheros que tiene que leer enteros, sumando los intentos del run (lo mira la plataforma en las llamadas a `Read`, no está en `validar_v0.py`) | todas, también el mockup |
 | `REF-PREG`, `ID-DUP`, `FALTA` | Una sugerencia por cada pregunta pendiente, sin repetir ni sugerir para otras | sugerencias |
 | `SIN-NUEVA`, `REF-PREG`, `REF-REQ`, `REV-DUP`, `REV-TEXTO` (v0.13, solo en C#) | Cada pregunta nueva y cada revisión cita la documentación nueva; `contradice` apunta a una pregunta respondida o a un requisito del catálogo validado; solo se revisan las pendientes, una vez cada una; `texto` solo en `reformular` | preguntas centradas |
+| `REF-REQ`, `CAMBIO-DUP`, `SIN-NUEVA`, `TIPO` (v0.13, solo en C#) | Los modificados y eliminados existen en el catálogo validado y se cambian una sola vez; cada cambio cita la documentación nueva o una respuesta nueva; un modificado no cambia de tipo | actualizar el catálogo |
+| `ARB-CAMBIO` (v0.13, solo en C#) | Una decisión por cada requisito cambiado, con `de` de las propuestas que proponen esa misma acción (vacío en `ninguna`) y el requisito entero solo en `modificar` | árbitro de la actualización |
 | `ARB-REV` (v0.13, solo en C#) | Una decisión por cada pregunta revisada, con `de` de las propuestas que proponen esa misma acción, y vacío en `ninguna` | árbitro de las preguntas centradas |
 | `SIN-ORIGEN`, `REF-FRAG` | Una sugerencia `documentacion` cita al menos un fragmento, y todos existen | sugerencias |
 
@@ -111,6 +116,7 @@ Antes de comprobar una salida, la plataforma corrige ella misma los errores de f
   - **`REF-LINEA`:** un fragmento citado que no existe y cuyo número es una línea de `input/documentacion.txt` con un fragmento del mismo documento se cambia por ese fragmento. Si el documento no coincide, sigue siendo el error `REF-FRAG`, que dice qué fragmento hay en esa línea.
   - **`TIPO`** (catálogo): si el prefijo de algún id no coincide con su tipo, se toma el tipo como bueno y se renumera el catálogo por tipo.
   - **`ARB-FALTA`** (árbitro): un elemento de una propuesta que no está en ningún `de` ni en los descartes se añade al elemento donde está su par «mismo» de `input/emparejamiento.txt`. Sin ese par, o con pares en varios elementos, sigue siendo un error.
+  - **`CAMBIO-DISC`** (árbitro de la actualización del catálogo, paso 113): si una propuesta modifica un requisito y la otra lo elimina, la decisión del árbitro se marca como discrepancia.
   - **`FRAGMENTO`** (pantalla del mockup): una pantalla escrita como documento entero se queda con el contenido de su `<body>`, y los `<style>` y `<script>` de su `<head>` pasan dentro de la `<section>` raíz.
 
 ## Ejemplo

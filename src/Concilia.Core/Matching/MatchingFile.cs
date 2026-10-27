@@ -47,11 +47,13 @@ public static class MatchingFile
 
     // Step 112: the lines "previa" of a centred round, after the others: a new
     // question like one already asked ("1:P-005 previa:P-014 parecido 0.83").
-    public static string WithPrevious(string matching, IReadOnlyList<PreviousMatch> previous)
+    // Step 113: with label "existente", a new requirement like one of the
+    // catalog ("1:N-005 existente:RF-014 parecido 0.83").
+    public static string WithPrevious(string matching, IReadOnlyList<PreviousMatch> previous, string label = "previa")
     {
         var text = new StringBuilder(matching);
         foreach (var p in previous.OrderBy(p => p.Proposal).ThenBy(p => p.Id, StringComparer.Ordinal))
-            text.Append($"{p.Proposal}:{p.Id} previa:{p.PreviousCode} {Name(p.Level)} {p.Similarity.ToString("F2", CultureInfo.InvariantCulture)}").Append('\n');
+            text.Append($"{p.Proposal}:{p.Id} {label}:{p.PreviousCode} {Name(p.Level)} {p.Similarity.ToString("F2", CultureInfo.InvariantCulture)}").Append('\n');
         return text.ToString();
     }
 

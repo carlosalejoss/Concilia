@@ -2,8 +2,9 @@ namespace Concilia.Core.Phases;
 
 // The phases of the v0 flow that run A ‖ B → arbiter (the mockup has its own
 // task), and Suggestions: the answers that one model suggests for the pending
-// questions of a round (a single run, without arbiter).
-public enum PhaseKind { Questions, Catalog, Backlog, Suggestions }
+// questions of a round (a single run, without arbiter). CatalogUpdate (step
+// 113): the changes that some new iterations ask in the validated catalog.
+public enum PhaseKind { Questions, Catalog, Backlog, Suggestions, CatalogUpdate }
 
 // Model A and model B write a proposal; the arbiter joins the two.
 public enum PhaseRole { Proposal, Arbiter }
@@ -33,6 +34,12 @@ public record PhaseDefinition(PhaseKind Kind, PhaseRole Role, string PromptResou
     {
         if (kind == PhaseKind.Suggestions)
             return new PhaseDefinition(kind, PhaseRole.Proposal, "v0/sugerir_respuestas.md", "v0/esquemas/sugerencias.schema.json", "output/sugerencias.json");
+        // Step 113 (prompts v0.13): a set of changes, not a whole catalog, so its own output file.
+        if (kind == PhaseKind.CatalogUpdate)
+        {
+            var update = role == PhaseRole.Arbiter ? "arbitro_catalogo_actualizacion" : "catalogo_actualizacion";
+            return new PhaseDefinition(kind, role, $"v0/{update}.md", $"v0/esquemas/{update}.schema.json", "output/cambios.json");
+        }
         var name = kind switch
         {
             PhaseKind.Questions => "preguntas",

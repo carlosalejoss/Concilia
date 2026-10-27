@@ -1872,6 +1872,61 @@
         }
       }
     },
+    "/projects/{projectId}/catalog-update-jobs": {
+      "post": {
+        "tags": [
+          "Catálogo y backlog"
+        ],
+        "summary": "Actualiza el catálogo validado con unas iteraciones",
+        "description": "A ‖ B → árbitro (prompts v0.13) sobre la documentación de esas iteraciones, los fragmentos anteriores relacionados y los requisitos validados relacionados, con las respuestas (marcadas como nuevas las contestadas después de validar el catálogo). El resultado es un conjunto de cambios que la plataforma aplica a la copia de trabajo: los requisitos nuevos se añaden con su historial, y lo que se modifica o elimina queda como propuesta por revisar antes de validar. Exige el catálogo validado, lo que exige cualquier catálogo (ninguna iteración abierta, una ronda terminada y ninguna pregunta pendiente) y, para cada iteración, una ronda de preguntas terminada después de cerrar su documentación, centrada en ella o con todas.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CatalogUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/projects/{projectId}/backlog-jobs": {
       "post": {
         "tags": [
@@ -2044,6 +2099,69 @@
             "name": "kind",
             "in": "path",
             "description": "`catalog`, `backlog` o `mockup`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverableView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/deliverables/catalog/requirements/{requirementId}/{decision}": {
+      "post": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Acepta o rechaza el cambio propuesto para un requisito",
+        "description": "Lo que una actualización del catálogo modifica o elimina es una propuesta, y el catálogo no se valida hasta revisarla. `accept-change`: una modificación se queda y una eliminación quita el requisito (pasa a `eliminados`, con su historial); las dos van al historial del requisito. `reject-change`: una modificación devuelve el contenido anterior y una eliminación deja el requisito como estaba. Solo en borrador.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "requirementId",
+            "in": "path",
+            "description": "El id del requisito (`RF-012`).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "decision",
+            "in": "path",
+            "description": "`accept-change` o `reject-change`.",
             "required": true,
             "schema": {
               "type": "string"
@@ -2900,6 +3018,25 @@
           }
         }
       },
+      "CatalogUpdateRequest": {
+        "required": [
+          "iterations"
+        ],
+        "type": "object",
+        "properties": {
+          "iterations": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "description": "Las iteraciones con las que se actualiza el catálogo (`Actualizar con…`): cerradas, con documentos y cubiertas por una ronda de preguntas."
+          }
+        }
+      },
       "CatalogValidationReport": {
         "required": [
           "valid",
@@ -2958,6 +3095,28 @@
             "additionalProperties": {
               "type": "string"
             }
+          }
+        }
+      },
+      "ChangeCounts": {
+        "required": [
+          "new",
+          "modified",
+          "deleted"
+        ],
+        "type": "object",
+        "properties": {
+          "new": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modified": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deleted": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -4015,6 +4174,16 @@
               },
               {
                 "$ref": "#/components/schemas/EmbeddingCounts"
+              }
+            ]
+          },
+          "update": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/UpdateCounts"
               }
             ]
           }
@@ -5229,6 +5398,54 @@
           }
         }
       },
+      "UpdateCounts": {
+        "required": [
+          "iterations",
+          "a",
+          "b",
+          "arbiter"
+        ],
+        "type": "object",
+        "properties": {
+          "iterations": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "a": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ChangeCounts"
+              }
+            ]
+          },
+          "b": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ChangeCounts"
+              }
+            ]
+          },
+          "arbiter": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ChangeCounts"
+              }
+            ]
+          }
+        }
+      },
       "UpdateProjectRequest": {
         "required": [
           "name",
@@ -5307,7 +5524,8 @@
           "Generated",
           "Edited",
           "Validated",
-          "Restored"
+          "Restored",
+          "Updated"
         ]
       }
     }

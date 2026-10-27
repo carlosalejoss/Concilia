@@ -79,7 +79,7 @@ public static class ProposalMatcher
     public static string TextOf(PhaseKind kind, JsonObject element) => kind switch
     {
         PhaseKind.Questions => Text(element, "pregunta"),
-        PhaseKind.Catalog => Text(element, "texto"),
+        PhaseKind.Catalog or PhaseKind.CatalogUpdate => Text(element, "texto"),
         PhaseKind.Backlog => $"{Text(element, "titulo")}. Como {Text(element, "como")}, quiero {Text(element, "quiero")}, para {Text(element, "para")}.",
         _ => throw new ArgumentOutOfRangeException(nameof(kind)),
     };

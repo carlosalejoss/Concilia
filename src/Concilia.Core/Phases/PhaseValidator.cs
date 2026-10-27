@@ -33,6 +33,8 @@ public record PhaseContext
     // questions, the only ones that can be revised.
     public IReadOnlySet<string> NewDocumentIds { get; init; } = new HashSet<string>();
     public IReadOnlySet<string> RevisableQuestionIds { get; init; } = new HashSet<string>();
+    // An update of the catalog (step 113): the answers given after validating it.
+    public IReadOnlySet<string> NewAnswerIds { get; init; } = new HashSet<string>();
 }
 
 // Errors cause the repair (each line goes to the annex); warnings are shown
@@ -87,6 +89,7 @@ public static class PhaseValidator
             PhaseKind.Catalog => ValidateCatalog(phase, data, context, proposals),
             PhaseKind.Backlog => ValidateBacklog(phase, data, context, proposals),
             PhaseKind.Suggestions => ValidateSuggestions(phase, data, context),
+            PhaseKind.CatalogUpdate => ValidateCatalogUpdate(phase, data, context, proposals),
             _ => throw new ArgumentOutOfRangeException(nameof(phase)),
         };
     }
@@ -182,6 +185,109 @@ public static class PhaseValidator
                     errors.Add($"{target} ARB-REV: la propuesta {n} no propone `{action}` para {target}.");
             }
         }
+        return new PhaseValidation(errors, []);
+    }
+
+    // Step 113 (prompts v0.13): an update of the validated catalog, a set of
+    // changes. The rules of a requirement (TIPO, EARS, SIN-ORIGEN, REF-FRAG,
+    // REF-PREG) for the new and modified ones, and (new codes, only in C#):
+    //   REF-REQ     a modified or deleted requirement that is not in the validated catalog
+    //   CAMBIO-DUP  two changes of the same requirement
+    //   SIN-NUEVA   a change that cites neither the new documentation nor a new answer
+    //   ARB-CAMBIO  the arbiter: one decision per changed requirement, `de` with the proposals
+    //               that propose that same action (none in `ninguna`), the whole requirement only in `modificar`
+    private static PhaseValidation ValidateCatalogUpdate(PhaseDefinition phase, JsonNode? data, PhaseContext context, (JsonNode, JsonNode)? proposals)
+    {
+        var errors = SchemaErrorsOf(phase, data);
+        if (errors.Count > 0)
+            return new PhaseValidation(errors, []);
+        var catalog = Items(JsonNode.Parse(context.Catalog ?? "{\"requisitos\":[]}")!, "requisitos").Select(r => Str(r, "id")).ToHashSet();
+        var nuevos = Items(data!, "nuevos");
+        errors.AddRange(IdErrors(Ids(nuevos), "N", 3, gaps: false));
+
+        void Requirement(JsonObject r, string id)
+        {
+            var type = Str(r, "tipo")!;
+            if (!id.StartsWith("N-", StringComparison.Ordinal) && id.Split('-')[0] != type)
+                errors.Add($"{id} TIPO: un requisito modificado mantiene su tipo; si cambia, elimínalo y propón uno nuevo.");
+            if (Str(r, "notacion") == "EARS" && Str(r, "obligatoriedad") != "shall")
+                errors.Add($"{id} EARS: un requisito EARS siempre es shall; para {Str(r, "obligatoriedad")} usa MASTeR.");
+            if (StrList(r, "fuentes").Count == 0 && StrList(r, "preguntas").Count == 0)
+                errors.Add($"{id} SIN-ORIGEN: cita al menos un fragmento o una pregunta respondida.");
+        }
+        void Origin(JsonObject r, string id, bool mustBeNew)
+        {
+            var sources = StrList(r, "fuentes");
+            var questions = StrList(r, "preguntas");
+            errors.AddRange(FragmentErrors(id, sources, context));
+            foreach (var p in questions.Where(p => !context.AnsweredQuestionIds.Contains(p)))
+                errors.Add($"{id} REF-PREG: la pregunta {p} no existe o no está respondida.");
+            if (mustBeNew && !CitesNew(sources, context) && !questions.Any(context.NewAnswerIds.Contains))
+                errors.Add($"{id} SIN-NUEVA: cita al menos un fragmento de la documentación nueva o una respuesta nueva.");
+        }
+
+        if (proposals is null)
+        {
+            foreach (var r in nuevos)
+            {
+                Requirement(r, Str(r, "id")!);
+                Origin(r, Str(r, "id")!, mustBeNew: true);
+            }
+            var changed = new HashSet<string>();
+            foreach (var (list, isModified) in new[] { ("modificados", true), ("eliminados", false) })
+                foreach (var r in Items(data!, list))
+                {
+                    var id = Str(r, "id")!;
+                    if (!catalog.Contains(id))
+                        errors.Add($"{id} REF-REQ: {id} no está en el catálogo validado.");
+                    if (!changed.Add(id))
+                        errors.Add($"{id} CAMBIO-DUP: hay más de un cambio del mismo requisito.");
+                    if (isModified)
+                        Requirement(r, id);
+                    Origin(r, id, mustBeNew: true);
+                }
+            return new PhaseValidation(errors, []);
+        }
+
+        var (p1, p2) = proposals.Value;
+        foreach (var r in nuevos)
+        {
+            Requirement(r, Str(r, "id")!);
+            Origin(r, Str(r, "id")!, mustBeNew: false);
+        }
+        errors.AddRange(ArbiterErrors(nuevos, (Ids(Items(p1, "nuevos")), Ids(Items(p2, "nuevos"))), Items(data!, "descartados"), "descartados"));
+        var byProposal = new[] { CatalogUpdateRound.ChangesOf(p1.ToJsonString()), CatalogUpdateRound.ChangesOf(p2.ToJsonString()) };
+        var targets = byProposal.SelectMany(list => list).Select(c => c.Id).ToHashSet();
+        var decided = new HashSet<string>();
+        foreach (var c in Items(data!, "cambios"))
+        {
+            var id = Str(c, "id")!;
+            var action = Str(c, "accion");
+            var de = c["de"]!.AsArray().Select(n => n!.GetValue<int>()).ToList();
+            if (!decided.Add(id))
+                errors.Add($"{id} ARB-CAMBIO: hay más de una decisión sobre {id}.");
+            if (!targets.Contains(id))
+                errors.Add($"{id} ARB-CAMBIO: ninguna propuesta cambia {id}.");
+            else if (action == "ninguna" && de.Count > 0)
+                errors.Add($"{id} ARB-CAMBIO: con `ninguna`, `de` va vacío.");
+            else if (action != "ninguna" && de.Count == 0)
+                errors.Add($"{id} ARB-CAMBIO: `de` dice de qué propuestas es el cambio que mantienes.");
+            foreach (var n in de.Where(n => !byProposal[n - 1].Any(x => x.Id == id && x.Action == action)))
+                errors.Add($"{id} ARB-CAMBIO: la propuesta {n} no propone `{action}` para {id}.");
+            var whole = c["texto"] is not null && c["tipo"] is not null && c["notacion"] is not null && c["obligatoriedad"] is not null;
+            if (action == "modificar")
+            {
+                if (!whole)
+                    errors.Add($"{id} ARB-CAMBIO: en `modificar` va el requisito entero (`tipo`, `notacion`, `obligatoriedad` y `texto`).");
+                else
+                    Requirement(c, id);
+                Origin(c, id, mustBeNew: false);
+            }
+            else if (c["texto"] is not null)
+                errors.Add($"{id} ARB-CAMBIO: en `{action}` no va el texto del requisito.");
+        }
+        foreach (var t in targets.Where(t => !decided.Contains(t)).Order(StringComparer.Ordinal))
+            errors.Add($"{t} ARB-CAMBIO: falta la decisión sobre {t} (una por cada requisito de input/cambios.txt; `ninguna` si se queda como está).");
         return new PhaseValidation(errors, []);
     }
 

@@ -60,6 +60,8 @@ public static class PhaseTask
     {
         if (phase.Focused)
             return FocusedRound.InputFilesOf(phase, input);
+        if (phase.Kind == PhaseKind.CatalogUpdate)
+            return CatalogUpdateRound.InputFilesOf(phase, input);
         var files = new List<InputFile>();
         if (phase.Kind == PhaseKind.Backlog)
             files.Add(new InputFile(CatalogFile, ReadingPlan.OnePerLine(input.Catalog), Required: true));
@@ -84,7 +86,7 @@ public static class PhaseTask
     // Step 112: in a centred round, A and B read entirely the documentation of
     // the focus, so the line numbers they may cite are those of that file.
     public static InputFile DocumentationOf(PhaseDefinition phase, PhaseInput input) =>
-        phase.Focused && !phase.IsArbiter
+        (phase.Focused || phase.Kind == PhaseKind.CatalogUpdate) && !phase.IsArbiter
             ? new InputFile(FocusedRound.NewDocumentationFile, input.NewDocumentation, Required: true)
             : phase.IsArbiter && phase.Kind == PhaseKind.Catalog
                 ? new InputFile(SourcesFile.Path, SourcesFile.Build(input.Documentation, input.Proposal1, input.Proposal2, input.Matching), Required: false)

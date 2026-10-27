@@ -39,6 +39,8 @@ public static partial class FakePhaseOutput
         var focused = phase["focused"] is JsonValue f && f.GetValue<bool>();
         var output = (role, focused) switch
         {
+            (PhaseRole.Proposal, _) when kind == PhaseKind.CatalogUpdate => UpdateProposal(workDirectory),
+            (_, _) when kind == PhaseKind.CatalogUpdate => UpdateArbiter(workDirectory),
             (PhaseRole.Proposal, true) => FocusedProposal(workDirectory, prompt),
             (PhaseRole.Proposal, false) => Proposal(kind, workDirectory),
             (_, true) => FocusedArbiter(workDirectory),
@@ -138,6 +140,7 @@ public static partial class FakePhaseOutput
         {
             PhaseKind.Questions => ("preguntas", "descartadas"),
             PhaseKind.Catalog => ("requisitos", "descartados"),
+            PhaseKind.CatalogUpdate => ("nuevos", "descartados"),
             _ => ("historias", "descartadas"),
         };
 
@@ -229,6 +232,63 @@ public static partial class FakePhaseOutput
             var de = Enumerable.Range(1, 2).Where(n => byProposal[n - 1].Any(r =>
                 r["pregunta"]!.GetValue<string>() == target && r["accion"]!.GetValue<string>() == mine["accion"]!.GetValue<string>()));
             var decision = mine.DeepClone().AsObject();
+            decision["de"] = new JsonArray(de.Select(n => (JsonNode)n).ToArray());
+            decision["discrepancia"] = false;
+            decision["explicacion"] = Note;
+            return decision;
+        }));
+        return output;
+    }
+
+    // An update of the catalog (step 113): a new requirement about the first
+    // fragment of the new documentation and, if there is a related
+    // requirement, its modification citing that fragment too.
+    private static JsonObject UpdateProposal(string workDirectory)
+    {
+        var fragment = Read(workDirectory, FocusedRound.NewDocumentationFile).Split('\n')
+            .Select(line => NewFragment().Match(line)).First(m => m.Success).Groups[1].Value;
+        var related = JsonNode.Parse(Read(workDirectory, FocusedRound.RelatedRequirementsFile))!["requisitos"]!.AsArray().OfType<JsonObject>().FirstOrDefault();
+        var modified = new JsonArray();
+        if (related is not null)
+        {
+            var copy = related.DeepClone().AsObject();
+            copy["texto"] = $"{related["texto"]!.GetValue<string>()} (actualizado)";
+            copy["fuentes"]!.AsArray().Add(fragment);
+            copy["motivo"] = Note;
+            modified.Add(copy);
+        }
+        return new JsonObject
+        {
+            ["nuevos"] = new JsonArray(new JsonObject
+            {
+                ["id"] = "N-001",
+                ["tipo"] = "RF",
+                ["notacion"] = "EARS",
+                ["obligatoriedad"] = "shall",
+                ["texto"] = $"El sistema DEBERÁ hacer lo que describe el fragmento nuevo {fragment} (simulado).",
+                ["fuentes"] = new JsonArray(fragment),
+                ["preguntas"] = new JsonArray(),
+                ["motivo"] = Note,
+            }),
+            ["modificados"] = modified,
+            ["eliminados"] = new JsonArray(),
+        };
+    }
+
+    // Its arbiter: the new requirements as when joining a catalog, and for each
+    // changed requirement the change of proposal 1 (or 2), with both in `de` if they agree.
+    private static JsonObject UpdateArbiter(string workDirectory)
+    {
+        var output = Arbiter(PhaseKind.CatalogUpdate, workDirectory);
+        var p1 = Read(workDirectory, PhaseTask.Proposal1File);
+        var p2 = Read(workDirectory, PhaseTask.Proposal2File);
+        var byProposal = new[] { CatalogUpdateRound.ChangesOf(p1), CatalogUpdateRound.ChangesOf(p2) };
+        output["cambios"] = Array(CatalogUpdateRound.Targets(p1, p2).Select(id =>
+        {
+            var mine = byProposal[0].Concat(byProposal[1]).First(c => c.Id == id);
+            var de = Enumerable.Range(1, 2).Where(n => byProposal[n - 1].Any(c => c.Id == id && c.Action == mine.Action));
+            var decision = mine.Change.DeepClone().AsObject();
+            decision["accion"] = mine.Action;
             decision["de"] = new JsonArray(de.Select(n => (JsonNode)n).ToArray());
             decision["discrepancia"] = false;
             decision["explicacion"] = Note;

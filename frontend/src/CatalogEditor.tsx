@@ -13,7 +13,7 @@ import EmptyState from './ui/EmptyState.tsx'
 import Provenance from './ui/Provenance.tsx'
 import IterationBadge from './ui/IterationBadge.tsx'
 import IterationFilter from './ui/IterationFilter.tsx'
-import { iterationsOf, showIterations, useElementIterations } from './iterations.ts'
+import { iterationsOf, iterationsText, showIterations, useElementIterations } from './iterations.ts'
 
 type ReqType = CatalogRequirement['tipo']
 
@@ -50,6 +50,8 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
   const [origin, setOrigin] = useState<(typeof ORIGINS)[number][0]>('all')
   const [onlyPending, setOnlyPending] = useState(false)
   const [onlyAssumed, setOnlyAssumed] = useState(false)
+  // Step 113: only the requirements with a change of an update still to review.
+  const [onlyChanges, setOnlyChanges] = useState(false)
   const [iteration, setIteration] = useState<number | null>(null)
   const iterationMap = useElementIterations(project.id, version)
   // The requirements open, by their position in the list.
@@ -118,13 +120,16 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
     (origin === 'all' || r.origen === origin) &&
     (!onlyPending || pendingDiscrepancy(r)) &&
     (!onlyAssumed || isAssumed(r)) &&
+    (!onlyChanges || !!r.cambio) &&
     (iteration === null || iterationsOfRequirement(r).includes(iteration)) &&
     (needle === '' || `${r.id} ${r.texto} ${r.fuentes.join(' ')} ${r.preguntas.join(' ')}`.toLowerCase().includes(needle))
   const indexed = requirements.map((r, index) => ({ r, index }))
 
+  const changes = requirements.filter((r) => r.cambio).length
   const summary =
     `${requirements.length} requisitos` +
     (discrepancies > 0 ? `, ${discrepancies - pending} de ${discrepancies} discrepancias revisadas` : '') +
+    (changes > 0 ? `, ${changes} ${changes === 1 ? 'cambio propuesto' : 'cambios propuestos'} por revisar` : '') +
     '. Los ids no cambian al guardar: un requisito nuevo, o que cambia de tipo, toma el siguiente número de su tipo.'
 
   return (
@@ -176,6 +181,12 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
             Solo basados en suposiciones de la IA <Badge tone="warn">{assumed}</Badge>
           </label>
         )}
+        {changes > 0 && (
+          <label className="flex items-center gap-2 text-sm" title="Requisitos que una actualización propone modificar o eliminar: hay que aceptarlo o rechazarlo antes de validar">
+            <input type="checkbox" checked={onlyChanges} onChange={(e) => setOnlyChanges(e.target.checked)} className="accent-accent" />
+            Solo cambios propuestos <Badge tone="danger">{changes}</Badge>
+          </label>
+        )}
       </div>
 
       <div className="space-y-3">
@@ -215,6 +226,8 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
                       open={open.has(index)}
                       // The panel shows what is saved: hidden while there are changes.
                       onTrace={state.dirty ? undefined : () => setTrace({ kind: 'requirement', id: r.id })}
+                      // Step 113: on what is saved, so not while there are unsaved changes.
+                      onDecide={state.dirty || state.busy ? undefined : (accept) => state.post(`/requirements/${r.id}/${accept ? 'accept-change' : 'reject-change'}`)}
                       onToggle={() => toggle(index)}
                       onUpdate={(change) => update(index, change)}
                       onRemove={() => remove(index)}
@@ -247,6 +260,7 @@ function RequirementItem({
   iterations,
   open,
   onTrace,
+  onDecide,
   onToggle,
   onUpdate,
   onRemove,
@@ -257,6 +271,7 @@ function RequirementItem({
   iterations: number[]
   open: boolean
   onTrace?: () => void
+  onDecide?: (accept: boolean) => void
   onToggle: () => void
   onUpdate: (change: Partial<CatalogRequirement>) => void
   onRemove: () => void
@@ -276,6 +291,7 @@ function RequirementItem({
         </span>
         <span className="flex shrink-0 flex-wrap justify-end gap-1">
           <IterationBadge numbers={iterations} />
+          {r.cambio && <Badge tone="danger">{r.cambio.accion === 'modificar' ? 'Modificación propuesta' : 'Eliminación propuesta'}</Badge>}
           {r.notacion === 'MASTeR' && <Badge>MASTeR</Badge>}
           {r.obligatoriedad !== 'shall' && <Badge tone="info">{r.obligatoriedad}</Badge>}
           {r.discrepancia && <Badge tone={discrepancy ? 'danger' : 'ok'}>{discrepancy ? 'Discrepancia' : 'Revisada'}</Badge>}
@@ -293,6 +309,42 @@ function RequirementItem({
             <Button variant="secondary" size="sm" icon={Waypoints} onClick={onTrace}>
               Trazabilidad
             </Button>
+          )}
+          {/* Step 113: what an update proposes to modify or delete, reviewed before validating. */}
+          {r.cambio && (
+            <div className="space-y-2 rounded bg-danger-soft px-3 py-2 text-sm">
+              <p>
+                <span className="font-medium">
+                  {r.cambio.accion === 'modificar' ? 'La actualización propone modificarlo' : 'La actualización propone eliminarlo'}
+                </span>{' '}
+                ({iterationsText(r.cambio.iteraciones)}): {r.cambio.motivo}
+              </p>
+              {r.cambio.accion === 'modificar' && r.cambio.antes?.texto && (
+                <p className="text-xs">
+                  Antes: <span className="font-serif">«{r.cambio.antes.texto}»</span>
+                </p>
+              )}
+              {r.cambio.discrepancia && <p className="text-xs">Los dos modelos no coincidían: {r.cambio.explicacion}</p>}
+              <div className="flex flex-wrap items-center gap-2">
+                <Button size="sm" variant="primary" disabled={readOnly || !onDecide} onClick={() => onDecide?.(true)}>
+                  {r.cambio.accion === 'modificar' ? 'Aceptar la modificación' : 'Eliminarlo'}
+                </Button>
+                <Button size="sm" disabled={readOnly || !onDecide} onClick={() => onDecide?.(false)}>
+                  {r.cambio.accion === 'modificar' ? 'Rechazarla (vuelve el texto anterior)' : 'Mantenerlo'}
+                </Button>
+                {!onDecide && !readOnly && <span className="text-xs">Guarda o deshaz tus cambios para revisarlo.</span>}
+              </div>
+            </div>
+          )}
+          {(r.historial?.length ?? 0) > 0 && (
+            <ul className="space-y-0.5 text-xs text-muted">
+              {r.historial!.map((h, i) => (
+                <li key={i}>
+                  {h.accion === 'creado' ? 'Creado' : h.accion === 'modificado' ? 'Modificado' : 'Eliminado'} en {iterationsText(h.iteraciones)}: {h.motivo}
+                  {h.antes?.texto && <span className="font-serif"> Antes: «{h.antes.texto}»</span>}
+                </li>
+              ))}
+            </ul>
           )}
           {r.discrepancia && (
             <div className={`rounded px-3 py-2 text-sm ${discrepancy ? 'bg-danger-soft' : 'bg-ok-soft'}`}>

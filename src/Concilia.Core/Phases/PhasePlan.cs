@@ -29,6 +29,7 @@ public record PhasePlan(
         PhaseKind.Catalog => "catalog-v0",
         PhaseKind.Backlog => "backlog",
         PhaseKind.Suggestions => "answer-suggestions",
+        PhaseKind.CatalogUpdate => "catalog-update",
         _ => throw new ArgumentOutOfRangeException(nameof(kind)),
     };
 
@@ -59,6 +60,7 @@ public record PhasePlan(
         Catalog = Input.Catalog.Length > 0 ? Input.Catalog : null,
         PendingQuestionIds = PendingQuestionIds,
         NewDocumentIds = Focus?.NewDocuments.ToHashSet() ?? [],
+        NewAnswerIds = Focus?.NewAnswers?.ToHashSet() ?? new HashSet<string>(),
         RevisableQuestionIds = Focus?.PendingCodes ?? new HashSet<string>(),
         Proposal1 = proposal1,
         Proposal2 = proposal2,
