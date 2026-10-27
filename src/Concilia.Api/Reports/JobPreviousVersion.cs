@@ -35,8 +35,12 @@ public static class JobPreviousVersion
             .Where(v => v.JobId == job.Id && v.Origin == VersionOrigin.Generated)
             .OrderBy(v => v.Number)
             .FirstOrDefaultAsync();
+        // A job from before the history (step 101) only has the version the
+        // deliverable got at start-up (Existing): what there was before it was not kept.
         if (generated is null)
-            return None("El trabajo no generó ninguna versión.");
+            return None(await versions.AnyAsync(v => v.JobId == job.Id)
+                ? "El trabajo es de antes del historial de versiones: no se guardó lo que había antes."
+                : "El trabajo no generó ninguna versión.");
         var previous = await versions
             .Where(v => v.Number < generated.Number)
             .OrderByDescending(v => v.Number)
