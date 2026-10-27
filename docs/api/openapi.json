@@ -394,6 +394,41 @@
         }
       }
     },
+    "/jobs/{jobId}/previous-version": {
+      "get": {
+        "tags": [
+          "Informes y evaluación"
+        ],
+        "summary": "Desde cero, frente a la versión anterior",
+        "description": "Un catálogo o un backlog generado desde cero, frente a la versión que tenía el entregable justo antes (`comparison.version`, con el estado que tenía entonces). Cada requisito o historia generado lleva su marca, con el elemento más parecido de antes: `Same` (lo mismo, desde el umbral de «mismo», 0,90), `Changed` (desde el de «parecido», 0,70) o `New`; `gone` son los de antes sin ninguno nuevo desde «parecido». Se empareja con embeddings, como A y B, sin mirar los ids (desde cero se numera otra vez desde 1), y varios elementos pueden emparejarse con el mismo. Los embeddings se calculan una vez por trabajo y se guardan. Sin comparación (`comparison` nulo y el motivo en `unavailable`) en la primera versión, en las actualizaciones y en los trabajos de otras fases.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviousVersionView"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/projects": {
       "get": {
         "tags": [
@@ -2756,7 +2791,7 @@
           "Informes y evaluación"
         ],
         "summary": "Informe de un trabajo",
-        "description": "La base de la evaluación: tokens (reales y, aparte, estimados para las ejecuciones sin dato), duración, reparaciones, cada ejecución, los elementos de A, de B y de la unión (de ambas, solo de A, solo de B, discrepancias, descartados y desviaciones del árbitro), lo que dicen los embeddings de las mismas propuestas (`embeddings`: solo de A y solo de B sin nada «mismo» ni «parecido» en la otra, y el acuerdo con el árbitro; se calculan una vez por trabajo y se guardan), los cambios del usuario frente al borrador que dejó el trabajo y, en las preguntas, su estado y el origen de cada respuesta.",
+        "description": "La base de la evaluación: tokens (reales y, aparte, estimados para las ejecuciones sin dato), duración, reparaciones, cada ejecución, los elementos de A, de B y de la unión (de ambas, solo de A, solo de B, discrepancias, descartados y desviaciones del árbitro), lo que dicen los embeddings de las mismas propuestas (`embeddings`: solo de A y solo de B sin nada «mismo» ni «parecido» en la otra, y el acuerdo con el árbitro; se calculan una vez por trabajo y se guardan), los cambios del usuario frente al borrador que dejó el trabajo, de un catálogo o un backlog generado desde cero, cuántos de sus elementos son iguales, cambiados o nuevos frente a la versión anterior y cuántos han desaparecido (`previous`; detalle en `GET /jobs/{jobId}/previous-version`) y, en las preguntas, su estado y el origen de cada respuesta.",
         "parameters": [
           {
             "name": "jobId",
@@ -2791,7 +2826,7 @@
           "Informes y evaluación"
         ],
         "summary": "Informes de todos los trabajos del proyecto, en CSV",
-        "description": "Una fila por trabajo, del más reciente al más antiguo, con las cifras del informe; al final, las de los embeddings (`emb_solo_A`, `emb_solo_B` y `emb_acuerdo_arbitro_pct`, el acuerdo con el árbitro en %). La primera vez calcula los embeddings de los trabajos que no los tienen guardados (unos segundos cada uno). Separado por `;` y con BOM, para que Excel en español lo abra con sus columnas y sus tildes.",
+        "description": "Una fila por trabajo, del más reciente al más antiguo, con las cifras del informe; al final, las de los embeddings (`emb_solo_A`, `emb_solo_B` y `emb_acuerdo_arbitro_pct`, el acuerdo con el árbitro en %) y, de un catálogo o un backlog generado desde cero, la comparación con la versión anterior (`ant_version`, `ant_igual`, `ant_cambiado`, `ant_nuevo` y `ant_desaparecido`). La primera vez calcula los embeddings de los trabajos que no los tienen guardados (unos segundos cada uno). Separado por `;` y con BOM, para que Excel en español lo abra con sus columnas y sus tildes.",
         "parameters": [
           {
             "name": "projectId",
@@ -3872,6 +3907,40 @@
           }
         }
       },
+      "GoneElement": {
+        "required": [
+          "id",
+          "text",
+          "bestId",
+          "bestText",
+          "similarity"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "bestId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "bestText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "similarity": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "HealthView": {
         "required": [
           "status"
@@ -4259,6 +4328,16 @@
                 "$ref": "#/components/schemas/UpdateCounts"
               }
             ]
+          },
+          "previous": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PreviousCounts"
+              }
+            ]
           }
         }
       },
@@ -4284,6 +4363,44 @@
       "JsonNode": { },
       "JsonObject": {
         "type": "object"
+      },
+      "MarkedElement": {
+        "required": [
+          "id",
+          "text",
+          "mark",
+          "previousId",
+          "previousText",
+          "similarity"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "mark": {
+            "$ref": "#/components/schemas/VersionMark"
+          },
+          "previousId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "similarity": {
+            "type": "number",
+            "format": "double"
+          }
+        }
       },
       "MatchCounts": {
         "required": [
@@ -4512,6 +4629,113 @@
           },
           "after": {
             "$ref": "#/components/schemas/JsonObject"
+          }
+        }
+      },
+      "PreviousCounts": {
+        "required": [
+          "version",
+          "status",
+          "same",
+          "changed",
+          "new",
+          "gone"
+        ],
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DeliverableStatus"
+          },
+          "same": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "changed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "new": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gone": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PreviousVersionComparison": {
+        "required": [
+          "version",
+          "status",
+          "thresholds",
+          "elements",
+          "gone"
+        ],
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DeliverableStatus"
+          },
+          "thresholds": {
+            "$ref": "#/components/schemas/MatchThresholds"
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MarkedElement"
+            }
+          },
+          "gone": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoneElement"
+            }
+          },
+          "counts": {
+            "$ref": "#/components/schemas/PreviousCounts"
+          }
+        }
+      },
+      "PreviousVersionView": {
+        "required": [
+          "jobId",
+          "unavailable",
+          "comparison",
+          "fromCache"
+        ],
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "unavailable": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "comparison": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PreviousVersionComparison"
+              }
+            ]
+          },
+          "fromCache": {
+            "type": "boolean"
           }
         }
       },
@@ -5590,6 +5814,13 @@
             "format": "int32"
           }
         }
+      },
+      "VersionMark": {
+        "enum": [
+          "Same",
+          "Changed",
+          "New"
+        ]
       },
       "VersionOrigin": {
         "enum": [

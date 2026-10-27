@@ -14,6 +14,8 @@ import Provenance from './ui/Provenance.tsx'
 import IterationBadge from './ui/IterationBadge.tsx'
 import IterationFilter from './ui/IterationFilter.tsx'
 import { iterationsOf, iterationsText, showIterations, storyIterations, useElementIterations } from './iterations.ts'
+import { markOf, usePreviousVersion, type MarkedElement, type VersionMark } from './previousVersion.ts'
+import { GoneElements, PreviousVersionBadge, PreviousVersionDetail, PreviousVersionFilter } from './PreviousVersionMarks.tsx'
 
 const field = 'w-full rounded border border-line bg-surface px-2.5 py-1.5 text-sm focus:outline-2 focus:outline-accent'
 const label = 'text-xs font-medium text-muted'
@@ -42,7 +44,9 @@ const pendingDiscrepancy = (h: Story) => !!h.discrepancia && !h.revisada
 // discrepancies, "open all" and "fold all", and the coverage of the functional
 // requirements of the validated catalog. What is open is remembered. With
 // more than one iteration, each story says those it comes from (those of its
-// requirements), with a filter (step 111).
+// requirements), with a filter (step 111). Generated from scratch over an
+// earlier backlog, each story says whether it is the same, changed or new,
+// with a filter, and the ones that disappeared are listed apart (step 115).
 function BacklogEditor({ project, version, onChange }: { project: Project; version: number; onChange: () => void }) {
   const state = useDeliverable<BacklogContent>(project.id, 'backlog', version, onChange)
   const [catalog, setCatalog] = useState<CatalogContent | null>(null)
@@ -50,6 +54,8 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
   const [onlyPending, setOnlyPending] = useState(false)
   const [iteration, setIteration] = useState<number | null>(null)
   const iterationMap = useElementIterations(project.id, version)
+  const previous = usePreviousVersion(state.deliverable?.jobId)
+  const [mark, setMark] = useState<VersionMark | 'all'>('all')
   // Open epics ("0") and stories ("0.3"), by position.
   const [openKeys, setOpenKeys] = usePersistentState<string[]>(`concilia.open.p${project.id}.backlog`, ['0'])
   // Step 99: the story whose traceability is shown in the panel.
@@ -99,8 +105,9 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
   const visible = (h: Story) =>
     (!onlyPending || pendingDiscrepancy(h)) &&
     (iteration === null || iterationsOfStory(h).includes(iteration)) &&
+    (mark === 'all' || markOf(previous, h.id)?.mark === mark) &&
     (needle === '' || `${h.id} ${h.titulo} ${h.como} ${h.quiero} ${h.para} ${h.requisitos.join(' ')}`.toLowerCase().includes(needle))
-  const filtering = onlyPending || needle !== '' || iteration !== null
+  const filtering = onlyPending || needle !== '' || iteration !== null || mark !== 'all'
 
   const changes = stories.filter((h) => h.cambio).length
   const summary =
@@ -137,6 +144,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
           />
         </label>
         {showIterations(iterationMap) && <IterationFilter count={iterationMap.count} value={iteration} onChange={setIteration} />}
+        {previous && <PreviousVersionFilter comparison={previous} value={mark} onChange={setMark} />}
         {discrepancies > 0 && (
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={onlyPending} onChange={(e) => setOnlyPending(e.target.checked)} className="accent-accent" />
@@ -187,6 +195,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
                         key={j}
                         story={h}
                         iterations={iterationsOfStory(h)}
+                        previous={markOf(previous, h.id)}
                         readOnly={readOnly}
                         // Step 114: on what is saved, so not while there are unsaved changes.
                         onDecide={state.dirty || state.busy ? undefined : (accept) => state.post(`/stories/${h.id}/${accept ? 'accept-change' : 'reject-change'}`)}
@@ -217,6 +226,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
             </section>
           )
         })}
+        {previous && <GoneElements comparison={previous} persistKey={`p${project.id}.backlog.desaparecidas`} noun="Historias" />}
       </div>
 
       {!readOnly && (
@@ -288,6 +298,7 @@ function Coverage({
 function StoryItem({
   story: h,
   iterations,
+  previous,
   onDecide,
   readOnly,
   open,
@@ -298,6 +309,7 @@ function StoryItem({
 }: {
   story: Story
   iterations: number[]
+  previous: MarkedElement | null
   onDecide?: (accept: boolean) => void
   readOnly: boolean
   open: boolean
@@ -324,6 +336,7 @@ function StoryItem({
         </span>
         <span className="flex shrink-0 flex-wrap justify-end gap-1">
           <IterationBadge numbers={iterations} />
+          <PreviousVersionBadge element={previous} />
           {h.cambio && <Badge tone="danger">{h.cambio.accion === 'modificar' ? 'Modificación propuesta' : 'Eliminación propuesta'}</Badge>}
           <Badge>{h.criterios.length} criterios</Badge>
           {h.discrepancia && <Badge tone={discrepancy ? 'danger' : 'ok'}>{discrepancy ? 'Discrepancia' : 'Revisada'}</Badge>}
@@ -337,6 +350,7 @@ function StoryItem({
               Trazabilidad
             </Button>
           )}
+          <PreviousVersionDetail element={previous} />
           {/* Step 114: what an update proposes to modify or delete, reviewed before validating. */}
           {h.cambio && (
             <div className="space-y-2 rounded bg-danger-soft px-3 py-2 text-sm">

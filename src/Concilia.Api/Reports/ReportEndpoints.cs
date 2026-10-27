@@ -31,7 +31,7 @@ public static class ReportEndpoints
             return job is null ? Results.NotFound() : Results.Ok(await BuildAsync(db, storage, embedder, options, job));
         })
             .WithSummary("Informe de un trabajo")
-            .WithDescription("La base de la evaluación: tokens (reales y, aparte, estimados para las ejecuciones sin dato), duración, reparaciones, cada ejecución, los elementos de A, de B y de la unión (de ambas, solo de A, solo de B, discrepancias, descartados y desviaciones del árbitro), lo que dicen los embeddings de las mismas propuestas (`embeddings`: solo de A y solo de B sin nada «mismo» ni «parecido» en la otra, y el acuerdo con el árbitro; se calculan una vez por trabajo y se guardan), los cambios del usuario frente al borrador que dejó el trabajo y, en las preguntas, su estado y el origen de cada respuesta.")
+            .WithDescription("La base de la evaluación: tokens (reales y, aparte, estimados para las ejecuciones sin dato), duración, reparaciones, cada ejecución, los elementos de A, de B y de la unión (de ambas, solo de A, solo de B, discrepancias, descartados y desviaciones del árbitro), lo que dicen los embeddings de las mismas propuestas (`embeddings`: solo de A y solo de B sin nada «mismo» ni «parecido» en la otra, y el acuerdo con el árbitro; se calculan una vez por trabajo y se guardan), los cambios del usuario frente al borrador que dejó el trabajo, de un catálogo o un backlog generado desde cero, cuántos de sus elementos son iguales, cambiados o nuevos frente a la versión anterior y cuántos han desaparecido (`previous`; detalle en `GET /jobs/{jobId}/previous-version`) y, en las preguntas, su estado y el origen de cada respuesta.")
             .Produces<JobReport>()
             .Produces(StatusCodes.Status404NotFound);
 
@@ -52,7 +52,7 @@ public static class ReportEndpoints
                 "text/csv; charset=utf-8", $"informe-proyecto-{projectId}.csv");
         })
             .WithSummary("Informes de todos los trabajos del proyecto, en CSV")
-            .WithDescription("Una fila por trabajo, del más reciente al más antiguo, con las cifras del informe; al final, las de los embeddings (`emb_solo_A`, `emb_solo_B` y `emb_acuerdo_arbitro_pct`, el acuerdo con el árbitro en %). La primera vez calcula los embeddings de los trabajos que no los tienen guardados (unos segundos cada uno). Separado por `;` y con BOM, para que Excel en español lo abra con sus columnas y sus tildes.")
+            .WithDescription("Una fila por trabajo, del más reciente al más antiguo, con las cifras del informe; al final, las de los embeddings (`emb_solo_A`, `emb_solo_B` y `emb_acuerdo_arbitro_pct`, el acuerdo con el árbitro en %) y, de un catálogo o un backlog generado desde cero, la comparación con la versión anterior (`ant_version`, `ant_igual`, `ant_cambiado`, `ant_nuevo` y `ant_desaparecido`). La primera vez calcula los embeddings de los trabajos que no los tienen guardados (unos segundos cada uno). Separado por `;` y con BOM, para que Excel en español lo abra con sus columnas y sus tildes.")
             .Produces<Stream>(contentType: "text/csv")
             .Produces(StatusCodes.Status404NotFound);
     }
@@ -68,6 +68,8 @@ public static class ReportEndpoints
         "mensaje",
         // Step 100, at the end so the columns before keep their place.
         "emb_solo_A", "emb_solo_B", "emb_acuerdo_arbitro_pct",
+        // Step 115, also at the end.
+        "ant_version", "ant_igual", "ant_cambiado", "ant_nuevo", "ant_desaparecido",
     ];
 
     private static IEnumerable<object?> Row(JobReport r) =>
@@ -85,6 +87,7 @@ public static class ReportEndpoints
         r.Message,
         r.Embeddings?.OnlyA, r.Embeddings?.OnlyB,
         r.Embeddings?.Agreement is { Total: > 0 } agreement ? Math.Round(agreement.Rate * 100, 1) : null,
+        r.Previous?.Version, r.Previous?.Same, r.Previous?.Changed, r.Previous?.New, r.Previous?.Gone,
     ];
 
     private static string Cell(object? value)
@@ -195,6 +198,9 @@ public static class ReportEndpoints
             }
         }
 
+        // Step 115: a generation from scratch against the version before it.
+        var previous = (await JobPreviousVersion.LoadAsync(db, storage, embedder, options, job)).Comparison?.Counts;
+
         return new JobReport(job.Id, job.Kind, job.CreatedAt, job.FinishedAt, succeeded, result?["mensaje"]?.GetValue<string>(),
             runs.Sum(r => r.InputTokens ?? 0), runs.Sum(r => r.OutputTokens ?? 0),
             runs.Count(r => r.StartedAt is not null && r.InputTokens is null), runs.Count(r => r.Attempt > 1),
@@ -205,7 +211,7 @@ public static class ReportEndpoints
             result?["emparejamiento"] is JsonObject time
                 ? new ComputeTime(time["segundos"]!.GetValue<double>(), time["segundos_cpu"]!.GetValue<double>())
                 : null,
-            assumedRequirements, embeddings, update);
+            assumedRequirements, embeddings, update, previous);
     }
 
     public static JsonNode? ReadResult(string jobFolder)

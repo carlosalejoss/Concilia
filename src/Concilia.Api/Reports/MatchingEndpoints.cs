@@ -89,6 +89,18 @@ public static class MatchingEndpoints
             .Produces<JobComparison>()
             .ProducesValidationProblem()
             .Produces(StatusCodes.Status404NotFound);
+
+        // Step 115: a generation from scratch against the version before it.
+        app.MapGet("/jobs/{jobId:guid}/previous-version", async (Guid jobId, AppDbContext db, FileStorage storage, ITextEmbedder embedder, EmbeddingOptions options) =>
+        {
+            var job = await db.Jobs.FindAsync(jobId);
+            return job is null ? Results.NotFound() : Results.Ok(await JobPreviousVersion.LoadAsync(db, storage, embedder, options, job));
+        })
+            .WithTags(ApiTags.Reports)
+            .WithSummary("Desde cero, frente a la versión anterior")
+            .WithDescription("Un catálogo o un backlog generado desde cero, frente a la versión que tenía el entregable justo antes (`comparison.version`, con el estado que tenía entonces). Cada requisito o historia generado lleva su marca, con el elemento más parecido de antes: `Same` (lo mismo, desde el umbral de «mismo», 0,90), `Changed` (desde el de «parecido», 0,70) o `New`; `gone` son los de antes sin ninguno nuevo desde «parecido». Se empareja con embeddings, como A y B, sin mirar los ids (desde cero se numera otra vez desde 1), y varios elementos pueden emparejarse con el mismo. Los embeddings se calculan una vez por trabajo y se guardan. Sin comparación (`comparison` nulo y el motivo en `unavailable`) en la primera versión, en las actualizaciones y en los trabajos de otras fases.")
+            .Produces<PreviousVersionView>()
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     private static IResult Refuse(string message) =>

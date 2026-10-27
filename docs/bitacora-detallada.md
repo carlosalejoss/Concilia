@@ -2738,3 +2738,13 @@ Cierre de los pasos 113 y 114.
 - **Revisión del autor:** pasan los 1.020 tests en su equipo, y da el visto bueno a la revisión en el navegador. Pasos 113 y 114 cerrados.
 - **Siguiente:** el paso 115 (desde cero, frente a lo anterior), cuando el autor lo diga (estaba al 96 % del límite de su suscripción).
 
+## 27-10-2026, 12:25 (sesión)
+
+Paso 115: desde cero, frente a lo anterior.
+
+- **Diseño aprobado por el autor** tal como lo propuso Claude: se compara con la versión de justo antes de la generación (borrador o validada), no con la última validada; mismo emparejamiento y mismos umbrales que entre A y B (igual desde 0,90, cambiado desde 0,70), sin mirar los ids; se calcula una vez y se guarda; sin comparación en la primera versión, en las actualizaciones ni en el nuevo arbitraje.
+- **Qué se hizo:** `PreviousVersion` (Core, la clasificación); `MatchingCache` acepta el nombre del fichero y guarda también `frente-anterior.json`; `JobPreviousVersion` y `GET /jobs/{id}/previous-version`; el informe con `previous` y el CSV con `ant_version`, `ant_igual`, `ant_cambiado`, `ant_nuevo` y `ant_desaparecido` al final; web: `previousVersion.ts` (la consulta) y `PreviousVersionMarks.tsx` (marca, filtro, lo de antes de un cambiado y los desaparecidos) en los editores del catálogo y del backlog, y la línea «Frente a lo anterior» en el informe del trabajo.
+- **Sin prompts nuevos ni migración.**
+- **Tests:** 1.024 en verde (1.020 + 4 de `PreviousVersionTests`). Un test anterior cambia en una línea: `FullFlowTests` comprobaba que la cabecera del CSV terminaba en las columnas del paso 100; ahora comprueba que las contiene y que termina en las del 115.
+- **Pendientes:** reconstruir la API y la web en Docker (sin migración) cuando lo autorice el autor y verlo en el navegador; después, el paso 116.
+

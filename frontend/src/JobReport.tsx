@@ -41,6 +41,8 @@ type Report = {
   } | null
   // Step 113: an update of the catalog, what A, B and the arbiter proposed.
   update?: { iterations: number[]; a: ChangeCounts | null; b: ChangeCounts | null; arbiter: ChangeCounts | null } | null
+  // Step 115: a catalog or backlog from scratch against the version before it.
+  previous?: { version: number; status: 'Draft' | 'Validated'; same: number; changed: number; new: number; gone: number } | null
 }
 
 type ChangeCounts = { new: number; modified: number; deleted: number }
@@ -122,6 +124,13 @@ function JobReport({ jobId, finished }: { jobId: string; finished: boolean }) {
           <Line label="Actualización">
             Con {iterationsText(report.update.iterations)}. A: {changeText(report.update.a)}. B: {changeText(report.update.b)}. Árbitro:{' '}
             {changeText(report.update.arbiter)}.
+          </Line>
+        )}
+        {report.previous && (
+          <Line label="Frente a lo anterior">
+            Frente a la versión {report.previous.version} ({report.previous.status === 'Validated' ? 'validada' : 'en borrador'}):{' '}
+            {report.previous.same} iguales, {report.previous.changed} cambiados y {report.previous.new} nuevos; {report.previous.gone} han
+            desaparecido.
           </Line>
         )}
         {changes && (

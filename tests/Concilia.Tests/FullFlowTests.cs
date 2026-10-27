@@ -194,7 +194,8 @@ public class FullFlowTests
         Assert.Equal(Encoding.UTF8.GetPreamble(), csv[..3]); // for Excel
         var rows = Encoding.UTF8.GetString(csv[3..]).Trim().Split('\n');
         Assert.StartsWith("fecha;trabajo;tipo;resultado", rows[0]);
-        Assert.EndsWith(";emb_solo_A;emb_solo_B;emb_acuerdo_arbitro_pct", rows[0].TrimEnd()); // step 100
+        Assert.Contains(";emb_solo_A;emb_solo_B;emb_acuerdo_arbitro_pct;", rows[0]); // step 100
+        Assert.EndsWith(";ant_version;ant_igual;ant_cambiado;ant_nuevo;ant_desaparecido", rows[0].TrimEnd()); // step 115, after them
         Assert.Equal(1 + 4, rows.Length); // the header, and the questions, the catalog, the backlog and the mockup
 
         var flow = await Flow(client, id);

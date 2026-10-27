@@ -66,6 +66,8 @@ public record QuestionCounts(int Total, int Answered, int Discarded, int Pending
 // proposed: new, modified and deleted requirements (the arbiter's, what it kept).
 public record ChangeCounts(int New, int Modified, int Deleted);
 public record UpdateCounts(IReadOnlyList<int> Iterations, ChangeCounts? A, ChangeCounts? B, ChangeCounts? Arbiter);
+// Step 115: Previous, a catalog or backlog from scratch against the version
+// before it (PreviousVersion); null without a version before.
 
 public record JobReport(
     Guid JobId, string Kind, DateTimeOffset CreatedAt, DateTimeOffset? FinishedAt, bool Succeeded, string? Message,
@@ -73,7 +75,7 @@ public record JobReport(
     IReadOnlyList<RunLine> Runs, ElementCounts? Elements, UserChanges? Changes, string? ChangesNote, QuestionCounts? Questions,
     string? Phase = null, string? ArbiterModel = null, Guid? RearbitrationOf = null,
     long EstimatedInputTokens = 0, long EstimatedOutputTokens = 0, ComputeTime? MatchingTime = null, int? AssumedRequirements = null,
-    EmbeddingCounts? Embeddings = null, UpdateCounts? Update = null);
+    EmbeddingCounts? Embeddings = null, UpdateCounts? Update = null, PreviousCounts? Previous = null);
 
 public static class JobReports
 {

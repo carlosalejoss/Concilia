@@ -14,6 +14,8 @@ import Provenance from './ui/Provenance.tsx'
 import IterationBadge from './ui/IterationBadge.tsx'
 import IterationFilter from './ui/IterationFilter.tsx'
 import { iterationsOf, iterationsText, showIterations, useElementIterations } from './iterations.ts'
+import { markOf, usePreviousVersion, type MarkedElement, type VersionMark } from './previousVersion.ts'
+import { GoneElements, PreviousVersionBadge, PreviousVersionDetail, PreviousVersionFilter } from './PreviousVersionMarks.tsx'
 
 type ReqType = CatalogRequirement['tipo']
 
@@ -43,6 +45,9 @@ const pendingDiscrepancy = (r: CatalogRequirement) => !!r.discrepancia && !r.rev
 // until the user reviews it. Saving replaces the content (the ids stay, step
 // 110); a validated catalog is read-only until reopened. With more than one
 // iteration, each requirement says those it comes from, with a filter (step 111).
+// Generated from scratch over an earlier catalog, each requirement says
+// whether it is the same, changed or new, with a filter, and the ones that
+// disappeared are listed apart (step 115).
 function CatalogEditor({ project, version, onChange }: { project: Project; version: number; onChange: () => void }) {
   const state = useDeliverable<CatalogContent>(project.id, 'catalog', version, onChange)
   const { deliverable, draft, edit } = state
@@ -54,6 +59,8 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
   const [onlyChanges, setOnlyChanges] = useState(false)
   const [iteration, setIteration] = useState<number | null>(null)
   const iterationMap = useElementIterations(project.id, version)
+  const previous = usePreviousVersion(state.deliverable?.jobId)
+  const [mark, setMark] = useState<VersionMark | 'all'>('all')
   // The requirements open, by their position in the list.
   const [open, setOpen] = useState<Set<number>>(new Set())
   // Step 99: the requirement whose traceability is shown in the panel.
@@ -122,6 +129,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
     (!onlyAssumed || isAssumed(r)) &&
     (!onlyChanges || !!r.cambio) &&
     (iteration === null || iterationsOfRequirement(r).includes(iteration)) &&
+    (mark === 'all' || markOf(previous, r.id)?.mark === mark) &&
     (needle === '' || `${r.id} ${r.texto} ${r.fuentes.join(' ')} ${r.preguntas.join(' ')}`.toLowerCase().includes(needle))
   const indexed = requirements.map((r, index) => ({ r, index }))
 
@@ -169,6 +177,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
           ))}
         </select>
         {showIterations(iterationMap) && <IterationFilter count={iterationMap.count} value={iteration} onChange={setIteration} />}
+        {previous && <PreviousVersionFilter comparison={previous} value={mark} onChange={setMark} />}
         {discrepancies > 0 && (
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={onlyPending} onChange={(e) => setOnlyPending(e.target.checked)} className="accent-accent" />
@@ -223,6 +232,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
                       readOnly={readOnly}
                       assumed={isAssumed(r)}
                       iterations={iterationsOfRequirement(r)}
+                      previous={markOf(previous, r.id)}
                       open={open.has(index)}
                       // The panel shows what is saved: hidden while there are changes.
                       onTrace={state.dirty ? undefined : () => setTrace({ kind: 'requirement', id: r.id })}
@@ -238,6 +248,7 @@ function CatalogEditor({ project, version, onChange }: { project: Project; versi
             </Collapsible>
           )
         })}
+        {previous && <GoneElements comparison={previous} persistKey={`p${project.id}.catalogo.desaparecidos`} noun="Requisitos" />}
       </div>
 
       {!readOnly && (
@@ -258,6 +269,7 @@ function RequirementItem({
   readOnly,
   assumed,
   iterations,
+  previous,
   open,
   onTrace,
   onDecide,
@@ -269,6 +281,7 @@ function RequirementItem({
   readOnly: boolean
   assumed: boolean
   iterations: number[]
+  previous: MarkedElement | null
   open: boolean
   onTrace?: () => void
   onDecide?: (accept: boolean) => void
@@ -291,6 +304,7 @@ function RequirementItem({
         </span>
         <span className="flex shrink-0 flex-wrap justify-end gap-1">
           <IterationBadge numbers={iterations} />
+          <PreviousVersionBadge element={previous} />
           {r.cambio && <Badge tone="danger">{r.cambio.accion === 'modificar' ? 'Modificación propuesta' : 'Eliminación propuesta'}</Badge>}
           {r.notacion === 'MASTeR' && <Badge>MASTeR</Badge>}
           {r.obligatoriedad !== 'shall' && <Badge tone="info">{r.obligatoriedad}</Badge>}
@@ -310,6 +324,7 @@ function RequirementItem({
               Trazabilidad
             </Button>
           )}
+          <PreviousVersionDetail element={previous} />
           {/* Step 113: what an update proposes to modify or delete, reviewed before validating. */}
           {r.cambio && (
             <div className="space-y-2 rounded bg-danger-soft px-3 py-2 text-sm">

@@ -13,6 +13,10 @@ namespace Concilia.Core.Matching;
 // other similarities) and the way the platform builds it (Version, raised if
 // the text compared for each element changes). The thresholds and the
 // arbiter are not in it: they are applied on each use (ProposalMatcher.Classify).
+//
+// Step 115: the comparison of a generation from scratch with the version
+// before it is saved the same way, in another file of the job
+// (PreviousVersion.FileName).
 public static class MatchingCache
 {
     public const string FileName = "emparejamiento.json";
@@ -29,9 +33,9 @@ public static class MatchingCache
 
     // The saved similarities, or null if there are none, they are from another
     // embedder or version, or the file cannot be read (then they are computed again).
-    public static ProposalSimilarities? Read(string jobFolder, string embedder)
+    public static ProposalSimilarities? Read(string jobFolder, string embedder, string fileName = FileName)
     {
-        var path = Path.Combine(jobFolder, FileName);
+        var path = Path.Combine(jobFolder, fileName);
         if (!File.Exists(path))
             return null;
         try
@@ -49,10 +53,10 @@ public static class MatchingCache
 
     // Written to a temporary file and then moved, so whoever reads it at the
     // same time never sees it half written.
-    public static void Write(string jobFolder, ProposalSimilarities similarities)
+    public static void Write(string jobFolder, ProposalSimilarities similarities, string fileName = FileName)
     {
         Directory.CreateDirectory(jobFolder);
-        var path = Path.Combine(jobFolder, FileName);
+        var path = Path.Combine(jobFolder, fileName);
         var temporary = $"{path}.{Guid.NewGuid():N}.tmp";
         File.WriteAllText(temporary, JsonSerializer.Serialize(new CacheFile(Version, similarities.Embedder, similarities.Elements), Options));
         File.Move(temporary, path, overwrite: true);
