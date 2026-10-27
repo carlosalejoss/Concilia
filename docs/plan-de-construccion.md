@@ -11,6 +11,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - Desde el 08-10-2026 se trabaja en la iteración v0 (hitos 8 a 13) antes que en el hito 7.
 - Desde el 16-10-2026, con los hitos 8 a 16 terminados, se sigue con los hitos 17 a 22 en su orden, acordado con el autor: 17 embeddings, 18 fiabilidad y calidad, 19 exportar, 20 trazabilidad y comparación, 21 historial y 22 evaluación. Los pasos marcados «por decidir» esperan a que el autor elija antes de empezarlos. El experimento del árbitro (paso 103) se cerró el mismo día.
 - Desde el 26-10-2026 (autor): el hito 22 son las iteraciones del proyecto (pasos 109 a 116), y la evaluación pasa a ser el hito 23, el último. Los pasos 103 a 106 de la evaluación conservan su número.
+- Desde el 27-10-2026 (autor): el hito 23 suma los pasos 117 a 121 (versión congelada, referencia revisada por el autor, repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL).
 
 ## Dónde estamos (26-10-2026)
 
@@ -525,12 +526,37 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
 
 Material para el capítulo de evaluación de la memoria. Era el hito 22 hasta el 26-10-2026, cuando el autor puso delante las iteraciones del proyecto. Sus pasos conservan su número. Incluye también los resultados del paso 116 (actualizar frente a empezar de cero).
 
+El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar la propuesta del TFG: ningún paso medía la hipótesis (que la verificación cruzada mejora la fiabilidad frente a un solo modelo), y el paso 65 apunta a que puede no mejorarla (la unión se parece mucho a A, y de las 15 contradicciones abiertas 2 las detecta solo A y ninguna solo B). Un resultado negativo también vale para la memoria, pero hay que medirlo. Se hacen en este orden: 117 antes que cualquier ejecución de la evaluación; después 104 a 106, 118, 119, 120 y 121. El 103 se hizo antes, con la v0.9, y sus resultados se citan con esa versión.
+
 - [x] 103. Terminar el experimento de si el árbitro prefiere a su propio modelo (`docs/experimento-sesgo-arbitro.md`). (16-10-2026: no hay preferencia; la unión se parece a A porque A propone más y casi todo lo de B ya está en A. LUNA, 2 arbitrajes válidos de 6 en el catálogo.)
+- [ ] 117. Congelar la versión que se evalúa (27-10-2026, autor). Antes de la primera ejecución de la evaluación, con el hito 22 cerrado:
+  - una etiqueta de git (`evaluacion-1`, sin push) y una versión de prompts fija para todas las ejecuciones del hito;
+  - en `docs/evaluacion/version.md`: el commit, la versión de prompts, los modelos de cada papel, los umbrales del emparejamiento, `Catalog:MaxParallelLots` y la versión de Claude Code;
+  - si un error obliga a cambiar código o prompts durante la evaluación, se crea `evaluacion-2`, se anota qué cambió y se repiten las ejecuciones afectadas.
+  Así los resultados son comparables entre sí y el tribunal puede repetir el paso 105 con la misma versión.
 - [ ] 104. Métricas externas sobre el catálogo y el backlog generados en inglés: AQUSA (`RELabUU/aqusa-core`) para las historias y `vale-ears` para EARS.
 - [ ] 105. El flujo completo con un documento público del dataset PURE, que el tribunal pueda reproducir.
 - [ ] 106. Una prueba editando de verdad el catálogo y el backlog, como un analista, para que la métrica de cambios del usuario tenga datos. Incluye los pasos 49 (segunda ronda de preguntas) y 53 (editar el catálogo), que siguen pendientes.
+- [ ] 118. El autor revisa la referencia (27-10-2026, autor). Los proyectos de ejemplo, su lista de contradicciones y huecos (`ejemplos/README.md`) y la comprobación del paso 65 (por palabras clave y leyendo) los hizo Claude, que también desarrolla la plataforma (`docs/resultados-paso-65/README.md`, «Ni independientes ni reales»). El autor:
+  - revisa la lista: que cada contradicción y cada hueco esté de verdad en los documentos y que su tratamiento esperado (preguntarse o estar en el catálogo) sea el correcto;
+  - repasa la comprobación del paso 65 sobre las preguntas y el catálogo de entonces;
+  - hace lo mismo con la lista de cambios de la segunda iteración de clínicas (paso 116).
+  Las correcciones se anotan en la lista, con fecha, y la referencia revisada es la que usan los pasos 119 a 121.
+- [ ] 119. Repetir cada fase para ver cuánto varía (27-10-2026, autor). Con la configuración de siempre (A `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA`, árbitro SOL), en el proyecto de clínicas, 3 repeticiones de preguntas, catálogo y backlog, como en el experimento del sesgo del árbitro: con una sola no se distingue una diferencia real de una casualidad.
+  - Cada fase se repite desde la misma entrada, para que lo que cambie venga solo de esa fase: el catálogo, desde las mismas preguntas respondidas; el backlog, desde el mismo catálogo validado. Las preguntas se repiten en proyectos copia con los mismos documentos, porque una segunda ronda en el mismo proyecto ya ve las preguntas de la primera.
+  - De cada repetición, el informe de siempre (tokens, minutos, coste, elementos de A, de B y de la unión, discrepancias). Además, cuánto se parecen entre sí las repeticiones de A, las de B y las de la unión: el porcentaje de elementos de una con par «mismo» o «parecido» en otra, con `ProposalMatcher`. Así se sabe si la unión del árbitro es más estable que cada modelo por separado. Hay un indicio: con la v0.10, la unión del catálogo de clínicas osciló entre 202 y 222 requisitos frente a 209–291 antes.
+  - Coste estimado con `docs/costes/costes.md`: una vuelta de preguntas, catálogo y backlog de clínicas con la v0.11 costó unos 7–9 $ y unos 35–45 minutos, así que las 3 repeticiones rondan los 20–30 $ y unas 2 horas. Se confirma con la primera repetición; si se dispara, se hacen 2 y se dice.
+  - Resultados en `docs/evaluacion/repeticiones.md` y en `docs/costes/costes.md`.
+- [ ] 120. Concilia frente a un solo modelo (27-10-2026, autor). La comparación que responde a la hipótesis, con las ejecuciones del paso 119 y, como primera medida sin ejecuciones nuevas, las propuestas de A y B que ya guardó el paso 65.
+  - Se compara A solo, B solo y la unión del árbitro frente a la referencia: cuánto de la referencia encuentra cada uno (recall), cuánto propone que no está en ella o no tiene fuente (precisión) y su F1. El emparejamiento con la referencia se hace con `ProposalMatcher` y lo revisa el autor.
+  - Referencia de las preguntas: la lista revisada del paso 118. **Referencia del catálogo y del backlog, por decidir al empezar el paso:** la versión validada tras editarla de verdad (paso 106) o una lista hecha a mano solo para el proyecto mediano.
+  - Si las discrepancias sirven: de las que marca el árbitro (las suyas y las de `ArbiterDeviations`), cuántas acabó cambiando el autor al revisar en el paso 106.
+  - Coste: Concilia cuesta A + B + árbitro frente a una sola de las propuestas. Se da la diferencia de coste y de minutos junto a la de recall y precisión, para decir si merece la pena.
+  - Un script en `scripts/evaluacion/` que saca las cifras de los trabajos guardados; resultados en `docs/evaluacion/un-solo-modelo.md`, con el bloque en palabras sencillas de qué se comprobó y qué demuestra.
+  Adelanta al hito 23 la parte de evaluación del punto 3 de «Después» (precision, recall y F1 frente a listas de referencia); la aprobación por umbral se queda allí.
+- [ ] 121. SOL ‖ SOL (27-10-2026, autor). Las mismas 3 repeticiones del paso 119 con B también `SS - GPT-6-SOL` (`RUNNER_MODEL_B`; el reparto de papeles ya es configuración, sin código), y la misma comparación del paso 120. Responde a si lo que aporta el patrón viene de usar dos modelos distintos o simplemente de hacer dos intentos. Es la configuración más cara, porque LUNA cuesta la vigésima parte que SOL: se estima con la primera repetición antes de lanzar las demás. Resultados junto a los del paso 120.
 
-**Hecho cuando:** el capítulo de evaluación tiene datos de los tres experimentos (sesgo del árbitro, calidad con métricas externas y cambios del usuario), de la actualización por iteraciones (paso 116) y de al menos un documento público.
+**Hecho cuando:** el capítulo de evaluación tiene datos de los experimentos (sesgo del árbitro, calidad con métricas externas, cambios del usuario, variación entre repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL), todos con la versión congelada del paso 117 y frente a la referencia revisada por el autor, de la actualización por iteraciones (paso 116) y de al menos un documento público.
 
 ## Después
 
@@ -538,5 +564,5 @@ Por este orden:
 
 1. Mejorar los prompts fase a fase sobre el flujo que ya funciona. En el catálogo, se retoma el hito 7 con los prompts v2 del autor.
 2. ~~Árbitro con embeddings.~~ Pasa al hito 17 (16-10-2026).
-3. Aprobación por umbral y evaluación: precision, recall y F1 frente a la versión validada y a listas de referencia hechas a mano.
+3. Aprobación por umbral y evaluación: precision, recall y F1 frente a la versión validada y a listas de referencia hechas a mano. (27-10-2026, autor: la evaluación pasa al hito 23, paso 120; aquí queda la aprobación por umbral.)
 4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación.

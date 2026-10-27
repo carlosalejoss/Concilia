@@ -86,7 +86,7 @@ concilia/
 - [x] **Hito 20.** Trazabilidad visual (de cada requisito a su origen en la documentación) y comparación lado a lado de A, B y el árbitro en cada trabajo, con el emparejamiento por embeddings.
 - [x] **Hito 21.** Historial de versiones de los entregables: cada versión se guarda con su fecha y su origen, y se puede ver, comparar con la actual y recuperar.
 - [ ] **Hito 22 (en curso).** Iteraciones del proyecto: la documentación se agrupa en iteraciones (hechos: pasos 109 a 113, con ids estables, la iteración de cada elemento, las preguntas centradas en lo nuevo y la actualización del catálogo), y las preguntas, el catálogo y el backlog se rehacen con todas o se actualizan solo con las nuevas, conservando lo validado y diciendo de qué iteración viene cada elemento y qué cambió y por qué.
-- [ ] **Hito 23.** Evaluación (precisión, recall y F1 frente a listas de referencia, y actualizar frente a empezar de cero).
+- [ ] **Hito 23.** Evaluación: Concilia frente a un solo modelo (precisión, recall, F1 y coste frente a listas de referencia), cuánto varía cada fase entre repeticiones, SOL ‖ SOL, métricas externas, un documento público y actualizar frente a empezar de cero, todo con una versión congelada.
 - [ ] **Hito 7 (aplazado).** Catálogo v2, de arriba abajo, con los prompts del autor.
 
 ## Ejecutar el proyecto desde cero

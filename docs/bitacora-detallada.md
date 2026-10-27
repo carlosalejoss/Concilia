@@ -2631,3 +2631,23 @@ Paso 113: actualizar el catálogo validado con unas iteraciones (prompts v0.13).
 - **Tests:** 1.013 en verde (1.004 + 9): `CatalogUpdateTests` (8) y `CatalogUpdateFlowTests`. Ningún test anterior cambia.
 - **Pendientes:** reconstruir la API y la web en Docker (sin migración) y la revisión del autor; el paso 114 (actualizar el backlog), con sus prompts revisados antes del código.
 
+
+## 27-10-2026, 08:57 (sesión)
+
+Propuesta del TFG y nuevos pasos del hito 23, sin código.
+
+- **Propuesta del TFG:** Claude redactó un borrador de los campos «Objetivos y problemas abordados», «Enfoque y herramientas» y «Fases del trabajo» a partir del README y del plan, para que el autor lo adapte (no se guarda en el repositorio). Al contrastarlo con el código, a petición del autor, se separó lo hecho de lo planificado:
+  - lo planificado sin hacer: PURE (paso 105), AQUSA y `vale-ears` (paso 104), la prueba editando de verdad (paso 106), los pasos 114 a 116 y la memoria;
+  - lo que se matizó: el informe de cada trabajo da tokens y tiempos, y los dólares los calcula `scripts/evaluacion/costes.cs`;
+  - lo que no tenía respaldo: ningún paso medía la hipótesis (que la verificación cruzada mejora la fiabilidad frente a un solo modelo), y el paso 65 apunta a que puede no mejorarla (la unión se parece a A; 2 de las 15 contradicciones abiertas solo las detecta A y ninguna solo B).
+  - Se comprobaron fuera del repositorio los datos de PURE (Ferrari, Spagnolo y Gnesi, RE 2017: 79 documentos, unas 34.000 frases) y de AQUSA (Lucassen, Dalpiaz, van der Werf y Brinkkemper, Requirements Engineering, 2016; marco QUS de 13 criterios, de los que la herramienta comprueba una parte).
+- **Decisión del autor:** se añaden al hito 23 los pasos 117 a 121, propuestos por Claude:
+  - 117, congelar la versión antes de evaluar (etiqueta de git y `docs/evaluacion/version.md`);
+  - 118, el autor revisa la referencia (la lista de `ejemplos/README.md`, la comprobación del paso 65 y la lista de la segunda iteración del paso 116), porque la hizo Claude;
+  - 119, 3 repeticiones de cada fase en clínicas desde la misma entrada, con la estabilidad entre repeticiones medida con `ProposalMatcher` (estimación: unos 20–30 $ y unas 2 horas);
+  - 120, Concilia frente a un solo modelo: recall, precisión y F1 de A solo, B solo y la unión frente a la referencia, si las discrepancias sirven y el coste;
+  - 121, SOL ‖ SOL, para saber si lo que aporta el patrón viene de usar dos modelos distintos.
+  Orden: 117 antes que cualquier ejecución de la evaluación; después 104 a 106, 118, 119, 120 y 121.
+- **Cambio de criterio:** la evaluación con precision, recall y F1 del punto 3 de «Después» pasa al hito 23 (paso 120); allí queda la aprobación por umbral.
+- **Decisión abierta nueva:** la referencia del catálogo y del backlog en el paso 120 (la versión validada tras el paso 106 o una lista hecha a mano del proyecto mediano), al empezar el paso.
+- **Pendientes:** los de antes (Docker y revisión del paso 113, y el paso 114).

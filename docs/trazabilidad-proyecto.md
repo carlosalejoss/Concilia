@@ -47,6 +47,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 26-10 | Hito 22, paso 111 | Cada pregunta, requisito e historia dice de qué iteración sale, con filtro; cada entregable, qué iteraciones incluye y cuáles le faltan; Word, PDF y los CSV llevan la iteración |
 | 27-10 | Hito 22, paso 113 (código) | Actualizar el catálogo validado con una iteración nueva: un conjunto de cambios; lo nuevo se añade y lo modificado o eliminado lo revisa el usuario, con el historial de cada requisito |
 | 26-10 | Hito 22, paso 112 | Rondas de preguntas centradas en una iteración nueva (prompts v0.13), con el tope de lo relacionado medido con clínicas; los modos de siempre, vigilados por una instantánea de la v0.12 |
+| 27-10 | Hito 23, nuevos pasos (sin código) | Al repasar la propuesta del TFG se ve que ningún paso medía la hipótesis; el autor añade los pasos 117 a 121: versión congelada, referencia revisada por el autor, repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL |
 | 20-10 | Documentación de la API (fuera del plan) | Swagger UI con los 42 endpoints documentados, que se actualiza sola y que los tests mantienen completa |
 
 ## Etapas
@@ -387,6 +388,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 - ~~Umbral de «discrepancia grave»~~: cerrado por el autor el 19-10-2026. Dos umbrales del emparejamiento (0,90 y 0,70, paso 87), y la discrepancia la marcan las desviaciones del árbitro respecto al emparejamiento (paso 88). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
 - Abaratar las pantallas del mockup. (El historial de mockups lo trae el hito 21: desde el paso 101 se guarda la página de cada mockup generado.)
+- Del hito 23 (27-10-2026): la referencia del catálogo y del backlog en el paso 120, la versión validada tras editarla de verdad (paso 106) o una lista hecha a mano solo para el proyecto mediano. Se decide al empezar el paso.
 - Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración. ~~El tope de fragmentos relacionados~~: cerrado por el autor el mismo día, 20.000 tokens, tras medirlo con clínicas (`docs/fragmentos-relacionados.md`).
 
 ## Siguientes pasos
@@ -400,7 +402,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 5. ~~**Hito 20, trazabilidad visual y comparación de A, B y el árbitro**~~: la trazabilidad en un panel lateral (paso 99) y la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100), los dos el 22-10-2026. Revisado en el navegador por Claude y por el autor (23-10-2026): cerrado.
 6. ~~**Hito 21, historial de versiones de los entregables**~~: cada versión se guarda con su fecha y su origen (paso 101) y se puede ver, comparar con la actual y recuperar (paso 102), los dos el 23-10-2026. Revisado en el navegador por el autor (26-10-2026): cerrado.
 7. **Hito 22, iteraciones del proyecto** (pasos 109 a 116): ~~iteraciones en Documentos~~ (paso 109) y ~~ids estables~~ (paso 110), los dos el 26-10-2026; ~~la iteración de cada elemento~~ (paso 111, revisado por el autor el mismo día); ~~preguntas centradas~~ (paso 112, revisado el 27-10); actualizar el catálogo (paso 113, código hecho el 27-10); actualizar el backlog (el siguiente), la iteración de cada elemento, preguntas centradas, actualizar el catálogo y el backlog, desde cero frente a lo anterior y una prueba real con clínicas en dos iteraciones.
-8. **Hito 23, evaluación:** métricas externas, un documento de PURE, una prueba editando de verdad y la comparación entre actualizar y empezar de cero.
+8. **Hito 23, evaluación:** métricas externas, un documento de PURE, una prueba editando de verdad y la comparación entre actualizar y empezar de cero. Desde el 27-10-2026 (autor), además: la versión congelada antes de evaluar (paso 117), la referencia revisada por el autor (118), 3 repeticiones de cada fase para ver cuánto varía (119), Concilia frente a un solo modelo con recall, precisión, F1 y coste, que es la comparación que responde a la hipótesis (120), y SOL ‖ SOL, para saber si lo que aporta el patrón viene de usar dos modelos distintos (121).
 9. **Después:** hito 7 (catálogo v2) y redactar la memoria (sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación).
 
 - **Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub (detalle en la bitácora): embeddings multilingües en local (árbitro y prueba del sesgo), AQUSA para las historias, el analizador de Gherkin, `vale-ears` para EARS en inglés y el dataset PURE como documento público.
