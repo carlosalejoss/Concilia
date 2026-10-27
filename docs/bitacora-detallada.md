@@ -2651,3 +2651,15 @@ Propuesta del TFG y nuevos pasos del hito 23, sin código.
 - **Cambio de criterio:** la evaluación con precision, recall y F1 del punto 3 de «Después» pasa al hito 23 (paso 120); allí queda la aprobación por umbral.
 - **Decisión abierta nueva:** la referencia del catálogo y del backlog en el paso 120 (la versión validada tras el paso 106 o una lista hecha a mano del proyecto mediano), al empezar el paso.
 - **Pendientes:** los de antes (Docker y revisión del paso 113, y el paso 114).
+
+## 27-10-2026, 11:00 (sesión)
+
+Reconstrucción en Docker con el paso 113 (sin migración; los datos siguen igual) y paso 114, primera parte: borradores de los prompts v0.13 para actualizar el backlog, para la revisión del autor antes del código.
+
+- **Revisión en el navegador del paso 113:** Claude recomienda preparar un proyecto de prueba (con el `plan.json` de su trabajo copiado a la carpeta de datos) y revisarlo junto con el paso 114, para separar los fallos de la web de los de los modelos del paso 116.
+- `prompts/v0/backlog_actualizacion.md` (A y B) y `prompts/v0/arbitro_backlog_actualizacion.md`, con sus esquemas. No los usa nada todavía.
+- **Antes de los modelos, la plataforma calcula el impacto sin IA** (`input/impacto.txt`): del catálogo del que salió el backlog al validado ahora, los requisitos modificados (como eran y como son), eliminados y nuevos sin historia, y las historias que citan uno modificado o eliminado (`input/historias_afectadas.json`, enteras, de lectura obligatoria). El catálogo y el backlog validados enteros, para consultar.
+- **A y B** escriben `output/cambios.json`: historias nuevas (`N-001`…, con su épica, existente o nueva), modificadas (enteras, citando por su id los criterios y las tareas que conservan, como en el paso 108) y eliminadas, cada una con su motivo. Prioridades: fidelidad, conservar lo validado (solo lo que pide el impacto), cobertura de los `RF` y `RI` nuevos y trazabilidad.
+- **Árbitro:** une las historias nuevas con el emparejamiento entre A y B y contra el backlog (`existente:`), y decide cada modificación y eliminación a partir de `input/cambios.txt`, agrupadas por historia sin IA.
+- **Pendiente:** la revisión del autor; después, el código del paso.
+

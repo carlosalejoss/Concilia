@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tfg/v0/arbitro_backlog_actualizacion.schema.json",
+  "title": "Actualización del backlog con unas iteraciones v0.13, unida por el árbitro",
+  "$comment": "Solo la estructura. Las reglas entre campos (las de unir un backlog para `nuevas` y `descartadas`; un cambio por cada historia de input/cambios.txt; `de` con las propuestas que proponen esa misma acción y vacío en `ninguna`; la historia entera solo en `modificar`…) las comprueba la plataforma.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "nuevas",
+    "descartadas",
+    "cambios"
+  ],
+  "properties": {
+    "nuevas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "epica",
+          "titulo",
+          "como",
+          "quiero",
+          "para",
+          "requisitos",
+          "criterios",
+          "tareas",
+          "motivo",
+          "de",
+          "discrepancia",
+          "explicacion"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^N-[0-9]{3,}$"
+          },
+          "epica": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^EP-[0-9]{2,}$"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "titulo",
+                  "descripcion"
+                ],
+                "properties": {
+                  "titulo": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "descripcion": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "titulo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "como": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quiero": {
+            "type": "string",
+            "minLength": 1
+          },
+          "para": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requisitos": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^(RF|RNF|RA|RT|RI)-[0-9]{3,}$"
+            }
+          },
+          "criterios": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "escenario",
+                "dado",
+                "cuando",
+                "entonces"
+              ],
+              "properties": {
+                "escenario": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "dado": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "cuando": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "entonces": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "tareas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "titulo"
+              ],
+              "properties": {
+                "titulo": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "motivo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "de": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "propuesta_1",
+              "propuesta_2"
+            ],
+            "properties": {
+              "propuesta_1": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^N-[0-9]{3,}$"
+                }
+              },
+              "propuesta_2": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^N-[0-9]{3,}$"
+                }
+              }
+            }
+          },
+          "discrepancia": {
+            "type": "boolean"
+          },
+          "explicacion": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "descartadas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "propuesta",
+          "id",
+          "motivo"
+        ],
+        "properties": {
+          "propuesta": {
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^N-[0-9]{3,}$"
+          },
+          "motivo": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "cambios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "accion",
+          "motivo",
+          "de",
+          "discrepancia",
+          "explicacion"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^HU-[0-9]{3,}$"
+          },
+          "titulo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "como": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quiero": {
+            "type": "string",
+            "minLength": 1
+          },
+          "para": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requisitos": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^(RF|RNF|RA|RT|RI)-[0-9]{3,}$"
+            }
+          },
+          "criterios": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^CA-[0-9]{3,}$"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "escenario",
+                    "dado",
+                    "cuando",
+                    "entonces"
+                  ],
+                  "properties": {
+                    "escenario": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "dado": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "cuando": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "entonces": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "tareas": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^T-[0-9]{3,}$"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "titulo"
+                  ],
+                  "properties": {
+                    "titulo": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "accion": {
+            "enum": [
+              "modificar",
+              "eliminar",
+              "ninguna"
+            ]
+          },
+          "de": {
+            "type": "array",
+            "items": {
+              "enum": [
+                1,
+                2
+              ]
+            },
+            "uniqueItems": true
+          },
+          "discrepancia": {
+            "type": "boolean"
+          },
+          "explicacion": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}
