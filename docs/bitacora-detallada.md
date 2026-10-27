@@ -2747,5 +2747,6 @@ Paso 115: desde cero, frente a lo anterior.
 - **Sin prompts nuevos ni migración.**
 - **Tests:** 1.024 en verde (1.020 + 4 de `PreviousVersionTests`). Un test anterior cambia en una línea: `FullFlowTests` comprobaba que la cabecera del CSV terminaba en las columnas del paso 100; ahora comprueba que las contiene y que termina en las del 115.
 - **Docker:** reconstruidas la API y la web con autorización del autor (sin migración; Docker Hub volvió a agotar el tiempo una vez y al repetir funcionó). Con los datos de clínicas, el backlog del proyecto 33 se compara con su versión 1 validada: 22 historias iguales, 65 cambiadas, 7 nuevas y 19 desaparecidas. Los catálogos y el otro backlog se generaron antes del historial de versiones (23-10) y no tienen comparación; la API lo dice ahora con su motivo («El trabajo es de antes del historial de versiones…») en lugar de «no generó ninguna versión».
-- **Pendientes:** que el autor lo vea en el navegador; después, el paso 116.
+- **Revisión del autor:** da el visto bueno en el navegador. Paso 115 cerrado.
+- **Siguiente:** el paso 116, la prueba real con clínicas en dos iteraciones.
 

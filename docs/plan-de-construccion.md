@@ -20,7 +20,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
   - Hechos los pasos 109 a 111, revisados por el autor en el navegador.
   - Hecho el 112 (preguntas centradas, prompts v0.13), revisado el 27-10-2026.
   - Hechos el 113 y el 114 (actualizar el catálogo y el backlog), en Docker y revisados por el autor en el navegador el 27-10-2026.
-  - Hecho el código del 115 (desde cero, frente a lo anterior) el 27-10-2026; falta verlo en el navegador.
+  - Hecho el 115 (desde cero, frente a lo anterior), en Docker y revisado por el autor en el navegador el 27-10-2026.
   - Siguiente: el paso 116 (la prueba real con clínicas en dos iteraciones).
 - **Después:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo.
 
@@ -30,7 +30,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Hito 22, iteraciones del proyecto:**
 1. ~~**Revisar en el navegador los pasos 113 y 114**~~ (hecho el 27-10-2026).
-2. **115,** desde cero frente a lo anterior: código hecho el 27-10-2026; falta reconstruir Docker y verlo en el navegador.
+2. ~~**115,** desde cero frente a lo anterior~~ (hecho y revisado por el autor el 27-10-2026).
 3. **116,** la prueba real con clínicas en dos iteraciones. Claude escribe los documentos ficticios de la segunda iteración y su lista de cambios puestos a propósito, y el autor la revisa en el paso 118. Coste estimado: unos 15–20 $, porque son la ronda centrada, la actualización del catálogo y del backlog, y lo mismo desde cero.
 
 **Hito 23, evaluación** (en este orden; cada paso dice qué hace el autor y qué hace Claude):
@@ -550,7 +550,7 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
   - Prompts y esquemas del conjunto de cambios del backlog (historias nuevas, modificadas y eliminadas, y criterios y tareas por id, como en el paso 108) y de su árbitro.
   - La plataforma los aplica con su historial y sus propuestas por revisar, como en el catálogo. Trabajo `backlog-update`, con versión, informe, comparación y nuevo arbitraje.
   - **Cómo quedó (27-10-2026; prompts revisados por el autor antes del código, con los cuatro detalles de Claude aprobados: una historia que pierde un requisito eliminado se modifica y solo se elimina si se queda sin ninguno; un `RNF`, `RA` o `RT` nuevo va como criterio o tarea; los criterios de las historias nuevas se escriben enteros; se ofrece actualizar con las iteraciones que tiene el catálogo validado y le faltan al backlog):** `PhaseKind.BacklogUpdate` y el trabajo `backlog-update` (paso Backlog); `BacklogImpact` (el impacto sin IA, del catálogo del plan del trabajo que generó el backlog al validado ahora); `BacklogUpdateRound` (ficheros de `input/` y cambios agrupados por historia); `ValidateBacklogUpdate` (`REF-REQ`, `REF-EP`, `REF-HU`, `CAMBIO-DUP`, `CITA`, `ARB-CAMBIO`); `CAMBIO-DISC` también aquí; emparejamiento de las nuevas contra el backlog (`existente:`); `BacklogUpdate` (las nuevas en su épica, o en una nueva con el siguiente `EP`, con ids estables de historias, criterios y tareas; lo modificado o eliminado como `cambio` pendiente; las eliminadas aceptadas en `eliminadas`, con su épica). `POST /projects/{id}/backlog-update-jobs` exige el backlog validado y el catálogo validado con esas iteraciones, y rechaza la actualización si el catálogo no ha cambiado. Aceptar o rechazar en `POST …/deliverables/{catalog|backlog}/{requirements|stories}/{id}/{accept-change|reject-change}`. Web: el lanzador «Actualizar con…» sirve a los dos pasos (`UpdateLauncher`); en cada historia, el cambio propuesto con aceptar o rechazar y su historial. Tests: `BacklogUpdateTests` (5) y el flujo de `CatalogUpdateFlowTests`, que ahora actualiza también el backlog. 1.020 tests.
-- [x] 115. Desde cero, frente a lo anterior. (27-10-2026; diseño aprobado por el autor, sin prompts nuevos ni migración; falta reconstruir en Docker y verlo en el navegador.)
+- [x] 115. Desde cero, frente a lo anterior. (27-10-2026; diseño aprobado por el autor, sin prompts nuevos ni migración; reconstruido en Docker y revisado por el autor en el navegador el mismo día, con el backlog de clínicas: 22 historias iguales, 65 cambiadas, 7 nuevas y 19 desaparecidas frente a su versión 1 validada. Los trabajos de antes del historial de versiones no tienen comparación, y la API dice por qué.)
   - Tras generar el catálogo o el backlog desde cero, la plataforma empareja con embeddings el resultado con la versión anterior y marca cada elemento como igual, cambiado o nuevo, y lo que ha desaparecido.
   - El informe y su CSV, con las columnas nuevas al final.
   - **Cómo quedó (27-10-2026, detalles de Claude aprobados por el autor):**
