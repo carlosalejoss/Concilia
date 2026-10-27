@@ -13,10 +13,49 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - Desde el 26-10-2026 (autor): el hito 22 son las iteraciones del proyecto (pasos 109 a 116), y la evaluación pasa a ser el hito 23, el último. Los pasos 103 a 106 de la evaluación conservan su número.
 - Desde el 27-10-2026 (autor): el hito 23 suma los pasos 117 a 121 (versión congelada, referencia revisada por el autor, repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL).
 
-## Dónde estamos (26-10-2026)
+## Dónde estamos (27-10-2026)
 
 - **Hechos:** los hitos 17 (embeddings en local), 18 y 18b (fiabilidad y calidad, prompts v0.11 y v0.12), 19 (exportar), 20 (trazabilidad y comparación) y 21 (historial de versiones), revisados por el autor.
-- **En curso:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026. Hechos los pasos 109 a 111, revisados por el autor en el navegador, y el 112 (preguntas centradas, prompts v0.13), revisado el 27-10-2026, y el código del 113 (actualizar el catálogo), que falta ver en el navegador; siguiente, el paso 114 (actualizar el backlog). Después, el hito 23 (evaluación).
+- **En curso:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026.
+  - Hechos los pasos 109 a 111, revisados por el autor en el navegador.
+  - Hecho el 112 (preguntas centradas, prompts v0.13), revisado el 27-10-2026.
+  - Hecho el código del 113 (actualizar el catálogo), ya en Docker; falta verlo en el navegador.
+  - Del 114 (actualizar el backlog), los borradores de sus prompts, para la revisión del autor.
+- **Después:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo.
+
+### Lo que queda, en orden
+
+Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tiene el detalle en su hito.
+
+**Hito 22, iteraciones del proyecto:**
+1. **Revisar el 113 en el navegador.** Claude recomienda hacerlo junto con el 114, con un proyecto de prueba, para separar los fallos de la web de los de los modelos del 116.
+2. **114, actualizar el backlog.**
+   - Primero, revisar los borradores `prompts/v0/backlog_actualizacion.md` y `prompts/v0/arbitro_backlog_actualizacion.md`.
+   - Después, el código y su revisión en el navegador.
+3. **115,** desde cero frente a lo anterior.
+4. **116,** la prueba real con clínicas en dos iteraciones, con su lista de cambios puestos a propósito.
+
+**Hito 23, evaluación** (en este orden; cada paso dice qué hace el autor y qué hace Claude):
+
+5. 117, congelar la versión.
+6. 105, el flujo con un documento de PURE, en inglés.
+7. 104, AQUSA y `vale-ears` sobre lo del 105.
+8. 106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53).
+9. 118, la referencia: revisar las trampas y hacer la lista de funcionalidades.
+10. 119, las 9 ejecuciones de clínicas.
+11. 120, las hojas de revisión y la comparación con un solo modelo.
+12. 121, SOL ‖ SOL.
+
+**Después del plan:**
+
+13. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. El esqueleto está en `memoria/tfg/memoria.tex`, fuera de git.
+14. Lo que queda en «Después», al final de este plan: el hito 7 (catálogo v2, aplazado) y la aprobación por umbral.
+
+**Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
+- si se hace un CSV solo con lo nuevo de una iteración;
+- abaratar las pantallas del mockup;
+- la licencia del repositorio, por acordar con la tutora y con la empresa (README);
+- el mockup con la suscripción y la skill `frontend-design`, aparcado desde el 15-10-2026.
 
 ## Hito 0: preparación y prueba de humo (completado)
 
@@ -526,17 +565,83 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
 
 Material para el capítulo de evaluación de la memoria. Era el hito 22 hasta el 26-10-2026, cuando el autor puso delante las iteraciones del proyecto. Sus pasos conservan su número. Incluye también los resultados del paso 116 (actualizar frente a empezar de cero).
 
-El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar la propuesta del TFG: ningún paso medía la hipótesis (que la verificación cruzada mejora la fiabilidad frente a un solo modelo), y el paso 65 apunta a que puede no mejorarla (la unión se parece mucho a A, y de las 15 contradicciones abiertas 2 las detecta solo A y ninguna solo B). Un resultado negativo también vale para la memoria, pero hay que medirlo. Se hacen en este orden: 117 antes que cualquier ejecución de la evaluación; después 104 a 106, 118, 119, 120 y 121. El 103 se hizo antes, con la v0.9, y sus resultados se citan con esa versión. Los pasos 118 a 121 llevan sus instrucciones, separadas en lo que hace el autor y lo que hace Claude, en su propio apartado, más abajo.
+El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar la propuesta del TFG: ningún paso medía la hipótesis (que la verificación cruzada mejora la fiabilidad frente a un solo modelo), y el paso 65 apunta a que puede no mejorarla (la unión se parece mucho a A, y de las 15 contradicciones abiertas 2 las detecta solo A y ninguna solo B). Un resultado negativo también vale para la memoria, pero hay que medirlo. Se hacen en este orden: 117 antes que cualquier ejecución de la evaluación; después 105, 104 (usa lo que genera el 105, en inglés), 106, 118, 119, 120 y 121. El 103 se hizo antes, con la v0.9, y sus resultados se citan con esa versión. Los pasos 118 a 121 llevan sus instrucciones, separadas en lo que hace el autor y lo que hace Claude, en su propio apartado, más abajo.
 
 - [x] 103. Terminar el experimento de si el árbitro prefiere a su propio modelo (`docs/experimento-sesgo-arbitro.md`). (16-10-2026: no hay preferencia; la unión se parece a A porque A propone más y casi todo lo de B ya está en A. LUNA, 2 arbitrajes válidos de 6 en el catálogo.)
-- [ ] 117. Congelar la versión que se evalúa (27-10-2026, autor). Antes de la primera ejecución de la evaluación, con el hito 22 cerrado:
-  - una etiqueta de git (`evaluacion-1`, sin push) y una versión de prompts fija para todas las ejecuciones del hito;
-  - en `docs/evaluacion/version.md`: el commit, la versión de prompts, los modelos de cada papel, los umbrales del emparejamiento, `Catalog:MaxParallelLots` y la versión de Claude Code;
-  - si un error obliga a cambiar código o prompts durante la evaluación, se crea `evaluacion-2`, se anota qué cambió y se repiten las ejecuciones afectadas.
-  Así los resultados son comparables entre sí y el tribunal puede repetir el paso 105 con la misma versión.
-- [ ] 104. Métricas externas sobre el catálogo y el backlog generados en inglés: AQUSA (`RELabUU/aqusa-core`) para las historias y `vale-ears` para EARS.
-- [ ] 105. El flujo completo con un documento público del dataset PURE, que el tribunal pueda reproducir.
-- [ ] 106. Una prueba editando de verdad el catálogo y el backlog, como un analista, para que la métrica de cambios del usuario tenga datos. Incluye los pasos 49 (segunda ronda de preguntas) y 53 (editar el catálogo), que siguen pendientes.
+- [ ] 117. Congelar la versión que se evalúa (27-10-2026, autor). Así los resultados son comparables entre sí y el tribunal puede repetir el paso 105 con la misma versión. Unos 15 minutos, sin coste. Se hace con el hito 22 cerrado y antes de la primera ejecución de la evaluación.
+  **Qué haces tú** (o Claude, si se lo pides):
+  1. **Comprueba que todo está guardado:** `git status` debe salir limpio, todos los tests en verde y Docker reconstruido con ese código.
+  2. **Crea la etiqueta:** `git tag evaluacion-1`, sin push.
+  3. **Rellena `docs/evaluacion/version.md`** con:
+     - el commit (`git rev-parse HEAD`);
+     - la versión de los prompts (la v0.12 en los modos de siempre y la v0.13 en los centrados y las actualizaciones);
+     - los modelos de cada papel: A, B, árbitro, sugerencias y mockup;
+     - los umbrales del emparejamiento (0,90 y 0,70);
+     - `Catalog:MaxParallelLots`;
+     - la versión de Claude Code, con `claude --version` dentro del contenedor de la API (es el único comando que se lanza ahí; nada que imprima variables de entorno).
+  4. **Si durante la evaluación un error obliga a cambiar código o prompts:** se crea `evaluacion-2`, se anota en el mismo fichero qué cambió y por qué, y se repiten las ejecuciones afectadas. Cada resultado dice con qué etiqueta se obtuvo.
+- [ ] 105. El flujo completo con un documento público del dataset PURE (27-10-2026, detalles de Claude). Hasta ahora todo se ha probado con documentos que hizo Claude o que son internos. Un documento público, ajeno al proyecto, es una prueba que el tribunal puede repetir. Coste: como un flujo de clínicas, unos 7–9 $, y algo más si el documento es más largo.
+  **Qué es PURE:** 79 documentos de requisitos públicos (sobre todo especificaciones SRS en inglés), de Ferrari, Spagnolo y Gnesi, RE 2017. Están en [Zenodo](https://zenodo.org/records/1414117); hay una versión más reciente, que es la que se usa.
+  **Qué haces tú:**
+  1. **Elige un documento** con estas cuatro condiciones:
+     - en inglés;
+     - una aplicación con usuarios y funciones, no un sistema embebido ni una norma;
+     - entre 10 y 40 páginas, para que quepa en el tope de documentación y cueste como clínicas;
+     - en un formato que admita Concilia (`.pdf`, `.docx`, `.html` o `.xml`; el `.doc` antiguo no se admite: si solo está así, ábrelo con Word y guárdalo como `.docx`).
+     Anota en `docs/evaluacion/pure.md` cuál es, de dónde se descarga y su licencia.
+  2. **Comprueba la licencia** en la página de Zenodo. Si permite copiarlo, se guarda en `ejemplos/pure/` con su atribución; si no, solo se anota cómo descargarlo.
+  3. **Crea el proyecto «PURE · nombre del documento»** y, en su configuración, pon el idioma en **inglés** (`en`). Así el catálogo y el backlog salen en inglés y valen para el paso 104.
+  4. **Sube el documento, cierra la documentación y recorre el flujo entero:**
+     - una ronda de preguntas;
+     - sugerencias con «Aprobar todas las sugerencias» y, en las que queden («A decidir por el cliente:»), la primera opción que proponga la sugerencia;
+     - el catálogo, validado sin editar;
+     - el backlog, validado sin editar;
+     - el mockup.
+     Sin editar, para que cualquiera que lo repita obtenga lo mismo.
+  5. **Descarga** el catálogo (Word y PDF), el backlog (Gherkin) y el CSV del informe del proyecto, y guárdalos en `docs/evaluacion/pure/`.
+  **Qué hace Claude:**
+  - Escribe `docs/evaluacion/pure.md`: el documento, las cifras del informe (tokens, minutos, coste, de A, de B, unión y discrepancias), qué fue bien y qué mal, y el bloque en palabras sencillas.
+  - Regenera `docs/costes/costes.md`.
+- [ ] 104. Métricas externas de calidad (27-10-2026, detalles de Claude). Mide la calidad con herramientas de otros y no solo con las de Concilia. Las dos trabajan en inglés: se aplican al catálogo y al backlog del paso 105, y a las tres propuestas de cada fase (SOL, LUNA y la unión), lo que completa la comparación del paso 120. Unas 3–4 horas, la mayor parte en instalar y probar las herramientas; sin coste.
+  - **AQUSA** (Lucassen, Dalpiaz y otros, Universidad de Utrecht, revista *Requirements Engineering*, 2016) revisa historias de usuario con parte de los 13 criterios del marco QUS: bien formadas («As a… I want… so that…»), atómicas (una sola cosa), mínimas (sin texto de más), únicas, uniformes… Es una herramienta en Python.
+  - **`vale-ears`** (`tbhb/vale-ears`, MIT) es un estilo para el corrector Vale que comprueba que cada frase con *shall* sigue un patrón EARS (`ears.Syntax`) y que no usa *must*, *will*, *should* o *may* en lugar de *shall* (`ears.Shall`).
+  **Antes de empezar, dos avisos** (comprobado por Claude el 27-10-2026):
+  - **El repositorio `RELabUU/aqusa-core` del plan no se ha podido confirmar.** El que citan los artículos es `gglucass/AQUSA`.
+  - **`vale-ears` es muy nuevo** (junio de 2026) y casi no lo usa nadie.
+  Por eso lo primero es probar que funcionan. Si alguna no funciona, se anota y se busca otra en la lista `nlp4re-tools`; no se escribe una propia.
+  **Qué haces tú** (o Claude, si se lo pides):
+  1. **Instala AQUSA** en un entorno de Python aparte, fuera del repositorio, siguiendo su README, y pruébalo con las historias de ejemplo que traiga.
+  2. **Instala Vale y `vale-ears`** siguiendo su README, y pruébalo con dos frases: una EARS buena («WHEN the user cancels an appointment, the system shall…») y una mala.
+  3. **Comprueba si Vale distingue mayúsculas.** Concilia escribe las palabras clave de EARS en mayúsculas («WHEN», «IF … THEN»).
+  4. **Anota las versiones y los comandos** en `docs/evaluacion/metricas-externas.md`.
+  **Qué hace Claude:**
+  - El script `scripts/evaluacion/metricas-externas.cs`, que saca de los trabajos del paso 105 las historias de SOL, de LUNA y de la unión.
+    - Las historias se escriben como «As a {como}, I want {quiero}, so that {para}»: en Concilia se guardan en tres campos sin esas palabras.
+    - Los requisitos se escriben uno por línea, **solo los de notación EARS**. Los MASTeR usan *should* y *may* a propósito, y `ears.Shall` los marcaría como error.
+    - Después ejecuta AQUSA y Vale y cuenta los defectos por criterio y por propuesta.
+  - Resultados en `docs/evaluacion/metricas-externas.md`: defectos por cada 100 historias o requisitos de SOL, LUNA y la unión, con ejemplos y el bloque en palabras sencillas.
+  - Si da tiempo, lo mismo con el proyecto de clínicas generado en inglés.
+  - Limitación: AQUSA tiene una precisión del 72 % según sus autores, así que sus avisos se cuentan, pero no se dan por buenos sin mirarlos.
+- [ ] 106. Una prueba editando de verdad, como un analista (27-10-2026, detalles de Claude). Hasta ahora todas las respuestas fueron sugerencias de la IA aceptadas tal cual y nadie editó el catálogo ni el backlog, así que la métrica de cambios del usuario (paso 64) no tiene datos. Incluye los pasos 49 (segunda ronda de preguntas) y 53 (editar el catálogo), que siguen pendientes, y se hace con ReservaSalas porque esos dos pasos son de ese ejemplo. Coste: unos pocos dólares, porque ReservaSalas es pequeño. Tiempo: el que tardes en revisar, unas 2–3 horas.
+  **Qué haces tú:**
+  1. **Crea el proyecto «ReservaSalas analista»,** sube `prompts/generacion_requisitos/ejemplo/fuentes/DOC-01.txt` y cierra la documentación.
+  2. **Primera ronda de preguntas.** Respóndelas tú, como lo haría un cliente, aunque te ayudes de las sugerencias, que puedes editar.
+  3. **Segunda ronda (paso 49).** Lánzala y apunta si repite algo ya preguntado.
+  4. **Catálogo (paso 53).** Genéralo y revísalo entero, como un analista:
+     - corrige lo que esté mal;
+     - borra lo que sobre;
+     - añade lo que falte;
+     - revisa cada discrepancia (marca si era un problema de verdad).
+     Después, valídalo.
+  5. **Backlog.** Igual: genéralo, revísalo entero y valídalo.
+  6. **Mientras revisas,** apunta en `docs/evaluacion/analista.md` el tiempo que tardas en cada fase y, en una frase, los tipos de error que más corriges.
+  **Qué hace Claude:**
+  - Con el informe de cada trabajo (cambios del usuario: añadidos, borrados y modificados, emparejados por contenido) y tus notas, escribe los resultados:
+    - en `docs/evaluacion/analista.md`;
+    - en la sección v0 de `docs/evolucion-prompt-requisitos.md`, que es lo que piden los pasos 49 y 53;
+    - el bloque en palabras sencillas.
+  - Marca como hechos los pasos 49 y 53.
+  - Cuánto corrige un analista y cuánto tarda es lo que mejor dice si la automatización ahorra trabajo, que es la pregunta del título del TFG.
 
 ### Los pasos 118 a 121: Concilia frente a un solo modelo
 

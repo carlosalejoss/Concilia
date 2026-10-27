@@ -2677,3 +2677,25 @@ Cómo se hace la comparación de Concilia frente a un solo modelo (pasos 118 a 1
 - **Cambio de criterio:** se cierra la decisión abierta del mismo día con una opción distinta de las dos que había: ni la versión validada del paso 106 (que se queda para los cambios del usuario) ni una lista del proyecto mediano.
 - **Plan:** los pasos 118 a 121 se reescriben como instrucciones (qué hace el autor, qué hace Claude, scripts `repeticiones.cs` y `un-solo-modelo.cs`, hojas de revisión en `docs/evaluacion/revision/`, tiempos y coste estimados: unas 3–4 h para la referencia, 20–30 $ y 2–3 h de ejecuciones, unas 5 h de revisión y 30–50 $ más para SOL ‖ SOL).
 - **Limitaciones anotadas:** un solo proyecto, ficticio; la referencia la hace el autor; en el paso 65 la unión ya trató bien las 26 trampas, así que distinguirán poco; pocas discrepancias.
+
+## 27-10-2026, 09:30 (sesión)
+
+Revisión de la documentación para que no quede nada pendiente sin explicar, a petición del autor. Sin código.
+
+- **Plan:**
+  - nueva lista «Lo que queda, en orden» en «Dónde estamos»: el hito 22, el hito 23, la memoria, «Después» y lo abierto sin paso;
+  - los pasos 117, 104, 105 y 106, que eran una línea, se explican como los 118 a 121: qué hace el autor, qué hace Claude, ficheros, tiempo, coste y limitaciones.
+- **Detalles decididos por Claude:**
+  - 105 (PURE) va antes que 104, en un proyecto en inglés, con cuatro criterios para elegir el documento y sin editar nada;
+  - 104 mide AQUSA y `vale-ears` sobre las tres propuestas de cada fase del 105, y `vale-ears` solo sobre los requisitos EARS (`ears.Shall` marcaría los MASTeR, que usan *should* y *may* a propósito);
+  - 106 va con ReservaSalas, porque los pasos 49 y 53 que cierra son de ese ejemplo, y se anota el tiempo que tarda el autor en revisar cada fase.
+- **Comprobado fuera del repositorio:**
+  - no se pudo confirmar el repositorio `RELabUU/aqusa-core` del plan; el que citan los artículos es `gglucass/AQUSA`;
+  - `vale-ears` (`tbhb/vale-ears`, MIT) es de junio de 2026.
+  Por eso el paso 104 empieza probando que las dos herramientas funcionan.
+- **Puestos al día:**
+  - `CLAUDE.md`: el estado de los pasos 112 a 114;
+  - el README: las versiones de los prompts y lo que queda de la evaluación;
+  - la trazabilidad: la etapa 14 (diseño de la evaluación), los siguientes pasos con su orden, las candidatas del 16-10 marcadas como decididas y los commits.
+- **Memoria de Claude:** los pasos pendientes se escriben como instrucciones (qué hace el autor, qué hace Claude), y la lista de lo que queda se mantiene al día.
+- **Pendientes:** los de la lista «Lo que queda, en orden».

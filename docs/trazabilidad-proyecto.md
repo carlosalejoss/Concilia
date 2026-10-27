@@ -322,6 +322,27 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Paso 113, actualizar el catálogo (27-10, código; falta verlo en el navegador):** con el catálogo validado y una ronda sobre la iteración nueva, los dos modelos proponen solo los cambios que pide lo nuevo: requisitos nuevos, modificados y eliminados, cada uno con su motivo. El árbitro los une; la plataforma alinea por id las modificaciones y eliminaciones y avisa si un «nuevo» ya estaba en el catálogo. Lo nuevo se añade con el siguiente número de su tipo; lo modificado o eliminado queda como propuesta que el usuario acepta o rechaza antes de validar, y cada requisito guarda su historial. Lo que el usuario había editado se conserva, porque los cambios se aplican sobre su copia de trabajo.
 - **Para la memoria, en palabras sencillas:** un análisis real no llega de una vez: el cliente manda documentos en varias tandas. Con las iteraciones, Concilia trabaja como un analista que recibe información nueva: se centra en lo nuevo, comprueba si choca con lo que ya se sabía y propone qué añadir, cambiar o quitar, sin tocar lo que el cliente ya validó y sin decidir nada por su cuenta.
 
+### 14. Hito 23: diseño de la evaluación (27-10, sin código)
+
+- **Por qué:** al redactar la propuesta del TFG y contrastarla con el código, se vio que ningún paso medía la hipótesis: que la verificación cruzada es más fiable que un solo modelo. El paso 65 apunta incluso a que puede no serlo, porque la unión se parece mucho a A (SOL) y B (LUNA) aporta muy poco. Un resultado negativo también vale para la memoria, pero hay que medirlo.
+- **Lo que se añade (autor), con los detalles de Claude:** los pasos 117 a 121.
+  - 117: una versión congelada antes de evaluar.
+  - 118: la referencia, revisada o hecha por el autor:
+    - las 26 trampas del proyecto grande;
+    - una lista de funcionalidades escrita sin mirar los catálogos.
+  - 119: 3 repeticiones de cada fase en clínicas, para ver cuánto varía.
+  - 120: Concilia frente a un solo modelo:
+    - recall, precisión, F1 y coste de SOL solo, LUNA solo y la unión;
+    - la revisión se hace a ciegas, con hojas de cálculo que prepara un script.
+  - 121: SOL ‖ SOL, para saber si lo que aporta el patrón viene de usar dos modelos distintos o de hacer dos intentos.
+- **La idea clave:** no hacen falta ejecuciones aparte de cada modelo. Cada trabajo de Concilia ya lleva una propuesta de SOL sola y otra de LUNA sola, que son independientes y parten de la misma entrada que la unión.
+- **Los pasos que ya existían** (104 a 106) pasan a explicar también qué hace el autor y qué hace Claude:
+  - 105, PURE, se hace en inglés y antes que el 104, que mide sobre él AQUSA y `vale-ears`, solo en los requisitos EARS, porque los MASTeR usan *should* y *may* a propósito;
+  - 106, la prueba como analista, va con ReservaSalas y cierra los pasos 49 y 53.
+  Al comprobarlas, Claude vio dos cosas de las herramientas: no se pudo confirmar el repositorio de AQUSA del plan (el que citan los artículos es `gglucass/AQUSA`), y `vale-ears` es de junio de 2026. Por eso el paso 104 empieza probando que funcionan.
+- **Coste estimado:** unos 20–30 $ las repeticiones, unos 30–50 $ SOL ‖ SOL y unos 7–9 $ PURE. En horas del autor, unas 3–4 h de referencia, unas 5 h de revisión y 2–3 h como analista.
+- **Para la memoria, en palabras sencillas:** hasta ahora se sabía qué propone cada modelo y qué se queda el árbitro, pero no si el resultado es mejor que el de un solo modelo. Para saberlo hace falta una lista de lo que debería salir, hecha por una persona, y contar cuánto de esa lista encuentra cada uno, cuánto de lo que propone está bien y cuánto cuesta.
+
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
 - **Qué hay:** el documento OpenAPI 3.1 de la API (`/openapi/v1.json`), generado por ASP.NET Core, y Swagger UI encima (`/swagger`, también en <http://localhost:8080/swagger> con Docker), con los colores de Concilia en claro y en oscuro. Los 42 endpoints van en 10 grupos en el orden del flujo, cada uno con su resumen, su descripción en español, sus parámetros y lo que devuelve en cada caso (incluidos los `400` con los mensajes de la web, los `404` y los `202` de las tareas en segundo plano).
@@ -402,13 +423,15 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 5. ~~**Hito 20, trazabilidad visual y comparación de A, B y el árbitro**~~: la trazabilidad en un panel lateral (paso 99) y la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100), los dos el 22-10-2026. Revisado en el navegador por Claude y por el autor (23-10-2026): cerrado.
 6. ~~**Hito 21, historial de versiones de los entregables**~~: cada versión se guarda con su fecha y su origen (paso 101) y se puede ver, comparar con la actual y recuperar (paso 102), los dos el 23-10-2026. Revisado en el navegador por el autor (26-10-2026): cerrado.
 7. **Hito 22, iteraciones del proyecto** (pasos 109 a 116): ~~iteraciones en Documentos~~ (paso 109) y ~~ids estables~~ (paso 110), los dos el 26-10-2026; ~~la iteración de cada elemento~~ (paso 111, revisado por el autor el mismo día); ~~preguntas centradas~~ (paso 112, revisado el 27-10); actualizar el catálogo (paso 113, código hecho el 27-10); actualizar el backlog (el siguiente), la iteración de cada elemento, preguntas centradas, actualizar el catálogo y el backlog, desde cero frente a lo anterior y una prueba real con clínicas en dos iteraciones.
-8. **Hito 23, evaluación:** métricas externas, un documento de PURE, una prueba editando de verdad y la comparación entre actualizar y empezar de cero. Desde el 27-10-2026 (autor), además: la versión congelada antes de evaluar (paso 117), la referencia revisada por el autor (118), 3 repeticiones de cada fase para ver cuánto varía (119), Concilia frente a un solo modelo con recall, precisión, F1 y coste, que es la comparación que responde a la hipótesis (120), y SOL ‖ SOL, para saber si lo que aporta el patrón viene de usar dos modelos distintos (121).
+8. **Hito 23, evaluación:** métricas externas, un documento de PURE, una prueba editando de verdad y la comparación entre actualizar y empezar de cero. Desde el 27-10-2026 (autor), además: la versión congelada antes de evaluar (paso 117), la referencia revisada por el autor (118), 3 repeticiones de cada fase para ver cuánto varía (119), Concilia frente a un solo modelo con recall, precisión, F1 y coste, que es la comparación que responde a la hipótesis (120), y SOL ‖ SOL, para saber si lo que aporta el patrón viene de usar dos modelos distintos (121). Orden: 117, 105, 104, 106, 118, 119, 120 y 121. Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`.
 9. **Después:** hito 7 (catálogo v2) y redactar la memoria (sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación).
 
-- **Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub (detalle en la bitácora): embeddings multilingües en local (árbitro y prueba del sesgo), AQUSA para las historias, el analizador de Gherkin, `vale-ears` para EARS en inglés y el dataset PURE como documento público.
+- ~~**Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub~~. Todas decididas:
+  - los embeddings en local (hito 17) y el analizador de Gherkin (paso 97), ya hechos;
+  - AQUSA y `vale-ears` (paso 104) y el dataset PURE (paso 105), en el hito 23.
 - **Aparcado (15-10-2026):** rehacer el mockup del proyecto grande de ejemplo con la suscripción del autor (Sonnet 5.5) y la skill `frontend-design`, para ver si mejora la calidad; se retoma tras el paso 65. Riesgos: agotar el límite de 5 horas de la suscripción (se puede reanudar) y cambiar dos cosas a la vez, el modelo y las skills.
 
 ## Cifras de seguimiento
 
-- **Commits:** 230 entre el 28-09 y el 27-10-2026.
+- **Commits:** 234 entre el 28-09 y el 27-10-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99), 937 (22-10, paso 100), 943 (22-10, pasos 107 y 108), 948 (23-10, paso 101), 951 (23-10, paso 102), 966 (26-10, paso 109), 974 (26-10, paso 110) y 983 (26-10, paso 111), 990 (26-10, instantánea de la v0.12), 1.002 (26-10, paso 112) y 1.013 (27-10, paso 113).

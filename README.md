@@ -6,7 +6,7 @@ El nombre viene de *conciliar* dos versiones. Es el Trabajo Fin de Grado del aut
 
 ## Estado
 
-El flujo funciona de principio a fin: documentos → preguntas → requisitos → backlog → mockup, con prompts básicos (iteración v0, de la v0.1 a la v0.11) probados con los modelos de la pasarela de la empresa. El árbitro parte de un emparejamiento por embeddings calculado en local, y la plataforma corrige sola los errores de formato más comunes. Cada trabajo deja un informe con sus tokens, tiempos, coste, acuerdos y discrepancias entre modelos y los cambios del usuario: es la base de la evaluación. Lo que queda está en la [hoja de ruta](#hoja-de-ruta) y en [`docs/plan-de-construccion.md`](docs/plan-de-construccion.md).
+El flujo funciona de principio a fin: documentos → preguntas → requisitos → backlog → mockup, con prompts básicos (iteración v0, de la v0.1 a la v0.12, y la v0.13 para trabajar por iteraciones) probados con los modelos de la pasarela de la empresa. El árbitro parte de un emparejamiento por embeddings calculado en local, y la plataforma corrige sola los errores de formato más comunes. Cada trabajo deja un informe con sus tokens, tiempos, coste, acuerdos y discrepancias entre modelos y los cambios del usuario: es la base de la evaluación. Lo que queda está en la [hoja de ruta](#hoja-de-ruta) y en [`docs/plan-de-construccion.md`](docs/plan-de-construccion.md).
 
 ## La idea
 
@@ -246,6 +246,16 @@ Cada trabajo tiene su informe en la vista de ejecuciones («Informe del trabajo�
 - en las preguntas, quién escribió cada respuesta.
 
 Todos los trabajos de un proyecto se descargan como CSV, un trabajo por fila, desde la misma vista. La evolución de cada versión de los prompts, con sus resultados medidos, está en [`docs/evolucion-prompt-requisitos.md`](docs/evolucion-prompt-requisitos.md); el coste en tiempo y dinero de cada fase y versión, en [`docs/costes/costes.md`](docs/costes/costes.md). Un experimento comprobó si el árbitro prefiere la propuesta de su propio modelo, y no la prefiere ([`docs/experimento-sesgo-arbitro.md`](docs/experimento-sesgo-arbitro.md)).
+
+Lo que queda de la evaluación es el hito 23 de [`docs/plan-de-construccion.md`](docs/plan-de-construccion.md). Cada paso explica qué hace el autor y qué hace Claude, y sus resultados irán a `docs/evaluacion/`:
+
+- la comparación que responde a la hipótesis: cada trabajo ya contiene una propuesta de SOL solo (A) y otra de LUNA sola (B), y se miden frente a la unión del árbitro, con una referencia hecha por el autor, en recall, precisión, F1 y coste;
+- cuánto varía cada fase entre 3 repeticiones;
+- SOL ‖ SOL;
+- AQUSA y `vale-ears` como métricas externas;
+- un documento público del dataset PURE;
+- una prueba editando como un analista;
+- todo con una versión congelada.
 
 ## Configuración y secretos
 
