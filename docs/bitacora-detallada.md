@@ -2728,3 +2728,13 @@ Comprobación de que lo que queda se puede hacer, a petición del autor. Sin có
   - AQUSA puede necesitar Python 3.7;
   - para la memoria no hay LaTeX en el equipo (Overleaf o MiKTeX).
 - **Plan:** «Lo que queda, en orden» al día (113 y 114 hechos, falta revisarlos en el navegador) y el coste estimado del 116 (unos 15–20 $).
+
+## 27-10-2026, 16:00 (sesión)
+
+Cierre de los pasos 113 y 114.
+
+- **Docker:** la API se reconstruyó con el paso 114 sin migración; la imagen de la web no se pudo reconstruir durante un rato (se agotaba el tiempo al pedir el token de Docker Hub), así que para la revisión Claude sirvió la web nueva con Vite en el puerto 5180, con una configuración temporal (fuera de git) que enviaba las llamadas a la API de Docker. Al terminar, Docker Hub volvió a responder y la web se reconstruyó; la configuración temporal se borró.
+- **Proyecto de prueba:** «Prueba pasos 113 y 114», con dos iteraciones cerradas por la API y, con un script local que usa las clases de la plataforma, los `plan.json` de sus cuatro trabajos (catálogo, backlog y sus dos actualizaciones) en la carpeta de datos y, en la base de datos, el catálogo y el backlog actualizados en borrador: un requisito y una historia nuevos con su historial, una modificación y una eliminación propuestas en cada uno (una con discrepancia) y sus versiones. Una descripción de épica vacía daba un error de esquema y se corrigió en la base de datos. Se borró después, con sus carpetas.
+- **Revisión del autor:** pasan los 1.020 tests en su equipo, y da el visto bueno a la revisión en el navegador. Pasos 113 y 114 cerrados.
+- **Siguiente:** el paso 115 (desde cero, frente a lo anterior), cuando el autor lo diga (estaba al 96 % del límite de su suscripción).
+
