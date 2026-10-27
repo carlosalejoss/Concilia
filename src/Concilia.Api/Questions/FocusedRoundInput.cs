@@ -18,11 +18,14 @@ namespace Concilia.Api.Questions;
 // related requirements (RelatedContext, with embeddings in local), and the
 // block of the iterations. The documentation is numbered as always
 // (PhaseJobs.LoadDocumentsAsync), so the ids are the same in every mode.
+// Step 116 (readAll, ReadAllRound): option A, every earlier fragment is read
+// entirely instead of the related ones; the related requirements stay the
+// same, so only the reading of the documentation changes.
 public static class FocusedRoundInput
 {
     public static async Task<(PhaseInput? Input, FocusPlan? Focus, string? Error)> BuildAsync(
         AppDbContext db, ITextEmbedder embedder, int projectId, IReadOnlyList<int> focus,
-        IReadOnlyList<CatalogDocument> documents, IReadOnlyList<Question> previous, PhaseInput input)
+        IReadOnlyList<CatalogDocument> documents, IReadOnlyList<Question> previous, PhaseInput input, bool readAll = false)
     {
         var iterations = await db.Iterations.Where(i => i.ProjectId == projectId).ToListAsync();
         var byDocument = await ProjectIterations.DocumentsAsync(db, projectId);
@@ -34,7 +37,8 @@ public static class FocusedRoundInput
         var newDocuments = documents.Where(d => byDocument.TryGetValue(d.Id, out var n) && focus.Contains(n)).Select(d => d.Id).ToList();
         var fresh = newDocuments.SelectMany(id => fragments[id]).ToList();
         var earlier = documents.Where(d => !newDocuments.Contains(d.Id)).SelectMany(d => fragments[d.Id]).ToList();
-        var related = RelatedContext.Fragments(embedder, fresh, earlier);
+        var selected = RelatedContext.Fragments(embedder, fresh, earlier);
+        var related = readAll ? earlier : selected;
 
         // The validated catalog, if there is one: entire to consult, and its related requirements to read.
         var catalog = await db.Deliverables.SingleOrDefaultAsync(d => d.ProjectId == projectId && d.Kind == DeliverableKind.Catalog);
@@ -47,7 +51,7 @@ public static class FocusedRoundInput
             RelatedFragments = related.Count > 0 ? DocumentationFile.Build(related, names) : "",
             Catalog = validated,
             RelatedRequirements = validated.Length > 0
-                ? RelatedContext.Requirements(embedder, validated, fresh, related.Select(f => f.Id).ToHashSet())
+                ? RelatedContext.Requirements(embedder, validated, fresh, selected.Select(f => f.Id).ToHashSet())
                 : "",
         };
         var plan = new FocusPlan(focus, newDocuments,

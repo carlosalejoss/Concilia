@@ -94,6 +94,46 @@ public class FocusedRoundFlowTests
         Assert.All((await Json(await client.GetAsync($"/jobs/{always}")))["runs"]!.AsArray(), r => Assert.Equal("v0.12", r!["promptVersion"]!.GetValue<string>()));
     }
 
+    // Step 116: the same centred round reading everything (option A) is an
+    // experiment: A and B read all the earlier documentation, and its
+    // questions are not added to the project nor does it count as a round.
+    [Fact]
+    public async Task A_round_that_reads_everything_reads_all_the_earlier_documentation_and_changes_nothing()
+    {
+        using var temp = new TempDirectory();
+        await using var api = Api(temp.Path);
+        var client = api.CreateClient();
+        var id = (await Json(await client.PostAsJsonAsync("/projects", new { name = "ReservaSalas" })))["id"]!.GetValue<int>();
+        var document = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts", "ejemplo", "fuentes", "DOC-01.txt"));
+        await Upload(client, id, "DOC-01.txt", document);
+        (await client.PostAsync($"/projects/{id}/iterations/1/close", null)).EnsureSuccessStatusCode();
+        await Launch(client, $"/projects/{id}/question-rounds", null);
+        (await client.PostAsJsonAsync($"/projects/{id}/iterations", new { name = (string?)null })).EnsureSuccessStatusCode();
+        await Upload(client, id, "acta.md", "# Acta de la reunión\n\nEl cliente pide un recordatorio por correo antes de cada reserva.\n");
+        (await client.PostAsync($"/projects/{id}/iterations/2/close", null)).EnsureSuccessStatusCode();
+        var questions = (await client.GetStringAsync($"/projects/{id}/questions"));
+        var flow = await client.GetStringAsync($"/projects/{id}/flow");
+
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsJsonAsync($"/projects/{id}/question-rounds/read-all", new { focus = Array.Empty<int>() })).StatusCode);
+        var readAll = await Launch(client, $"/projects/{id}/question-rounds/read-all", new { focus = new[] { 2 } });
+
+        var job = await Json(await client.GetAsync($"/jobs/{readAll}"));
+        Assert.Equal("questions-read-all", job["job"]!["kind"]!.GetValue<string>());
+        Assert.All(job["runs"]!.AsArray(), r => Assert.Equal("v0.13", r!["promptVersion"]!.GetValue<string>()));
+        // A reads entirely every fragment of DOC-01, not only the related ones (here, none would be).
+        var runA = job["runs"]!.AsArray().First(r => r!["slot"]!.GetValue<string>() == "A")!["id"]!.GetValue<string>();
+        var related = File.ReadAllText(Path.Combine(temp.Path, "runs", runA, FocusedRound.RelatedFragmentsFile));
+        Assert.All(Fragmenter.FragmentDocument("DOC-01", document), f => Assert.Contains(f.Id, related));
+
+        // Nothing of the project changes, and the report says it is an experiment.
+        Assert.Equal(questions, await client.GetStringAsync($"/projects/{id}/questions"));
+        Assert.Equal(flow, await client.GetStringAsync($"/projects/{id}/flow"));
+        var report = await Json(await client.GetAsync($"/jobs/{readAll}/report"));
+        Assert.Equal(("Questions", "Ronda experimental que lo lee todo: sus preguntas no se añaden al proyecto."),
+            (report["phase"]!.GetValue<string>(), report["changesNote"]!.GetValue<string>()));
+        Assert.NotNull(report["elements"]);
+    }
+
     private static async Task Upload(HttpClient client, int projectId, string name, string text)
     {
         using var form = new MultipartFormDataContent { { new ByteArrayContent(Encoding.UTF8.GetBytes(text)), "file", name } };

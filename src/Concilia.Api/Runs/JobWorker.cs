@@ -88,7 +88,8 @@ public class JobWorker(
         }
 
         // A v0 phase: A ‖ B → arbiter, and the result of the job in its folder.
-        if (PhasePlan.KindOfJob(job.Kind) is not null)
+        // Step 116: also a round that reads everything, whose questions are not stored.
+        if (PhasePlan.KindOfJob(job.Kind) is not null || job.Kind == Questions.ReadAllRound.JobKind)
         {
             var phasePlan = PhasePlan.Load(storage.JobFolder(jobId));
             var result = phasePlan.Kind == PhaseKind.Suggestions
@@ -101,7 +102,9 @@ public class JobWorker(
             }
             else if (phasePlan.Kind == PhaseKind.Questions)
             {
-                await Questions.QuestionEndpoints.StoreRoundAsync(db, jobId, job.ProjectId, phasePlan, result);
+                // The questions of a round that reads everything (an experiment) stay only in its result.
+                if (job.Kind != Questions.ReadAllRound.JobKind)
+                    await Questions.QuestionEndpoints.StoreRoundAsync(db, jobId, job.ProjectId, phasePlan, result);
             }
             else if (phasePlan.Kind is PhaseKind.CatalogUpdate or PhaseKind.BacklogUpdate)
             {

@@ -2750,3 +2750,14 @@ Paso 115: desde cero, frente a lo anterior.
 - **Revisión del autor:** da el visto bueno en el navegador. Paso 115 cerrado.
 - **Siguiente:** el paso 116, la prueba real con clínicas en dos iteraciones.
 
+## 27-10-2026, 13:10 (sesión)
+
+Paso 116, preparación: la ronda que lo lee todo.
+
+- **Decisiones del autor:** los dos caminos (actualizar y desde cero) en el mismo proyecto de clínicas, uno detrás de otro, sin programar la copia de un proyecto; que la prueba la ejecute Claude por la API, en lugar del autor; y que Claude decida si se mide la opción A. Claude la mide.
+- **Condiciones de Claude para que la prueba valga:** responde con una hoja de respuestas del cliente escrita antes de ver ninguna salida (las sugerencias de la IA solo se aprueban si coinciden con ella) y anota en los resultados cada aceptación o rechazo de las propuestas, con su motivo.
+- **Qué se hizo:** `ReadAllRound` y `POST /projects/{id}/question-rounds/read-all` (trabajo `questions-read-all`); la ronda centrada y esta comparten `LaunchRoundAsync`; `FocusedRoundInput` con `readAll` (todos los fragmentos anteriores en `input/relacionados.txt`; los requisitos relacionados, los de la opción C); `PhaseJobs.Create` acepta el tipo de trabajo; el worker no guarda sus preguntas; el informe la trata como una ronda, con la nota de que es experimental; la web la nombra en Ejecuciones.
+- **Un fallo encontrado por el test antes del commit:** al principio la condición del worker hacía que la ronda cayera en la rama del catálogo y el backlog (NullReferenceException en `BacklogDraft.FromResult`); se corrigió dejando la rama de las preguntas y saltando solo el guardado.
+- **Tests:** 1.025 en verde (1.024 + 1).
+- **Pendientes:** los documentos de la iteración 2, su lista de cambios y la hoja de respuestas; reconstruir la API y la web; ejecutar la prueba.
+

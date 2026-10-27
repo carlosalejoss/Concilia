@@ -120,8 +120,9 @@ public static class ReportEndpoints
         // A new arbitration takes its phase from its plan, and its proposals
         // from the copies in its folder (it has no runs of A and B).
         var rearbitration = job.Kind == Rearbitration.JobKind;
+        var readAll = job.Kind == Questions.ReadAllRound.JobKind; // step 116, a round of questions too
         var hasPlan = File.Exists(Path.Combine(folder, PhasePlan.FileName));
-        var kind = PhasePlan.KindOfJob(job.Kind) ?? (rearbitration && hasPlan ? PhasePlan.Load(folder).Kind : null);
+        var kind = PhasePlan.KindOfJob(job.Kind) ?? ((rearbitration || readAll) && hasPlan ? PhasePlan.Load(folder).Kind : null);
         Guid? rearbitrationOf = null;
         int? assumedRequirements = null;
         EmbeddingCounts? embeddings = null;
@@ -154,6 +155,10 @@ public static class ReportEndpoints
             {
                 changesNote = "Arbitraje experimental: no cambia las preguntas, el catálogo ni el backlog del proyecto.";
             }
+            else if (readAll)
+            {
+                changesNote = "Ronda experimental que lo lee todo: sus preguntas no se añaden al proyecto.";
+            }
             else if (phase is PhaseKind.Catalog or PhaseKind.Backlog && succeeded && output is not null)
             {
                 var deliverableKind = phase == PhaseKind.Catalog ? DeliverableKind.Catalog : DeliverableKind.Backlog;
@@ -185,7 +190,7 @@ public static class ReportEndpoints
                     JobReports.Changes(JobProposals.Read(storage, job, runs, phase, "B")),
                     result?["fuente"]?.GetValue<string>() == "ARB" ? JobReports.Changes(output) : null);
 
-            if (phase == PhaseKind.Questions && !rearbitration)
+            if (phase == PhaseKind.Questions && !rearbitration && !readAll)
             {
                 var round = await db.Questions.Where(q => q.JobId == job.Id).ToListAsync();
                 questions = new QuestionCounts(round.Count,

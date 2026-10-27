@@ -57,6 +57,7 @@ public static class ActiveJobs
         Deliverables.MockupEndpoints.JobKind => "el mockup",
         CatalogTask.Kind => "el catálogo v1.4 (experimental)",
         Rearbitration.JobKind => "un nuevo arbitraje (experimental)",
+        Questions.ReadAllRound.JobKind => "una ronda que lo lee todo (experimental)",
         _ => "una tarea",
     };
 

@@ -32,7 +32,8 @@ public static class InterruptedJobs
             // The jobs whose result the web reads get one that says what happened.
             var folder = storage.JobFolder(job.Id);
             if (!File.Exists(Path.Combine(folder, PhaseJobResult.FileName))
-                && (job.Kind == Deliverables.MockupEndpoints.JobKind || job.Kind == Rearbitration.JobKind || PhasePlan.KindOfJob(job.Kind) is not null))
+                && (job.Kind == Deliverables.MockupEndpoints.JobKind || job.Kind == Rearbitration.JobKind || job.Kind == Questions.ReadAllRound.JobKind
+                    || PhasePlan.KindOfJob(job.Kind) is not null))
             {
                 PhaseJobs.WriteResult(folder, new PhaseJobResult(null, false, null, Message(job.Kind)));
             }

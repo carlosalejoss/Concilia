@@ -48,7 +48,7 @@ public static class PhaseJobs
     public static NewPhaseJob Create(
         Project project, IReadOnlyList<CatalogDocument> documents, PhaseKind kind, PhaseInput input,
         IReadOnlyList<string> answeredQuestionIds, RunnerOptions options, string providerName, Random random,
-        IReadOnlyList<string>? pendingQuestionIds = null, FocusPlan? focus = null)
+        IReadOnlyList<string>? pendingQuestionIds = null, FocusPlan? focus = null, string? jobKind = null)
     {
         if (documents.Count == 0)
             return new NewPhaseJob(null, [], null, "El proyecto no tiene archivos con texto. Sube algún documento con texto.");
@@ -72,7 +72,7 @@ public static class PhaseJobs
             return new NewPhaseJob(null, [], null, budgetError);
 
         var now = DateTimeOffset.UtcNow;
-        var job = new Job { Id = Guid.NewGuid(), ProjectId = project.Id, Kind = PhasePlan.JobKind(kind), CreatedAt = now, Focus = focus?.Iterations.ToList() };
+        var job = new Job { Id = Guid.NewGuid(), ProjectId = project.Id, Kind = jobKind ?? PhasePlan.JobKind(kind), CreatedAt = now, Focus = focus?.Iterations.ToList() };
         var plan = new PhasePlan(kind, fullInput, fragments, answeredQuestionIds, PhasePlan.RandomOrder(random))
         {
             PendingQuestionIds = pendingQuestionIds ?? [],

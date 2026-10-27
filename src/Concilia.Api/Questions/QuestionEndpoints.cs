@@ -41,50 +41,27 @@ public static class QuestionEndpoints
         // the questions already asked (so they are not asked again). When the
         // arbiter ends, JobWorker stores its questions as pending (StoreRoundAsync).
         questions.MapPost("/projects/{projectId:int}/question-rounds",
-            async (int projectId, [FromBody] QuestionRoundRequest? request, AppDbContext db, JobQueue queue, IRunnerProvider provider,
+            (int projectId, [FromBody] QuestionRoundRequest? request, AppDbContext db, JobQueue queue, IRunnerProvider provider,
                 RunnerOptions options, FileStorage storage, ITextEmbedder embedder) =>
-        {
-            var project = await db.Projects.FindAsync(projectId);
-            if (project is null)
-            {
-                return Results.NotFound();
-            }
-            if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
-            {
-                return busy; // one task at a time in the whole platform
-            }
-
-            var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Questions);
-            if (!step.CanLaunch)
-            {
-                return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [step.Reason!] });
-            }
-
-            var previous = await db.Questions.Where(q => q.ProjectId == projectId).OrderBy(q => q.Code).ToListAsync();
-            var input = new PhaseInput
-            {
-                SystemName = project.SystemName,
-                Language = project.Language,
-                PreviousQuestions = PhasePrompt.PreviousQuestionsBlock(previous.Select(QuestionRules.ForPrompt)),
-            };
-            var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
-            // Step 112: centred on some iterations, with the prompts v0.13 and the reading of option C.
-            FocusPlan? focus = null;
-            var focusNumbers = request?.Focus?.Distinct().Order().ToList() ?? [];
-            if (focusNumbers.Count > 0)
-            {
-                var (focusedInput, plan, error) = await FocusedRoundInput.BuildAsync(db, embedder, projectId, focusNumbers, documents, previous, input);
-                if (error is not null)
-                {
-                    return Results.ValidationProblem(new Dictionary<string, string[]> { ["focus"] = [error] });
-                }
-                (input, focus) = (focusedInput!, plan);
-            }
-            var created = PhaseJobs.Create(project, documents, PhaseKind.Questions, input, [], options, provider.Name, Random.Shared, focus: focus);
-            return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
-        })
+                LaunchRoundAsync(projectId, request?.Focus, readAll: false, db, queue, provider, options, storage, embedder))
             .WithSummary("Lanza una ronda de preguntas")
             .WithDescription("A ‖ B → árbitro sobre toda la documentación y las preguntas ya hechas, para no repetirlas. Al terminar, las preguntas del árbitro se guardan como pendientes, numeradas tras las que ya tiene el proyecto. Exige al menos un documento con texto. Con `focus` (paso 112), la ronda se centra en esas iteraciones, cerradas y con documentos: lee entera su documentación, los fragmentos anteriores relacionados y los requisitos validados relacionados, y además de preguntas nuevas (también por contradicciones con una respuesta o con un requisito validado) propone revisiones de las pendientes: reformularlas, o que la documentación nueva las resuelve o las deja obsoletas.")
+            .LaunchesJob();
+
+        // Step 116: the same centred round reading everything (option A), an
+        // experiment whose questions are not added to the project (ReadAllRound).
+        questions.MapPost("/projects/{projectId:int}/question-rounds/read-all",
+            async (int projectId, QuestionRoundRequest request, AppDbContext db, JobQueue queue, IRunnerProvider provider,
+                RunnerOptions options, FileStorage storage, ITextEmbedder embedder) =>
+        {
+            if (request.Focus is not { Count: > 0 })
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["focus"] = ["Di en qué iteraciones se centra la ronda."] });
+            }
+            return await LaunchRoundAsync(projectId, request.Focus, readAll: true, db, queue, provider, options, storage, embedder);
+        })
+            .WithSummary("Lanza una ronda centrada que lo lee todo (experimental)")
+            .WithDescription("Para medir la lectura de la opción C frente a leerlo todo (opción A, paso 116): la misma ronda centrada en `focus`, con los mismos prompts v0.13 y las mismas entradas, salvo que A y B leen entera toda la documentación anterior en lugar de solo los fragmentos relacionados con la nueva. Es un experimento, como el nuevo arbitraje: un trabajo `questions-read-all` que deja su resultado y su informe, no cuenta como ronda del proyecto y no añade sus preguntas. Exige lo mismo que una ronda.")
             .LaunchesJob();
 
         // The catalog v0: A ‖ B → arbiter over all the documentation and the
@@ -510,6 +487,52 @@ public static class QuestionEndpoints
     // Called by JobWorker when a round ends: its questions, renumbered after
     // those the project already has, are stored as pending. Step 112: a round
     // centred on some iterations also applies the revisions its arbiter kept.
+    // A round of questions (step 112: centred on focus, if any; step 116:
+    // reading everything, as an experiment). Both endpoints share it.
+    private static async Task<IResult> LaunchRoundAsync(int projectId, List<int>? focusRequest, bool readAll, AppDbContext db, JobQueue queue,
+        IRunnerProvider provider, RunnerOptions options, FileStorage storage, ITextEmbedder embedder)
+    {
+        var project = await db.Projects.FindAsync(projectId);
+        if (project is null)
+        {
+            return Results.NotFound();
+        }
+        if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
+        {
+            return busy; // one task at a time in the whole platform
+        }
+
+        var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Questions);
+        if (!step.CanLaunch)
+        {
+            return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [step.Reason!] });
+        }
+
+        var previous = await db.Questions.Where(q => q.ProjectId == projectId).OrderBy(q => q.Code).ToListAsync();
+        var input = new PhaseInput
+        {
+            SystemName = project.SystemName,
+            Language = project.Language,
+            PreviousQuestions = PhasePrompt.PreviousQuestionsBlock(previous.Select(QuestionRules.ForPrompt)),
+        };
+        var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
+        // Step 112: centred on some iterations, with the prompts v0.13 and the reading of option C.
+        FocusPlan? focus = null;
+        var focusNumbers = focusRequest?.Distinct().Order().ToList() ?? [];
+        if (focusNumbers.Count > 0)
+        {
+            var (focusedInput, plan, error) = await FocusedRoundInput.BuildAsync(db, embedder, projectId, focusNumbers, documents, previous, input, readAll);
+            if (error is not null)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["focus"] = [error] });
+            }
+            (input, focus) = (focusedInput!, plan);
+        }
+        var created = PhaseJobs.Create(project, documents, PhaseKind.Questions, input, [], options, provider.Name, Random.Shared, focus: focus,
+            jobKind: readAll ? ReadAllRound.JobKind : null);
+        return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
+    }
+
     public static async Task StoreRoundAsync(AppDbContext db, Guid jobId, int projectId, PhasePlan plan, PhaseJobResult result)
     {
         var existing = await db.Questions.Where(q => q.ProjectId == projectId).ToListAsync();

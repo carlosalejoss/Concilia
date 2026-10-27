@@ -81,7 +81,7 @@ export type Job = {
 
 // The job kinds of the v0 flow (A ‖ B → arbiter, or a single run for the
 // answer suggestions and the mockup).
-export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'catalog-update', 'backlog', 'backlog-update', 'answer-suggestions', 'mockup', 'rearbitration']
+export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'catalog-update', 'backlog', 'backlog-update', 'answer-suggestions', 'mockup', 'rearbitration', 'questions-read-all']
 // A new arbitration of a finished job (16-10-2026): only the arbiter, on the
 // same proposals of A and B; an experiment that changes nothing of the project.
 export const REARBITRATION_KIND = 'rearbitration'
@@ -102,6 +102,7 @@ export const JOB_KIND_NAMES: Record<string, string> = {
   mockup: 'Mockup',
   catalog: 'Catálogo v1.4 (experimental)',
   rearbitration: 'Nuevo arbitraje (experimental)',
+  'questions-read-all': 'Ronda que lo lee todo (experimental)',
 }
 
 // GET /jobs/{id}/result: the output of a v0 phase job that counts, and where

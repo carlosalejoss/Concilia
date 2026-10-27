@@ -1523,6 +1523,61 @@
         }
       }
     },
+    "/projects/{projectId}/question-rounds/read-all": {
+      "post": {
+        "tags": [
+          "Preguntas"
+        ],
+        "summary": "Lanza una ronda centrada que lo lee todo (experimental)",
+        "description": "Para medir la lectura de la opción C frente a leerlo todo (opción A, paso 116): la misma ronda centrada en `focus`, con los mismos prompts v0.13 y las mismas entradas, salvo que A y B leen entera toda la documentación anterior en lugar de solo los fragmentos relacionados con la nueva. Es un experimento, como el nuevo arbitraje: un trabajo `questions-read-all` que deja su resultado y su informe, no cuenta como ronda del proyecto y no añade sus preguntas. Exige lo mismo que una ronda.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionRoundRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/question-rounds/{jobId}/suggestions": {
       "post": {
         "tags": [
