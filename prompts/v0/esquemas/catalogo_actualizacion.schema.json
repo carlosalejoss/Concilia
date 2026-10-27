@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tfg/v0/catalogo_actualizacion.schema.json",
+  "title": "Actualización del catálogo con unas iteraciones v0.13 (salida de Modelo A / Modelo B)",
+  "$comment": "Solo la estructura. Las reglas entre campos (ids nuevos consecutivos, que los modificados y eliminados existan en el catálogo validado y no se repitan, que un modificado mantenga su tipo, EARS solo con shall, que cada cambio cite la documentación nueva o una respuesta nueva…) las comprueba la plataforma.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "nuevos",
+    "modificados",
+    "eliminados"
+  ],
+  "properties": {
+    "nuevos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tipo",
+          "notacion",
+          "obligatoriedad",
+          "texto",
+          "fuentes",
+          "preguntas",
+          "motivo"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^N-[0-9]{3,}$"
+          },
+          "tipo": {
+            "enum": [
+              "RF",
+              "RNF",
+              "RA",
+              "RT",
+              "RI"
+            ]
+          },
+          "notacion": {
+            "enum": [
+              "EARS",
+              "MASTeR"
+            ]
+          },
+          "obligatoriedad": {
+            "enum": [
+              "shall",
+              "should",
+              "may"
+            ]
+          },
+          "texto": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fuentes": {
+            "$ref": "#/$defs/fuentes"
+          },
+          "preguntas": {
+            "$ref": "#/$defs/preguntas"
+          },
+          "motivo": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "modificados": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tipo",
+          "notacion",
+          "obligatoriedad",
+          "texto",
+          "fuentes",
+          "preguntas",
+          "motivo"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/idCatalogo"
+          },
+          "tipo": {
+            "enum": [
+              "RF",
+              "RNF",
+              "RA",
+              "RT",
+              "RI"
+            ]
+          },
+          "notacion": {
+            "enum": [
+              "EARS",
+              "MASTeR"
+            ]
+          },
+          "obligatoriedad": {
+            "enum": [
+              "shall",
+              "should",
+              "may"
+            ]
+          },
+          "texto": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fuentes": {
+            "$ref": "#/$defs/fuentes"
+          },
+          "preguntas": {
+            "$ref": "#/$defs/preguntas"
+          },
+          "motivo": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "eliminados": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "fuentes",
+          "preguntas",
+          "motivo"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/idCatalogo"
+          },
+          "fuentes": {
+            "$ref": "#/$defs/fuentes"
+          },
+          "preguntas": {
+            "$ref": "#/$defs/preguntas"
+          },
+          "motivo": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "idCatalogo": {
+      "type": "string",
+      "pattern": "^(RF|RNF|RA|RT|RI)-[0-9]{3,}$"
+    },
+    "fuentes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DOC-[0-9]{2,}#F[0-9]{3,}$"
+      }
+    },
+    "preguntas": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^P-[0-9]{3,}$"
+      }
+    }
+  }
+}

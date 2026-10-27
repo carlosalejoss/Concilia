@@ -40,6 +40,7 @@ Cada fichero es su versión vigente: no hay una copia por subversión, porque la
 | `esquemas/preguntas`, `arbitro_preguntas`, `catalogo`, `arbitro_catalogo`, `backlog` y `arbitro_backlog` `.schema.json` | v0 | — | v0 |
 | `esquemas/sugerencias.schema.json` | v0 (09-10, sugerencias) | — | v0 |
 | `preguntas_centradas.md`, `arbitro_preguntas_centradas.md` y sus esquemas | v0.13 | — | v0.13 |
+| `catalogo_actualizacion.md`, `arbitro_catalogo_actualizacion.md` y sus esquemas | v0.13 (borrador del 27-10-2026, pendiente de la revisión del autor; todavía no los usa ningún código) | — | — |
 
 Ficheros que ya no existen: `mockup.md` (de la v0 a la v0.5; en la v0.6 lo sustituyen `mockup_diseno.md` y `mockup_pantalla.md`) y `mockup_integracion.md` (v0.6 y v0.7; en la v0.8 lo sustituye la revisión de la plataforma con `mockup_correccion.md`). Desde la v0.11, la dirección de estilo del mockup sin `.zip` la pone la plataforma (`StyleDirections`), no un prompt.
 

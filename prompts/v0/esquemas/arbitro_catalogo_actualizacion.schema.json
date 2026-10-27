@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tfg/v0/arbitro_catalogo_actualizacion.schema.json",
+  "title": "Actualización del catálogo con unas iteraciones v0.13, unida por el árbitro",
+  "$comment": "Solo la estructura. Las reglas entre campos (las de unir un catálogo para `nuevos` y `descartados`; un cambio por cada requisito de input/cambios.txt; `de` con las propuestas que proponen esa misma acción y vacío en `ninguna`; el requisito entero solo en `modificar`…) las comprueba la plataforma.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "nuevos",
+    "descartados",
+    "cambios"
+  ],
+  "properties": {
+    "nuevos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tipo",
+          "notacion",
+          "obligatoriedad",
+          "texto",
+          "fuentes",
+          "preguntas",
+          "motivo",
+          "de",
+          "discrepancia",
+          "explicacion"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^N-[0-9]{3,}$"
+          },
+          "tipo": {
+            "$ref": "#/$defs/tipo"
+          },
+          "notacion": {
+            "$ref": "#/$defs/notacion"
+          },
+          "obligatoriedad": {
+            "$ref": "#/$defs/obligatoriedad"
+          },
+          "texto": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fuentes": {
+            "$ref": "#/$defs/fuentes"
+          },
+          "preguntas": {
+            "$ref": "#/$defs/preguntas"
+          },
+          "motivo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "de": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "propuesta_1",
+              "propuesta_2"
+            ],
+            "properties": {
+              "propuesta_1": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^N-[0-9]{3,}$"
+                }
+              },
+              "propuesta_2": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^N-[0-9]{3,}$"
+                }
+              }
+            }
+          },
+          "discrepancia": {
+            "type": "boolean"
+          },
+          "explicacion": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "descartados": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "propuesta",
+          "id",
+          "motivo"
+        ],
+        "properties": {
+          "propuesta": {
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^N-[0-9]{3,}$"
+          },
+          "motivo": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "cambios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "accion",
+          "fuentes",
+          "preguntas",
+          "motivo",
+          "de",
+          "discrepancia",
+          "explicacion"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^(RF|RNF|RA|RT|RI)-[0-9]{3,}$"
+          },
+          "accion": {
+            "enum": [
+              "modificar",
+              "eliminar",
+              "ninguna"
+            ]
+          },
+          "tipo": {
+            "$ref": "#/$defs/tipo"
+          },
+          "notacion": {
+            "$ref": "#/$defs/notacion"
+          },
+          "obligatoriedad": {
+            "$ref": "#/$defs/obligatoriedad"
+          },
+          "texto": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fuentes": {
+            "$ref": "#/$defs/fuentes"
+          },
+          "preguntas": {
+            "$ref": "#/$defs/preguntas"
+          },
+          "motivo": {
+            "type": "string"
+          },
+          "de": {
+            "type": "array",
+            "items": {
+              "enum": [
+                1,
+                2
+              ]
+            },
+            "uniqueItems": true
+          },
+          "discrepancia": {
+            "type": "boolean"
+          },
+          "explicacion": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "tipo": {
+      "enum": [
+        "RF",
+        "RNF",
+        "RA",
+        "RT",
+        "RI"
+      ]
+    },
+    "notacion": {
+      "enum": [
+        "EARS",
+        "MASTeR"
+      ]
+    },
+    "obligatoriedad": {
+      "enum": [
+        "shall",
+        "should",
+        "may"
+      ]
+    },
+    "fuentes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DOC-[0-9]{2,}#F[0-9]{3,}$"
+      }
+    },
+    "preguntas": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^P-[0-9]{3,}$"
+      }
+    }
+  }
+}

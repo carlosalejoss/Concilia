@@ -2608,3 +2608,12 @@ Cierre del paso 112.
 - El autor revisó en el navegador el selector «Todas las iteraciones / Centrarse en…», el foco de la ronda, las preguntas enlazadas, la propuesta y el historial: «está todo bien». Paso 112 cerrado.
 - **Siguiente:** el paso 113 (actualizar el catálogo con unas iteraciones), empezando por los borradores de sus prompts para la revisión del autor.
 
+## 27-10-2026, 07:45 (sesión)
+
+Paso 113, primera parte: borradores de los prompts v0.13 para actualizar el catálogo con unas iteraciones, para la revisión del autor antes del código.
+
+- `prompts/v0/catalogo_actualizacion.md` (A y B) y `prompts/v0/arbitro_catalogo_actualizacion.md`, con sus esquemas. No los usa nada todavía.
+- **A y B:** con la lectura de la opción C, como en las preguntas centradas (la documentación nueva, los fragmentos relacionados y los requisitos validados relacionados, enteros; el catálogo y la documentación, para consultar), y las respuestas con `nueva="si"` en las contestadas después de validar el catálogo. Escriben `output/cambios.json`: requisitos nuevos (`N-001`…; la plataforma les da el id definitivo de su tipo), modificados (enteros, con su id y sin cambiar de tipo) y eliminados, cada uno con su motivo y sus fuentes. Prioridades: fidelidad, conservar lo validado (no se modifica para mejorarlo), cobertura y sin repeticiones.
+- **Árbitro:** une los nuevos con el emparejamiento entre A y B y contra el catálogo (líneas `existente:`), y decide cada modificación y eliminación a partir de `input/cambios.txt`, donde la plataforma las agrupa por requisito sin IA; consulta `input/fuentes.txt`, con los fragmentos que citan los cambios.
+- **Pendiente:** la revisión del autor; después, el código del paso.
+
