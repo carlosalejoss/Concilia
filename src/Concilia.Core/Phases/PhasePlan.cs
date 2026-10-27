@@ -30,6 +30,7 @@ public record PhasePlan(
         PhaseKind.Backlog => "backlog",
         PhaseKind.Suggestions => "answer-suggestions",
         PhaseKind.CatalogUpdate => "catalog-update",
+        PhaseKind.BacklogUpdate => "backlog-update",
         _ => throw new ArgumentOutOfRangeException(nameof(kind)),
     };
 
@@ -58,6 +59,7 @@ public record PhasePlan(
         FragmentAtLine = DocumentationFile.FragmentAtLine(Input.Documentation),
         AnsweredQuestionIds = AnsweredQuestionIds.ToHashSet(),
         Catalog = Input.Catalog.Length > 0 ? Input.Catalog : null,
+        Backlog = Kind == PhaseKind.BacklogUpdate && Input.Backlog.Length > 0 ? Input.Backlog : null,
         PendingQuestionIds = PendingQuestionIds,
         NewDocumentIds = Focus?.NewDocuments.ToHashSet() ?? [],
         NewAnswerIds = Focus?.NewAnswers?.ToHashSet() ?? new HashSet<string>(),

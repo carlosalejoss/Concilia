@@ -56,8 +56,8 @@ public static partial class PlatformFixes
         FixLineCitations(root, context, phase.OutputFile, warnings);
         if (phase.IsArbiter)
             FixMissing(phase.Kind, root, context, warnings);
-        if (phase.IsArbiter && phase.Kind == PhaseKind.CatalogUpdate)
-            FixChangeDiscrepancies(root, context, warnings);
+        if (phase.IsArbiter && phase.Kind is PhaseKind.CatalogUpdate or PhaseKind.BacklogUpdate)
+            FixChangeDiscrepancies(phase.Kind, root, context, warnings);
         var json = root.ToJsonString(Indented);
         if (phase.Kind == PhaseKind.Catalog)
             json = FixTypes(json, warnings);
@@ -164,11 +164,13 @@ public static partial class PlatformFixes
     // CAMBIO-DISC (step 113): if A modifies a requirement and B deletes it (or
     // the other way round), it is a discrepancy whatever the arbiter says
     // (decision of the author, 26-10-2026): the platform marks it.
-    private static void FixChangeDiscrepancies(JsonNode root, PhaseContext context, List<string> warnings)
+    private static void FixChangeDiscrepancies(PhaseKind kind, JsonNode root, PhaseContext context, List<string> warnings)
     {
         if (context.Proposal1 is null || context.Proposal2 is null)
             return;
-        var actions = new[] { CatalogUpdateRound.ChangesOf(context.Proposal1), CatalogUpdateRound.ChangesOf(context.Proposal2) };
+        var actions = new[] { context.Proposal1, context.Proposal2 }
+            .Select(p => kind == PhaseKind.CatalogUpdate ? CatalogUpdateRound.ChangesOf(p) : BacklogUpdateRound.ChangesOf(p))
+            .ToArray();
         foreach (var change in (root["cambios"] as JsonArray ?? []).OfType<JsonObject>())
         {
             var id = change["id"]?.GetValue<string>();

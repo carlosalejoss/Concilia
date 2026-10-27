@@ -103,7 +103,7 @@ public class JobWorker(
             {
                 await Questions.QuestionEndpoints.StoreRoundAsync(db, jobId, job.ProjectId, phasePlan, result);
             }
-            else if (phasePlan.Kind == PhaseKind.CatalogUpdate)
+            else if (phasePlan.Kind is PhaseKind.CatalogUpdate or PhaseKind.BacklogUpdate)
             {
                 await Deliverables.DeliverableEndpoints.StoreUpdateAsync(db, storage, jobId, job.ProjectId, phasePlan, result);
             }

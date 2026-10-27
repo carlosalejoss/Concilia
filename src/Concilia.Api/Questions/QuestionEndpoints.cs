@@ -10,6 +10,7 @@ using Concilia.Api.Runs;
 using Concilia.Core.Deliverables;
 using Concilia.Core.Flow;
 using Concilia.Core.Phases;
+using Concilia.Core.Projects;
 using Concilia.Core.Questions;
 using Concilia.Core.Runner;
 
@@ -181,6 +182,85 @@ public static class QuestionEndpoints
         })
             .WithSummary("Actualiza el catálogo validado con unas iteraciones")
             .WithDescription("A ‖ B → árbitro (prompts v0.13) sobre la documentación de esas iteraciones, los fragmentos anteriores relacionados y los requisitos validados relacionados, con las respuestas (marcadas como nuevas las contestadas después de validar el catálogo). El resultado es un conjunto de cambios que la plataforma aplica a la copia de trabajo: los requisitos nuevos se añaden con su historial, y lo que se modifica o elimina queda como propuesta por revisar antes de validar. Exige el catálogo validado, lo que exige cualquier catálogo (ninguna iteración abierta, una ronda terminada y ninguna pregunta pendiente) y, para cada iteración, una ronda de preguntas terminada después de cerrar su documentación, centrada en ella o con todas.")
+            .LaunchesJob();
+
+        // Step 114: update the validated backlog with the iterations its
+        // validated catalog already includes (prompts v0.13). The platform
+        // computes the impact without AI (BacklogImpact), from the catalog the
+        // backlog came from to the validated one now; A ‖ B write the changes
+        // only over that, and the platform applies them to the working copy.
+        phases.MapPost("/projects/{projectId:int}/backlog-update-jobs",
+            async (int projectId, CatalogUpdateRequest request, AppDbContext db, JobQueue queue, IRunnerProvider provider,
+                RunnerOptions options, FileStorage storage) =>
+        {
+            var project = await db.Projects.FindAsync(projectId);
+            if (project is null)
+            {
+                return Results.NotFound();
+            }
+            if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
+            {
+                return busy; // one task at a time in the whole platform
+            }
+            var step = ProjectFlow.Compute(await FlowEndpoints.ReadFactsAsync(db, storage, projectId)).Single(s => s.Step == FlowStep.Backlog);
+            if (!step.CanLaunch)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [step.Reason!] });
+            }
+            var backlog = await Deliverables.DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Backlog);
+            var catalog = await Deliverables.DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Catalog);
+            if (backlog is not { Status: DeliverableStatus.Validated })
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["project"] = ["Para actualizar el backlog hace falta el backlog validado; si no, genéralo desde cero."],
+                });
+            }
+            var iterations = request.Iterations?.Distinct().Order().ToList() ?? [];
+            var all = await db.Iterations.Where(i => i.ProjectId == projectId).ToListAsync();
+            var byDocument = await ProjectIterations.DocumentsAsync(db, projectId);
+            var invalid = IterationRules.ValidateFocus(iterations, all, byDocument.Values.ToHashSet())
+                ?? iterations.Where(n => !(catalog!.Iterations ?? []).Contains(n))
+                    .Select(n => $"Actualiza y valida antes el catálogo con la iteración {n}.").FirstOrDefault();
+            if (invalid is not null)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["iterations"] = [invalid] });
+            }
+
+            // The impact: from the catalog the backlog came from to the validated one now.
+            var from = PhasePlan.Load(storage.JobFolder(backlog.JobId)).Input.Catalog;
+            var current = CatalogDraft.ForNextPhase(catalog!.Content);
+            var validatedBacklog = BacklogDraft.ForNextPhase(backlog.Content);
+            var impact = BacklogImpact.Compute(from, current, validatedBacklog);
+            if (impact.IsEmpty)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["iterations"] = ["El catálogo no ha cambiado desde que se generó el backlog: no hay nada que actualizar."],
+                });
+            }
+            var answered = await db.Questions
+                .Where(q => q.ProjectId == projectId && q.Status == QuestionStatus.Answered)
+                .OrderBy(q => q.Code)
+                .ToListAsync();
+            var input = new PhaseInput
+            {
+                SystemName = project.SystemName,
+                Language = project.Language,
+                Answers = PhasePrompt.AnswersBlock(answered.Select(QuestionRules.ForPrompt)),
+                Iterations = FocusedRound.IterationsBlock(iterations, byDocument),
+                Impact = impact.Text(),
+                AffectedStories = impact.AffectedJson(validatedBacklog),
+                Catalog = current,
+                Backlog = validatedBacklog,
+            };
+            var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
+            var created = PhaseJobs.Create(project, documents, PhaseKind.BacklogUpdate, input, answered.Select(q => q.Code).ToList(),
+                options, provider.Name, Random.Shared, focus: new FocusPlan(iterations, [], []));
+            return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
+        })
+            .WithSummary("Actualiza el backlog validado con unas iteraciones")
+            .WithDescription("A ‖ B → árbitro (prompts v0.13) sobre el impacto que calcula la plataforma, sin IA, del catálogo del que salió el backlog al validado ahora: requisitos modificados, eliminados y nuevos sin historia, y las historias que citan uno modificado o eliminado. El resultado es un conjunto de cambios que la plataforma aplica a la copia de trabajo: las historias nuevas se añaden con su historial, y lo que se modifica o elimina queda como propuesta por revisar antes de validar. Exige el backlog validado y el catálogo validado con esas iteraciones.")
             .LaunchesJob();
 
         // The backlog v0: A ‖ B → arbiter from the validated catalog (only the

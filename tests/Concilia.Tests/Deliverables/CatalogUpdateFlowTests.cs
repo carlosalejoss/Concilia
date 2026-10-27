@@ -13,10 +13,11 @@ using Concilia.Core.Catalog;
 
 namespace Concilia.Tests.Deliverables;
 
-// Step 113: the validated catalog updated with a second iteration, through the
-// API with Fake. A new requirement is added with the next id and its history;
-// the modification of a related requirement waits for the user, and the
-// catalog is validated after accepting it.
+// Steps 113 and 114: the validated catalog and then the validated backlog
+// updated with a second iteration, through the API with Fake. A new
+// requirement (and its story) is added with the next id and its history; the
+// modification of a related requirement (and of its story) waits for the user,
+// and each one is validated after accepting it.
 public class CatalogUpdateFlowTests
 {
     private static WebApplicationFactory<Program> Api(string storage) =>
@@ -49,6 +50,9 @@ public class CatalogUpdateFlowTests
         await AnswerAll(client, id);
         var first = await Launch(client, $"/projects/{id}/catalog-jobs", null);
         await ReviewAndValidate(client, id);
+        // Step 114: and its backlog, to update it afterwards.
+        await Launch(client, $"/projects/{id}/backlog-jobs", null);
+        await ReviewAndValidate(client, id, "backlog");
         var before = await Json(await client.GetAsync($"/projects/{id}/deliverables/catalog"));
         var requirements = before["content"]!["requisitos"]!.AsArray();
 
@@ -104,6 +108,24 @@ public class CatalogUpdateFlowTests
         Assert.Equal("modificado", kept["historial"]![0]!["accion"]!.GetValue<string>());
         Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsync($"/projects/{id}/deliverables/catalog/requirements/{modifiedId}/reject-change", null)).StatusCode);
         await ReviewAndValidate(client, id);
+
+        // Step 114: the backlog, updated with the same iteration: a story for the new
+        // requirement, and the story of the modified one as a proposal.
+        var backlogUpdate = await Launch(client, $"/projects/{id}/backlog-update-jobs", new { iterations = new[] { 2 } });
+        Assert.Equal("backlog-update", (await Json(await client.GetAsync($"/jobs/{backlogUpdate}")))["job"]!["kind"]!.GetValue<string>());
+        var backlog = await Json(await client.GetAsync($"/projects/{id}/deliverables/backlog"));
+        Assert.Equal([1, 2], backlog["iterations"]!.AsArray().Select(n => n!.GetValue<int>()));
+        var stories = backlog["content"]!["epicas"]!.AsArray().SelectMany(e => e!["historias"]!.AsArray()).ToList();
+        var newStory = stories.Single(h => h!["historial"] is not null && h["cambio"] is null)!;
+        Assert.Equal([added["id"]!.GetValue<string>()], newStory["requisitos"]!.AsArray().Select(r => r!.GetValue<string>()));
+        var changedStory = stories.Single(h => h!["cambio"] is not null)!;
+        Assert.Contains(modifiedId, changedStory["requisitos"]!.AsArray().Select(r => r!.GetValue<string>()));
+        var storyId = changedStory["id"]!.GetValue<string>();
+        Assert.Contains(backlog["errors"]!.AsArray(), e => e!.GetValue<string>().StartsWith($"{storyId} CAMBIO"));
+        (await client.PostAsync($"/projects/{id}/deliverables/backlog/stories/{storyId}/accept-change", null)).EnsureSuccessStatusCode();
+        await ReviewAndValidate(client, id, "backlog");
+        var backlogReport = await Json(await client.GetAsync($"/jobs/{backlogUpdate}/report"));
+        Assert.Equal((1, 1), (backlogReport["update"]!["arbiter"]!["new"]!.GetValue<int>(), backlogReport["update"]!["arbiter"]!["modified"]!.GetValue<int>()));
     }
 
     private static async Task AnswerAll(HttpClient client, int projectId)
@@ -112,15 +134,18 @@ public class CatalogUpdateFlowTests
             (await client.PutAsJsonAsync($"/questions/{q!["id"]}/answer", new { answer = "Sí, como dice la documentación." })).EnsureSuccessStatusCode();
     }
 
-    // Reviews every discrepancy and validates.
-    private static async Task ReviewAndValidate(HttpClient client, int projectId)
+    // Reviews every discrepancy (of the requirements or the stories) and validates.
+    private static async Task ReviewAndValidate(HttpClient client, int projectId, string kind = "catalog")
     {
-        var content = (await Json(await client.GetAsync($"/projects/{projectId}/deliverables/catalog")))["content"]!.DeepClone();
-        foreach (var r in content["requisitos"]!.AsArray())
-            if (r!["discrepancia"]!.GetValue<bool>())
-                r["revisada"] = true;
-        (await client.PutAsJsonAsync($"/projects/{projectId}/deliverables/catalog", new { content })).EnsureSuccessStatusCode();
-        var validated = await client.PostAsync($"/projects/{projectId}/deliverables/catalog/validate", null);
+        var content = (await Json(await client.GetAsync($"/projects/{projectId}/deliverables/{kind}")))["content"]!.DeepClone();
+        var elements = kind == "catalog"
+            ? content["requisitos"]!.AsArray().ToList()
+            : content["epicas"]!.AsArray().SelectMany(e => e!["historias"]!.AsArray()).ToList();
+        foreach (var e in elements)
+            if (e!["discrepancia"]!.GetValue<bool>())
+                e["revisada"] = true;
+        (await client.PutAsJsonAsync($"/projects/{projectId}/deliverables/{kind}", new { content })).EnsureSuccessStatusCode();
+        var validated = await client.PostAsync($"/projects/{projectId}/deliverables/{kind}/validate", null);
         Assert.True(validated.IsSuccessStatusCode, await validated.Content.ReadAsStringAsync());
     }
 

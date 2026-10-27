@@ -93,7 +93,7 @@ Escribe `output/cambios.json` con **una sola llamada a Write**: un objeto JSON e
 
 Tus cambios no se aplican tal cual: otro product owner los compara con los de un compañero y, después, el cliente revisa cada modificación y cada eliminación antes de validar.
 
-# §6 CIERRE DE LA COBERTURA
+# §6 ANTES DE ESCRIBIR
 
 Antes de escribir, comprueba que cada `RF` y `RI` nuevo de `input/impacto.txt` está en alguna historia nueva o modificada.
 

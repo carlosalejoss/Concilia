@@ -175,8 +175,8 @@ public static class ReportEndpoints
                     .Count(r => (r["preguntas"] as JsonArray ?? []).Any(p => p is JsonValue v && v.TryGetValue<string>(out var id) && guesses.Contains(id)));
             }
 
-            // Step 113: what A, B and the arbiter of an update proposed.
-            if (phase == PhaseKind.CatalogUpdate)
+            // Steps 113 and 114: what A, B and the arbiter of an update proposed.
+            if (phase is PhaseKind.CatalogUpdate or PhaseKind.BacklogUpdate)
                 update = new UpdateCounts(plan.Focus?.Iterations ?? [],
                     JobReports.Changes(JobProposals.Read(storage, job, runs, phase, "A")),
                     JobReports.Changes(JobProposals.Read(storage, job, runs, phase, "B")),

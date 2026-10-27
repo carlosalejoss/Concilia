@@ -41,6 +41,8 @@ public static partial class FakePhaseOutput
         {
             (PhaseRole.Proposal, _) when kind == PhaseKind.CatalogUpdate => UpdateProposal(workDirectory),
             (_, _) when kind == PhaseKind.CatalogUpdate => UpdateArbiter(workDirectory),
+            (PhaseRole.Proposal, _) when kind == PhaseKind.BacklogUpdate => BacklogUpdateProposal(workDirectory),
+            (_, _) when kind == PhaseKind.BacklogUpdate => BacklogUpdateArbiter(workDirectory),
             (PhaseRole.Proposal, true) => FocusedProposal(workDirectory, prompt),
             (PhaseRole.Proposal, false) => Proposal(kind, workDirectory),
             (_, true) => FocusedArbiter(workDirectory),
@@ -141,6 +143,7 @@ public static partial class FakePhaseOutput
             PhaseKind.Questions => ("preguntas", "descartadas"),
             PhaseKind.Catalog => ("requisitos", "descartados"),
             PhaseKind.CatalogUpdate => ("nuevos", "descartados"),
+            PhaseKind.BacklogUpdate => ("nuevas", "descartadas"),
             _ => ("historias", "descartadas"),
         };
 
@@ -284,6 +287,71 @@ public static partial class FakePhaseOutput
         var p2 = Read(workDirectory, PhaseTask.Proposal2File);
         var byProposal = new[] { CatalogUpdateRound.ChangesOf(p1), CatalogUpdateRound.ChangesOf(p2) };
         output["cambios"] = Array(CatalogUpdateRound.Targets(p1, p2).Select(id =>
+        {
+            var mine = byProposal[0].Concat(byProposal[1]).First(c => c.Id == id);
+            var de = Enumerable.Range(1, 2).Where(n => byProposal[n - 1].Any(c => c.Id == id && c.Action == mine.Action));
+            var decision = mine.Change.DeepClone().AsObject();
+            decision["accion"] = mine.Action;
+            decision["de"] = new JsonArray(de.Select(n => (JsonNode)n).ToArray());
+            decision["discrepancia"] = false;
+            decision["explicacion"] = Note;
+            return decision;
+        }));
+        return output;
+    }
+
+    // An update of the backlog (step 114): a story for the first new
+    // requirement of the impact, in the first epic, and the modification of
+    // the first affected story (its criteria kept by id, one task more).
+    private static JsonObject BacklogUpdateProposal(string workDirectory)
+    {
+        var impact = Read(workDirectory, BacklogUpdateRound.ImpactFile).Split('\n');
+        var created = impact.SkipWhile(l => l != "Requisitos nuevos sin historia:").Skip(1).TakeWhile(l => l.StartsWith("- ", StringComparison.Ordinal))
+            .Select(l => l[2..].Split(' ')[0]).ToList();
+        var epic = JsonNode.Parse(Read(workDirectory, BacklogUpdateRound.BacklogFile))!["epicas"]!.AsArray()[0]!["id"]!.GetValue<string>();
+        var affected = JsonNode.Parse(Read(workDirectory, BacklogUpdateRound.AffectedFile))!["historias"]!.AsArray().OfType<JsonObject>().FirstOrDefault();
+        var modified = new JsonArray();
+        if (affected is not null)
+            modified.Add(new JsonObject
+            {
+                ["id"] = affected["id"]!.DeepClone(),
+                ["titulo"] = affected["titulo"]!.DeepClone(),
+                ["como"] = affected["como"]!.DeepClone(),
+                ["quiero"] = affected["quiero"]!.DeepClone(),
+                ["para"] = affected["para"]!.DeepClone(),
+                ["requisitos"] = affected["requisitos"]!.DeepClone(),
+                ["criterios"] = new JsonArray(affected["criterios"]!.AsArray().Select(c => (JsonNode)c!["id"]!.GetValue<string>()).ToArray()),
+                ["tareas"] = new JsonArray(affected["tareas"]!.AsArray().Select(t => (JsonNode)t!["id"]!.GetValue<string>())
+                    .Append(new JsonObject { ["titulo"] = "Ajustar al requisito actualizado (simulado)" }).ToArray()),
+                ["motivo"] = Note,
+            });
+        return new JsonObject
+        {
+            ["nuevas"] = Array(created.Take(1).Select(r => new JsonObject
+            {
+                ["id"] = "N-001",
+                ["epica"] = epic,
+                ["titulo"] = $"Historia de {r}",
+                ["como"] = "usuario",
+                ["quiero"] = $"lo que pide {r}",
+                ["para"] = "probar la actualización sin modelos",
+                ["requisitos"] = new JsonArray(r),
+                ["criterios"] = new JsonArray(new JsonObject { ["escenario"] = $"{r} se cumple", ["dado"] = "el sistema en marcha", ["cuando"] = "el usuario lo usa", ["entonces"] = $"se cumple {r}" }),
+                ["tareas"] = new JsonArray(new JsonObject { ["titulo"] = $"Implementar {r}" }),
+                ["motivo"] = Note,
+            })),
+            ["modificadas"] = modified,
+            ["eliminadas"] = new JsonArray(),
+        };
+    }
+
+    private static JsonObject BacklogUpdateArbiter(string workDirectory)
+    {
+        var output = Arbiter(PhaseKind.BacklogUpdate, workDirectory);
+        var p1 = Read(workDirectory, PhaseTask.Proposal1File);
+        var p2 = Read(workDirectory, PhaseTask.Proposal2File);
+        var byProposal = new[] { BacklogUpdateRound.ChangesOf(p1), BacklogUpdateRound.ChangesOf(p2) };
+        output["cambios"] = Array(BacklogUpdateRound.Targets(p1, p2).Select(id =>
         {
             var mine = byProposal[0].Concat(byProposal[1]).First(c => c.Id == id);
             var de = Enumerable.Range(1, 2).Where(n => byProposal[n - 1].Any(c => c.Id == id && c.Action == mine.Action));

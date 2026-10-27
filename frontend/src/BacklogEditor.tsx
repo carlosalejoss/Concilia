@@ -13,7 +13,7 @@ import EmptyState from './ui/EmptyState.tsx'
 import Provenance from './ui/Provenance.tsx'
 import IterationBadge from './ui/IterationBadge.tsx'
 import IterationFilter from './ui/IterationFilter.tsx'
-import { iterationsOf, showIterations, storyIterations, useElementIterations } from './iterations.ts'
+import { iterationsOf, iterationsText, showIterations, storyIterations, useElementIterations } from './iterations.ts'
 
 const field = 'w-full rounded border border-line bg-surface px-2.5 py-1.5 text-sm focus:outline-2 focus:outline-accent'
 const label = 'text-xs font-medium text-muted'
@@ -102,9 +102,11 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
     (needle === '' || `${h.id} ${h.titulo} ${h.como} ${h.quiero} ${h.para} ${h.requisitos.join(' ')}`.toLowerCase().includes(needle))
   const filtering = onlyPending || needle !== '' || iteration !== null
 
+  const changes = stories.filter((h) => h.cambio).length
   const summary =
     `${epics.length} épicas, ${stories.length} historias` +
     (discrepancies > 0 ? `, ${discrepancies - pending} de ${discrepancies} discrepancias revisadas` : '') +
+    (changes > 0 ? `, ${changes} ${changes === 1 ? 'cambio propuesto' : 'cambios propuestos'} por revisar` : '') +
     '. Los ids no cambian al guardar: lo nuevo toma el siguiente número.'
 
   return (
@@ -186,6 +188,8 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
                         story={h}
                         iterations={iterationsOfStory(h)}
                         readOnly={readOnly}
+                        // Step 114: on what is saved, so not while there are unsaved changes.
+                        onDecide={state.dirty || state.busy ? undefined : (accept) => state.post(`/stories/${h.id}/${accept ? 'accept-change' : 'reject-change'}`)}
                         open={isOpen(`${i}.${j}`)}
                         // The panel shows what is saved: hidden while there are changes.
                         onTrace={state.dirty ? undefined : () => setTrace({ kind: 'story', id: h.id })}
@@ -284,6 +288,7 @@ function Coverage({
 function StoryItem({
   story: h,
   iterations,
+  onDecide,
   readOnly,
   open,
   onTrace,
@@ -293,6 +298,7 @@ function StoryItem({
 }: {
   story: Story
   iterations: number[]
+  onDecide?: (accept: boolean) => void
   readOnly: boolean
   open: boolean
   onTrace?: () => void
@@ -318,6 +324,7 @@ function StoryItem({
         </span>
         <span className="flex shrink-0 flex-wrap justify-end gap-1">
           <IterationBadge numbers={iterations} />
+          {h.cambio && <Badge tone="danger">{h.cambio.accion === 'modificar' ? 'Modificación propuesta' : 'Eliminación propuesta'}</Badge>}
           <Badge>{h.criterios.length} criterios</Badge>
           {h.discrepancia && <Badge tone={discrepancy ? 'danger' : 'ok'}>{discrepancy ? 'Discrepancia' : 'Revisada'}</Badge>}
         </span>
@@ -329,6 +336,42 @@ function StoryItem({
             <Button variant="secondary" size="sm" icon={Waypoints} onClick={onTrace}>
               Trazabilidad
             </Button>
+          )}
+          {/* Step 114: what an update proposes to modify or delete, reviewed before validating. */}
+          {h.cambio && (
+            <div className="space-y-2 rounded bg-danger-soft px-3 py-2 text-sm">
+              <p>
+                <span className="font-medium">
+                  {h.cambio.accion === 'modificar' ? 'La actualización propone modificarla' : 'La actualización propone eliminarla'}
+                </span>{' '}
+                ({iterationsText(h.cambio.iteraciones)}): {h.cambio.motivo}
+              </p>
+              {h.cambio.accion === 'modificar' && h.cambio.antes && (
+                <p className="text-xs">
+                  Antes: Como {h.cambio.antes.como}, quiero {h.cambio.antes.quiero}, para {h.cambio.antes.para} ({h.cambio.antes.criterios?.length ?? 0} criterios y{' '}
+                  {h.cambio.antes.tareas?.length ?? 0} tareas).
+                </p>
+              )}
+              {h.cambio.discrepancia && <p className="text-xs">Los dos modelos no coincidían: {h.cambio.explicacion}</p>}
+              <div className="flex flex-wrap items-center gap-2">
+                <Button size="sm" variant="primary" disabled={readOnly || !onDecide} onClick={() => onDecide?.(true)}>
+                  {h.cambio.accion === 'modificar' ? 'Aceptar la modificación' : 'Eliminarla'}
+                </Button>
+                <Button size="sm" disabled={readOnly || !onDecide} onClick={() => onDecide?.(false)}>
+                  {h.cambio.accion === 'modificar' ? 'Rechazarla (vuelve como era)' : 'Mantenerla'}
+                </Button>
+                {!onDecide && !readOnly && <span className="text-xs">Guarda o deshaz tus cambios para revisarla.</span>}
+              </div>
+            </div>
+          )}
+          {(h.historial?.length ?? 0) > 0 && (
+            <ul className="space-y-0.5 text-xs text-muted">
+              {h.historial!.map((c, i) => (
+                <li key={i}>
+                  {c.accion === 'creada' ? 'Creada' : c.accion === 'modificada' ? 'Modificada' : 'Eliminada'} en {iterationsText(c.iteraciones)}: {c.motivo}
+                </li>
+              ))}
+            </ul>
           )}
           {h.discrepancia && (
             <div className={`rounded px-3 py-2 text-sm ${discrepancy ? 'bg-danger-soft' : 'bg-ok-soft'}`}>

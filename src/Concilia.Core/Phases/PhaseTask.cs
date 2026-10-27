@@ -62,6 +62,8 @@ public static class PhaseTask
             return FocusedRound.InputFilesOf(phase, input);
         if (phase.Kind == PhaseKind.CatalogUpdate)
             return CatalogUpdateRound.InputFilesOf(phase, input);
+        if (phase.Kind == PhaseKind.BacklogUpdate)
+            return BacklogUpdateRound.InputFilesOf(phase, input);
         var files = new List<InputFile>();
         if (phase.Kind == PhaseKind.Backlog)
             files.Add(new InputFile(CatalogFile, ReadingPlan.OnePerLine(input.Catalog), Required: true));

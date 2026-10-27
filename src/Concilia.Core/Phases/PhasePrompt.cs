@@ -30,7 +30,9 @@ public record PhaseInput
     public string RelatedFragments { get; init; } = "";    // the earlier fragments related to them (input/relacionados.txt)
     public string RelatedRequirements { get; init; } = ""; // the related requirements of the validated catalog (input/requisitos_relacionados.json)
     public string Revisions { get; init; } = "";           // arbiter: the revisions grouped by question (input/revisiones.txt)
-    public string Changes { get; init; } = "";             // arbiter of an update of the catalog (step 113): input/cambios.txt
+    public string Changes { get; init; } = "";             // arbiter of an update (steps 113 and 114): input/cambios.txt
+    public string Impact { get; init; } = "";              // update of the backlog (step 114): input/impacto.txt (BacklogImpact)
+    public string AffectedStories { get; init; } = "";     // its stories that cite a modified or deleted requirement
 }
 
 // Builds the prompts of the v0 phases from their templates.

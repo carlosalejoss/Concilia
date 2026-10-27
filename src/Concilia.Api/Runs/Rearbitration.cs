@@ -47,7 +47,7 @@ public static class Rearbitration
                 return Results.NotFound();
             }
             var phase = PhasePlan.KindOfJob(source.Kind);
-            if (phase is not (PhaseKind.Questions or PhaseKind.Catalog or PhaseKind.Backlog or PhaseKind.CatalogUpdate))
+            if (phase is not (PhaseKind.Questions or PhaseKind.Catalog or PhaseKind.Backlog or PhaseKind.CatalogUpdate or PhaseKind.BacklogUpdate))
             {
                 return Refuse("Solo se puede volver a arbitrar una ronda de preguntas, un catálogo o un backlog.");
             }

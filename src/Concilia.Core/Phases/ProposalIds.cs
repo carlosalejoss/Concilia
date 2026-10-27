@@ -168,6 +168,8 @@ public static class ProposalIds
         PhaseKind.Backlog => Items(root["epicas"]).SelectMany(e => Items(e["historias"])),
         // Step 113: only the new requirements; the modified and deleted ones keep the id of the catalog.
         PhaseKind.CatalogUpdate => Items(root["nuevos"]),
+        // Step 114: only the new stories; the modified and deleted ones keep the id of the backlog.
+        PhaseKind.BacklogUpdate => Items(root["nuevas"]),
         _ => [],
     };
 

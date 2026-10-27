@@ -47,6 +47,9 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
         // Step 113: the arbiter of an update gets the modifications and deletions grouped by requirement.
         if (arbiter is not null && plan.Kind == PhaseKind.CatalogUpdate)
             input = input with { Changes = CatalogUpdateRound.Changes(input.Proposal1, input.Proposal2, plan.Input.Catalog) };
+        // Step 114: and that of an update of the backlog, the modifications and deletions grouped by story.
+        if (arbiter is not null && plan.Kind == PhaseKind.BacklogUpdate)
+            input = input with { Changes = BacklogUpdateRound.Changes(input.Proposal1, input.Proposal2, plan.Input.Backlog) };
         var options = new PhaseOptions
         {
             MaxContextTokens = runnerOptions.MaxContextTokens,

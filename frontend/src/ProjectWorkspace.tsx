@@ -20,7 +20,7 @@ import LaunchButton from './ui/LaunchButton.tsx'
 import { useActiveJob } from './hooks/useActiveJob.ts'
 import Drawer from './ui/Drawer.tsx'
 import RoundFocus from './RoundFocus.tsx'
-import CatalogUpdateLauncher from './CatalogUpdateLauncher.tsx'
+import UpdateLauncher from './UpdateLauncher.tsx'
 
 // What each step does, and the button that launches its job.
 type LaunchOptions = { mockupStyle: boolean }
@@ -225,8 +225,9 @@ function ProjectWorkspace({ project, route, navigate, onProjectSaved, onProjectD
           {stepId === 'Questions' && step.canLaunch && (
             <RoundFocus projectId={project.id} version={version} value={questionFocus} onChange={setQuestionFocus} />
           )}
-          {stepId === 'Catalog' && step.canLaunch && (
-            <CatalogUpdateLauncher
+          {(stepId === 'Catalog' || stepId === 'Backlog') && step.canLaunch && (
+            <UpdateLauncher
+              kind={stepId === 'Catalog' ? 'catalog' : 'backlog'}
               projectId={project.id}
               version={version}
               onLaunched={() => {

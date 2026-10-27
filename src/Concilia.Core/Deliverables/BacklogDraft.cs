@@ -76,6 +76,10 @@ public static class BacklogDraft
     {
         var root = JsonNode.Parse(json)!.AsObject();
         var ids = new StableIds(Ids(previous), used);
+        // Step 114: the stories deleted by an update, with their history, stay
+        // although the web does not send them back.
+        if (root["eliminadas"] is null && JsonNode.Parse(previous)?["eliminadas"] is JsonArray deleted)
+            root["eliminadas"] = deleted.DeepClone();
         foreach (var e in Epics(root))
         {
             e["id"] = ids.Assign(IdOf(e), "EP", 2);
@@ -129,7 +133,9 @@ public static class BacklogDraft
         var pending = Epics(root).SelectMany(e => Items(e, "historias"))
             .Where(h => h["discrepancia"] is JsonValue d && d.GetValue<bool>() && !(h["revisada"] is JsonValue rv && rv.GetValue<bool>()))
             .Select(h => $"{h["id"]} DISC: hay una discrepancia sin revisar.");
-        return new PhaseValidation([.. result.Errors, .. pending], result.Warnings);
+        // Step 114: what an update modifies or deletes is a proposal, reviewed before validating.
+        var changes = BacklogUpdate.Pending(root).Select(id => $"{id} CAMBIO: hay un cambio propuesto por la IA sin revisar; acéptalo o recházalo.");
+        return new PhaseValidation([.. result.Errors, .. pending, .. changes], result.Warnings);
     }
 
     // The validated backlog as the mockup receives it ({{BACKLOG}}): only the

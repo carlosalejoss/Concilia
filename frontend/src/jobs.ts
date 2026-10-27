@@ -20,7 +20,7 @@ export const STEP_JOB_KINDS: Record<FlowStep, string[]> = {
   Documents: [],
   Questions: ['questions', SUGGESTIONS_KIND],
   Catalog: ['catalog-v0', 'catalog-update'],
-  Backlog: ['backlog'],
+  Backlog: ['backlog', 'backlog-update'],
   Mockup: ['mockup'],
 }
 

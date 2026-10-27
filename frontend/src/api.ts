@@ -81,11 +81,11 @@ export type Job = {
 
 // The job kinds of the v0 flow (A ‖ B → arbiter, or a single run for the
 // answer suggestions and the mockup).
-export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'catalog-update', 'backlog', 'answer-suggestions', 'mockup', 'rearbitration']
+export const PHASE_JOB_KINDS = ['questions', 'catalog-v0', 'catalog-update', 'backlog', 'backlog-update', 'answer-suggestions', 'mockup', 'rearbitration']
 // A new arbitration of a finished job (16-10-2026): only the arbiter, on the
 // same proposals of A and B; an experiment that changes nothing of the project.
 export const REARBITRATION_KIND = 'rearbitration'
-export const REARBITRABLE_KINDS = ['questions', 'catalog-v0', 'catalog-update', 'backlog']
+export const REARBITRABLE_KINDS = ['questions', 'catalog-v0', 'catalog-update', 'backlog', 'backlog-update']
 export const SUGGESTIONS_KIND = 'answer-suggestions'
 
 export function isPhaseJob(job: Job): boolean {
@@ -96,6 +96,7 @@ export const JOB_KIND_NAMES: Record<string, string> = {
   questions: 'Ronda de preguntas',
   'catalog-v0': 'Catálogo',
   'catalog-update': 'Actualización del catálogo',
+  'backlog-update': 'Actualización del backlog',
   backlog: 'Backlog',
   'answer-suggestions': 'Sugerencias de respuesta',
   mockup: 'Mockup',
@@ -285,7 +286,13 @@ export type Story = {
   discrepancia?: boolean
   explicacion?: string
   revisada?: boolean
+  // Step 114: what the updates did to it, and a change still to review.
+  historial?: StoryChange[]
+  cambio?: StoryPendingChange | null
 }
+
+export type StoryChange = Omit<RequirementChange, 'accion' | 'antes'> & { accion: 'creada' | 'modificada' | 'eliminada'; antes: Partial<Story> | null }
+export type StoryPendingChange = Omit<PendingChange, 'antes'> & { antes: Partial<Story> | null }
 
 export type Epic = { id: string; titulo: string; descripcion: string; historias: Story[] }
 

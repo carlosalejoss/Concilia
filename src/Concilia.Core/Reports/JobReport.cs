@@ -85,6 +85,7 @@ public static class JobReports
         PhaseKind.Questions or PhaseKind.Suggestions => Items(root?["preguntas"]),
         PhaseKind.Catalog => Items(root?["requisitos"]),
         PhaseKind.CatalogUpdate => Items(root?["nuevos"]), // step 113: the new requirements of an update
+        PhaseKind.BacklogUpdate => Items(root?["nuevas"]), // step 114: the new stories of an update
         PhaseKind.Backlog => Items(root?["epicas"]).SelectMany(e => Items(e["historias"])).ToList(),
         _ => [],
     };
@@ -97,11 +98,12 @@ public static class JobReports
         if (json is null)
             return null;
         var root = JsonNode.Parse(json);
-        int Of(string list) => Items(root?[list]).Count;
+        // The lists of the catalog (nuevos…) or of the backlog (nuevas…, step 114): an output has one of the two.
+        int Of(string catalogList, string backlogList) => Items(root?[catalogList]).Count + Items(root?[backlogList]).Count;
         int Decided(string action) => Items(root?["cambios"]).Count(c => c["accion"]?.GetValue<string>() == action);
         return root?["cambios"] is null
-            ? new ChangeCounts(Of("nuevos"), Of("modificados"), Of("eliminados"))
-            : new ChangeCounts(Of("nuevos"), Decided("modificar"), Decided("eliminar"));
+            ? new ChangeCounts(Of("nuevos", "nuevas"), Of("modificados", "modificadas"), Of("eliminados", "eliminadas"))
+            : new ChangeCounts(Of("nuevos", "nuevas"), Decided("modificar"), Decided("eliminar"));
     }
 
     // What the arbiter made of the two proposals: each element of its output

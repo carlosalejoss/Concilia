@@ -24,7 +24,7 @@ public static class FlowEndpoints
     {
         "questions" => FlowStep.Questions,
         "catalog-v0" or "catalog-update" => FlowStep.Catalog,
-        "backlog" => FlowStep.Backlog,
+        "backlog" or "backlog-update" => FlowStep.Backlog,
         "mockup" => FlowStep.Mockup,
         _ => null,
     };

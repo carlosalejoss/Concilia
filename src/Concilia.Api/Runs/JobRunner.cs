@@ -208,6 +208,12 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
             matchingText = MatchingFile.WithPrevious(matchingText,
                 phases.Matching.AgainstExisting(plan.Kind, Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]), CatalogRequirements(plan.Input.Catalog)),
                 "existente");
+        // Step 114: and the new stories like one of the backlog.
+        if (plan.Kind == PhaseKind.BacklogUpdate)
+            matchingText = MatchingFile.WithPrevious(matchingText,
+                phases.Matching.AgainstExisting(plan.Kind, Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]),
+                    ProposalMatcher.ElementsOf(PhaseKind.Backlog, plan.Input.Backlog).Select(e => (e.Id, e.Text)).ToList()),
+                "existente");
         var input = (Of(plan.ProposalOrder[0]), Of(plan.ProposalOrder[1]), matchingText);
         var final = await RunOneAsync(arbiter, () => phases.ExecuteAsync(arbiter, plan, input, cancellationToken), onRunStarting, onRunFinished, cancellationToken);
         if (!final.Succeeded)

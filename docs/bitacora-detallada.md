@@ -2699,3 +2699,15 @@ Revisión de la documentación para que no quede nada pendiente sin explicar, a 
   - la trazabilidad: la etapa 14 (diseño de la evaluación), los siguientes pasos con su orden, las candidatas del 16-10 marcadas como decididas y los commits.
 - **Memoria de Claude:** los pasos pendientes se escriben como instrucciones (qué hace el autor, qué hace Claude), y la lista de lo que queda se mantiene al día.
 - **Pendientes:** los de la lista «Lo que queda, en orden».
+
+## 27-10-2026, 13:30 (sesión)
+
+Paso 114: actualizar el backlog validado con unas iteraciones (prompts v0.13).
+
+- **Decisiones del autor:** aprobados los cuatro detalles de Claude de los borradores (una historia que pierde un requisito eliminado se modifica y solo se elimina si se queda sin ninguno; un `RNF`, `RA` o `RT` nuevo va como criterio o tarea; los criterios de las historias nuevas se escriben enteros; se ofrece actualizar con las iteraciones que el catálogo validado incluye y al backlog le faltan). Para revisar en el navegador los pasos 113 y 114, la opción 1: un proyecto de prueba preparado por Claude, revisado cuando esté el 114.
+- **Qué se hizo:** `PhaseKind.BacklogUpdate` (trabajo `backlog-update`); `BacklogImpact` (el impacto sin IA); `BacklogUpdateRound`; `ValidateBacklogUpdate`; `CAMBIO-DISC` también para el backlog; emparejamiento de las historias nuevas contra el backlog; `BacklogUpdate` (aplicar, aceptar y rechazar) y el error `CAMBIO` en el borrador; guardar conserva `eliminadas`; `POST /projects/{id}/backlog-update-jobs`; aceptar y rechazar en un endpoint común con el catálogo; informe con `update` también aquí; web: `UpdateLauncher` para los dos pasos, y en cada historia el cambio propuesto y su historial.
+- **Detalle decidido por Claude:** si el catálogo no ha cambiado desde que se generó el backlog, la actualización se rechaza con un mensaje, porque no habría nada que hacer; una historia eliminada guarda su épica en `eliminadas`.
+- **Sin migración.**
+- **Tests:** 1.020 en verde (1.015 + 5): `BacklogUpdateTests` (5); `CatalogUpdateFlowTests` ahora genera y valida el backlog, actualiza el catálogo y después el backlog, acepta la historia modificada y lo valida. Ningún test anterior cambia.
+- **Pendientes:** reconstruir en Docker y preparar el proyecto de prueba para la revisión del autor de los pasos 113 y 114; el paso 115.
+

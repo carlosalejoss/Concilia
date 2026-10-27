@@ -35,6 +35,8 @@ public record PhaseContext
     public IReadOnlySet<string> RevisableQuestionIds { get; init; } = new HashSet<string>();
     // An update of the catalog (step 113): the answers given after validating it.
     public IReadOnlySet<string> NewAnswerIds { get; init; } = new HashSet<string>();
+    // An update of the backlog (step 114): the validated backlog it changes.
+    public string? Backlog { get; init; }
 }
 
 // Errors cause the repair (each line goes to the annex); warnings are shown
@@ -90,6 +92,7 @@ public static class PhaseValidator
             PhaseKind.Backlog => ValidateBacklog(phase, data, context, proposals),
             PhaseKind.Suggestions => ValidateSuggestions(phase, data, context),
             PhaseKind.CatalogUpdate => ValidateCatalogUpdate(phase, data, context, proposals),
+            PhaseKind.BacklogUpdate => ValidateBacklogUpdate(phase, data, context, proposals),
             _ => throw new ArgumentOutOfRangeException(nameof(phase)),
         };
     }
@@ -288,6 +291,106 @@ public static class PhaseValidator
         }
         foreach (var t in targets.Where(t => !decided.Contains(t)).Order(StringComparer.Ordinal))
             errors.Add($"{t} ARB-CAMBIO: falta la decisión sobre {t} (una por cada requisito de input/cambios.txt; `ninguna` si se queda como está).");
+        return new PhaseValidation(errors, []);
+    }
+
+    // Step 114 (prompts v0.13): an update of the validated backlog, a set of
+    // changes on the stories. New codes, only in C#:
+    //   REF-REQ     a requirement that is not in the validated catalog
+    //   REF-EP      a new story in an epic that is not in the backlog
+    //   REF-HU      a modified or deleted story that is not in the backlog
+    //   CAMBIO-DUP  two changes of the same story
+    //   CITA        a criterion or task cited by its id that is not of that story
+    //   ARB-CAMBIO  the arbiter: one decision per changed story, `de` with the proposals that
+    //               propose that same action (none in `ninguna`), the whole story only in `modificar`
+    private static PhaseValidation ValidateBacklogUpdate(PhaseDefinition phase, JsonNode? data, PhaseContext context, (JsonNode, JsonNode)? proposals)
+    {
+        var errors = SchemaErrorsOf(phase, data);
+        if (errors.Count > 0)
+            return new PhaseValidation(errors, []);
+        var catalog = Items(JsonNode.Parse(context.Catalog ?? "{\"requisitos\":[]}")!, "requisitos").Select(r => Str(r, "id")).ToHashSet();
+        var epics = Items(JsonNode.Parse(context.Backlog ?? "{\"epicas\":[]}")!, "epicas");
+        var epicIds = epics.Select(e => Str(e, "id")).ToHashSet();
+        var stories = epics.SelectMany(e => Items(e, "historias")).GroupBy(h => Str(h, "id")!).ToDictionary(g => g.Key, g => g.First());
+        var nuevas = Items(data!, "nuevas");
+        errors.AddRange(IdErrors(Ids(nuevas), "N", 3, gaps: false));
+
+        void Requirements(JsonObject h, string id)
+        {
+            foreach (var r in StrList(h, "requisitos").Where(r => !catalog.Contains(r)))
+                errors.Add($"{id} REF-REQ: {r} no está en el catálogo validado.");
+        }
+        void Citations(JsonObject h, string id)
+        {
+            stories.TryGetValue(id, out var current);
+            foreach (var (list, label) in new[] { ("criterios", "criterio"), ("tareas", "tarea") })
+            {
+                var own = current is null ? [] : Items(current, list).Select(x => Str(x, "id")).ToHashSet();
+                foreach (var cited in (h[list] as JsonArray ?? []).OfType<JsonValue>().Select(v => v.GetValue<string>()).Where(c => !own.Contains(c)))
+                    errors.Add($"{id} CITA: {cited} no es un {label} de {id}; cita solo los suyos, o escríbelo entero.");
+            }
+        }
+        foreach (var h in nuevas)
+        {
+            var id = Str(h, "id")!;
+            Requirements(h, id);
+            if (h["epica"] is JsonValue epic && !epicIds.Contains(epic.GetValue<string>()))
+                errors.Add($"{id} REF-EP: la épica {epic.GetValue<string>()} no está en el backlog; usa una que exista o escribe una nueva.");
+        }
+
+        if (proposals is null)
+        {
+            var changed = new HashSet<string>();
+            foreach (var (list, isModified) in new[] { ("modificadas", true), ("eliminadas", false) })
+                foreach (var h in Items(data!, list))
+                {
+                    var id = Str(h, "id")!;
+                    if (!stories.ContainsKey(id))
+                        errors.Add($"{id} REF-HU: {id} no está en el backlog validado.");
+                    if (!changed.Add(id))
+                        errors.Add($"{id} CAMBIO-DUP: hay más de un cambio de la misma historia.");
+                    if (isModified)
+                    {
+                        Requirements(h, id);
+                        Citations(h, id);
+                    }
+                }
+            return new PhaseValidation(errors, []);
+        }
+
+        var (p1, p2) = proposals.Value;
+        errors.AddRange(ArbiterErrors(nuevas, (Ids(Items(p1, "nuevas")), Ids(Items(p2, "nuevas"))), Items(data!, "descartadas"), "descartadas"));
+        var byProposal = new[] { BacklogUpdateRound.ChangesOf(p1.ToJsonString()), BacklogUpdateRound.ChangesOf(p2.ToJsonString()) };
+        var targets = byProposal.SelectMany(list => list).Select(c => c.Id).ToHashSet();
+        var decided = new HashSet<string>();
+        foreach (var c in Items(data!, "cambios"))
+        {
+            var id = Str(c, "id")!;
+            var action = Str(c, "accion");
+            var de = c["de"]!.AsArray().Select(n => n!.GetValue<int>()).ToList();
+            if (!decided.Add(id))
+                errors.Add($"{id} ARB-CAMBIO: hay más de una decisión sobre {id}.");
+            if (!targets.Contains(id))
+                errors.Add($"{id} ARB-CAMBIO: ninguna propuesta cambia {id}.");
+            else if (action == "ninguna" && de.Count > 0)
+                errors.Add($"{id} ARB-CAMBIO: con `ninguna`, `de` va vacío.");
+            else if (action != "ninguna" && de.Count == 0)
+                errors.Add($"{id} ARB-CAMBIO: `de` dice de qué propuestas es el cambio que mantienes.");
+            foreach (var n in de.Where(n => !byProposal[n - 1].Any(x => x.Id == id && x.Action == action)))
+                errors.Add($"{id} ARB-CAMBIO: la propuesta {n} no propone `{action}` para {id}.");
+            var whole = new[] { "titulo", "como", "quiero", "para", "requisitos", "criterios", "tareas" }.All(f => c[f] is not null);
+            if (action == "modificar")
+            {
+                if (!whole)
+                    errors.Add($"{id} ARB-CAMBIO: en `modificar` va la historia entera (`titulo`, `como`, `quiero`, `para`, `requisitos`, `criterios` y `tareas`).");
+                Requirements(c, id);
+                Citations(c, id);
+            }
+            else if (c["titulo"] is not null)
+                errors.Add($"{id} ARB-CAMBIO: en `{action}` no va la historia.");
+        }
+        foreach (var t in targets.Where(t => !decided.Contains(t)).Order(StringComparer.Ordinal))
+            errors.Add($"{t} ARB-CAMBIO: falta la decisión sobre {t} (una por cada historia de input/cambios.txt; `ninguna` si se queda como está).");
         return new PhaseValidation(errors, []);
     }
 

@@ -80,7 +80,7 @@ public static class ProposalMatcher
     {
         PhaseKind.Questions => Text(element, "pregunta"),
         PhaseKind.Catalog or PhaseKind.CatalogUpdate => Text(element, "texto"),
-        PhaseKind.Backlog => $"{Text(element, "titulo")}. Como {Text(element, "como")}, quiero {Text(element, "quiero")}, para {Text(element, "para")}.",
+        PhaseKind.Backlog or PhaseKind.BacklogUpdate => $"{Text(element, "titulo")}. Como {Text(element, "como")}, quiero {Text(element, "quiero")}, para {Text(element, "para")}.",
         _ => throw new ArgumentOutOfRangeException(nameof(kind)),
     };
 

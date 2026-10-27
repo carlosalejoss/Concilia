@@ -1927,6 +1927,61 @@
         }
       }
     },
+    "/projects/{projectId}/backlog-update-jobs": {
+      "post": {
+        "tags": [
+          "Catálogo y backlog"
+        ],
+        "summary": "Actualiza el backlog validado con unas iteraciones",
+        "description": "A ‖ B → árbitro (prompts v0.13) sobre el impacto que calcula la plataforma, sin IA, del catálogo del que salió el backlog al validado ahora: requisitos modificados, eliminados y nuevos sin historia, y las historias que citan uno modificado o eliminado. El resultado es un conjunto de cambios que la plataforma aplica a la copia de trabajo: las historias nuevas se añaden con su historial, y lo que se modifica o elimina queda como propuesta por revisar antes de validar. Exige el backlog validado y el catálogo validado con esas iteraciones.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CatalogUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/projects/{projectId}/backlog-jobs": {
       "post": {
         "tags": [
@@ -2132,13 +2187,13 @@
         }
       }
     },
-    "/projects/{projectId}/deliverables/catalog/requirements/{requirementId}/{decision}": {
+    "/projects/{projectId}/deliverables/{kind}/{elements}/{elementId}/{decision}": {
       "post": {
         "tags": [
           "Entregables"
         ],
-        "summary": "Acepta o rechaza el cambio propuesto para un requisito",
-        "description": "Lo que una actualización del catálogo modifica o elimina es una propuesta, y el catálogo no se valida hasta revisarla. `accept-change`: una modificación se queda y una eliminación quita el requisito (pasa a `eliminados`, con su historial); las dos van al historial del requisito. `reject-change`: una modificación devuelve el contenido anterior y una eliminación deja el requisito como estaba. Solo en borrador.",
+        "summary": "Acepta o rechaza el cambio propuesto para un requisito o una historia",
+        "description": "Lo que una actualización del catálogo o del backlog modifica o elimina es una propuesta, y no se valida hasta revisarla. `accept-change`: una modificación se queda y una eliminación quita el requisito o la historia (pasa a `eliminados` o `eliminadas`, con su historial); las dos van a su historial. `reject-change`: una modificación devuelve el contenido anterior y una eliminación lo deja como estaba. Solo en borrador.",
         "parameters": [
           {
             "name": "projectId",
@@ -2150,9 +2205,27 @@
             }
           },
           {
-            "name": "requirementId",
+            "name": "kind",
             "in": "path",
-            "description": "El id del requisito (`RF-012`).",
+            "description": "`catalog` o `backlog`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "elements",
+            "in": "path",
+            "description": "`requirements` en el catálogo o `stories` en el backlog.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "elementId",
+            "in": "path",
+            "description": "El id del requisito (`RF-012`) o de la historia (`HU-004`).",
             "required": true,
             "schema": {
               "type": "string"
