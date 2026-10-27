@@ -20,6 +20,11 @@ public record FocusPlan(IReadOnlyList<int> Iterations, IReadOnlyList<string> New
     IReadOnlyList<string>? NewAnswers = null)
 {
     public IReadOnlySet<string> PendingCodes => Questions.Where(q => q.Status == "pendiente").Select(q => q.Code).ToHashSet();
+
+    // The answered ones, which a new question may contradict (step 116: the
+    // plan of a round has no answered questions of its own, so without them
+    // every `contradice` with an answer was refused).
+    public IReadOnlySet<string> AnsweredCodes => Questions.Where(q => q.Status == "respondida").Select(q => q.Code).ToHashSet();
 }
 
 // The input files of a round centred on some iterations (option C, decision

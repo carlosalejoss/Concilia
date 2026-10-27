@@ -247,6 +247,29 @@ public class FocusedRoundTests
         Assert.Equal(("P-009", null, "RF-012"), (questions[1].Code, questions[1].ContradictsQuestion, questions[1].ContradictsRequirement));
     }
 
+    // Step 116: in the real test every `contradice` with an answer was refused,
+    // because the plan of a round has no answered questions; the context of a
+    // centred plan takes them from its focus.
+    [Fact]
+    public void A_new_question_may_contradict_an_answered_question_of_the_plan()
+    {
+        var focus = new FocusPlan([2], ["DOC-02"],
+            [new FocusQuestion("P-001", "¿Cuántos recordatorios?", "respondida"), new FocusQuestion("P-002", "¿Límite?", "pendiente"),
+             new FocusQuestion("P-003", "¿Salas?", "pendiente")]);
+        var plan = new PhasePlan(PhaseKind.Questions, new PhaseInput { SystemName = "el sistema", Language = "es", Catalog = Context.Catalog! },
+            [new Fragment("DOC-01#F001", "DOC-01", "doc", "", "uno", null), new Fragment("DOC-01#F002", "DOC-01", "doc", "", "dos", null),
+             new Fragment("DOC-02#F001", "DOC-02", "doc", "", "tres", null), new Fragment("DOC-02#F002", "DOC-02", "doc", "", "cuatro", null)],
+            [], ["A", "B"]) { Focus = focus };
+
+        var context = plan.Context();
+
+        Assert.Equal(["P-001"], context.AnsweredQuestionIds);
+        Assert.True(PhaseValidator.Validate(Proposal, ValidProposal, context).Valid);
+        // Without the focus (as the plan was read before), the same answer is refused.
+        var withoutFocus = (plan with { Focus = null }).Context();
+        Assert.Contains(PhaseValidator.Validate(Proposal, ValidProposal, withoutFocus).Errors, e => e.Contains("`contradice` cita P-001"));
+    }
+
     [Fact]
     public void The_focus_is_one_or_more_closed_iterations_with_documents()
     {

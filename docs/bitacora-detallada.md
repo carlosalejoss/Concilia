@@ -2761,3 +2761,12 @@ Paso 116, preparación: la ronda que lo lee todo.
 - **Tests:** 1.025 en verde (1.024 + 1).
 - **Pendientes:** los documentos de la iteración 2, su lista de cambios y la hoja de respuestas; reconstruir la API y la web; ejecutar la prueba.
 
+## 27-10-2026, 13:20 (sesión)
+
+Paso 116: primera ejecución real y un fallo del paso 112.
+
+- **Preparación:** copia de la base de datos (`concilia-antes-116.dump`), API y web reconstruidas, iteración 2 («Seguimiento de octubre») creada en «Clinicas Veterinarias v0.11» con `DOC-22` a `DOC-27` y cerrada.
+- **Ronda que lo lee todo, primer intento: falló.** A (SOL) escribió preguntas enlazadas a respuestas (`contradice` P-001) y la plataforma las rechazó con `REF-PREG` («no existe o no está respondida»), aunque P-001 está respondida; la reparación las quitó. B (LUNA) numeró sus preguntas desde P-064, siguiendo las del proyecto, en lugar de desde P-001 como pide el prompt, y no lo arregló en dos reparaciones (`ID-SEQ`). Sin las dos propuestas no hubo árbitro.
+- **Causa del `REF-PREG`, un fallo del paso 112:** el validador comprueba `contradice` contra las preguntas respondidas del plan, y el plan de una ronda se crea sin ninguna; los tests daban la lista a mano. Con esto, ninguna ronda centrada podía enlazar una pregunta a una respuesta. Arreglo: el contexto de un plan centrado añade las preguntas respondidas de su foco (`FocusPlan.AnsweredCodes`). Test nuevo en `FocusedRoundTests`; 1.026 tests en verde, la instantánea de la v0.12 incluida.
+- **Lo de LUNA no se toca por ahora:** es un error del modelo; si se repite, se le plantea al autor una corrección automática antes de hacerla.
+

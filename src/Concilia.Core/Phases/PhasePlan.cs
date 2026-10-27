@@ -57,7 +57,8 @@ public record PhasePlan(
     {
         FragmentIds = Fragments.Select(f => f.Id).ToHashSet(),
         FragmentAtLine = DocumentationFile.FragmentAtLine(Input.Documentation),
-        AnsweredQuestionIds = AnsweredQuestionIds.ToHashSet(),
+        // A centred round adds the answered questions of its focus (step 116).
+        AnsweredQuestionIds = AnsweredQuestionIds.Concat(Focus?.AnsweredCodes ?? new HashSet<string>()).ToHashSet(),
         Catalog = Input.Catalog.Length > 0 ? Input.Catalog : null,
         Backlog = Kind == PhaseKind.BacklogUpdate && Input.Backlog.Length > 0 ? Input.Backlog : null,
         PendingQuestionIds = PendingQuestionIds,
