@@ -1,0 +1,604 @@
+{
+  "fuente": "ARB",
+  "verificacion_cruzada": true,
+  "mensaje": "Unión del árbitro.",
+  "salida": {
+    "preguntas": [
+      {
+        "id": "P-001",
+        "pregunta": "El acta de apertura de Huellas Puerto prevé atención de lunes a sábado, con cierre los sábados a las 14:00, pero el correo posterior indica que abrirá solo de lunes a viernes. ¿Cuál será su horario de apertura desde enero de 2027?",
+        "motivo": "La discrepancia sobre la apertura en sábado impide configurar la agenda y comunicar el horario de la nueva clínica.",
+        "fuentes": [
+          "DOC-22#F005",
+          "DOC-23#F024"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-009"
+          ],
+          "propuesta_2": [
+            "P-001"
+          ]
+        },
+        "explicacion": "Ambas propuestas plantean la misma discrepancia de horario."
+      },
+      {
+        "id": "P-002",
+        "pregunta": "El requisito validado RF-187 limita la peluquería a Huellas Montaña, pero Huellas Puerto ofrecerá peluquería desde su apertura. ¿Debe habilitarse también este servicio en Huellas Puerto?",
+        "motivo": "Debe resolverse el cambio respecto del alcance validado de peluquería por clínica.",
+        "fuentes": [
+          "DOC-22#F004",
+          "DOC-26#F010"
+        ],
+        "contradice": {
+          "requisito": "RF-187"
+        },
+        "de": {
+          "propuesta_1": [
+            "P-010"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se separa la decisión de habilitar la peluquería de la cuestión de tarifas y duraciones incluida en 2:P-003; el emparejamiento reunía asuntos distintos."
+      },
+      {
+        "id": "P-003",
+        "pregunta": "Si Huellas Puerto ofrece peluquería, ¿qué tarifas y duraciones de cita se aplicarán a sus servicios, en particular al baño y corte, dado que se le asignan las tarifas de Huellas Centro y allí no hay peluquería?",
+        "motivo": "Faltan los datos necesarios para presupuestar, cobrar y reservar citas de peluquería en Puerto.",
+        "fuentes": [
+          "DOC-22#F004",
+          "DOC-22#F006",
+          "DOC-26#F010",
+          "DOC-26#F011"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-011"
+          ],
+          "propuesta_2": [
+            "P-003"
+          ]
+        },
+        "explicacion": "Se combina la tarifa concreta señalada por la primera propuesta con las duraciones y el alcance de tarifas señalados por la segunda, sin repetir la pregunta sobre habilitación."
+      },
+      {
+        "id": "P-004",
+        "pregunta": "Las facturas y rectificativas tienen series distintas por clínica, pero las series actuales solo identifican a las cuatro clínicas anteriores. ¿Qué series y numeración se asignarán a las facturas ordinarias y rectificativas de Huellas Puerto?",
+        "motivo": "La nueva clínica necesita series propias para emitir y exportar sus facturas sin confundirlas con las de otras sedes.",
+        "fuentes": [
+          "DOC-22#F003",
+          "DOC-22#F006",
+          "DOC-11#F004",
+          "DOC-11#F006"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-004"
+          ]
+        },
+        "explicacion": "Pregunta exclusiva de la segunda propuesta y necesaria para la facturación de la quinta clínica."
+      },
+      {
+        "id": "P-005",
+        "pregunta": "La respuesta a P-005 reservó los dos primeros huecos de mañana y tarde para urgencias leves en todas las clínicas, pero Huellas Puerto abrirá sin servicio de urgencias. ¿También se reservarán allí esos huecos o quedará Puerto excluida de la regla?",
+        "motivo": "La excepción de Puerto afecta a los huecos disponibles para citas ordinarias.",
+        "fuentes": [
+          "DOC-22#F003",
+          "DOC-22#F004"
+        ],
+        "contradice": {
+          "pregunta": "P-005"
+        },
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-002"
+          ]
+        },
+        "explicacion": "La segunda propuesta detecta un conflicto nuevo entre una regla confirmada para todas las clínicas y la ausencia de urgencias en Puerto."
+      },
+      {
+        "id": "P-006",
+        "pregunta": "La respuesta a P-004 permite cancelar desde la app hasta 12 horas antes de la cita mediante el botón del recordatorio enviado 24 horas antes, pero gerencia fija ahora un límite de 24 horas. ¿Qué límite se aplicará y, si pasa a ser de 24 horas, se adelantará el recordatorio o dejará de permitir cancelar desde su botón?",
+        "motivo": "Hay que reconciliar el nuevo plazo con la respuesta anterior y con la utilidad del botón del recordatorio.",
+        "fuentes": [
+          "DOC-22#F009",
+          "DOC-01#F124",
+          "DOC-20#F046"
+        ],
+        "contradice": {
+          "pregunta": "P-004"
+        },
+        "de": {
+          "propuesta_1": [
+            "P-001"
+          ],
+          "propuesta_2": [
+            "P-005"
+          ]
+        },
+        "explicacion": "Se unen las preguntas sobre cancelación y se conserva la consecuencia adicional para el recordatorio indicada por la segunda propuesta."
+      },
+      {
+        "id": "P-007",
+        "pregunta": "El nuevo límite de 24 horas se refiere a cancelar citas desde la app, mientras que antes se podían cambiar o cancelar hasta 12 horas antes. ¿Los cambios de cita desde la app pasan también a tener un límite de 24 horas o conservan el de 12?",
+        "motivo": "El acta modifica expresamente las cancelaciones, pero no determina si también cambian las condiciones para modificar una cita.",
+        "fuentes": [
+          "DOC-22#F007",
+          "DOC-22#F009",
+          "DOC-15#F018"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-006"
+          ]
+        },
+        "explicacion": "Se mantiene separada del conflicto sobre cancelaciones porque pregunta por el plazo de los cambios de cita."
+      },
+      {
+        "id": "P-008",
+        "pregunta": "Antes se descartó cobrar una señal por incomparecencia en la primera versión y se preveía un aviso en la ficha al llegar a tres ausencias en un año; ahora se aprueba una señal de 10 € desde la segunda ausencia sin aviso en seis meses. ¿Sustituye la nueva decisión a la anterior y se mantiene también el aviso en la ficha con su propio umbral?",
+        "motivo": "Debe quedar claro qué medidas por incomparecencia entran en vigor y si coexisten las reglas de aviso y señal.",
+        "fuentes": [
+          "DOC-22#F012",
+          "DOC-22#F013",
+          "DOC-15#F020",
+          "DOC-15#F021",
+          "DOC-15#F022"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-002"
+          ],
+          "propuesta_2": [
+            "P-007"
+          ]
+        },
+        "explicacion": "Aunque figuraban sin emparejar, ambas preguntan por la sustitución de la decisión anterior sobre la señal; se incorpora la coexistencia del aviso que aporta la segunda."
+      },
+      {
+        "id": "P-009",
+        "pregunta": "Si una persona paga la señal de 10 € al reservar la siguiente cita después de varias incomparecencias y luego cancela esa cita o vuelve a no presentarse, ¿cuándo se devuelve la señal y cuándo se retiene?",
+        "motivo": "Se establece el cobro y el descuento al realizar la visita, pero no la liquidación de la señal si la visita no tiene lugar.",
+        "fuentes": [
+          "DOC-22#F012",
+          "DOC-22#F013"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-008"
+          ]
+        },
+        "explicacion": "La devolución o retención es distinta de decidir si se implanta la señal y se conserva como pregunta propia."
+      },
+      {
+        "id": "P-010",
+        "pregunta": "La respuesta a P-002 mantuvo la gestión de hospitalización en la fase 2, pero el acta nueva la adelanta a la fase 1 para Huellas Centro. ¿En qué fase debe estar operativa la hospitalización en esa clínica?",
+        "motivo": "La planificación confirmada y la nueva decisión requieren una única fase de implantación.",
+        "fuentes": [
+          "DOC-22#F015",
+          "DOC-22#F016",
+          "DOC-25#F013"
+        ],
+        "contradice": {
+          "pregunta": "P-002"
+        },
+        "de": {
+          "propuesta_1": [
+            "P-003"
+          ],
+          "propuesta_2": [
+            "P-009"
+          ]
+        },
+        "explicacion": "Se unen las dos formulaciones del mismo cambio de fase, pese al parecido indicado con la pregunta previa: la documentación nueva contradice su respuesta."
+      },
+      {
+        "id": "P-011",
+        "pregunta": "La especificación anterior excluía de esta versión las videoconsultas, pero los documentos nuevos solicitan teleconsultas de seguimiento por videollamada desde la app para la primera versión. ¿Se incorpora esta función al alcance y se sustituye aquella exclusión?",
+        "motivo": "El alcance de la primera versión no puede definirse con una exclusión anterior y una inclusión nueva incompatibles.",
+        "fuentes": [
+          "DOC-22#F018",
+          "DOC-23#F007",
+          "DOC-23#F009",
+          "DOC-01#F122",
+          "DOC-01#F157"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-004"
+          ],
+          "propuesta_2": [
+            "P-010"
+          ]
+        },
+        "explicacion": "Las dos propuestas plantean el mismo cambio de alcance de la teleconsulta."
+      },
+      {
+        "id": "P-012",
+        "pregunta": "El acta fija la teleconsulta en 20 €, mientras que el correo posterior y el tarifario de 2027 indican 25 € con IVA incluido. ¿Cuál es el precio total aplicable y desde qué fecha debe cobrarse?",
+        "motivo": "El pago anticipado de la teleconsulta requiere un importe total y una fecha de vigencia inequívocos.",
+        "fuentes": [
+          "DOC-22#F020",
+          "DOC-23#F015",
+          "DOC-26#F004",
+          "DOC-26#F005"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-005"
+          ],
+          "propuesta_2": [
+            "P-011"
+          ]
+        },
+        "explicacion": "Se combina la aclaración del IVA de la primera propuesta con la vigencia temporal solicitada por la segunda."
+      },
+      {
+        "id": "P-013",
+        "pregunta": "¿Las teleconsultas de seguimiento cuentan como consultas o prestaciones incluidas en los planes de salud Cachorro, Adulto y Senior, o se cobran siempre por separado y por anticipado, con o sin descuento del plan?",
+        "motivo": "El equipo veterinario dejó sin decidir si el nuevo servicio consume una prestación del plan o genera un cobro independiente.",
+        "fuentes": [
+          "DOC-25#F010",
+          "DOC-25#F011",
+          "DOC-25#F012",
+          "DOC-23#F015"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-013"
+          ],
+          "propuesta_2": [
+            "P-012"
+          ]
+        },
+        "explicacion": "Se unen las dudas sobre la cobertura por planes y se conservan el pago anticipado y el posible descuento mencionados por la segunda propuesta."
+      },
+      {
+        "id": "P-014",
+        "pregunta": "¿Las teleconsultas de seguimiento se consideran consultas cubiertas por Seguros Animalia y Mascota Protegida y, si es así, qué parte deberá pagar por anticipado en la app el cliente asegurado?",
+        "motivo": "Las coberturas confirmadas incluyen consultas, pero no aclaran si incluyen este nuevo servicio ni cómo se reparte su pago previo.",
+        "fuentes": [
+          "DOC-23#F009",
+          "DOC-23#F015",
+          "DOC-26#F004"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-013"
+          ]
+        },
+        "explicacion": "Se conserva separada de la pregunta sobre planes de salud porque la cobertura de aseguradoras y el reparto del pago son otra decisión."
+      },
+      {
+        "id": "P-015",
+        "pregunta": "Si una teleconsulta pagada por adelantado se cancela o cambia, alguna de las partes no se conecta o falla la videollamada, ¿en qué casos se devuelve o se conserva el importe abonado?",
+        "motivo": "El pago previo requiere una regla de devolución cuando la teleconsulta no se presta como estaba prevista.",
+        "fuentes": [
+          "DOC-23#F009",
+          "DOC-23#F013",
+          "DOC-23#F015"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-014"
+          ]
+        },
+        "explicacion": "La liquidación de una teleconsulta no realizada no queda resuelta por las preguntas de precio o cobertura."
+      },
+      {
+        "id": "P-016",
+        "pregunta": "La especificación excluía la tienda en línea de esta versión, pero gerencia pide ahora pedidos pagados desde la app de alimentación y productos de higiene para recoger en clínica en la primera versión. ¿Se incorpora esta modalidad de venta y se sustituye la exclusión anterior?",
+        "motivo": "Debe definirse el alcance de la venta desde la app antes de especificar sus pedidos y cobros.",
+        "fuentes": [
+          "DOC-23#F007",
+          "DOC-23#F017",
+          "DOC-23#F018",
+          "DOC-23#F019",
+          "DOC-01#F156"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-008"
+          ],
+          "propuesta_2": [
+            "P-015"
+          ]
+        },
+        "explicacion": "Las dos preguntas piden decidir el mismo cambio de alcance para pedidos desde la app."
+      },
+      {
+        "id": "P-017",
+        "pregunta": "El requisito validado RT-002 exige las mismas funciones en la app y en la web del cliente, pero las nuevas teleconsultas y los pedidos pagados solo se describen desde la app. ¿Estarán disponibles ambas funciones también en la web o serán excepciones a esa equivalencia?",
+        "motivo": "Hay que determinar si se mantiene la paridad de canales confirmada para estas nuevas funciones.",
+        "fuentes": [
+          "DOC-23#F009",
+          "DOC-23#F018",
+          "DOC-23#F019",
+          "DOC-01#F116"
+        ],
+        "contradice": {
+          "requisito": "RT-002"
+        },
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-016"
+          ]
+        },
+        "explicacion": "La duda sobre la equivalencia entre app y web no está cubierta por decidir si se incorporan las nuevas funciones."
+      },
+      {
+        "id": "P-018",
+        "pregunta": "Las teleconsultas y los pedidos desde la app se piden para la «primera versión», mientras que la planificación anterior situaba la app en la fase 3. ¿Deben estar disponibles ya en la fase 1 o «primera versión» se refiere a una entrega posterior a la fase 3?",
+        "motivo": "No se puede fijar la fecha de disponibilidad de estas funciones sin conciliar la versión solicitada con las fases previstas.",
+        "fuentes": [
+          "DOC-23#F007",
+          "DOC-23#F009",
+          "DOC-23#F018",
+          "DOC-02#F047",
+          "DOC-02#F049"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-017"
+          ]
+        },
+        "explicacion": "La fase de entrega es una duda distinta del alcance funcional de teleconsultas y pedidos."
+      },
+      {
+        "id": "P-019",
+        "pregunta": "Para los pedidos pagados desde la app, ¿solo podrán pedirse productos de alimentación e higiene disponibles en la clínica de recogida o también productos sin existencias allí, y qué ocurrirá con el pago si la clínica no puede apartarlos?",
+        "motivo": "El cliente paga antes de que la clínica aparte los productos, sin una regla de disponibilidad ni de resolución de faltantes.",
+        "fuentes": [
+          "DOC-23#F018",
+          "DOC-23#F019",
+          "DOC-23#F020"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-018"
+          ]
+        },
+        "explicacion": "Pregunta propia sobre disponibilidad y cumplimiento de los pedidos, no sobre su inclusión en el alcance."
+      },
+      {
+        "id": "P-020",
+        "pregunta": "Para anular y reembolsar un pedido no recogido, ¿las 48 horas empiezan al pagarlo, al apartar el producto o al avisar de que está listo, y son horas naturales o solo horas de apertura de la clínica de recogida?",
+        "motivo": "Sin el inicio y el cómputo del plazo no se sabe cuándo vence la reserva ni cuándo procede el reembolso.",
+        "fuentes": [
+          "DOC-23#F019",
+          "DOC-23#F020",
+          "DOC-23#F021"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-019"
+          ]
+        },
+        "explicacion": "La ambigüedad del plazo de recogida es independiente de la disponibilidad del producto."
+      },
+      {
+        "id": "P-021",
+        "pregunta": "La respuesta a P-006 fijó la prioridad de notificación por la app y, si el cliente no la tiene, por SMS, pero la nueva encuesta de satisfacción se enviará en la app al día siguiente de cada visita. ¿Se enviará también la encuesta por SMS a quienes no tengan app o será una excepción limitada a sus usuarios?",
+        "motivo": "Debe aclararse si esta nueva comunicación respeta la regla general de canales o excluye a clientes sin app.",
+        "fuentes": [
+          "DOC-22#F022"
+        ],
+        "contradice": {
+          "pregunta": "P-006"
+        },
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-020"
+          ]
+        },
+        "explicacion": "Aunque se parece a la regla previa de canales, pregunta si la encuesta nueva es una excepción a su respuesta."
+      },
+      {
+        "id": "P-022",
+        "pregunta": "Además de gerencia, ¿qué perfiles podrán consultar las respuestas y comentarios individuales de las encuestas de satisfacción y cuáles podrán consultar sus resultados agregados, incluidos responsables de clínica y veterinarios evaluados?",
+        "motivo": "El acta prevé una media para gerencia, pero deja sin decidir los permisos para acceder a valoraciones y comentarios.",
+        "fuentes": [
+          "DOC-22#F022",
+          "DOC-22#F023",
+          "DOC-22#F024"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-006"
+          ],
+          "propuesta_2": [
+            "P-021"
+          ]
+        },
+        "explicacion": "Se combinan el nivel de detalle de la primera propuesta con los perfiles concretos y el acceso de gerencia de la segunda."
+      },
+      {
+        "id": "P-023",
+        "pregunta": "Para la media mensual de satisfacción por clínica, ¿se publicarán por separado las medias de atención, veterinario y puntualidad o una nota global, y cuántas respuestas de una misma visita se computarán si la mascota tiene varios clientes asociados?",
+        "motivo": "La encuesta recoge tres notas, pero no está definido cómo se agregan ni cómo se ponderan las visitas con varios clientes.",
+        "fuentes": [
+          "DOC-22#F022",
+          "DOC-22#F023"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-022"
+          ]
+        },
+        "explicacion": "El cálculo de la media mensual es una cuestión distinta de los permisos de consulta de la encuesta."
+      },
+      {
+        "id": "P-024",
+        "pregunta": "La respuesta a P-042 proponía reservar citas consecutivas vinculadas para varias mascotas, también desde la app, pero el acta nueva descarta la reserva conjunta y pide una cita independiente por mascota aunque sean seguidas. ¿Debe eliminarse la vinculación y la reserva múltiple?",
+        "motivo": "La agenda y la app necesitan una regla única para las citas de varias mascotas de un mismo cliente.",
+        "fuentes": [
+          "DOC-22#F026",
+          "DOC-22#F027"
+        ],
+        "contradice": {
+          "pregunta": "P-042"
+        },
+        "de": {
+          "propuesta_1": [
+            "P-007"
+          ],
+          "propuesta_2": [
+            "P-023"
+          ]
+        },
+        "explicacion": "No se descarta por su parecido con la pregunta previa: la nueva decisión contradice la respuesta dada a P-042."
+      },
+      {
+        "id": "P-025",
+        "pregunta": "El requisito validado RF-090 permite fotos opcionales en los informes diarios de hospitalización, pero el equipo veterinario ha acordado que esos informes sean solo de texto y sin fotos de pacientes en la app. ¿Debe eliminarse la publicación de fotos en los informes?",
+        "motivo": "El contenido validado del informe diario contradice la nueva decisión clínica.",
+        "fuentes": [
+          "DOC-25#F004",
+          "DOC-25#F005",
+          "DOC-25#F006",
+          "DOC-25#F007"
+        ],
+        "contradice": {
+          "requisito": "RF-090"
+        },
+        "de": {
+          "propuesta_1": [
+            "P-014"
+          ],
+          "propuesta_2": [
+            "P-024"
+          ]
+        },
+        "explicacion": "Ambas propuestas detectan el mismo cambio sobre fotografías en los informes diarios."
+      },
+      {
+        "id": "P-026",
+        "pregunta": "La respuesta a P-059 y el requisito validado RF-136 fijan en 95 € las urgencias nocturnas y festivas, pero el tarifario nuevo las eleva a 100 € desde el 1 de enero de 2027. ¿Se aplicarán 95 € hasta el 31 de diciembre de 2026 y 100 € desde el 1 de enero de 2027?",
+        "motivo": "Hay que conciliar el importe anterior con la vigencia y el precio del nuevo tarifario.",
+        "fuentes": [
+          "DOC-26#F003"
+        ],
+        "contradice": {
+          "pregunta": "P-059"
+        },
+        "de": {
+          "propuesta_1": [
+            "P-015"
+          ],
+          "propuesta_2": [
+            "P-025"
+          ]
+        },
+        "explicacion": "Se unen las referencias a la respuesta anterior y al requisito validado, manteniendo la fecha de vigencia aportada por la segunda propuesta."
+      },
+      {
+        "id": "P-027",
+        "pregunta": "La respuesta a P-001 estableció que las historias clínicas se conservarían identificables indefinidamente, pero el informe jurídico nuevo exige anonimizarlas de forma irreversible cinco años después de la última visita. ¿Se sustituye la conservación indefinida por esa regla de cinco años?",
+        "motivo": "La decisión previa y el nuevo criterio jurídico establecen tratamientos incompatibles para las historias clínicas.",
+        "fuentes": [
+          "DOC-24#F006",
+          "DOC-24#F007",
+          "DOC-24#F009",
+          "DOC-24#F010",
+          "DOC-24#F014"
+        ],
+        "contradice": {
+          "pregunta": "P-001"
+        },
+        "de": {
+          "propuesta_1": [
+            "P-012"
+          ],
+          "propuesta_2": [
+            "P-026"
+          ]
+        },
+        "explicacion": "Aunque el emparejamiento señala parecido con la pregunta previa, el informe jurídico contradice expresamente su respuesta y obliga a volver a preguntar."
+      },
+      {
+        "id": "P-028",
+        "pregunta": "El informe jurídico exige que nadie pueda recuperar los datos identificables de una historia después de anonimizarla, mientras que se conservan copias de seguridad durante 30 días. ¿Debe impedirse también la recuperación de esos datos desde copias anteriores, incluida una restauración posterior?",
+        "motivo": "Es necesario determinar si la irreversibilidad exigida alcanza a las copias para que una restauración no vuelva accesibles historias ya anonimizadas.",
+        "fuentes": [
+          "DOC-24#F013",
+          "DOC-24#F014",
+          "DOC-01#F147"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-027"
+          ]
+        },
+        "explicacion": "Se conserva aparte de la decisión sobre el plazo de conservación porque aclara el alcance de la irreversibilidad respecto de las copias."
+      },
+      {
+        "id": "P-029",
+        "pregunta": "El requisito validado RNF-006 exigía segundo factor a gerencia y contabilidad y al personal que accediera desde fuera de las clínicas, pero la auditoría nueva lo exige a todo el personal también dentro de las clínicas, sin cambiar el acceso de los clientes. ¿Debe sustituirse el alcance anterior por el segundo factor obligatorio para todo el personal, manteniendo la excepción de los clientes de la app y la web?",
+        "motivo": "La nueva obligación amplía el alcance del segundo factor establecido para el personal, y debe preservarse la respuesta previa sobre los clientes.",
+        "fuentes": [
+          "DOC-27#F008",
+          "DOC-27#F009",
+          "DOC-27#F010",
+          "DOC-27#F011"
+        ],
+        "contradice": {
+          "requisito": "RNF-006"
+        },
+        "de": {
+          "propuesta_1": [
+            "P-016"
+          ],
+          "propuesta_2": [
+            "P-028"
+          ]
+        },
+        "explicacion": "Se combinan la referencia de la primera propuesta a P-030 con la ampliación del requisito y la excepción para clientes señaladas por la segunda."
+      }
+    ],
+    "descartadas": [],
+    "revisiones": []
+  },
+  "desviaciones": [
+    {
+      "id": "P-008",
+      "tipo": "junta-distintos",
+      "similitud": 0.625,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,62, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    },
+    {
+      "id": "P-003",
+      "tipo": "junta-distintos",
+      "similitud": 0.695,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,69, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    },
+    {
+      "id": "P-003",
+      "tipo": "separa-iguales",
+      "similitud": 0.907,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,91) que «DOC-22 indica que Huellas Puerto ofrecerá peluquería, pero el requisito validado RF-187 limita ese servicio a Huellas…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "P-002",
+      "tipo": "separa-iguales",
+      "similitud": 0.907,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,91) que «El requisito RF-187 limita la peluquería a Huellas Montaña, pero Huellas Puerto ofrecerá peluquería desde su apertura…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    }
+  ],
+  "emparejamiento": {
+    "segundos": 1.74,
+    "segundos_cpu": 7.93
+  }
+}

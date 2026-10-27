@@ -2770,3 +2770,14 @@ Paso 116: primera ejecución real y un fallo del paso 112.
 - **Causa del `REF-PREG`, un fallo del paso 112:** el validador comprueba `contradice` contra las preguntas respondidas del plan, y el plan de una ronda se crea sin ninguna; los tests daban la lista a mano. Con esto, ninguna ronda centrada podía enlazar una pregunta a una respuesta. Arreglo: el contexto de un plan centrado añade las preguntas respondidas de su foco (`FocusPlan.AnsweredCodes`). Test nuevo en `FocusedRoundTests`; 1.026 tests en verde, la instantánea de la v0.12 incluida.
 - **Lo de LUNA no se toca por ahora:** es un error del modelo; si se repite, se le plantea al autor una corrección automática antes de hacerla.
 
+## 27-10-2026, 14:05 (sesión)
+
+Paso 116, a medias: el camino «actualizar» hasta el catálogo validado.
+
+- **Ronda que lo lee todo (opción A), con el arreglo:** terminada (trabajo `de8001c0`), 29 preguntas, muchas enlazadas a la respuesta o al requisito que contradicen. LUNA volvió a numerar desde P-064 y la reparación lo corrigió. Un intento anterior (`3ccafd50`) corrió sin el arreglo porque la API no se había reconstruido (Docker Hub falló sin que se viera): se descarta para medir. Desde entonces se comprueba la fecha de la imagen tras cada reconstrucción.
+- **Ronda centrada (opción C):** terminada sin reparaciones (`d5935386`), 28 preguntas (P-064 a P-091). Respondidas con la hoja: 15 por la hoja, 1 con una sugerencia basada en la documentación y 12 con la respuesta fija (`docs/resultados-paso-116/respuestas-camino-actualizar.md`). La hoja solo responde cuando su fila contesta exactamente la pregunta; las de detalle siguen las reglas.
+- **Actualización del catálogo:** terminada sin reparaciones (`220fae39`): 22 modificaciones, 1 eliminación y 10 requisitos nuevos, todos correspondientes a un cambio I2 o a una respuesta; se aceptaron todos, se marcaron revisadas 2 discrepancias y el catálogo quedó validado (`docs/resultados-paso-116/revision-catalogo-actualizacion.md`).
+- **Incidencias para proponer al autor al final:** nginx corta a los 60 s y lanzar una ronda centrada o una actualización en clínicas tarda más (devuelve 504 aunque la tarea se lanza); LUNA numera desde P-064 en las rondas centradas (3 de 3).
+- **Parada:** el autor se va y el equipo pierde la conexión; se para sin nada en marcha.
+- **Queda:** actualizar el backlog y validarlo; el camino «desde cero» (ronda con todas, catálogo y backlog); el análisis y las tablas de coste.
+

@@ -1,0 +1,844 @@
+{
+  "fuente": "ARB",
+  "verificacion_cruzada": true,
+  "mensaje": "Unión del árbitro.",
+  "salida": {
+    "nuevos": [
+      {
+        "id": "N-001",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un cliente acumule al menos dos inasistencias sin aviso en los últimos seis meses, el sistema Clinicas Veterinarias v0.11 DEBERÁ cobrarle una única señal de 10 € al reservar la siguiente cita desde la app o en recepción y descontarla de la factura de esa visita; SI cambia la cita, ENTONCES DEBERÁ trasladar la señal a la nueva reserva; SI cancela la cita, ENTONCES DEBERÁ devolverla; SI vuelve a no presentarse, ENTONCES DEBERÁ retenerla.",
+        "fuentes": [
+          "DOC-22#F012",
+          "DOC-22#F013"
+        ],
+        "preguntas": [
+          "P-071",
+          "P-072",
+          "P-073"
+        ],
+        "motivo": "La decisión nueva incorpora la señal pagadera al reservar y descontable de la visita; para los supuestos no resueltos expresamente se adopta la regla sencilla propuesta en 2:N-001, sin repetir el cobro por las mismas faltas.",
+        "de": {
+          "propuesta_1": [
+            "N-001",
+            "N-002",
+            "N-003"
+          ],
+          "propuesta_2": [
+            "N-001"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen el cobro único, el descuento y los destinos de la señal; se sustituye el marcador indefinido de 1:N-003 por el tratamiento concreto de 2:N-001."
+      },
+      {
+        "id": "N-002",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "DONDE el veterinario ofrezca huecos de teleconsulta en su agenda, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir reservar desde la app una videollamada de seguimiento de 15 minutos sin grabación solo si esa mascota tuvo una consulta presencial en los 30 días anteriores, para revisión posquirúrgica, control de tratamiento o dudas sobre resultados, y no para primeras visitas ni urgencias.",
+        "fuentes": [
+          "DOC-23#F009",
+          "DOC-23#F010",
+          "DOC-23#F011",
+          "DOC-23#F012",
+          "DOC-23#F013",
+          "DOC-23#F014",
+          "DOC-23#F016"
+        ],
+        "preguntas": [
+          "P-075",
+          "P-091"
+        ],
+        "motivo": "La documentación y P-075 incorporan la videollamada de seguimiento a la app, limitada por motivo, visita previa, duración y disponibilidad del veterinario, sin grabarla.",
+        "de": {
+          "propuesta_1": [
+            "N-004",
+            "N-005"
+          ],
+          "propuesta_2": [
+            "N-002"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La reserva y la realización sin grabación de la misma teleconsulta se integran; el cobro de 2:N-003 se recoge por separado en N-003."
+      },
+      {
+        "id": "N-003",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se reserve desde la app una teleconsulta de seguimiento S090, el sistema Clinicas Veterinarias v0.11 DEBERÁ cobrarla por adelantado a 25 € con IVA incluido, o a 20 € si el cliente tiene un plan de salud activo, sin contarla entre las consultas incluidas en el plan.",
+        "fuentes": [
+          "DOC-23#F015",
+          "DOC-26#F004",
+          "DOC-26#F005"
+        ],
+        "preguntas": [
+          "P-075",
+          "P-076",
+          "P-077"
+        ],
+        "motivo": "P-076 y P-077 fijan los dos precios y el cobro aparte, mientras DOC-23 exige el pago en la app al reservar.",
+        "de": {
+          "propuesta_1": [
+            "N-006"
+          ],
+          "propuesta_2": [
+            "N-003"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se combina el cobro anticipado de ambas propuestas con las tarifas y la exclusión del plan detalladas en 1:N-006; la duración, la agenda y la ausencia de grabación quedan en N-002."
+      },
+      {
+        "id": "N-004",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "MIENTRAS se realice una teleconsulta, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario consultar la historia clínica de la mascota, anotar en ella lo tratado como una visita y asignarle una cita presencial durante la llamada.",
+        "fuentes": [
+          "DOC-25#F008",
+          "DOC-25#F009"
+        ],
+        "preguntas": [
+          "P-075"
+        ],
+        "motivo": "La reunión veterinaria exige acceso y anotación en la historia y la posibilidad de dar cita presencial en la misma llamada.",
+        "de": {
+          "propuesta_1": [
+            "N-007",
+            "N-008"
+          ],
+          "propuesta_2": [
+            "N-004"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "2:N-004 reúne los dos comportamientos complementarios descritos por separado en la propuesta 1."
+      },
+      {
+        "id": "N-005",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se cambie una teleconsulta ya pagada, el sistema Clinicas Veterinarias v0.11 DEBERÁ trasladar el pago a la nueva reserva; SI el cliente la cancela o la sesión no se celebra por causa de la clínica, ENTONCES DEBERÁ devolver el pago; SI el cliente no se presenta, ENTONCES DEBERÁ retenerlo.",
+        "fuentes": [
+          "DOC-23#F015"
+        ],
+        "preguntas": [
+          "P-078"
+        ],
+        "motivo": "La teleconsulta se paga por adelantado y P-078 pide adoptar la solución más sencilla para cambios, cancelaciones y sesiones no realizadas; se utiliza la regla operativa de 2:N-005.",
+        "de": {
+          "propuesta_1": [
+            "N-009"
+          ],
+          "propuesta_2": [
+            "N-005"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se reemplaza el tratamiento indefinido de 1:N-009 por las reglas explícitas de 2:N-005 sin alterar el cobro anticipado."
+      },
+      {
+        "id": "N-006",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "El sistema Clinicas Veterinarias v0.11 DEBERÁ permitir pedir y pagar desde la app alimentación y productos de higiene disponibles en la clínica de recogida elegida por el cliente, sin ofrecer medicamentos con o sin receta.",
+        "fuentes": [
+          "DOC-23#F018",
+          "DOC-23#F019",
+          "DOC-23#F022"
+        ],
+        "preguntas": [
+          "P-079",
+          "P-080",
+          "P-091"
+        ],
+        "motivo": "Gerencia incorpora pedidos de alimentación e higiene con recogida en clínica y pago en la app, excluye todos los medicamentos y se limita la oferta a existencias en la clínica elegida.",
+        "de": {
+          "propuesta_1": [
+            "N-010"
+          ],
+          "propuesta_2": [
+            "N-006"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas describen la misma modalidad de pedido; la devolución si falla el apartado queda en N-008."
+      },
+      {
+        "id": "N-007",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO la clínica aparte un pedido pagado en la app, el sistema Clinicas Veterinarias v0.11 DEBERÁ mantenerlo disponible para su recogida durante 48 horas desde el apartado y, SI no se recoge en ese plazo, ENTONCES DEBERÁ anularlo y devolver su importe.",
+        "fuentes": [
+          "DOC-23#F019",
+          "DOC-23#F020",
+          "DOC-23#F021"
+        ],
+        "preguntas": [
+          "P-079",
+          "P-081"
+        ],
+        "motivo": "El pedido pagado debe guardarse 48 horas y cancelarse con devolución si no se recoge; se fija el inicio del plazo en el apartado del producto.",
+        "de": {
+          "propuesta_1": [
+            "N-011"
+          ],
+          "propuesta_2": [
+            "N-007"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas coinciden en el inicio del plazo, la anulación y la devolución, sin duplicar aquí la regla de disponibilidad del pedido."
+      },
+      {
+        "id": "N-008",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI la clínica elegida no consigue apartar los productos de un pedido pagado en la app, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ anular el pedido y devolver el importe pagado.",
+        "fuentes": [
+          "DOC-23#F018",
+          "DOC-23#F019",
+          "DOC-23#F020"
+        ],
+        "preguntas": [
+          "P-080"
+        ],
+        "motivo": "P-080 solicita resolver el cobro si, pese a aparecer disponibles, no se consiguen apartar los artículos en la clínica de recogida.",
+        "de": {
+          "propuesta_1": [
+            "N-012"
+          ],
+          "propuesta_2": []
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el caso de fallo de apartado, diferente de la devolución por no recoger el pedido ya apartado."
+      },
+      {
+        "id": "N-009",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO termine una visita, el sistema Clinicas Veterinarias v0.11 DEBERÁ enviar al día siguiente por la app al cliente principal asociado a la mascota una encuesta con valoraciones de 1 a 5 de la atención, del veterinario y de la puntualidad y un campo opcional de comentario libre.",
+        "fuentes": [
+          "DOC-22#F022"
+        ],
+        "preguntas": [
+          "P-082"
+        ],
+        "motivo": "La nueva encuesta se envía al día siguiente de cada visita; P-082 permite escoger al cliente principal si hay varios clientes asociados.",
+        "de": {
+          "propuesta_1": [
+            "N-013"
+          ],
+          "propuesta_2": [
+            "N-008"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen las formulaciones equivalentes de la encuesta, su destinatario y sus tres valoraciones."
+      },
+      {
+        "id": "N-010",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "El sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a gerencia consultar las respuestas individuales y comentarios de las encuestas de todas las clínicas y al responsable de cada clínica consultar solo los de su clínica.",
+        "fuentes": [
+          "DOC-22#F022",
+          "DOC-22#F024"
+        ],
+        "preguntas": [
+          "P-083"
+        ],
+        "motivo": "La nueva respuesta asigna la consulta de respuestas individuales y comentarios a gerencia para el grupo y a cada responsable para su clínica.",
+        "de": {
+          "propuesta_1": [
+            "N-014"
+          ],
+          "propuesta_2": [
+            "N-010"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas coinciden en perfiles y alcance por clínica."
+      }
+    ],
+    "descartados": [
+      {
+        "propuesta": 2,
+        "id": "N-009",
+        "motivo": "Su media conjunta mensual de satisfacción por clínica ya se incorpora a la modificación de RF-183 propuesta por la propuesta 1; mantenerla también como requisito nuevo duplicaría la misma salida."
+      }
+    ],
+    "cambios": [
+      {
+        "id": "RF-001",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "El sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a recepción dar de alta y mantener las fichas de clientes de las cuatro clínicas actuales y de Huellas Puerto desde su apertura en enero de 2027.",
+        "fuentes": [
+          "DOC-01#F034",
+          "DOC-22#F003",
+          "DOC-22#F006"
+        ],
+        "preguntas": [
+          "P-064"
+        ],
+        "motivo": "Huellas Puerto se incorpora como quinta clínica a la plataforma desde el primer día.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas amplían las fichas de las cuatro clínicas a Huellas Puerto."
+      },
+      {
+        "id": "RF-024",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO transcurran cinco años desde la última visita de un paciente sin otra visita que reinicie el plazo, el sistema Clinicas Veterinarias v0.11 DEBERÁ anonimizar cada noche de forma irreversible su historia clínica identificable en la plataforma, retirando nombre, documento, teléfono, correo y dirección del propietario y nombre y microchip de la mascota, conservando especie, raza, edad, diagnósticos, tratamientos y fechas sin borrar la historia y registrando cuántas historias ha anonimizado.",
+        "fuentes": [
+          "DOC-07#F011",
+          "DOC-07#F012",
+          "DOC-24#F006",
+          "DOC-24#F007",
+          "DOC-24#F008",
+          "DOC-24#F010",
+          "DOC-24#F013",
+          "DOC-24#F014"
+        ],
+        "preguntas": [
+          "P-086",
+          "P-087"
+        ],
+        "motivo": "El informe legal y P-086 sustituyen la conservación identificable indefinida por anonimización irreversible a los cinco años; se adopta inicialmente el alcance de las historias en la plataforma sin afirmar una política no decidida para el archivo anterior y las copias.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": true,
+        "explicacion": "La propuesta 1 restringe el alcance a la plataforma y deja archivo anterior y copias por definir, mientras la 2 exige anonimización sin delimitar ese alcance; se combina el detalle verificable de ambas y se evita el marcador indefinido."
+      },
+      {
+        "id": "RF-040",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "El sistema Clinicas Veterinarias v0.11 DEBERÁ mantener agendas por clínica, veterinario y sala para consultas, quirófano y rayos y agendas independientes de peluquería para Huellas Montaña, asociada a su peluquera, y Huellas Puerto, asociada al profesional, espacio y horario que configure la clínica.",
+        "fuentes": [
+          "DOC-01#F046",
+          "DOC-20#F039",
+          "DOC-20#F040",
+          "DOC-22#F004",
+          "DOC-23#F025"
+        ],
+        "preguntas": [
+          "P-066",
+          "P-068"
+        ],
+        "motivo": "Huellas Puerto ofrecerá peluquería desde su apertura, pero su profesional, espacio y horario todavía no se han comunicado; se usa una agenda con recursos configurables sin inventar una dotación.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas añaden la agenda de Puerto y dejan sus recursos pendientes; se sustituye el marcador indefinido por la asociación configurable a esos recursos."
+      },
+      {
+        "id": "RF-059",
+        "accion": "eliminar",
+        "fuentes": [
+          "DOC-22#F026",
+          "DOC-22#F027"
+        ],
+        "preguntas": [
+          "P-085"
+        ],
+        "motivo": "La decisión posterior elimina la reserva conjunta vinculada y deja una cita independiente por mascota en todos los canales.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas eliminan el requisito de reserva múltiple vinculada."
+      },
+      {
+        "id": "RF-062",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI faltan menos de 24 horas para una cita, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ impedir cambiarla o cancelarla desde la app y mostrar el teléfono de la clínica; SI faltan 24 horas o más, ENTONCES DEBERÁ permitir ambas operaciones desde la app.",
+        "fuentes": [
+          "DOC-01#F052",
+          "DOC-01#F053",
+          "DOC-14#F020",
+          "DOC-14#F021",
+          "DOC-22#F009",
+          "DOC-22#F010"
+        ],
+        "preguntas": [
+          "P-004",
+          "P-070"
+        ],
+        "motivo": "Gerencia y P-070 sustituyen las 12 horas por 24 horas para la app y conservan la vía telefónica.",
+        "de": [
+          1
+        ],
+        "discrepancia": true,
+        "explicacion": "La propuesta 1 limita tanto el cambio como la cancelación a 24 horas; la 2 mantiene 12 horas para cambiar y 24 para cancelar: P-070 y DOC-01#F052 respaldan el límite de 24 horas para ambas operaciones."
+      },
+      {
+        "id": "RF-078",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "DONDE esté implantada la fase 1 de hospitalización, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir registrar únicamente en Huellas Centro el ingreso con motivo, veterinario responsable, jaula o box y estimación de días.",
+        "fuentes": [
+          "DOC-01#F073",
+          "DOC-01#F074",
+          "DOC-12#F019",
+          "DOC-22#F015"
+        ],
+        "preguntas": [
+          "P-074"
+        ],
+        "motivo": "P-074 adelanta a la fase 1 todas las funciones hospitalarias de Huellas Centro, incluido el ingreso.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas hacen el mismo cambio de fase y conservan los datos del ingreso."
+      },
+      {
+        "id": "RF-079",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "DONDE esté implantada la fase 1 de hospitalización, el sistema Clinicas Veterinarias v0.11 DEBERÁ gestionar en Huellas Centro 18 jaulas —seis grandes, ocho medianas y cuatro para gatos en sala separada—, dos boxes de UCI y una plaza adicional de aislamiento solo para perros y gatos con enfermedades infecciosas.",
+        "fuentes": [
+          "DOC-12#F020",
+          "DOC-12#F022",
+          "DOC-22#F015",
+          "DOC-25#F014",
+          "DOC-25#F015"
+        ],
+        "preguntas": [
+          "P-036",
+          "P-074"
+        ],
+        "motivo": "Se adelanta a la fase 1 la gestión de las plazas de Huellas Centro sin cambiar su capacidad ni las condiciones del aislamiento.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas coinciden en fase, número de plazas y especies admitidas."
+      },
+      {
+        "id": "RF-083",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "DONDE esté implantada la fase 1 de hospitalización, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario planificar por paciente tareas de medicación, fluidoterapia, alimentación, paseo, control de constantes y limpieza de heridas con hora, dosis o detalle y responsable.",
+        "fuentes": [
+          "DOC-01#F075",
+          "DOC-12#F026",
+          "DOC-22#F015"
+        ],
+        "preguntas": [
+          "P-074"
+        ],
+        "motivo": "La respuesta P-074 confirma que el adelanto a la fase 1 abarca las hojas de tratamientos.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas mantienen las tareas y solo actualizan la fase de implantación."
+      },
+      {
+        "id": "RF-090",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "MIENTRAS una mascota esté ingresada en Huellas Centro, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario publicar informes diarios escritos por él solo en texto, sin fotos, y mostrar a cada cliente asociado dichos informes y el importe acumulado de la estancia en la app.",
+        "fuentes": [
+          "DOC-01#F078",
+          "DOC-03#F033",
+          "DOC-12#F033",
+          "DOC-22#F015",
+          "DOC-25#F004",
+          "DOC-25#F005",
+          "DOC-25#F006"
+        ],
+        "preguntas": [
+          "P-008",
+          "P-074",
+          "P-088"
+        ],
+        "motivo": "El informe diario pasa a ser exclusivamente textual y se mantiene disponible para todos los clientes asociados durante la hospitalización adelantada de Centro.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas suprimen las fotos; se conserva el autor explícito de la primera y la clínica explícita de la segunda."
+      },
+      {
+        "id": "RF-091",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "DONDE esté implantada la fase 1 de hospitalización en Huellas Centro, el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar y permitir citar visitas a pacientes hospitalizados de 12:00 a 13:00 y de 18:00 a 19:00, con un máximo de dos personas.",
+        "fuentes": [
+          "DOC-12#F036",
+          "DOC-22#F015"
+        ],
+        "preguntas": [
+          "P-074"
+        ],
+        "motivo": "La respuesta P-074 incluye todas las funciones del hospital en la fase 1 únicamente en Huellas Centro.",
+        "de": [
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Solo la propuesta 2 aclara la fase y la clínica para la agenda de visitas hospitalarias."
+      },
+      {
+        "id": "RF-093",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se dé un alta hospitalaria en Huellas Centro durante la fase 1, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario redactar informe con diagnóstico, tratamiento realizado y para casa, cuidados y fecha de revisión, y generar receta, cita de revisión en la clínica habitual y factura final descontando el depósito.",
+        "fuentes": [
+          "DOC-12#F038",
+          "DOC-12#F039",
+          "DOC-22#F015"
+        ],
+        "preguntas": [
+          "P-074"
+        ],
+        "motivo": "P-074 confirma que el alta hospitalaria se incorpora con las demás funciones de Centro en la fase 1.",
+        "de": [
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Solo la propuesta 2 hace explícitos el adelanto y la clínica, manteniendo las funciones de alta validadas."
+      },
+      {
+        "id": "RF-100",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "El sistema Clinicas Veterinarias v0.11 DEBERÁ mantener un catálogo único de medicamentos, vacunas, alimentación, productos de higiene, accesorios y material clínico con código, nombre, laboratorio, presentación, unidad de venta, precio de compra y venta, IVA y necesidad de receta.",
+        "fuentes": [
+          "DOC-01#F081",
+          "DOC-01#F082",
+          "DOC-23#F018"
+        ],
+        "preguntas": [
+          "P-079"
+        ],
+        "motivo": "El nuevo pedido de productos de higiene en la app hace necesario incluirlos expresamente en el catálogo único.",
+        "de": [
+          1
+        ],
+        "discrepancia": false,
+        "explicacion": "Solo la propuesta 1 actualiza el catálogo; el correo nuevo respalda esa inclusión."
+      },
+      {
+        "id": "RF-118",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se emita una factura, el sistema Clinicas Veterinarias v0.11 DEBERÁ numerarla correlativamente por año en la serie ordinaria de su clínica, C, N, R o M para las cuatro clínicas actuales y una serie propia para Huellas Puerto, y, SI es rectificativa, ENTONCES DEBERÁ usar la serie rectificativa de la clínica, CR, NR, RR o MR para las cuatro actuales y una serie propia para Huellas Puerto, y referenciar la factura rectificada.",
+        "fuentes": [
+          "DOC-11#F004",
+          "DOC-11#F006",
+          "DOC-22#F003"
+        ],
+        "preguntas": [
+          "P-069"
+        ],
+        "motivo": "La nueva clínica necesita series ordinaria y rectificativa diferenciadas, pero ninguna entrada proporciona códigos concretos; se conserva la numeración por clínica sin inventar prefijos.",
+        "de": [
+          1
+        ],
+        "discrepancia": false,
+        "explicacion": "Solo la propuesta 1 incorpora las series de Puerto; se sustituye el marcador indefinido por la obligación de contar con series propias, sin asignar códigos no documentados."
+      },
+      {
+        "id": "RF-136",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se cobre una urgencia, el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar según la hora de atención 65 € en horario diurno no festivo, incluidos sábados y domingos, 95 € de 20:00 a 9:00 o durante festivos hasta el 31 de diciembre de 2026, y 100 € para esas urgencias nocturnas o festivas desde el 1 de enero de 2027.",
+        "fuentes": [
+          "DOC-06#F005",
+          "DOC-06#F006",
+          "DOC-26#F003"
+        ],
+        "preguntas": [
+          "P-059",
+          "P-089"
+        ],
+        "motivo": "La tarifa nueva eleva de 95 a 100 € las urgencias nocturnas y festivas a partir del 1 de enero de 2027.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas coinciden en precios, horarios y fecha de vigencia; se usa la redacción cronológica más clara."
+      },
+      {
+        "id": "RF-138",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se cobre baño y corte de perro pequeño en Huellas Montaña o Huellas Puerto entre el 1 de noviembre y el 28 de febrero, el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar 32 € y fuera de ese periodo 35 €.",
+        "fuentes": [
+          "DOC-06#F026",
+          "DOC-22#F004"
+        ],
+        "preguntas": [
+          "P-012",
+          "P-067"
+        ],
+        "motivo": "Puerto ofrecerá peluquería y se adopta la opción simple de utilizar las tarifas existentes de Montaña para baño y corte.",
+        "de": [
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Solo la propuesta 2 extiende expresamente el precio estacional a Huellas Puerto."
+      },
+      {
+        "id": "RF-139",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se cobre baño y corte de perro grande en Huellas Montaña o Huellas Puerto, el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar 45 €.",
+        "fuentes": [
+          "DOC-06#F026",
+          "DOC-22#F004"
+        ],
+        "preguntas": [
+          "P-012",
+          "P-043",
+          "P-067"
+        ],
+        "motivo": "Se aplica a la peluquería de Puerto la tarifa existente de Montaña para perros grandes.",
+        "de": [
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Solo la propuesta 2 extiende expresamente esta tarifa a Huellas Puerto."
+      },
+      {
+        "id": "RF-140",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "El sistema Clinicas Veterinarias v0.11 DEBERÁ incluir en el tarifario los servicios de la hoja Servicios del DOC-06 con sus códigos, precios, duraciones, IVA y disponibilidad por clínica, sujetos a las excepciones confirmadas de urgencias, hospitalización y peluquería y al cambio de S004 a 100 € desde el 1 de enero de 2027; aplicar a Huellas Puerto las tarifas de Huellas Centro salvo los precios de baño y corte, que serán los de Huellas Montaña; e incluir S090 de teleconsulta de seguimiento, de 15 minutos y con IVA del 21 %, a 25 € o a 20 € para clientes con plan activo, sin incluirlo en sus prestaciones.",
+        "fuentes": [
+          "DOC-06#F002",
+          "DOC-06#F006",
+          "DOC-06#F026",
+          "DOC-22#F006",
+          "DOC-23#F015",
+          "DOC-26#F003",
+          "DOC-26#F004",
+          "DOC-26#F010"
+        ],
+        "preguntas": [
+          "P-064",
+          "P-067",
+          "P-076",
+          "P-077",
+          "P-089"
+        ],
+        "motivo": "El tarifario debe reflejar la vigencia del nuevo S004, las tarifas generales de Centro en Puerto con peluquería de Montaña y el servicio S090 con precio diferenciado no incluido en el plan.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": true,
+        "explicacion": "La propuesta 1 deja indefinida la peluquería de Puerto y solo incorpora la actualización de S004; la 2 fija la peluquería según Montaña y añade S090 pero omite la nueva cuantía de S004: se combinan los extremos respaldados por P-067, P-076, P-077 y P-089."
+      },
+      {
+        "id": "RF-172",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO falten 24 horas para una cita, el sistema Clinicas Veterinarias v0.11 DEBERÁ enviar al cliente un recordatorio con botones para confirmar y cancelar, permitir cancelar desde ese botón mientras resten al menos 24 horas y, SI resta menos tiempo, ENTONCES DEBERÁ bloquear el botón y mostrar el teléfono de la clínica.",
+        "fuentes": [
+          "DOC-01#F124",
+          "DOC-20#F046",
+          "DOC-22#F009",
+          "DOC-22#F010"
+        ],
+        "preguntas": [
+          "P-004",
+          "P-070"
+        ],
+        "motivo": "El botón enviado exactamente 24 horas antes permite cancelar en ese instante, pero se bloquea pasado el límite y se conserva el canal telefónico.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas fijan el mismo límite; se unen el bloqueo explícito de la segunda y el teléfono indicado en la primera."
+      },
+      {
+        "id": "RF-183",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CADA mes, el sistema Clinicas Veterinarias v0.11 DEBERÁ proporcionar a gerencia facturación por veterinario y familia de servicio, ventas de farmacia y alimentación, margen calculado con precio de compra por lote, altas y bajas de planes, ingreso por plan y una media conjunta por clínica de las valoraciones de atención, veterinario y puntualidad de las encuestas de satisfacción.",
+        "fuentes": [
+          "DOC-15#F010",
+          "DOC-15#F012",
+          "DOC-22#F022",
+          "DOC-22#F023"
+        ],
+        "preguntas": [
+          "P-084"
+        ],
+        "motivo": "La documentación nueva pide añadir la media mensual de satisfacción por clínica y se elige agregar las tres valoraciones en una media conjunta.",
+        "de": [
+          1
+        ],
+        "discrepancia": false,
+        "explicacion": "Se mantiene el cambio propuesto solo por la propuesta 1; el nuevo 2:N-009 se descarta porque duplicaría este informe."
+      },
+      {
+        "id": "RF-187",
+        "accion": "modificar",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "El sistema Clinicas Veterinarias v0.11 DEBERÁ mantener los horarios y recursos por clínica de la hoja Clínicas del DOC-06, con exóticos solo en Huellas Centro y peluquería en Huellas Montaña y Huellas Puerto, e incorporar desde su apertura en enero de 2027 Huellas Puerto en paseo del Muelle 12 de Alcorza con consultas, vacunación y peluquería de lunes a viernes de 9:00 a 20:00 y sábados de 9:00 a 14:00, sin hospital ni urgencias.",
+        "fuentes": [
+          "DOC-06#F043",
+          "DOC-06#F044",
+          "DOC-06#F045",
+          "DOC-06#F046",
+          "DOC-06#F047",
+          "DOC-22#F003",
+          "DOC-22#F004",
+          "DOC-22#F005",
+          "DOC-22#F006"
+        ],
+        "preguntas": [
+          "P-064",
+          "P-065",
+          "P-066"
+        ],
+        "motivo": "Puerto abre en enero de 2027 con las actividades indicadas y horario confirmado, incluida la peluquería y el sábado por la mañana, sin hospital ni urgencias.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas coinciden; se conserva la dirección aportada por la primera y la enumeración completa de servicios de la segunda."
+      },
+      {
+        "id": "RNF-006",
+        "accion": "modificar",
+        "tipo": "RNF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "El sistema Clinicas Veterinarias v0.11 DEBERÁ exigir segundo factor de autenticación a todo el personal tanto dentro como fuera de las clínicas, sin exigirlo a los clientes de la app o la web.",
+        "fuentes": [
+          "DOC-01#F143",
+          "DOC-21#F014",
+          "DOC-27#F010",
+          "DOC-27#F011"
+        ],
+        "preguntas": [
+          "P-030",
+          "P-090"
+        ],
+        "motivo": "La auditoría y P-090 extienden el segundo factor a todos los accesos del personal y excluyen a clientes.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Las propuestas coinciden en el nuevo alcance, tanto dentro como fuera de las clínicas."
+      },
+      {
+        "id": "RT-002",
+        "accion": "modificar",
+        "tipo": "RT",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "El sistema Clinicas Veterinarias v0.11 DEBERÁ ofrecer una aplicación móvil para Android e iOS y una versión web para clientes con las mismas funciones, excepto las teleconsultas de seguimiento y los pedidos de alimentación y productos de higiene, disponibles solo en la app móvil en esta versión.",
+        "fuentes": [
+          "DOC-01#F116",
+          "DOC-23#F009",
+          "DOC-23#F018"
+        ],
+        "preguntas": [
+          "P-075",
+          "P-079",
+          "P-091"
+        ],
+        "motivo": "Se incorporan dos funciones nuevas descritas para la app y se adopta la excepción sencilla a la paridad con la web.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas limitan a la app estas funciones; se precisa que los pedidos son únicamente de alimentación e higiene."
+      }
+    ]
+  },
+  "desviaciones": [
+    {
+      "id": "N-002",
+      "tipo": "separa-iguales",
+      "similitud": 0.909,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,91) que «CUANDO se reserve una teleconsulta, el sistema Clinicas Veterinarias v0.11 DEBERÁ asignar 15 minutos de un hueco ofre…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "N-003",
+      "tipo": "separa-iguales",
+      "similitud": 0.909,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,91) que «DONDE un veterinario ofrezca huecos de teleconsulta en su agenda, el sistema Clinicas Veterinarias v0.11 DEBERÁ permi…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    }
+  ],
+  "emparejamiento": {
+    "segundos": 0.65,
+    "segundos_cpu": 2.58
+  }
+}
