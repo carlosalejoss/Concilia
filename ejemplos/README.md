@@ -114,6 +114,51 @@ Como en un proyecto real, los documentos no siempre coinciden. Esta lista es la 
 | G25 | Depósito del 50 % al ingresar | Solo en el protocolo de urgencias, con excepciones. | — |
 | G26 | Programa de puntos | Reunión con gerencia: para el año siguiente. | Fuera de alcance |
 
+## Grande: segunda iteración
+
+Para probar las iteraciones del proyecto (hito 22, paso 116), el grande tiene una **segunda tanda de documentos**, en [`grande-clinicas-veterinarias/iteracion-2/`](grande-clinicas-veterinarias/iteracion-2/). Llega después de que el catálogo y el backlog de la primera estén validados. Se suben como «Iteración 2» y, como siguen la numeración del proyecto, son `DOC-22` a `DOC-27`. Juntos tienen unos 2.500 tokens.
+
+| Archivo | Formato | Qué es |
+| --- | --- | --- |
+| `22-acta-seguimiento-gerencia.docx` | Word | Acta de la reunión de seguimiento con gerencia (20-10-2026) |
+| `23-correo-gerencia-teleconsulta-y-tienda.eml` | Correo | La gerente detalla la teleconsulta, los pedidos desde la app y el horario de la nueva clínica |
+| `24-informe-asesoria-legal-conservacion.md` | Markdown | Informe de la asesora legal sobre la conservación de la historia clínica |
+| `25-reunion-veterinarios-seguimiento.vtt` | Transcripción | Reunión de seguimiento con el equipo veterinario |
+| `26-tarifas-2027.xlsx` | Excel | Cambios de tarifas para 2027 |
+| `27-informe-auditoria-seguridad.html` | HTML | Conclusiones de la auditoría de seguridad |
+
+### Cambios puestos a propósito
+
+Esta lista es la **referencia para evaluar la ronda centrada y las actualizaciones** del paso 116. La columna «Se espera» dice qué debería salir:
+- **P:** una pregunta; **P enlazada:** una pregunta enlazada a la respuesta o al requisito que contradice, sin reescribir la respuesta;
+- **N:** un requisito o una historia nuevos;
+- **M:** una modificación propuesta;
+- **E:** una eliminación propuesta;
+- **—:** nada, porque no cambia nada.
+
+Las respuestas que se citan son las del proyecto de clínicas de la v0.11 («Clinicas Veterinarias v0.11»).
+
+| # | Tema | Qué dice la iteración 2 | Contra qué choca | Se espera |
+| --- | --- | --- | --- | --- |
+| I2-1 | Teleconsulta de seguimiento | Correo: videollamada desde la app, solo seguimientos, visita presencial en los 30 días anteriores, 15 min, se paga al reservar, no se graba. Veterinarios: anotar en la historia y dar cita presencial desde la llamada. | Nada: es nueva | N |
+| I2-2 | Pedidos desde la app con recogida en clínica | Correo: alimentación e higiene, pago en la app, reserva de 48 h y devolución si no se recoge; medicamentos no. | Nada: es nueva | N |
+| I2-3 | Quinta clínica, Huellas Puerto | Acta: abre en enero de 2027, sin hospital ni urgencias, mismas tarifas que Centro, en la plataforma desde el primer día. Tarifas: lo mismo. | Los requisitos que hablan de cuatro clínicas | M (y N si hace falta) |
+| I2-4 | Encuesta de satisfacción | Acta: al día siguiente de cada visita, tres valoraciones de 1 a 5 y un comentario; la media por clínica en el informe mensual. | Nada: es nueva | N |
+| I2-5 | Plazo para cancelar desde la app | Acta: 24 horas, no 12. | La respuesta a P-004 (12 horas) y los requisitos validados de 12 horas (G1) | P enlazada; tras responder, M |
+| I2-6 | Señal para quien no se presenta | Acta: 10 € a partir de la segunda falta sin avisar en seis meses; se paga al reservar la siguiente y se descuenta de su factura. | G14 (decidido: no en la primera versión) | N o M |
+| I2-7 | Segundo factor | Auditoría: obligatorio para todo el personal, también dentro de las clínicas; para los clientes, nada. | El requisito validado de segundo factor solo para accesos desde fuera (G16) | M |
+| I2-8 | Hospitalización en la primera fase | Acta: se adelanta a la fase 1, solo en Huellas Centro. Veterinarios: les parece bien. | La respuesta a P-002 (fase 2) | P enlazada; tras responder, M |
+| I2-9 | Urgencias nocturnas y festivos | Tarifas: 100 € desde el 1 de enero de 2027 (antes 95 €). | La respuesta a P-059 (95 €) | P enlazada o M |
+| I2-10 | Precio de la teleconsulta | Acta: 20 €. Correo y tarifas: 25 €. | Entre los documentos de la iteración 2 | P |
+| I2-11 | Conservación de la historia clínica | Informe legal: identificable 5 años desde la última visita y después anonimizada, cada noche; lo indefinido «debe descartarse». | La respuesta a P-001 (indefinidamente) y su requisito validado (G5) | P enlazada; tras responder, M |
+| I2-12 | Horario de Huellas Puerto | Acta: de lunes a sábado. Correo: de lunes a viernes. | Entre los documentos de la iteración 2 | P |
+| I2-13 | Cita para varias mascotas | Acta: se descarta; una cita por mascota. | G23, la respuesta a P-042 y su requisito validado | E |
+| I2-14 | Fotos en el informe de hospitalización | Veterinarios: se quitan; el informe, solo texto. | G13 y su requisito validado | M o E |
+| I2-15 | Quién ve los resultados de la encuesta | Acta: «no se decide». | Hueco | P |
+| I2-16 | ¿La teleconsulta cuenta para el plan de salud? | Veterinarios: «lo tiene que decidir Elena». | Hueco | P |
+| I2-17 | Plan Adulto | Acta: se confirman las mismas condiciones. | Nada: coincide con G2 resuelto | — |
+| I2-18 | Jaula de aislamiento y disponibilidad | Veterinarios y auditoría repiten lo que ya se decidió (P-036 y P-039). | Nada | — |
+
 ## Cómo se generaron
 
-Los generó Claude con unos scripts de Python (python-docx, python-pptx, openpyxl y fpdf2) el 15-10-2026, a petición del autor, para el paso 65. El contenido es ficticio, y las contradicciones y huecos de la tabla anterior se incluyeron a propósito.
+Los generó Claude con unos scripts de Python (python-docx, python-pptx, openpyxl y fpdf2) el 15-10-2026, a petición del autor, para el paso 65. El contenido es ficticio, y las contradicciones y huecos de la tabla anterior se incluyeron a propósito. La segunda iteración del grande la escribió Claude el 27-10-2026, para el paso 116, con python-docx y openpyxl para el Word y el Excel, a partir de las decisiones y respuestas ya validadas del proyecto de clínicas.
