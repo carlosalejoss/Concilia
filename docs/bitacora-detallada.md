@@ -2663,3 +2663,17 @@ Reconstrucción en Docker con el paso 113 (sin migración; los datos siguen igua
 - **Árbitro:** une las historias nuevas con el emparejamiento entre A y B y contra el backlog (`existente:`), y decide cada modificación y eliminación a partir de `input/cambios.txt`, agrupadas por historia sin IA.
 - **Pendiente:** la revisión del autor; después, el código del paso.
 
+
+## 27-10-2026, 09:20 (sesión)
+
+Cómo se hace la comparación de Concilia frente a un solo modelo (pasos 118 a 121), sin código.
+
+- **Propuesta del autor:** comparar una ejecución de SOL, una de LUNA y la de los dos con el árbitro en el proyecto grande. Deja a Claude los detalles, con la condición de que el plan explique bien cómo hacerlo.
+- **Decisiones de Claude, aceptadas por el autor:**
+  - SOL solo y LUNA solo son las propuestas de A y B de cada trabajo de Concilia, no ejecuciones aparte: son independientes (el prompt no menciona al otro modelo) y parten de la misma entrada que la unión. Cuesta menos y la comparación es más justa.
+  - Se mantienen 3 repeticiones (paso 119) y se compara fase a fase, no flujo contra flujo.
+  - Se mide frente a una referencia y no contando: en el paso 65 la unión (209 requisitos) tenía menos que SOL (299) porque el árbitro quita repeticiones.
+  - Referencia del proyecto grande: las 26 trampas revisadas por el autor, una lista de 40–60 funcionalidades hecha por el autor sin mirar los catálogos (cobertura) y una muestra de 30 requisitos por propuesta, revisada a ciegas (precisión). La revisión manual se hace sobre la primera repetición; las otras dos dan la variación.
+- **Cambio de criterio:** se cierra la decisión abierta del mismo día con una opción distinta de las dos que había: ni la versión validada del paso 106 (que se queda para los cambios del usuario) ni una lista del proyecto mediano.
+- **Plan:** los pasos 118 a 121 se reescriben como instrucciones (qué hace el autor, qué hace Claude, scripts `repeticiones.cs` y `un-solo-modelo.cs`, hojas de revisión en `docs/evaluacion/revision/`, tiempos y coste estimados: unas 3–4 h para la referencia, 20–30 $ y 2–3 h de ejecuciones, unas 5 h de revisión y 30–50 $ más para SOL ‖ SOL).
+- **Limitaciones anotadas:** un solo proyecto, ficticio; la referencia la hace el autor; en el paso 65 la unión ya trató bien las 26 trampas, así que distinguirán poco; pocas discrepancias.

@@ -106,7 +106,7 @@ Ninguna del hito 17. El umbral de "discrepancia grave" lo cerró el autor el 19-
 
 Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración.
 
-Del hito 23 (27-10-2026): la referencia del catálogo y del backlog en el paso 120 (Concilia frente a un solo modelo), la versión validada tras editarla de verdad (paso 106) o una lista hecha a mano solo para el proyecto mediano. Se decide al empezar el paso. El tope de fragmentos relacionados lo cerró el autor el 26-10-2026 (20.000 tokens, tras medirlo en el paso 112), y las demás decisiones del hito, el mismo día.
+Del hito 23: ninguna. La referencia del catálogo y del backlog del paso 120 la cerró el autor el 27-10-2026, dejando los detalles a Claude: el proyecto grande (clínicas), con una lista de funcionalidades hecha por el autor sin mirar los catálogos (cobertura) y una muestra de 30 requisitos por propuesta revisada a ciegas (precisión), más las 26 trampas de `ejemplos/README.md` revisadas por el autor. SOL solo y LUNA solo son las propuestas de A y B de cada trabajo, no ejecuciones aparte. Instrucciones en los pasos 118 a 121 del plan. El tope de fragmentos relacionados lo cerró el autor el 26-10-2026 (20.000 tokens, tras medirlo en el paso 112), y las demás decisiones del hito, el mismo día.
 
 ## Runner y pasarela (verificado)
 

@@ -526,7 +526,7 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
 
 Material para el capítulo de evaluación de la memoria. Era el hito 22 hasta el 26-10-2026, cuando el autor puso delante las iteraciones del proyecto. Sus pasos conservan su número. Incluye también los resultados del paso 116 (actualizar frente a empezar de cero).
 
-El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar la propuesta del TFG: ningún paso medía la hipótesis (que la verificación cruzada mejora la fiabilidad frente a un solo modelo), y el paso 65 apunta a que puede no mejorarla (la unión se parece mucho a A, y de las 15 contradicciones abiertas 2 las detecta solo A y ninguna solo B). Un resultado negativo también vale para la memoria, pero hay que medirlo. Se hacen en este orden: 117 antes que cualquier ejecución de la evaluación; después 104 a 106, 118, 119, 120 y 121. El 103 se hizo antes, con la v0.9, y sus resultados se citan con esa versión.
+El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar la propuesta del TFG: ningún paso medía la hipótesis (que la verificación cruzada mejora la fiabilidad frente a un solo modelo), y el paso 65 apunta a que puede no mejorarla (la unión se parece mucho a A, y de las 15 contradicciones abiertas 2 las detecta solo A y ninguna solo B). Un resultado negativo también vale para la memoria, pero hay que medirlo. Se hacen en este orden: 117 antes que cualquier ejecución de la evaluación; después 104 a 106, 118, 119, 120 y 121. El 103 se hizo antes, con la v0.9, y sus resultados se citan con esa versión. Los pasos 118 a 121 llevan sus instrucciones, separadas en lo que hace el autor y lo que hace Claude, en su propio apartado, más abajo.
 
 - [x] 103. Terminar el experimento de si el árbitro prefiere a su propio modelo (`docs/experimento-sesgo-arbitro.md`). (16-10-2026: no hay preferencia; la unión se parece a A porque A propone más y casi todo lo de B ya está en A. LUNA, 2 arbitrajes válidos de 6 en el catálogo.)
 - [ ] 117. Congelar la versión que se evalúa (27-10-2026, autor). Antes de la primera ejecución de la evaluación, con el hito 22 cerrado:
@@ -537,24 +537,105 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
 - [ ] 104. Métricas externas sobre el catálogo y el backlog generados en inglés: AQUSA (`RELabUU/aqusa-core`) para las historias y `vale-ears` para EARS.
 - [ ] 105. El flujo completo con un documento público del dataset PURE, que el tribunal pueda reproducir.
 - [ ] 106. Una prueba editando de verdad el catálogo y el backlog, como un analista, para que la métrica de cambios del usuario tenga datos. Incluye los pasos 49 (segunda ronda de preguntas) y 53 (editar el catálogo), que siguen pendientes.
-- [ ] 118. El autor revisa la referencia (27-10-2026, autor). Los proyectos de ejemplo, su lista de contradicciones y huecos (`ejemplos/README.md`) y la comprobación del paso 65 (por palabras clave y leyendo) los hizo Claude, que también desarrolla la plataforma (`docs/resultados-paso-65/README.md`, «Ni independientes ni reales»). El autor:
-  - revisa la lista: que cada contradicción y cada hueco esté de verdad en los documentos y que su tratamiento esperado (preguntarse o estar en el catálogo) sea el correcto;
-  - repasa la comprobación del paso 65 sobre las preguntas y el catálogo de entonces;
-  - hace lo mismo con la lista de cambios de la segunda iteración de clínicas (paso 116).
-  Las correcciones se anotan en la lista, con fecha, y la referencia revisada es la que usan los pasos 119 a 121.
-- [ ] 119. Repetir cada fase para ver cuánto varía (27-10-2026, autor). Con la configuración de siempre (A `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA`, árbitro SOL), en el proyecto de clínicas, 3 repeticiones de preguntas, catálogo y backlog, como en el experimento del sesgo del árbitro: con una sola no se distingue una diferencia real de una casualidad.
-  - Cada fase se repite desde la misma entrada, para que lo que cambie venga solo de esa fase: el catálogo, desde las mismas preguntas respondidas; el backlog, desde el mismo catálogo validado. Las preguntas se repiten en proyectos copia con los mismos documentos, porque una segunda ronda en el mismo proyecto ya ve las preguntas de la primera.
-  - De cada repetición, el informe de siempre (tokens, minutos, coste, elementos de A, de B y de la unión, discrepancias). Además, cuánto se parecen entre sí las repeticiones de A, las de B y las de la unión: el porcentaje de elementos de una con par «mismo» o «parecido» en otra, con `ProposalMatcher`. Así se sabe si la unión del árbitro es más estable que cada modelo por separado. Hay un indicio: con la v0.10, la unión del catálogo de clínicas osciló entre 202 y 222 requisitos frente a 209–291 antes.
-  - Coste estimado con `docs/costes/costes.md`: una vuelta de preguntas, catálogo y backlog de clínicas con la v0.11 costó unos 7–9 $ y unos 35–45 minutos, así que las 3 repeticiones rondan los 20–30 $ y unas 2 horas. Se confirma con la primera repetición; si se dispara, se hacen 2 y se dice.
-  - Resultados en `docs/evaluacion/repeticiones.md` y en `docs/costes/costes.md`.
-- [ ] 120. Concilia frente a un solo modelo (27-10-2026, autor). La comparación que responde a la hipótesis, con las ejecuciones del paso 119 y, como primera medida sin ejecuciones nuevas, las propuestas de A y B que ya guardó el paso 65.
-  - Se compara A solo, B solo y la unión del árbitro frente a la referencia: cuánto de la referencia encuentra cada uno (recall), cuánto propone que no está en ella o no tiene fuente (precisión) y su F1. El emparejamiento con la referencia se hace con `ProposalMatcher` y lo revisa el autor.
-  - Referencia de las preguntas: la lista revisada del paso 118. **Referencia del catálogo y del backlog, por decidir al empezar el paso:** la versión validada tras editarla de verdad (paso 106) o una lista hecha a mano solo para el proyecto mediano.
-  - Si las discrepancias sirven: de las que marca el árbitro (las suyas y las de `ArbiterDeviations`), cuántas acabó cambiando el autor al revisar en el paso 106.
-  - Coste: Concilia cuesta A + B + árbitro frente a una sola de las propuestas. Se da la diferencia de coste y de minutos junto a la de recall y precisión, para decir si merece la pena.
-  - Un script en `scripts/evaluacion/` que saca las cifras de los trabajos guardados; resultados en `docs/evaluacion/un-solo-modelo.md`, con el bloque en palabras sencillas de qué se comprobó y qué demuestra.
-  Adelanta al hito 23 la parte de evaluación del punto 3 de «Después» (precision, recall y F1 frente a listas de referencia); la aprobación por umbral se queda allí.
-- [ ] 121. SOL ‖ SOL (27-10-2026, autor). Las mismas 3 repeticiones del paso 119 con B también `SS - GPT-6-SOL` (`RUNNER_MODEL_B`; el reparto de papeles ya es configuración, sin código), y la misma comparación del paso 120. Responde a si lo que aporta el patrón viene de usar dos modelos distintos o simplemente de hacer dos intentos. Es la configuración más cara, porque LUNA cuesta la vigésima parte que SOL: se estima con la primera repetición antes de lanzar las demás. Resultados junto a los del paso 120.
+
+### Los pasos 118 a 121: Concilia frente a un solo modelo
+
+Decidido el 27-10-2026: el autor propuso comparar una ejecución de SOL, una de LUNA y la de los dos con el árbitro en el proyecto grande (clínicas), y dejó a Claude los detalles. Lo que hay que saber antes de empezar:
+
+- **No hacen falta ejecuciones aparte de SOL y de LUNA.** Cada trabajo de Concilia ya lleva una ejecución de SOL sola (A) y una de LUNA sola (B): el prompt no menciona al otro modelo ni al árbitro (decisión del 1-10-2026), así que la propuesta de A es exactamente lo que daría SOL lanzado solo. Un trabajo da las tres cosas que se comparan, SOL, LUNA y la unión del árbitro, y las tres parten de la misma entrada.
+- **Se compara fase a fase**, no el flujo entero de un modelo contra el de Concilia: así un fallo en las preguntas no se arrastra al catálogo y se sabe de qué fase viene cada diferencia.
+- **Se mide frente a una referencia, no contando elementos.** En el paso 65, SOL propuso 299 requisitos, LUNA 192 y la unión 209: la unión tiene menos que SOL porque el árbitro quita repeticiones, y contar no dice cuál es mejor.
+- **Tres medidas, en palabras sencillas:**
+  - **recall** (cobertura): de lo que debía estar, cuánto está;
+  - **precisión:** de lo que propone, cuánto está bien (lo dice su fuente, no está repetido y no sobra);
+  - **F1:** un solo número que junta las dos (su media armónica: solo es alto si las dos lo son).
+- **Coste:** «SOL solo» cuesta las ejecuciones de A del trabajo; «LUNA solo», las de B; Concilia, todas (A, B y árbitro). En minutos, Concilia tarda lo que el más lento de A y B más el árbitro, porque A y B van en paralelo.
+- **Cierra la decisión abierta de la referencia del catálogo y del backlog:** ni la versión validada del paso 106 (que se queda para medir los cambios del usuario) ni una lista del proyecto mediano, sino una lista de funcionalidades del proyecto grande hecha por el autor y una muestra revisada a mano.
+
+- [ ] 118. Preparar la referencia (27-10-2026, autor). Los proyectos de ejemplo, su lista de contradicciones y huecos y la comprobación del paso 65 los hizo Claude, que también desarrolla la plataforma (`docs/resultados-paso-65/README.md`, «Ni independientes ni reales»). La referencia de la evaluación la revisa o la hace el autor. Unas 3–4 horas, sin coste.
+  **Qué haces tú:**
+  1. **Revisa las 26 «trampas» del proyecto grande** (G1–G26 en `ejemplos/README.md`). De cada una, comprueba en los documentos de `ejemplos/grande-clinicas-veterinarias/` que la contradicción o el hueco está como dice la tabla y que el tratamiento esperado es el correcto. Hay cuatro tipos:
+     - una contradicción **abierta** debe preguntarse;
+     - una **resuelta** en un documento posterior no debe preguntarse, y el catálogo debe recoger la decisión final;
+     - un **hueco** de un solo documento debe estar en el catálogo;
+     - lo **fuera de alcance** no debe estar en el catálogo.
+     Si algo no cuadra, corrígelo en la tabla y añade debajo una línea «Revisado por el autor el DD-MM-AAAA: …».
+  2. **Haz la lista de funcionalidades de clínicas**, en `docs/evaluacion/referencia-clinicas.md`. Es lo que se usa para medir la cobertura del catálogo y del backlog.
+     - Léela de los documentos, **sin mirar ningún catálogo generado**, para no copiar lo que dicen los modelos.
+     - Una funcionalidad es algo que un usuario hace con el sistema o que el sistema hace solo, como «Cancelar una cita desde la app» o «Avisar de una vacuna próxima». Un detalle de una funcionalidad no es una funcionalidad: «con 12 h de antelación» va dentro de «Cancelar una cita».
+     - Una por línea, con un id, el nombre y el documento donde aparece: `F01 · Cancelar una cita desde la app · 04-reunion-recepcion.srt`. Saldrán unas 40–60.
+  3. **Haz lo mismo con la lista de cambios de la segunda iteración de clínicas** (paso 116): revísala como en el punto 1.
+- [ ] 119. Las ejecuciones: 3 repeticiones de cada fase (27-10-2026, autor). Con una sola ejecución no se distingue una diferencia real de una casualidad, como en el experimento del sesgo del árbitro. Con la versión congelada del paso 117 y la configuración de siempre: A `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA` y árbitro SOL.
+  - **Coste estimado** (con `docs/costes/costes.md`): una vuelta de preguntas, catálogo y backlog de clínicas con la v0.11 costó unos 7–9 $ y unos 35–45 minutos. Las 3 repeticiones rondan los 20–30 $ y 2–3 horas, casi todo de espera. Se confirma con la primera; si se dispara, se hacen 2 y se dice.
+  - **Por qué cada fase se repite desde la misma entrada:** para que lo que cambie venga solo de esa fase. El catálogo sale de las mismas preguntas respondidas, y el backlog, del mismo catálogo validado. Las preguntas, en cambio, se repiten en proyectos distintos, porque una segunda ronda en el mismo proyecto ya ve las preguntas de la primera.
+  **Qué haces tú** (solo se lanza una tarea cada vez en toda la plataforma):
+  1. **Comprueba la configuración.** En «Ejecuciones», el primer trabajo debe decir SOL en A y en el árbitro, y LUNA en B.
+  2. **Preguntas.** Crea tres proyectos, «Clínicas eval 1», «Clínicas eval 2» y «Clínicas eval 3». En cada uno:
+     - sube los 21 archivos de `ejemplos/grande-clinicas-veterinarias/` (sin `.zip`);
+     - pulsa «Cerrar documentación»;
+     - lanza **una** ronda de preguntas. Solo la primera ronda.
+  3. **Responde las preguntas, solo en «Clínicas eval 1».** Pide las sugerencias de toda la ronda y pulsa «Aprobar todas las sugerencias».
+     - Las que queden («A decidir por el cliente:») respóndelas con la primera opción que proponga la sugerencia. Así cualquiera puede repetirlo.
+     - No edites ninguna respuesta.
+  4. **Catálogo.** En «Clínicas eval 1», genera el catálogo **3 veces** seguidas, sin editarlo entre medias.
+     - Cada generación sustituye al borrador, pero las propuestas de A y B y la unión de cada trabajo se quedan guardadas en sus carpetas.
+     - Después, valida el último tal cual, sin editarlo.
+  5. **Backlog.** En «Clínicas eval 1», genera el backlog **3 veces** seguidas, sin editarlo.
+  6. **Si un trabajo falla** (A o B sin salida válida), relánzalo y apúntalo: cuántos fallan también es un dato de fiabilidad.
+  7. **Avisa a Claude** cuando estén los 9 trabajos válidos (3 de preguntas, 3 de catálogo y 3 de backlog).
+  **Qué hace Claude:**
+  - El script `scripts/evaluacion/repeticiones.cs`, que lee los trabajos de la API por el nombre de los proyectos, como `costes.cs`.
+  - De cada fase y repetición, saca el informe de siempre: tokens, minutos, coste, elementos de A, de B y de la unión, y discrepancias.
+  - Mide **cuánto se parecen entre sí las repeticiones**: de cada dos repeticiones de A, qué porcentaje de elementos de una tiene par «mismo» o «parecido» en la otra, con `ProposalMatcher` y el modelo de embeddings de `models/`, como `medir-fragmentos-relacionados.cs`. Lo mismo con B y con la unión.
+  - Así se sabe si la unión del árbitro es más estable que cada modelo por separado. Hay un indicio: con la v0.10, la unión del catálogo de clínicas osciló entre 202 y 222 requisitos, frente a 209–291 antes.
+  - Resultados en `docs/evaluacion/repeticiones.md`, con el bloque en palabras sencillas, y en `docs/costes/costes.md`, que se regenera.
+- [ ] 120. Concilia frente a un solo modelo (27-10-2026, autor). La comparación que responde a la hipótesis. Usa los trabajos del paso 119 y la referencia del 118. Unas 5 horas de revisión, que se pueden repartir en varios días; sin coste en dinero.
+  **Qué hace Claude primero:**
+  - El script `scripts/evaluacion/un-solo-modelo.cs`. Antes de dártelo, Claude lo prueba con los trabajos ya guardados de «Clinicas Veterinarias v0.11», que no cuentan para los resultados.
+  - Con `dotnet run scripts/evaluacion/un-solo-modelo.cs -- hojas`, prepara en `docs/evaluacion/revision/` las hojas de revisión, una por cada cosa que hay que revisar. Son CSV que se abren en Excel.
+  - **Revisión a ciegas:** en las hojas no se ve si un elemento es de SOL, de LUNA o de la unión, y el orden está mezclado, para que no influya lo que esperas. El origen queda en `claves.json`, que no hace falta abrir.
+  - Los elementos con el mismo texto en dos propuestas (la unión copia muchos de A) se revisan una sola vez.
+  - Se revisa la **primera repetición** de cada fase, porque las otras dos ya se usan en el paso 119 para ver cuánto varía. Si da tiempo, el script prepara también las otras dos y las suma.
+  **Qué haces tú: rellenar las hojas.** En cada fila ya está todo lo necesario, sin buscar en los documentos.
+  1. **`trampas-preguntas.csv`.** Una fila por cada trampa abierta o resuelta y cada propuesta de preguntas (SOL, LUNA y unión). El script pone al lado las 3 preguntas que más se parecen.
+     - Marca `sí` si alguna pregunta trata esa trampa y `no` si no.
+     - En una resuelta, `sí` es un error, porque se pregunta lo que ya está decidido.
+  2. **`trampas-catalogo.csv`.** Lo mismo con las resueltas, los huecos y lo fuera de alcance, frente a cada catálogo y con sus 3 requisitos más parecidos.
+     - Marca `sí` si el catálogo lo trata como debe: recoge la decisión final o el hueco, o no incluye lo fuera de alcance.
+  3. **`cobertura.csv`.** Una fila por cada funcionalidad de tu lista y cada catálogo y backlog, con los 3 requisitos o historias más parecidos.
+     - Marca `sí` si está cubierta, `en parte` o `no`.
+  4. **`muestra.csv`.** 30 requisitos al azar de cada catálogo (SOL, LUNA y unión; 90 en total, con semilla fija para que salgan los mismos si se repite), cada uno con el texto de los fragmentos que cita. Marca tres columnas:
+     - `fiel`: `sí`, `en parte` o `no`, según lo diga su fuente;
+     - `repetido`: `sí` si otro requisito del mismo catálogo dice lo mismo (el script te pone al lado el más parecido de ese catálogo);
+     - `sobra`: `sí` si no es un requisito, por ejemplo una nota del proyecto o un detalle de diseño.
+  5. **`discrepancias.csv`.** Las discrepancias que marcó el árbitro en la unión de la primera repetición: las suyas y las de `ArbiterDeviations`.
+     - Marca `sí` si de verdad hay algo que revisar y `no` si es una falsa alarma.
+     - En el paso 65 hubo entre 0 y 2 por fase, así que esta hoja es corta.
+  **Qué hace Claude después:**
+  - Con `dotnet run scripts/evaluacion/un-solo-modelo.cs -- calcular`, lee las hojas rellenas y `claves.json` y escribe `docs/evaluacion/un-solo-modelo.md`. Por fase, una tabla de SOL solo, LUNA solo y Concilia con:
+    - el recall de las trampas y de la cobertura;
+    - la precisión de la muestra (fiel, sin repetir y sin sobrar);
+    - el F1, con el recall de la cobertura y la precisión de la muestra;
+    - el coste en dólares y los minutos;
+    - cuántas discrepancias eran de verdad.
+  - Cada cifra lleva con cuántos casos se calculó. Debajo va el bloque en palabras sencillas: qué se comprobó, qué demuestra y si la diferencia de coste merece la pena.
+  - **Limitaciones**, que se dicen en la memoria:
+    - un solo proyecto, ficticio;
+    - la referencia la hace el autor;
+    - en el paso 65 la unión ya trató bien las 26 trampas, así que las trampas apenas distinguen la unión de SOL; las diferencias saldrán sobre todo de la cobertura y de la muestra;
+    - pocas discrepancias.
+  Adelanta al hito 23 la parte de evaluación del punto 3 de «Después» (precision, recall y F1 frente a listas de referencia). La aprobación por umbral se queda allí.
+- [ ] 121. SOL ‖ SOL (27-10-2026, autor). Responde a si lo que aporta el patrón viene de usar dos modelos distintos o simplemente de hacer dos intentos. Es la configuración más cara, porque B pasa de LUNA a SOL, que cuesta unas 20 veces más: las 3 repeticiones rondarían los 30–50 $.
+  **Qué haces tú:**
+  1. **Cambia el modelo B.** En `.env`, pon `RUNNER_MODEL_B` a `SS - GPT-6-SOL`. Después, reinicia la API con `docker compose up -d api`, sin tareas en marcha.
+  2. **Repite el paso 119** en tres proyectos nuevos, «Clínicas SOL-SOL 1», «Clínicas SOL-SOL 2» y «Clínicas SOL-SOL 3».
+     - Haz **primero una sola vuelta** (preguntas, catálogo y backlog) y mira su coste en `docs/costes/costes.md` antes de lanzar las otras dos.
+     - Si no compensa, se queda en una y se dice.
+  3. **Rellena las hojas nuevas** que prepare el script, como en el paso 120. Solo saldrán los elementos que no se revisaron ya, porque los textos iguales se reutilizan.
+  4. **Al terminar, deja `RUNNER_MODEL_B` como estaba** (vacío, para que vuelva a ser LUNA) y reinicia la API.
+  **Qué hace Claude:**
+  - Los mismos dos scripts, con el nombre de los proyectos SOL-SOL.
+  - Una tabla más en `docs/evaluacion/un-solo-modelo.md`: SOL solo, Concilia SOL ‖ LUNA y Concilia SOL ‖ SOL, con su coste.
 
 **Hecho cuando:** el capítulo de evaluación tiene datos de los experimentos (sesgo del árbitro, calidad con métricas externas, cambios del usuario, variación entre repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL), todos con la versión congelada del paso 117 y frente a la referencia revisada por el autor, de la actualización por iteraciones (paso 116) y de al menos un documento público.
 

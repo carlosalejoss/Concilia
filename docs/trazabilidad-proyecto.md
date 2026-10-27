@@ -388,7 +388,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 
 - ~~Umbral de «discrepancia grave»~~: cerrado por el autor el 19-10-2026. Dos umbrales del emparejamiento (0,90 y 0,70, paso 87), y la discrepancia la marcan las desviaciones del árbitro respecto al emparejamiento (paso 88). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
 - Abaratar las pantallas del mockup. (El historial de mockups lo trae el hito 21: desde el paso 101 se guarda la página de cada mockup generado.)
-- Del hito 23 (27-10-2026): la referencia del catálogo y del backlog en el paso 120, la versión validada tras editarla de verdad (paso 106) o una lista hecha a mano solo para el proyecto mediano. Se decide al empezar el paso.
+- ~~Del hito 23: la referencia del catálogo y del backlog en el paso 120~~: cerrada por el autor el 27-10-2026. El proyecto grande, con una lista de funcionalidades hecha por el autor (cobertura), una muestra revisada a ciegas (precisión) y las 26 trampas revisadas. SOL solo y LUNA solo son las propuestas de A y B de cada trabajo de Concilia.
 - Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración. ~~El tope de fragmentos relacionados~~: cerrado por el autor el mismo día, 20.000 tokens, tras medirlo con clínicas (`docs/fragmentos-relacionados.md`).
 
 ## Siguientes pasos
