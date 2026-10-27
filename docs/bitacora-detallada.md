@@ -2599,3 +2599,12 @@ Paso 112: el código de las preguntas centradas en unas iteraciones (prompts v0.
 - **Tests:** 1.002 en verde (990 + 12): `FocusedRoundTests` (11) y `FocusedRoundFlowTests` (la ronda centrada por la API con `Fake`: foco guardado, `v0.13`, ficheros de A y del árbitro, pregunta nueva que cita lo nuevo y propuesta «resuelta» en una pendiente con su historial; y una ronda con todas las iteraciones sigue en `v0.12`). Ningún test anterior cambia; la instantánea de la v0.12 sigue igual.
 - **Pendientes:** copia de la base de datos y migración en Docker, revisión del autor en el navegador; el paso 113.
 
+## 27-10-2026, 07:15 (sesión)
+
+Cierre del paso 112.
+
+- El autor hizo la copia de la base de datos (`concilia-antes-112.dump`) y, con su permiso, se reconstruyeron la API y la web. La migración `AddFocusedQuestions` se aplicó sin errores: las 252 preguntas que ya había quedaron con el historial vacío y sin propuesta, y la API las lee bien.
+- Para la revisión, Claude creó «Prueba paso 112» con dos iteraciones cerradas por la API y, en la base de datos, una ronda normal y otra centrada en la iteración 2 con sus efectos (una pregunta nueva, una que contradice una respuesta, una reformulación con su historial y una propuesta «resuelta» con discrepancia), sin llamar a los modelos. Se borró después.
+- El autor revisó en el navegador el selector «Todas las iteraciones / Centrarse en…», el foco de la ronda, las preguntas enlazadas, la propuesta y el historial: «está todo bien». Paso 112 cerrado.
+- **Siguiente:** el paso 113 (actualizar el catálogo con unas iteraciones), empezando por los borradores de sus prompts para la revisión del autor.
+
