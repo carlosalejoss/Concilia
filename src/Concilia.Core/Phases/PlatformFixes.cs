@@ -26,6 +26,13 @@ namespace Concilia.Core.Phases;
 //              `de` and of the discards: if its pair "mismo" of the matching
 //              (input/emparejamiento.txt) is in one element of the arbiter, it
 //              is added to that `de`. Otherwise it is still an error.
+//   ID-SEQ     (step 122) the new questions of a centred round numbered after
+//              the ones of the project (P-064, P-065…) instead of from P-001:
+//              LUNA did it in the 3 rounds that read everything of step 116.
+//              They are renumbered from P-001, which is only a label (the
+//              platform numbers them after the project's when it keeps them).
+//              Only the ids of the new questions: `contradice` and the
+//              revisions cite questions of the project, which keep their code.
 public static partial class PlatformFixes
 {
     public record Fixed(string Output, IReadOnlyList<string> Warnings);
@@ -58,6 +65,8 @@ public static partial class PlatformFixes
             FixMissing(phase.Kind, root, context, warnings);
         if (phase.IsArbiter && phase.Kind is PhaseKind.CatalogUpdate or PhaseKind.BacklogUpdate)
             FixChangeDiscrepancies(phase.Kind, root, context, warnings);
+        if (phase.Focused && !phase.IsArbiter)
+            FixQuestionNumbers(root, warnings);
         var json = root.ToJsonString(Indented);
         if (phase.Kind == PhaseKind.Catalog)
             json = FixTypes(json, warnings);
@@ -181,6 +190,26 @@ public static partial class PlatformFixes
                 warnings.Add($"{id} CAMBIO-DISC: una propuesta lo modifica y la otra lo elimina; la plataforma lo marca como discrepancia.");
             }
         }
+    }
+
+    // ID-SEQ in a centred round: only when the new questions go one after
+    // another from a number other than 1 (P-064, P-065…); any other gap is
+    // still an error for the validator.
+    private static void FixQuestionNumbers(JsonNode root, List<string> warnings)
+    {
+        var questions = (root["preguntas"] as JsonArray ?? []).OfType<JsonObject>().ToList();
+        var numbers = questions
+            .Select(q => q["id"] is JsonValue v && v.TryGetValue<string>(out var id) && id.StartsWith("P-", StringComparison.Ordinal)
+                         && int.TryParse(id[2..], out var n) ? n : (int?)null)
+            .ToList();
+        if (numbers.Count == 0 || numbers.Any(n => n is null) || numbers[0] == 1)
+            return;
+        for (var i = 1; i < numbers.Count; i++)
+            if (numbers[i] != numbers[0] + i)
+                return;
+        for (var i = 0; i < questions.Count; i++)
+            questions[i]["id"] = $"P-{i + 1:D3}";
+        warnings.Add($"preguntas ID-SEQ: las preguntas nuevas empezaban en P-{numbers[0]:D3}; la plataforma las renumera desde P-001.");
     }
 
     private static IEnumerable<string> Ids(JsonNode? list) =>

@@ -1,5 +1,6 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Concilia.Core.Catalog;
 using Concilia.Core.Matching;
 using Concilia.Core.Runner;
@@ -222,17 +223,53 @@ public static class PhaseTask
     // Each error that starts with the id of an element of the output gets the
     // line of that element ("RF-007 TIPO: … (línea 9)"). ARB-FALTA starts with
     // an id of a proposal, which is not in the output: it stays as it is.
+    // Step 122: a SCHEMA error says where it is as a path of the JSON
+    // ("SCHEMA requisitos/74/notacion: …"), and LUNA did not find it: it gets
+    // the line of the element of that path that has an id.
     private static IReadOnlyList<string> Locate(IReadOnlyList<string> errors, string file)
     {
         var lines = file.Split('\n');
+        int LineOf(string id) => Array.FindIndex(lines, l => l.Contains($"\"id\":\"{id}\"", StringComparison.Ordinal));
         return errors.Select(error =>
         {
-            var id = error.Split(' ')[0];
-            var line = error.Contains(" ARB-FALTA:", StringComparison.Ordinal)
-                ? -1
-                : Array.FindIndex(lines, l => l.Contains($"\"id\":\"{id}\"", StringComparison.Ordinal));
+            var line = error.Contains(" ARB-FALTA:", StringComparison.Ordinal) ? -1
+                : error.StartsWith("SCHEMA ", StringComparison.Ordinal) ? SchemaIds(error, file).Select(LineOf).FirstOrDefault(l => l >= 0, -1)
+                : LineOf(error.Split(' ')[0]);
             return line >= 0 ? $"{error} (línea {line + 1})" : error;
         }).ToList();
+    }
+
+    // The ids of the elements along the path of a SCHEMA error, the deepest
+    // first: "epicas/2/historias/0/criterios/1/texto" gives the criterion, then
+    // the story, then the epic (the first one with a line of its own is used).
+    private static IEnumerable<string> SchemaIds(string error, string file)
+    {
+        var path = error["SCHEMA ".Length..].Split(':')[0].Split('/');
+        JsonNode? node;
+        try
+        {
+            node = JsonNode.Parse(file);
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
+        var ids = new List<string>();
+        foreach (var step in path)
+        {
+            node = node switch
+            {
+                JsonObject obj => obj[step],
+                JsonArray array when int.TryParse(step, out var i) && i >= 0 && i < array.Count => array[i],
+                _ => null,
+            };
+            if (node is null)
+                break;
+            if (node is JsonObject element && element["id"] is JsonValue v && v.TryGetValue<string>(out var id))
+                ids.Add(id);
+        }
+        ids.Reverse();
+        return ids;
     }
 
     // What the platform fixes by itself in an output before checking it and

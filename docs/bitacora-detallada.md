@@ -2807,3 +2807,18 @@ Paso 116 terminado: el resto de la prueba real y su análisis.
   - revisar la lista de cambios de la iteración 2 en el paso 118.
   Después, el hito 23.
 
+## 03-11-2026, 14:15 (sesión)
+
+Paso 122: las mejoras de la prueba real.
+
+- **Decisión del autor:** hacer las propuestas 1 (nginx), 2 (la numeración de LUNA) y 3 (la línea del error de esquema), y la 5 (medir la opción C con una documentación grande, paso 123). La 4 (el coste de actualizar) la deja a Claude, que no la hace: con una sola medición no se sabe si el coste es estable, y cambiaría la opción C que decidió el autor.
+- **Qué se hizo:**
+  - `proxy_read_timeout 5m` en `/projects` y `/jobs` de nginx;
+  - la corrección automática `ID-SEQ` en las rondas centradas (`PlatformFixes.FixQuestionNumbers`): renumera desde P-001 las preguntas nuevas seguidas que empiezan en otro número, solo sus ids;
+  - `PhaseTask.Locate` da a los errores `SCHEMA` la línea del elemento de su ruta que tiene id.
+  Los prompts no cambian.
+- **Tests:** 1.028 en verde (1.026 + 2).
+- **Pendientes:**
+  - reconstruir la API y la web (sin migración) cuando lo autorice el autor;
+  - diseñar con él el paso 123.
+

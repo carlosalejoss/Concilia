@@ -563,6 +563,25 @@ public class PhaseTaskTests
         Assert.StartsWith("{\"id\":\"RF-", file[line - 1]);
     }
 
+    // Step 122: a SCHEMA error names a path of the JSON; the repair gets the
+    // line of its element too (LUNA wrote `should` in `notacion` and did not
+    // find it).
+    [Fact]
+    public void A_schema_error_gets_the_line_of_its_element()
+    {
+        var phase = PhaseDefinition.For(PhaseKind.Catalog, PhaseRole.Proposal);
+        var output = JsonNode.Parse(File.ReadAllText(Example("catalogo_propuesta_1.json")))!;
+        var second = output["requisitos"]![1]!;
+        second["notacion"] = "should";
+
+        var review = PhaseTask.Review(phase, output.ToJsonString(), Context(), "PROMPT", 1);
+
+        var error = review.Validation.Errors.Single(e => e.StartsWith("SCHEMA requisitos/1/notacion", StringComparison.Ordinal));
+        var file = review.RepairFile!.Split('\n');
+        var line = Array.FindIndex(file, l => l.Contains($"\"id\":\"{second["id"]}\"")) + 1;
+        Assert.Contains($"{error} (línea {line})", review.RepairPrompt);
+    }
+
     [Fact]
     public void A_missing_output_is_repaired_too()
     {

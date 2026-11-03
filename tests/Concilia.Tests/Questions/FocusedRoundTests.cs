@@ -270,6 +270,30 @@ public class FocusedRoundTests
         Assert.Contains(PhaseValidator.Validate(Proposal, ValidProposal, withoutFocus).Errors, e => e.Contains("`contradice` cita P-001"));
     }
 
+    // Step 122: LUNA numbered the new questions after the project's (P-064…);
+    // the platform renumbers them from P-001 with a warning, and only them:
+    // what they contradict and the revisions keep the codes of the project.
+    [Fact]
+    public void New_questions_numbered_after_the_projects_are_renumbered_from_one()
+    {
+        var output = ValidProposal.Replace("\"id\": \"P-001\"", "\"id\": \"P-064\"").Replace("\"id\": \"P-002\"", "\"id\": \"P-065\"");
+
+        var review = PhaseTask.Review(Proposal, output, Context, "PROMPT", 1);
+
+        Assert.True(review.Valid, string.Join(" | ", review.Validation.Errors));
+        Assert.Contains(review.Validation.Warnings, w => w.Contains("ID-SEQ: las preguntas nuevas empezaban en P-064"));
+        var kept = JsonNode.Parse(PhaseTask.Clean(Proposal, output, Context)!)!;
+        Assert.Equal(["P-001", "P-002"], kept["preguntas"]!.AsArray().Select(q => q!["id"]!.GetValue<string>()));
+        Assert.Equal("P-001", kept["preguntas"]![1]!["contradice"]!["pregunta"]!.GetValue<string>()); // the answered P-001 of the project
+        Assert.Equal(["P-002", "P-003"], kept["revisiones"]!.AsArray().Select(r => r!["pregunta"]!.GetValue<string>()));
+
+        // A gap that is not a whole shift is still an error, and a round of always is not touched.
+        var gap = ValidProposal.Replace("\"id\": \"P-002\"", "\"id\": \"P-004\"");
+        Assert.Contains(PhaseTask.Review(Proposal, gap, Context, "PROMPT", 1).Validation.Errors, e => e.Contains("ID-SEQ"));
+        var always = PhaseDefinition.For(PhaseKind.Questions, PhaseRole.Proposal);
+        Assert.DoesNotContain(PhaseTask.Review(always, output, Context, "PROMPT", 1).Validation.Warnings, w => w.Contains("ID-SEQ"));
+    }
+
     [Fact]
     public void The_focus_is_one_or_more_closed_iterations_with_documents()
     {

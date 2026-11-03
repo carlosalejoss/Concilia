@@ -579,6 +579,13 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
       - nginx corta a los 60 s el lanzamiento de una ronda centrada o una actualización y devuelve 504.
     - Propuestas de mejora para decidir con el autor, en el documento de resultados.
 
+- [x] 122. Las mejoras de la prueba real (03-11-2026; el autor eligió 1, 2 y 3 de las propuestas de `docs/resultados-paso-116/README.md`, y la 5 es el paso 123; la 4 no se hace, como recomendaba Claude: con una sola medición no se sabe si el coste es estable, y cambiaría la opción C que decidió el autor).
+  - **nginx** (`frontend/nginx.conf`): `proxy_read_timeout 5m` en `/projects` y `/jobs`. Lanzar una ronda centrada o una actualización en clínicas calcula embeddings durante más de 60 s, y nginx devolvía 504 aunque la tarea se lanzaba.
+  - **`ID-SEQ` en las rondas centradas** (`PlatformFixes`, una corrección automática más, con su aviso): si las preguntas nuevas de A o B van seguidas desde otro número (P-064, P-065…), se renumeran desde P-001. Solo sus ids: `contradice` y las revisiones citan preguntas del proyecto, que no cambian. Cualquier otro hueco sigue siendo un error. Los prompts no cambian, como en el paso 89.
+  - **El error de esquema con su línea** (`PhaseTask.Locate`): `SCHEMA requisitos/74/notacion` recibe en la reparación la línea del elemento de esa ruta que tiene id (el más profundo), como los demás errores.
+  - Tests: `FocusedRoundTests` (la renumeración y lo que no toca) y `PhaseTaskTests` (la línea del error de esquema). 1.028 tests en verde.
+- [ ] 123. La opción C con una documentación grande (aprobado por el autor el 03-11-2026; detalle por decidir con él).
+
 **Hecho cuando:** en un proyecto con el catálogo y el backlog validados, se añade una segunda iteración, se lanza una ronda centrada en ella y se actualizan el catálogo y el backlog. Cada elemento dice de qué iteración viene, lo modificado y lo eliminado llevan su motivo y se revisan antes de validar, lo que no cambia sigue igual, y los modos de siempre dan exactamente lo mismo que antes.
 
 ## Hito 23: evaluación
