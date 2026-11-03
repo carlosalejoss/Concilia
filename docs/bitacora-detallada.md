@@ -2822,3 +2822,14 @@ Paso 122: las mejoras de la prueba real.
   - reconstruir la API y la web (sin migración) cuando lo autorice el autor;
   - diseñar con él el paso 123.
 
+## 03-11-2026, 14:00 (sesión)
+
+Paso 123, a medias: la opción C con una documentación grande.
+
+- **Decisiones del autor:** medirlo con un documento público de PURE (frente a ampliar clínicas o dejarlo como limitación) y reconstruir Docker con el paso 122 (hecho; imágenes comprobadas).
+- **Documento:** PURE v2.0 (Zenodo, registro 7118517, CC BY 4.0), «2009 - peppol.pdf» (PEPPOL D2.1, requisitos del Virtual Company Dossier), 127 páginas y unos 96.000 tokens. Se descartaron los otros de más de 60.000 tokens por ser sistemas técnicos. Partido con pypdf, sin cambiar nada más, por el inicio de la sección 4: páginas 1–90 (unos 71.000 tokens) como iteración 1 y 91–127 (unos 25.000) como iteración 2. Proyecto nuevo «PURE PEPPOL VCD (paso 123)» (id 38), en inglés, sin ronda ni catálogo de la iteración 1: solo se miden las dos rondas.
+- **Ronda que lo lee todo (opción A), `f5a6a2d0`: falló entera.** A (SOL) y B (LUNA) compactaron dos veces sin escribir su salida, también al repetirse: leerlo todo no cabe en los 128.000 tokens de contexto. Es el caso para el que se diseñó la opción C.
+- **Ronda centrada (opción C), `540b4dda`:** lanzada y detenida a los pocos segundos reiniciando la API, porque el autor tenía que irse y el equipo pierde la conexión (`InterruptedJobs` la cerró como interrumpida).
+- **El 504 de nginx no volvió a salir** al lanzar con el paso 122.
+- **Queda:** lanzar de nuevo la ronda centrada en el proyecto 38, escribir `docs/resultados-paso-123/` (con la atribución de PURE y cómo partir el documento) y cerrar el paso.
+
