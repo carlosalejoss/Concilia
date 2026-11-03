@@ -99,7 +99,7 @@ Aparte, para la prueba: dos rondas que lo leían todo que no valen (0,88 $ y 1,8
 | Reparaciones | 1 (LUNA numera desde P-064) | 0 |
 
 - **Con esta iteración, leerlo todo es igual de bueno y más barato.** La iteración 2 es pequeña y la 1 cabe entera sin problema (unos 23.400 tokens): leerla de una vez cuesta menos que consultarla por tramos.
-- **La opción C se diseñó para documentaciones grandes,** donde leerlo todo no cabe o se compacta, como el documento B, con más de 80.000 tokens. Esta prueba no lo mide. Es una sola ejecución de cada una, y el coste de una misma fase varía mucho entre ejecuciones.
+- **La opción C se diseñó para documentaciones grandes,** donde leerlo todo no cabe o se compacta. Esta prueba no lo mide, y ningún documento de los que se pueden usar es grande: el documento B tiene también unos 23.000 tokens (una primera versión de este texto decía que pasaba de 80.000, que es el umbral del aviso de tamaño, no su tamaño). Es una sola ejecución de cada una, y el coste de una misma fase varía mucho entre ejecuciones.
 
 ### 5. Incidencias
 

@@ -385,7 +385,7 @@ Paso 116, 27-10 y 03-11-2026: «Clinicas Veterinarias v0.11» (catálogo de 235 
 ### Qué hay que mejorar
 
 - Limitar lo que consultan A y B al actualizar, o darles la documentación entera cuando es pequeña.
-- Medir la opción C con una documentación grande (como el documento B) y repetir las ejecuciones.
+- Medir la opción C con una documentación grande (ninguna de las que se pueden usar lo es: el documento B tiene unos 23.000 tokens, como clínicas) y repetir las ejecuciones.
 - LUNA numera las preguntas de las rondas centradas desde P-064 en lugar de desde P-001 (3 de 3 rondas que lo leían todo).
 - El error de esquema debería decir su línea, para que la reparación lo encuentre.
 
