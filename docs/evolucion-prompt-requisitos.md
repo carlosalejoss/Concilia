@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.13 | 26 y 27-10-2026 | Iteraciones del proyecto: ronda centrada en la documentación nueva (lo nuevo y lo relacionado, opción C) y actualización del catálogo y del backlog como un conjunto de cambios que el usuario revisa | Sí (proyecto grande de ejemplo con una segunda iteración, 27-10 y 03-11-2026) | Las dos rondas (C y leyéndolo todo) detectan las 8 preguntas esperadas y enlazan las 4 que contradicen una respuesta; actualizar recoge los 14 cambios del catálogo y conserva idéntico el 91 % de los requisitos y el 95 % de las historias (desde cero, el 0 %), pero cuesta lo mismo (5,85 $ frente a 5,44 $) y leerlo todo sale más barato que la opción C (0,95 $ frente a 1,67 $) |
 | v0.12 | 22-10-2026 | El árbitro del catálogo consulta solo las fuentes de los requisitos que tiene que decidir (`input/fuentes.txt`); el del backlog cita por su id los criterios y las tareas que conserva, y la plataforma pone su texto | Sí (nuevos arbitrajes del proyecto grande de ejemplo, 22-10-2026) | Catálogo: 298 líneas de documentación consultadas en lugar de 1.242, a la primera y por 1,43 $ en lugar de 3,20 $. Backlog: 239 criterios en lugar de 121, por 1,23 $ en lugar de 1,05 $ |
 | v0.11 | 19-10-2026 | La reparación corrige con Edit la salida anterior en su fichero, con la línea de cada error, en lugar de llevarla pegada y reescribirla; sugerencias más prudentes; estilo propio del mockup por proyecto | Sí (proyecto grande de ejemplo y banco de alimentos, 20 a 22-10-2026) | Preguntas a 0,94 $ (antes 2,31 $). Las reparaciones de LUNA y del árbitro caben y corrigen con Edit. Catálogo de 235 requisitos con 12 discrepancias, todas de la plataforma; unos 3,9 $ (antes 2,70 $) porque el árbitro lee demasiada documentación. Backlog de 121 historias sin reparaciones, 1,67 $ (antes 1,43 $), pero con un solo criterio por historia. Mockups de 40 y 24 pantallas a la primera, con el mismo coste por pantalla que antes y estilos distintos en cada proyecto |
 | v0.10 | 19-10-2026 | El árbitro parte del emparejamiento por significado de la plataforma (`input/emparejamiento.txt`, embeddings en local); puede apartarse si la fuente lo justifica, y la plataforma marca como discrepancia en el catálogo y el backlog dónde lo hizo | Sí (proyecto grande de ejemplo, catálogo, 19-10-2026) | Con las mismas propuestas, 3 arbitrajes de SOL válidos de 3: unión de 202 a 222 requisitos (media 212,3), frente a 209–291 (media 240) con la v0.9. Las desviaciones no bajan (7,7 de media, frente a las 7,0 que habría marcado la v0.9) |
@@ -345,6 +346,48 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.13 (26 y 27-10-2026)
+
+Hito 22, iteraciones del proyecto. Prompts nuevos solo para los modos nuevos: la ronda centrada (`preguntas_centradas.md` y su árbitro, paso 112) y la actualización del catálogo (`catalogo_actualizacion.md` y su árbitro, paso 113) y del backlog (`backlog_actualizacion.md` y su árbitro, paso 114). Los modos de siempre siguen con la v0.12 (`V012SnapshotTests`). Los revisó el autor antes del código. Detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- **Ronda centrada (opción C):** A y B leen enteras la documentación nueva, los fragmentos anteriores relacionados (embeddings, desde 0,70 y con un tope de 20.000 tokens) y los requisitos validados relacionados; el resto de la documentación y el catálogo, solo para consultar. Además de preguntas nuevas, proponen revisiones de las pendientes, y una pregunta que contradice una respuesta o un requisito validado se enlaza a él, sin reescribir la respuesta.
+- **Actualizar el catálogo y el backlog:** A y B escriben un conjunto de cambios (nuevos, modificados y eliminados, con su motivo); el árbitro los une, alineados por id sin IA, y la plataforma los aplica a la copia de trabajo. Lo que modifica o elimina la IA queda como propuesta que el usuario acepta o rechaza. En el backlog, la plataforma calcula antes el impacto sin IA.
+- En palabras sencillas: cuando llegan documentos nuevos, la IA se centra en lo nuevo, pregunta lo que choca con lo que ya se sabía y propone qué añadir, cambiar o quitar, sin tocar lo validado por su cuenta.
+
+### Resultados
+
+Paso 116, 27-10 y 03-11-2026: «Clinicas Veterinarias v0.11» (catálogo de 235 requisitos y backlog de 94 historias validados) con una segunda iteración ficticia de 6 documentos (unos 2.500 tokens) y 18 cambios puestos a propósito. `SS - GPT-6-SOL` como A y árbitro y `SS - GPT-6-LUNA` como B; una ejecución de cada trabajo. Detalle completo en `docs/resultados-paso-116/README.md`.
+
+| | Actualizar (v0.13) | Desde cero (v0.12) |
+| --- | --- | --- |
+| Cambios del catálogo recogidos | 14 de 14 | 14 de 14 |
+| Requisitos validados que siguen idénticos | **213 de 235 (91 %)** | 1 de 235 (0 %) |
+| Historias validadas que siguen idénticas | **89 de 94 (95 %)** | 0 de 94 (0 %) |
+| Qué revisa el usuario | 23 propuestas y 5 discrepancias (catálogo); 22 y 2 (backlog) | 241 requisitos (21 discrepancias) y 89 historias (20) |
+| «[POR DEFINIR]» en el catálogo | 11 (como antes) | 29 |
+| Coste y minutos | **5,85 $ y 29 min** | 5,44 $ y 48 min (4,66 $ y 25 min sin un catálogo fallido por LUNA) |
+| Reparaciones | 0 | 1 (y un intento fallido con 2) |
+
+| Ronda centrada | C (lo nuevo y lo relacionado) | A (lo lee todo, experimental) |
+| --- | --- | --- |
+| Preguntas en la unión | 28 | 29 |
+| Preguntas esperadas detectadas | 8 de 8 | 8 de 8 |
+| Enlazadas a la respuesta que contradicen | 4 de 4 | 4 de 4 |
+| Coste | 1,67 $ | **0,95 $** |
+
+- **La detección es completa en los dos modos,** y las preguntas enlazadas funcionan, tras arreglar un fallo del paso 112 que las rechazaba siempre (`REF-PREG`).
+- **Actualizar conserva el trabajo validado** y reduce lo que hay que revisar, pero **no ahorra dinero**: los prompts de actualizar dejan consultar lo anterior por tramos, y SOL consulta mucho (unos 780.000 tokens de entrada en la actualización del catálogo, frente a 209.000 desde cero).
+- **La opción C no ahorró frente a leerlo todo** con una documentación de unos 26.000 tokens en total.
+
+### Qué hay que mejorar
+
+- Limitar lo que consultan A y B al actualizar, o darles la documentación entera cuando es pequeña.
+- Medir la opción C con una documentación grande (como el documento B) y repetir las ejecuciones.
+- LUNA numera las preguntas de las rondas centradas desde P-064 en lugar de desde P-001 (3 de 3 rondas que lo leían todo).
+- El error de esquema debería decir su línea, para que la reparación lo encuentre.
 
 ## v0.12 (22-10-2026)
 

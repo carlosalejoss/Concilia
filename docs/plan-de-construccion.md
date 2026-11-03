@@ -13,16 +13,16 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - Desde el 26-10-2026 (autor): el hito 22 son las iteraciones del proyecto (pasos 109 a 116), y la evaluación pasa a ser el hito 23, el último. Los pasos 103 a 106 de la evaluación conservan su número.
 - Desde el 27-10-2026 (autor): el hito 23 suma los pasos 117 a 121 (versión congelada, referencia revisada por el autor, repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL).
 
-## Dónde estamos (27-10-2026)
+## Dónde estamos (03-11-2026)
 
 - **Hechos:** los hitos 17 (embeddings en local), 18 y 18b (fiabilidad y calidad, prompts v0.11 y v0.12), 19 (exportar), 20 (trazabilidad y comparación) y 21 (historial de versiones), revisados por el autor.
-- **En curso:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026.
+- **Hecho, a falta de que el autor revise sus resultados:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026.
   - Hechos los pasos 109 a 111, revisados por el autor en el navegador.
   - Hecho el 112 (preguntas centradas, prompts v0.13), revisado el 27-10-2026.
   - Hechos el 113 y el 114 (actualizar el catálogo y el backlog), en Docker y revisados por el autor en el navegador el 27-10-2026.
   - Hecho el 115 (desde cero, frente a lo anterior), en Docker y revisado por el autor en el navegador el 27-10-2026.
-  - Siguiente: el paso 116 (la prueba real con clínicas en dos iteraciones).
-- **Después:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo.
+  - Hecho el 116 (la prueba real con clínicas en dos iteraciones), el 27-10 y el 03-11-2026: resultados en `docs/resultados-paso-116/`. Quedan para decidir con el autor sus propuestas de mejora.
+- **Siguiente:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo.
 
 ### Lo que queda, en orden
 
@@ -31,7 +31,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 **Hito 22, iteraciones del proyecto:**
 1. ~~**Revisar en el navegador los pasos 113 y 114**~~ (hecho el 27-10-2026).
 2. ~~**115,** desde cero frente a lo anterior~~ (hecho y revisado por el autor el 27-10-2026).
-3. **116,** la prueba real con clínicas en dos iteraciones. Claude escribe los documentos ficticios de la segunda iteración y su lista de cambios puestos a propósito, y el autor la revisa en el paso 118. Coste estimado: unos 15–20 $, porque son la ronda centrada, la actualización del catálogo y del backlog, y lo mismo desde cero.
+3. ~~**116,** la prueba real con clínicas en dos iteraciones~~ (hecha el 27-10 y el 03-11-2026; costó unos 16 $ con los intentos fallidos). El autor revisa la lista de cambios de la segunda iteración en el paso 118 y decide sobre las propuestas de mejora de `docs/resultados-paso-116/README.md`.
 
 **Hito 23, evaluación** (en este orden; cada paso dice qué hace el autor y qué hace Claude):
 
@@ -560,12 +560,24 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
     - **API:** `GET /jobs/{id}/previous-version` (`JobPreviousVersion`): cada elemento con su marca (`Same`, `Changed`, `New`), su par de antes y el parecido, los desaparecidos (`gone`) y, sin comparación, el motivo (`unavailable`). El informe lleva `previous` (versión, estado y las cuatro cifras) y el CSV del proyecto, `ant_version`, `ant_igual`, `ant_cambiado`, `ant_nuevo` y `ant_desaparecido` al final.
     - **Web:** en el editor del catálogo y del backlog, si lo que hay salió de una generación desde cero con versión anterior, una marca en cada requisito o historia («Igual que RF-012», «Cambiado», con lo que era antes al abrirlo, o «Nuevo»), un filtro por marca y un apartado plegado con los desaparecidos; como los ids no cambian al editar (paso 110), las marcas siguen a los elementos, y lo añadido a mano no lleva. En el informe del trabajo, la línea «Frente a lo anterior».
     - **Tests:** `PreviousVersionTests` (el cálculo de requisitos e historias, sin nada antes, y por la API con `Fake`: la primera versión y una ronda no tienen comparación; la segunda, generada tras reescribir un requisito, se compara con ese borrador, se guarda una vez y llega al informe y al CSV). En `FullFlowTests`, la cabecera del CSV termina ahora en las columnas del paso 115 (antes, en las del 100). 1.024 tests en verde.
-- [ ] 116. Prueba real con clínicas en dos iteraciones.
+- [x] 116. Prueba real con clínicas en dos iteraciones. (27-10 y 03-11-2026; ejecutada por Claude por la API. Resultados en `docs/resultados-paso-116/README.md`.)
   - Una segunda iteración de documentos ficticios para el proyecto de clínicas, sobre el flujo ya validado de la v0.11, con novedades, cambios y contradicciones con la iteración 1 puestos a propósito y listados como referencia, como en `ejemplos/README.md`. (Aprobado por el autor el 26-10-2026, frente a partir en dos tandas los documentos que ya hay.)
   - Ronda centrada, actualización del catálogo y del backlog, y lo mismo desde cero. Se mide el coste y el tiempo, cuánto de lo validado se conserva igual y cuántos de los cambios puestos a propósito se detectan. La ronda centrada se mide también leyéndolo todo (opción A) frente a la opción C.
   - Resultados en `docs/evolucion-prompt-requisitos.md` (v0.13) y `docs/costes/costes.md`.
   - **Cómo se hace (27-10-2026, autor):** los dos caminos en el mismo proyecto, «Clinicas Veterinarias v0.11», uno detrás de otro: primero actualizar (ronda centrada, catálogo y backlog), después desde cero (ronda con todas, catálogo y backlog), que el paso 115 compara con lo actualizado. No se programa «copiar un proyecto». Lo ejecuta Claude por la API, a petición del autor: responde con la hoja de respuestas del cliente, escrita antes de ver ninguna salida, y deja anotada cada decisión al revisar las propuestas.
   - **Opción A frente a C (Claude, con permiso del autor):** una ronda centrada experimental que lo lee todo, `POST /projects/{id}/question-rounds/read-all` (`ReadAllRound`, trabajo `questions-read-all`): los mismos prompts v0.13 y las mismas entradas, salvo que en `input/relacionados.txt` van todos los fragmentos anteriores y no solo los relacionados (los requisitos relacionados no cambian). Como el nuevo arbitraje, deja su resultado y su informe, no cuenta como ronda ni para actualizar, y sus preguntas no se añaden al proyecto. Test en `FocusedRoundFlowTests`; 1.025 tests en verde.
+  - **Un fallo del paso 112, arreglado durante la prueba (27-10-2026):** una pregunta enlazada a una respuesta se rechazaba siempre (`REF-PREG`), porque el plan de una ronda no lleva preguntas respondidas; el contexto de un plan centrado añade las respondidas de su foco (`FocusPlan.AnsweredCodes`). 1.026 tests.
+  - **Resultados (03-11-2026):**
+    - Las dos rondas centradas, la normal (C) y la que lo lee todo (A), detectan las 8 preguntas esperadas y enlazan las 4 que contradicen una respuesta.
+    - Los dos caminos recogen los 14 cambios que llegan al catálogo.
+    - Actualizar conserva idéntico el 91 % de los requisitos y el 95 % de las historias validadas; desde cero, el 0 %.
+    - Actualizar no ahorra dinero (5,85 $ y 29 min, frente a 5,44 $ y 48 min con un intento fallido de LUNA), porque consulta mucho lo anterior. Lo que ahorra es revisión: unas 25 propuestas por entregable en lugar de volver a revisarlo entero.
+    - Con esta iteración pequeña, leerlo todo (0,95 $) sale más barato que la opción C (1,67 $).
+    - Incidencias:
+      - LUNA numera las preguntas centradas desde P-064;
+      - el error de esquema no dice su línea;
+      - nginx corta a los 60 s el lanzamiento de una ronda centrada o una actualización y devuelve 504.
+    - Propuestas de mejora para decidir con el autor, en el documento de resultados.
 
 **Hecho cuando:** en un proyecto con el catálogo y el backlog validados, se añade una segunda iteración, se lanza una ronda centrada en ella y se actualizan el catálogo y el backlog. Cada elemento dice de qué iteración viene, lo modificado y lo eliminado llevan su motivo y se revisan antes de validar, lo que no cambia sigue igual, y los modos de siempre dan exactamente lo mismo que antes.
 

@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 22-10-2026 14:02, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 03-11-2026 13:10, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -52,18 +52,32 @@ Los trabajos de un nuevo arbitraje sin tiempo de embeddings son anteriores al pa
 | Clinicas Veterinarias v0.11 | 22-10 09:10 | Mockup | v0.11 | válido | 41 | 3.696.191 | 975.684 | 17,15 | 52 | 0 | — |
 | Clinicas Veterinarias v0.11 | 22-10 13:44 | Nuevo arbitraje (catálogo) | v0.12 | válido | 1 | 370.349* | 68.682* | 1,43* | 8 | 0 | 30,2 / 130,8 |
 | Clinicas Veterinarias v0.11 | 22-10 13:54 | Nuevo arbitraje (backlog) | v0.12 | válido | 1 | 233.175* | 76.711* | 1,23* | 6 | 0 | 4,9 / 20,5 |
+| Clinicas Veterinarias v0.11 | 23-10 13:39 | Backlog | v0.12 | válido | 3 | 503.629 | 91.015 | 1,40 | 7 | 0 | 6,3 / 16,2 |
+| Clinicas Veterinarias v0.11 | 26-10 08:44 | Mockup | v0.12 | válido | 52 | 4.612.510 | 1.145.839 | 20,68 | 64 | 0 | — |
+| Clinicas Veterinarias v0.11 | 27-10 13:04 | Preguntas centradas, leyéndolo todo (experimental) | v0.13 | fallido | 4 | 495.358 | 41.749 | 0,88 | 4 | 2 | — |
+| Clinicas Veterinarias v0.11 | 27-10 13:14 | Preguntas centradas, leyéndolo todo (experimental) | v0.13 | válido | 6 | 1.251.126 | 62.696 | 1,80 | 8 | 3 | 3,4 / 13,5 |
+| Clinicas Veterinarias v0.11 | 27-10 13:24 | Preguntas centradas, leyéndolo todo (experimental) | v0.13 | válido | 4 | 479.748 | 46.865 | 0,95 | 5 | 1 | 1,7 / 7,9 |
+| Clinicas Veterinarias v0.11 | 27-10 13:31 | Preguntas centradas | v0.13 | válido | 3 | 860.932 | 57.277 | 1,67 | 9 | 0 | 0,8 / 3,1 |
+| Clinicas Veterinarias v0.11 | 27-10 13:41 | Sugerencias de respuesta | v0.12 | válido | 1 | 174.635 | 9.156 | 0,44 | 1 | 0 | — |
+| Clinicas Veterinarias v0.11 | 27-10 13:44 | Actualización del catálogo | v0.13 | válido | 3 | 1.249.680 | 97.932 | 2,53 | 12 | 0 | 0,7 / 2,6 |
+| Clinicas Veterinarias v0.11 | 03-11 12:10 | Actualización del backlog | v0.13 | válido | 3 | 798.513* | 51.006* | 1,22* | 7 | 0 | 2,4 / 4,4 |
+| Clinicas Veterinarias v0.11 | 03-11 12:17 | Preguntas | v0.12 | válido | 3 | 396.468 | 22.470 | 0,71 | 3 | 0 | 0,1 / 0,6 |
+| Clinicas Veterinarias v0.11 | 03-11 12:20 | Sugerencias de respuesta | v0.12 | válido | 1 | 176.092 | 4.975 | 0,40 | 1 | 0 | — |
+| Clinicas Veterinarias v0.11 | 03-11 12:22 | Catálogo | v0.12 | fallido | 4 | 438.617* | 68.846* | 0,78* | 23 | 2 | — |
+| Clinicas Veterinarias v0.11 | 03-11 12:45 | Catálogo | v0.12 | válido | 4 | 778.741* | 133.420* | 2,17* | 14 | 1 | 12,1 / 48,4 |
+| Clinicas Veterinarias v0.11 | 03-11 13:00 | Backlog | v0.12 | válido | 3 | 527.043 | 78.936 | 1,38 | 7 | 0 | 2,5 / 10,0 |
 
 ## 3. El flujo completo de cada proyecto, por fase
 
-Solo los trabajos del flujo, no los nuevos arbitrajes de los experimentos. Si una fase se repitió, cuentan todas sus ejecuciones: es lo que costó llegar al resultado.
+Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ronda que lo lee todo del paso 116). Si una fase se repitió, cuentan todas sus ejecuciones: es lo que costó llegar al resultado.
 
 | Proyecto | Fase | Trabajos | Tokens de entrada | Tokens de salida | Coste (USD) | Minutos |
 | --- | --- | --- | --- | --- | --- | --- |
-| ReservaSalasHito911.v2 | Preguntas | 1 | 25.555 | 12.611 | 0,10 | 1 |
+| ReservaSalasHito911.v2 | Preguntas | 2 | 92.349 | 20.086 | 0,23 | 3 |
 | ReservaSalasHito911.v2 | Sugerencias de respuesta | 1 | 9.128 | 4.089 | 0,06 | 1 |
 | ReservaSalasHito911.v2 | Catálogo | 1 | 49.668 | 26.904 | 0,24 | 2 |
 | ReservaSalasHito911.v2 | Backlog | 1 | 78.339 | 28.664 | 0,32 | 2 |
-| **ReservaSalasHito911.v2** | **Total** | 4 | **162.690** | **72.268** | **0,73** | **5** |
+| **ReservaSalasHito911.v2** | **Total** | 5 | **229.484** | **79.743** | **0,86** | **7** |
 | Proyecto interno 1 | Preguntas | 1 | 407.932 | 50.325 | 1,02 | 4 |
 | Proyecto interno 1 | Sugerencias de respuesta | 1 | 142.409 | 7.741 | 0,36 | 1 |
 | Proyecto interno 1 | Catálogo | 1 | 723.409 | 97.995 | 1,67 | 8 |
@@ -94,12 +108,15 @@ Solo los trabajos del flujo, no los nuevos arbitrajes de los experimentos. Si un
 | Banco De Alimentos | Backlog | 1 | 212.321 | 63.142 | 0,78 | 5 |
 | Banco De Alimentos | Mockup | 2 | 3.234.706 | 723.197 | 13,70 | 56 |
 | **Banco De Alimentos** | **Total** | 6 | **3.893.509** | **892.925** | **15,99** | **75** |
-| Clinicas Veterinarias v0.11 | Preguntas | 1 | 374.678 | 57.613 | 0,94 | 8 |
-| Clinicas Veterinarias v0.11 | Sugerencias de respuesta | 1 | 155.133 | 18.696 | 0,50 | 3 |
-| Clinicas Veterinarias v0.11 | Catálogo | 2 | 2.604.656* | 197.613* | 5,99* | 25 |
-| Clinicas Veterinarias v0.11 | Backlog | 1 | 447.072* | 120.292* | 1,67* | 8 |
-| Clinicas Veterinarias v0.11 | Mockup | 1 | 3.696.191 | 975.684 | 17,15 | 52 |
-| **Clinicas Veterinarias v0.11** | **Total** | 6 | **7.277.730*** | **1.369.898*** | **26,24*** | **96** |
+| Clinicas Veterinarias v0.11 | Preguntas | 2 | 771.146 | 80.083 | 1,66 | 10 |
+| Clinicas Veterinarias v0.11 | Sugerencias de respuesta | 3 | 505.860 | 32.827 | 1,34 | 5 |
+| Clinicas Veterinarias v0.11 | Catálogo | 4 | 3.822.014* | 399.879* | 8,94* | 62 |
+| Clinicas Veterinarias v0.11 | Backlog | 3 | 1.477.744* | 290.243* | 4,44* | 22 |
+| Clinicas Veterinarias v0.11 | Mockup | 2 | 8.308.701 | 2.121.523 | 37,83 | 117 |
+| Clinicas Veterinarias v0.11 | Preguntas centradas | 1 | 860.932 | 57.277 | 1,67 | 9 |
+| Clinicas Veterinarias v0.11 | Actualización del catálogo | 1 | 1.249.680 | 97.932 | 2,53 | 12 |
+| Clinicas Veterinarias v0.11 | Actualización del backlog | 1 | 798.513* | 51.006* | 1,22* | 7 |
+| **Clinicas Veterinarias v0.11** | **Total** | 17 | **17.794.590*** | **3.130.770*** | **59,62*** | **243** |
 
 ## 4. Antes y después: la misma fase con distintas versiones del prompt
 
@@ -111,6 +128,16 @@ Medias por trabajo, para la misma fase del mismo proyecto. Los nuevos arbitrajes
 | Banco De Alimentos | Mockup | Mockup 6-SOL | v0.11 | 1 (1) | 1.666.670 | 389.231 | 7,23 | 7,23–7,23 | 20 | 0,0 | — |
 | Clinicas Veterinarias | Nuevo arbitraje (catálogo) | Árbitro 6-SOL | v0.9 | 2 (2) | 565.296* | 64.840* | 1,78 | 1,58–1,98 | 6 | 0,0 | — |
 | Clinicas Veterinarias | Nuevo arbitraje (catálogo) | Árbitro 6-SOL | v0.10 | 3 (3) | 902.371* | 63.718* | 2,44 | 1,39–4,53 | 7 | 0,3 | — |
+| Clinicas Veterinarias v0.11 | Backlog | A 6-SOL · Árbitro 6-SOL · B 6-LUNA | v0.11 | 1 (1) | 447.072* | 120.292* | 1,67 | 1,67–1,67 | 8 | 0,0 | 35,7 |
+| Clinicas Veterinarias v0.11 | Backlog | A 6-SOL · Árbitro 6-SOL · B 6-LUNA | v0.12 | 2 (2) | 515.336 | 84.976 | 1,39 | 1,38–1,40 | 7 | 0,0 | 13,1 |
+| Clinicas Veterinarias v0.11 | Catálogo | A 6-SOL · Árbitro 6-SOL · B 6-LUNA | v0.11 | 2 (1) | 1.302.328* | 98.806* | 2,99 | 2,06–3,92 | 12 | 2,5 | 45,6 |
+| Clinicas Veterinarias v0.11 | Catálogo | A 6-SOL · Árbitro 6-SOL · B 6-LUNA | v0.12 | 1 (1) | 778.741* | 133.420* | 2,17 | 2,17–2,17 | 14 | 1,0 | 48,4 |
+| Clinicas Veterinarias v0.11 | Mockup | Mockup 6-SOL | v0.11 | 1 (1) | 3.696.191 | 975.684 | 17,15 | 17,15–17,15 | 52 | 0,0 | — |
+| Clinicas Veterinarias v0.11 | Mockup | Mockup 6-SOL | v0.12 | 1 (1) | 4.612.510 | 1.145.839 | 20,68 | 20,68–20,68 | 64 | 0,0 | — |
+| Clinicas Veterinarias v0.11 | Preguntas | A 6-SOL · Árbitro 6-SOL · B 6-LUNA | v0.11 | 1 (1) | 374.678 | 57.613 | 0,94 | 0,94–0,94 | 8 | 0,0 | 9,7 |
+| Clinicas Veterinarias v0.11 | Preguntas | A 6-SOL · Árbitro 6-SOL · B 6-LUNA | v0.12 | 1 (1) | 396.468 | 22.470 | 0,71 | 0,71–0,71 | 3 | 0,0 | 0,6 |
+| Clinicas Veterinarias v0.11 | Sugerencias de respuesta | Sugerencias 6-SOL | v0.11 | 1 (1) | 155.133 | 18.696 | 0,50 | 0,50–0,50 | 3 | 0,0 | — |
+| Clinicas Veterinarias v0.11 | Sugerencias de respuesta | Sugerencias 6-SOL | v0.12 | 2 (2) | 175.364 | 7.066 | 0,42 | 0,40–0,44 | 1 | 0,0 | — |
 | Proyecto interno 1 | Mockup | Mockup claude-sonnet-5-5 | v0.1 | 1 (0) | ≥ 0 | ≥ 0 | sin precio | — | 15 | 0,0 | — |
 | Proyecto interno 1 | Mockup | Mockup claude-sonnet-5-5 | v0.2 | 1 (0) | ≥ 0 | ≥ 0 | sin precio | — | 3 | 0,0 | — |
 | Proyecto interno 2 | Mockup | Mockup claude-sonnet-5-5 | v0.3 | 1 (0) | 220.862 | 256.408 | sin precio | — | 32 | 0,0 | — |
@@ -118,6 +145,8 @@ Medias por trabajo, para la misma fase del mismo proyecto. Los nuevos arbitrajes
 | Proyecto interno 3 | Mockup | Mockup 6-SOL | v0.7 | 1 (0) | 2.757.262 | 419.506 | 9,71 | 9,71–9,71 | 1115 | 0,0 | — |
 | Proyecto interno 3 | Mockup | Mockup 6-SOL | v0.8 | 2 (1) | 311.039* | 51.346* | 1,14 | 0,47–1,80 | 7 | 0,0 | — |
 | Proyecto interno 3 | Mockup | Mockup 6-SOL | v0.9 | 1 (1) | 3.465.323 | 548.080 | 12,41 | 12,41–12,41 | 40 | 1,0 | — |
+| ReservaSalasHito911.v2 | Preguntas | A 6-SOL · Árbitro 6-SOL · B 6-LUNA | v0 | 1 (1) | 25.555 | 12.611 | 0,10 | 0,10–0,10 | 1 | 0,0 | — |
+| ReservaSalasHito911.v2 | Preguntas | A 6-SOL · Árbitro 6-SOL · B 6-LUNA | v0.12 | 1 (1) | 66.794 | 7.475 | 0,13 | 0,13–0,13 | 2 | 0,0 | 1,9 |
 
 ## 5. Coste por papel y modelo (Clinicas Veterinarias, flujo completo)
 

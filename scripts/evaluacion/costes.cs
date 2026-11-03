@@ -121,11 +121,11 @@ md.AppendLine();
 
 md.AppendLine("## 3. El flujo completo de cada proyecto, por fase");
 md.AppendLine();
-md.AppendLine("Solo los trabajos del flujo, no los nuevos arbitrajes de los experimentos. Si una fase se repitió, cuentan todas sus ejecuciones: es lo que costó llegar al resultado.");
+md.AppendLine("Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ronda que lo lee todo del paso 116). Si una fase se repitió, cuentan todas sus ejecuciones: es lo que costó llegar al resultado.");
 md.AppendLine();
 md.AppendLine("| Proyecto | Fase | Trabajos | Tokens de entrada | Tokens de salida | Coste (USD) | Minutos |");
 md.AppendLine("| --- | --- | --- | --- | --- | --- | --- |");
-foreach (var project in jobs.Where(j => !j.Rearbitration).GroupBy(j => j.Project))
+foreach (var project in jobs.Where(InFlow).GroupBy(j => j.Project))
 {
     foreach (var phase in project.GroupBy(Name).OrderBy(g => g.Min(j => j.Created)))
     {
@@ -165,7 +165,7 @@ md.AppendLine($"## 5. Coste por papel y modelo ({Main}, flujo completo)");
 md.AppendLine();
 md.AppendLine("| Papel | Modelo | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) | Parte del coste |");
 md.AppendLine("| --- | --- | --- | --- | --- | --- | --- |");
-var mainRuns = jobs.Where(j => j.Project == Main && !j.Rearbitration).SelectMany(j => j.Runs).ToList();
+var mainRuns = jobs.Where(j => j.Project == Main && InFlow(j)).SelectMany(j => j.Runs).ToList();
 var mainTotal = mainRuns.Sum(r => CostOf(r) ?? 0);
 foreach (var role in mainRuns.GroupBy(r => (Role(r.Slot), r.Model)).OrderByDescending(g => g.Sum(r => CostOf(r) ?? 0)))
 {
@@ -198,11 +198,20 @@ string Money(IEnumerable<RunCost> runs)
     return list.Any(r => r.Estimated) ? sum + "*" : sum;
 }
 
+// The jobs of the flow: not the experiments (a new arbitration, or the centred
+// round that reads everything of step 116), which change nothing of the project.
+static bool InFlow(JobCost j) => !j.Rearbitration && j.Kind != "questions-read-all";
+
 string Minutes(double? seconds) => seconds is { } s ? (s / 60).ToString("F0", es) : "—";
 
 static string Name(JobCost j) => j.Kind switch
 {
+    // Step 112: a round centred on some iterations (prompts v0.13) is another phase, not a new version of the round.
+    "questions" when Version(j) == "v0.13" => "Preguntas centradas",
     "questions" => "Preguntas",
+    "questions-read-all" => "Preguntas centradas, leyéndolo todo (experimental)",
+    "catalog-update" => "Actualización del catálogo",
+    "backlog-update" => "Actualización del backlog",
     "catalog-v0" => "Catálogo",
     "backlog" => "Backlog",
     "mockup" => "Mockup",

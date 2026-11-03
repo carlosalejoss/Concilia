@@ -1,0 +1,1232 @@
+{
+  "fuente": "ARB",
+  "verificacion_cruzada": true,
+  "mensaje": "Unión del árbitro.",
+  "salida": {
+    "nuevas": [
+      {
+        "id": "N-001",
+        "epica": "EP-04",
+        "titulo": "Abonar la señal de la siguiente cita tras inasistencias",
+        "como": "cliente",
+        "quiero": "abonar una única señal al reservar mi siguiente cita y conocer su destino",
+        "para": "descontarla de la visita o resolverla si cambio, cancelo o falto a la cita",
+        "requisitos": [
+          "RF-203"
+        ],
+        "criterios": [
+          {
+            "escenario": "Señal al reservar",
+            "dado": "un cliente con al menos dos inasistencias sin aviso en los últimos seis meses",
+            "cuando": "reserva su siguiente cita desde la app o en recepción",
+            "entonces": "paga una única señal de 10 € que se descuenta de la factura de esa visita"
+          },
+          {
+            "escenario": "Cambio con señal pagada",
+            "dado": "una cita con señal de 10 € pagada",
+            "cuando": "el cliente cambia la cita",
+            "entonces": "la señal se traslada a la nueva reserva"
+          },
+          {
+            "escenario": "Cancelación o nueva inasistencia",
+            "dado": "una cita con señal de 10 € pagada",
+            "cuando": "el cliente cancela la cita o vuelve a no presentarse",
+            "entonces": "se devuelve la señal si cancela y se retiene si no se presenta"
+          }
+        ],
+        "tareas": [
+          {
+            "titulo": "Calcular inasistencias sin aviso en seis meses y cobrar una sola señal al reservar en app o recepción"
+          },
+          {
+            "titulo": "Vincular la señal a cita y factura y gestionar su traslado, devolución o retención"
+          }
+        ],
+        "motivo": "RF-203 exige la señal de 10 € para la siguiente cita y define su liquidación.",
+        "de": {
+          "propuesta_1": [
+            "N-001"
+          ],
+          "propuesta_2": []
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene separada de la gestión por recepción porque el cliente tiene otro rol y objetivo."
+      },
+      {
+        "id": "N-002",
+        "epica": "EP-04",
+        "titulo": "Gestionar en recepción señales por inasistencia",
+        "como": "recepción",
+        "quiero": "gestionar el cobro y el estado de la señal de las citas con inasistencias reiteradas",
+        "para": "imputarla a la visita sin duplicar cobros",
+        "requisitos": [
+          "RF-203"
+        ],
+        "criterios": [
+          {
+            "escenario": "Cobro e imputación de señal",
+            "dado": "un cliente con al menos dos inasistencias sin aviso en los últimos seis meses",
+            "cuando": "recepción reserva su siguiente cita",
+            "entonces": "cobra una única señal de 10 €, vinculada a esa reserva y descontable de la factura de la visita"
+          },
+          {
+            "escenario": "Regularización de señal",
+            "dado": "una reserva con señal pagada",
+            "cuando": "recepción registra un cambio, una cancelación o una nueva inasistencia",
+            "entonces": "la señal se traslada a la nueva reserva al cambiar, se devuelve al cancelar y se retiene si el cliente vuelve a no presentarse"
+          }
+        ],
+        "tareas": [
+          {
+            "titulo": "Permitir a recepción consultar y regularizar la señal vinculada a cada cita y su factura sin generar un segundo cargo"
+          }
+        ],
+        "motivo": "RF-203 también exige tramitar presencialmente reservas y señales.",
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "N-001"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "No se fusiona con la historia del cliente: este rol administra la señal en recepción."
+      },
+      {
+        "id": "N-003",
+        "epica": "EP-04",
+        "titulo": "Reservar y pagar teleconsultas de seguimiento",
+        "como": "cliente",
+        "quiero": "reservar una videollamada de seguimiento en la app y gestionar su pago",
+        "para": "recibir seguimiento veterinario y conocer el destino del importe si la cita cambia o no se celebra",
+        "requisitos": [
+          "RF-204",
+          "RF-205",
+          "RF-207",
+          "RT-002"
+        ],
+        "criterios": [
+          {
+            "escenario": "Reserva de seguimiento elegible",
+            "dado": "un hueco de teleconsulta ofrecido por el veterinario y una mascota con consulta presencial en los 30 días anteriores",
+            "cuando": "el cliente reserva desde la app una revisión posquirúrgica, un control de tratamiento o dudas sobre resultados",
+            "entonces": "se reserva una videollamada de 15 minutos sin grabación; la reserva solo está disponible en la app móvil, no en la web"
+          },
+          {
+            "escenario": "Primera visita o urgencia no elegible",
+            "dado": "una primera visita, una urgencia o una mascota sin consulta presencial en los 30 días anteriores",
+            "cuando": "el cliente intenta reservar una teleconsulta",
+            "entonces": "no se permite la reserva"
+          },
+          {
+            "escenario": "Cobro anticipado",
+            "dado": "una teleconsulta de seguimiento S090 reservada desde la app",
+            "cuando": "se confirma la reserva",
+            "entonces": "se cobran por adelantado 25 € con IVA incluido, o 20 € si el cliente tiene un plan de salud activo, sin consumir consultas incluidas en el plan"
+          },
+          {
+            "escenario": "Traslado de pago",
+            "dado": "una teleconsulta ya pagada",
+            "cuando": "se cambia su reserva",
+            "entonces": "el pago se traslada a la nueva reserva"
+          },
+          {
+            "escenario": "Devolución o retención",
+            "dado": "una teleconsulta ya pagada",
+            "cuando": "el cliente la cancela, la clínica impide que se celebre o el cliente no se presenta",
+            "entonces": "se devuelve el pago en los dos primeros casos y se retiene si el cliente no se presenta"
+          }
+        ],
+        "tareas": [
+          {
+            "titulo": "Configurar huecos por veterinario y validar motivo, visita presencial previa y duración al reservar desde la app"
+          },
+          {
+            "titulo": "Integrar videollamada sin grabación en la app y excluir su reserva de la web"
+          },
+          {
+            "titulo": "Cobrar S090 al reservar según plan activo sin consumir consultas del plan"
+          },
+          {
+            "titulo": "Vincular pago y reserva para gestionar cambios, devoluciones y retenciones"
+          }
+        ],
+        "motivo": "RF-204, RF-205 y RF-207 crean reserva, cobro y gestión de teleconsultas; RT-002 las limita a la app.",
+        "de": {
+          "propuesta_1": [
+            "N-002",
+            "N-003"
+          ],
+          "propuesta_2": [
+            "N-002"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La segunda propuesta reúne reserva y pago; integrar las dos historias de cliente de la primera evita duplicar esos criterios."
+      },
+      {
+        "id": "N-004",
+        "epica": "EP-02",
+        "titulo": "Documentar la atención de una teleconsulta",
+        "como": "veterinario",
+        "quiero": "consultar la historia y registrar la atención durante una teleconsulta",
+        "para": "conservar lo tratado y concertar una visita presencial cuando proceda",
+        "requisitos": [
+          "RF-206"
+        ],
+        "criterios": [
+          {
+            "escenario": "Atención durante la llamada",
+            "dado": "una teleconsulta de seguimiento en curso con una mascota",
+            "cuando": "el veterinario la atiende",
+            "entonces": "puede consultar su historia clínica, anotar lo tratado como una visita y asignarle una cita presencial durante la llamada"
+          }
+        ],
+        "tareas": [
+          {
+            "titulo": "Habilitar consulta y registro de la historia como visita durante la teleconsulta"
+          },
+          {
+            "titulo": "Permitir asignar una cita presencial durante la llamada"
+          }
+        ],
+        "motivo": "RF-206 añade acciones clínicas específicas a la teleconsulta.",
+        "de": {
+          "propuesta_1": [
+            "N-004"
+          ],
+          "propuesta_2": [
+            "N-003"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Coinciden en rol y finalidad; no duplica la documentación ordinaria de visitas, pues incorpora la atención durante la llamada."
+      },
+      {
+        "id": "N-005",
+        "epica": "EP-08",
+        "titulo": "Pedir alimentación e higiene para recoger en clínica",
+        "como": "cliente",
+        "quiero": "pedir y pagar desde la app productos disponibles en la clínica elegida",
+        "para": "recogerlos allí o recuperar el importe si no pueden apartarse o no los recojo",
+        "requisitos": [
+          "RF-208",
+          "RF-209",
+          "RF-210",
+          "RT-002"
+        ],
+        "criterios": [
+          {
+            "escenario": "Pedido y pago en la clínica elegida",
+            "dado": "alimentación o productos de higiene disponibles en una clínica de recogida elegida",
+            "cuando": "el cliente hace y paga un pedido desde la app",
+            "entonces": "el pedido incluye solo esos productos; no se ofrecen medicamentos con ni sin receta ni se permiten pedidos desde la web"
+          },
+          {
+            "escenario": "Recogida y vencimiento",
+            "dado": "un pedido pagado cuyos productos ha apartado la clínica",
+            "cuando": "transcurren 48 horas desde el apartado sin recogida",
+            "entonces": "el pedido, disponible para recogida durante esas 48 horas, se anula y se devuelve su importe"
+          },
+          {
+            "escenario": "Pedido imposible de apartar",
+            "dado": "un pedido pagado en la app",
+            "cuando": "la clínica elegida no consigue apartar los productos",
+            "entonces": "se anula el pedido y se devuelve el importe pagado"
+          }
+        ],
+        "tareas": [
+          {
+            "titulo": "Implementar pedido y pago en app filtrado por existencias de alimentación e higiene de la clínica elegida, sin medicamentos ni pedidos web"
+          },
+          {
+            "titulo": "Vincular pedido, apartado y recogida para devolver pagos de pedidos no apartados o no recogidos en 48 horas"
+          }
+        ],
+        "motivo": "RF-208 a RF-210 incorporan pedidos pagados para recogida con devolución; RT-002 los limita a la app.",
+        "de": {
+          "propuesta_1": [
+            "N-005"
+          ],
+          "propuesta_2": [
+            "N-004"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen las propuestas del cliente y se conserva el plazo de recogida que aporta la segunda."
+      },
+      {
+        "id": "N-006",
+        "epica": "EP-08",
+        "titulo": "Apartar y controlar la recogida de pedidos",
+        "como": "recepción",
+        "quiero": "apartar los productos de un pedido pagado y controlar el plazo de recogida",
+        "para": "devolver el importe si el cliente no los recoge a tiempo",
+        "requisitos": [
+          "RF-209"
+        ],
+        "criterios": [
+          {
+            "escenario": "Inicio del plazo de recogida",
+            "dado": "un pedido de alimentación o higiene ya pagado desde la app",
+            "cuando": "la clínica aparta los productos",
+            "entonces": "registra el apartado y el pedido queda disponible durante 48 horas contadas desde ese momento"
+          },
+          {
+            "escenario": "Pedido no recogido",
+            "dado": "un pedido apartado sin recoger",
+            "cuando": "transcurren 48 horas desde el apartado",
+            "entonces": "se anula el pedido y se devuelve su importe"
+          }
+        ],
+        "tareas": [
+          {
+            "titulo": "Registrar el apartado en recepción y calcular el vencimiento a las 48 horas"
+          },
+          {
+            "titulo": "Anular pedidos no recogidos en plazo y devolver el importe pagado"
+          }
+        ],
+        "motivo": "RF-209 requiere una actuación de la clínica que inicia el plazo de recogida.",
+        "de": {
+          "propuesta_1": [
+            "N-006"
+          ],
+          "propuesta_2": []
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene aparte de la compra del cliente porque recepción ejecuta y fecha el apartado."
+      },
+      {
+        "id": "N-007",
+        "epica": "EP-12",
+        "titulo": "Valorar la atención tras la visita",
+        "como": "cliente principal",
+        "quiero": "responder desde la app a la encuesta de la visita de mi mascota",
+        "para": "comunicar mi satisfacción y añadir un comentario si quiero",
+        "requisitos": [
+          "RF-211"
+        ],
+        "criterios": [
+          {
+            "escenario": "Encuesta al cliente principal",
+            "dado": "una visita terminada de una mascota con cliente principal asociado",
+            "cuando": "llega el día siguiente a la visita",
+            "entonces": "se le envía por la app una encuesta con valoraciones de 1 a 5 de atención, veterinario y puntualidad y un campo opcional de comentario libre"
+          }
+        ],
+        "tareas": [
+          {
+            "titulo": "Programar el envío por la app al cliente principal al día siguiente de cada visita terminada"
+          },
+          {
+            "titulo": "Registrar valoraciones de 1 a 5 y comentario libre opcional"
+          }
+        ],
+        "motivo": "RF-211 incorpora encuestas al cliente principal después de cada visita.",
+        "de": {
+          "propuesta_1": [
+            "N-007"
+          ],
+          "propuesta_2": [
+            "N-005"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "El rol cliente principal precisa el destinatario del requisito; ambas propuestas persiguen su valoración."
+      },
+      {
+        "id": "N-008",
+        "epica": "EP-12",
+        "titulo": "Consultar encuestas de satisfacción del grupo",
+        "como": "gerencia",
+        "quiero": "consultar respuestas individuales y comentarios de todas las clínicas",
+        "para": "revisar la satisfacción del grupo",
+        "requisitos": [
+          "RF-212"
+        ],
+        "criterios": [
+          {
+            "escenario": "Consulta global",
+            "dado": "respuestas individuales y comentarios de encuestas de satisfacción de varias clínicas",
+            "cuando": "gerencia los consulta",
+            "entonces": "puede ver las respuestas y comentarios de todas las clínicas"
+          }
+        ],
+        "tareas": [
+          {
+            "titulo": "Habilitar consulta de respuestas y comentarios con alcance de todo el grupo para gerencia"
+          }
+        ],
+        "motivo": "RF-212 concede a gerencia acceso a las respuestas individuales de todo el grupo.",
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "N-006"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "El acceso global corresponde a un rol distinto del responsable de clínica y se conserva separado."
+      },
+      {
+        "id": "N-009",
+        "epica": "EP-12",
+        "titulo": "Consultar encuestas de satisfacción de la clínica",
+        "como": "responsable de clínica",
+        "quiero": "consultar respuestas individuales y comentarios de mi clínica",
+        "para": "conocer su satisfacción sin acceder a encuestas de otras clínicas",
+        "requisitos": [
+          "RF-212"
+        ],
+        "criterios": [
+          {
+            "escenario": "Consulta restringida",
+            "dado": "encuestas con respuestas individuales y comentarios en varias clínicas",
+            "cuando": "el responsable de una clínica los consulta",
+            "entonces": "solo puede ver las respuestas y comentarios de su propia clínica"
+          }
+        ],
+        "tareas": [
+          {
+            "titulo": "Restringir por clínica la consulta de respuestas y comentarios de cada responsable"
+          }
+        ],
+        "motivo": "RF-212 limita el acceso de cada responsable a la satisfacción de su clínica.",
+        "de": {
+          "propuesta_1": [
+            "N-008"
+          ],
+          "propuesta_2": [
+            "N-007"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se fusionan las propuestas del responsable y se separa el acceso global de gerencia para mantener un solo rol."
+      }
+    ],
+    "descartadas": [],
+    "cambios": [
+      {
+        "id": "HU-001",
+        "accion": "modificar",
+        "titulo": "Mantener fichas y consentimientos de clientes",
+        "como": "recepción",
+        "quiero": "dar de alta clientes y mantener sus datos y consentimientos",
+        "para": "gestionar su relación con las cuatro clínicas actuales y Huellas Puerto sin comunicaciones comerciales no autorizadas",
+        "requisitos": [
+          "RF-001",
+          "RF-002",
+          "RF-003",
+          "RNF-013"
+        ],
+        "criterios": [
+          {
+            "escenario": "Alta y mantenimiento",
+            "dado": "un cliente de cualquiera de las cuatro clínicas actuales o de Huellas Puerto desde su apertura en enero de 2027",
+            "cuando": "recepción crea o actualiza su ficha",
+            "entonces": "quedan registrados nombre, documento de identidad, teléfonos, correo, dirección, datos bancarios para domiciliaciones, datos de facturación, preferencias de comunicación y consentimientos de protección de datos y comerciales"
+          },
+          "CA-002",
+          "CA-003",
+          "CA-004"
+        ],
+        "tareas": [
+          "T-001",
+          "T-002",
+          {
+            "titulo": "Incorporar Huellas Puerto al alta y mantenimiento de fichas desde enero de 2027"
+          }
+        ],
+        "motivo": "RF-001 incorpora Huellas Puerto desde su apertura.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se preservan los criterios y tareas existentes y se añade la configuración de la quinta clínica."
+      },
+      {
+        "id": "HU-002",
+        "accion": "modificar",
+        "titulo": "Conservar fichas y anonimizar historias según su plazo",
+        "como": "responsable de clínica",
+        "quiero": "bloquear fichas inactivas y anonimizar historias clínicas tras su plazo identificable",
+        "para": "respetar los plazos diferenciados de conservación",
+        "requisitos": [
+          "RF-004",
+          "RF-024"
+        ],
+        "criterios": [
+          "CA-005",
+          {
+            "escenario": "Plazo de la historia y ficha bloqueada",
+            "dado": "una ficha de cliente bloqueada y una historia clínica identificable",
+            "cuando": "se consulta la historia antes de cumplirse cinco años desde la última visita del paciente o se registra una nueva visita",
+            "entonces": "la historia sigue identificable hasta cumplir cinco años desde su última visita, y cada visita reinicia el plazo aunque la ficha se haya bloqueado"
+          },
+          {
+            "escenario": "Anonimización nocturna irreversible",
+            "dado": "una historia identificable sin una visita que reinicie el plazo",
+            "cuando": "han transcurrido cinco años desde la última visita y se ejecuta el proceso nocturno en la plataforma",
+            "entonces": "se retiran irreversiblemente nombre, documento, teléfono, correo y dirección del propietario y nombre y microchip de la mascota; se conservan la historia, especie, raza, edad, diagnósticos, tratamientos y fechas, y se registra cuántas historias se han anonimizado"
+          }
+        ],
+        "tareas": [
+          "T-003",
+          {
+            "titulo": "Implementar anonimización irreversible nocturna a los cinco años, reinicio del plazo y recuento de historias"
+          }
+        ],
+        "motivo": "RF-024 sustituye la conservación identificable indefinida por anonimización tras cinco años.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se combina el plazo y su reinicio con la lista completa de datos a retirar y conservar."
+      },
+      {
+        "id": "HU-020",
+        "accion": "modificar",
+        "titulo": "Mantener agendas, horarios y guardias",
+        "como": "responsable de clínica",
+        "quiero": "configurar agendas de recursos y horarios veterinarios",
+        "para": "asignar citas en franjas disponibles",
+        "requisitos": [
+          "RF-040",
+          "RF-041"
+        ],
+        "criterios": [
+          {
+            "escenario": "Recursos de agenda",
+            "dado": "una clínica con consultas, quirófano o rayos, o peluquería en Huellas Montaña o Huellas Puerto",
+            "cuando": "se mantienen sus agendas",
+            "entonces": "hay agendas por clínica, veterinario y sala para consultas, quirófano y rayos; la peluquería tiene agenda independiente en Huellas Montaña asociada a su peluquera y en Huellas Puerto asociada al profesional, espacio y horario que configure esa clínica"
+          },
+          "CA-042"
+        ],
+        "tareas": [
+          "T-024",
+          {
+            "titulo": "Configurar la agenda independiente de peluquería de Huellas Puerto con profesional, espacio y horario propios"
+          }
+        ],
+        "motivo": "RF-040 incorpora una agenda configurable de peluquería para Huellas Puerto.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se mantiene la agenda de Montaña y la tarea existente al añadir la de Puerto."
+      },
+      {
+        "id": "HU-024",
+        "accion": "modificar",
+        "titulo": "Reservar citas elegibles por app y web",
+        "como": "cliente",
+        "quiero": "ver disponibilidad y reservar citas permitidas aunque tenga deuda",
+        "para": "gestionar la atención de mis mascotas en línea",
+        "requisitos": [
+          "RF-050",
+          "RF-051",
+          "RF-052",
+          "RF-053",
+          "RF-058",
+          "RT-002"
+        ],
+        "criterios": [
+          {
+            "escenario": "Reserva ordinaria en línea",
+            "dado": "una clínica que permite reservas en línea y un tipo de cita permitido",
+            "cuando": "el cliente, incluso con deuda, elige veterinario o cualquiera y reserva en app o web entre los huecos libres de los próximos 30 días",
+            "entonces": "la cita se registra sin restricción por deuda y la app confirma por notificación; la reserva ordinaria está disponible también en web, pero teleconsultas de seguimiento y pedidos de alimentación e higiene solo están disponibles en la app móvil"
+          },
+          "CA-052"
+        ],
+        "tareas": [
+          {
+            "titulo": "Mantener disponibilidad y reservas ordinarias en app y web con filtros y límite por mascota, excluyendo teleconsultas y pedidos de la web"
+          }
+        ],
+        "motivo": "RT-002 exceptúa teleconsultas y pedidos de la igualdad funcional con la web.",
+        "de": [
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Solo la segunda propuesta actualiza esta historia afectada por RT-002 y conserva la reserva ordinaria."
+      },
+      {
+        "id": "HU-027",
+        "accion": "eliminar",
+        "motivo": "RF-059 se elimina y la reserva múltiple vinculada deja de estar prevista.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas eliminan la historia; cada mascota conserva su cita independiente sin reserva conjunta."
+      },
+      {
+        "id": "HU-029",
+        "accion": "modificar",
+        "titulo": "Cambiar o cancelar citas desde la app",
+        "como": "cliente",
+        "quiero": "modificar mis citas antes del límite temporal",
+        "para": "gestionar cambios sin llamar cuando está permitido",
+        "requisitos": [
+          "RF-058",
+          "RF-062"
+        ],
+        "criterios": [
+          {
+            "escenario": "Al menos 24 horas",
+            "dado": "una cita a la que faltan 24 horas o más y un cliente con o sin deuda",
+            "cuando": "el cliente la cambia o cancela desde la app",
+            "entonces": "se permite la operación sin restricción por deuda"
+          },
+          {
+            "escenario": "Menos de 24 horas",
+            "dado": "una cita a la que faltan menos de 24 horas",
+            "cuando": "el cliente intenta cambiarla o cancelarla desde la app",
+            "entonces": "se impide la operación y se muestra el teléfono de la clínica"
+          }
+        ],
+        "tareas": [
+          {
+            "titulo": "Aplicar en los cambios y cancelaciones de la app el límite de 24 horas y mostrar el teléfono cuando no se permita la operación"
+          }
+        ],
+        "motivo": "RF-062 eleva de 12 a 24 horas el límite para cambios y cancelaciones desde la app.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas coinciden en el límite inclusivo de 24 horas y conservan el derecho a reservar con deuda."
+      },
+      {
+        "id": "HU-033",
+        "accion": "modificar",
+        "titulo": "Registrar y vincular cuentas existentes",
+        "como": "cliente",
+        "quiero": "verificar mi identidad y vincular individualmente mis fichas",
+        "para": "consultar mis mascotas desde app y web",
+        "requisitos": [
+          "RF-165",
+          "RF-166",
+          "RF-167",
+          "RT-002"
+        ],
+        "criterios": [
+          {
+            "escenario": "Vinculación verificada y canales",
+            "dado": "una ficha existente y un teléfono registrado o código entregado por la clínica",
+            "cuando": "el cliente se registra con código SMS o de clínica y crea contraseña",
+            "entonces": "su cuenta queda vinculada a la ficha en app Android o iOS y web; cada ficha adicional con teléfono compartido requiere un código individual tras verificar la identidad; la igualdad de funciones entre app y web excluye teleconsultas de seguimiento y pedidos de alimentación e higiene, disponibles solo en app móvil"
+          },
+          "CA-072"
+        ],
+        "tareas": [
+          {
+            "titulo": "Mantener registro y códigos individuales de vinculación en app y web y comprobar las excepciones móviles de RT-002"
+          }
+        ],
+        "motivo": "RT-002 exceptúa teleconsultas y pedidos del acceso funcional compartido de app y web.",
+        "de": [
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "La segunda propuesta adapta los canales de esta historia afectada y mantiene la vinculación individual."
+      },
+      {
+        "id": "HU-037",
+        "accion": "modificar",
+        "titulo": "Confirmar o cancelar desde el recordatorio",
+        "como": "cliente",
+        "quiero": "responder al recordatorio recibido 24 horas antes",
+        "para": "comunicar mi asistencia respetando el límite de cambios desde la app",
+        "requisitos": [
+          "RF-049",
+          "RF-062",
+          "RF-172"
+        ],
+        "criterios": [
+          {
+            "escenario": "Confirmación o cancelación en plazo",
+            "dado": "una cita cuyo recordatorio con botones se envía cuando faltan 24 horas",
+            "cuando": "el cliente confirma o pulsa cancelar desde la app mientras resten al menos 24 horas",
+            "entonces": "puede confirmar la cita o cancelarla, incluso exactamente 24 horas antes, y se actualiza su estado"
+          },
+          {
+            "escenario": "Cancelación tardía",
+            "dado": "un recordatorio recibido y menos de 24 horas hasta la cita",
+            "cuando": "el cliente pulsa el botón de cancelar desde la app",
+            "entonces": "se bloquea la cancelación desde el botón y se muestra el teléfono de la clínica; la app tampoco permite cambiar la cita en ese plazo"
+          }
+        ],
+        "tareas": [
+          "T-046",
+          {
+            "titulo": "Ajustar el botón del recordatorio al límite inclusivo de 24 horas y mostrar el teléfono si se supera"
+          }
+        ],
+        "motivo": "RF-062 y RF-172 sustituyen las 12 horas por 24 también en el botón de cancelar.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se consolidan los escenarios repetidos sin perder la cancelación justo al enviarse el recordatorio."
+      },
+      {
+        "id": "HU-044",
+        "accion": "modificar",
+        "titulo": "Ingresar pacientes en plazas hospitalarias",
+        "como": "veterinario",
+        "quiero": "asignar jaula o box válido al paciente ingresado",
+        "para": "controlar ocupación, aislamiento y depósito en fase 1",
+        "requisitos": [
+          "RF-078",
+          "RF-079",
+          "RF-080",
+          "RF-081",
+          "RF-082"
+        ],
+        "criterios": [
+          {
+            "escenario": "Ingreso y plazas en fase 1",
+            "dado": "hospitalización implantada en fase 1 únicamente en Huellas Centro",
+            "cuando": "se registra ingreso con motivo, veterinario responsable, jaula o box y estimación de días",
+            "entonces": "se gestionan 18 jaulas (seis grandes, ocho medianas y cuatro para gatos en sala separada), dos boxes UCI y una plaza adicional de aislamiento solo para perros y gatos infecciosos; no se permite una jaula ocupada ni alojar gatos en sala de perros y el aislamiento marca y avisa de la infección"
+          },
+          "CA-098"
+        ],
+        "tareas": [
+          {
+            "titulo": "Implantar ingresos en fase 1 solo en Huellas Centro, control de plazas, alertas y depósito"
+          }
+        ],
+        "motivo": "RF-078 y RF-079 adelantan ingreso y gestión de plazas en Huellas Centro a fase 1.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se mantienen la distribución, el aislamiento y los controles previos al cambiar la fase."
+      },
+      {
+        "id": "HU-045",
+        "accion": "modificar",
+        "titulo": "Planificar y controlar tareas hospitalarias",
+        "como": "veterinario",
+        "quiero": "planificar cuidados, registrar dosis, retrasos y cambios de tratamiento",
+        "para": "seguir las tareas y consumos del ingreso",
+        "requisitos": [
+          "RF-083",
+          "RF-084",
+          "RF-085",
+          "RF-086",
+          "RF-087",
+          "RF-088",
+          "RNF-018"
+        ],
+        "criterios": [
+          {
+            "escenario": "Planificación y ejecución en fase 1",
+            "dado": "un paciente ingresado en Huellas Centro durante la fase 1",
+            "cuando": "se planifican medicación, fluidoterapia, alimentación, paseo, control de constantes y limpieza de heridas con hora, dosis o detalle y responsable, y un ATV o veterinario marca una tarea como realizada",
+            "entonces": "se conserva quién la realizó y, si es medicación, la dosis realmente administrada"
+          },
+          "CA-100",
+          "CA-101",
+          "CA-102"
+        ],
+        "tareas": [
+          "T-054",
+          "T-055"
+        ],
+        "motivo": "RF-083 adelanta a fase 1 la planificación hospitalaria en Huellas Centro.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas preservan criterios de retrasos, cambios y consumos y solo adelantan la planificación."
+      },
+      {
+        "id": "HU-046",
+        "accion": "modificar",
+        "titulo": "Comunicar evolución de pacientes ingresados",
+        "como": "veterinario",
+        "quiero": "dejar traspasos e informes diarios y registrar comunicaciones importantes",
+        "para": "coordinar turnos e informar a los clientes asociados",
+        "requisitos": [
+          "RF-088",
+          "RF-089",
+          "RF-090",
+          "RF-091",
+          "RF-092"
+        ],
+        "criterios": [
+          {
+            "escenario": "Tareas y traspasos",
+            "dado": "un paciente ingresado en Huellas Centro durante la fase 1",
+            "cuando": "se administra medicación o en los cambios de turno de las 8:00, 15:00 y 22:00 el veterinario saliente deja una nota por paciente y el entrante la marca leída",
+            "entonces": "los fármacos administrados descuentan stock hospitalario y generan cargos al realizarse sin cobrar aparte los incluidos en el servicio; queda registrada la lectura de las notas"
+          },
+          {
+            "escenario": "Informe diario de texto",
+            "dado": "una mascota ingresada en Huellas Centro",
+            "cuando": "el veterinario publica su informe diario",
+            "entonces": "el informe contiene solo texto, sin fotos; cada cliente asociado consulta desde la app los informes y el importe acumulado de la estancia"
+          },
+          {
+            "escenario": "Visitas y comunicaciones importantes",
+            "dado": "un paciente hospitalizado en Huellas Centro en fase 1",
+            "cuando": "se cita una visita o se llama por empeoramiento, decisión quirúrgica o fallecimiento",
+            "entonces": "la visita se muestra y cita de 12:00 a 13:00 o de 18:00 a 19:00 con máximo dos personas y la comunicación inmediata queda registrada en su ficha"
+          }
+        ],
+        "tareas": [
+          "T-056"
+        ],
+        "motivo": "RF-090 retira las fotos y RF-091 sitúa las visitas hospitalarias en fase 1 en Huellas Centro.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se combinan las propuestas eliminando escenarios redundantes y conservando los cargos y traspasos previos."
+      },
+      {
+        "id": "HU-047",
+        "accion": "modificar",
+        "titulo": "Cerrar hospitalizaciones por alta o fallecimiento",
+        "como": "veterinario",
+        "quiero": "documentar el alta o fallecimiento y sus efectos",
+        "para": "continuar cuidados o conservar el informe final y la facturación",
+        "requisitos": [
+          "RF-091",
+          "RF-092",
+          "RF-093",
+          "RF-094",
+          "RF-095",
+          "RF-096"
+        ],
+        "criterios": [
+          {
+            "escenario": "Alta hospitalaria",
+            "dado": "un paciente en Huellas Centro durante la fase 1 listo para el alta, incluso si procede de otra clínica",
+            "cuando": "se redacta el informe con diagnóstico, tratamiento realizado y para casa, cuidados y fecha de revisión",
+            "entonces": "se generan receta, cita de revisión en la clínica habitual y factura final descontando el depósito; si la clínica habitual es distinta, recibe aviso e informe de alta"
+          },
+          "CA-107",
+          {
+            "escenario": "Visitas y aviso por evolución",
+            "dado": "un paciente hospitalizado en Huellas Centro durante la fase 1",
+            "cuando": "se organiza una visita o se llama por empeoramiento, decisión quirúrgica o fallecimiento",
+            "entonces": "se puede citar visita de 12:00 a 13:00 o de 18:00 a 19:00 para máximo dos personas y registrar de inmediato la comunicación en la ficha"
+          }
+        ],
+        "tareas": [
+          "T-057"
+        ],
+        "motivo": "RF-091 y RF-093 adelantan visitas y alta hospitalaria de Huellas Centro a fase 1.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se conserva CA-107 para fallecimiento y se evitan duplicaciones de la descripción del alta."
+      },
+      {
+        "id": "HU-050",
+        "accion": "modificar",
+        "titulo": "Mantener productos y precios incluidos",
+        "como": "gerencia",
+        "quiero": "mantener el catálogo común y el tratamiento del precio cero",
+        "para": "ofrecer productos homogéneos sin cobrar aparte lo incluido en servicios",
+        "requisitos": [
+          "RF-100",
+          "RF-101",
+          "RF-142"
+        ],
+        "criterios": [
+          {
+            "escenario": "Producto de catálogo usado o vendido",
+            "dado": "un medicamento, vacuna, alimento, producto de higiene, accesorio o material clínico del catálogo común",
+            "cuando": "se mantiene, se usa en un servicio o se vende por separado",
+            "entonces": "constan código, nombre, laboratorio, presentación, unidad de venta, precios de compra y venta, IVA y necesidad de receta, junto a los datos de la hoja Productos y mínimos por clínica; un producto con precio cero incluido en un servicio no se cobra aparte y su venta separada requiere tarifa propia"
+          }
+        ],
+        "tareas": [
+          "T-060",
+          {
+            "titulo": "Incorporar productos de higiene al catálogo único y sus reglas de precio"
+          }
+        ],
+        "motivo": "RF-100 añade higiene al catálogo común.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se conserva la tarea anterior y se incorpora la nueva categoría sin cambiar el significado del precio cero."
+      },
+      {
+        "id": "HU-051",
+        "accion": "modificar",
+        "titulo": "Controlar existencias y reposición por lote",
+        "como": "responsable de clínica",
+        "quiero": "consultar lotes y consumir antes los de caducidad próxima",
+        "para": "evitar roturas y reponer cuando se baje del mínimo",
+        "requisitos": [
+          "RF-100",
+          "RF-101",
+          "RF-102",
+          "RF-103",
+          "RF-104",
+          "RF-202"
+        ],
+        "criterios": [
+          {
+            "escenario": "Catálogo único para control de existencias",
+            "dado": "medicamentos, vacunas, alimentación, productos de higiene, accesorios o material clínico",
+            "cuando": "se mantienen en catálogo, incluidos los de la hoja Productos del DOC-06",
+            "entonces": "constan código, nombre, laboratorio, presentación, unidad de venta, precios de compra y venta, IVA, exigencia de receta y, según producto, condición de controlado y mínimo por clínica"
+          },
+          "CA-114",
+          "CA-115",
+          "CA-116"
+        ],
+        "tareas": [
+          "T-061",
+          "T-062"
+        ],
+        "motivo": "RF-100 incluye higiene entre los productos cuyo stock se controla.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas conservan el control por lotes y añaden higiene al catálogo que lo alimenta."
+      },
+      {
+        "id": "HU-059",
+        "accion": "modificar",
+        "titulo": "Emitir, rectificar y sustituir facturas",
+        "como": "recepción",
+        "quiero": "emitir facturas correlativas y corregirlas sin modificar las emitidas",
+        "para": "conservar el registro fiscal y evitar duplicar ingresos",
+        "requisitos": [
+          "RF-117",
+          "RF-118",
+          "RF-119",
+          "RF-120",
+          "RNF-020"
+        ],
+        "criterios": [
+          {
+            "escenario": "Tipo, serie y conservación",
+            "dado": "una venta en una clínica",
+            "cuando": "se emite factura",
+            "entonces": "es simplificada por defecto, completa a petición del cliente y siempre completa para empresas, incluidas protectoras, criaderos y ayuntamientos con convenio; se numera correlativamente por año en C, N, R o M para las cuatro clínicas actuales o en una serie ordinaria propia para Huellas Puerto, y se conserva seis años"
+          },
+          {
+            "escenario": "Rectificación sin edición",
+            "dado": "una factura ya emitida",
+            "cuando": "se intenta borrar, modificar o corregir",
+            "entonces": "no se borra ni modifica; se corrige mediante rectificativa correlativa en CR, NR, RR o MR de la clínica actual correspondiente o en la serie rectificativa propia de Huellas Puerto, con referencia a la factura rectificada"
+          },
+          "CA-133",
+          "CA-134"
+        ],
+        "tareas": [
+          "T-071",
+          "T-072",
+          {
+            "titulo": "Configurar series ordinaria y rectificativa independientes para Huellas Puerto sin fijar códigos no aprobados"
+          }
+        ],
+        "motivo": "RF-118 exige series propias de facturas ordinarias y rectificativas en Huellas Puerto.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se respetan las series existentes y no se inventan identificadores para Puerto."
+      },
+      {
+        "id": "HU-067",
+        "accion": "modificar",
+        "titulo": "Administrar clínicas, recursos y tarifas",
+        "como": "gerencia",
+        "quiero": "mantener permisos, servicios disponibles y precios por clínica",
+        "para": "configurar la oferta del grupo y auditar cambios sensibles",
+        "requisitos": [
+          "RF-135",
+          "RF-140",
+          "RF-141",
+          "RF-187",
+          "RF-188"
+        ],
+        "criterios": [
+          "CA-149",
+          {
+            "escenario": "Oferta de Huellas Puerto",
+            "dado": "las clínicas del grupo y Huellas Puerto desde su apertura en enero de 2027",
+            "cuando": "se consultan su oferta, horarios y recursos",
+            "entonces": "los exóticos solo están disponibles en Huellas Centro y la peluquería en Huellas Montaña y Huellas Puerto; Huellas Puerto, en paseo del Muelle 12 de Alcorza, ofrece consultas, vacunación y peluquería de lunes a viernes de 9:00 a 20:00 y sábados de 9:00 a 14:00, sin hospital ni urgencias"
+          },
+          "CA-151",
+          {
+            "escenario": "Tarifas y servicios nuevos",
+            "dado": "el tarifario común con servicios de la hoja Servicios del DOC-06",
+            "cuando": "se configuran Huellas Puerto y las excepciones vigentes",
+            "entonces": "cada servicio mantiene código, precio, duración, IVA y disponibilidad; Puerto aplica las tarifas de Huellas Centro excepto baño y corte, con precios de Huellas Montaña; S004 pasa a 100 € desde el 1 de enero de 2027 y se incluye S090 de seguimiento de 15 minutos y 21 % de IVA, a 25 € o 20 € para clientes con plan activo sin incluirla en sus prestaciones"
+          }
+        ],
+        "tareas": [
+          "T-081",
+          "T-082",
+          {
+            "titulo": "Configurar Huellas Puerto con oferta, horario y tarifas y añadir S090 y la vigencia del nuevo precio S004"
+          }
+        ],
+        "motivo": "RF-140 y RF-187 incorporan Huellas Puerto, sus tarifas y horarios y el servicio S090.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se combinan los detalles de oferta, excepciones tarifarias y tareas existentes sin fijar recursos aún no decididos."
+      },
+      {
+        "id": "HU-068",
+        "accion": "modificar",
+        "titulo": "Aplicar tarifas especiales por hora y temporada",
+        "como": "recepción",
+        "quiero": "cobrar urgencias, eutanasia a domicilio y peluquería según condiciones",
+        "para": "aplicar las excepciones confirmadas al tarifario",
+        "requisitos": [
+          "RF-136",
+          "RF-137",
+          "RF-138",
+          "RF-139",
+          "RF-140"
+        ],
+        "criterios": [
+          {
+            "escenario": "Tarifario y urgencias",
+            "dado": "servicios de la hoja Servicios del DOC-06 con códigos, precios, duraciones, IVA y disponibilidad por clínica",
+            "cuando": "se cobra una urgencia según la hora de atención",
+            "entonces": "cuesta 65 € en horario diurno no festivo, incluidos sábados y domingos; de 20:00 a 9:00 o en festivos cuesta 95 € hasta el 31 de diciembre de 2026 y 100 € desde el 1 de enero de 2027; prevalecen las excepciones de hospitalización y peluquería sobre la hoja"
+          },
+          {
+            "escenario": "Domicilio y peluquería",
+            "dado": "una eutanasia a domicilio dentro del municipio de la clínica y en horario de apertura o un baño y corte en Huellas Montaña o Huellas Puerto",
+            "cuando": "se factura",
+            "entonces": "la eutanasia añade 40 € a los 120 € de tarifa base; el baño y corte de perro pequeño cuesta 32 € del 1 de noviembre al 28 de febrero y 35 € el resto del año, y el de perro grande cuesta 45 € en ambas clínicas"
+          },
+          {
+            "escenario": "Tarifa de teleconsulta",
+            "dado": "una teleconsulta de seguimiento S090 de 15 minutos",
+            "cuando": "se aplica su tarifa",
+            "entonces": "su IVA es del 21 % y cuesta 25 € o 20 € para un cliente con plan activo, sin consumirse una consulta incluida en el plan"
+          }
+        ],
+        "tareas": [
+          "T-083",
+          {
+            "titulo": "Actualizar la vigencia del precio nocturno y festivo y parametrizar S090 y las tarifas de peluquería de Huellas Puerto"
+          }
+        ],
+        "motivo": "RF-136, RF-138, RF-139 y RF-140 cambian urgencias, amplían peluquería y añaden S090.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se conserva la tarea existente y se añade S090 sin confundir su tarifa con urgencias o peluquería."
+      },
+      {
+        "id": "HU-081",
+        "accion": "modificar",
+        "titulo": "Consultar indicadores semanales y mensuales del grupo",
+        "como": "gerencia",
+        "quiero": "consultar cuadros e informes comparativos de negocio",
+        "para": "seguir actividad sin duplicar clientes o pacientes",
+        "requisitos": [
+          "RF-180",
+          "RF-181",
+          "RF-182",
+          "RF-183"
+        ],
+        "criterios": [
+          "CA-183",
+          "CA-184",
+          "CA-185",
+          {
+            "escenario": "Resumen mensual",
+            "dado": "un mes con actividad y encuestas de satisfacción por clínica",
+            "cuando": "gerencia consulta el informe mensual",
+            "entonces": "incluye facturación por veterinario y familia de servicio, ventas de farmacia y alimentación, margen calculado con compra por lote, altas y bajas de planes, ingresos por plan y una media conjunta por clínica de las valoraciones de atención, veterinario y puntualidad"
+          }
+        ],
+        "tareas": [
+          "T-099",
+          "T-100",
+          {
+            "titulo": "Calcular por clínica la media conjunta mensual de las tres valoraciones de satisfacción"
+          }
+        ],
+        "motivo": "RF-183 añade la media conjunta de satisfacción por clínica al informe mensual.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se conservan ambos trabajos anteriores y se añade el cálculo nuevo sin triplicar la métrica."
+      },
+      {
+        "id": "HU-092",
+        "accion": "modificar",
+        "titulo": "Acceder con autenticación y sesiones protegidas",
+        "como": "personal",
+        "quiero": "usar mi cuenta con segundo factor en todos mis accesos",
+        "para": "proteger la información clínica y recuperar el acceso legítimo",
+        "requisitos": [
+          "RNF-005",
+          "RNF-006",
+          "RNF-007",
+          "RNF-008",
+          "RNF-009",
+          "RNF-010",
+          "RNF-011"
+        ],
+        "criterios": [
+          {
+            "escenario": "Inicio y sesión",
+            "dado": "una cuenta con contraseña personal e intransferible de al menos 12 caracteres que se renueva cada seis meses",
+            "cuando": "un miembro del personal accede desde dentro o fuera de la clínica",
+            "entonces": "se exige segundo factor a todo el personal, no a clientes de app o web; se cifran las comunicaciones y el puesto de recepción cierra sesión tras 15 minutos inactivo"
+          },
+          "CA-215"
+        ],
+        "tareas": [
+          "T-115",
+          {
+            "titulo": "Exigir segundo factor a todos los accesos del personal, incluidos los efectuados dentro de las clínicas"
+          }
+        ],
+        "motivo": "RNF-006 amplía el segundo factor a todos los accesos del personal.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se mantiene la recuperación de cuenta existente sin extender el segundo factor a clientes."
+      },
+      {
+        "id": "HU-093",
+        "accion": "modificar",
+        "titulo": "Gobernar seguridad y tratamiento de datos",
+        "como": "gerencia",
+        "quiero": "aplicar políticas de acceso, cifrado y auditoría inalterable",
+        "para": "proteger las cuentas y los datos personales del grupo",
+        "requisitos": [
+          "RNF-005",
+          "RNF-006",
+          "RNF-007",
+          "RNF-008",
+          "RNF-009",
+          "RNF-010",
+          "RNF-011",
+          "RNF-012",
+          "RNF-013"
+        ],
+        "criterios": [
+          {
+            "escenario": "Autenticación, bloqueo y protección de datos",
+            "dado": "una cuenta del sistema",
+            "cuando": "se autentica o se produce inactividad o consulta de datos",
+            "entonces": "cada usuario usa contraseña personal de al menos 12 caracteres renovada cada seis meses; el segundo factor es obligatorio para todo el personal dentro y fuera de las clínicas pero no para clientes; cinco intentos fallidos bloquean la cuenta, que se desbloquea automáticamente a los 30 minutos o antes por personal autorizado tras verificar identidad, registrándose cada desbloqueo; recepción cierra sesión tras 15 minutos inactivos, las comunicaciones están cifradas, la auditoría es inalterable al menos dos años y los datos se tratan conforme al reglamento europeo de protección de datos"
+          }
+        ],
+        "tareas": [
+          "T-116",
+          {
+            "titulo": "Extender la política de segundo factor a todo el personal con independencia del lugar de acceso"
+          }
+        ],
+        "motivo": "RNF-006 exige segundo factor para todo el personal en cualquier ubicación.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se conserva la política previa de seguridad, bloqueo y auditoría y se excluye a clientes de la nueva exigencia."
+      },
+      {
+        "id": "HU-094",
+        "accion": "modificar",
+        "titulo": "Usar las interfaces y dispositivos aprobados",
+        "como": "gerencia",
+        "quiero": "ofrecer la plataforma en puestos, tabletas, Android, iOS y web",
+        "para": "dar acceso compatible y en los idiomas previstos",
+        "requisitos": [
+          "RT-001",
+          "RT-002",
+          "RNF-018",
+          "RNF-019",
+          "RNF-020"
+        ],
+        "criterios": [
+          "CA-217",
+          {
+            "escenario": "Canales del cliente",
+            "dado": "un cliente que accede desde Android, iOS o navegador web",
+            "cuando": "utiliza las funciones de su cuenta",
+            "entonces": "la app y la web tienen las mismas funciones excepto teleconsultas de seguimiento y pedidos de alimentación e higiene, disponibles solo en la app móvil; ambas interfaces se ofrecen en castellano e inglés"
+          },
+          {
+            "escenario": "Puestos, tabletas y conservación",
+            "dado": "personal en clínica y facturas emitidas",
+            "cuando": "se usa la plataforma o se consulta el archivo de facturas",
+            "entonces": "en puestos con Windows 11 funciona con Chrome o Edge actualizado sin programa de escritorio; en hospitalización y quirófano admite tabletas con botones grandes para guantes; la interfaz del personal está en castellano y las facturas emitidas se conservan seis años"
+          }
+        ],
+        "tareas": [
+          "T-117",
+          {
+            "titulo": "Comprobar en Android e iOS las teleconsultas y los pedidos y su ausencia de la web de clientes"
+          }
+        ],
+        "motivo": "RT-002 hace excepciones móviles para teleconsultas y pedidos de alimentación e higiene.",
+        "de": [
+          1,
+          2
+        ],
+        "discrepancia": false,
+        "explicacion": "Se conservan las compatibilidades existentes y se comprueban las dos excepciones sin repetir criterios."
+      }
+    ]
+  },
+  "desviaciones": [
+    {
+      "id": "N-003",
+      "tipo": "junta-distintos",
+      "similitud": 0.673,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,67, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    },
+    {
+      "id": "N-007",
+      "tipo": "junta-distintos",
+      "similitud": 0.596,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,60, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    }
+  ],
+  "emparejamiento": {
+    "segundos": 2.37,
+    "segundos_cpu": 4.38
+  }
+}

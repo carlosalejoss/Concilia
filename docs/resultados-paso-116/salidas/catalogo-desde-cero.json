@@ -1,0 +1,5787 @@
+{
+  "fuente": "ARB",
+  "verificacion_cruzada": true,
+  "mensaje": "Unión del árbitro.",
+  "salida": {
+    "requisitos": [
+      {
+        "id": "RF-001",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ gestionar fichas compartidas de clientes con identificación, teléfonos, correo, dirección, datos bancarios para domiciliaciones, preferencias de comunicación y consentimientos en todas las clínicas, incluida Huellas Puerto desde su apertura en enero de 2027.",
+        "fuentes": [
+          "DOC-01#F038",
+          "DOC-07#F004",
+          "DOC-22#F003",
+          "DOC-22#F006"
+        ],
+        "preguntas": [
+          "P-064"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-002"
+          ],
+          "propuesta_2": [
+            "RF-001"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se completa la ficha común con los datos bancarios y la quinta clínica documentados en la segunda propuesta."
+      },
+      {
+        "id": "RF-002",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ gestionar fichas de pacientes con nombre, especie, raza, sexo, fecha de nacimiento o edad estimada, color, microchip, estado reproductivo, alergias, enfermedades crónicas, foto y fecha de fallecimiento.",
+        "fuentes": [
+          "DOC-01#F039"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-003"
+          ],
+          "propuesta_2": [
+            "RF-002"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas recogen los mismos campos clínicos de la ficha."
+      },
+      {
+        "id": "RF-003",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir asociar varios clientes a una mascota y designar al principal para facturarle por defecto.",
+        "fuentes": [
+          "DOC-01#F040"
+        ],
+        "preguntas": [
+          "P-008",
+          "P-009"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-004"
+          ],
+          "propuesta_2": [
+            "RF-003"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifica la asociación de clientes y el pagador predeterminado."
+      },
+      {
+        "id": "RF-004",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar una gráfica del historial de peso de cada paciente.",
+        "fuentes": [
+          "DOC-01#F041"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-005"
+          ],
+          "propuesta_2": [
+            "RF-004"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas describen la misma gráfica."
+      },
+      {
+        "id": "RF-005",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ buscar en todas las clínicas por nombre del cliente, teléfono, nombre del paciente o microchip.",
+        "fuentes": [
+          "DOC-01#F042"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-006"
+          ],
+          "propuesta_2": [
+            "RF-005"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la búsqueda compartida descrita por ambas propuestas."
+      },
+      {
+        "id": "RF-006",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aceptar en el buscador de pacientes el código de microchip introducido mediante un lector USB que actúe como teclado.",
+        "fuentes": [
+          "DOC-21#F020"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RT-002"
+          ],
+          "propuesta_2": [
+            "RF-006"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se une la misma capacidad de búsqueda y se clasifica como función."
+      },
+      {
+        "id": "RF-007",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir solo al responsable de clínica fusionar fichas duplicadas y registrar quién realizó cada fusión.",
+        "fuentes": [
+          "DOC-01#F043"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-007"
+          ],
+          "propuesta_2": [
+            "RF-007"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La segunda redacción añade la restricción del actor a la auditoría de la primera."
+      },
+      {
+        "id": "RF-008",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar en las fichas los avisos de paciente agresivo, cliente con deuda y alergias únicamente a quienes tengan permiso para acceder a cada dato clínico.",
+        "fuentes": [
+          "DOC-01#F044",
+          "DOC-07#F017"
+        ],
+        "preguntas": [
+          "P-027",
+          "P-028"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-008"
+          ],
+          "propuesta_2": [
+            "RF-008"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se limita la visibilidad indiscriminada de la primera propuesta según los permisos documentados."
+      },
+      {
+        "id": "RF-009",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ registrar en la ficha de cada gato su acceso al exterior y permitir al veterinario actualizar o validar el dato aunque el cambio lo comunique el cliente.",
+        "fuentes": [
+          "DOC-17#F003"
+        ],
+        "preguntas": [
+          "P-015"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-012"
+          ],
+          "propuesta_2": [
+            "RF-009"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se adopta la misma decisión sobre acceso al exterior y validación veterinaria."
+      },
+      {
+        "id": "RF-010",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al cliente otorgar y retirar su consentimiento expreso para comunicaciones comerciales.",
+        "fuentes": [
+          "DOC-07#F009",
+          "DOC-14#F036"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-023"
+          ],
+          "propuesta_2": [
+            "RF-010"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la retirada propuesta en ambas y se añade el otorgamiento explícito."
+      },
+      {
+        "id": "RF-011",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI el consentimiento comercial no está confirmado, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ impedir el envío de comunicaciones comerciales hasta obtener aceptación expresa.",
+        "fuentes": [
+          "DOC-07#F009",
+          "DOC-16#F009"
+        ],
+        "preguntas": [
+          "P-031"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-011"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la prohibición general expresada separadamente en la segunda propuesta, distinta de la regla de migración."
+      },
+      {
+        "id": "RF-012",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir configurar clínicas, salas, horarios de apertura y festivos.",
+        "fuentes": [
+          "DOC-01#F134",
+          "DOC-06#F043",
+          "DOC-22#F003"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-001"
+          ],
+          "propuesta_2": [
+            "RF-012"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se separa la configuración de clínicas y horarios de la administración de usuarios para evitar repetirla."
+      },
+      {
+        "id": "RF-013",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mantener los horarios semanales de veterinarios por clínica y el calendario de guardias de doce horas e impedir asignar consulta ordinaria a un veterinario de guardia ese día.",
+        "fuentes": [
+          "DOC-20#F003",
+          "DOC-20#F005",
+          "DOC-20#F006",
+          "DOC-20#F010"
+        ],
+        "preguntas": [
+          "P-025"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-044"
+          ],
+          "propuesta_2": [
+            "RF-013",
+            "RF-014"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen mantenimiento de calendarios y exclusión de consultas ordinarias para las guardias."
+      },
+      {
+        "id": "RF-014",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar agendas por clínica, veterinario y sala y una agenda de peluquería separada con su profesional.",
+        "fuentes": [
+          "DOC-01#F046",
+          "DOC-20#F039",
+          "DOC-20#F040"
+        ],
+        "preguntas": [
+          "P-066"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-025"
+          ],
+          "propuesta_2": [
+            "RF-015"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se combina la agenda por recursos con la agenda separada de peluquería."
+      },
+      {
+        "id": "RF-015",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ ofrecer tramos de 20 minutos para consultas, 15 para vacunaciones y revisiones, 60 para peluquería y un bloque configurable para cirugías, sin duración fija para urgencias.",
+        "fuentes": [
+          "DOC-01#F047"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-046"
+          ],
+          "propuesta_2": [
+            "RF-016"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conservan los tramos coincidentes y la ausencia de duración fija de urgencias."
+      },
+      {
+        "id": "RF-016",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ asignar 30 minutos a la primera visita de cachorro y a la consulta de un paciente geriátrico con varias patologías.",
+        "fuentes": [
+          "DOC-10#F013",
+          "DOC-20#F027",
+          "DOC-20#F028"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-047"
+          ],
+          "propuesta_2": [
+            "RF-017"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas fijan el mismo tramo ampliado."
+      },
+      {
+        "id": "RF-017",
+        "tipo": "RF",
+        "notacion": "MASTeR",
+        "obligatoriedad": "should",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÍA PROPORCIONAR AL veterinario LA CAPACIDAD DE alargar una cita de consulta.",
+        "fuentes": [
+          "DOC-20#F029"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-048"
+          ],
+          "propuesta_2": [
+            "RF-018"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el carácter de preferencia expresado en ambas propuestas."
+      },
+      {
+        "id": "RF-018",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir reservar por separado una cita por mascota, indicando clínica, tipo, paciente, veterinario o «cualquiera» y hora, sin vincular reservas conjuntas aunque las citas sean seguidas.",
+        "fuentes": [
+          "DOC-01#F048",
+          "DOC-22#F025",
+          "DOC-22#F027"
+        ],
+        "preguntas": [
+          "P-085"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-026",
+            "RF-166"
+          ],
+          "propuesta_2": [
+            "RF-019"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se integra la reserva individual con la decisión posterior que elimina la reserva múltiple."
+      },
+      {
+        "id": "RF-019",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI una cita nueva se solapa con otra del mismo veterinario o de la misma sala, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ rechazar su reserva.",
+        "fuentes": [
+          "DOC-01#F049"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-027"
+          ],
+          "propuesta_2": [
+            "RF-020"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas prohíben el mismo solapamiento."
+      },
+      {
+        "id": "RF-020",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ gestionar los estados pendiente, confirmada, en sala de espera, en consulta, atendida, no presentada y cancelada de cada cita.",
+        "fuentes": [
+          "DOC-01#F050"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-028"
+          ],
+          "propuesta_2": [
+            "RF-021"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifica la lista idéntica de estados."
+      },
+      {
+        "id": "RF-021",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO recepción registre la llegada de un paciente citado, el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar al veterinario el paciente en espera y su hora de llegada; CUANDO el veterinario lo llame, DEBERÁ pasar la cita a «en consulta».",
+        "fuentes": [
+          "DOC-20#F031",
+          "DOC-20#F032",
+          "DOC-20#F034"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-053"
+          ],
+          "propuesta_2": [
+            "RF-022",
+            "RF-023"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen los dos eventos consecutivos de recepción y llamada que la primera propuesta reunía."
+      },
+      {
+        "id": "RF-022",
+        "tipo": "RF",
+        "notacion": "MASTeR",
+        "obligatoriedad": "should",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÍA PROPORCIONAR A los pacientes en sala de espera LA CAPACIDAD DE ver el orden de atención en una pantalla que muestre solo el nombre de la mascota y no el del cliente.",
+        "fuentes": [
+          "DOC-20#F035"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-054"
+          ],
+          "propuesta_2": [
+            "RF-024"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la privacidad y el carácter preferente de la pantalla de espera."
+      },
+      {
+        "id": "RF-023",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI un cliente llega más de 15 minutos tarde y el veterinario no puede atenderlo, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a recepción ofrecer otra cita.",
+        "fuentes": [
+          "DOC-10#F016",
+          "DOC-20#F037"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-055"
+          ],
+          "propuesta_2": [
+            "RF-025"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se aclara que la nueva cita depende de que no pueda atenderlo el veterinario."
+      },
+      {
+        "id": "RF-024",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ reservar al veterinario la programación de cirugías y permitir citar en Huellas Centro las de pacientes de Huellas Ribera con acceso a su ficha y analíticas.",
+        "fuentes": [
+          "DOC-10#F014",
+          "DOC-10#F015",
+          "DOC-06#F046"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-056"
+          ],
+          "propuesta_2": [
+            "RF-026"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La fuente especifica Ribera, no cualquier clínica sin quirófano, y reserva la programación al veterinario."
+      },
+      {
+        "id": "RF-025",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ reservar el quirófano de 9:00 a 13:00 para cirugías programadas y durante la tarde para urgencias quirúrgicas.",
+        "fuentes": [
+          "DOC-20#F023",
+          "DOC-20#F024"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-052"
+          ],
+          "propuesta_2": [
+            "RF-027"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la distribución documentada del quirófano."
+      },
+      {
+        "id": "RF-026",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ reservar en todas las clínicas los dos primeros huecos de mañana y los dos primeros de tarde para urgencias leves asignadas exclusivamente por recepción.",
+        "fuentes": [
+          "DOC-20#F021",
+          "DOC-20#F022"
+        ],
+        "preguntas": [
+          "P-005"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-032"
+          ],
+          "propuesta_2": [
+            "RF-028"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las propuestas coinciden en clínicas, sesiones, número de huecos y actor."
+      },
+      {
+        "id": "RF-027",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO a las 10:00 o a las 17:00 sigan libres los huecos reservados para urgencias leves de la sesión respectiva, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a recepción ofrecerlos como citas ordinarias.",
+        "fuentes": [
+          "DOC-20#F021"
+        ],
+        "preguntas": [
+          "P-005"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-033"
+          ],
+          "propuesta_2": [
+            "RF-029"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la liberación de cada sesión a su hora acordada."
+      },
+      {
+        "id": "RF-028",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a cada clínica configurar tipos de citas reservables en línea y sus huecos, excluyendo cirugías, urgencias, consultas de exóticos y primeras visitas de cachorro.",
+        "fuentes": [
+          "DOC-01#F119",
+          "DOC-14#F013",
+          "DOC-14#F018"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-037"
+          ],
+          "propuesta_2": [
+            "RF-030"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se une la configuración por clínica con las exclusiones documentadas."
+      },
+      {
+        "id": "RF-029",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar al cliente los huecos en línea de los próximos 30 días y permitirle elegir veterinario o «cualquiera».",
+        "fuentes": [
+          "DOC-14#F014",
+          "DOC-14#F015"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-034"
+          ],
+          "propuesta_2": [
+            "RF-031"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas ofrecen la misma ventana y elección."
+      },
+      {
+        "id": "RF-030",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI un cliente ya tiene dos citas futuras solicitadas desde la app para una mascota, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ impedir una tercera cita futura por la app para esa mascota.",
+        "fuentes": [
+          "DOC-14#F017"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-036"
+          ],
+          "propuesta_2": [
+            "RF-032"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se adopta el umbral de dos citas; la primera propuesta lo situaba erróneamente después de superar dos."
+      },
+      {
+        "id": "RF-031",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a clientes con deuda pedir y cambiar citas desde la app para los tipos reservables en línea.",
+        "fuentes": [
+          "DOC-01#F119",
+          "DOC-01#F165"
+        ],
+        "preguntas": [
+          "P-003"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-035"
+          ],
+          "propuesta_2": [
+            "RF-033"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el permiso explícito del cliente con deuda sin ampliar los tipos de cita disponibles."
+      },
+      {
+        "id": "RF-032",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a cada clínica configurar por sesión y tipo de cita huecos preferentes para mascotas con plan de salud activo sin incluir los reservados para urgencias leves.",
+        "fuentes": [
+          "DOC-14#F019",
+          "DOC-20#F021"
+        ],
+        "preguntas": [
+          "P-041"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-031"
+          ],
+          "propuesta_2": [
+            "RF-034"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se incorpora la exclusión de los dos huecos urgentes de cada sesión."
+      },
+      {
+        "id": "RF-033",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un cliente con plan de salud activo consulte citas en línea, el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar primero los huecos preferentes configurados por la clínica.",
+        "fuentes": [
+          "DOC-14#F019"
+        ],
+        "preguntas": [
+          "P-041"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-035"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la presentación preferente, comportamiento distinto de configurar esos huecos."
+      },
+      {
+        "id": "RF-034",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI no existe un hueco compatible, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir inscribir al cliente en la lista de espera.",
+        "fuentes": [
+          "DOC-01#F051"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-029"
+          ],
+          "propuesta_2": [
+            "RF-036"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se distingue la inscripción del aviso posterior al liberar un hueco."
+      },
+      {
+        "id": "RF-035",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se libere un hueco compatible con la lista de espera, el sistema Clinicas Veterinarias v0.11 DEBERÁ avisar a recepción y ofrecerlo primero a clientes con plan activo por orden de entrada y después a los demás clientes compatibles por ese orden.",
+        "fuentes": [
+          "DOC-01#F051",
+          "DOC-05#F023",
+          "DOC-14#F022"
+        ],
+        "preguntas": [
+          "P-040"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-030",
+            "RF-041"
+          ],
+          "propuesta_2": [
+            "RF-037"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se juntan aviso por liberación, prioridad de plan y desempate por antigüedad."
+      },
+      {
+        "id": "RF-036",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al cliente cambiar o cancelar una cita ordinaria desde la app hasta 24 horas antes de su inicio.",
+        "fuentes": [
+          "DOC-01#F052",
+          "DOC-22#F009"
+        ],
+        "preguntas": [
+          "P-070"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-038"
+          ],
+          "propuesta_2": [
+            "RF-038"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se usa el límite posterior de 24 horas que sustituye al de 12."
+      },
+      {
+        "id": "RF-037",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI faltan menos de 24 horas para una cita ordinaria, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar el teléfono de la clínica sin permitir cambiarla ni cancelarla desde la app.",
+        "fuentes": [
+          "DOC-01#F053",
+          "DOC-14#F021",
+          "DOC-22#F009"
+        ],
+        "preguntas": [
+          "P-070"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-039"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la salida alternativa telefónica documentada sin duplicar la regla temporal de reserva."
+      },
+      {
+        "id": "RF-038",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO falten 24 horas para una cita, el sistema Clinicas Veterinarias v0.11 DEBERÁ enviar un recordatorio con botones para confirmar o solicitar la cancelación, aplicando al de cancelación el límite de 24 horas de la app.",
+        "fuentes": [
+          "DOC-01#F124",
+          "DOC-20#F046",
+          "DOC-22#F009"
+        ],
+        "preguntas": [
+          "P-004",
+          "P-070"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-040"
+          ],
+          "propuesta_2": [
+            "RF-040"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se aplica al botón la decisión posterior de 24 horas, coincidente con el envío del recordatorio."
+      },
+      {
+        "id": "RF-039",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un cliente pida por teléfono cambiar o cancelar una cita, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a recepción gestionarlo hasta dos horas antes.",
+        "fuentes": [
+          "DOC-04#F007",
+          "DOC-04#F008"
+        ],
+        "preguntas": [
+          "P-070"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-039"
+          ],
+          "propuesta_2": []
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la regla telefónica que solo recogió la primera propuesta."
+      },
+      {
+        "id": "RF-040",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un cliente acumule tres citas a las que no se presentó en un año, el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar un aviso en su ficha.",
+        "fuentes": [
+          "DOC-01#F054",
+          "DOC-15#F022"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-042"
+          ],
+          "propuesta_2": [
+            "RF-041"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Este aviso anual es distinto de la señal por dos faltas en seis meses."
+      },
+      {
+        "id": "RF-041",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un cliente reserve la siguiente cita desde la app o en recepción tras su segunda inasistencia sin aviso en seis meses, el sistema Clinicas Veterinarias v0.11 DEBERÁ exigir una señal de 10 € al reservar y descontarla de la factura de esa visita, con aplicación a reservas posteriores y gestión de cambios, cancelaciones e inasistencias [POR DEFINIR].",
+        "fuentes": [
+          "DOC-22#F012",
+          "DOC-22#F013"
+        ],
+        "preguntas": [
+          "P-071",
+          "P-072",
+          "P-073"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-043"
+          ],
+          "propuesta_2": [
+            "RF-042",
+            "RF-043"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen cobro y descuento de la señal sin inventar las reglas de reservas posteriores ni de devolución."
+      },
+      {
+        "id": "RF-042",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un veterinario cause baja imprevista, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a recepción reasignar en bloque sus citas del día a otro veterinario y avisar a los clientes afectados.",
+        "fuentes": [
+          "DOC-20#F012",
+          "DOC-20#F013",
+          "DOC-20#F014",
+          "DOC-20#F015"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-045"
+          ],
+          "propuesta_2": [
+            "RF-044",
+            "RF-045"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se combinan reasignación y notificación asociadas a la misma ausencia."
+      },
+      {
+        "id": "RF-043",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ asignar 120 minutos, equivalentes a dos huecos de 60, a peluquería de perros de más de 25 kg.",
+        "fuentes": [
+          "DOC-20#F040",
+          "DOC-20#F041"
+        ],
+        "preguntas": [
+          "P-043"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-049"
+          ],
+          "propuesta_2": [
+            "RF-046"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Coinciden duración y criterio de peso para perro grande."
+      },
+      {
+        "id": "RF-044",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir citas de peluquería en Huellas Montaña y, desde su apertura, Huellas Puerto, cuyo profesional, espacio y horario de peluquería están [POR DEFINIR].",
+        "fuentes": [
+          "DOC-06#F047",
+          "DOC-22#F004"
+        ],
+        "preguntas": [
+          "P-066",
+          "P-068"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-051"
+          ],
+          "propuesta_2": [
+            "RF-047"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen las clínicas habilitadas y se conserva la dotación pendiente sin inventarla; la tarifa queda en otro requisito."
+      },
+      {
+        "id": "RF-045",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar en Huellas Puerto desde enero de 2027 el horario de lunes a viernes de 9:00 a 20:00 y sábados de 9:00 a 14:00, con consultas, vacunación y peluquería pero sin hospitalización ni urgencias.",
+        "fuentes": [
+          "DOC-22#F003",
+          "DOC-22#F004",
+          "DOC-22#F005",
+          "DOC-22#F006"
+        ],
+        "preguntas": [
+          "P-064",
+          "P-065",
+          "P-066"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-050",
+            "RA-002"
+          ],
+          "propuesta_2": [
+            "RF-048"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se combina la cobertura de la nueva clínica desde su apertura con su horario y servicios confirmados."
+      },
+      {
+        "id": "RF-046",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir configurar urgencias de fin de semana en Huellas Norte desde marzo de 2027 con horario [POR DEFINIR].",
+        "fuentes": [
+          "DOC-15#F036",
+          "DOC-15#F037",
+          "DOC-15#F038"
+        ],
+        "preguntas": [
+          "P-093"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-049"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la futura activación aprobada sin inventar su horario todavía no decidido."
+      },
+      {
+        "id": "RF-047",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a recepción registrar cliente, paciente, motivo y hora de las llegadas sin cita a urgencias de Huellas Centro entre las 20:00 y las 9:00 y durante fines de semana, con aplicación entre semana de 9:00 a 20:00 [POR DEFINIR].",
+        "fuentes": [
+          "DOC-01#F055",
+          "DOC-12#F005"
+        ],
+        "preguntas": [
+          "P-092"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-057"
+          ],
+          "propuesta_2": [
+            "RF-050"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se adopta el horario expresamente descrito en la fuente y se deja sin resolver su extensión a urgencias diurnas."
+      },
+      {
+        "id": "RF-048",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO recepción complete las cinco preguntas iniciales sobre respiración, sangrado, consciencia, traumatismo e ingestión de tóxicos, el sistema Clinicas Veterinarias v0.11 DEBERÁ proponer el nivel de triaje 3 sin asignarlo automáticamente hasta que dirección veterinaria apruebe una regla validada.",
+        "fuentes": [
+          "DOC-12#F006",
+          "DOC-12#F007"
+        ],
+        "preguntas": [
+          "P-035"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-058"
+          ],
+          "propuesta_2": [
+            "RF-051",
+            "RF-052"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen cuestionario y propuesta inicial de nivel 3 sin fingir una clasificación clínica validada."
+      },
+      {
+        "id": "RF-049",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario o ATV revisor confirmar el nivel de triaje propuesto y al veterinario de guardia modificarlo dejando hora y motivo.",
+        "fuentes": [
+          "DOC-12#F008",
+          "DOC-12#F009"
+        ],
+        "preguntas": [
+          "P-035"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-059"
+          ],
+          "propuesta_2": [
+            "RF-053"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se precisan los actores de confirmación y modificación conforme a la segunda propuesta."
+      },
+      {
+        "id": "RF-050",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ ordenar la cola de urgencias por nivel y hora de llegada dentro de cada nivel, con máximos de espera de 0, 15, 60, 120 y 240 minutos para los niveles 1 a 5, y resaltar a quien supere su máximo.",
+        "fuentes": [
+          "DOC-12#F010",
+          "DOC-12#F011",
+          "DOC-12#F012"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-060"
+          ],
+          "propuesta_2": [
+            "RF-054",
+            "RF-055"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se añaden los cinco umbrales documentados al orden y aviso coincidentes."
+      },
+      {
+        "id": "RF-051",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se clasifique una urgencia como nivel 5, el sistema Clinicas Veterinarias v0.11 DEBERÁ ofrecer cita para el día siguiente en la clínica habitual del paciente salvo que el cliente prefiera esperar.",
+        "fuentes": [
+          "DOC-12#F013"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-061"
+          ],
+          "propuesta_2": [
+            "RF-056"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se elige la formulación del ofrecimiento al clasificar, no después de atenderlo."
+      },
+      {
+        "id": "RF-052",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI llega a urgencias un animal sin propietario identificado, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir registrarlo sin identificar, buscar al propietario mediante su microchip y, si no consta, anotar la necesidad de contactar con el registro oficial.",
+        "fuentes": [
+          "DOC-12#F005",
+          "DOC-12#F015",
+          "DOC-12#F016"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-142"
+          ],
+          "propuesta_2": [
+            "RF-057",
+            "RF-058"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se reúnen identificación, búsqueda y seguimiento del registro oficial para animales hallados."
+      },
+      {
+        "id": "RF-053",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un animal sin propietario identificado sea traído por la policía local o una protectora, el sistema Clinicas Veterinarias v0.11 DEBERÁ atribuir los gastos al ayuntamiento con convenio de Valdecierzo o a la protectora, respectivamente.",
+        "fuentes": [
+          "DOC-12#F015",
+          "DOC-12#F017"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-143"
+          ],
+          "propuesta_2": [
+            "RF-059"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifica el pagador institucional según quién presenta al animal."
+      },
+      {
+        "id": "RF-054",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un particular traiga a urgencias un animal sin propietario identificado, el sistema Clinicas Veterinarias v0.11 DEBERÁ dejar los gastos sin pagador hasta identificarlo, facturarlos al propietario si aparece y, si no aparece en 30 días, al particular solo si aceptó hacerse cargo.",
+        "fuentes": [
+          "DOC-12#F015"
+        ],
+        "preguntas": [
+          "P-061"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-141"
+          ],
+          "propuesta_2": [
+            "RF-060",
+            "RF-061",
+            "RF-062"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen los tres estados sucesivos de atribución sin anticipar el cobro al particular."
+      },
+      {
+        "id": "RF-055",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mantener una historia clínica única del grupo y permitir a los veterinarios consultar visitas, alergias, medicación, cirugías y antecedentes de pacientes de cualquier clínica.",
+        "fuentes": [
+          "DOC-01#F020",
+          "DOC-01#F062",
+          "DOC-03#F006",
+          "DOC-03#F007"
+        ],
+        "preguntas": [
+          "P-028"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-063"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva separada la historia clínica compartida de los permisos específicos por rol."
+      },
+      {
+        "id": "RF-056",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al responsable de clínica consultar historias y avisos de pacientes de otra clínica solo al atenderlos o tramitar sus casos y limitar a ATV y recepción a los de su propia clínica.",
+        "fuentes": [
+          "DOC-01#F034",
+          "DOC-07#F017",
+          "DOC-07#F018"
+        ],
+        "preguntas": [
+          "P-028"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-010"
+          ],
+          "propuesta_2": [
+            "RF-064"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen los límites por perfil, dejando el acceso veterinario general en el requisito anterior."
+      },
+      {
+        "id": "RF-057",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar a recepción únicamente identidad del paciente, datos imprescindibles de la receta para dispensar medicación y estado de resultados para adjuntarlos o avisar de su disponibilidad, ocultando historia, diagnósticos y resultados no publicados salvo acceso clínico autorizado.",
+        "fuentes": [
+          "DOC-07#F017",
+          "DOC-07#F018",
+          "DOC-04#F032",
+          "DOC-04#F034"
+        ],
+        "preguntas": [
+          "P-027"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-009"
+          ],
+          "propuesta_2": [
+            "RF-065"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas aplican la restricción expresa de acceso de recepción."
+      },
+      {
+        "id": "RF-058",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se consulte una historia clínica, el sistema Clinicas Veterinarias v0.11 DEBERÁ registrar identidad y fecha del acceso y, si es entre clínicas, también su motivo.",
+        "fuentes": [
+          "DOC-01#F137",
+          "DOC-07#F019"
+        ],
+        "preguntas": [
+          "P-028"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-011"
+          ],
+          "propuesta_2": [
+            "RF-066"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se incorpora la auditoría de toda consulta además del motivo obligatorio entre clínicas."
+      },
+      {
+        "id": "RF-059",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir registrar en cada visita motivo, anamnesis, temperatura, frecuencias cardiaca y respiratoria, peso, condición corporal, mucosas, diagnósticos presuntivo y definitivo, tratamiento, pruebas y recomendaciones.",
+        "fuentes": [
+          "DOC-01#F057"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-071"
+          ],
+          "propuesta_2": [
+            "RF-067"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se elige el detalle de exploración física documentado en la segunda propuesta sin exigir esperar al cierre."
+      },
+      {
+        "id": "RF-060",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ ofrecer plantillas de visita modificables por el veterinario para primera visita de cachorro, revisión geriátrica y preoperatorio.",
+        "fuentes": [
+          "DOC-01#F058"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-072"
+          ],
+          "propuesta_2": [
+            "RF-068"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas coinciden en plantillas y modificación veterinaria."
+      },
+      {
+        "id": "RF-061",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir diagnósticos codificados del catálogo ampliable por dirección veterinaria y diagnósticos en texto libre en cada visita.",
+        "fuentes": [
+          "DOC-01#F059",
+          "DOC-03#F060",
+          "DOC-03#F064",
+          "DOC-19#F074"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-069"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se separa la función de catálogo de la corrección concreta de especies."
+      },
+      {
+        "id": "RF-062",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ asociar EXO-001 y EXO-002 a conejo, EXO-003 y EXO-004 a hurón y EXO-005 a reptil.",
+        "fuentes": [
+          "DOC-19#F066",
+          "DOC-19#F067",
+          "DOC-19#F068",
+          "DOC-19#F069",
+          "DOC-19#F070"
+        ],
+        "preguntas": [
+          "P-017"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-073"
+          ],
+          "propuesta_2": [
+            "RF-070"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conservan las asociaciones corregidas por respuesta del cliente."
+      },
+      {
+        "id": "RF-063",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir adjuntar manualmente imágenes, radiografías, ecografías, PDF de laboratorio y consentimientos firmados a la historia, hasta 50 MB por archivo, sin visualización DICOM en esta versión.",
+        "fuentes": [
+          "DOC-01#F060",
+          "DOC-01#F061",
+          "DOC-21#F022"
+        ],
+        "preguntas": [
+          "P-024"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-074"
+          ],
+          "propuesta_2": [
+            "RF-071"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se corrige la alusión equívoca a carga de DICOM: solo se admiten adjuntos manuales sin visor."
+      },
+      {
+        "id": "RF-064",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un veterinario firme una visita, el sistema Clinicas Veterinarias v0.11 DEBERÁ cerrarla sin permitir cambios al original y, una vez cerrada, admitir anotaciones posteriores visibles, fechadas y firmadas junto al diagnóstico.",
+        "fuentes": [
+          "DOC-01#F063",
+          "DOC-01#F064",
+          "DOC-03#F015"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-075"
+          ],
+          "propuesta_2": [
+            "RF-072",
+            "RF-073"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantienen inmutabilidad original y anotaciones posteriores como partes del cierre."
+      },
+      {
+        "id": "RF-065",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ conservar consentimientos informados de cirugía, anestesia y eutanasia firmados por el cliente en tableta o escaneados desde papel.",
+        "fuentes": [
+          "DOC-01#F065"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-076"
+          ],
+          "propuesta_2": [
+            "RF-074"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifican los soportes de firma y los tres procedimientos."
+      },
+      {
+        "id": "RF-066",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir configurar protocolos de vacunación por especie, edad y clínica y de desparasitación para perros y gatos.",
+        "fuentes": [
+          "DOC-01#F068",
+          "DOC-03#F055",
+          "DOC-03#F056",
+          "DOC-17#F003"
+        ],
+        "preguntas": [
+          "P-016"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-079"
+          ],
+          "propuesta_2": [
+            "RF-075"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen los protocolos configurables, sin excluir vacunas aprobadas para conejo y hurón."
+      },
+      {
+        "id": "RF-067",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ proponer para perros polivalente a las 8, 12 y 16 semanas, antirrábica a partir de las 12 semanas y recuerdos anuales de ambas en adultos.",
+        "fuentes": [
+          "DOC-17#F003"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-076"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el calendario canino explícito que faltaba en la primera propuesta."
+      },
+      {
+        "id": "RF-068",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ proponer la vacuna anual de leishmaniosis a perros mayores de seis meses de Huellas Montaña solo con test negativo de los tres meses anteriores.",
+        "fuentes": [
+          "DOC-17#F002",
+          "DOC-17#F003"
+        ],
+        "preguntas": [
+          "P-048"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-080"
+          ],
+          "propuesta_2": [
+            "RF-077"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se combina el test obligatorio con edad, clínica y periodicidad de la pauta."
+      },
+      {
+        "id": "RF-069",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ proponer para gatos trivalente a las 9 y 12 semanas, leucemia a las 12 semanas solo si salen al exterior y tienen test negativo, y recuerdos de trivalente cada 36 meses para interiores o cada 12 meses para exteriores.",
+        "fuentes": [
+          "DOC-17#F003"
+        ],
+        "preguntas": [
+          "P-015"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-078"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene el calendario felino explícito presente solo en la segunda propuesta."
+      },
+      {
+        "id": "RF-070",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ proponer en Huellas Centro la vacuna anual de mixomatosis y enfermedad hemorrágica vírica para conejos adultos y moquillo anual y antirrábica para viajes de hurones adultos.",
+        "fuentes": [
+          "DOC-17#F003"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-079"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantienen las pautas aprobadas para conejo y hurón que la primera propuesta no detalló."
+      },
+      {
+        "id": "RF-071",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ proponer desparasitación interna trimestral para perros y gatos, externa mensual para perros o semestral con collar y externa mensual para gatos con acceso al exterior.",
+        "fuentes": [
+          "DOC-17#F003"
+        ],
+        "preguntas": [
+          "P-016"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-083"
+          ],
+          "propuesta_2": [
+            "RF-080"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se concretan las frecuencias aprobadas que la primera propuesta dejaba implícitas."
+      },
+      {
+        "id": "RF-072",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI se trata de vacunación de aves o reptiles o de desparasitación de especies distintas de perro y gato, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir registrar manualmente lo realizado sin calcular propuestas ni recordatorios automáticos hasta aprobarse las pautas.",
+        "fuentes": [
+          "DOC-17#F003"
+        ],
+        "preguntas": [
+          "P-016"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-082"
+          ],
+          "propuesta_2": [
+            "RF-081"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La respuesta solo excluye desparasitación automática de otros animales, no la vacunación aprobada de conejos y hurones."
+      },
+      {
+        "id": "RF-073",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se registre una vacuna, el sistema Clinicas Veterinarias v0.11 DEBERÁ guardar producto, lote, fecha y veterinario y proponer la fecha de próxima dosis según el protocolo aplicable.",
+        "fuentes": [
+          "DOC-01#F067",
+          "DOC-01#F068"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-078"
+          ],
+          "propuesta_2": [
+            "RF-082"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifica registro de vacunación y cálculo de próxima dosis."
+      },
+      {
+        "id": "RF-074",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ generar una cartilla vacunal imprimible y descargable en PDF con vacunas administradas, fecha y clínica y próximas dosis previstas.",
+        "fuentes": [
+          "DOC-01#F069",
+          "DOC-14#F023",
+          "DOC-14#F024"
+        ],
+        "preguntas": [
+          "P-008"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-084"
+          ],
+          "propuesta_2": [
+            "RF-083"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifican los formatos y contenidos de la cartilla; su consulta en la app consta aparte."
+      },
+      {
+        "id": "RF-075",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se registre una vacunación antirrábica, el sistema Clinicas Veterinarias v0.11 DEBERÁ generar una ficha imprimible para comunicarla manualmente al registro oficial con producto, lote, fecha, veterinario e identificación del paciente y del cliente cuando se exija, y demás datos oficiales [POR DEFINIR].",
+        "fuentes": [
+          "DOC-01#F070",
+          "DOC-06#F009"
+        ],
+        "preguntas": [
+          "P-055"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-086"
+          ],
+          "propuesta_2": [
+            "RF-084"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la comunicación manual y se declara pendiente el esquema del registro oficial."
+      },
+      {
+        "id": "RF-076",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir configurar los días de antelación de los recordatorios de vacunación, con siete días por defecto y otro aviso el día anterior si existe cita, enviándolos solo para pacientes no fallecidos.",
+        "fuentes": [
+          "DOC-15#F027",
+          "DOC-15#F028",
+          "DOC-15#F029",
+          "DOC-15#F030",
+          "DOC-10#F024"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-085"
+          ],
+          "propuesta_2": [
+            "RF-085",
+            "RF-086"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La reunión posterior resuelve la cifra distinta: siete días configurables por defecto, no quince."
+      },
+      {
+        "id": "RF-077",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ gestionar ingresos y todas las funciones de hospitalización desde la primera fase únicamente en Huellas Centro.",
+        "fuentes": [
+          "DOC-01#F073",
+          "DOC-22#F015",
+          "DOC-22#F016"
+        ],
+        "preguntas": [
+          "P-074"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-087"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el adelanto de fase confirmado después de la decisión inicial de fase dos."
+      },
+      {
+        "id": "RF-078",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un veterinario ingrese un paciente en Huellas Centro, el sistema Clinicas Veterinarias v0.11 DEBERÁ registrar motivo, veterinario responsable, jaula o box y estimación de días.",
+        "fuentes": [
+          "DOC-01#F074",
+          "DOC-12#F019"
+        ],
+        "preguntas": [
+          "P-074"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-090"
+          ],
+          "propuesta_2": [
+            "RF-088"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se separa el registro de ingreso del alcance temporal ya recogido en el requisito anterior."
+      },
+      {
+        "id": "RF-079",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ gestionar en Huellas Centro 18 jaulas ordinarias, seis grandes, ocho medianas y cuatro para gatos en sala separada, dos boxes UCI y una plaza adicional de aislamiento solo para perros y gatos con enfermedades infecciosas.",
+        "fuentes": [
+          "DOC-12#F020",
+          "DOC-12#F022",
+          "DOC-25#F014",
+          "DOC-25#F015"
+        ],
+        "preguntas": [
+          "P-036"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-091"
+          ],
+          "propuesta_2": [
+            "RF-089"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se completa el aforo de la primera propuesta y se aclara que el aislamiento es adicional."
+      },
+      {
+        "id": "RF-080",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI una jaula está ocupada o se pretende alojar a un gato en sala de perros, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ impedir esa asignación.",
+        "fuentes": [
+          "DOC-12#F021"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-090"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la comprobación de plaza y especie separada del inventario de plazas."
+      },
+      {
+        "id": "RF-081",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO ingrese un paciente infeccioso, el sistema Clinicas Veterinarias v0.11 DEBERÁ marcarlo como infeccioso y mostrar un aviso en la pantalla de hospitalización.",
+        "fuentes": [
+          "DOC-12#F022",
+          "DOC-12#F023"
+        ],
+        "preguntas": [
+          "P-036"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-092"
+          ],
+          "propuesta_2": [
+            "RF-091"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se une el aviso clínico sin repetir las condiciones de ocupación del aislamiento."
+      },
+      {
+        "id": "RF-082",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO ingrese un paciente sin plan Senior ni aseguradora con convenio, el sistema Clinicas Veterinarias v0.11 DEBERÁ solicitar al cliente un depósito del 50 % del presupuesto estimado.",
+        "fuentes": [
+          "DOC-12#F024"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-093"
+          ],
+          "propuesta_2": [
+            "RF-092"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas coinciden en importe y excepciones."
+      },
+      {
+        "id": "RF-083",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ ofrecer una hoja de hospitalización por horas con medicación, fluidoterapia, alimentación, paseo, control de constantes y limpieza de heridas, cada tarea con hora, dosis o detalle y profesional responsable.",
+        "fuentes": [
+          "DOC-01#F075",
+          "DOC-12#F026"
+        ],
+        "preguntas": [
+          "P-074"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-094"
+          ],
+          "propuesta_2": [
+            "RF-093"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el contenido coincidente de la hoja adelantada a fase uno."
+      },
+      {
+        "id": "RF-084",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un ATV o veterinario complete una tarea de hospitalización, el sistema Clinicas Veterinarias v0.11 DEBERÁ registrar quién la realizó y la dosis administrada si es medicación, exigiendo motivo cuando difiera de la prevista.",
+        "fuentes": [
+          "DOC-01#F076",
+          "DOC-12#F027",
+          "DOC-12#F028"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-095"
+          ],
+          "propuesta_2": [
+            "RF-094",
+            "RF-095"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen ejecución y justificación de una dosis distinta en una misma actuación."
+      },
+      {
+        "id": "RF-085",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar en la pantalla de hospitalización las tareas de la próxima hora y las retrasadas, resaltando estas en rojo.",
+        "fuentes": [
+          "DOC-01#F077",
+          "DOC-03#F026"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-096"
+          ],
+          "propuesta_2": [
+            "RF-096"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se añade el resaltado rojo indicado por la reunión veterinaria."
+      },
+      {
+        "id": "RF-086",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI una tarea de hospitalización no se marca en los 30 minutos posteriores a su hora prevista, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ señalarla como retrasada y avisar en la sala y en la tableta del veterinario responsable.",
+        "fuentes": [
+          "DOC-12#F029"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-097"
+          ],
+          "propuesta_2": [
+            "RF-097"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las propuestas fijan el mismo umbral y destinatarios del aviso."
+      },
+      {
+        "id": "RF-087",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un veterinario cambie el tratamiento durante un ingreso, el sistema Clinicas Veterinarias v0.11 DEBERÁ recalcular solo tareas futuras, conservar las realizadas y mostrar tachadas las medicaciones suspendidas.",
+        "fuentes": [
+          "DOC-03#F027",
+          "DOC-03#F028",
+          "DOC-03#F029",
+          "DOC-03#F030"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-098"
+          ],
+          "propuesta_2": [
+            "RF-098"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene intacto el historial de actuaciones ya realizadas."
+      },
+      {
+        "id": "RF-088",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se administre un fármaco en hospitalización, el sistema Clinicas Veterinarias v0.11 DEBERÁ descontarlo del stock del hospital y cargarlo al cliente únicamente cuando proceda cobrarlo aparte.",
+        "fuentes": [
+          "DOC-12#F030",
+          "DOC-06#F032",
+          "DOC-06#F036"
+        ],
+        "preguntas": [
+          "P-057"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-100"
+          ],
+          "propuesta_2": [
+            "RF-099"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se corrige el cobro incondicional de la primera propuesta por la aclaración sobre productos incluidos en servicios."
+      },
+      {
+        "id": "RF-089",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario saliente dejar una nota por paciente en los relevos de 8:00, 15:00 y 22:00 y al entrante marcarla como leída.",
+        "fuentes": [
+          "DOC-12#F031"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-099"
+          ],
+          "propuesta_2": [
+            "RF-100"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el registro bidireccional del relevo."
+      },
+      {
+        "id": "RF-090",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO el veterinario publique el informe diario de hospitalización, el sistema Clinicas Veterinarias v0.11 DEBERÁ poner a disposición de los clientes asociados un resumen escrito solo en texto, sin fotos.",
+        "fuentes": [
+          "DOC-01#F078",
+          "DOC-12#F033",
+          "DOC-25#F004",
+          "DOC-25#F006"
+        ],
+        "preguntas": [
+          "P-008",
+          "P-088"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-101"
+          ],
+          "propuesta_2": [
+            "RF-101"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La decisión veterinaria posterior excluye las fotos inicialmente opcionales."
+      },
+      {
+        "id": "RF-091",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "MIENTRAS una mascota esté hospitalizada, el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar a sus clientes asociados en la app los informes diarios publicados, el horario de visitas y el importe acumulado de la estancia.",
+        "fuentes": [
+          "DOC-14#F027",
+          "DOC-12#F036"
+        ],
+        "preguntas": [
+          "P-008",
+          "P-088"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-102"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene separada la vista del cliente de la publicación veterinaria del informe."
+      },
+      {
+        "id": "RF-092",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir concertar visitas a pacientes hospitalizados de 12:00 a 13:00 o de 18:00 a 19:00 para un máximo de dos personas.",
+        "fuentes": [
+          "DOC-12#F036"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-103"
+          ],
+          "propuesta_2": [
+            "RF-103"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas coinciden en las franjas y el aforo."
+      },
+      {
+        "id": "RF-093",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se registre una llamada por empeoramiento, decisión quirúrgica o fallecimiento de un paciente ingresado, el sistema Clinicas Veterinarias v0.11 DEBERÁ dejar constancia de ella en la ficha del cliente.",
+        "fuentes": [
+          "DOC-12#F034",
+          "DOC-12#F035"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-102"
+          ],
+          "propuesta_2": [
+            "RF-104"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se exige registrar la llamada, sin atribuir al sistema su realización inmediata."
+      },
+      {
+        "id": "RF-094",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se dé el alta hospitalaria, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario elaborar un informe con diagnóstico, tratamientos y cuidados y generar receta, cita de revisión en la clínica habitual y factura final descontando el depósito pagado.",
+        "fuentes": [
+          "DOC-01#F079",
+          "DOC-12#F038",
+          "DOC-12#F039"
+        ],
+        "preguntas": [
+          "P-074"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-104"
+          ],
+          "propuesta_2": [
+            "RF-105",
+            "RF-106"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen informe y documentos generados en el mismo proceso de alta."
+      },
+      {
+        "id": "RF-095",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se dé el alta a un paciente de otra clínica del grupo, el sistema Clinicas Veterinarias v0.11 DEBERÁ avisar a su clínica habitual y facilitarle el informe de alta.",
+        "fuentes": [
+          "DOC-12#F040"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-105"
+          ],
+          "propuesta_2": [
+            "RF-107"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el aviso entre clínicas como función adicional del alta."
+      },
+      {
+        "id": "RF-096",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se registre el fallecimiento de un paciente con hora y causa, el sistema Clinicas Veterinarias v0.11 DEBERÁ marcar su ficha como fallecida, cancelar citas y recordatorios futuros y conservar el informe de fallecimiento.",
+        "fuentes": [
+          "DOC-12#F041",
+          "DOC-12#F042",
+          "DOC-12#F043",
+          "DOC-10#F024"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-106"
+          ],
+          "propuesta_2": [
+            "RF-108"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se combinan el registro y los efectos inmediatos de marcar el fallecimiento."
+      },
+      {
+        "id": "RF-097",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se contrate la incineración de un paciente fallecido, el sistema Clinicas Veterinarias v0.11 DEBERÁ añadir a la factura el servicio gestionado con la funeraria concertada.",
+        "fuentes": [
+          "DOC-10#F025",
+          "DOC-12#F042"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-107"
+          ],
+          "propuesta_2": [
+            "RF-109"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La contratación, no el mero fallecimiento, desencadena la facturación del servicio."
+      },
+      {
+        "id": "RF-098",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mantener un catálogo único de medicamentos, vacunas, alimentación, accesorios y material clínico con código, nombre, laboratorio, presentación, unidad, precios de compra y venta, IVA y exigencia de receta.",
+        "fuentes": [
+          "DOC-01#F081",
+          "DOC-01#F082"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-109"
+          ],
+          "propuesta_2": [
+            "RF-110"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifica la estructura del catálogo común de productos."
+      },
+      {
+        "id": "RF-099",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ gestionar existencias por clínica y lote con caducidad y descontar cada producto usado o dispensado del lote disponible que venza antes.",
+        "fuentes": [
+          "DOC-01#F083",
+          "DOC-01#F084"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-110"
+          ],
+          "propuesta_2": [
+            "RF-111",
+            "RF-112"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen inventario por lotes y salida por caducidad; el precio de compra se registra aparte."
+      },
+      {
+        "id": "RF-100",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI un producto baja del stock mínimo de una clínica, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ avisar y proponer un pedido al proveedor habitual.",
+        "fuentes": [
+          "DOC-01#F085"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-111"
+          ],
+          "propuesta_2": [
+            "RF-113"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas establecen la misma alerta y propuesta."
+      },
+      {
+        "id": "RF-101",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir solicitar y enviar traspasos de stock entre clínicas registrando solicitante y remitente y exigir aprobación del responsable remitente para controlados o estupefacientes.",
+        "fuentes": [
+          "DOC-01#F086",
+          "DOC-03#F040",
+          "DOC-03#F041",
+          "DOC-15#F024",
+          "DOC-15#F026"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-112"
+          ],
+          "propuesta_2": [
+            "RF-114",
+            "RF-115"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se integran traspaso ordinario y autorización adicional para controlados."
+      },
+      {
+        "id": "RF-102",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ registrar recuentos físicos de inventario y ajustar diferencias con motivo de rotura, caducidad o error.",
+        "fuentes": [
+          "DOC-01#F088"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-113"
+          ],
+          "propuesta_2": [
+            "RF-116"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifican recuento y ajuste motivado."
+      },
+      {
+        "id": "RF-103",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se registre una entrada, salida o traspaso de medicamentos controlados o estupefacientes, el sistema Clinicas Veterinarias v0.11 DEBERÁ anotar producto, lote, cantidad, fecha, origen o destino, paciente si procede, profesional y justificante, con demás datos oficiales [POR DEFINIR].",
+        "fuentes": [
+          "DOC-01#F089",
+          "DOC-03#F040",
+          "DOC-09#F009"
+        ],
+        "preguntas": [
+          "P-056"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-108"
+          ],
+          "propuesta_2": [
+            "RF-117"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conservan los campos propuestos y se declara pendiente la confirmación oficial de los restantes."
+      },
+      {
+        "id": "RF-104",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario emitir desde la visita recetas con medicamento, posología, duración y cantidad, entregables en papel o PDF, y dispensar en la clínica lo prescrito.",
+        "fuentes": [
+          "DOC-01#F091",
+          "DOC-01#F094"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-116"
+          ],
+          "propuesta_2": [
+            "RF-118",
+            "RF-120"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen emisión y dispensación; los permisos clínicos de recepción quedan regulados aparte."
+      },
+      {
+        "id": "RF-105",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI se prescribe un antibiótico, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ exigir una receta.",
+        "fuentes": [
+          "DOC-01#F092"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-117"
+          ],
+          "propuesta_2": [
+            "RF-119"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se separa la obligación de receta de la exportación mensual de prescripciones."
+      },
+      {
+        "id": "RF-106",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un medicamento controlado, vacuna o material clínico con precio de producto cero se utilice en un servicio, el sistema Clinicas Veterinarias v0.11 DEBERÁ incluir su valor en el servicio sin cobrarlo aparte y exigir tarifa propia si se vende por separado.",
+        "fuentes": [
+          "DOC-06#F032",
+          "DOC-06#F033",
+          "DOC-06#F036",
+          "DOC-06#F037",
+          "DOC-06#F041"
+        ],
+        "preguntas": [
+          "P-057"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-121"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la interpretación expresa del precio cero que no constaba como requisito separado en la primera propuesta."
+      },
+      {
+        "id": "RF-107",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mantener un tarifario común con variaciones por clínica y aplicar en Huellas Puerto desde su apertura las tarifas de Huellas Centro excepto peluquería, cuya tarifa en Puerto está [POR DEFINIR].",
+        "fuentes": [
+          "DOC-01#F136",
+          "DOC-22#F006",
+          "DOC-26#F010"
+        ],
+        "preguntas": [
+          "P-064",
+          "P-067"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-122"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la tarifa general confirmada sin atribuir a Puerto un precio de peluquería no aprobado."
+      },
+      {
+        "id": "RF-108",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar 38 € a la consulta general de 20 minutos, 22 € a la revisión dentro de quince días y 45 € a la consulta de exóticos de 30 minutos solo en Huellas Centro.",
+        "fuentes": [
+          "DOC-06#F003",
+          "DOC-06#F004",
+          "DOC-06#F007"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-123"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantienen precios y condiciones del tarifario que solo explicitó la segunda propuesta."
+      },
+      {
+        "id": "RF-109",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar a la consulta urgente diurna de sábados y domingos no festivos 65 € según la hora de atención, y a la nocturna de 20:00 a 9:00 o festiva 95 € hasta 2026 y 100 € desde el 1 de enero de 2027.",
+        "fuentes": [
+          "DOC-06#F005",
+          "DOC-06#F006",
+          "DOC-26#F003",
+          "DOC-26#F007"
+        ],
+        "preguntas": [
+          "P-059",
+          "P-089"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-138"
+          ],
+          "propuesta_2": [
+            "RF-124",
+            "RF-125"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen tarifas diurnas y especiales con el cambio posterior de 2027, decidido por hora de atención."
+      },
+      {
+        "id": "RF-110",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar 42 € a polivalente canina, 35 € a antirrábica, 40 € a trivalente felina, 58 € a leishmaniosis en Huellas Montaña y 12 € a desparasitación interna.",
+        "fuentes": [
+          "DOC-06#F008",
+          "DOC-06#F009",
+          "DOC-06#F010",
+          "DOC-06#F011",
+          "DOC-06#F012"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-126"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conservan precios de prevención documentados ausentes del primer catálogo."
+      },
+      {
+        "id": "RF-111",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar 85 € a analítica completa, 55 € a prequirúrgica, 35 € a test de leishmaniosis, 70 € a radiografía de dos proyecciones, 90 € a ecografía abdominal y 110 € a revisión cardiológica con ecocardiografía.",
+        "fuentes": [
+          "DOC-06#F013",
+          "DOC-06#F014",
+          "DOC-06#F015",
+          "DOC-06#F016",
+          "DOC-06#F017",
+          "DOC-06#F018"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-127"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene el detalle de tarifas de análisis e imagen documentado solo en la segunda propuesta."
+      },
+      {
+        "id": "RF-112",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar 180 € a esterilización de gata, 290 € a esterilización de perra hasta 20 kg y 160 € a limpieza dental con analítica previa.",
+        "fuentes": [
+          "DOC-06#F019",
+          "DOC-06#F020",
+          "DOC-06#F021",
+          "DOC-06#F022",
+          "DOC-06#F023"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-128"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conservan tarifas quirúrgicas y condición preanalítica del tarifario."
+      },
+      {
+        "id": "RF-113",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ facturar cada periodo de 24 horas iniciado de hospitalización a 75 € en plaza normal sin medicación o 140 € en UCI y, si cambia de plaza, aplicar a ese periodo la tarifa del tipo en que pasó más horas.",
+        "fuentes": [
+          "DOC-06#F024",
+          "DOC-06#F025"
+        ],
+        "preguntas": [
+          "P-058"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-137"
+          ],
+          "propuesta_2": [
+            "RF-129"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La segunda propuesta completa el cómputo por periodo iniciado con los dos precios del tarifario."
+      },
+      {
+        "id": "RF-114",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar en Huellas Montaña al baño y corte de perro pequeño 32 € del 1 de noviembre al 28 de febrero y 35 € el resto del año, y al de perro grande 45 €.",
+        "fuentes": [
+          "DOC-06#F026"
+        ],
+        "preguntas": [
+          "P-012"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-140"
+          ],
+          "propuesta_2": [
+            "RF-130"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se incorporan temporada y precio de perro grande confirmados por el cliente."
+      },
+      {
+        "id": "RF-115",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO una eutanasia se realice a domicilio dentro del municipio de la clínica en horario de apertura, el sistema Clinicas Veterinarias v0.11 DEBERÁ sumar un suplemento fijo de 40 € a la tarifa base de 120 €.",
+        "fuentes": [
+          "DOC-06#F027"
+        ],
+        "preguntas": [
+          "P-060"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-139"
+          ],
+          "propuesta_2": [
+            "RF-131"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las dos propuestas recogen las mismas condiciones y cifras."
+      },
+      {
+        "id": "RF-116",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ calcular bases y cuotas de IVA de servicios y productos según el porcentaje de cada concepto del tarifario.",
+        "fuentes": [
+          "DOC-06#F002",
+          "DOC-06#F029",
+          "DOC-11#F019"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-132"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el cálculo fiscal basado en el tarifario, explícito solo en la segunda propuesta."
+      },
+      {
+        "id": "RF-117",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se cierre una visita, el sistema Clinicas Veterinarias v0.11 DEBERÁ agregar una sola vez como cargos cobrables los servicios y productos realizados y permitir a recepción revisarlos antes del cobro.",
+        "fuentes": [
+          "DOC-01#F096",
+          "DOC-04#F021"
+        ],
+        "preguntas": [
+          "P-052"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-119"
+          ],
+          "propuesta_2": [
+            "RF-133"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se evita duplicar al cierre los conceptos ya cargados desde un presupuesto."
+      },
+      {
+        "id": "RF-118",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se acepte por escrito un presupuesto de cirugía, el sistema Clinicas Veterinarias v0.11 DEBERÁ crear conceptos previstos no cobrables y generar un único cargo vinculado a cada concepto cuando se realice, sin repetirlo al cerrar la visita.",
+        "fuentes": [
+          "DOC-01#F096",
+          "DOC-01#F097"
+        ],
+        "preguntas": [
+          "P-052"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-118"
+          ],
+          "propuesta_2": [
+            "RF-134",
+            "RF-135"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La respuesta del cliente sustituye el cobro inmediato del documento inicial por cargos solo al prestar los servicios."
+      },
+      {
+        "id": "RF-119",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO recepción proponga dejar sin cobro un cargo automático, el sistema Clinicas Veterinarias v0.11 DEBERÁ exigir autorización del veterinario de la visita o del responsable de clínica y registrar motivo y autorizante sin borrar el cargo original.",
+        "fuentes": [
+          "DOC-04#F021",
+          "DOC-04#F023"
+        ],
+        "preguntas": [
+          "P-053"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-120"
+          ],
+          "propuesta_2": [
+            "RF-136"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la trazabilidad del cargo y la autoridad confirmada."
+      },
+      {
+        "id": "RF-120",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a recepción autorizar descuentos hasta el 10 %, exigir al responsable de clínica los superiores y los del 25 % a empleados y familiares, y reservar a gerencia el 30 % de protectoras por convenio.",
+        "fuentes": [
+          "DOC-04#F025",
+          "DOC-04#F026",
+          "DOC-04#F027",
+          "DOC-10#F019",
+          "DOC-10#F020",
+          "DOC-10#F021",
+          "DOC-10#F022"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-121"
+          ],
+          "propuesta_2": [
+            "RF-137"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifican límites de autorización y descuentos especiales."
+      },
+      {
+        "id": "RF-121",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI coinciden descuentos de plan, empleado, protectora o cortesía, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar solo el más favorable al cliente sin acumularlos.",
+        "fuentes": [
+          "DOC-10#F018",
+          "DOC-05#F012"
+        ],
+        "preguntas": [
+          "P-050"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-122"
+          ],
+          "propuesta_2": [
+            "RF-138"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las propuestas coinciden en la regla de no acumulación."
+      },
+      {
+        "id": "RF-122",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ repartir los conceptos de una visita entre clientes asociados a la misma mascota mediante facturas separadas sin duplicar conceptos.",
+        "fuentes": [
+          "DOC-01#F040",
+          "DOC-04#F054"
+        ],
+        "preguntas": [
+          "P-009"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-018"
+          ],
+          "propuesta_2": [
+            "RF-139"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se respeta la decisión expresa de facturas separadas por conceptos."
+      },
+      {
+        "id": "RF-123",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ emitir factura simplificada por defecto y factura completa con datos fiscales a petición del cliente o para empresas, protectoras, criaderos y ayuntamientos con convenio.",
+        "fuentes": [
+          "DOC-01#F098",
+          "DOC-11#F010",
+          "DOC-11#F012"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-123"
+          ],
+          "propuesta_2": [
+            "RF-140"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La segunda propuesta completa los destinatarios que necesitan factura completa."
+      },
+      {
+        "id": "RF-124",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ numerar correlativamente por año las facturas ordinarias de Centro, Norte, Ribera y Montaña en C, N, R y M y sus rectificativas en CR, NR, RR y MR, con series de Puerto [POR DEFINIR].",
+        "fuentes": [
+          "DOC-01#F099",
+          "DOC-11#F004",
+          "DOC-11#F006",
+          "DOC-22#F003"
+        ],
+        "preguntas": [
+          "P-069"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-126"
+          ],
+          "propuesta_2": [
+            "RF-141"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se añaden series conocidas y se dejan las de la quinta clínica sin asignar."
+      },
+      {
+        "id": "RF-125",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se emita una factura, el sistema Clinicas Veterinarias v0.11 DEBERÁ impedir borrarla o modificarla y permitir corregirla únicamente con una rectificativa que referencie la original.",
+        "fuentes": [
+          "DOC-11#F006",
+          "DOC-11#F007",
+          "DOC-11#F008"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-124"
+          ],
+          "propuesta_2": [
+            "RF-142"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La prohibición rige para toda factura emitida, no solo para las que ya contienen errores."
+      },
+      {
+        "id": "RF-126",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se solicite factura completa tras una simplificada, el sistema Clinicas Veterinarias v0.11 DEBERÁ emitir una rectificativa que anule y referencie la original y una completa vinculada, asociar el cobro existente a esta y reflejar la anulación contable sin duplicar ingresos.",
+        "fuentes": [
+          "DOC-11#F010",
+          "DOC-11#F011",
+          "DOC-11#F019"
+        ],
+        "preguntas": [
+          "P-054"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-125",
+            "RF-178"
+          ],
+          "propuesta_2": [
+            "RF-143",
+            "RF-144"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen sustitución documental, reasignación del cobro y anulación en exportación en una sola operación."
+      },
+      {
+        "id": "RF-127",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir cobros en efectivo, con tarjeta en clínica sin envío obligatorio del importe al datáfono, por transferencia y desde la app.",
+        "fuentes": [
+          "DOC-01#F100",
+          "DOC-21#F021"
+        ],
+        "preguntas": [
+          "P-018"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-127",
+            "RI-015"
+          ],
+          "propuesta_2": [
+            "RF-145"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se elimina la integración obligatoria con el datáfono conforme a la respuesta y se absorbe la repetición técnica."
+      },
+      {
+        "id": "RF-128",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un cliente fraccione un pago superior a 300 €, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir hasta tres plazos con autorización del responsable de clínica y exigir autorización de gerencia para excepciones.",
+        "fuentes": [
+          "DOC-01#F101",
+          "DOC-11#F025",
+          "DOC-11#F040"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-129"
+          ],
+          "propuesta_2": [
+            "RF-146"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas coinciden en importe, plazos y autorizaciones."
+      },
+      {
+        "id": "RF-129",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar los cargos pendientes en la ficha del cliente.",
+        "fuentes": [
+          "DOC-01#F102"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-130"
+          ],
+          "propuesta_2": [
+            "RF-147"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se separa la consulta de cargos de su pago desde la app, recogido más adelante."
+      },
+      {
+        "id": "RF-130",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un cliente con deuda superior a 150 € y antigüedad mayor de 60 días solicite otra cita, el sistema Clinicas Veterinarias v0.11 DEBERÁ advertir a recepción para recordarle la deuda sin denegarle atención de urgencia.",
+        "fuentes": [
+          "DOC-11#F026",
+          "DOC-11#F027"
+        ],
+        "preguntas": [
+          "P-098"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-131"
+          ],
+          "propuesta_2": [
+            "RF-148",
+            "RF-149"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen el aviso de deuda y la protección expresa de la atención urgente."
+      },
+      {
+        "id": "RF-131",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ generar mensualmente un listado de deudas en tramos de 0 a 30, 31 a 60, 61 a 90 y más de 90 días, con antigüedad de deudas migradas sin fecha [POR DEFINIR].",
+        "fuentes": [
+          "DOC-11#F028",
+          "DOC-16#F010"
+        ],
+        "preguntas": [
+          "P-098"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-132"
+          ],
+          "propuesta_2": [
+            "RF-150"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el desglose y se declara desconocida la antigüedad del importe histórico global."
+      },
+      {
+        "id": "RF-132",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ cerrar diariamente la caja de cada clínica comparando efectivo contado con esperado, pagos con tarjeta con listado del datáfono y cobros en línea.",
+        "fuentes": [
+          "DOC-01#F103",
+          "DOC-11#F014"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-133"
+          ],
+          "propuesta_2": [
+            "RF-151"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la conciliación diaria de los tres canales."
+      },
+      {
+        "id": "RF-133",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI la diferencia de efectivo de un cierre supera 5 €, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ exigir una justificación escrita y permitir revisarla al responsable de clínica.",
+        "fuentes": [
+          "DOC-11#F015"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-134"
+          ],
+          "propuesta_2": [
+            "RF-152"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las propuestas recogen la misma tolerancia y revisión."
+      },
+      {
+        "id": "RF-134",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se complete un cierre de caja, el sistema Clinicas Veterinarias v0.11 DEBERÁ impedir reabrirlo y atribuir al día siguiente los cobros recibidos después.",
+        "fuentes": [
+          "DOC-11#F016"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-135"
+          ],
+          "propuesta_2": [
+            "RF-153"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la inmutabilidad del cierre y el corte temporal."
+      },
+      {
+        "id": "RF-135",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ gestionar en Huellas Centro un cierre de caja de recepción de día a las 21:00 y otro de urgencias a las 9:00 del día siguiente.",
+        "fuentes": [
+          "DOC-11#F017",
+          "DOC-11#F042"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-136"
+          ],
+          "propuesta_2": [
+            "RF-154"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conservan los dos horarios particulares de Centro."
+      },
+      {
+        "id": "RF-136",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a gerencia definir planes Cachorro, Adulto y Senior, sus precios y prestaciones solo para perros y gatos en todas las clínicas.",
+        "fuentes": [
+          "DOC-01#F106",
+          "DOC-01#F109",
+          "DOC-05#F008"
+        ],
+        "preguntas": [
+          "P-047"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-144"
+          ],
+          "propuesta_2": [
+            "RF-155"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se combina la elegibilidad por especie y clínica con la configuración por gerencia."
+      },
+      {
+        "id": "RF-137",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ gestionar cada plan como suscripción mensual domiciliada por mascota con permanencia de 12 meses.",
+        "fuentes": [
+          "DOC-01#F105",
+          "DOC-05#F015"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-156"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene el modelo de suscripción del documento, explícito solo en la segunda propuesta."
+      },
+      {
+        "id": "RF-138",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar en 2027 al plan Cachorro una cuota mensual de 24,90 € IVA incluido y cubrir durante el primer año vacunas, desparasitación interna y externa mensual, consultas ilimitadas, analítica antes de esterilizar y 15 % de descuento en esterilización.",
+        "fuentes": [
+          "DOC-05#F008",
+          "DOC-05#F009",
+          "DOC-05#F010"
+        ],
+        "preguntas": [
+          "P-011"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-147",
+            "RF-148"
+          ],
+          "propuesta_2": [
+            "RF-157"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen cuota del año 2027 y servicios del plan Cachorro."
+      },
+      {
+        "id": "RF-139",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se aplique el plan Cachorro en Huellas Montaña, el sistema Clinicas Veterinarias v0.11 DEBERÁ incluir la vacuna de leishmaniosis durante el primer año si se cumplen sus requisitos clínicos previos.",
+        "fuentes": [
+          "DOC-05#F010",
+          "DOC-17#F002",
+          "DOC-17#F003"
+        ],
+        "preguntas": [
+          "P-048"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-081"
+          ],
+          "propuesta_2": [
+            "RF-158"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La respuesta expresa del cliente prevalece sobre la exclusión de la tarifa de productos."
+      },
+      {
+        "id": "RF-140",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar en 2027 al plan Adulto una cuota mensual de 19,90 € IVA incluido, vacunación anual, consultas ilimitadas, desparasitación interna trimestral y 10 % de descuento en servicios y alimentación.",
+        "fuentes": [
+          "DOC-05#F011",
+          "DOC-05#F012",
+          "DOC-22#F029"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-149"
+          ],
+          "propuesta_2": [
+            "RF-159"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantienen precio y prestaciones confirmados posteriormente por gerencia."
+      },
+      {
+        "id": "RF-141",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar en 2027 al plan Senior una cuota mensual de 29,90 € IVA incluido y cubrir las prestaciones del Adulto, una analítica completa y una revisión cardiológica al año.",
+        "fuentes": [
+          "DOC-05#F013",
+          "DOC-05#F014"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-150"
+          ],
+          "propuesta_2": [
+            "RF-160"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen la cuota conocida y las coberturas anuales del plan Senior."
+      },
+      {
+        "id": "RF-142",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO una mascota cumpla un año o ocho años, el sistema Clinicas Veterinarias v0.11 DEBERÁ pasarla respectivamente al plan Adulto o Senior, aplicar la nueva cuota desde el mes siguiente y avisar al cliente con un mes de antelación.",
+        "fuentes": [
+          "DOC-05#F018"
+        ],
+        "preguntas": [
+          "P-011"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-146"
+          ],
+          "propuesta_2": [
+            "RF-161",
+            "RF-162"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifican cambio por cumpleaños, efecto en cuota y aviso previo."
+      },
+      {
+        "id": "RF-143",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se cobre un servicio a una mascota con plan activo, el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar automáticamente las prestaciones incluidas y avisar si un servicio limitado se agotó.",
+        "fuentes": [
+          "DOC-01#F108",
+          "DOC-05#F010",
+          "DOC-05#F014"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-151"
+          ],
+          "propuesta_2": [
+            "RF-163"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se limita el aviso de agotamiento a las prestaciones con límite."
+      },
+      {
+        "id": "RF-144",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se cancele un plan antes de 12 meses, el sistema Clinicas Veterinarias v0.11 DEBERÁ liquidar la diferencia positiva entre servicios usados a tarifa y cuotas pagadas, o cero si estas superan aquel valor, sin devolución y con cuotas pendientes o devueltas como deuda aparte.",
+        "fuentes": [
+          "DOC-05#F015",
+          "DOC-05#F016"
+        ],
+        "preguntas": [
+          "P-049"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-152"
+          ],
+          "propuesta_2": [
+            "RF-164"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se explicita el mínimo cero y se separan las cuotas impagadas conforme a la respuesta."
+      },
+      {
+        "id": "RF-145",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se devuelva una cuota de plan, el sistema Clinicas Veterinarias v0.11 DEBERÁ suspenderlo hasta su pago y, tras dos recibos consecutivos devueltos, darlo de baja aplicando la liquidación de permanencia.",
+        "fuentes": [
+          "DOC-01#F110",
+          "DOC-11#F032",
+          "DOC-11#F033",
+          "DOC-05#F016"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-153"
+          ],
+          "propuesta_2": [
+            "RF-165",
+            "RF-166"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen suspensión por impago y baja tras la segunda devolución consecutiva."
+      },
+      {
+        "id": "RF-146",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir solicitar desde la app un plan disponible para la edad y especie de la mascota mostrando precio y prestaciones, sin activarlo hasta confirmación en la siguiente visita y firma del mandato bancario.",
+        "fuentes": [
+          "DOC-14#F031",
+          "DOC-14#F032"
+        ],
+        "preguntas": [
+          "P-047"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-145"
+          ],
+          "propuesta_2": [
+            "RF-167"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen solicitud y confirmación diferida, aplicando la elegibilidad por especie acordada."
+      },
+      {
+        "id": "RF-147",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ registrar por mascota aseguradora, número de póliza y coberturas.",
+        "fuentes": [
+          "DOC-01#F112"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-156"
+          ],
+          "propuesta_2": [
+            "RF-168"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la ficha de póliza coincidente en ambas propuestas."
+      },
+      {
+        "id": "RF-148",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se facture una consulta o cirugía cubierta, el sistema Clinicas Veterinarias v0.11 DEBERÁ asignar a Seguros Animalia el 80 % o a Mascota Protegida el 70 % hasta 1.500 € anuales y el resto al cliente, excluyendo tienda y peluquería de ambas pólizas, con prelación frente al plan de salud [POR DEFINIR].",
+        "fuentes": [
+          "DOC-05#F020",
+          "DOC-05#F021",
+          "DOC-01#F113"
+        ],
+        "preguntas": [
+          "P-010",
+          "P-094"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-157",
+            "RF-158"
+          ],
+          "propuesta_2": [
+            "RF-169",
+            "RF-170"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen porcentajes, tope y exclusiones de ambas compañías sin inventar la prelación con planes."
+      },
+      {
+        "id": "RF-149",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se prepare un presupuesto de cirugía para una mascota de Mascota Protegida, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir solicitar y registrar la autorización previa y, si falta o se deniega, impedir cargarla a la aseguradora y pedir al cliente decidir entre asumir el coste o aplazarla.",
+        "fuentes": [
+          "DOC-05#F022",
+          "DOC-11#F036"
+        ],
+        "preguntas": [
+          "P-046"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-159"
+          ],
+          "propuesta_2": [
+            "RF-171",
+            "RF-172"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen solicitud de autorización y tratamiento del rechazo antes de la cirugía."
+      },
+      {
+        "id": "RF-150",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se facture una cirugía autorizada por Mascota Protegida, el sistema Clinicas Veterinarias v0.11 DEBERÁ consignar en la factura el número de autorización.",
+        "fuentes": [
+          "DOC-11#F036"
+        ],
+        "preguntas": [
+          "P-046"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-173"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el campo exigido en factura, diferente de gestionar la autorización previa."
+      },
+      {
+        "id": "RF-151",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO una factura tenga cobertura de una aseguradora con convenio, el sistema Clinicas Veterinarias v0.11 DEBERÁ dividir el importe entre aseguradora y cliente sin duplicar la factura.",
+        "fuentes": [
+          "DOC-01#F113",
+          "DOC-11#F020"
+        ],
+        "preguntas": [
+          "P-010"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-174"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la división de la factura como función general, distinta de las reglas porcentuales de cada convenio."
+      },
+      {
+        "id": "RF-152",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar por aseguradora los importes pendientes y desde cuándo, teniendo en cuenta plazos de pago de 60 días para Animalia y 30 para Mascota Protegida.",
+        "fuentes": [
+          "DOC-11#F035",
+          "DOC-11#F036",
+          "DOC-11#F037"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-161"
+          ],
+          "propuesta_2": [
+            "RF-175"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se completa la consulta de pendientes con los plazos por aseguradora documentados."
+      },
+      {
+        "id": "RF-153",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al cliente registrarse en la app con una ficha existente mediante código de la clínica o SMS a su teléfono y una contraseña, sin crear fichas nuevas desde la app.",
+        "fuentes": [
+          "DOC-01#F117",
+          "DOC-14#F003",
+          "DOC-14#F004",
+          "DOC-14#F005",
+          "DOC-14#F008",
+          "DOC-14#F012"
+        ],
+        "preguntas": [
+          "P-029"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-013"
+          ],
+          "propuesta_2": [
+            "RF-176"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen las dos vías para obtener código manteniendo la prohibición de alta de fichas nuevas."
+      },
+      {
+        "id": "RF-154",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI el teléfono de registro no figura en ninguna ficha, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ indicar al cliente que solicite un código de vinculación a la clínica.",
+        "fuentes": [
+          "DOC-14#F011"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-015"
+          ],
+          "propuesta_2": [
+            "RF-177"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la recuperación de vínculo sin crear una ficha nueva."
+      },
+      {
+        "id": "RF-155",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI varias fichas comparten un teléfono, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ impedir vincularlas automáticamente juntas y exigir para cada ficha adicional un código individual entregado por la clínica tras verificar identidad.",
+        "fuentes": [
+          "DOC-14#F006",
+          "DOC-14#F010"
+        ],
+        "preguntas": [
+          "P-029"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-014"
+          ],
+          "propuesta_2": [
+            "RF-178"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la salvaguarda de identidad para números compartidos."
+      },
+      {
+        "id": "RF-156",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar a cada cliente en la app las mascotas asociadas y, de cada una, citas, cartilla, resultados publicados e informes de hospitalización.",
+        "fuentes": [
+          "DOC-01#F118",
+          "DOC-14#F009",
+          "DOC-14#F023",
+          "DOC-14#F025",
+          "DOC-14#F027"
+        ],
+        "preguntas": [
+          "P-008"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-017"
+          ],
+          "propuesta_2": [
+            "RF-179"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se adopta el acceso de cada cliente asociado a los cuatro contenidos confirmados."
+      },
+      {
+        "id": "RF-157",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar al cliente en la app y la web sus facturas, cargos pendientes y planes de salud.",
+        "fuentes": [
+          "DOC-01#F116",
+          "DOC-01#F118",
+          "DOC-14#F028",
+          "DOC-14#F031"
+        ],
+        "preguntas": [
+          "P-091"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-016"
+          ],
+          "propuesta_2": [
+            "RF-180"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se separan los datos propios del cliente de los datos compartidos por mascota; la web conserva las funciones documentadas."
+      },
+      {
+        "id": "RF-158",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir pagar con tarjeta desde la app cargos pendientes y depósitos de hospitalización y enviar el justificante por correo electrónico.",
+        "fuentes": [
+          "DOC-01#F121",
+          "DOC-14#F028",
+          "DOC-14#F029",
+          "DOC-14#F030"
+        ],
+        "preguntas": [
+          "P-006"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-128"
+          ],
+          "propuesta_2": [
+            "RF-181"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se une el justificante por correo de la primera propuesta con los pagos de deuda y depósito."
+      },
+      {
+        "id": "RF-159",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir desde la app pagar cuotas pendientes o devueltas que no estén en una remesa en curso y conciliar cada pago con su recibo antes de otra remesa para impedir cobros duplicados.",
+        "fuentes": [
+          "DOC-01#F121",
+          "DOC-11#F030",
+          "DOC-11#F032"
+        ],
+        "preguntas": [
+          "P-051"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-155"
+          ],
+          "propuesta_2": [
+            "RF-182"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conservan exclusión de remesa en curso y conciliación previa a otro cobro."
+      },
+      {
+        "id": "RF-160",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al cliente elegir idioma y gestionar preferencias y consentimiento comercial, y solicitar la baja de la app, con consecuencias sobre cuenta, acceso y otros datos [POR DEFINIR].",
+        "fuentes": [
+          "DOC-14#F036"
+        ],
+        "preguntas": [
+          "P-100"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-186"
+          ],
+          "propuesta_2": [
+            "RF-183"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la solicitud de baja pero se elimina la desactivación automática inventada por la primera propuesta."
+      },
+      {
+        "id": "RF-161",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO envíe una comunicación ordinaria al cliente, el sistema Clinicas Veterinarias v0.11 DEBERÁ usar la notificación de la app si la tiene y SMS en otro caso, con independencia de su preferencia de canal, reservando el correo para informes, facturas y justificantes.",
+        "fuentes": [
+          "DOC-01#F038",
+          "DOC-01#F125",
+          "DOC-01#F126"
+        ],
+        "preguntas": [
+          "P-006"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-020"
+          ],
+          "propuesta_2": [
+            "RF-184"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La respuesta impone la prioridad app/SMS sobre el canal elegido y acota el uso del correo."
+      },
+      {
+        "id": "RF-162",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ enviar SMS, correos y notificaciones, incluidos recordatorios, en castellano o inglés según el idioma elegido por el cliente y en castellano si no eligió ninguno.",
+        "fuentes": [
+          "DOC-01#F149",
+          "DOC-01#F150",
+          "DOC-14#F036"
+        ],
+        "preguntas": [
+          "P-007"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-019"
+          ],
+          "propuesta_2": [
+            "RF-185"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el idioma por persona y la opción predeterminada para todo canal."
+      },
+      {
+        "id": "RF-163",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ ofrecer a gerencia plantillas comunes editables de confirmación de cita, recordatorios de cita y vacunas, resultados disponibles y cumpleaños de mascota.",
+        "fuentes": [
+          "DOC-01#F124"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-186"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la gestión de plantillas documentada solo en la segunda propuesta."
+      },
+      {
+        "id": "RF-164",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se envíe una comunicación al cliente, el sistema Clinicas Veterinarias v0.11 DEBERÁ registrarla en su ficha.",
+        "fuentes": [
+          "DOC-01#F127"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-021"
+          ],
+          "propuesta_2": [
+            "RF-187"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conservan los justificantes de envíos sin repetir la elección de canal."
+      },
+      {
+        "id": "RF-165",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ ofrecer en la app un formulario de consulta no urgente con mascota, motivo y foto opcional en lugar de un chat.",
+        "fuentes": [
+          "DOC-05#F024",
+          "DOC-14#F033",
+          "DOC-01#F122"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-062"
+          ],
+          "propuesta_2": [
+            "RF-188"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se separa el formulario de su asignación posterior a los profesionales."
+      },
+      {
+        "id": "RF-166",
+        "tipo": "RF",
+        "notacion": "MASTeR",
+        "obligatoriedad": "should",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÍA SER CAPAZ DE mostrar un aviso para llamar a la clínica o acudir a urgencias si el formulario indica dificultad respiratoria, sangrado abundante, pérdida de conciencia, traumatismo grave o ingestión de tóxicos, solo tras validación de la regla por dirección veterinaria.",
+        "fuentes": [
+          "DOC-14#F035"
+        ],
+        "preguntas": [
+          "P-014"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-064"
+          ],
+          "propuesta_2": [
+            "RF-189"
+          ]
+        },
+        "discrepancia": true,
+        "explicacion": "La primera opción lo formula como preferencia y la segunda como obligación condicionada; la respuesta propone la regla pero deja su validación clínica pendiente, por lo que se mantiene preferente."
+      },
+      {
+        "id": "RF-167",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO llegue una consulta no urgente por la app, el sistema Clinicas Veterinarias v0.11 DEBERÁ asignar las administrativas a recepción y las clínicas al veterinario responsable o sustituto y permitir responder por la misma vía en 24 horas laborables según calendario común del grupo, con horario y festivos [POR DEFINIR].",
+        "fuentes": [
+          "DOC-05#F024",
+          "DOC-14#F034"
+        ],
+        "preguntas": [
+          "P-063"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-063"
+          ],
+          "propuesta_2": [
+            "RF-190",
+            "RF-191"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen las dos clases de consulta con sus responsables y se deja sin inventar el horario del calendario común."
+      },
+      {
+        "id": "RF-168",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario publicar resultados de laboratorio para el cliente solo tras revisarlos, con comentario opcional.",
+        "fuentes": [
+          "DOC-04#F039",
+          "DOC-04#F040",
+          "DOC-14#F025"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-192"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la revisión previa que limita la visibilidad del cliente."
+      },
+      {
+        "id": "RF-169",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO el veterinario publique un resultado de laboratorio, el sistema Clinicas Veterinarias v0.11 DEBERÁ notificar su disponibilidad al cliente.",
+        "fuentes": [
+          "DOC-01#F120",
+          "DOC-14#F026"
+        ],
+        "preguntas": [
+          "P-006"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-193"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la notificación de resultados separada de su publicación."
+      },
+      {
+        "id": "RF-170",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a cada veterinario elegir huecos de 15 minutos para teleconsultas de seguimiento por videollamada desde la app, con disponibilidad en la web [POR DEFINIR].",
+        "fuentes": [
+          "DOC-23#F009",
+          "DOC-23#F010",
+          "DOC-23#F013",
+          "DOC-23#F014"
+        ],
+        "preguntas": [
+          "P-075",
+          "P-091"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-065",
+            "RF-067"
+          ],
+          "propuesta_2": [
+            "RF-194"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la funcionalidad confirmada en app sin decidir si la excepción a la igualdad de la web será definitiva."
+      },
+      {
+        "id": "RF-171",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI no consta visita presencial de la mascota en los 30 días anteriores o se pide primera visita o urgencia, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ impedir reservar una teleconsulta de seguimiento.",
+        "fuentes": [
+          "DOC-23#F010",
+          "DOC-23#F011",
+          "DOC-23#F012"
+        ],
+        "preguntas": [
+          "P-075"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-066"
+          ],
+          "propuesta_2": [
+            "RF-195"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifican condiciones de seguimiento y exclusiones."
+      },
+      {
+        "id": "RF-172",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se reserve una teleconsulta en la app, el sistema Clinicas Veterinarias v0.11 DEBERÁ cobrar por adelantado 25 € IVA incluido o 20 € con plan activo, sin tratarla como consulta incluida en el plan y con cobertura de aseguradora [POR DEFINIR].",
+        "fuentes": [
+          "DOC-23#F015",
+          "DOC-26#F004",
+          "DOC-26#F005"
+        ],
+        "preguntas": [
+          "P-075",
+          "P-076",
+          "P-077",
+          "P-095"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-068"
+          ],
+          "propuesta_2": [
+            "RF-196"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se respetan los dos precios confirmados y se declara no resuelta su cobertura por seguros."
+      },
+      {
+        "id": "RF-173",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "MIENTRAS se celebre una teleconsulta, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario consultar la historia y registrar la atención como visita, sin grabar la videollamada.",
+        "fuentes": [
+          "DOC-23#F016",
+          "DOC-25#F008"
+        ],
+        "preguntas": [
+          "P-075"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-069",
+            "RF-070"
+          ],
+          "propuesta_2": [
+            "RF-197"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen registro clínico y prohibición expresa de grabación."
+      },
+      {
+        "id": "RF-174",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "MIENTRAS se celebre una teleconsulta, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario concertar una cita presencial con el cliente.",
+        "fuentes": [
+          "DOC-25#F009"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-198"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la reserva presencial durante la llamada como capacidad separada."
+      },
+      {
+        "id": "RF-175",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI una teleconsulta pagada se cambia, se cancela, no se realiza o alguien no se presenta, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar al importe la política [POR DEFINIR].",
+        "fuentes": [
+          "DOC-23#F015"
+        ],
+        "preguntas": [
+          "P-078"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-199"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la necesidad de gestionar el pago sin inventar devoluciones o retenciones."
+      },
+      {
+        "id": "RF-176",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir pedir y pagar desde la app alimentación y productos de higiene de categoría [POR DEFINIR] para recogerlos en la clínica elegida, con regla de disponibilidad local y pago si no pueden apartarse [POR DEFINIR].",
+        "fuentes": [
+          "DOC-23#F018",
+          "DOC-23#F019",
+          "DOC-23#F020"
+        ],
+        "preguntas": [
+          "P-079",
+          "P-080",
+          "P-097"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-163"
+          ],
+          "propuesta_2": [
+            "RF-200",
+            "RF-201"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se reúnen pedido y prepago; siguen pendientes categoría de higiene y faltas de existencias."
+      },
+      {
+        "id": "RF-177",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO la clínica aparte un pedido pagado desde la app, el sistema Clinicas Veterinarias v0.11 DEBERÁ controlar 48 horas para recogerlo desde un inicio [POR DEFINIR] y, si vence sin recogida, anularlo y devolver el pago.",
+        "fuentes": [
+          "DOC-23#F020",
+          "DOC-23#F021"
+        ],
+        "preguntas": [
+          "P-079",
+          "P-081"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-165"
+          ],
+          "propuesta_2": [
+            "RF-202",
+            "RF-203"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen reserva, plazo y devolución sin escoger arbitrariamente el inicio de las 48 horas."
+      },
+      {
+        "id": "RF-178",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI el producto solicitado desde la app es un medicamento, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ impedir su venta por ese canal, con o sin receta.",
+        "fuentes": [
+          "DOC-23#F022"
+        ],
+        "preguntas": [
+          "P-079"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-164"
+          ],
+          "propuesta_2": [
+            "RF-204"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Las propuestas coinciden en la exclusión absoluta de medicamentos."
+      },
+      {
+        "id": "RF-179",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO transcurra un día desde una visita, el sistema Clinicas Veterinarias v0.11 DEBERÁ enviar por la app al cliente destinatario [POR DEFINIR] una encuesta de 1 a 5 sobre atención, veterinario y puntualidad con comentario opcional.",
+        "fuentes": [
+          "DOC-22#F022"
+        ],
+        "preguntas": [
+          "P-082"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-167"
+          ],
+          "propuesta_2": [
+            "RF-205"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se prefiere el envío previsto en la fuente y se deja pendiente el destinatario entre asociados."
+      },
+      {
+        "id": "RF-180",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir a gerencia consultar respuestas y comentarios de satisfacción de todo el grupo y a cada responsable solo los de su clínica.",
+        "fuentes": [
+          "DOC-22#F022",
+          "DOC-22#F024"
+        ],
+        "preguntas": [
+          "P-083"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-169"
+          ],
+          "propuesta_2": [
+            "RF-206"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se aplican los permisos de visualización individual confirmados."
+      },
+      {
+        "id": "RF-181",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar por clínica en el informe mensual de satisfacción la media de atención, veterinario y puntualidad con agregación conjunta o separada [POR DEFINIR].",
+        "fuentes": [
+          "DOC-22#F022",
+          "DOC-22#F023"
+        ],
+        "preguntas": [
+          "P-084"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-168"
+          ],
+          "propuesta_2": [
+            "RF-207"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la media por clínica sin escoger un modo de agregación no decidido."
+      },
+      {
+        "id": "RF-182",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ proporcionar a gerencia un cuadro de mando con facturación por clínica, veterinario y familia, ocupación de agenda, clientes nuevos y perdidos y planes activos y bajas.",
+        "fuentes": [
+          "DOC-01#F129"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-172"
+          ],
+          "propuesta_2": [
+            "RF-208"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifica el cuadro de mando general distinto de los informes semanales y mensuales."
+      },
+      {
+        "id": "RF-183",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ presentar a gerencia cada lunes la facturación, citas atendidas y no presentadas y clientes nuevos por clínica de la semana anterior, comparando con la semana previa durante el primer año y con la misma semana del año anterior cuando existan datos.",
+        "fuentes": [
+          "DOC-15#F004",
+          "DOC-15#F006",
+          "DOC-15#F008",
+          "DOC-15#F009"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-170"
+          ],
+          "propuesta_2": [
+            "RF-209"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se combinan contenidos y comparación según disponibilidad de datos históricos."
+      },
+      {
+        "id": "RF-184",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar mensualmente a gerencia facturación por veterinario y familia, ventas de farmacia y alimentación, margen calculado con coste de compra registrado y altas, bajas e ingresos por plan.",
+        "fuentes": [
+          "DOC-15#F010",
+          "DOC-15#F011",
+          "DOC-15#F014"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-171"
+          ],
+          "propuesta_2": [
+            "RF-210"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se precisa la base de coste para calcular el margen de productos."
+      },
+      {
+        "id": "RF-185",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ proporcionar al responsable de clínica informes de facturación diaria y mensual, citas no presentadas, stock bajo mínimos y productos próximos a caducar solo de su clínica.",
+        "fuentes": [
+          "DOC-01#F130"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-174"
+          ],
+          "propuesta_2": [
+            "RF-211"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conservan los cuatro indicadores y la limitación al ámbito de su clínica."
+      },
+      {
+        "id": "RF-186",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ clasificar como cliente nuevo al dado de alta en el periodo, perdido al que lleve más de 18 meses sin visitas y paciente activo al visitado en los últimos 12 meses, atribuirlos a la clínica de su última atención y no duplicarlos en el total del grupo.",
+        "fuentes": [
+          "DOC-01#F129",
+          "DOC-01#F131"
+        ],
+        "preguntas": [
+          "P-013"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-173"
+          ],
+          "propuesta_2": [
+            "RF-212"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se aplican definiciones y regla de atribución confirmadas por el cliente."
+      },
+      {
+        "id": "RF-187",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ calcular por clínica y especie el porcentaje de pacientes activos sin dosis vencidas según especie, edad, clínica y acceso al exterior y mostrar aparte sin contarlos a quienes carezcan de protocolo aprobado.",
+        "fuentes": [
+          "DOC-01#F131",
+          "DOC-17#F002",
+          "DOC-17#F003"
+        ],
+        "preguntas": [
+          "P-062"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-175"
+          ],
+          "propuesta_2": [
+            "RF-213"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el denominador solo de pacientes activos con protocolo aprobado."
+      },
+      {
+        "id": "RF-188",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir filtrar todos los informes por fecha y exportarlos a hoja de cálculo.",
+        "fuentes": [
+          "DOC-01#F132"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-176"
+          ],
+          "propuesta_2": [
+            "RF-214"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifican filtro y exportación comunes a informes."
+      },
+      {
+        "id": "RF-189",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ administrar usuarios, permisos y roles distintos para la misma persona según clínica.",
+        "fuentes": [
+          "DOC-01#F034",
+          "DOC-01#F135"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-215"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la administración de roles separada de la configuración de salas y horarios."
+      },
+      {
+        "id": "RF-190",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO cambie un precio, una factura o una existencia, el sistema Clinicas Veterinarias v0.11 DEBERÁ registrar el cambio en la auditoría.",
+        "fuentes": [
+          "DOC-01#F137"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-216"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la auditoría de cambios distinta del registro de acceso clínico."
+      },
+      {
+        "id": "RF-191",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir tramitar solicitudes de acceso, rectificación, supresión, oposición, limitación y portabilidad de datos de clientes y registrar el plazo de respuesta de un mes.",
+        "fuentes": [
+          "DOC-07#F021",
+          "DOC-07#F022"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-217"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la atención de derechos de protección de datos presente solo en la segunda propuesta."
+      },
+      {
+        "id": "RF-192",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir entregar un informe PDF de la historia de la mascota para ejercer portabilidad a otra clínica.",
+        "fuentes": [
+          "DOC-07#F023"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-218"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la salida PDF específica de portabilidad documentada."
+      },
+      {
+        "id": "RF-193",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO transcurran tres años sin actividad desde la última visita, el sistema Clinicas Veterinarias v0.11 DEBERÁ bloquear los demás datos personales del cliente con plazo y evento de supresión [POR DEFINIR], sin alterar los plazos específicos de historias y facturas.",
+        "fuentes": [
+          "DOC-07#F014"
+        ],
+        "preguntas": [
+          "P-099"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-219"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el bloqueo legal sin inventar la fecha de supresión de datos ajenos a historia y facturas."
+      },
+      {
+        "id": "RF-194",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se cumplan cinco años desde la última visita, el sistema Clinicas Veterinarias v0.11 DEBERÁ anonimizar irreversiblemente la historia clínica, reiniciando el plazo si antes se registra una nueva visita, con aplicación al programa anterior y copias [POR DEFINIR].",
+        "fuentes": [
+          "DOC-07#F011",
+          "DOC-07#F012",
+          "DOC-24#F006",
+          "DOC-24#F007",
+          "DOC-24#F010"
+        ],
+        "preguntas": [
+          "P-086",
+          "P-087"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-087"
+          ],
+          "propuesta_2": [
+            "RF-220"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La decisión legal posterior reemplaza la conservación indefinida; sigue pendiente su alcance a archivo antiguo y copias."
+      },
+      {
+        "id": "RF-195",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se anonimice una historia, el sistema Clinicas Veterinarias v0.11 DEBERÁ eliminar nombre, documento, teléfono, correo y dirección del propietario y nombre y microchip de mascota, conservando especie, raza, edad, diagnósticos, tratamientos y fechas sin permitir recuperar identificadores.",
+        "fuentes": [
+          "DOC-24#F007",
+          "DOC-24#F008",
+          "DOC-24#F014"
+        ],
+        "preguntas": [
+          "P-086"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-088",
+            "RF-089"
+          ],
+          "propuesta_2": [
+            "RF-221"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se combinan la lista legal de campos y la irreversibilidad exigida."
+      },
+      {
+        "id": "RF-196",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ revisar cada noche las historias que cumplen el plazo de anonimización y registrar cuántas ha anonimizado.",
+        "fuentes": [
+          "DOC-24#F013"
+        ],
+        "preguntas": [
+          "P-086"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-222"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se separa la ejecución nocturna y su recuento de los campos que se anonimizan."
+      },
+      {
+        "id": "RF-197",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ conservar las facturas emitidas durante seis años.",
+        "fuentes": [
+          "DOC-07#F013",
+          "DOC-24#F011"
+        ],
+        "preguntas": [
+          "P-026"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-223"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene el plazo de facturas nuevas aparte del archivo antiguo."
+      },
+      {
+        "id": "RF-198",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO una clínica pierda conexión, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir consultar en modo lectura la agenda del día y las fichas de pacientes citados ese día, sin incluir urgencias sin cita.",
+        "fuentes": [
+          "DOC-21#F010"
+        ],
+        "preguntas": [
+          "P-037"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-184"
+          ],
+          "propuesta_2": [
+            "RF-224"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La respuesta limita expresamente el acceso sin conexión a pacientes citados."
+      },
+      {
+        "id": "RF-199",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se recupere la conexión, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir transcribir de forma supervisada las actuaciones de hospitalización y urgencias anotadas en papel durante la caída.",
+        "fuentes": [
+          "DOC-21#F010",
+          "DOC-21#F026"
+        ],
+        "preguntas": [
+          "P-038"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-185"
+          ],
+          "propuesta_2": [
+            "RF-225"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la transcripción posterior, no una edición clínica desconectada."
+      },
+      {
+        "id": "RF-200",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI una cuenta acumula cinco intentos fallidos, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ bloquearla durante 30 minutos, desbloquearla automáticamente al vencer ese tiempo o antes por personal autorizado tras verificar identidad, y registrar cada desbloqueo.",
+        "fuentes": [
+          "DOC-21#F015"
+        ],
+        "preguntas": [
+          "P-023"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RNF-006"
+          ],
+          "propuesta_2": [
+            "RF-226",
+            "RF-227",
+            "RF-228"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se integran bloqueo, las dos vías de desbloqueo y su auditoría como función de acceso."
+      },
+      {
+        "id": "RF-201",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ migrar desde cuatro instalaciones los clientes, pacientes, vacunas, stock y deudas pendientes, y las visitas de historias de los últimos diez años sujetas a anonimización cinco años después de la última visita.",
+        "fuentes": [
+          "DOC-01#F152",
+          "DOC-16#F017",
+          "DOC-24#F006"
+        ],
+        "preguntas": [
+          "P-086"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-180"
+          ],
+          "propuesta_2": [
+            "RF-229"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene el alcance de migración sujeto al plazo legal posterior, sin perpetuar visitas identificables."
+      },
+      {
+        "id": "RF-202",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ separar nombre y apellidos en clientes migrados cuando estén en formato «APELLIDOS, NOMBRE», normalizar documento a mayúsculas sin espacios, retirar 0034 del teléfono, validar correo y convertir consentimientos S/N a sus estados afirmativo o negativo.",
+        "fuentes": [
+          "DOC-16#F003",
+          "DOC-16#F004",
+          "DOC-16#F005",
+          "DOC-16#F007",
+          "DOC-16#F008",
+          "DOC-16#F009"
+        ],
+        "preguntas": [
+          "P-031"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-181"
+          ],
+          "propuesta_2": [
+            "RF-230",
+            "RF-231"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "El mapeo ordena separar nombres desde el formato histórico, no transformar los nuevos nombres a ese formato como decía la segunda."
+      },
+      {
+        "id": "RF-203",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI preferencias o consentimiento comercial de una ficha migrada están ausentes o vacíos, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ marcarlos como no confirmados, nunca como aceptados.",
+        "fuentes": [
+          "DOC-16#F009"
+        ],
+        "preguntas": [
+          "P-031"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-022"
+          ],
+          "propuesta_2": [
+            "RF-232"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se distingue la conversión de valores ausentes del veto general a envíos comerciales."
+      },
+      {
+        "id": "RF-204",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se migren fichas posiblemente duplicadas, el sistema Clinicas Veterinarias v0.11 DEBERÁ detectarlas por nombre normalizado, documento si existe, teléfonos, correo y mascota o microchip, fusionar solo las verificadas manualmente y dejar señaladas y separadas las dudosas.",
+        "fuentes": [
+          "DOC-01#F153",
+          "DOC-16#F004",
+          "DOC-18#F027"
+        ],
+        "preguntas": [
+          "P-032"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-024"
+          ],
+          "propuesta_2": [
+            "RF-233",
+            "RF-234"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen detección amplia y prohibición de fusión sin verificación."
+      },
+      {
+        "id": "RF-205",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ transformar en la migración códigos de especie P, G, C, H, A y R, marcar razas no reconocidas para revisión, quitar espacios del microchip y comprobar sus 15 dígitos.",
+        "fuentes": [
+          "DOC-16#F012",
+          "DOC-16#F013",
+          "DOC-16#F015",
+          "DOC-18#F027"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-235"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la transformación de especie, raza y microchip documentada solo en la segunda propuesta."
+      },
+      {
+        "id": "RF-206",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI solo consta el año de nacimiento de un paciente migrado, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ asignarle el 1 de julio de ese año y señalar la fecha como estimada.",
+        "fuentes": [
+          "DOC-16#F014"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-182"
+          ],
+          "propuesta_2": [
+            "RF-236"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se separa la fecha estimada de la normalización del microchip, recogida en otro requisito."
+      },
+      {
+        "id": "RF-207",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se migre una baja de paciente por fallecimiento, el sistema Clinicas Veterinarias v0.11 DEBERÁ conservar su fecha como fecha de fallecimiento sin clasificar como tal bajas por traslado o venta.",
+        "fuentes": [
+          "DOC-16#F016"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-237"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene el mapeo de baja por causa que faltaba en la primera propuesta."
+      },
+      {
+        "id": "RF-208",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ conservar íntegro en anamnesis el texto de cada visita migrada y vincular las iniciales del veterinario al profesional correspondiente o a un usuario histórico si dejó el grupo.",
+        "fuentes": [
+          "DOC-16#F018",
+          "DOC-16#F019"
+        ],
+        "preguntas": [
+          "P-033"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-183"
+          ],
+          "propuesta_2": [
+            "RF-238"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifica el mapeo del texto clínico y la autoría histórica."
+      },
+      {
+        "id": "RF-209",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se migren historias, el sistema Clinicas Veterinarias v0.11 DEBERÁ conservar y mostrar alertas de alergias, enfermedades crónicas, tratamientos vigentes, adjuntos disponibles y texto de visitas, señalando para revisión clínica cualquier dato que no se pueda migrar.",
+        "fuentes": [
+          "DOC-16#F018",
+          "DOC-18#F003",
+          "DOC-18#F012",
+          "DOC-18#F015"
+        ],
+        "preguntas": [
+          "P-033"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-077"
+          ],
+          "propuesta_2": [
+            "RF-239",
+            "RF-240"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen datos adicionales conservados y revisión de faltantes sin reducir la historia a texto libre."
+      },
+      {
+        "id": "RF-210",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ aplicar las equivalencias de producto de vacunación al migrar vacunas y conservar lote cuando exista y fecha prevista de próxima dosis.",
+        "fuentes": [
+          "DOC-16#F020",
+          "DOC-16#F021",
+          "DOC-16#F022"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-241"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el mapeo específico de vacunaciones incluido solo en la segunda propuesta."
+      },
+      {
+        "id": "RF-211",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ unificar en la migración los códigos diferentes que identifican un mismo producto de las cuatro clínicas.",
+        "fuentes": [
+          "DOC-16#F023"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-242"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la unificación de códigos histórica para el catálogo único."
+      },
+      {
+        "id": "RF-212",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se migre una deuda que solo conste como importe total, el sistema Clinicas Veterinarias v0.11 DEBERÁ crear un único cargo pendiente sin atribuir conceptos ni fechas desconocidas y con criterio para su antigüedad [POR DEFINIR].",
+        "fuentes": [
+          "DOC-16#F010"
+        ],
+        "preguntas": [
+          "P-098"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RF-243"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el cargo único previsto sin inventar edad para avisos ni informes."
+      },
+      {
+        "id": "RF-213",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se migre stock sin lote ni caducidad, el sistema Clinicas Veterinarias v0.11 DEBERÁ asignarlo provisionalmente al lote ficticio «MIGRACION» y bloquear su uso o dispensación hasta recuento y comprobación de lotes y vencimientos, tras los cuales permitirá asignarlo a lotes reales.",
+        "fuentes": [
+          "DOC-16#F024"
+        ],
+        "preguntas": [
+          "P-034"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-114"
+          ],
+          "propuesta_2": [
+            "RF-244",
+            "RF-245"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen creación provisional del lote ficticio y bloqueo hasta verificación física."
+      },
+      {
+        "id": "RF-214",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ conservar consultable durante seis años el archivo de facturas del programa anterior sin migrarlas como facturas nuevas.",
+        "fuentes": [
+          "DOC-01#F154",
+          "DOC-07#F013",
+          "DOC-24#F011"
+        ],
+        "preguntas": [
+          "P-026"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-179"
+          ],
+          "propuesta_2": [
+            "RF-246"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La política legal posterior fija seis años para el archivo anterior, no cinco."
+      },
+      {
+        "id": "RF-215",
+        "tipo": "RF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se dé entrada a un pedido, el sistema Clinicas Veterinarias v0.11 DEBERÁ registrar el precio de compra por lote.",
+        "fuentes": [
+          "DOC-15#F012",
+          "DOC-15#F014"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RF-115"
+          ],
+          "propuesta_2": []
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene el coste por lote necesario para el margen, explícito solo en la primera propuesta."
+      },
+      {
+        "id": "RI-001",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un veterinario solicite análisis a LabVet, el sistema Clinicas Veterinarias v0.11 DEBERÁ transmitir por API código de clínica, veterinario y colegiado, paciente y especie, códigos de pruebas y urgencia usando la clave de la clínica, y conservar el código de muestra devuelto.",
+        "fuentes": [
+          "DOC-08#F005",
+          "DOC-08#F008",
+          "DOC-13#F007"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RI-001",
+            "RI-002"
+          ],
+          "propuesta_2": [
+            "RI-001",
+            "RI-002"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen creación de solicitud, autenticación y código de muestra de la misma operación API."
+      },
+      {
+        "id": "RI-002",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ consultar periódicamente por clínica estados y resultados de LabVet, sin superar una petición al endpoint de resultados por cada 10 minutos y clínica, y asociar cada estado recibido al código de muestra.",
+        "fuentes": [
+          "DOC-08#F006",
+          "DOC-08#F007",
+          "DOC-13#F009",
+          "DOC-13#F010"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RI-003",
+            "RI-004"
+          ],
+          "propuesta_2": [
+            "RI-003"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen consulta de estados y sondeo limitado del endpoint de resultados."
+      },
+      {
+        "id": "RI-003",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO LabVet publique un resultado, el sistema Clinicas Veterinarias v0.11 DEBERÁ descargar y conservar su PDF antes de que expire el enlace a las 24 horas, asociarlo al paciente y guardar valores estructurados solo de hematología y bioquímica.",
+        "fuentes": [
+          "DOC-08#F008",
+          "DOC-08#F009",
+          "DOC-13#F011",
+          "DOC-13#F012",
+          "DOC-13#F013"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RI-005",
+            "RI-006"
+          ],
+          "propuesta_2": [
+            "RI-004"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen descarga de PDF temporal y uso limitado de valores estructurados."
+      },
+      {
+        "id": "RI-004",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "SI LabVet rechaza una solicitud o devuelve un error 422 por datos incompletos o especie no admitida, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar el motivo asociado, incluida la incompatibilidad de reptiles con bioquímica.",
+        "fuentes": [
+          "DOC-08#F005",
+          "DOC-08#F009",
+          "DOC-13#F014"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RI-007",
+            "RI-010"
+          ],
+          "propuesta_2": [
+            "RI-005"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen errores del laboratorio y restricción concreta de reptil sin anticipar validación no contratada."
+      },
+      {
+        "id": "RI-005",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO LabVet rechace una solicitud o entregue un resultado urgente o anómalo, el sistema Clinicas Veterinarias v0.11 DEBERÁ avisar inmediatamente al veterinario solicitante o al de guardia si no está disponible; para otros resultados DEBERÁ avisarles en 24 horas.",
+        "fuentes": [
+          "DOC-08#F006",
+          "DOC-08#F009",
+          "DOC-13#F015"
+        ],
+        "preguntas": [
+          "P-044"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RI-008"
+          ],
+          "propuesta_2": [
+            "RI-006",
+            "RI-007"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifican los plazos distintos según prioridad y la sustitución por el veterinario de guardia."
+      },
+      {
+        "id": "RI-006",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO se solicite una prueba urgente a LabVet, el sistema Clinicas Veterinarias v0.11 DEBERÁ transmitir el indicador de urgencia y registrar un recargo del laboratorio de 15 € por solicitud y el plazo de cuatro horas solo para muestras recibidas antes de las 16:00 de lunes a viernes, con repercusión al cliente [POR DEFINIR].",
+        "fuentes": [
+          "DOC-08#F008",
+          "DOC-13#F015",
+          "DOC-13#F018"
+        ],
+        "preguntas": [
+          "P-096"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RI-008"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el coste del laboratorio sin inventar si la clínica lo traslada al cliente."
+      },
+      {
+        "id": "RI-007",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ generar mensualmente por clínica un fichero contable separado por punto y coma con serie, número, fecha, cliente o NIF en facturas completas, bases de IVA al 21 %, 10 % y exento, cuota, total y forma de cobro, con esquema, orden y formatos [POR DEFINIR].",
+        "fuentes": [
+          "DOC-01#F103",
+          "DOC-11#F019",
+          "DOC-11#F021"
+        ],
+        "preguntas": [
+          "P-019"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-177",
+            "RI-012"
+          ],
+          "propuesta_2": [
+            "RI-009"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifican campos y formato del fichero sin presumir el ejemplo pendiente de contabilidad."
+      },
+      {
+        "id": "RI-008",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO una factura tenga importe de aseguradora, el sistema Clinicas Veterinarias v0.11 DEBERÁ reflejar en la exportación contable líneas separadas para aseguradora y cliente sin duplicar el ingreso.",
+        "fuentes": [
+          "DOC-11#F020"
+        ],
+        "preguntas": [
+          "P-019"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-162"
+          ],
+          "propuesta_2": [
+            "RI-010"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se precisa que las dos líneas corresponden a la exportación contable, no necesariamente al fichero mensual del seguro."
+      },
+      {
+        "id": "RI-009",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ generar para contabilidad una remesa bancaria de planes activos a cobrar el día 5 y cargar devoluciones asociándolas a cuota y plan, en formatos, campos e identificadores bancarios [POR DEFINIR] validados antes de usarlos.",
+        "fuentes": [
+          "DOC-11#F029",
+          "DOC-11#F030",
+          "DOC-11#F031",
+          "DOC-11#F032"
+        ],
+        "preguntas": [
+          "P-020"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-154",
+            "RI-013"
+          ],
+          "propuesta_2": [
+            "RI-011",
+            "RI-012"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen generación de remesa y lectura de devoluciones sin inventar especificaciones del banco."
+      },
+      {
+        "id": "RI-010",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ generar relaciones mensuales de facturas para Animalia con póliza e importe a su cargo y para Mascota Protegida con número de autorización en cirugías, conforme a formatos y otros campos [POR DEFINIR] validados con ambas.",
+        "fuentes": [
+          "DOC-01#F114",
+          "DOC-11#F035",
+          "DOC-11#F036"
+        ],
+        "preguntas": [
+          "P-021"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RF-160",
+            "RI-014"
+          ],
+          "propuesta_2": [
+            "RI-013"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen campos conocidos y formatos aún pendientes de confirmar por cada aseguradora."
+      },
+      {
+        "id": "RI-011",
+        "tipo": "RI",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ exportar cada mes las prescripciones de antibióticos para presentación manual a la plataforma oficial con formato, campos y plazo [POR DEFINIR] validados mediante una exportación de prueba.",
+        "fuentes": [
+          "DOC-01#F092",
+          "DOC-01#F093",
+          "DOC-03#F054"
+        ],
+        "preguntas": [
+          "P-022"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RI-011"
+          ],
+          "propuesta_2": [
+            "RI-014"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene la exportación mensual y la validación previa sin atribuir un esquema oficial desconocido."
+      },
+      {
+        "id": "RNF-001",
+        "tipo": "RNF",
+        "notacion": "MASTeR",
+        "obligatoriedad": "shall",
+        "texto": "La disponibilidad del sistema Clinicas Veterinarias v0.11 DEBERÁ SER al menos del 99,5 % por mes natural, excluyendo mantenimiento anunciado entre las 3:00 y las 5:00.",
+        "fuentes": [
+          "DOC-01#F141",
+          "DOC-27#F013"
+        ],
+        "preguntas": [
+          "P-039"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RNF-001"
+          ],
+          "propuesta_2": [
+            "RNF-001"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se expresa el porcentaje como mínimo y se conserva el periodo y exclusión confirmados."
+      },
+      {
+        "id": "RNF-002",
+        "tipo": "RNF",
+        "notacion": "MASTeR",
+        "obligatoriedad": "shall",
+        "texto": "El tiempo de búsqueda de clientes y apertura de historias clínicas del sistema Clinicas Veterinarias v0.11 DEBERÁ SER inferior a 2 segundos con 60 usuarios simultáneos.",
+        "fuentes": [
+          "DOC-01#F142"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RNF-002"
+          ],
+          "propuesta_2": [
+            "RNF-002"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva el mismo umbral de rendimiento y carga."
+      },
+      {
+        "id": "RNF-003",
+        "tipo": "RNF",
+        "notacion": "MASTeR",
+        "obligatoriedad": "shall",
+        "texto": "El tiempo de recuperación del servicio del sistema Clinicas Veterinarias v0.11 tras un desastre DEBERÁ SER inferior a 4 horas.",
+        "fuentes": [
+          "DOC-21#F011"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RNF-013"
+          ],
+          "propuesta_2": [
+            "RNF-003"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se separa el tiempo de recuperación de la pérdida máxima de datos, que son medidas distintas."
+      },
+      {
+        "id": "RNF-004",
+        "tipo": "RNF",
+        "notacion": "MASTeR",
+        "obligatoriedad": "shall",
+        "texto": "La pérdida máxima de datos del sistema Clinicas Veterinarias v0.11 tras un desastre DEBERÁ SER de 1 hora.",
+        "fuentes": [
+          "DOC-21#F011"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RNF-004"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La segunda propuesta permite expresar de forma medible la otra magnitud del objetivo de recuperación."
+      },
+      {
+        "id": "RNF-005",
+        "tipo": "RNF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ hacer copias de seguridad diarias cifradas en ubicación distinta de la principal, conservarlas 30 días y probar su restauración trimestralmente.",
+        "fuentes": [
+          "DOC-01#F147",
+          "DOC-21#F012"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RNF-012"
+          ],
+          "propuesta_2": [
+            "RNF-005",
+            "RNF-006"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen periodicidad, retención, restauración y protección física de las copias."
+      },
+      {
+        "id": "RNF-006",
+        "tipo": "RNF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ cifrar todas las comunicaciones y tratar los datos personales conforme al reglamento europeo, limitando cada acceso a lo necesario para el trabajo.",
+        "fuentes": [
+          "DOC-21#F016",
+          "DOC-01#F145",
+          "DOC-07#F006",
+          "DOC-07#F017"
+        ],
+        "preguntas": [
+          "P-027",
+          "P-028"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RNF-007",
+            "RNF-011"
+          ],
+          "propuesta_2": [
+            "RNF-007"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se combinan cifrado, normativa y mínimo privilegio sin alterar permisos específicos por rol."
+      },
+      {
+        "id": "RNF-007",
+        "tipo": "RNF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ autenticar con cuentas personales y contraseñas de al menos 12 caracteres, exigiendo su cambio cada seis meses.",
+        "fuentes": [
+          "DOC-01#F143",
+          "DOC-07#F025",
+          "DOC-21#F014"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RNF-003",
+            "RNF-004"
+          ],
+          "propuesta_2": [
+            "RNF-008"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen longitud y vigencia de contraseña de cuenta personal."
+      },
+      {
+        "id": "RNF-008",
+        "tipo": "RNF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ exigir un segundo factor en todos los accesos del personal dentro y fuera de las clínicas sin exigirlo a clientes de la app o la web.",
+        "fuentes": [
+          "DOC-27#F010",
+          "DOC-27#F011"
+        ],
+        "preguntas": [
+          "P-030",
+          "P-090"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RNF-005"
+          ],
+          "propuesta_2": [
+            "RNF-009"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "La auditoría posterior extiende la exigencia a todo el personal y excluye a los clientes."
+      },
+      {
+        "id": "RNF-009",
+        "tipo": "RNF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "CUANDO un puesto de recepción acumule 15 minutos de inactividad, el sistema Clinicas Veterinarias v0.11 DEBERÁ cerrar automáticamente su sesión.",
+        "fuentes": [
+          "DOC-01#F144"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RNF-009"
+          ],
+          "propuesta_2": [
+            "RNF-010"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Ambas propuestas recogen el mismo cierre automático."
+      },
+      {
+        "id": "RNF-010",
+        "tipo": "RNF",
+        "notacion": "MASTeR",
+        "obligatoriedad": "shall",
+        "texto": "La conservación inalterable del registro de auditoría del sistema Clinicas Veterinarias v0.11 DEBERÁ SER de al menos dos años.",
+        "fuentes": [
+          "DOC-21#F017"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RNF-008"
+          ],
+          "propuesta_2": [
+            "RNF-011"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se expresa la duración y la integridad como cualidad verificable."
+      },
+      {
+        "id": "RNF-011",
+        "tipo": "RNF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ presentar pantallas de hospitalización y quirófano adaptadas a tabletas y al uso con guantes mediante botones grandes.",
+        "fuentes": [
+          "DOC-01#F148",
+          "DOC-02#F023"
+        ],
+        "preguntas": [
+          "P-074"
+        ],
+        "de": {
+          "propuesta_1": [
+            "RNF-014",
+            "RT-003"
+          ],
+          "propuesta_2": [
+            "RNF-012"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unen compatibilidad con tabletas y adaptación táctil para personal clínico."
+      },
+      {
+        "id": "RNF-012",
+        "tipo": "RNF",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ ofrecer la interfaz del personal en castellano y la app del cliente en castellano e inglés.",
+        "fuentes": [
+          "DOC-01#F149",
+          "DOC-01#F150"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RNF-013"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantiene el requisito de idioma de la interfaz independiente del idioma de los mensajes."
+      },
+      {
+        "id": "RA-001",
+        "tipo": "RA",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ alojarse en la nube en un centro de datos situado en la Unión Europea.",
+        "fuentes": [
+          "DOC-21#F004"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RA-001"
+          ],
+          "propuesta_2": [
+            "RT-001"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se unifica la decisión de despliegue y se clasifica como arquitectura."
+      },
+      {
+        "id": "RT-001",
+        "tipo": "RT",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ funcionar en puestos con Windows 11 y Chrome o Edge actualizados sin instalar programas de escritorio.",
+        "fuentes": [
+          "DOC-21#F006",
+          "DOC-21#F007"
+        ],
+        "preguntas": [],
+        "de": {
+          "propuesta_1": [
+            "RT-001"
+          ],
+          "propuesta_2": [
+            "RT-002"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se mantienen navegadores, sistema operativo y ausencia de instalación de escritorio."
+      },
+      {
+        "id": "RT-002",
+        "tipo": "RT",
+        "notacion": "EARS",
+        "obligatoriedad": "shall",
+        "texto": "el sistema Clinicas Veterinarias v0.11 DEBERÁ ofrecer app de cliente para Android e iOS y versión web con las funciones documentadas, con disponibilidad de teleconsultas y pedidos también en web [POR DEFINIR].",
+        "fuentes": [
+          "DOC-01#F116",
+          "DOC-23#F009",
+          "DOC-23#F018"
+        ],
+        "preguntas": [
+          "P-091"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "RT-003"
+          ]
+        },
+        "discrepancia": false,
+        "explicacion": "Se conserva la web y la app sin dar por decididas excepciones a la igualdad de funciones."
+      }
+    ],
+    "descartados": [
+      {
+        "propuesta": 1,
+        "id": "RI-009",
+        "motivo": "La cancelación de LabVet por DELETE se aplazó expresamente a otra versión de la API; tramitarla fuera de la integración no constituye una función de esta entrega."
+      },
+      {
+        "propuesta": 1,
+        "id": "RNF-010",
+        "motivo": "Realizar o superar pruebas de intrusión antes del lanzamiento y cada año es una tarea externa de verificación, no un comportamiento ni cualidad medible del sistema."
+      },
+      {
+        "propuesta": 2,
+        "id": "RNF-014",
+        "motivo": "El horario de atención del proveedor es un acuerdo de soporte externo, no un requisito del sistema."
+      },
+      {
+        "propuesta": 2,
+        "id": "RNF-015",
+        "motivo": "El tiempo de respuesta del proveedor a incidencias es un compromiso de servicio externo, no un requisito del sistema."
+      }
+    ]
+  },
+  "desviaciones": [
+    {
+      "id": "RI-011",
+      "tipo": "separa-iguales",
+      "similitud": 0.954,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,95) que «CUANDO se prescriba un antibiótico, el sistema Clinicas Veterinarias v0.11 DEBERÁ exigir receta e incluir la prescrip…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-105",
+      "tipo": "separa-iguales",
+      "similitud": 0.954,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,95) que «el sistema Clinicas Veterinarias v0.11 DEBERÁ exportar mensualmente las prescripciones de antibióticos en un fichero…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-174",
+      "tipo": "separa-iguales",
+      "similitud": 0.951,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,95) que «MIENTRAS se realice una teleconsulta, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario consultar…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-173",
+      "tipo": "separa-iguales",
+      "similitud": 0.951,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,95) que «MIENTRAS se celebre una teleconsulta, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario dar al cl…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-037",
+      "tipo": "separa-iguales",
+      "similitud": 0.938,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,94) que «CUANDO un cliente cambie o cancele una cita desde la app con al menos 24 horas de antelación, el sistema Clinicas Vet…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-036",
+      "tipo": "separa-iguales",
+      "similitud": 0.938,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,94) que «SI faltan menos de 24 horas para una cita, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar al cliente…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-158",
+      "tipo": "separa-iguales",
+      "similitud": 0.922,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,92) que «MIENTRAS un cliente tenga cargos pendientes, el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrarlos en su ficha y p…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-129",
+      "tipo": "separa-iguales",
+      "similitud": 0.922,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,92) que «el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al cliente pagar con tarjeta desde la app sus cargos pendiente…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-151",
+      "tipo": "separa-iguales",
+      "similitud": 0.915,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,92) que «CUANDO se generen las relaciones mensuales de facturas para aseguradoras, el sistema Clinicas Veterinarias v0.11 DEBE…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RI-008",
+      "tipo": "separa-iguales",
+      "similitud": 0.915,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,92) que «CUANDO una factura tenga cobertura de una aseguradora con convenio, el sistema Clinicas Veterinarias v0.11 DEBERÁ div…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-011",
+      "tipo": "separa-iguales",
+      "similitud": 0.91,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,91) que «el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir que el cliente retire su consentimiento para comunicaciones co…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-010",
+      "tipo": "separa-iguales",
+      "similitud": 0.91,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,91) que «SI el consentimiento comercial de un cliente no está confirmado, ENTONCES el sistema Clinicas Veterinarias v0.11 DEBE…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-197",
+      "tipo": "separa-iguales",
+      "similitud": 0.908,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,91) que «el sistema Clinicas Veterinarias v0.11 DEBERÁ conservar consultable durante seis años el archivo de facturas del prog…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-214",
+      "tipo": "separa-iguales",
+      "similitud": 0.908,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,91) que «el sistema Clinicas Veterinarias v0.11 DEBERÁ conservar las facturas emitidas durante seis años.», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-150",
+      "tipo": "separa-iguales",
+      "similitud": 0.903,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,90) que «CUANDO se presupueste una cirugía cubierta por Mascota Protegida, el sistema Clinicas Veterinarias v0.11 DEBERÁ permi…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-149",
+      "tipo": "separa-iguales",
+      "similitud": 0.903,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,90) que «CUANDO se facture una cirugía autorizada de Mascota Protegida, el sistema Clinicas Veterinarias v0.11 DEBERÁ consigna…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-091",
+      "tipo": "separa-iguales",
+      "similitud": 0.902,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,90) que «MIENTRAS un paciente esté hospitalizado, el sistema Clinicas Veterinarias v0.11 DEBERÁ permitir al veterinario redact…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-090",
+      "tipo": "separa-iguales",
+      "similitud": 0.902,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,90) que «MIENTRAS un paciente esté hospitalizado, el sistema Clinicas Veterinarias v0.11 DEBERÁ mostrar a sus clientes asociad…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-185",
+      "tipo": "separa-iguales",
+      "similitud": 0.901,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,90) que «CUANDO se genere el informe mensual, el sistema Clinicas Veterinarias v0.11 DEBERÁ incluir facturación por veterinari…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    },
+    {
+      "id": "RF-184",
+      "tipo": "separa-iguales",
+      "similitud": 0.901,
+      "explicacion": "La plataforma ve este elemento como lo mismo (similitud 0,90) que «el sistema Clinicas Veterinarias v0.11 DEBERÁ proporcionar a cada responsable de clínica informes de facturación diar…», que el árbitro dejó en otro elemento. Comprueba que no está repetido."
+    }
+  ],
+  "emparejamiento": {
+    "segundos": 12.09,
+    "segundos_cpu": 48.42
+  }
+}

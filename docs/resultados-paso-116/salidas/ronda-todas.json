@@ -1,0 +1,174 @@
+{
+  "fuente": "ARB",
+  "verificacion_cruzada": true,
+  "mensaje": "Unión del árbitro.",
+  "salida": {
+    "preguntas": [
+      {
+        "id": "P-001",
+        "pregunta": "Huellas Centro ofrece urgencias las 24 horas, pero la recepción de llegadas sin cita y el triaje de cinco niveles se describen solo para noches y fines de semana. ¿Deben aplicarse también de lunes a viernes entre las 9:00 y las 20:00?",
+        "motivo": "No se puede delimitar cuándo deben registrarse y ordenarse por triaje las urgencias atendidas en Huellas Centro.",
+        "fuentes": [
+          "DOC-01#F055",
+          "DOC-06#F044",
+          "DOC-12#F005",
+          "DOC-12#F011"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-001"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene la pregunta exclusiva de la propuesta 1 porque el horario de aplicación del triaje diurno sigue sin aclararse."
+      },
+      {
+        "id": "P-002",
+        "pregunta": "¿En qué horario exacto prestará Huellas Norte el servicio de urgencias los sábados y domingos a partir de marzo de 2027?",
+        "motivo": "No se puede configurar la disponibilidad de urgencias de Huellas Norte ni indicar cuándo se admitirán pacientes sin cita.",
+        "fuentes": [
+          "DOC-06#F045",
+          "DOC-15#F036",
+          "DOC-15#F037",
+          "DOC-15#F038"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-002"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene la pregunta exclusiva de la propuesta 1: se aprobó el servicio, pero no se fijó su horario de fin de semana."
+      },
+      {
+        "id": "P-003",
+        "pregunta": "Si una mascota tiene un plan de salud activo y una póliza de Seguros Animalia o Mascota Protegida, ¿en qué orden se aplican los servicios incluidos o descuentos del plan y la cobertura de la aseguradora para calcular lo que paga cada parte?",
+        "motivo": "No se puede determinar el importe de la factura a cargo del cliente y de la aseguradora cuando concurren ambas coberturas.",
+        "fuentes": [
+          "DOC-01#F108",
+          "DOC-01#F113",
+          "DOC-05#F012",
+          "DOC-11#F019",
+          "DOC-11#F020"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-003"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene la pregunta exclusiva de la propuesta 1 porque las respuestas previas sobre cobertura y descuentos no resuelven su concurrencia con el seguro."
+      },
+      {
+        "id": "P-004",
+        "pregunta": "¿Consideran Seguros Animalia y Mascota Protegida la teleconsulta de seguimiento una consulta cubierta por sus pólizas, o debe cobrarla íntegramente al cliente aunque tenga seguro?",
+        "motivo": "No se puede establecer el reparto del pago de una teleconsulta de un paciente asegurado.",
+        "fuentes": [
+          "DOC-23#F009",
+          "DOC-23#F015",
+          "DOC-26#F004",
+          "DOC-05#F020",
+          "DOC-05#F021",
+          "DOC-05#F022"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-004"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene la pregunta exclusiva de la propuesta 1: la exclusión de la teleconsulta de los planes de salud no aclara su cobertura por aseguradoras."
+      },
+      {
+        "id": "P-005",
+        "pregunta": "Cuando se solicita a LabVet una prueba urgente, ¿debe repercutirse al cliente algún suplemento por urgencia además de la tarifa de la prueba y, en tal caso, cuál?",
+        "motivo": "No se puede calcular el precio al cliente de las pruebas urgentes: consta el recargo que cobra el laboratorio, pero no una tarifa de urgencia para el cliente.",
+        "fuentes": [
+          "DOC-13#F015",
+          "DOC-13#F017",
+          "DOC-13#F018",
+          "DOC-06#F013"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-005"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene la pregunta exclusiva de la propuesta 1 porque el recargo de LabVet no determina el precio final al cliente."
+      },
+      {
+        "id": "P-006",
+        "pregunta": "¿Qué productos del catálogo se consideran de higiene y podrán pedirse en la app desde el lanzamiento, dado que el catálogo actual no identifica esa categoría?",
+        "motivo": "No se puede determinar qué artículos, además de los de alimentación, son elegibles para pedidos pagados desde la app.",
+        "fuentes": [
+          "DOC-23#F018",
+          "DOC-23#F022",
+          "DOC-06#F029",
+          "DOC-06#F038",
+          "DOC-06#F040"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-006"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene la pregunta exclusiva de la propuesta 1 porque la nueva venta de artículos de higiene carece de una clasificación en el catálogo."
+      },
+      {
+        "id": "P-007",
+        "pregunta": "¿Cómo debe determinarse la antigüedad de las deudas migradas como un único importe sin fecha ni detalle para incluirlas en los tramos del informe mensual y decidir si procede el aviso por deudas de más de 60 días?",
+        "motivo": "No se pueden aplicar correctamente el informe de antigüedad y el aviso de deuda a los saldos migrados sin un criterio para fecharlos.",
+        "fuentes": [
+          "DOC-16#F010",
+          "DOC-11#F026",
+          "DOC-11#F028"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-007"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene la pregunta exclusiva de la propuesta 1 porque la migración no proporciona fechas para clasificar la deuda."
+      },
+      {
+        "id": "P-008",
+        "pregunta": "Una vez bloqueados por tres años sin actividad, ¿cuánto tiempo deben conservarse los demás datos personales del cliente, excluidas las historias clínicas y las facturas, y qué evento permite suprimirlos?",
+        "motivo": "La política fija el bloqueo, pero no concreta el plazo ni el criterio de supresión de esos datos, por lo que no puede especificarse su ciclo de conservación.",
+        "fuentes": [
+          "DOC-07#F014"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-001"
+          ]
+        },
+        "explicacion": "Se mantiene la pregunta exclusiva de la propuesta 2 porque los plazos de historias y facturas no precisan cuándo suprimir los restantes datos personales."
+      },
+      {
+        "id": "P-009",
+        "pregunta": "Cuando un cliente solicita darse de baja de la app, ¿qué debe hacer el sistema: desactivar el acceso, desvincular la cuenta o suprimirla, y qué datos deben conservarse en ese caso?",
+        "motivo": "No se puede definir el requisito de baja de la cuenta ni sus efectos sobre los datos sin precisar qué implica la solicitud.",
+        "fuentes": [
+          "DOC-14#F036"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-002"
+          ]
+        },
+        "explicacion": "Se mantiene la pregunta exclusiva de la propuesta 2 porque la baja de la app no tiene efectos definidos sobre la cuenta y sus datos."
+      }
+    ],
+    "descartadas": []
+  },
+  "desviaciones": [],
+  "emparejamiento": {
+    "segundos": 0.14,
+    "segundos_cpu": 0.56
+  }
+}

@@ -2781,3 +2781,29 @@ Paso 116, a medias: el camino «actualizar» hasta el catálogo validado.
 - **Parada:** el autor se va y el equipo pierde la conexión; se para sin nada en marcha.
 - **Queda:** actualizar el backlog y validarlo; el camino «desde cero» (ronda con todas, catálogo y backlog); el análisis y las tablas de coste.
 
+## 03-11-2026, 13:30 (sesión)
+
+Paso 116 terminado: el resto de la prueba real y su análisis.
+
+- **Reanudación:** Docker estaba parado tras el apagado del equipo; se levantaron los contenedores, sin reconstruir nada y sin tareas a medias.
+- **Camino «actualizar», final:** actualización del backlog sin reparaciones (`3f6ee98e`; a LUNA la detuvo la plataforma al compactar con la salida ya escrita): 21 modificaciones, 1 eliminación (HU-027, la cita para varias mascotas) y 9 historias nuevas, todas por cambios I2. Se aceptaron todas y se validó.
+- **Camino «desde cero»:**
+  - ronda con todas las iteraciones (`945abc03`), con 9 preguntas que se respondieron por las reglas (ninguna en la hoja; las sugerencias eran suposiciones);
+  - catálogo, cuyo primer intento falló por LUNA (`74e56390`: 15 minutos sin actividad, después `should` en `notacion` y una reparación que no lo corrigió) y se relanzó una vez (`6fe013f7`, válido);
+  - backlog (`19f8d067`).
+  Los dos se validaron marcando las discrepancias como revisadas.
+- **Resultados** (`docs/resultados-paso-116/README.md`, también en la v0.13 de `docs/evolucion-prompt-requisitos.md` y en `docs/costes/costes.md`):
+  - detección completa en los dos caminos y en las dos lecturas;
+  - actualizar conserva idéntico el 91 % de los requisitos y el 95 % de las historias (desde cero, el 0 %);
+  - el coste es parecido (5,85 $ frente a 5,44 $);
+  - leerlo todo salió más barato que la opción C (0,95 $ frente a 1,67 $);
+  - desde cero dejó 18 «[POR DEFINIR]» más en el catálogo.
+  El coste total de la prueba fue de unos 16 $ con los intentos fallidos y descartados.
+- **Cambios en el script de costes:** nombres de los trabajos nuevos y la ronda centrada como fase propia; la ronda que lo lee todo queda fuera de los totales del flujo, como los nuevos arbitrajes.
+- **Decisión de Claude al responder:** la hoja responde una pregunta solo cuando su fila contesta exactamente lo preguntado; las de detalle siguen las reglas. Aplicado igual en los dos caminos.
+- **Pendientes para el autor:**
+  - revisar los resultados;
+  - decidir las propuestas de mejora: el tiempo de nginx, la numeración de LUNA en las rondas centradas, la línea del error de esquema, el coste de consultar al actualizar y medir la opción C con una documentación grande;
+  - revisar la lista de cambios de la iteración 2 en el paso 118.
+  Después, el hito 23.
+
