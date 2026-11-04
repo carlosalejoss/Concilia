@@ -2892,3 +2892,22 @@ Hito 23 empezado: paso 117 (la versión congelada que se evalúa).
 - **`costes.md` no se regenera:** la prueba era de un proyecto ya borrado. Al hacer el paso 105, el script deberá mostrar los proyectos de PURE por su nombre: hoy solo conoce los de los ejemplos y anonimiza los demás como «proyecto interno».
 - **Pendiente del autor:** confirmar la etiqueta `evaluacion-1` (en el commit de este paso, sin push). Siguiente: el paso 105.
 - **Etiqueta (09:30):** el autor deja la decisión a Claude («haz lo que consideres mejor»). Se crea `evaluacion-1` en `6d34025`, sin push: es local y se deshace con `git tag -d`. Desde el código del paso 122 solo cambia documentación. Este apunte va en un commit `docs:` posterior, que no cambia la versión evaluada.
+
+## 04-11-2026, 09:35 (sesión)
+
+**Resumen para la bitácora (04-11-2026, memoria: la introducción)**
+
+- **Contexto:** el autor empieza la memoria por el capítulo 1. Antes, Claude repasó a fondo `docs/` (trazabilidad, plan, bitácora reciente, evolución de los prompts, experimentos, costes, resultados de los pasos 65, 116 y 123 y la versión congelada). A la vez trabaja otra sesión en el paso 105; no se tocan sus ficheros.
+- **Antecedentes de la memoria (22-10-2026, sin entrada hasta hoy):**
+  - el autor confirma que es de **tipo B**, aunque el formulario de propuesta marque el A;
+  - estructura nueva del autor, que sustituye a la del 14-10: 1 Introducción (la sección 3, «Métodos y herramientas», sin «estado del arte»); 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema, 2.3 validación de la solución); 3 Conclusiones; sin Metodología ni Resultados;
+  - esqueleto en `memoria/tfg/memoria.tex` sobre la plantilla de la UZ (fuera de git, como toda `memoria/`), MiKTeX instalado para el usuario y `memoria/tfg/compilar.ps1`, que hace pdflatex, biber y dos pasadas más.
+- **Qué se hizo hoy:** la introducción, en las páginas 1 a 4 (unas 2.100 palabras, el 21 % del máximo de 10.000):
+  - motivación (el análisis es caro, los LLM se equivocan sin avisar) e hipótesis;
+  - objetivo general y seis específicos, O1 a O6 (flujo completo, verificación cruzada, calidad y trazabilidad, fiabilidad y coste, iteraciones, evaluación), para usarlos en «Cumplimiento de objetivos»; alcance y lo que queda fuera;
+  - contexto: prácticas en el equipo de análisis de Integra Tecnología y las tres condiciones de la empresa que marcan el diseño (pasarela LiteLLM con SOL y LUNA y 128k de contexto, sin embeddings en la pasarela, confidencialidad);
+  - métodos: forma de trabajo por hitos y pasos con mediciones reales, el uso de Claude Code como asistente de programación (para el anexo VII), las técnicas (EARS, MASTeR, Gherkin, verificación cruzada y el riesgo de autopreferencia, embeddings, PURE, AQUSA, `vale-ears`, recall, precisión y F1) y una tabla de herramientas, distinguiendo Claude Code como asistente y como ejecutor de los modelos;
+  - estructura de la memoria.
+- **Bibliografía:** las entradas de ejemplo de la plantilla se sustituyen por 18 referencias, con sus datos comprobados en la web (Mavin 2009, Rupp 2020, Großer 2024, ISO 29148, Ji 2023, Arora 2024, Du 2024, Panickssery 2024, Reimers 2019 y 2020, Ferrari 2017, Lucassen 2016, y las páginas de Gherkin, el modelo de embeddings, ONNX Runtime, `vale-ears`, Claude Code y LiteLLM).
+- **Compila sin errores ni referencias sin resolver** (19 páginas en total).
+- **Pendiente del autor**, marcado con `% PENDIENTE` en el `.tex`: el equipo y su trabajo diario, las fechas de las prácticas y el papel de cada director; la redacción del párrafo sobre el uso de la IA, que debe coincidir con el anexo VII; y la estructura de la memoria cuando se defina el contenido del capítulo 2.

@@ -49,7 +49,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Después del plan:**
 
-14. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. El esqueleto está en `memoria/tfg/memoria.tex`, fuera de git. En el equipo no hay LaTeX instalado: para compilarla hace falta Overleaf o instalar MiKTeX, y conviene probarlo antes de empezar a redactar.
+14. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. Está en `memoria/tfg/memoria.tex`, fuera de git, y se compila con MiKTeX (instalado el 22-10-2026) y `memoria/tfg/compilar.ps1`. Estructura del autor (22-10-2026): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema, 2.3 validación de la solución); 3 Conclusiones. **Empezada el 04-11-2026:** la introducción, redactada.
 15. Lo que queda en «Después», al final de este plan: el hito 7 (catálogo v2, aplazado), la aprobación por umbral y las mejoras futuras de las iteraciones (punto 5).
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
@@ -813,7 +813,7 @@ Por este orden:
 1. Mejorar los prompts fase a fase sobre el flujo que ya funciona. En el catálogo, se retoma el hito 7 con los prompts v2 del autor.
 2. ~~Árbitro con embeddings.~~ Pasa al hito 17 (16-10-2026).
 3. Aprobación por umbral y evaluación: precision, recall y F1 frente a la versión validada y a listas de referencia hechas a mano. (27-10-2026, autor: la evaluación pasa al hito 23, paso 120; aquí queda la aprobación por umbral.)
-4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación.
+4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación. (Sustituido el 22-10-2026 por el autor: 1 Introducción; 2 Desarrollo, con 2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución; 3 Conclusiones. Empezada el 04-11-2026; ver «Lo que queda, en orden», punto 14.)
 5. **Mejoras futuras de las iteraciones del proyecto** (decididas con el autor el 04-11-2026, como recomendaba Claude: no se hacen antes de evaluar; van a la memoria como hallazgos y trabajo futuro):
    - **Leer todo cuando la documentación es pequeña y la opción C cuando es grande.** Con unos 26.000 tokens, leerlo todo costó 0,95 $ frente a 1,67 $ con la misma detección (paso 116); con unos 96.000, leerlo todo no cabe y solo funciona la opción C (paso 123). No se hace ahora porque solo hay una ejecución de cada caso (el coste de una misma fase varía mucho), habría que fijar un umbral que no se ha medido, y cambiar la lectura justo antes de congelar la versión (paso 117) obligaría a repetir las mediciones. La opción C funciona en todos los tamaños; leerlo todo solo ahorraría céntimos en los proyectos pequeños.
    - **Un CSV para Jira o Azure DevOps solo con lo nuevo de una iteración,** para no duplicar lo ya importado. Era la decisión abierta del hito 22; se cierra sin hacerlo porque solo sirve a quien ya importó el backlog y después lo actualiza, un caso que no entra en la evaluación.
