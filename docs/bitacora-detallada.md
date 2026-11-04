@@ -2975,3 +2975,17 @@ Paso 105 hecho: el flujo completo con un documento público de PURE, en inglés,
 - **`costes.cs`:** muestra por su nombre los proyectos «PURE …». También sale así el del paso 123, antes «Proyecto interno 4». Anotado en `version.md` como cambio que no toca la aplicación. `costes.md` regenerado.
 - **Sin reconstruir ni reiniciar contenedores.**
 - **Siguiente:** el paso 104 (AQUSA y `vale-ears`).
+
+## 04-11-2026, 10:16 (sesión)
+
+**Resumen para la bitácora (04-11-2026, memoria: resumen y revisión de los diagramas contra el código)**
+
+- **Resumen y abstract** redactados: el problema, qué genera Concilia, la verificación cruzada con embeddings y la revisión del analista, lo que añade la plataforma (validación, trazabilidad, iteraciones, exportaciones) y tres resultados ya medidos (las contradicciones de los proyectos de ejemplo, ninguna preferencia del árbitro por su modelo y menos del 1 % de coste del segundo modelo en clínicas). Palabras clave en los dos idiomas. Con `% PENDIENTE` para los resultados del hito 23.
+- **Revisión de los diagramas contra el código** (`ProjectFlow`, `DeliverableRules`, `QuestionRules`, `IterationRules`, `PhaseJobs`, `PhaseExecutor`, `CatalogUpdate`, `nginx.conf`, Dockerfiles):
+  - **alto nivel:** fiel a su nivel de abstracción; el texto aclara que los coordinadores son papeles (las reglas del flujo y la tarea de fase común) y que `/data` es, físicamente, la base de datos y la carpeta de ficheros;
+  - **despliegue:** ya corregido (sin la API de Anthropic);
+  - **estados:** tres diferencias corregidas en el SVG: un trabajo que falla vuelve al estado del entregable si ya había uno («si ya había uno, vuelve a su estado»); validar exige que no haya errores ni cambios por decidir, y las discrepancias no lo impiden («[sin errores ni cambios por decidir]», antes «[nada por revisar]»); las preguntas tampoco se validan ni se desactualizan;
+  - **secuencia:** dos diferencias corregidas: la API solo guarda el plan en `data/jobs/{id}` y el `input/` de cada modelo lo escribe el `JobWorker` en la carpeta de cada ejecución; y cada salida se valida y se repara en su propia rama del `par`, en cuanto termina, no después. Se añade el paso «sigue solo si A y B tienen salida válida» y que el árbitro también se repara y que se marcan sus desviaciones. El diagrama crece 92 px.
+  - Editados los SVG con scripts y convertidos a PNG con Edge sin ventana; los anteriores quedan como `memoria/diagrama-estados-anterior.*` y `memoria/diagrama-secuencia-catalogo-anterior.*`.
+- **Correcciones del texto** que venían de los mismos errores o de cifras viejas: 63 operaciones de la API (no 42, que era la cifra del 20-10); el estado de una fase tras un fallo y con condiciones que dejan de cumplirse; qué impide validar; las preguntas sin validación ni vigencia; dónde se preparan las entradas y cuándo se sortea el orden de las propuestas (al crear el trabajo, en el plan); la validación y la reparación por rama; la reparación del árbitro.
+- **Cifras:** introducción, unas 2.070 palabras; capítulo 2, unas 4.700. Compila sin errores.
