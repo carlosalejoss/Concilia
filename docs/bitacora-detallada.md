@@ -2833,3 +2833,18 @@ Paso 123, a medias: la opción C con una documentación grande.
 - **El 504 de nginx no volvió a salir** al lanzar con el paso 122.
 - **Queda:** lanzar de nuevo la ronda centrada en el proyecto 38, escribir `docs/resultados-paso-123/` (con la atribución de PURE y cómo partir el documento) y cerrar el paso.
 
+## 04-11-2026, 08:30 (sesión)
+
+Paso 123 terminado.
+
+- **Reanudación:** Docker parado tras el apagado; se levantaron los contenedores, con las imágenes del paso 122, sin reconstruir.
+- **Ronda centrada (opción C) en el proyecto PEPPOL (`d3aa44f7`):** válida a la primera, sin reparaciones, en 3,3 minutos y por 0,87 $ (548.088 tokens de entrada y 24.691 de salida). 10 preguntas en inglés: 13 propuestas de A (SOL), ninguna de B (LUNA) y 3 descartadas por el árbitro. Citan 31 fragmentos de la parte nueva y 13 de la anterior.
+- **Frente a la ronda que lo lee todo (`f5a6a2d0`, del día anterior):** aquella falló entera (cuatro ejecuciones detenidas al compactar por segunda vez sin escribir) y gastó unos 1,35 $ estimados sin resultado.
+- **Conclusión, con el paso 116:** leerlo todo es igual de bueno y más barato con documentación pequeña, pero no cabe con grande; la opción C vale para cualquier tamaño. Es también la primera ronda del flujo en inglés, y funciona.
+- **Detalle encontrado:** las repeticiones de una tarea se guardan al final con la hora de inicio del primer intento, así que su duración por intento no es real (la del trabajo sí). Viene de los reintentos de antes; anotado, sin cambiar.
+- **Pendientes para el autor:**
+  - revisar los resultados de los pasos 116 y 123;
+  - decidir si se lee todo cuando la documentación es pequeña (la propuesta 4, ahora con datos de los dos extremos);
+  - si conviene repetir la ronda centrada por LUNA, que no propuso nada.
+  Después, el hito 23.
+

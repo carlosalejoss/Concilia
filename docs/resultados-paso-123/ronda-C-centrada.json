@@ -1,0 +1,216 @@
+{
+  "fuente": "ARB",
+  "verificacion_cruzada": true,
+  "mensaje": "Unión del árbitro.",
+  "salida": {
+    "preguntas": [
+      {
+        "id": "P-001",
+        "pregunta": "Which VCD stages and countries are committed for the initial rollout, and which are only prospective pilots or later stages? In particular, is Italy's pilot limited to Stage 2 despite the conclusion's statement that the two scheduled pilots will focus on Stages 3 and 4?",
+        "motivo": "The pilot deliverables and acceptance scope cannot be specified consistently while the Italian plan and the conclusion describe different target stages.",
+        "fuentes": [
+          "DOC-02#F113",
+          "DOC-02#F115",
+          "DOC-02#F116",
+          "DOC-02#F117",
+          "DOC-02#F171",
+          "DOC-02#F331",
+          "DOC-02#F334"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-001"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se conserva la duda de alcance y la contradicción entre el plan italiano y la conclusión; no tiene equivalente en la propuesta 2."
+      },
+      {
+        "id": "P-002",
+        "pregunta": "At the initial release of the pre-VCD mapping tool, must every participating Member State provide information-level mappings for all criteria in Articles 45–50, with detailed support initially limited to Articles 45–46, or may Articles 47–50 be omitted until a later release?",
+        "motivo": "The minimum coverage and timing of the mapping service remain unclear: the earlier common minimum covers all criteria at information level, while the new document calls for phased coverage.",
+        "fuentes": [
+          "DOC-02#F187",
+          "DOC-02#F190",
+          "DOC-01#F327",
+          "DOC-01#F331"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-002"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene porque distingue la cobertura informativa común de la implantación gradual del soporte más detallado."
+      },
+      {
+        "id": "P-003",
+        "pregunta": "Does a positive pre-VCD mapping guarantee that a contracting authority will accept the indicated foreign evidence for a tender criterion, or does it provide guidance subject to the authority's own assessment?",
+        "motivo": "The earlier description promises guaranteed mutual recognition for mapped attestations, whereas the new synthesis calls the mapping an indication; the service's stated assurance to its users depends on the distinction.",
+        "fuentes": [
+          "DOC-02#F287",
+          "DOC-01#F510",
+          "DOC-01#F511",
+          "DOC-01#F512"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-003"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene la diferencia relevante entre reconocimiento garantizado y orientación no vinculante."
+      },
+      {
+        "id": "P-004",
+        "pregunta": "When a tender's selection and exclusion criteria are not published in a formal electronic representation, including a partial notice or a procedure below the publication threshold, how must the mapping service obtain them for tender-specific results: from the economic operator, directly from the contracting authority, or not at all?",
+        "motivo": "The new requirement for authorities to state criteria during notification does not settle whether tender-specific mapping remains available where a formal published set of criteria is missing.",
+        "fuentes": [
+          "DOC-02#F194",
+          "DOC-02#F237",
+          "DOC-01#F387",
+          "DOC-01#F483",
+          "DOC-01#F485"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-004"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se conserva la duda sobre la entrada admisible de criterios y el alcance del servicio en licitaciones sin publicación formal completa."
+      },
+      {
+        "id": "P-005",
+        "pregunta": "Under what conditions may a self-declaration or declaration on oath be offered as acceptable cross-border evidence instead of a third-party attestation, particularly when no equivalent attestation exists in the operator's country?",
+        "motivo": "The mapping and package rules cannot determine which candidate statements qualify as evidence without the conditions for their acceptance.",
+        "fuentes": [
+          "DOC-02#F389",
+          "DOC-02#F437",
+          "DOC-02#F489"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-005"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "El glosario deja las condiciones abiertas y el cuestionario presenta alternativas sin resolverlas."
+      },
+      {
+        "id": "P-006",
+        "pregunta": "Which evidence types must have machine-readable context-specific data in a Stage 3 VCD, and how must a Stage 3 package present evidence for which no agreed context-specific representation exists?",
+        "motivo": "Stage 3 introduces context-specific data, but the document limits standardization to some simple evidence types without defining required coverage or the treatment of other evidence.",
+        "fuentes": [
+          "DOC-02#F203",
+          "DOC-02#F257",
+          "DOC-02#F259",
+          "DOC-02#F260",
+          "DOC-01#F980"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-006"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se conserva una sola duda sobre la cobertura exigida de datos contextuales y el tratamiento de pruebas no cubiertas."
+      },
+      {
+        "id": "P-007",
+        "pregunta": "For a cross-border VCD, when is a selective translation of context-specific data sufficient, and when must an official translation of the underlying evidence also be supplied?",
+        "motivo": "The requirements for presenting translated evidence cannot be specified while acceptance of selective translation in place of official translation remains uncertain.",
+        "fuentes": [
+          "DOC-02#F261",
+          "DOC-02#F263",
+          "DOC-02#F264",
+          "DOC-02#F436"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-007"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene porque la documentación advierte del riesgo de rechazo sin fijar las condiciones de aceptación."
+      },
+      {
+        "id": "P-008",
+        "pregunta": "If a contracting authority's on-demand request for a Stage 4 attestation fails or the issuing service is unavailable, what outcome must the VCD present to the authority and economic operator, and may the authority evaluate the dossier without that attestation?",
+        "motivo": "The requirement for resolving failures during on-demand retrieval does not specify the observable result or whether the requested evidence can be treated as available.",
+        "fuentes": [
+          "DOC-02#F204",
+          "DOC-02#F209",
+          "DOC-01#F1056"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-010"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se conserva la duda sobre el resultado funcional de un fallo de recuperación, no sobre su solución técnica."
+      },
+      {
+        "id": "P-009",
+        "pregunta": "At which point must each required attestation be valid—VCD creation, tender submission, closing of the call, or award—and does the expiry of a document not required for that tender invalidate the entire VCD?",
+        "motivo": "The lifecycle describes package and document expiry, but does not fix the relevant date of validity or whether an irrelevant expired document affects the package's validity.",
+        "fuentes": [
+          "DOC-02#F395",
+          "DOC-02#F452",
+          "DOC-02#F453",
+          "DOC-01#F1012"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-011"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se conserva la duda única sobre la vigencia exigible del expediente y sus pruebas para una licitación."
+      },
+      {
+        "id": "P-010",
+        "pregunta": "In which VCD stages and for which kinds of evidence must the VCD provider issue a Boolean conclusion that a selection or exclusion criterion is satisfied, rather than present the evidence for the contracting authority to assess?",
+        "motivo": "The glossary describes provider-issued validation results, but does not establish when such a determination is obligatory rather than optional decision support; qualitative evidence may not admit a Boolean conclusion.",
+        "fuentes": [
+          "DOC-02#F397",
+          "DOC-02#F398",
+          "DOC-02#F250",
+          "DOC-01#F1447",
+          "DOC-01#F1460"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-013"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Se mantiene la duda normativa sobre cuándo procede exigir un resultado binario, distinta de la cobertura de datos contextuales."
+      }
+    ],
+    "descartadas": [
+      {
+        "propuesta": 1,
+        "id": "P-008",
+        "motivo": "La referencia a acceso directo desde emisores en DOC-01#F1000 es una posibilidad futura; para la etapa 4 propuesta ya se establece almacenamiento y recuperación indirecta por el proveedor nacional en DOC-01#F1008, DOC-01#F1027, DOC-01#F1064 y DOC-02#F207. No hay contradicción abierta sobre la custodia prevista."
+      },
+      {
+        "propuesta": 1,
+        "id": "P-009",
+        "motivo": "La documentación ya exige el mandato del operador a una autoridad determinada y la comprobación de sus derechos para cada solicitud, con límites temporales: DOC-01#F1026, DOC-01#F1052, DOC-01#F1055 y DOC-01#F1061. DOC-02#F208 también habla de autoridades mandatadas."
+      },
+      {
+        "propuesta": 1,
+        "id": "P-012",
+        "motivo": "DOC-02#F134 ya compromete al piloto austriaco a aportar todas las pruebas necesarias para cualquier autoridad, incluso las de los miembros del consorcio; DOC-01#F331 solo permite, sin imponer, reducir la cobertura de otros pilotos."
+      }
+    ],
+    "revisiones": []
+  },
+  "desviaciones": [],
+  "emparejamiento": {
+    "segundos": 0.29,
+    "segundos_cpu": 1.19
+  }
+}

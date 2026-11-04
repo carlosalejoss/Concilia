@@ -13,7 +13,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - Desde el 26-10-2026 (autor): el hito 22 son las iteraciones del proyecto (pasos 109 a 116), y la evaluación pasa a ser el hito 23, el último. Los pasos 103 a 106 de la evaluación conservan su número.
 - Desde el 27-10-2026 (autor): el hito 23 suma los pasos 117 a 121 (versión congelada, referencia revisada por el autor, repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL).
 
-## Dónde estamos (03-11-2026)
+## Dónde estamos (04-11-2026)
 
 - **Hechos:** los hitos 17 (embeddings en local), 18 y 18b (fiabilidad y calidad, prompts v0.11 y v0.12), 19 (exportar), 20 (trazabilidad y comparación) y 21 (historial de versiones), revisados por el autor.
 - **Hecho, a falta de que el autor revise sus resultados:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026.
@@ -21,7 +21,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
   - Hecho el 112 (preguntas centradas, prompts v0.13), revisado el 27-10-2026.
   - Hechos el 113 y el 114 (actualizar el catálogo y el backlog), en Docker y revisados por el autor en el navegador el 27-10-2026.
   - Hecho el 115 (desde cero, frente a lo anterior), en Docker y revisado por el autor en el navegador el 27-10-2026.
-  - Hecho el 116 (la prueba real con clínicas en dos iteraciones), el 27-10 y el 03-11-2026: resultados en `docs/resultados-paso-116/`. Quedan para decidir con el autor sus propuestas de mejora.
+  - Hecho el 116 (la prueba real con clínicas en dos iteraciones), el 27-10 y el 03-11-2026: resultados en `docs/resultados-paso-116/`.
+  - Hechos el 122 (sus mejoras, 03-11-2026) y el 123 (la opción C con una documentación grande, 04-11-2026: leerlo todo no cabe y la opción C funciona).
 - **Siguiente:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo.
 
 ### Lo que queda, en orden
@@ -584,7 +585,14 @@ En la documentación se habla de **iteraciones del proyecto**, para no confundir
   - **`ID-SEQ` en las rondas centradas** (`PlatformFixes`, una corrección automática más, con su aviso): si las preguntas nuevas de A o B van seguidas desde otro número (P-064, P-065…), se renumeran desde P-001. Solo sus ids: `contradice` y las revisiones citan preguntas del proyecto, que no cambian. Cualquier otro hueco sigue siendo un error. Los prompts no cambian, como en el paso 89.
   - **El error de esquema con su línea** (`PhaseTask.Locate`): `SCHEMA requisitos/74/notacion` recibe en la reparación la línea del elemento de esa ruta que tiene id (el más profundo), como los demás errores.
   - Tests: `FocusedRoundTests` (la renumeración y lo que no toca) y `PhaseTaskTests` (la línea del error de esquema). 1.028 tests en verde.
-- [ ] 123. La opción C con una documentación grande (aprobado por el autor el 03-11-2026; detalle por decidir con él).
+- [x] 123. La opción C con una documentación grande (03 y 04-11-2026; con un documento público de PURE, como recomendaba Claude y eligió el autor, frente a ampliar clínicas o dejarlo como limitación). Resultados en `docs/resultados-paso-123/README.md`.
+  - **Documento:** PURE v2.0 (Zenodo 7118517, CC BY 4.0), PEPPOL D2.1 (127 páginas, unos 96.000 tokens, en inglés), partido por páginas en dos iteraciones (1–90 y 91–127). Proyecto «PURE PEPPOL VCD (paso 123)», en inglés; solo las dos rondas centradas en la iteración 2.
+  - **Resultado:**
+    - Leerlo todo falla entero: A y B llenan los 128.000 tokens de contexto y la plataforma los detiene al compactar por segunda vez sin haber escrito, también al repetirse (unos 1,35 $ estimados, sin resultado).
+    - La opción C termina a la primera, sin reparaciones, por 0,87 $. Saca 10 preguntas en inglés, con un tercio de sus fragmentos de la iteración 1. Es la primera ronda del flujo en inglés.
+    - Con el paso 116: leerlo todo es una optimización para la documentación pequeña, y la opción C vale para cualquier tamaño.
+    - LUNA no propuso ninguna pregunta.
+    - Las duraciones de las repeticiones de una tarea no son reales: se guardan con la hora de inicio del primer intento.
 
 **Hecho cuando:** en un proyecto con el catálogo y el backlog validados, se añade una segunda iteración, se lanza una ronda centrada en ella y se actualizan el catálogo y el backlog. Cada elemento dice de qué iteración viene, lo modificado y lo eliminado llevan su motivo y se revisan antes de validar, lo que no cambia sigue igual, y los modos de siempre dan exactamente lo mismo que antes.
 
