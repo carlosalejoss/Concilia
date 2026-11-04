@@ -45,6 +45,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 26-10 | Hito 22, paso 109 | La documentación se agrupa en iteraciones que se cierran con «Cerrar documentación»; los proyectos que ya existen quedan igual que antes, en su «Iteración 1» |
 | 26-10 | Hito 22, paso 110 | Ids estables en el catálogo y el backlog: guardar ya no renumera, borrar deja hueco y un número no se vuelve a dar |
 | 26-10 | Hito 22, paso 111 | Cada pregunta, requisito e historia dice de qué iteración sale, con filtro; cada entregable, qué iteraciones incluye y cuáles le faltan; Word, PDF y los CSV llevan la iteración |
+| 04-11 | Hito 23, paso 117 | Versión congelada para evaluar (`docs/evaluacion/version.md`): código del paso 122, prompts v0.12 y v0.13, Claude Code 2.1.283. Antes, la ronda de preguntas normal en inglés con el documento de PURE del paso 105 (Microcare): válida a la primera por 0,50 $, sin cambios en el código |
 | 03 y 04-11 | Hito 22, paso 123 | La opción C con una documentación grande (un documento público de PURE, unos 96.000 tokens, en inglés): leerlo todo no cabe en el contexto y falla; la opción C funciona a la primera por 0,87 $. Primera ronda del flujo en inglés |
 | 03-11 | Hito 22, paso 122 | Las mejoras de la prueba real: nginx espera 5 minutos al lanzar tareas, la plataforma renumera las preguntas centradas que empiezan en otro número y el error de esquema dice su línea en la reparación |
 | 27-10 y 03-11 | Hito 22, paso 116 | Prueba real con una segunda iteración de clínicas: los dos caminos detectan todos los cambios puestos a propósito; actualizar conserva el 91 % de los requisitos y el 95 % de las historias validadas (desde cero, el 0 %), por un coste parecido; leerlo todo salió más barato que la opción C. Un fallo del paso 112 arreglado (`REF-PREG` con las preguntas enlazadas) |
@@ -357,6 +358,18 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 - **Coste estimado:** unos 20–30 $ las repeticiones, unos 30–50 $ SOL ‖ SOL y unos 7–9 $ PURE. En horas del autor, unas 3–4 h de referencia, unas 5 h de revisión y 2–3 h como analista.
 - **Para la memoria, en palabras sencillas:** hasta ahora se sabía qué propone cada modelo y qué se queda el árbitro, pero no si el resultado es mejor que el de un solo modelo. Para saberlo hace falta una lista de lo que debería salir, hecha por una persona, y contar cuánto de esa lista encuentra cada uno, cuánto de lo que propone está bien y cuánto cuesta.
 
+### 15. Hito 23: la evaluación (desde el 04-11, en curso)
+
+- **Paso 117, la versión congelada (04-11):** todo lo que se mida en el hito 23 se hace con la versión de la etiqueta `evaluacion-1`, descrita en `docs/evaluacion/version.md`:
+  - el código del paso 122 (`d0dc673`), con las imágenes de Docker del 03-11, comprobadas por dentro: los 30 prompts y esquemas del repositorio están byte a byte en la imagen;
+  - los prompts v0.12 en los modos de siempre y v0.13 en los centrados y las actualizaciones;
+  - A y árbitro `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA`;
+  - los umbrales 0,90 y 0,70, y Claude Code 2.1.283.
+
+  La etiqueta se crea cuando la confirme el autor.
+- **La prueba en inglés de antes de congelar:** la ronda de preguntas normal (v0.12), que nunca se había usado en inglés, con el documento de PURE elegido para el paso 105: `2005 - microcare.pdf`, el SRS del *Voucher Management System* (33 páginas). Salió válida a la primera, en 4 minutos y por 0,50 $, con 39 preguntas en inglés. LUNA propuso 20, al contrario que en la ronda centrada del paso 123. No hizo falta cambiar nada.
+- **Para la memoria, en palabras sencillas:** antes de medir, se fija una versión y no se toca, para que todas las mediciones sean comparables y cualquiera pueda repetirlas.
+
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
 - **Qué hay:** el documento OpenAPI 3.1 de la API (`/openapi/v1.json`), generado por ASP.NET Core, y Swagger UI encima (`/swagger`, también en <http://localhost:8080/swagger> con Docker), con los colores de Concilia en claro y en oscuro. Los 42 endpoints van en 10 grupos en el orden del flujo, cada uno con su resumen, su descripción en español, sus parámetros y lo que devuelve en cada caso (incluidos los `400` con los mensajes de la web, los `404` y los `202` de las tareas en segundo plano).
@@ -437,7 +450,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 5. ~~**Hito 20, trazabilidad visual y comparación de A, B y el árbitro**~~: la trazabilidad en un panel lateral (paso 99) y la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100), los dos el 22-10-2026. Revisado en el navegador por Claude y por el autor (23-10-2026): cerrado.
 6. ~~**Hito 21, historial de versiones de los entregables**~~: cada versión se guarda con su fecha y su origen (paso 101) y se puede ver, comparar con la actual y recuperar (paso 102), los dos el 23-10-2026. Revisado en el navegador por el autor (26-10-2026): cerrado.
 7. ~~**Hito 22, iteraciones del proyecto**~~ (pasos 109 a 116, completado el 03-11-2026 a falta de que el autor revise los resultados): ~~iteraciones en Documentos~~ (paso 109) y ~~ids estables~~ (paso 110), los dos el 26-10-2026; ~~la iteración de cada elemento~~ (paso 111, revisado por el autor el mismo día); ~~preguntas centradas~~ (paso 112, revisado el 27-10); ~~actualizar el catálogo y el backlog~~ (pasos 113 y 114, revisados el 27-10); ~~desde cero frente a lo anterior~~ (paso 115, revisado el 27-10); ~~la prueba real con clínicas en dos iteraciones~~ (paso 116, 03-11); ~~sus mejoras~~ (paso 122, 03-11); ~~la opción C con una documentación grande~~ (paso 123, 04-11).
-8. **Hito 23, evaluación:** métricas externas, un documento de PURE, una prueba editando de verdad y la comparación entre actualizar y empezar de cero. Desde el 27-10-2026 (autor), además: la versión congelada antes de evaluar (paso 117), la referencia revisada por el autor (118), 3 repeticiones de cada fase para ver cuánto varía (119), Concilia frente a un solo modelo con recall, precisión, F1 y coste, que es la comparación que responde a la hipótesis (120), y SOL ‖ SOL, para saber si lo que aporta el patrón viene de usar dos modelos distintos (121). Orden: 117, 105, 104, 106, 118, 119, 120 y 121. Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`.
+8. **Hito 23, evaluación** (en curso; ~~la versión congelada, paso 117~~, 04-11-2026, falta la etiqueta; siguiente, el paso 105 con Microcare de PURE): métricas externas, un documento de PURE, una prueba editando de verdad y la comparación entre actualizar y empezar de cero. Desde el 27-10-2026 (autor), además: la versión congelada antes de evaluar (paso 117), la referencia revisada por el autor (118), 3 repeticiones de cada fase para ver cuánto varía (119), Concilia frente a un solo modelo con recall, precisión, F1 y coste, que es la comparación que responde a la hipótesis (120), y SOL ‖ SOL, para saber si lo que aporta el patrón viene de usar dos modelos distintos (121). Orden: 117, 105, 104, 106, 118, 119, 120 y 121. Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`.
 9. **Después:** hito 7 (catálogo v2) y redactar la memoria (sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación).
 
 - ~~**Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub~~. Todas decididas:
@@ -447,5 +460,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 250 entre el 28-09 y el 04-11-2026.
+- **Commits:** 252 entre el 28-09 y el 04-11-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99), 937 (22-10, paso 100), 943 (22-10, pasos 107 y 108), 948 (23-10, paso 101), 951 (23-10, paso 102), 966 (26-10, paso 109), 974 (26-10, paso 110) y 983 (26-10, paso 111), 990 (26-10, instantánea de la v0.12), 1.002 (26-10, paso 112), 1.013 (27-10, paso 113), 1.020 (27-10, paso 114), 1.024 (27-10, paso 115), 1.025 (27-10, ronda que lo lee todo del paso 116) , 1.026 (27-10, arreglo de `REF-PREG`) y 1.028 (03-11, paso 122).

@@ -1,0 +1,103 @@
+{
+  "jobId": "5aec98d2-00c7-453b-941b-470e1f217947",
+  "kind": "questions",
+  "createdAt": "2026-11-04T08:02:28.005538+00:00",
+  "finishedAt": "2026-11-04T08:06:26.133134+00:00",
+  "succeeded": true,
+  "message": "Unión del árbitro.",
+  "inputTokens": 191980,
+  "outputTokens": 30257,
+  "runsWithoutUsage": 0,
+  "repairs": 0,
+  "seconds": 238.127596,
+  "runs": [
+    {
+      "slot": "A",
+      "lot": null,
+      "attempt": 1,
+      "model": "SS - GPT-6-SOL",
+      "state": "Done",
+      "inputTokens": 50484,
+      "outputTokens": 8408,
+      "turns": 4,
+      "seconds": 85.620929,
+      "error": null,
+      "estimatedInputTokens": null,
+      "estimatedOutputTokens": null
+    },
+    {
+      "slot": "ARB",
+      "lot": null,
+      "attempt": 1,
+      "model": "SS - GPT-6-SOL",
+      "state": "Done",
+      "inputTokens": 93128,
+      "outputTokens": 11910,
+      "turns": 15,
+      "seconds": 112.617806,
+      "error": null,
+      "estimatedInputTokens": null,
+      "estimatedOutputTokens": null
+    },
+    {
+      "slot": "B",
+      "lot": null,
+      "attempt": 1,
+      "model": "SS - GPT-6-LUNA",
+      "state": "Done",
+      "inputTokens": 48368,
+      "outputTokens": 9939,
+      "turns": 4,
+      "seconds": 118.09131,
+      "error": null,
+      "estimatedInputTokens": null,
+      "estimatedOutputTokens": null
+    }
+  ],
+  "elements": {
+    "a": 37,
+    "b": 20,
+    "merged": 39,
+    "both": 18,
+    "onlyA": 19,
+    "onlyB": 2,
+    "discrepancies": 0,
+    "discarded": 0,
+    "deviations": 5
+  },
+  "changes": null,
+  "changesNote": null,
+  "questions": {
+    "total": 39,
+    "answered": 0,
+    "discarded": 0,
+    "pending": 39,
+    "byUser": 0,
+    "byAi": 0,
+    "byAiEdited": 0
+  },
+  "phase": "Questions",
+  "arbiterModel": "SS - GPT-6-SOL",
+  "rearbitrationOf": null,
+  "estimatedInputTokens": 0,
+  "estimatedOutputTokens": 0,
+  "matchingTime": {
+    "seconds": 7.05,
+    "cpuSeconds": 27.9
+  },
+  "assumedRequirements": null,
+  "embeddings": {
+    "onlyA": 18,
+    "onlyB": 6,
+    "agreement": {
+      "bothYes": 26,
+      "onlyEmbeddings": 7,
+      "onlyArbiter": 10,
+      "bothNo": 14,
+      "total": 57,
+      "rate": 0.7017543859649122
+    }
+  },
+  "update": null,
+  "previous": null
+}

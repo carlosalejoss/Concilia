@@ -2861,3 +2861,33 @@ Decisiones pendientes de los pasos 116 y 123, cerradas con el autor.
   - también en «Qué hay que mejorar» de los resultados de los pasos 116 y 123, en las decisiones abiertas de CLAUDE.md y de la trazabilidad (ninguna del hito 22) y en el paso 105.
 - **Siguiente:** el hito 23, en otra sesión, empezando por el paso 117.
 
+
+## 04-11-2026, 09:15 (sesión)
+
+Hito 23 empezado: paso 117 (la versión congelada que se evalúa).
+
+- **Antes de tocar nada, propuesta al autor, que la aprueba («haz lo que creas mejor»):**
+  - **Prueba en inglés:** la ronda centrada del paso 123 no basta, porque usa otro prompt (v0.13). La ronda normal (v0.12) no se había usado nunca en inglés, y es el primer paso del 105. Se hace con el documento del 105, para comprobar también cómo se extrae.
+  - **Documento del paso 105:** `2005 - microcare.pdf` de PURE v2.0 (Zenodo 7118517, CC BY 4.0), el SRS del *Voucher Management System* de Microcare: 33 páginas, unos 11.000 tokens, industrial y con varios módulos y usuarios con permisos. Alternativa: `2008 - vub.pdf` (trabajo de clase). Descartados: `keepass` (un solo usuario), `puget sound` («Confidential») y `cctns` (corto, datos policiales). Se miraron los PDF de 8 a 45 páginas del dataset descargado en el paso 123.
+- **Prueba en inglés (job `5aec98d2`, proyecto 39, «PURE · prueba en inglés (paso 117)», idioma `en`):**
+  - el PDF se extrae bien: 877 líneas, con títulos y listas;
+  - la ronda es válida a la primera, sin reparaciones, en 4 minutos y por 0,50 $ (191.980 tokens de entrada y 30.257 de salida);
+  - 39 preguntas en inglés, con 107 fragmentos citados: A 37, B 20; unión con 18 de las dos, 19 solo de A y 2 solo de B; 5 desviaciones; emparejamiento y árbitro de acuerdo en el 70 %;
+  - LUNA sí propone preguntas, al contrario que en el paso 123;
+  - no hizo falta cambiar código ni prompts;
+  - un fallo del cliente, no de la plataforma: el primer `POST /projects` con el cuerpo en la línea de órdenes de Git Bash llegó con la codificación rota y se rechazó sin crear nada;
+  - resultado y su informe guardados en `docs/evaluacion/prueba-ingles-paso-117/` (por la API: la shell no tiene permiso para leer `data/jobs`), y después el proyecto se borró, como dice el plan.
+- **Comprobaciones antes de congelar:**
+  - `git status` limpio;
+  - 1.028 tests de .NET, lint y build de la web, y los tests de Python (16, 105 y 46; `jsonschema` en un entorno virtual del scratchpad);
+  - imágenes del 03-11 (13:44 y 13:46), posteriores al commit del paso 122 (`d0dc673`, 13:34). Desde entonces solo han cambiado `docs/` y `CLAUDE.md`, y los 30 prompts y esquemas de `prompts/v0/` están byte a byte en la `Concilia.Core.dll` de la imagen;
+  - `claude --version` en el contenedor: 2.1.283, la de las 419 ejecuciones guardadas con versión.
+- **`docs/evaluacion/version.md`:**
+  - el commit, las imágenes y los tests;
+  - los prompts por modo;
+  - los modelos de cada papel, sacados de las ejecuciones guardadas sin leer `.env`;
+  - la configuración: umbrales, lotes, pantallas, topes; tres valores se podrían cambiar en `.env`, y su valor por defecto en el compose es el mismo;
+  - la versión de Claude Code y la prueba en inglés.
+- **Sin contenedores reiniciados ni reconstruidos, y sin migraciones.**
+- **`costes.md` no se regenera:** la prueba era de un proyecto ya borrado. Al hacer el paso 105, el script deberá mostrar los proyectos de PURE por su nombre: hoy solo conoce los de los ejemplos y anonimiza los demás como «proyecto interno».
+- **Pendiente del autor:** confirmar la etiqueta `evaluacion-1` (en el commit de este paso, sin push). Siguiente: el paso 105.

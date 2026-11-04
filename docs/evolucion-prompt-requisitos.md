@@ -467,6 +467,13 @@ En palabras sencillas: antes, el árbitro tenía que copiar a mano cada condici�
 
 **Con esto se cumple el «Hecho cuando» del hito 18b** (22-10-2026): con las mismas propuestas, el árbitro del catálogo consulta cuatro veces menos documentación, y la unión no empeora (es más atómica, aunque con más avisos de la plataforma), y el del backlog conserva los criterios de las historias que une.
 
+**Ronda de preguntas en inglés (paso 117), 04-11-2026.** Prueba antes de congelar la versión que se evalúa, con un documento público de PURE: `2005 - microcare.pdf` (33 páginas, unos 11.000 tokens). A `SS - GPT-6-SOL`, B `SS - GPT-6-LUNA`, árbitro SOL. Detalle en `docs/evaluacion/version.md`.
+
+- **Válida a la primera,** sin reparaciones, en 4 minutos y por 0,50 $ (191.980 tokens de entrada y 30.257 de salida).
+- **39 preguntas en inglés,** con 107 fragmentos citados: 37 de A, 20 de B; en la unión, 18 de las dos, 19 solo de A y 2 solo de B.
+- **LUNA sí propone preguntas,** al contrario que en la ronda centrada del paso 123.
+- Es la primera vez que se usa en inglés un prompt de la v0.12. No hizo falta cambiar nada.
+
 ### Qué hay que mejorar
 
 - **Que la plataforma no marque como desviación un par «mismo» con cifras distintas** que el árbitro separa: los embeddings no ven la diferencia entre «un año» y «ocho años», y esos avisos son falsos. Es el mismo criterio de cifras que ya usa `fuentes.txt`.

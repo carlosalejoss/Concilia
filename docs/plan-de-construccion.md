@@ -23,7 +23,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
   - Hecho el 115 (desde cero, frente a lo anterior), en Docker y revisado por el autor en el navegador el 27-10-2026.
   - Hecho el 116 (la prueba real con clínicas en dos iteraciones), el 27-10 y el 03-11-2026: resultados en `docs/resultados-paso-116/`.
   - Hechos el 122 (sus mejoras, 03-11-2026) y el 123 (la opción C con una documentación grande, 04-11-2026: leerlo todo no cabe y la opción C funciona).
-- **Siguiente:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo.
+- **En curso:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo. Hecho el 117 (la versión congelada, `docs/evaluacion/version.md`, 04-11-2026); el siguiente es el 105, con `2005 - microcare.pdf` de PURE.
 
 ### Lo que queda, en orden
 
@@ -38,7 +38,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Hito 23, evaluación** (en este orden; cada paso dice qué hace el autor y qué hace Claude):
 
-6. 117, congelar la versión, con una prueba barata en inglés antes.
+6. ~~117, congelar la versión, con una prueba barata en inglés antes~~ (04-11-2026; falta la etiqueta `evaluacion-1`, cuando la confirme el autor).
 7. 105, el flujo con un documento de PURE, en inglés.
 8. 104, AQUSA y `vale-ears` sobre lo del 105.
 9. 106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53).
@@ -605,7 +605,11 @@ Material para el capítulo de evaluación de la memoria. Era el hito 22 hasta el
 El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar la propuesta del TFG: ningún paso medía la hipótesis (que la verificación cruzada mejora la fiabilidad frente a un solo modelo), y el paso 65 apunta a que puede no mejorarla (la unión se parece mucho a A, y de las 15 contradicciones abiertas 2 las detecta solo A y ninguna solo B). Un resultado negativo también vale para la memoria, pero hay que medirlo. Se hacen en este orden: 117 antes que cualquier ejecución de la evaluación; después 105, 104 (usa lo que genera el 105, en inglés), 106, 118, 119, 120 y 121. El 103 se hizo antes, con la v0.9, y sus resultados se citan con esa versión. Los pasos 118 a 121 llevan sus instrucciones, separadas en lo que hace el autor y lo que hace Claude, en su propio apartado, más abajo.
 
 - [x] 103. Terminar el experimento de si el árbitro prefiere a su propio modelo (`docs/experimento-sesgo-arbitro.md`). (16-10-2026: no hay preferencia; la unión se parece a A porque A propone más y casi todo lo de B ya está en A. LUNA, 2 arbitrajes válidos de 6 en el catálogo.)
-- [ ] 117. Congelar la versión que se evalúa (27-10-2026, autor). Así los resultados son comparables entre sí y el tribunal puede repetir el paso 105 con la misma versión. Unos 15 minutos, sin coste. Se hace con el hito 22 cerrado y antes de la primera ejecución de la evaluación.
+- [x] 117. Congelar la versión que se evalúa (27-10-2026, autor). Así los resultados son comparables entre sí y el tribunal puede repetir el paso 105 con la misma versión. Unos 15 minutos, sin coste. Se hace con el hito 22 cerrado y antes de la primera ejecución de la evaluación.
+  **Hecho el 04-11-2026** por Claude, a petición del autor; detalle en `docs/evaluacion/version.md`.
+  - **Prueba en inglés:** la ronda de preguntas normal (v0.12) con el documento del paso 105, porque la del paso 123 era una ronda centrada (v0.13). Salió válida a la primera, sin reparaciones, en 4 minutos y por 0,50 $: 39 preguntas en inglés (18 de las dos propuestas, 19 solo de A y 2 solo de B). LUNA propuso 20. No hizo falta corregir nada. El proyecto se borró y su resultado está en `docs/evaluacion/prueba-ingles-paso-117/`.
+  - **Comprobado:** `git status` limpio y todos los tests en verde. Las imágenes de Docker (03-11-2026) son del código del paso 122 (`d0dc673`), el último con código, y los 30 prompts y esquemas del repositorio están byte a byte en la imagen. Claude Code 2.1.283.
+  - **Etiqueta `evaluacion-1`:** en el commit de este paso, cuando la confirme el autor (sin push).
   **Qué haces tú** (o Claude, si se lo pides):
   1. **Antes de congelar, haz una prueba barata en inglés** (añadido el 27-10-2026). El flujo en inglés no se ha probado nunca con modelos: los prompts lo admiten (`idioma`), pero ningún test ni ninguna ejecución real lo ha usado.
      - Crea el proyecto del paso 105 con el idioma en inglés, sube el documento de PURE y lanza solo la ronda de preguntas. Cuesta en torno a 1 $.
@@ -623,6 +627,11 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
   5. **Si durante la evaluación un error obliga a cambiar código o prompts:** se crea `evaluacion-2`, se anota en el mismo fichero qué cambió y por qué, y se repiten las ejecuciones afectadas. Cada resultado dice con qué etiqueta se obtuvo.
 - [ ] 105. El flujo completo con un documento público del dataset PURE (27-10-2026, detalles de Claude). Hasta ahora todo se ha probado con documentos que hizo Claude o que son internos. Un documento público, ajeno al proyecto, es una prueba que el tribunal puede repetir. Coste: como un flujo de clínicas, unos 7–9 $, y algo más si el documento es más largo.
   **Qué es PURE:** 79 documentos de requisitos públicos (sobre todo especificaciones SRS en inglés), de Ferrari, Spagnolo y Gnesi, RE 2017. Están en [Zenodo](https://zenodo.org/records/1414117); hay una versión más reciente, que es la que se usa.
+  **Documento elegido** (04-11-2026, propuesto por Claude y aprobado por el autor): `2005 - microcare.pdf`, el SRS del *Voucher Management System* de Microcare. Tiene 33 páginas y unos 11.000 tokens, de la versión 2.0 (Zenodo, registro 7118517, CC BY 4.0, la misma del paso 123).
+  - **Por qué:** es una especificación industrial, no un ejercicio de clase, con varios módulos y usuarios con permisos (creación de vales, ventas, reclamaciones, devoluciones, opiniones de clientes, informes y seguridad), y el texto se extrae bien.
+  - **Alternativa:** `2008 - vub.pdf`, un trabajo de clase.
+  - **Descartados:** `keepass` (un solo usuario), `puget sound` (marcado como «Confidential») y `cctns` (corto y con datos policiales).
+  - Ya se usó en la prueba en inglés del paso 117.
   **Qué haces tú:**
   1. **Elige un documento** con estas cuatro condiciones:
      - en inglés;

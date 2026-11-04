@@ -1,0 +1,823 @@
+{
+  "fuente": "ARB",
+  "verificacion_cruzada": true,
+  "mensaje": "Unión del árbitro.",
+  "salida": {
+    "preguntas": [
+      {
+        "id": "P-001",
+        "pregunta": "For each distributor-to-client retail sale, which purchaser, voucher, distributor, date, location and price details must the system record, and must it check that only one voucher is sold at a time for the purchaser or their partner?",
+        "motivo": "The document requires retail-sale tracking but describes only the MSIU-to-distributor transaction in detail, leaving retail-sale data and enforcement rules unspecified.",
+        "fuentes": [
+          "DOC-01#F063",
+          "DOC-01#F064",
+          "DOC-01#F065",
+          "DOC-01#F067",
+          "DOC-01#F105",
+          "DOC-01#F123",
+          "DOC-01#F179",
+          "DOC-01#F181"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-001"
+          ],
+          "propuesta_2": [
+            "P-006"
+          ]
+        },
+        "explicacion": "Both ask about retail-sale scope; the combined question retains the specific fields and one-voucher rule from proposal 1."
+      },
+      {
+        "id": "P-002",
+        "pregunta": "For distributor allocations and client retail sales, which date must be the current system date and which may be backdated, and what limits or future-date checks apply to each?",
+        "motivo": "The document states that distribution uses the system date but also permits past sale dates, without clearly distinguishing the transactions or their validation rules.",
+        "fuentes": [
+          "DOC-01#F181",
+          "DOC-01#F186",
+          "DOC-01#F187",
+          "DOC-01#F188"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-002"
+          ],
+          "propuesta_2": [
+            "P-008"
+          ]
+        },
+        "explicacion": "Both address the apparent conflict between current distribution dates and backdated sales; the combined question asks which transaction each rule governs."
+      },
+      {
+        "id": "P-003",
+        "pregunta": "What makes up one uniquely numbered voucher: how many client and partner visit slips does it contain, and how do their barcodes identify the voucher, patient type and visit number?",
+        "motivo": "The descriptions of a two-person voucher and its tear-off slips leave their arrangement and identifier relationships unclear for generation and claim matching.",
+        "fuentes": [
+          "DOC-01#F063",
+          "DOC-01#F106",
+          "DOC-01#F125",
+          "DOC-01#F137",
+          "DOC-01#F139",
+          "DOC-01#F140",
+          "DOC-01#F141",
+          "DOC-01#F142"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-003"
+          ],
+          "propuesta_2": [
+            "P-003"
+          ]
+        },
+        "explicacion": "Both concern the composition of a voucher; the combined question preserves the physical-slip and barcode-identification details."
+      },
+      {
+        "id": "P-004",
+        "pregunta": "What are the exact formats and lengths, including prefixes, for the project, group-batch, batch, voucher and security codes, and how must the security code be validated?",
+        "motivo": "Several stated code lengths conflict with their examples, and the security-code format and validation rule are missing.",
+        "fuentes": [
+          "DOC-01#F125",
+          "DOC-01#F126",
+          "DOC-01#F127",
+          "DOC-01#F128",
+          "DOC-01#F130",
+          "DOC-01#F131",
+          "DOC-01#F132",
+          "DOC-01#F133"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-004"
+          ],
+          "propuesta_2": [
+            "P-001"
+          ]
+        },
+        "explicacion": "Although the platform marked proposal 1's item as unmatched, both ask for the same code formats; proposal 1 also asks for security-code validation."
+      },
+      {
+        "id": "P-005",
+        "pregunta": "What is the minimum number of vouchers allowed in one creation run, and are the approximate sizes of 10 vouchers per batch and 100 batches per group fixed capacities or examples?",
+        "motivo": "Creation minimums and batch/group sizing cannot be validated from an undecided minimum and approximate quantities.",
+        "fuentes": [
+          "DOC-01#F128",
+          "DOC-01#F130",
+          "DOC-01#F145"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-005"
+          ],
+          "propuesta_2": [
+            "P-002"
+          ]
+        },
+        "explicacion": "Both ask for voucher-creation quantities; proposal 1 additionally identifies the group-batch capacity question."
+      },
+      {
+        "id": "P-006",
+        "pregunta": "How are voucher validity start and end dates determined, during which events must expiry block use, and do authorized changes apply to vouchers already distributed, sold or used?",
+        "motivo": "Neither the applicable validity period nor the events and existing vouchers affected by a validity-date amendment are specified.",
+        "fuentes": [
+          "DOC-01#F123",
+          "DOC-01#F134",
+          "DOC-01#F135",
+          "DOC-01#F148",
+          "DOC-01#F149",
+          "DOC-01#F150"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-006"
+          ],
+          "propuesta_2": [
+            "P-004"
+          ]
+        },
+        "explicacion": "Both address voucher validity; proposal 1 also asks how amendments affect previously distributed or used vouchers."
+      },
+      {
+        "id": "P-007",
+        "pregunta": "When a voucher number is withheld, which operations must be blocked, what happens if it was already distributed or used, and may an authorized user release the hold?",
+        "motivo": "The document permits withholding but does not define its effects on transactions or its later lifecycle.",
+        "fuentes": [
+          "DOC-01#F148",
+          "DOC-01#F149"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-007"
+          ],
+          "propuesta_2": [
+            "P-005"
+          ]
+        },
+        "explicacion": "Both ask about withheld-voucher behavior; the combined question retains prior use and release of a hold."
+      },
+      {
+        "id": "P-008",
+        "pregunta": "What are the initial maximum retail and wholesale prices, who may set or change them, may they vary by project, and which price applies to a transaction recorded after a change?",
+        "motivo": "Voucher prices and the applicable rate for a sale or return cannot be specified without price-setting and effective-date rules.",
+        "fuentes": [
+          "DOC-01#F136",
+          "DOC-01#F181",
+          "DOC-01#F182",
+          "DOC-01#F259"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-008"
+          ],
+          "propuesta_2": [
+            "P-007"
+          ]
+        },
+        "explicacion": "The platform marked both as unmatched, but both seek voucher-price rules; the combined question includes initial values, authority and price changes."
+      },
+      {
+        "id": "P-009",
+        "pregunta": "Which voucher statuses make a voucher eligible for allocation to a distributor, particularly if it is expired, withheld or already allocated?",
+        "motivo": "Selecting from 'available stock' does not define the exclusion rules for vouchers in these states.",
+        "fuentes": [
+          "DOC-01#F134",
+          "DOC-01#F148",
+          "DOC-01#F181",
+          "DOC-01#F184"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-009"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept separately because this asks about general allocation eligibility, whereas the similar item in proposal 2 concerns the consequences of a distributor return."
+      },
+      {
+        "id": "P-010",
+        "pregunta": "After a distributor is deactivated, may the system still record sales, returns or historical transactions for that distributor?",
+        "motivo": "A distributor can be deactivated, but the effect of that status on transactions is not specified.",
+        "fuentes": [
+          "DOC-01#F155",
+          "DOC-01#F169",
+          "DOC-01#F181",
+          "DOC-01#F259"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-010"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept separately because distributor deactivation is distinct from the retail-sales scope raised by the platform's similar match."
+      },
+      {
+        "id": "P-011",
+        "pregunta": "May a distributor return a voucher that has already been sold, used, expired or withheld, and when an accepted return occurs, does the voucher become available for redistribution?",
+        "motivo": "The documented return check verifies the original distributor but does not define other return exclusions or the resulting stock status.",
+        "fuentes": [
+          "DOC-01#F123",
+          "DOC-01#F148",
+          "DOC-01#F257",
+          "DOC-01#F258",
+          "DOC-01#F259",
+          "DOC-01#F261",
+          "DOC-01#F262"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-011"
+          ],
+          "propuesta_2": [
+            "P-009"
+          ]
+        },
+        "explicacion": "Both address the effects of distributor returns; proposal 1 adds the cases in which a return should not be accepted."
+      },
+      {
+        "id": "P-012",
+        "pregunta": "For a distributor's voucher return, should the credit use the wholesale rate paid when the voucher was distributed or the rate effective on the return date?",
+        "motivo": "The return-amount formula names the wholesale rate without saying which dated rate applies.",
+        "fuentes": [
+          "DOC-01#F182",
+          "DOC-01#F259"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-012"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept separately because return-credit pricing is not the same question as whether returned vouchers can re-enter stock."
+      },
+      {
+        "id": "P-013",
+        "pregunta": "Is a separate sales-team register and team-level tracking required for the initial pilot, or only for a later country-wide rollout?",
+        "motivo": "Sales-team data appears mandatory for current salespeople, while the sales-team register is described as future development.",
+        "fuentes": [
+          "DOC-01#F170",
+          "DOC-01#F172",
+          "DOC-01#F173"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-013"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept because only proposal 1 asks about the timing of sales-team functionality."
+      },
+      {
+        "id": "P-014",
+        "pregunta": "When a patient is referred to a hospital that is not an approved voucher service provider, must the system record only the referral, or also track that hospital's treatment and reimburse its claims?",
+        "motivo": "The document allows referral outside the provider network without defining the system's responsibility after referral.",
+        "fuentes": [
+          "DOC-01#F068",
+          "DOC-01#F109",
+          "DOC-01#F245"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-014"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept because only proposal 1 raises the scope of non-provider referrals."
+      },
+      {
+        "id": "P-015",
+        "pregunta": "For provider claim submissions and payments, does 'bi-monthly' mean twice per month or once every two months, and what are the period boundaries and cutoff dates?",
+        "motivo": "Claim submission and payment periods cannot be scheduled from the ambiguous term 'bi-monthly' alone.",
+        "fuentes": [
+          "DOC-01#F116",
+          "DOC-01#F209",
+          "DOC-01#F221"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-015"
+          ],
+          "propuesta_2": [
+            "P-010"
+          ]
+        },
+        "explicacion": "Both ask for the meaning of bi-monthly and the applicable submission and payment periods."
+      },
+      {
+        "id": "P-016",
+        "pregunta": "Are approved provider claims payable only by bank transfer, or may providers also receive cash reimbursement?",
+        "motivo": "The program description specifies bank transfers for clean claims, but provider payment terms allow cash or bank.",
+        "fuentes": [
+          "DOC-01#F082",
+          "DOC-01#F209"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-016"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept because only proposal 1 identifies the conflicting reimbursement modes."
+      },
+      {
+        "id": "P-017",
+        "pregunta": "Must the system initiate payments to providers, or only calculate claim amounts and prepare payment reports for external payment; if payment is external, which payment outcomes must it record?",
+        "motivo": "The descriptions of system payment control and administration-arranged payments leave the payment-system boundary unclear.",
+        "fuentes": [
+          "DOC-01#F082",
+          "DOC-01#F116",
+          "DOC-01#F211",
+          "DOC-01#F215"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-017"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept because only proposal 1 asks whether the system performs payments or records externally arranged payments."
+      },
+      {
+        "id": "P-018",
+        "pregunta": "What do 'Mentioned Forms' and 'Available Forms' count in a provider claim submission, and what must happen when the counts differ before issuing a receipt or processing the forms?",
+        "motivo": "Unequal counts are allowed, but their meanings and the required reconciliation action are not defined.",
+        "fuentes": [
+          "DOC-01#F224",
+          "DOC-01#F227",
+          "DOC-01#F228",
+          "DOC-01#F229",
+          "DOC-01#F231"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-018"
+          ],
+          "propuesta_2": [
+            "P-011"
+          ]
+        },
+        "explicacion": "Although the platform marked both as unmatched, they ask about the same form-count discrepancy; their meaning and handling have been combined."
+      },
+      {
+        "id": "P-019",
+        "pregunta": "What distinguishes rejected, quarantined, accepted and cleared provider claims, and what transitions apply when a form is rejected before entry or later corrected and resubmitted, including whether its form number is retained?",
+        "motivo": "The overlapping rejection and quarantine descriptions do not establish a consistent claim lifecycle or correction rules.",
+        "fuentes": [
+          "DOC-01#F114",
+          "DOC-01#F115",
+          "DOC-01#F233",
+          "DOC-01#F234",
+          "DOC-01#F242",
+          "DOC-01#F246",
+          "DOC-01#F247"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-019"
+          ],
+          "propuesta_2": [
+            "P-012"
+          ]
+        },
+        "explicacion": "Both ask for claim-status transitions; proposal 1 additionally specifies pre-entry rejection and resubmission identifiers."
+      },
+      {
+        "id": "P-020",
+        "pregunta": "Must a client or partner's voucher claims follow consultation, first-follow-up and second-follow-up order, and what happens if the same visit is claimed twice or a follow-up is provided by another approved provider?",
+        "motivo": "Visit-slip descriptions alone do not define sequence, duplicate-visit or cross-provider validation.",
+        "fuentes": [
+          "DOC-01#F068",
+          "DOC-01#F106",
+          "DOC-01#F108",
+          "DOC-01#F139",
+          "DOC-01#F140",
+          "DOC-01#F141",
+          "DOC-01#F142",
+          "DOC-01#F243"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-020"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept because only proposal 1 asks for visit-sequence and duplicate-claim rules."
+      },
+      {
+        "id": "P-021",
+        "pregunta": "What are the exact formats and uniqueness rules for provider codes, provider staff codes and claim numbers, including code-prefix or suffix placement and the number of staff-code digits?",
+        "motivo": "The code descriptions and examples disagree on component placement and staff-code length, preventing reliable identifier validation.",
+        "fuentes": [
+          "DOC-01#F198",
+          "DOC-01#F219",
+          "DOC-01#F220",
+          "DOC-01#F242"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-021"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept because only proposal 1 identifies the distinct provider, staff and claim code ambiguities."
+      },
+      {
+        "id": "P-022",
+        "pregunta": "Can you provide the approved treatment matrix and its claim-validation rules, including what happens when a treatment differs from the matrix and when an alteration is allowed as justified?",
+        "motivo": "The referenced clinical rules are not supplied, and claim handling for treatment outside the matrix is unspecified.",
+        "fuentes": [
+          "DOC-01#F069",
+          "DOC-01#F239",
+          "DOC-01#F246",
+          "DOC-01#F255",
+          "DOC-01#F256",
+          "DOC-01#F268"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-022"
+          ],
+          "propuesta_2": [
+            "P-014"
+          ]
+        },
+        "explicacion": "Despite the platform's unmatched labels, both ask how claims should be assessed against the treatment matrix; the combined question requests the matrix and exception rules."
+      },
+      {
+        "id": "P-023",
+        "pregunta": "Which claim fields are mandatory for each visit type, and when are a doctor's note, HIV details, referral destination and referral reason required?",
+        "motivo": "The general rule that claim master fields are mandatory conflicts with fields described as conditional or applicable only 'if any'.",
+        "fuentes": [
+          "DOC-01#F237",
+          "DOC-01#F239",
+          "DOC-01#F240",
+          "DOC-01#F243",
+          "DOC-01#F244",
+          "DOC-01#F245"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-023"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept separately because field mandatory/conditional rules differ from the missing HIV-form specification raised in proposal 2."
+      },
+      {
+        "id": "P-024",
+        "pregunta": "In what units and range must patient age be recorded on a claim so that both newborns and adults can be represented?",
+        "motivo": "Patient age is mandatory but its units and range are unspecified despite neonatal cases being within the scheme.",
+        "fuentes": [
+          "DOC-01#F074",
+          "DOC-01#F237",
+          "DOC-01#F240"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-024"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept because only proposal 1 asks for a usable patient-age rule."
+      },
+      {
+        "id": "P-025",
+        "pregunta": "At claim entry, must a patient's thumbprint be captured from the paper claim form or collected digitally at treatment, and what must happen if it is missing, unreadable or has no previous print for comparison?",
+        "motivo": "Paper thumbprints and a biometric reader are both mentioned, but the capture and first-visit or unmatchable-print rules are not defined.",
+        "fuentes": [
+          "DOC-01#F038",
+          "DOC-01#F195",
+          "DOC-01#F249",
+          "DOC-01#F250",
+          "DOC-01#F255"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-025"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept separately from the mismatch-count question because this asks how a claim's print is obtained and assessed."
+      },
+      {
+        "id": "P-026",
+        "pregunta": "Does automatic provider deactivation occur after more than two thumbprint mismatches, more than two confirmed fraudulent claims of any kind, or either; how are those events counted, and is review required before deactivation?",
+        "motivo": "The stated automatic-deactivation triggers refer to different types of events without defining counting or confirmation rules.",
+        "fuentes": [
+          "DOC-01#F038",
+          "DOC-01#F206",
+          "DOC-01#F207",
+          "DOC-01#F249",
+          "DOC-01#F250",
+          "DOC-01#F251"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-026"
+          ],
+          "propuesta_2": [
+            "P-015"
+          ]
+        },
+        "explicacion": "Both ask when repeated fraud or biometric mismatches deactivate a provider; proposal 2 adds missing and unreadable events and review requirements."
+      },
+      {
+        "id": "P-027",
+        "pregunta": "When provider fees or drug prices change, must a claim use the rates from the treatment, submission, entry or payment date, and what happens if no rate is effective on that date?",
+        "motivo": "Claims cannot be priced consistently without an effective-date rule for changing provider fees and drug prices.",
+        "fuentes": [
+          "DOC-01#F209",
+          "DOC-01#F237",
+          "DOC-01#F248",
+          "DOC-01#F249",
+          "DOC-01#F254"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-027"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept separately from proposal 2's calculation-source question because this asks which dated version of a rate applies."
+      },
+      {
+        "id": "P-028",
+        "pregunta": "For an initial-visit claim, is the provider's laboratory fee paid once per claim, once per laboratory test, or only if at least one test was performed?",
+        "motivo": "The first-visit amount includes a single laboratory-fee term but allows zero or multiple tests without saying how that term is applied.",
+        "fuentes": [
+          "DOC-01#F209",
+          "DOC-01#F239",
+          "DOC-01#F248"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-028"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept because only proposal 1 raises the first-visit laboratory-fee calculation."
+      },
+      {
+        "id": "P-029",
+        "pregunta": "When feedback is entered using a voucher shared by a client and partner across several visits, which person's treatment and which visit or visits must the feedback display and refer to?",
+        "motivo": "Voucher number alone can identify multiple patients and visits, so the feedback-to-treatment link is ambiguous.",
+        "fuentes": [
+          "DOC-01#F063",
+          "DOC-01#F106",
+          "DOC-01#F110",
+          "DOC-01#F265",
+          "DOC-01#F266"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-029"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept because only proposal 1 asks how feedback selects a person and treatment history."
+      },
+      {
+        "id": "P-030",
+        "pregunta": "How must 'success of treatment' and 'partner treated' be determined for client feedback: from which claim data or rules, or from answers supplied by the client?",
+        "motivo": "These feedback values are described as automatically populated but have no stated source or derivation rule.",
+        "fuentes": [
+          "DOC-01#F237",
+          "DOC-01#F244",
+          "DOC-01#F265",
+          "DOC-01#F266"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-030"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept separately from the platform's similar feedback match because it asks how two derived values are obtained, not how satisfaction is rated."
+      },
+      {
+        "id": "P-031",
+        "pregunta": "What response values and mandatory or optional rules apply to counseling and privacy satisfaction in client feedback, and do they use the four-level treatment-satisfaction scale?",
+        "motivo": "The permitted values and required status of the counseling and privacy ratings are not stated.",
+        "fuentes": [
+          "DOC-01#F265",
+          "DOC-01#F266"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-031"
+          ],
+          "propuesta_2": [
+            "P-017"
+          ]
+        },
+        "explicacion": "Both ask for the counseling and privacy rating rules; proposal 1 identifies the existing treatment scale as a possible reference."
+      },
+      {
+        "id": "P-032",
+        "pregunta": "How must the reports define and calculate correctly documented cases, incorrect documentation, treatment according to algorithms, justified alterations, treatment errors, and primary clients versus notified partners?",
+        "motivo": "The specified provider comparisons and trend measures are not reproducible without definitions for their indicators.",
+        "fuentes": [
+          "DOC-01#F255",
+          "DOC-01#F268"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-032"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept separately from general report scope because this item asks for the definitions of particular clinical and population measures."
+      },
+      {
+        "id": "P-033",
+        "pregunta": "Which listed standard and customized analytical, medical, financial or statistical reports must be delivered in the initial release, and what reporting periods, filters and outputs are required for those reports?",
+        "motivo": "The document lists required reports while allowing other reports to be designed later, without fixing initial scope or report specifications.",
+        "fuentes": [
+          "DOC-01#F267",
+          "DOC-01#F268",
+          "DOC-01#F269"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-033"
+          ],
+          "propuesta_2": [
+            "P-018"
+          ]
+        },
+        "explicacion": "Both ask which reports are in scope; proposal 2 adds report periods, filters and outputs, while detailed indicator definitions remain a separate question."
+      },
+      {
+        "id": "P-034",
+        "pregunta": "Are screen permissions determined solely by user group, or must separately assigned roles or individual permission exceptions also be supported; if so, which ones?",
+        "motivo": "The security description mentions both roles and granular access but specifies only group-level screen permissions.",
+        "fuentes": [
+          "DOC-01#F034",
+          "DOC-01#F143",
+          "DOC-01#F271",
+          "DOC-01#F272",
+          "DOC-01#F273",
+          "DOC-01#F274"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-034"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept because only proposal 1 asks about the relationship between group, role and individual permissions."
+      },
+      {
+        "id": "P-035",
+        "pregunta": "What testable account and activity-security rules must the system enforce for passwords, failed logins, account lockout, sessions and activity logging?",
+        "motivo": "The general goal of high intrusion control does not specify measurable authentication, session or logging behavior.",
+        "fuentes": [
+          "DOC-01#F033",
+          "DOC-01#F034",
+          "DOC-01#F271",
+          "DOC-01#F275"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-035"
+          ],
+          "propuesta_2": [
+            "P-019"
+          ]
+        },
+        "explicacion": "Both ask for testable user-security behavior; proposal 2 adds sessions and activity logging to proposal 1's authentication rules."
+      },
+      {
+        "id": "P-036",
+        "pregunta": "Which user groups may view or change identifiable patient information, HIV details and thumbprints, and must amendments to claims and provider payment terms be auditable?",
+        "motivo": "Generic screen permissions do not establish access to sensitive clinical data or traceability of authorized claim and payment-term changes.",
+        "fuentes": [
+          "DOC-01#F033",
+          "DOC-01#F212",
+          "DOC-01#F237",
+          "DOC-01#F243",
+          "DOC-01#F249",
+          "DOC-01#F252",
+          "DOC-01#F273",
+          "DOC-01#F274"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-036"
+          ],
+          "propuesta_2": []
+        },
+        "explicacion": "Kept separately because it asks for access to specific sensitive records and traceability of particular changes, beyond general login rules."
+      },
+      {
+        "id": "P-037",
+        "pregunta": "What response-time targets, peak concurrent-user or transaction levels, and expected volume beyond the 20,000-voucher pilot must the system support for voucher lookup, claim entry and reporting?",
+        "motivo": "The goals of faster entry and future expansion do not provide measurable performance or capacity targets.",
+        "fuentes": [
+          "DOC-01#F028",
+          "DOC-01#F032",
+          "DOC-01#F102",
+          "DOC-01#F193"
+        ],
+        "de": {
+          "propuesta_1": [
+            "P-037"
+          ],
+          "propuesta_2": [
+            "P-020"
+          ]
+        },
+        "explicacion": "Both ask for measurable performance and concurrency; proposal 1 adds the affected operations and post-pilot volume."
+      },
+      {
+        "id": "P-038",
+        "pregunta": "Which source governs a reimbursable claim amount when the provider's agreed fees and drug prices differ from the MSIU treatment matrix, and who sets the applicable rates?",
+        "motivo": "The stated fee-and-drug formula conflicts with the instruction to calculate claim amounts only from the treatment matrix.",
+        "fuentes": [
+          "DOC-01#F209",
+          "DOC-01#F248",
+          "DOC-01#F249",
+          "DOC-01#F255",
+          "DOC-01#F256"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-013"
+          ]
+        },
+        "explicacion": "Kept because only proposal 2 asks which conflicting source governs claim amounts; rate effective dates are covered separately."
+      },
+      {
+        "id": "P-039",
+        "pregunta": "Can you provide the referenced HIV-details form, including the fields and validation rules the system must support?",
+        "motivo": "The required HIV claim details cannot be specified because the referenced form is not included.",
+        "fuentes": [
+          "DOC-01#F243"
+        ],
+        "de": {
+          "propuesta_1": [],
+          "propuesta_2": [
+            "P-016"
+          ]
+        },
+        "explicacion": "Kept because only proposal 2 asks for the missing HIV-form specification, distinct from when the claim field is required."
+      }
+    ],
+    "descartadas": []
+  },
+  "desviaciones": [
+    {
+      "id": "P-004",
+      "tipo": "junta-distintos",
+      "similitud": 0.662,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,66, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    },
+    {
+      "id": "P-008",
+      "tipo": "junta-distintos",
+      "similitud": 0.693,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,69, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    },
+    {
+      "id": "P-018",
+      "tipo": "junta-distintos",
+      "similitud": 0.611,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,61, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    },
+    {
+      "id": "P-022",
+      "tipo": "junta-distintos",
+      "similitud": 0.581,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,58, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    },
+    {
+      "id": "P-035",
+      "tipo": "junta-distintos",
+      "similitud": 0.683,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,68, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    },
+    {
+      "id": "P-008",
+      "tipo": "junta-distintos",
+      "similitud": 0.555,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,55, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    },
+    {
+      "id": "P-018",
+      "tipo": "junta-distintos",
+      "similitud": 0.585,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,59, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    },
+    {
+      "id": "P-035",
+      "tipo": "junta-distintos",
+      "similitud": 0.686,
+      "explicacion": "La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a 0,69, por debajo de «parecido» (0,70). Comprueba que no se han mezclado dos cosas."
+    }
+  ],
+  "emparejamiento": {
+    "segundos": 7.05,
+    "segundos_cpu": 27.9
+  }
+}
