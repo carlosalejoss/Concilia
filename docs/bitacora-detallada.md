@@ -3066,3 +3066,25 @@ Paso 104 hecho: métricas externas de calidad sobre lo que generó el paso 105.
 - **No se hizo** clínicas en inglés: habría que generarlo de nuevo, con coste.
 - **Pendiente para el autor:** revisar los casos dudosos de la revisión (pasivas dentro de la respuesta, historias de la unión) si van a la memoria.
 - **Siguiente:** el paso 106 (prueba como analista con ReservaSalas), que necesita al autor editando en el navegador.
+
+## 04-11-2026, 12:50 (sesión)
+
+Tras el paso 104, a petición del autor («haz lo que consideres que puede aportar valor»).
+
+- **¿El árbitro del backlog junta historias de A en todos los backlogs?** Comprobado sin coste, con `/jobs/{id}/comparison` de los 11 backlogs terminados:
+  - de un 0 % a un 57 % de la unión junta 2 o más historias de A; es más frecuente cuando A propone muchas más que B;
+  - con las mismas propuestas de clínicas, el árbitro v0.11 juntó 26 y un nuevo arbitraje v0.12 ninguna: variación, no una regla fija del prompt;
+  - AQUSA no se puede pasar a los demás, que están en español.
+
+  Tabla en `docs/evaluacion/metricas-externas.md`.
+- **Decisión de Claude:**
+  - no se corrige ahora, porque cambiaría la versión congelada;
+  - el paso 119 cuenta estas uniones en cada repetición;
+  - la mejora (que la plataforma marque como discrepancia, sin IA, la historia que junta varias de una misma propuesta, y una regla en el prompt) queda en «Después», punto 7.
+- **Paso 106 preparado, sin coste:**
+  - proyecto 41 «ReservaSalas analista», con el sistema «el sistema ReservaSalas» (el nombre por defecto habría metido «analista» en cada requisito);
+  - `DOC-01.txt` subido y documentación cerrada;
+  - plantilla `docs/evaluacion/analista.md` para los tiempos y las notas del autor.
+
+  La primera ronda la lanza el autor, que es quien hace de analista.
+

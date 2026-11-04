@@ -778,6 +778,7 @@ Decidido el 27-10-2026: el autor propuso comparar una ejecución de SOL, una de 
   - De cada fase y repetición, saca el informe de siempre: tokens, minutos, coste, elementos de A, de B y de la unión, y discrepancias.
   - Mide **cuánto se parecen entre sí las repeticiones**: de cada dos repeticiones de A, qué porcentaje de elementos de una tiene par «mismo» o «parecido» en la otra, con `ProposalMatcher` y el modelo de embeddings de `models/`, como `medir-fragmentos-relacionados.cs`. Lo mismo con B y con la unión.
   - Así se sabe si la unión del árbitro es más estable que cada modelo por separado. Hay un indicio: con la v0.10, la unión del catálogo de clínicas osciló entre 202 y 222 requisitos, frente a 209–291 antes.
+  - **Cuenta en cada backlog las historias de la unión que juntan varias de una misma propuesta** (04-11-2026, tras el paso 104), con la comparación de cada trabajo. En los backlogs que ya había iba de un 0 % a un 57 %, y en PURE esas uniones crearon historias con dos acciones (`docs/evaluacion/metricas-externas.md`). Con 3 repeticiones del mismo catálogo se sabrá si es lo normal o variación.
   - Resultados en `docs/evaluacion/repeticiones.md`, con el bloque en palabras sencillas, y en `docs/costes/costes.md`, que se regenera.
 - [ ] 120. Concilia frente a un solo modelo (27-10-2026, autor). La comparación que responde a la hipótesis. Usa los trabajos del paso 119 y la referencia del 118. Unas 5 horas de revisión, que se pueden repartir en varios días; sin coste en dinero.
   **Qué hace Claude primero:**
@@ -846,3 +847,7 @@ Por este orden:
    - los títulos, leyendas y anexos de Word y PDF;
    - el prefijo «A decidir por el cliente:», que pide así el prompt de sugerencias.
    No se hace durante la evaluación porque cambia el código (sería `evaluacion-2`), aunque no obligaría a repetir ninguna ejecución con modelos: las exportaciones salen de lo guardado.
+7. **Que el árbitro del backlog no junte historias atómicas de una misma propuesta** (pasos 104 y 105, 04-11-2026). Se decide con las repeticiones del paso 119. En PURE, las 6 historias de la unión con dos acciones juntan cada una 2 o 3 historias atómicas de SOL; en los demás backlogs, el árbitro junta varias de A en una de un 0 % a un 57 % de las veces. Dos piezas:
+   - **la más fiable, sin IA:** la plataforma marca como discrepancia la historia de la unión que junta varias de una misma propuesta, como ya hace con las demás desviaciones del árbitro (paso 88);
+   - **en el prompt:** pedir al árbitro que no junte historias de A que ya son atómicas solo porque B tiene una que las cubre.
+   No se hace durante la evaluación, porque cambiaría la versión congelada.

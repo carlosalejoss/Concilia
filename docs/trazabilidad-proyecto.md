@@ -386,6 +386,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Lo básico lo cumplen todos:** *shall* y la forma de las historias.
   - **Requisitos con un defecto real:** 5,1 (SOL), 9,6 (LUNA) y 7,0 (unión) por cada 100.
   - **Historias con dos acciones:** 6,0, 21,4 y 17,6. Las 6 de la unión juntan historias atómicas de SOL: el árbitro del backlog pierde ahí una calidad que SOL tenía.
+  - **En los demás backlogs,** sin coste: el árbitro junta varias historias de A en una de un 0 % a un 57 % de las veces, y con las mismas propuestas una vez lo hizo y otra no. Es variación, no una regla fija. Lo cuenta el paso 119; la mejora (marcarlo como discrepancia sin IA), en «Después», punto 7.
 
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
@@ -477,5 +478,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 262 entre el 28-09 y el 04-11-2026.
+- **Commits:** 263 entre el 28-09 y el 04-11-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99), 937 (22-10, paso 100), 943 (22-10, pasos 107 y 108), 948 (23-10, paso 101), 951 (23-10, paso 102), 966 (26-10, paso 109), 974 (26-10, paso 110) y 983 (26-10, paso 111), 990 (26-10, instantánea de la v0.12), 1.002 (26-10, paso 112), 1.013 (27-10, paso 113), 1.020 (27-10, paso 114), 1.024 (27-10, paso 115), 1.025 (27-10, ronda que lo lee todo del paso 116) , 1.026 (27-10, arreglo de `REF-PREG`) y 1.028 (03-11, paso 122).

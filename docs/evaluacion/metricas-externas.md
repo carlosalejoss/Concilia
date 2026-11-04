@@ -145,6 +145,29 @@ Cómo se revisó:
 - **La unión queda entre los dos,** más cerca de LUNA en las historias (18 por cada 100). Cuadra con lo que se vio en el paso 105: el árbitro del backlog adopta la granularidad de B y junta historias de A. Las 6 historias de la unión con dos acciones juntan cada una 2 o 3 historias atómicas de SOL en una sola, con la forma de la de LUNA. Por ejemplo, la HU-008 («allocate … and generate the distributor invoice») junta «Allocate vouchers to distributors» y «Generate distribution invoices» de SOL. Aquí la unión pierde una calidad que SOL tenía.
 - **Las herramientas en bruto exageran:** sin revisar, Vale daría un 22 % de requisitos de la unión con defecto y la cifra revisada es un 7 %. Casi todo el ruido son las comas en las condiciones y las pasivas en el disparador.
 
+### ¿Pasa en otros backlogs?
+
+Comprobado el mismo día, sin coste, con la comparación de A, B y el árbitro (`/jobs/{id}/comparison`) de todos los backlogs terminados. Para cada uno, cuántas historias de la unión juntan dos o más historias de una misma propuesta. AQUSA no se puede pasar a los demás, porque están en español: esto cuenta las uniones, no si crean historias con dos acciones.
+
+| Proyecto | Fecha | Árbitro | A | B | Unión | Juntan ≥ 2 de A | Juntan ≥ 2 de B |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| ReservaSalas | 09-10 | v0 | 17 | 12 | 16 | 1 (6 %) | 1 (6 %) |
+| Proyecto interno 1 | 09-10 | v0.1 | 37 | 23 | 37 | 0 | 0 |
+| Proyecto interno 2 | 13-10 | v0.3 | 58 | 20 | 53 | 6 (11 %) | 17 (32 %) |
+| Proyecto interno 3 | 14-10 | v0.7 | 118 | 36 | 46 | 26 (57 %) | 0 |
+| Clínicas | 15-10 | v0.9 | 109 | 54 | 109 | 0 | 7 (6 %) |
+| Banco de alimentos | 16-10 | v0.9 | 45 | 28 | 45 | 1 (2 %) | 6 (13 %) |
+| Clínicas v0.11 | 22-10 | v0.11 | 152 | 56 | 121 | 26 (21 %) | 1 (1 %) |
+| Clínicas v0.11, nuevo arbitraje de las mismas propuestas | 22-10 | v0.12 | 152 | 56 | 152 | 0 | 1 (1 %) |
+| Clínicas v0.11 | 23-10 | v0.12 | 96 | 85 | 94 | 10 (11 %) | 5 (5 %) |
+| Clínicas v0.11 | 03-11 | v0.12 | 125 | 40 | 89 | 21 (24 %) | 0 |
+| PURE · microcare | 04-11 | v0.12 | 50 | 28 | 34 | 14 (41 %) | 0 |
+
+- **Pasa a menudo, pero no siempre:** de un 0 % a un 57 % de la unión. Es más frecuente cuando A propone muchas más historias que B, y el árbitro toma las de B como medida.
+- **No es una regla fija del prompt, sino variación del árbitro:** con las mismas propuestas de clínicas, el árbitro v0.11 juntó 26 y un nuevo arbitraje con la v0.12 ninguna. Con la v0.12 y otras propuestas, entre un 11 % y un 41 %.
+- **Juntar no siempre es malo:** si A parte de más una funcionalidad, juntar es correcto. Solo en PURE se ha podido medir que crea historias con dos acciones (las 6 de arriba).
+- **Qué se hace:** nada antes de evaluar (cambiaría la versión). Las repeticiones del paso 119 cuentan estas uniones en cada backlog. Si se confirma, la mejora más fiable es que la plataforma marque como discrepancia, sin IA, la historia de la unión que junta varias de una misma propuesta, como ya hace con las otras desviaciones del árbitro. Además, el prompt puede pedir que no se junten historias de A que ya son atómicas. Anotado en «Después» del plan.
+
 ### Limitaciones
 
 - Un solo documento y una sola ejecución. Las repeticiones del paso 119 dirán cuánto varía.
