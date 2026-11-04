@@ -253,7 +253,7 @@ Lo que queda de la evaluación es el hito 23 de [`docs/plan-de-construccion.md`]
 - cuánto varía cada fase entre 3 repeticiones;
 - SOL ‖ SOL;
 - AQUSA y `vale-ears` como métricas externas;
-- un documento público del dataset PURE;
+- un documento público del dataset PURE (hecho: [`docs/evaluacion/pure.md`](docs/evaluacion/pure.md), el flujo completo en inglés por 9,29 $);
 - una prueba editando como un analista;
 - todo con una versión congelada, descrita en [`docs/evaluacion/version.md`](docs/evaluacion/version.md): código, prompts, modelos, umbrales y versión de Claude Code (etiqueta `evaluacion-1`, 04-11-2026).
 

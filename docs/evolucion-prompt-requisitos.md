@@ -474,6 +474,21 @@ En palabras sencillas: antes, el árbitro tenía que copiar a mano cada condici�
 - **LUNA sí propone preguntas,** al contrario que en la ronda centrada del paso 123.
 - Es la primera vez que se usa en inglés un prompt de la v0.12. No hizo falta cambiar nada.
 
+**Flujo completo con PURE en inglés (paso 105), 04-11-2026.** El mismo documento, con la versión `evaluacion-1`, de las preguntas al mockup y sin editar nada. Detalle en `docs/evaluacion/pure.md`.
+
+| Fase | Coste | Minutos | A | B | Unión (de ambas / solo A / solo B) |
+| --- | --- | --- | --- | --- | --- |
+| Preguntas | 0,57 $ | 4,4 | 37 | 23 | 40 (20 / 17 / 3) |
+| Sugerencias | 0,23 $ | 2,0 | — | — | 1 de la documentación y 39 suposiciones |
+| Catálogo | 0,98 $ | 9,6 | 142 | 115 | 122 (98 / 17 / 7) |
+| Backlog | 0,72 $ | 4,8 | 50 | 28 | 34 historias (27 / 6 / 1) |
+| Mockup | 6,81 $ | 25,4 | — | — | 21 pantallas |
+| **Total** | **9,29 $** | **46** | | | |
+
+- **Todo a la primera,** sin reparaciones ni ejecuciones detenidas, y en inglés. LUNA propone en todas las fases.
+- **Las decisiones del cliente no se inventan:** 28 sugerencias empiezan por «A decidir por el cliente:» (el prefijo sale en español, porque el prompt lo da así), y lo que queda abierto llega al catálogo como `[TBD]` (24 requisitos).
+- **El árbitro del backlog adopta la granularidad de B:** 14 historias de la unión juntan 2 o 3 de A, y de los criterios de las historias unidas no cita 74 de 176.
+
 ### Qué hay que mejorar
 
 - **Que la plataforma no marque como desviación un par «mismo» con cifras distintas** que el árbitro separa: los embeddings no ven la diferencia entre «un año» y «ocho años», y esos avisos son falsos. Es el mismo criterio de cifras que ya usa `fuentes.txt`.

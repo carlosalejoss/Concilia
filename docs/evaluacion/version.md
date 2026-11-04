@@ -86,6 +86,10 @@ El flujo en inglés solo se había probado en la ronda centrada del paso 123 (pr
 - **LUNA propone preguntas** (20). En la ronda centrada en inglés del paso 123 no propuso ninguna; con esta ronda, el inglés por sí solo no lo explica (era otro prompt y otro documento). Se sigue mirando en los pasos 105 y 119.
 - **No hizo falta corregir nada.** Lo único que falló fue el cliente: el primer intento de crear el proyecto, con `curl` y el cuerpo en la línea de órdenes de Git Bash, llegó con la codificación rota y la API lo rechazó sin crear nada. Con el cuerpo en un fichero UTF-8 funcionó.
 
+### Cambios después de la etiqueta que no tocan la aplicación
+
+- **04-11-2026, paso 105:** `scripts/evaluacion/costes.cs` muestra por su nombre los proyectos «PURE …», que son públicos, en lugar de anonimizarlos. Es un script de evaluación: no cambia la API, la web ni los prompts.
+
 ### En palabras sencillas
 
 Antes de medir, se fija una versión de Concilia y no se toca, para que todas las mediciones se hagan con la misma y cualquiera pueda repetirlas. Antes de fijarla, se probó una cosa que nunca se había usado: hacer las preguntas iniciales sobre un documento en inglés. Funcionó a la primera, por medio dólar, y los dos modelos aportaron preguntas.

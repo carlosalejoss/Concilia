@@ -2936,3 +2936,42 @@ Hito 23 empezado: paso 117 (la versión congelada que se evalúa).
 - **Título del TFG (autor):** «Evaluación del uso de grandes modelos de lenguaje (LLMs) para la automatización del análisis de un proyecto software» / «Evaluation of the Use of Large Language Models (LLMs) for Automating Software Project Analysis», en la portada, la página del resumen y las propiedades del PDF. Para que la portada siga en una página, dos espacios en blanco más cortos (3,56 → 2,2 cm y 1,76 → 1,2 cm).
 - **Diagrama de despliegue fiel a la versión evaluada (petición del autor):** se quita la API de Anthropic (el mockup va por la pasarela con SOL desde el proyecto grande de ejemplo), la pasarela dice «SOL: A, árbitro, sugerencias y mockup», la configuración ya no menciona el token de la suscripción, y Hugging Face sube a la altura del modelo de embeddings. Editado el SVG con un script y convertido a PNG con Edge sin ventana, al mismo tamaño (3744 × 2020). Los originales quedan como `memoria/diagrama-despliegue-con-anthropic.svg` y `.png`.
 - **Texto de la 2.2.1:** los servicios externos pasan de tres a dos (pasarela y Hugging Face).
+
+## 04-11-2026, 10:20 (sesión)
+
+Paso 105 hecho: el flujo completo con un documento público de PURE, en inglés, con `evaluacion-1`.
+
+- **Proyecto 40, «PURE · microcare»** (idioma `en`, sistema «the Voucher Management System»), con `2005 - microcare.pdf`. Ejecutado por Claude por la API, sin editar nada.
+- **Resultado:** todo a la primera, sin reparaciones ni ejecuciones detenidas. 46 minutos y 9,29 $:
+
+  | Fase | Coste | Resultado |
+  | --- | --- | --- |
+  | Preguntas | 0,57 $ | 40: 20 de las dos propuestas, 17 solo de A, 3 solo de B |
+  | Sugerencias | 0,23 $ | |
+  | Catálogo | 0,98 $ | 122 requisitos: 142 de A, 115 de B; 7 discrepancias |
+  | Backlog | 0,72 $ | 34 historias: 50 de A, 28 de B; 7 discrepancias |
+  | Mockup | 6,81 $ | 21 pantallas, 22 ejecuciones, 25 minutos |
+- **Coste del mockup:** el plan estimaba 7–9 $ para todo el flujo, pero el mockup solo había costado 7–21 $ en otros proyectos. Se avisó al autor antes de lanzarlo, con una nueva estimación de 6–12 $, y lo aprobó.
+- **Sugerencias:** 1 de la documentación (aprobada con «Aprobar todas»), 11 propuestas guardadas tal cual y 28 decisiones del cliente.
+  - En muchas de las 28, «la primera opción» no aplica: piden al cliente un dato. Regla aplicada:
+    - en cada elección, la primera opción;
+    - un «whether X» sin alternativa, «sí»;
+    - lo que solo aporta el cliente, «still to be decided by the client».
+  - Las 28 respuestas, en `docs/evaluacion/pure/respuestas-decisiones-cliente.json`. Lo pendiente llega al catálogo como `[TBD]` (24 requisitos).
+- **Validar sin editar:** la plataforma exige revisar las discrepancias. Solo se marcó «La he revisado» en las 7 del catálogo y en las 7 del backlog; el informe da 0 cambios del usuario.
+- **Hallazgos:**
+  - **los textos fijos de la plataforma siguen en español** en un proyecto en inglés:
+    - la narrativa «Como… quiero… para…» y «Tarea» en la web, la comparación y Gherkin;
+    - Word y PDF;
+    - el prefijo «A decidir por el cliente:».
+
+    Mejora futura («Después», punto 6), sin `evaluacion-2`: corregirlo no exige repetir ejecuciones. El paso 104 monta la entrada de AQUSA desde los campos del backlog;
+  - **los requisitos sin condición empiezan en minúscula** («the Voucher Management System SHALL…»): mirar en el paso 104;
+  - **el árbitro del backlog adopta la granularidad de B:** 14 historias de la unión juntan 2 o 3 de A, y no cita 74 de los 176 criterios de las historias que une. Lo mide el paso 120.
+- **El PDF no se copia en el repositorio:** lleva el copyright de Microcare y el repositorio no tiene licencia. Se anotan su descarga y su SHA-256.
+- **Archivos:**
+  - `docs/evaluacion/pure.md`;
+  - en `docs/evaluacion/pure/`: el catálogo en Word y PDF, el backlog en Gherkin, el mockup, el CSV del informe y las respuestas.
+- **`costes.cs`:** muestra por su nombre los proyectos «PURE …». También sale así el del paso 123, antes «Proyecto interno 4». Anotado en `version.md` como cambio que no toca la aplicación. `costes.md` regenerado.
+- **Sin reconstruir ni reiniciar contenedores.**
+- **Siguiente:** el paso 104 (AQUSA y `vale-ears`).

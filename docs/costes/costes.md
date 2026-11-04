@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 04-11-2026 08:16, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 04-11-2026 10:10, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -117,8 +117,14 @@ Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ron
 | Clinicas Veterinarias v0.11 | Actualización del catálogo | 1 | 1.249.680 | 97.932 | 2,53 | 12 |
 | Clinicas Veterinarias v0.11 | Actualización del backlog | 1 | 798.513* | 51.006* | 1,22* | 7 |
 | **Clinicas Veterinarias v0.11** | **Total** | 17 | **17.794.590*** | **3.130.770*** | **59,62*** | **243** |
-| Proyecto interno 4 | Preguntas centradas | 2 | ≥ 556.675 | ≥ 25.562 | ≥ 0,90 | 3 |
-| **Proyecto interno 4** | **Total** | 2 | **≥ 556.675** | **≥ 25.562** | **≥ 0,90** | **3** |
+| PURE PEPPOL VCD (paso 123) | Preguntas centradas | 2 | ≥ 556.675 | ≥ 25.562 | ≥ 0,90 | 3 |
+| **PURE PEPPOL VCD (paso 123)** | **Total** | 2 | **≥ 556.675** | **≥ 25.562** | **≥ 0,90** | **3** |
+| PURE · microcare | Preguntas | 1 | 189.700 | 37.575 | 0,57 | 4 |
+| PURE · microcare | Sugerencias de respuesta | 1 | 48.748 | 12.848 | 0,23 | 2 |
+| PURE · microcare | Catálogo | 1 | 304.654 | 82.243 | 0,98 | 10 |
+| PURE · microcare | Backlog | 1 | 233.619 | 49.260 | 0,72 | 5 |
+| PURE · microcare | Mockup | 1 | 1.431.393 | 394.238 | 6,81 | 25 |
+| **PURE · microcare** | **Total** | 5 | **2.208.114** | **576.164** | **9,29** | **46** |
 
 ## 4. Antes y después: la misma fase con distintas versiones del prompt
 

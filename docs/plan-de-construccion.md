@@ -23,7 +23,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
   - Hecho el 115 (desde cero, frente a lo anterior), en Docker y revisado por el autor en el navegador el 27-10-2026.
   - Hecho el 116 (la prueba real con clínicas en dos iteraciones), el 27-10 y el 03-11-2026: resultados en `docs/resultados-paso-116/`.
   - Hechos el 122 (sus mejoras, 03-11-2026) y el 123 (la opción C con una documentación grande, 04-11-2026: leerlo todo no cabe y la opción C funciona).
-- **En curso:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo. Hecho el 117 (la versión congelada, `docs/evaluacion/version.md`, 04-11-2026); el siguiente es el 105, con `2005 - microcare.pdf` de PURE.
+- **En curso:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo. Hechos el 117 (la versión congelada, `docs/evaluacion/version.md`) y el 105 (PURE en inglés, `docs/evaluacion/pure.md`), los dos el 04-11-2026; el siguiente es el 104.
 
 ### Lo que queda, en orden
 
@@ -39,7 +39,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 **Hito 23, evaluación** (en este orden; cada paso dice qué hace el autor y qué hace Claude):
 
 6. ~~117, congelar la versión, con una prueba barata en inglés antes~~ (04-11-2026, etiqueta `evaluacion-1` en `6d34025`).
-7. 105, el flujo con un documento de PURE, en inglés.
+7. ~~105, el flujo con un documento de PURE, en inglés~~ (04-11-2026, 9,29 $).
 8. 104, AQUSA y `vale-ears` sobre lo del 105.
 9. 106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53).
 10. 118, la referencia: revisar las trampas y hacer la lista de funcionalidades.
@@ -625,7 +625,14 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
      - `Catalog:MaxParallelLots`;
      - la versión de Claude Code, con `claude --version` dentro del contenedor de la API (es el único comando que se lanza ahí; nada que imprima variables de entorno).
   5. **Si durante la evaluación un error obliga a cambiar código o prompts:** se crea `evaluacion-2`, se anota en el mismo fichero qué cambió y por qué, y se repiten las ejecuciones afectadas. Cada resultado dice con qué etiqueta se obtuvo.
-- [ ] 105. El flujo completo con un documento público del dataset PURE (27-10-2026, detalles de Claude). Hasta ahora todo se ha probado con documentos que hizo Claude o que son internos. Un documento público, ajeno al proyecto, es una prueba que el tribunal puede repetir. Coste: como un flujo de clínicas, unos 7–9 $, y algo más si el documento es más largo.
+- [x] 105. El flujo completo con un documento público del dataset PURE (27-10-2026, detalles de Claude). Hasta ahora todo se ha probado con documentos que hizo Claude o que son internos. Un documento público, ajeno al proyecto, es una prueba que el tribunal puede repetir. Coste: como un flujo de clínicas, unos 7–9 $, y algo más si el documento es más largo.
+  **Hecho el 04-11-2026** por Claude por la API, a petición del autor, con `evaluacion-1`. Resultados en `docs/evaluacion/pure.md`.
+  - **Resultado:** todo a la primera, sin reparaciones, en 46 minutos y por 9,29 $ (el mockup, 6,81 $; el autor aprobó lanzarlo tras saber que la estimación subía a 6–12 $ solo para él). Salen 40 preguntas, 122 requisitos, 34 historias y un mockup de 21 pantallas, todo en inglés. LUNA propone en todas las fases.
+  - **Al hacerlo:**
+    - 39 de las 40 sugerencias son suposiciones y 28 son decisiones del cliente, muchas sin opciones; se concretó la regla de «la primera opción» (en `pure.md`), y lo que solo el cliente puede aportar llega al catálogo como `[TBD]`;
+    - validar exige marcar como revisadas las discrepancias (7 en el catálogo y 7 en el backlog), sin editar nada más;
+    - los textos fijos de la plataforma (narrativa «Como… quiero… para…», «Tarea», Word y PDF, el prefijo «A decidir por el cliente:») siguen en español en un proyecto en inglés: mejora futura, en «Después», punto 6.
+  - **El documento no se copia en el repositorio** (lleva el copyright de Microcare y el repositorio aún no tiene licencia): se anota cómo descargarlo y su SHA-256.
   **Qué es PURE:** 79 documentos de requisitos públicos (sobre todo especificaciones SRS en inglés), de Ferrari, Spagnolo y Gnesi, RE 2017. Están en [Zenodo](https://zenodo.org/records/1414117); hay una versión más reciente, que es la que se usa.
   **Documento elegido** (04-11-2026, propuesto por Claude y aprobado por el autor): `2005 - microcare.pdf`, el SRS del *Voucher Management System* de Microcare. Tiene 33 páginas y unos 11.000 tokens, de la versión 2.0 (Zenodo, registro 7118517, CC BY 4.0, la misma del paso 123).
   - **Por qué:** es una especificación industrial, no un ejercicio de clase, con varios módulos y usuarios con permisos (creación de vales, ventas, reclamaciones, devoluciones, opiniones de clientes, informes y seguridad), y el texto se extrae bien.
@@ -652,7 +659,7 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
   **Qué hace Claude:**
   - Escribe `docs/evaluacion/pure.md`: el documento, las cifras del informe (tokens, minutos, coste, de A, de B, unión y discrepancias), qué fue bien y qué mal, y el bloque en palabras sencillas.
   - **Mira si LUNA propone preguntas** (04-11-2026, autor, como recomendaba Claude): en la ronda centrada en inglés del paso 123 su propuesta fue válida, pero vacía. En lugar de repetir aquella ronda, se comprueba aquí y en las repeticiones del paso 119 si vuelve a pasar con un documento en inglés.
-  - Regenera `docs/costes/costes.md`.
+  - Regenera `docs/costes/costes.md`. (`costes.cs` muestra ya por su nombre los proyectos «PURE …», 04-11-2026.)
 - [ ] 104. Métricas externas de calidad (27-10-2026, detalles de Claude). Mide la calidad con herramientas de otros y no solo con las de Concilia. Las dos trabajan en inglés: se aplican al catálogo y al backlog del paso 105, y a las tres propuestas de cada fase (SOL, LUNA y la unión), lo que completa la comparación del paso 120. Unas 3–4 horas, la mayor parte en instalar y probar las herramientas; sin coste.
   - **AQUSA** (Lucassen, Dalpiaz y otros, Universidad de Utrecht, revista *Requirements Engineering*, 2016) revisa historias de usuario con parte de los 13 criterios del marco QUS: bien formadas («As a… I want… so that…»), atómicas (una sola cosa), mínimas (sin texto de más), únicas, uniformes… Es una herramienta en Python.
   - **`vale-ears`** (`tbhb/vale-ears`, MIT) es un estilo para el corrector Vale con cuatro reglas:
@@ -660,6 +667,7 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
     - `ears.Shall`: no se usa *must*, *will*, *should* o *may* en lugar de *shall*;
     - `ears.PassiveVoice`: sin voz pasiva;
     - `ears.WeakWords`: sin palabras vagas como *fast* o *usually*.
+  **Lo que dejó el paso 105** (04-11-2026): la narrativa que monta la plataforma está en español («Como… quiero… para…»), así que la entrada de AQUSA se escribe a partir de los campos `como`, `quiero` y `para` del backlog con la plantilla inglesa «As a… I want… so that…». Y los requisitos sin condición empiezan en minúscula («the Voucher Management System SHALL…»): mirar si `vale-ears` lo cuenta como error.
   **Cómo son las herramientas** (comprobado por Claude en sus repositorios el 27-10-2026; corrige un aviso de la mañana, que decía que no se encontraba `RELabUU/aqusa-core`):
   - **`RELabUU/aqusa-core`** existe: es la versión de línea de comandos de AQUSA, con licencia MIT.
     - Lee un fichero de texto con una historia por línea, en `./input`.
@@ -818,3 +826,8 @@ Por este orden:
    - **Leer todo cuando la documentación es pequeña y la opción C cuando es grande.** Con unos 26.000 tokens, leerlo todo costó 0,95 $ frente a 1,67 $ con la misma detección (paso 116); con unos 96.000, leerlo todo no cabe y solo funciona la opción C (paso 123). No se hace ahora porque solo hay una ejecución de cada caso (el coste de una misma fase varía mucho), habría que fijar un umbral que no se ha medido, y cambiar la lectura justo antes de congelar la versión (paso 117) obligaría a repetir las mediciones. La opción C funciona en todos los tamaños; leerlo todo solo ahorraría céntimos en los proyectos pequeños.
    - **Un CSV para Jira o Azure DevOps solo con lo nuevo de una iteración,** para no duplicar lo ya importado. Era la decisión abierta del hito 22; se cierra sin hacerlo porque solo sirve a quien ya importó el backlog y después lo actualiza, un caso que no entra en la evaluación.
    - **La duración real de cada repetición de una tarea:** hoy las repeticiones se guardan al final, con la hora de inicio del primer intento, y todas salen con la duración total (la del trabajo sí es real; pasos 116 y 123).
+6. **Los textos de la plataforma en el idioma del proyecto** (paso 105, 04-11-2026): en un proyecto en inglés, el contenido de los modelos sale en inglés, pero no lo que pone la plataforma:
+   - la narrativa de las historias («Como… quiero… para…») y «Tarea» en la web, la comparación y Gherkin;
+   - los títulos, leyendas y anexos de Word y PDF;
+   - el prefijo «A decidir por el cliente:», que pide así el prompt de sugerencias.
+   No se hace durante la evaluación porque cambia el código (sería `evaluacion-2`), aunque no obligaría a repetir ninguna ejecución con modelos: las exportaciones salen de lo guardado.
