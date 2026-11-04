@@ -424,7 +424,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - ~~Umbral de «discrepancia grave»~~: cerrado por el autor el 19-10-2026. Dos umbrales del emparejamiento (0,90 y 0,70, paso 87), y la discrepancia la marcan las desviaciones del árbitro respecto al emparejamiento (paso 88). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
 - Abaratar las pantallas del mockup. (El historial de mockups lo trae el hito 21: desde el paso 101 se guarda la página de cada mockup generado.)
 - ~~Del hito 23: la referencia del catálogo y del backlog en el paso 120~~: cerrada por el autor el 27-10-2026. El proyecto grande, con una lista de funcionalidades hecha por el autor (cobertura), una muestra revisada a ciegas (precisión) y las 26 trampas revisadas. SOL solo y LUNA solo son las propuestas de A y B de cada trabajo de Concilia.
-- Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración. ~~El tope de fragmentos relacionados~~: cerrado por el autor el mismo día, 20.000 tokens, tras medirlo con clínicas (`docs/fragmentos-relacionados.md`).
+- ~~Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración~~: cerrada por el autor el 04-11-2026 sin hacerlo, como mejora futura. ~~El tope de fragmentos relacionados~~: cerrado por el autor el mismo día, 20.000 tokens, tras medirlo con clínicas (`docs/fragmentos-relacionados.md`).
 
 ## Siguientes pasos
 
@@ -447,5 +447,5 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 
 ## Cifras de seguimiento
 
-- **Commits:** 249 entre el 28-09 y el 04-11-2026.
+- **Commits:** 250 entre el 28-09 y el 04-11-2026.
 - **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99), 937 (22-10, paso 100), 943 (22-10, pasos 107 y 108), 948 (23-10, paso 101), 951 (23-10, paso 102), 966 (26-10, paso 109), 974 (26-10, paso 110) y 983 (26-10, paso 111), 990 (26-10, instantánea de la v0.12), 1.002 (26-10, paso 112), 1.013 (27-10, paso 113), 1.020 (27-10, paso 114), 1.024 (27-10, paso 115), 1.025 (27-10, ronda que lo lee todo del paso 116) , 1.026 (27-10, arreglo de `REF-PREG`) y 1.028 (03-11, paso 122).

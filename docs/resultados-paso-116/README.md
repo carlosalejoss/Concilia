@@ -121,7 +121,7 @@ Cuando el cliente manda documentos nuevos, hay dos formas de seguir: rehacer el 
 
 ## Qué hay que mejorar
 
-Propuestas para decidir con el autor. **Decisión del autor (03-11-2026):** la 1, la 2 y la 3 se hacen en el paso 122; la 5 es el paso 123; la 4 no se hace, como recomendaba Claude: con una sola medición no se sabe si el coste es estable, y cambiaría la opción C.
+Propuestas para decidir con el autor. **Decisión del autor (03-11-2026):** la 1, la 2 y la 3 se hacen en el paso 122; la 5 es el paso 123; la 4 no se hace, como recomendaba Claude: con una sola medición no se sabe si el coste es estable, y cambiaría la opción C. Tras el paso 123, el 04-11-2026, el autor decide no cambiar la lectura antes de evaluar: leer todo cuando la documentación es pequeña queda como mejora futura (sección «Después» del plan).
 
 1. **nginx:** subir `proxy_read_timeout` en las rutas que lanzan tareas (por ejemplo, a 5 minutos), para que la web no muestre un 504 cuando la tarea sí se ha lanzado.
 2. **La numeración de LUNA en las rondas centradas:**

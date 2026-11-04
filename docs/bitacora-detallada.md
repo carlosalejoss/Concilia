@@ -2848,3 +2848,16 @@ Paso 123 terminado.
   - si conviene repetir la ronda centrada por LUNA, que no propuso nada.
   Después, el hito 23.
 
+## 04-11-2026, 09:00 (sesión)
+
+Decisiones pendientes de los pasos 116 y 123, cerradas con el autor.
+
+- **El autor sigue las recomendaciones de Claude y no se hace nada antes de evaluar:**
+  1. **Leer todo cuando la documentación es pequeña y la opción C cuando es grande:** no se cambia la lectura. Hay una sola ejecución de cada caso, el umbral no está medido y cambiarla antes de congelar la versión obligaría a repetir las mediciones. La opción C funciona en todos los tamaños. Queda como hallazgo y mejora futura.
+  2. **Repetir la ronda centrada de PEPPOL por LUNA:** no se repite. Se mira en el paso 105 (PURE, en inglés) y en las repeticiones del paso 119; anotado en el paso 105.
+  3. **El CSV solo con lo nuevo de una iteración** (la decisión abierta del hito 22): se cierra sin hacerlo, como mejora futura.
+- **Dónde queda:**
+  - las tres, en la sección «Después» de `docs/plan-de-construccion.md` (punto 5, «Mejoras futuras de las iteraciones del proyecto»), junto con la duración real de cada repetición de una tarea;
+  - también en «Qué hay que mejorar» de los resultados de los pasos 116 y 123, en las decisiones abiertas de CLAUDE.md y de la trazabilidad (ninguna del hito 22) y en el paso 105.
+- **Siguiente:** el hito 23, en otra sesión, empezando por el paso 117.
+

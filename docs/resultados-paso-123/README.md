@@ -57,6 +57,11 @@ Cuando llega documentación nueva, la plataforma puede hacer que la IA lo lea to
 
 ## Qué hay que mejorar
 
-- Decidir con el autor si se lee todo cuando la documentación es pequeña y la opción C cuando es grande. La propuesta 4 del paso 116 tiene ahora los datos de los dos extremos, aunque con una ejecución de cada caso.
-- Repetir la ronda centrada para saber si LUNA vuelve a no proponer nada.
-- Guardar la hora real de cada repetición de una tarea, para que las duraciones del informe sirvan también por intento.
+**Decisión del autor (04-11-2026), como recomendaba Claude:** no se hace nada antes de evaluar. Las tres quedan como mejoras futuras en la sección «Después» de `docs/plan-de-construccion.md`.
+
+- **Leer todo cuando la documentación es pequeña y la opción C cuando es grande:** queda como hallazgo y trabajo futuro.
+  - Solo hay una ejecución de cada caso.
+  - Habría que fijar un umbral sin medir.
+  - Cambiar la lectura antes de congelar la versión obligaría a repetir las mediciones.
+- **Lo de LUNA, que no propuso ninguna pregunta:** no se repite esta ronda; se mira en el paso 105 (PURE, en inglés) y en las repeticiones del paso 119.
+- **La hora real de cada repetición de una tarea,** para que las duraciones del informe sirvan también por intento: mejora futura.
