@@ -14,7 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
-| v0.13 | 26 y 27-10-2026 | Iteraciones del proyecto: ronda centrada en la documentación nueva (lo nuevo y lo relacionado, opción C) y actualización del catálogo y del backlog como un conjunto de cambios que el usuario revisa | Sí (proyecto grande de ejemplo con una segunda iteración, 27-10 y 03-11-2026) | Las dos rondas (C y leyéndolo todo) detectan las 8 preguntas esperadas y enlazan las 4 que contradicen una respuesta; actualizar recoge los 14 cambios del catálogo y conserva idéntico el 91 % de los requisitos y el 95 % de las historias (desde cero, el 0 %), pero cuesta lo mismo (5,85 $ frente a 5,44 $) y leerlo todo sale más barato que la opción C (0,95 $ frente a 1,67 $); con una documentación grande (paso 123, unos 96.000 tokens), leerlo todo no cabe y solo funciona la opción C (0,87 $) |
+| v0.13 | 26 y 27-10-2026 | Iteraciones del proyecto: ronda centrada en la documentación nueva (lo nuevo y lo relacionado, lectura relacionada) y actualización del catálogo y del backlog como un conjunto de cambios que el usuario revisa | Sí (proyecto grande de ejemplo con una segunda iteración, 27-10 y 03-11-2026) | Las dos rondas (C y leyéndolo todo) detectan las 8 preguntas esperadas y enlazan las 4 que contradicen una respuesta; actualizar recoge los 14 cambios del catálogo y conserva idéntico el 91 % de los requisitos y el 95 % de las historias (desde cero, el 0 %), pero cuesta lo mismo (5,85 $ frente a 5,44 $) y leerlo todo sale más barato que la lectura relacionada (0,95 $ frente a 1,67 $); con una documentación grande (paso 123, unos 96.000 tokens), leerlo todo no cabe y solo funciona la lectura relacionada (0,87 $) |
 | v0.12 | 22-10-2026 | El árbitro del catálogo consulta solo las fuentes de los requisitos que tiene que decidir (`input/fuentes.txt`); el del backlog cita por su id los criterios y las tareas que conserva, y la plataforma pone su texto | Sí (nuevos arbitrajes del proyecto grande de ejemplo, 22-10-2026) | Catálogo: 298 líneas de documentación consultadas en lugar de 1.242, a la primera y por 1,43 $ en lugar de 3,20 $. Backlog: 239 criterios en lugar de 121, por 1,23 $ en lugar de 1,05 $ |
 | v0.11 | 19-10-2026 | La reparación corrige con Edit la salida anterior en su fichero, con la línea de cada error, en lugar de llevarla pegada y reescribirla; sugerencias más prudentes; estilo propio del mockup por proyecto | Sí (proyecto grande de ejemplo y banco de alimentos, 20 a 22-10-2026) | Preguntas a 0,94 $ (antes 2,31 $). Las reparaciones de LUNA y del árbitro caben y corrigen con Edit. Catálogo de 235 requisitos con 12 discrepancias, todas de la plataforma; unos 3,9 $ (antes 2,70 $) porque el árbitro lee demasiada documentación. Backlog de 121 historias sin reparaciones, 1,67 $ (antes 1,43 $), pero con un solo criterio por historia. Mockups de 40 y 24 pantallas a la primera, con el mismo coste por pantalla que antes y estilos distintos en cada proyecto |
 | v0.10 | 19-10-2026 | El árbitro parte del emparejamiento por significado de la plataforma (`input/emparejamiento.txt`, embeddings en local); puede apartarse si la fuente lo justifica, y la plataforma marca como discrepancia en el catálogo y el backlog dónde lo hizo | Sí (proyecto grande de ejemplo, catálogo, 19-10-2026) | Con las mismas propuestas, 3 arbitrajes de SOL válidos de 3: unión de 202 a 222 requisitos (media 212,3), frente a 209–291 (media 240) con la v0.9. Las desviaciones no bajan (7,7 de media, frente a las 7,0 que habría marcado la v0.9) |
@@ -353,7 +353,7 @@ Hito 22, iteraciones del proyecto. Prompts nuevos solo para los modos nuevos: la
 
 ### Qué hace
 
-- **Ronda centrada (opción C):** A y B leen enteras la documentación nueva, los fragmentos anteriores relacionados (embeddings, desde 0,70 y con un tope de 20.000 tokens) y los requisitos validados relacionados; el resto de la documentación y el catálogo, solo para consultar. Además de preguntas nuevas, proponen revisiones de las pendientes, y una pregunta que contradice una respuesta o un requisito validado se enlaza a él, sin reescribir la respuesta.
+- **Ronda centrada (lectura relacionada):** A y B leen enteras la documentación nueva, los fragmentos anteriores relacionados (embeddings, desde 0,70 y con un tope de 20.000 tokens) y los requisitos validados relacionados; el resto de la documentación y el catálogo, solo para consultar. Además de preguntas nuevas, proponen revisiones de las pendientes, y una pregunta que contradice una respuesta o un requisito validado se enlaza a él, sin reescribir la respuesta.
 - **Actualizar el catálogo y el backlog:** A y B escriben un conjunto de cambios (nuevos, modificados y eliminados, con su motivo); el árbitro los une, alineados por id sin IA, y la plataforma los aplica a la copia de trabajo. Lo que modifica o elimina la IA queda como propuesta que el usuario acepta o rechaza. En el backlog, la plataforma calcula antes el impacto sin IA.
 - En palabras sencillas: cuando llegan documentos nuevos, la IA se centra en lo nuevo, pregunta lo que choca con lo que ya se sabía y propone qué añadir, cambiar o quitar, sin tocar lo validado por su cuenta.
 
@@ -371,7 +371,7 @@ Paso 116, 27-10 y 03-11-2026: «Clinicas Veterinarias v0.11» (catálogo de 235 
 | Coste y minutos | **5,85 $ y 29 min** | 5,44 $ y 48 min (4,66 $ y 25 min sin un catálogo fallido por LUNA) |
 | Reparaciones | 0 | 1 (y un intento fallido con 2) |
 
-| Ronda centrada | C (lo nuevo y lo relacionado) | A (lo lee todo, experimental) |
+| Ronda centrada | Lectura relacionada | Lectura completa (experimental) |
 | --- | --- | --- |
 | Preguntas en la unión | 28 | 29 |
 | Preguntas esperadas detectadas | 8 de 8 | 8 de 8 |
@@ -380,11 +380,11 @@ Paso 116, 27-10 y 03-11-2026: «Clinicas Veterinarias v0.11» (catálogo de 235 
 
 - **La detección es completa en los dos modos,** y las preguntas enlazadas funcionan, tras arreglar un fallo del paso 112 que las rechazaba siempre (`REF-PREG`).
 - **Actualizar conserva el trabajo validado** y reduce lo que hay que revisar, pero **no ahorra dinero**: los prompts de actualizar dejan consultar lo anterior por tramos, y SOL consulta mucho (unos 780.000 tokens de entrada en la actualización del catálogo, frente a 209.000 desde cero).
-- **La opción C no ahorró frente a leerlo todo** con una documentación de unos 26.000 tokens en total.
+- **La lectura relacionada no ahorró frente a leerlo todo** con una documentación de unos 26.000 tokens en total.
 
-**Paso 123, 03 y 04-11-2026: la opción C con una documentación grande.** Un documento público de PURE (PEPPOL D2.1, 127 páginas y unos 96.000 tokens, en inglés), partido en dos iteraciones (unos 71.000 y 25.000 tokens); solo las dos rondas centradas en la segunda, sin preguntas anteriores ni catálogo. Detalle en `docs/resultados-paso-123/README.md`.
+**Paso 123, 03 y 04-11-2026: la lectura relacionada con una documentación grande.** Un documento público de PURE (PEPPOL D2.1, 127 páginas y unos 96.000 tokens, en inglés), partido en dos iteraciones (unos 71.000 y 25.000 tokens); solo las dos rondas centradas en la segunda, sin preguntas anteriores ni catálogo. Detalle en `docs/resultados-paso-123/README.md`.
 
-| | A, lo lee todo | C, centrada |
+| | Lectura completa | Lectura relacionada |
 | --- | --- | --- |
 | Resultado | fallida: A y B llenan el contexto, compactan dos veces sin escribir y se detienen, también al repetirse | válida a la primera, sin reparaciones |
 | Coste | unos 1,35 $*, sin resultado | 0,87 $ |
@@ -392,13 +392,13 @@ Paso 116, 27-10 y 03-11-2026: «Clinicas Veterinarias v0.11» (catálogo de 235 
 
 \* Estimado (paso 95).
 
-- **Con documentación grande, solo funciona la opción C:** leerlo todo no cabe en los 128.000 tokens de contexto. Con pequeña, leerlo todo es igual de bueno y más barato (paso 116).
+- **Con documentación grande, solo funciona la lectura relacionada:** leerlo todo no cabe en los 128.000 tokens de contexto. Con pequeña, leerlo todo es igual de bueno y más barato (paso 116).
 - **Primera ronda del flujo en inglés:** funciona.
 
 ### Qué hay que mejorar
 
 - Limitar lo que consultan A y B al actualizar, o darles la documentación entera cuando es pequeña.
-- ~~Medir la opción C con una documentación grande~~ (paso 123: con unos 96.000 tokens, leerlo todo no cabe y la opción C funciona). Repetir las ejecuciones para conocer la variación, y decidir si se lee todo cuando la documentación es pequeña.
+- ~~Medir la lectura relacionada con una documentación grande~~ (paso 123: con unos 96.000 tokens, leerlo todo no cabe y la lectura relacionada funciona). Repetir las ejecuciones para conocer la variación, y decidir si se lee todo cuando la documentación es pequeña.
 - LUNA numera las preguntas de las rondas centradas desde P-064 en lugar de desde P-001 (3 de 3 rondas que lo leían todo).
 - El error de esquema debería decir su línea, para que la reparación lo encuentre.
 

@@ -52,7 +52,7 @@ Lista de lo que pesa en el proyecto y debería aparecer en la memoria del TFG, s
   - sugerencias prudentes: «A decidir por el cliente» y la marca «Suposición de la IA».
 - ★ **Iteraciones del proyecto, lo más diferencial** (hito 22):
   - modos «todas las iteraciones» y «centrarse en…»;
-  - lectura con la opción C, frente a la A (leerlo todo) y la B (solo lo nuevo);
+  - la lectura relacionada (lo nuevo y lo relacionado), frente a la lectura completa (leerlo todo) y a «solo lo nuevo»;
   - una respuesta del cliente nunca se reescribe;
   - lo que la IA modifica o elimina es una propuesta que el usuario revisa;
   - ids estables, y la iteración de cada elemento la calcula la plataforma.
@@ -144,7 +144,7 @@ Lista de lo que pesa en el proyecto y debería aparecer en la memoria del TFG, s
   - detección: 8 de 8 preguntas esperadas y los 14 cambios del catálogo;
   - actualizar conserva el 91 % de los requisitos y el 95 % de las historias validadas, frente al 0 % desde cero;
   - el coste es parecido: 5,85 $ frente a 5,44 $.
-- **Paso 123** (`docs/resultados-paso-123/`): con 96.000 tokens, leerlo todo no cabe en el contexto y la opción C funciona por 0,87 $.
+- **Paso 123** (`docs/resultados-paso-123/`): con 96.000 tokens, leerlo todo no cabe en el contexto y la lectura relacionada funciona por 0,87 $.
 - ★ **Paso 105, PURE en inglés** (`docs/evaluacion/pure.md`):
   - un documento público que cualquiera puede repetir;
   - todo a la primera, en 46 minutos y por 9,29 $;
@@ -173,7 +173,7 @@ Lista de lo que pesa en el proyecto y debería aparecer en la memoria del TFG, s
 - ★ **Aportaciones propias:**
   - árbitro guiado por embeddings, con las desviaciones como señal para el usuario;
   - la plataforma corrige el formato en lugar de repetir el trabajo;
-  - lectura con la opción C;
+  - la lectura relacionada;
   - iteraciones con propuestas revisables;
   - medición del coste con el estimador.
 - ★ **Lecciones:**
@@ -211,7 +211,7 @@ Comprobado con una búsqueda de palabras clave en `memoria/tfg/memoria.tex` el 0
 
 - **El resultado del experimento del sesgo del árbitro:** la introducción cita el riesgo, pero no el experimento ni su resultado. Va en la 2.3.
 - **La versión congelada `evaluacion-1`:** no aparece. Va al principio de la 2.3, como garantía de que las mediciones son comparables.
-- **La opción C y su comparación con leerlo todo:** las iteraciones están, pero no las tres opciones de lectura ni los pasos 116 y 123.
+- **La lectura relacionada y su comparación con leerlo todo:** las iteraciones están, pero no las tres opciones de lectura ni los pasos 116 y 123.
 - **Las amenazas a la validez:** hoy, solo en la valoración crítica. En la 2.3 conviene decirlas junto a los resultados.
 
 Ya están cubiertos los embeddings y su calibración, las iteraciones, las exportaciones (Gherkin y Jira), la configuración y los secretos, el proveedor simulado y la calidad del software.

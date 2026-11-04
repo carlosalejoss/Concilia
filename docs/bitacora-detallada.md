@@ -3100,3 +3100,12 @@ Tras el paso 104, a petición del autor («haz lo que consideres que puede aport
 - **Datos corregidos al revisar:** el mockup capturado es el del 26-10 (49 pantallas, backlog de la iteración 1), no el de 40 pantallas; el CSV importado en Jira fue el del 23-10 («un CSV de este mismo proyecto, con el mismo formato»); MASTeR y PURE sin desarrollo del acrónimo, porque no se pudo confirmar.
 - **Extensión:** 9.164 palabras de texto corrido (9.879 con pies, tablas y listados), con la 2.3 sin escribir. Hay que reorganizar antes de redactarla: se avisa al autor.
 - **PDF:** 52 páginas. Compila sin errores.
+
+## 04-11-2026, 13:00 (sesión)
+
+Nombre de la «opción C».
+
+- **Decisión del autor:** la «opción C» del diseño del hito 22 no decía lo que hace. Pasa a llamarse **lectura relacionada** («lectura de lo nuevo y lo relacionado»): el modelo lee entera la documentación nueva y los fragmentos anteriores que se le parecen (y, si hay catálogo validado, los requisitos relacionados) y consulta el resto. La A pasa a ser **lectura completa** (leerlo todo) y la B, **«solo lo nuevo»**. Era la recomendación de Claude, frente a «lectura selectiva» y «lectura dirigida».
+- **Dónde se cambia:** solo en la documentación (CLAUDE.md, el plan, la trazabilidad, la evolución de los prompts, el contenido de la memoria, los resultados de los pasos 116 y 123, la hoja de respuestas y el CHANGELOG de los prompts), con «en el diseño, opción C» donde se cuenta la decisión. Esta bitácora no se reescribe: en las entradas anteriores, «opción C» es la lectura relacionada, «opción A» la lectura completa y «opción B» «solo lo nuevo».
+- **El código no cambia ahora** (comentarios y textos de la API que dicen «option C» u «opción C»), para no tocar la versión congelada `evaluacion-1`; se cambia después de la evaluación.
+

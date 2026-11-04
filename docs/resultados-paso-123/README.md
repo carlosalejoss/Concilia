@@ -1,6 +1,6 @@
-# Paso 123: la opción C con una documentación grande
+# Paso 123: la lectura relacionada con una documentación grande
 
-Complemento del paso 116, a petición del autor (03-11-2026). En el paso 116, con clínicas (unos 26.000 tokens en total), leerlo todo salió más barato que la opción C con la misma detección. Faltaba saber qué pasa con una documentación grande, el caso para el que se diseñó la opción C. Lo ejecutó Claude por la API el 03 y el 04-11-2026, con `SS - GPT-6-SOL` como A y árbitro y `SS - GPT-6-LUNA` como B, prompts v0.13 y la versión del paso 122.
+Complemento del paso 116, a petición del autor (03-11-2026). En el paso 116, con clínicas (unos 26.000 tokens en total), leerlo todo salió más barato que la lectura relacionada con la misma detección. Faltaba saber qué pasa con una documentación grande, el caso para el que se diseñó la lectura relacionada. Lo ejecutó Claude por la API el 03 y el 04-11-2026, con `SS - GPT-6-SOL` como A y árbitro y `SS - GPT-6-LUNA` como B, prompts v0.13 y la versión del paso 122.
 
 ## El documento
 
@@ -21,14 +21,14 @@ Complemento del paso 116, a petición del autor (03-11-2026). En el paso 116, co
 
 Proyecto «PURE PEPPOL VCD (paso 123)», con el idioma en inglés y el sistema «the Virtual Company Dossier system». Solo se miden las dos rondas centradas en la iteración 2, sobre el mismo estado del proyecto: sin preguntas anteriores ni catálogo, para que lo único distinto sea la lectura.
 
-1. **Opción A, la ronda que lo lee todo** (experimental, del paso 116): A y B leen enteras las dos partes, unos 96.000 tokens.
-2. **Opción C, la ronda centrada:** A y B leen entera la parte 2 y los fragmentos de la parte 1 relacionados con ella (embeddings desde 0,70, con un tope de 20.000 tokens). El resto de la parte 1 se puede consultar.
+1. **Lectura completa, la ronda que lo lee todo** (experimental, del paso 116): A y B leen enteras las dos partes, unos 96.000 tokens.
+2. **Lectura relacionada, la ronda centrada:** A y B leen entera la parte 2 y los fragmentos de la parte 1 relacionados con ella (embeddings desde 0,70, con un tope de 20.000 tokens). El resto de la parte 1 se puede consultar.
 
 Un primer lanzamiento de la ronda centrada se detuvo a los pocos segundos reiniciando la API, porque el autor tenía que irse y el equipo pierde la conexión. Se repitió al día siguiente.
 
 ## Resultados
 
-| | Opción A, lo lee todo | Opción C, centrada |
+| | Lectura completa | Lectura relacionada |
 | --- | --- | --- |
 | Resultado | **fallida**: ni A ni B escriben su salida | **válida a la primera** |
 | Qué pasó | A (SOL) y B (LUNA) llenan los 128.000 tokens de contexto leyendo, compactan dos veces sin escribir y la plataforma los detiene (paso 92); al repetirse, igual | A y B terminan en unos 2 minutos sin compactar; el árbitro, en 1 |
@@ -42,11 +42,11 @@ Un primer lanzamiento de la ronda centrada se detuvo a los pocos segundos reinic
 
 \* Estimado (paso 95): las ejecuciones detenidas no tienen dato de consumo.
 
-- **Con una documentación grande, leerlo todo no funciona:** no cabe en el contexto de 128.000 tokens. La opción C sí funciona, y además aprovecha lo anterior que hace falta: un tercio de los fragmentos que citan las preguntas son de la parte 1.
+- **Con una documentación grande, leerlo todo no funciona:** no cabe en el contexto de 128.000 tokens. La lectura relacionada sí funciona, y además aprovecha lo anterior que hace falta: un tercio de los fragmentos que citan las preguntas son de la parte 1.
 - **Junto con el paso 116:**
   - con documentación pequeña (unos 26.000 tokens), leerlo todo es igual de bueno y más barato;
-  - con documentación grande (unos 96.000), solo funciona la opción C.
-  La opción C es la que vale para cualquier tamaño, y leerlo todo, una optimización para los proyectos pequeños.
+  - con documentación grande (unos 96.000), solo funciona la lectura relacionada.
+  La lectura relacionada es la que vale para cualquier tamaño, y leerlo todo, una optimización para los proyectos pequeños.
 - **Es la primera ronda del flujo en inglés,** y funciona: las preguntas salen en inglés y citan bien los fragmentos.
 - **LUNA no propuso ninguna pregunta.** Su propuesta es válida, pero vacía. Con una sola ejecución no se sabe si es por el inglés, por el documento o por azar.
 - **Las duraciones de las repeticiones no son reales:** la plataforma guarda cada repetición al final de la tarea, con la hora de inicio del primer intento, así que todos los intentos salen con la duración total. La duración del trabajo sí es real. Pasa desde que existen los reintentos.
@@ -59,7 +59,7 @@ Cuando llega documentación nueva, la plataforma puede hacer que la IA lo lea to
 
 **Decisión del autor (04-11-2026), como recomendaba Claude:** no se hace nada antes de evaluar. Las tres quedan como mejoras futuras en la sección «Después» de `docs/plan-de-construccion.md`.
 
-- **Leer todo cuando la documentación es pequeña y la opción C cuando es grande:** queda como hallazgo y trabajo futuro.
+- **Leer todo cuando la documentación es pequeña y la lectura relacionada cuando es grande:** queda como hallazgo y trabajo futuro.
   - Solo hay una ejecución de cada caso.
   - Habría que fijar un umbral sin medir.
   - Cambiar la lectura antes de congelar la versión obligaría a repetir las mediciones.

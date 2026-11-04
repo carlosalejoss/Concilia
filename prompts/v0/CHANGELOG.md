@@ -4,7 +4,7 @@
 
 Hito 22, paso 112. Prompts nuevos, redactados por Claude y revisados por el autor antes del código; los de siempre no cambian (lo comprueba `V012SnapshotTests`):
 
-- **`preguntas_centradas.md` (A y B):** cuando llega documentación nueva, el modelo se centra en ella. Lee entera la documentación de las iteraciones elegidas, los fragmentos anteriores relacionados y, si el catálogo está validado, los requisitos relacionados (opción C, con un tope de 20.000 tokens para cada lista, medido con clínicas en `docs/fragmentos-relacionados.md`); consulta el resto. Escribe:
+- **`preguntas_centradas.md` (A y B):** cuando llega documentación nueva, el modelo se centra en ella. Lee entera la documentación de las iteraciones elegidas, los fragmentos anteriores relacionados y, si el catálogo está validado, los requisitos relacionados (lectura relacionada, con un tope de 20.000 tokens para cada lista, medido con clínicas en `docs/fragmentos-relacionados.md`); consulta el resto. Escribe:
   - preguntas nuevas, también por contradicciones con lo anterior, con una respuesta (una respuesta nunca se reescribe: la pregunta nueva la enlaza en `contradice`) o con un requisito validado;
   - revisiones de las preguntas pendientes: `reformular` (con el texto nuevo), `resuelta` u `obsoleta`.
 - **`arbitro_preguntas_centradas.md`:** une las preguntas nuevas como siempre, con el emparejamiento y una línea `previa` cuando una nueva se parece a una ya hecha, y decide cada revisión a partir de `input/revisiones.txt`, donde la plataforma las agrupa por pregunta sin IA. Una revisión de un solo modelo la mantiene o la rechaza según la documentación.

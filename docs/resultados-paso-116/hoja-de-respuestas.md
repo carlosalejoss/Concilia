@@ -42,8 +42,8 @@ Cuando una pregunta trata de uno de estos temas, se responde con este texto, aun
 Todo en «Clinicas Veterinarias v0.11» (proyecto 33), con el catálogo y el backlog validados de la iteración 1:
 
 1. Nueva iteración, subir `DOC-22` a `DOC-27` y cerrar la documentación.
-2. Ronda que lo lee todo (opción A), experimental: no cambia el proyecto.
-3. Ronda centrada en la iteración 2 (opción C), responder con esta hoja.
+2. Ronda que lo lee todo (lectura completa), experimental: no cambia el proyecto.
+3. Ronda centrada en la iteración 2 (lectura relacionada), responder con esta hoja.
 4. Actualizar el catálogo con la iteración 2, revisar las propuestas y validar.
 5. Actualizar el backlog, revisar las propuestas y validar.
 6. Ronda con todas las iteraciones, responder con esta hoja.

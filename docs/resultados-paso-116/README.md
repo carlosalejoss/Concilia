@@ -6,7 +6,7 @@ Prueba real del hito 22 sobre «Clinicas Veterinarias v0.11», el proyecto grand
 
 1. **Una segunda iteración de documentos ficticios** (`DOC-22` a `DOC-27`, unos 2.500 tokens; la iteración 1 tiene unos 23.400), con 18 cambios puestos a propósito y su resultado esperado: [`ejemplos/README.md`](../../ejemplos/README.md), «Grande: segunda iteración».
 2. **Una hoja de respuestas del cliente**, escrita antes de lanzar nada: [`hoja-de-respuestas.md`](hoja-de-respuestas.md). Con ella se respondió y se revisó igual en los dos caminos.
-3. **Opción A frente a C:** la ronda centrada experimental que lo lee todo (A) y la ronda centrada normal (C), sobre el mismo estado del proyecto.
+3. **Lectura completa frente a lectura relacionada:** la ronda centrada experimental que lo lee todo y la ronda centrada normal, sobre el mismo estado del proyecto.
 4. **Camino «actualizar»:** ronda centrada (C) → respuestas → actualización del catálogo → revisión y validación → actualización del backlog → revisión y validación.
 5. **Camino «desde cero»**, después y en el mismo proyecto (decisión del autor): ronda con todas las iteraciones → respuestas → catálogo desde cero → validación → backlog desde cero → validación. El paso 115 compara cada uno con lo actualizado.
 
@@ -63,7 +63,7 @@ P: pregunta; N: requisito nuevo; M: modificación propuesta; E: eliminación pro
 
 | Camino | Trabajo | Resultado | Entrada | Salida | Coste (USD) | Minutos | Reparaciones |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| A frente a C | Ronda que lo lee todo (A) | válida | 479.748 | 46.865 | 0,95 | 5 | 1 |
+| Lectura completa frente a relacionada | Ronda que lo lee todo | válida | 479.748 | 46.865 | 0,95 | 5 | 1 |
 | Actualizar | Ronda centrada (C) | válida | 860.932 | 57.277 | 1,67 | 9 | 0 |
 | Actualizar | Sugerencias de respuesta | válidas | 174.635 | 9.156 | 0,44 | 1 | 0 |
 | Actualizar | Actualización del catálogo | válida | 1.249.680 | 97.932 | 2,53 | 12 | 0 |
@@ -87,9 +87,9 @@ Aparte, para la prueba: dos rondas que lo leían todo que no valen (0,88 $ y 1,8
 - **Por qué:** los prompts de actualizar hacen leer entera la documentación nueva, lo relacionado y los requisitos relacionados, y dejan consultar por tramos la documentación y el catálogo enteros. SOL consulta mucho: en la actualización del catálogo, A leyó unos 780.000 tokens, frente a los 209.000 de A desde cero. Cada consulta vuelve a enviar todo el contexto. Desde cero se lee todo una sola vez.
 - **Lo que sí ahorra actualizar es trabajo del usuario:** hay que revisar 23 propuestas y 5 discrepancias en el catálogo, y 22 propuestas y 2 discrepancias en el backlog, con lo demás ya validado. Desde cero hay que revisar de nuevo 241 requisitos (21 con discrepancia) y 89 historias (20), todos con otras palabras.
 
-### 4. Opción A (leerlo todo) frente a C (lo nuevo y lo relacionado)
+### 4. Lectura completa (leerlo todo) frente a lectura relacionada (lo nuevo y lo relacionado)
 
-| | A, lo lee todo | C, centrada |
+| | Lectura completa | Lectura relacionada |
 | --- | --- | --- |
 | Preguntas (de A, de B, unión) | 28, 16, **29** | 27, 13, **28** |
 | Preguntas esperadas detectadas | **8 de 8** | **8 de 8** |
@@ -99,7 +99,7 @@ Aparte, para la prueba: dos rondas que lo leían todo que no valen (0,88 $ y 1,8
 | Reparaciones | 1 (LUNA numera desde P-064) | 0 |
 
 - **Con esta iteración, leerlo todo es igual de bueno y más barato.** La iteración 2 es pequeña y la 1 cabe entera sin problema (unos 23.400 tokens): leerla de una vez cuesta menos que consultarla por tramos.
-- **La opción C se diseñó para documentaciones grandes,** donde leerlo todo no cabe o se compacta. Esta prueba no lo mide, y ningún documento de los que se pueden usar es grande: el documento B tiene también unos 23.000 tokens (una primera versión de este texto decía que pasaba de 80.000, que es el umbral del aviso de tamaño, no su tamaño). Es una sola ejecución de cada una, y el coste de una misma fase varía mucho entre ejecuciones.
+- **La lectura relacionada se diseñó para documentaciones grandes,** donde leerlo todo no cabe o se compacta. Esta prueba no lo mide, y ningún documento de los que se pueden usar es grande: el documento B tiene también unos 23.000 tokens (una primera versión de este texto decía que pasaba de 80.000, que es el umbral del aviso de tamaño, no su tamaño). Es una sola ejecución de cada una, y el coste de una misma fase varía mucho entre ejecuciones.
 
 ### 5. Incidencias
 
@@ -121,7 +121,7 @@ Cuando el cliente manda documentos nuevos, hay dos formas de seguir: rehacer el 
 
 ## Qué hay que mejorar
 
-Propuestas para decidir con el autor. **Decisión del autor (03-11-2026):** la 1, la 2 y la 3 se hacen en el paso 122; la 5 es el paso 123; la 4 no se hace, como recomendaba Claude: con una sola medición no se sabe si el coste es estable, y cambiaría la opción C. Tras el paso 123, el 04-11-2026, el autor decide no cambiar la lectura antes de evaluar: leer todo cuando la documentación es pequeña queda como mejora futura (sección «Después» del plan).
+Propuestas para decidir con el autor. **Decisión del autor (03-11-2026):** la 1, la 2 y la 3 se hacen en el paso 122; la 5 es el paso 123; la 4 no se hace, como recomendaba Claude: con una sola medición no se sabe si el coste es estable, y cambiaría la lectura relacionada. Tras el paso 123, el 04-11-2026, el autor decide no cambiar la lectura antes de evaluar: leer todo cuando la documentación es pequeña queda como mejora futura (sección «Después» del plan).
 
 1. **nginx:** subir `proxy_read_timeout` en las rutas que lanzan tareas (por ejemplo, a 5 minutos), para que la web no muestre un 504 cuando la tarea sí se ha lanzado.
 2. **La numeración de LUNA en las rondas centradas:**
@@ -130,5 +130,5 @@ Propuestas para decidir con el autor. **Decisión del autor (03-11-2026):** la 1
    La plataforma ya las renumera al guardarlas.
 3. **El error de esquema con su línea:** que diga la línea del fichero, como los demás errores, para que la reparación por Edit la encuentre.
 4. **El coste de actualizar:** limitar lo que A y B consultan, o probar a darles la documentación entera de una vez cuando sea pequeña: con menos de unos 30.000 tokens, leerla entera es más barato.
-5. **Medir la opción C con una documentación grande** antes de darla por buena, y repetir las rondas para conocer la variación.
+5. **Medir la lectura relacionada con una documentación grande** antes de darla por buena, y repetir las rondas para conocer la variación.
 6. **Las revisiones de preguntas pendientes** (reformular, resuelta, obsoleta) no se probaron: en el proyecto no había ninguna pendiente.
