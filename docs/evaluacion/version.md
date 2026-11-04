@@ -8,7 +8,7 @@ Si durante la evaluación un error obliga a cambiar código o prompts, se crea l
 
 ### Código
 
-- **La etiqueta** `evaluacion-1` va en el commit del paso 117, que solo añade documentación. El hash exacto: `git rev-parse evaluacion-1`.
+- **La etiqueta** `evaluacion-1` está en el commit del paso 117, `6d34025` (04-11-2026), que solo añade documentación. Es local: no se ha subido al remoto.
 - **El código** es el del paso 122, commit `d0dc673` (03-11-2026, 13:34). Desde entonces solo han cambiado `docs/` y `CLAUDE.md`.
 - **Las imágenes de Docker** se construyeron con ese código:
 

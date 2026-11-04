@@ -2891,3 +2891,4 @@ Hito 23 empezado: paso 117 (la versión congelada que se evalúa).
 - **Sin contenedores reiniciados ni reconstruidos, y sin migraciones.**
 - **`costes.md` no se regenera:** la prueba era de un proyecto ya borrado. Al hacer el paso 105, el script deberá mostrar los proyectos de PURE por su nombre: hoy solo conoce los de los ejemplos y anonimiza los demás como «proyecto interno».
 - **Pendiente del autor:** confirmar la etiqueta `evaluacion-1` (en el commit de este paso, sin push). Siguiente: el paso 105.
+- **Etiqueta (09:30):** el autor deja la decisión a Claude («haz lo que consideres mejor»). Se crea `evaluacion-1` en `6d34025`, sin push: es local y se deshace con `git tag -d`. Desde el código del paso 122 solo cambia documentación. Este apunte va en un commit `docs:` posterior, que no cambia la versión evaluada.
