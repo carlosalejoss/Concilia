@@ -2989,3 +2989,18 @@ Paso 105 hecho: el flujo completo con un documento público de PURE, en inglés,
   - Editados los SVG con scripts y convertidos a PNG con Edge sin ventana; los anteriores quedan como `memoria/diagrama-estados-anterior.*` y `memoria/diagrama-secuencia-catalogo-anterior.*`.
 - **Correcciones del texto** que venían de los mismos errores o de cifras viejas: 63 operaciones de la API (no 42, que era la cifra del 20-10); el estado de una fase tras un fallo y con condiciones que dejan de cumplirse; qué impide validar; las preguntas sin validación ni vigencia; dónde se preparan las entradas y cuándo se sortea el orden de las propuestas (al crear el trabajo, en el plan); la validación y la reparación por rama; la reparación del árbitro.
 - **Cifras:** introducción, unas 2.070 palabras; capítulo 2, unas 4.700. Compila sin errores.
+
+## 04-11-2026, 10:22 (sesión)
+
+**Resumen para la bitácora (04-11-2026, memoria: conclusiones sin la validación)**
+
+- **Encargo del autor:** rellenar el capítulo 3 salvo lo que depende de la validación, que es lo último y aún no está decidido cómo se hace.
+- **Qué se hizo** (unas 1.530 palabras):
+  - **resumen del trabajo:** qué es Concilia, el cambio de rumbo de los lotes al flujo completo y lo que hace la plataforma alrededor de los modelos, con las cifras del plan (23 hitos, 123 pasos, 258 commits, más de 1.000 tests);
+  - **cumplimiento de objetivos:** O1 a O5 cumplidos, cada uno con lo que lo respalda (en O3, Jira probado en real y Azure DevOps solo en formato); O6, pendiente;
+  - **aportaciones propias:** separadas de lo ajeno (modelos, Claude Code, modelo de embeddings, notaciones y bibliotecas);
+  - **valoración crítica:** las tres decisiones que explican el resultado y cinco limitaciones (los modelos y la ventana de 128k, la variabilidad, el coste del mockup, el 69–74 %, los datos ficticios hechos con ayuda de la IA, un solo usuario y una tarea cada vez);
+  - **trabajos futuros:** del «Después» del plan y de las mejoras pendientes;
+  - **valoración personal:** un borrador marcado para que el autor lo haga suyo.
+- **Pendiente**, con `% PENDIENTE` en el `.tex`: el resultado de la validación en el resumen del trabajo, el objetivo O6 y la valoración de la hipótesis.
+- **Cifras:** introducción, unas 2.070 palabras; capítulo 2, unas 4.700; capítulo 3, unas 1.530; total, unas 8.300 de 10.000. Quedan unas 1.700 para la 2.3 y lo pendiente de las conclusiones.
