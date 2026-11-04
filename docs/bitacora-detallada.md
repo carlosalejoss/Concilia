@@ -2911,3 +2911,20 @@ Hito 23 empezado: paso 117 (la versión congelada que se evalúa).
 - **Bibliografía:** las entradas de ejemplo de la plantilla se sustituyen por 18 referencias, con sus datos comprobados en la web (Mavin 2009, Rupp 2020, Großer 2024, ISO 29148, Ji 2023, Arora 2024, Du 2024, Panickssery 2024, Reimers 2019 y 2020, Ferrari 2017, Lucassen 2016, y las páginas de Gherkin, el modelo de embeddings, ONNX Runtime, `vale-ears`, Claude Code y LiteLLM).
 - **Compila sin errores ni referencias sin resolver** (19 páginas en total).
 - **Pendiente del autor**, marcado con `% PENDIENTE` en el `.tex`: el equipo y su trabajo diario, las fechas de las prácticas y el papel de cada director; la redacción del párrafo sobre el uso de la IA, que debe coincidir con el anexo VII; y la estructura de la memoria cuando se defina el contenido del capítulo 2.
+
+## 04-11-2026, 09:55 (sesión)
+
+**Resumen para la bitácora (04-11-2026, memoria: correcciones de la introducción y secciones 2.1 y 2.2)**
+
+- **Decisiones del autor sobre la introducción:**
+  - contexto sin hablar del equipo, de su trabajo diario ni del papel de cada director; fechas de las prácticas: del 7-09-2026 al 17-02-2027. Se quita también la frase sobre el responsable del equipo y la lectura por partes;
+  - uso de la IA: el autor ha tomado todas las decisiones y se ha apoyado en Claude Code para desarrollarlas; en la memoria, igual, apoyándose en Claude Code para mejorar la redacción. Se quita la frase sobre los proyectos ficticios hechos con ayuda de Claude (queda para la validación).
+- **Encargo del autor para el capítulo 2:** en la 2.1, el diagrama de alto nivel con una explicación general de cada elemento; en la 2.2, los diagramas de despliegue, estados y secuencia, en el orden que mejor encaje y explicados en profundidad; la 2.3, vacía por ahora.
+- **Qué se hizo:**
+  - 2.1, sobre `diagrama-alto-nivel-tfg-iteraciones.png` (el de las iteraciones, 27-10): usuario, documentación por iteraciones, contexto de entrada, coordinador general, las cuatro fases, modelos A, B y C, dónde se usan los embeddings y el almacenamiento compartido;
+  - 2.2, en el orden despliegue → estados → secuencia (qué piezas hay, qué reglas aplica la API y cómo colaboran en un trabajo): contenedores y servicios externos; las tres máquinas de estados (fase con avance y vigencia, iteración y pregunta); y el catálogo desde cero en diez pasos, con las variantes de actualizar y del mockup;
+  - antes de escribir, se comprobó contra el código lo que dicen los diagramas: `docker-compose.yml`, los Dockerfile y `nginx.conf` (puertos, rutas, SSE sin búfer, 5 minutos y 1 hora), las rutas de la API, `StepState` de `ProjectFlow`, `JobQueue` y `JobWorker`, los argumentos de Claude Code, los tiempos de 15 y 30 minutos, una reparación y la consulta cada 3 s de la web;
+  - las figuras anchas van en página apaisada (`rotating`) y la de secuencia a página completa; las cuatro imágenes, copiadas a `memoria/tfg/img/`.
+- **Cifras:** introducción, unas 2.070 palabras; capítulo 2, unas 4.400; total, unas 6.500 de 10.000. El PDF tiene 30 páginas con las preliminares y las figuras. Compila sin errores.
+- **Matices que señala el texto:** el diagrama de despliegue muestra la API de Anthropic para el mockup, pero en la versión evaluada el mockup va por la pasarela con SOL; se dice así.
+- **Pendientes:** la revisión del autor; la 2.3 y las conclusiones, cuando las pida.
