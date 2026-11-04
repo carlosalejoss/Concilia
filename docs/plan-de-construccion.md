@@ -32,26 +32,28 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 **Hito 22, iteraciones del proyecto:**
 1. ~~**Revisar en el navegador los pasos 113 y 114**~~ (hecho el 27-10-2026).
 2. ~~**115,** desde cero frente a lo anterior~~ (hecho y revisado por el autor el 27-10-2026).
-3. ~~**116,** la prueba real con clínicas en dos iteraciones~~ (hecha el 27-10 y el 03-11-2026; costó unos 16 $ con los intentos fallidos). El autor revisa la lista de cambios de la segunda iteración en el paso 118 y decide sobre las propuestas de mejora de `docs/resultados-paso-116/README.md`.
+3. ~~**116,** la prueba real con clínicas en dos iteraciones~~ (hecha el 27-10 y el 03-11-2026; costó unos 16 $ con los intentos fallidos). El autor revisa la lista de cambios de la segunda iteración en el paso 118. Sus propuestas de mejora, decididas: las hechas, en el 122; las demás, en «Después», punto 5.
+4. ~~**122,** las mejoras de la prueba real~~ (03-11-2026).
+5. ~~**123,** la opción C con una documentación grande~~ (04-11-2026).
 
 **Hito 23, evaluación** (en este orden; cada paso dice qué hace el autor y qué hace Claude):
 
-4. 117, congelar la versión, con una prueba barata en inglés antes.
-5. 105, el flujo con un documento de PURE, en inglés.
-6. 104, AQUSA y `vale-ears` sobre lo del 105.
-7. 106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53).
-8. 118, la referencia: revisar las trampas y hacer la lista de funcionalidades.
-9. 119, las 9 ejecuciones de clínicas.
-10. 120, las hojas de revisión y la comparación con un solo modelo.
-11. 121, SOL ‖ SOL.
+6. 117, congelar la versión, con una prueba barata en inglés antes.
+7. 105, el flujo con un documento de PURE, en inglés.
+8. 104, AQUSA y `vale-ears` sobre lo del 105.
+9. 106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53).
+10. 118, la referencia: revisar las trampas y hacer la lista de funcionalidades.
+11. 119, las 9 ejecuciones de clínicas.
+12. 120, las hojas de revisión y la comparación con un solo modelo.
+13. 121, SOL ‖ SOL.
 
 **Después del plan:**
 
-12. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. El esqueleto está en `memoria/tfg/memoria.tex`, fuera de git. En el equipo no hay LaTeX instalado: para compilarla hace falta Overleaf o instalar MiKTeX, y conviene probarlo antes de empezar a redactar.
-13. Lo que queda en «Después», al final de este plan: el hito 7 (catálogo v2, aplazado) y la aprobación por umbral.
+14. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. El esqueleto está en `memoria/tfg/memoria.tex`, fuera de git. En el equipo no hay LaTeX instalado: para compilarla hace falta Overleaf o instalar MiKTeX, y conviene probarlo antes de empezar a redactar.
+15. Lo que queda en «Después», al final de este plan: el hito 7 (catálogo v2, aplazado), la aprobación por umbral y las mejoras futuras de las iteraciones (punto 5).
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
-- si se hace un CSV solo con lo nuevo de una iteración;
+- ~~si se hace un CSV solo con lo nuevo de una iteración~~ (cerrado el 04-11-2026 sin hacerlo, como mejora futura);
 - abaratar las pantallas del mockup;
 - la licencia del repositorio, por acordar con la tutora y con la empresa (README);
 - el mockup con la suscripción y la skill `frontend-design`, aparcado desde el 15-10-2026.
