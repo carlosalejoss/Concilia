@@ -3088,3 +3088,15 @@ Tras el paso 104, a petición del autor («haz lo que consideres que puede aport
 
   La primera ronda la lanza el autor, que es quien hace de analista.
 
+
+## 04-11-2026, 12:45 (sesión)
+
+**Resumen para la bitácora (04-11-2026, memoria: capturas, anexos, acrónimos y comparación con otras aproximaciones)**
+
+- **Decisiones del autor:** recortar solo cuando se pase del límite, avisando; los anexos pueden ocupar lo que haga falta; la evolución de los prompts va a un anexo; capturas de clínicas hechas por Claude con la mejor calidad; lista de acrónimos; párrafo de comparación con otras aproximaciones; año de la portada, 2027.
+- **Capturas** (9, a escala ×2, del proyecto «Clinicas Veterinarias v0.11», solo leyendo): catálogo, trazabilidad de RF-037, ronda centrada con P-070 (contradice P-004), HU-016 con su criterio en Gherkin, informe del trabajo, comparación A | árbitro | B filtrada por desviaciones, consolas de las tres ejecuciones y el mockup (inicio y agenda). Siguen un mismo caso, el plazo de cancelación que pasa de 12 a 24 horas en la segunda iteración. Herramienta: Edge sin ventana con el puerto de depuración y puppeteer-core 23.11.1 en la carpeta temporal (lanzarlo desde puppeteer fallaba; conectarse sí funciona). El estado guardado de la web se limpia en cada captura. El mockup se recorta antes de una tarjeta con «Clave de prueba: undefined», un fallo del modelo.
+- **Anexos** (sustituyen al texto de relleno): A, instalación y puesta en marcha; B, evolución de los prompts (la tabla que estaba en la 2.2.4, que queda como un párrafo) y los 17 ficheros de instrucciones; C, calibración del emparejamiento (fidelidad frente a Python, método, barrido de umbrales y matriz 3 × 3); D, coste (precios, flujo de clínicas por fase, coste por papel y error del estimador); E, ejemplos de las exportaciones (dos páginas del PDF, el `.feature` de HU-016 y sus filas en el CSV de Jira).
+- **Otros cambios:** lista de acrónimos (24, a mano, porque `glossaries` necesita Perl); en 1.3, «Verificación cruzada y otras aproximaciones», con autoconsistencia (Wang et al., ICLR 2023) y LLM como juez con su sesgo de posición (Zheng et al., NeurIPS 2023), comprobadas en la web; los anexos se titulan «Anexo» (antes «Apéndice») y `\cref` dice «anexo B»; las comillas angulares y otros signos en los listados; portada con 2027.
+- **Datos corregidos al revisar:** el mockup capturado es el del 26-10 (49 pantallas, backlog de la iteración 1), no el de 40 pantallas; el CSV importado en Jira fue el del 23-10 («un CSV de este mismo proyecto, con el mismo formato»); MASTeR y PURE sin desarrollo del acrónimo, porque no se pudo confirmar.
+- **Extensión:** 9.164 palabras de texto corrido (9.879 con pies, tablas y listados), con la 2.3 sin escribir. Hay que reorganizar antes de redactarla: se avisa al autor.
+- **PDF:** 52 páginas. Compila sin errores.
