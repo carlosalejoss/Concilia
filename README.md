@@ -252,7 +252,7 @@ Lo que queda de la evaluación es el hito 23 de [`docs/plan-de-construccion.md`]
 - la comparación que responde a la hipótesis: cada trabajo ya contiene una propuesta de SOL solo (A) y otra de LUNA sola (B), y se miden frente a la unión del árbitro, con una referencia hecha por el autor, en recall, precisión, F1 y coste;
 - cuánto varía cada fase entre 3 repeticiones;
 - SOL ‖ SOL;
-- AQUSA y `vale-ears` como métricas externas;
+- AQUSA y `vale-ears` como métricas externas (hecho: [`docs/evaluacion/metricas-externas.md`](docs/evaluacion/metricas-externas.md));
 - un documento público del dataset PURE (hecho: [`docs/evaluacion/pure.md`](docs/evaluacion/pure.md), el flujo completo en inglés por 9,29 $);
 - una prueba editando como un analista;
 - todo con una versión congelada, descrita en [`docs/evaluacion/version.md`](docs/evaluacion/version.md): código, prompts, modelos, umbrales y versión de Claude Code (etiqueta `evaluacion-1`, 04-11-2026).

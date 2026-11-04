@@ -1,0 +1,744 @@
+{
+  "Project": "PURE · microcare",
+  "Measured": "04-11-2026 12:04",
+  "Proposals": [
+    {
+      "Name": "catalogo-sol",
+      "Slot": "A",
+      "Model": "SS - GPT-6-SOL",
+      "Tool": "Vale + vale-ears",
+      "Elements": 142,
+      "Counted": 136,
+      "Alerts": [
+        {
+          "Element": "RF-002",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'are created'. Name the actor and use an active verb.",
+          "Match": "are created"
+        },
+        {
+          "Element": "RF-008",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is created'. Name the actor and use an active verb.",
+          "Match": "is created"
+        },
+        {
+          "Element": "RF-014",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is blocked'. Name the actor and use an active verb.",
+          "Match": "is blocked"
+        },
+        {
+          "Element": "RF-020",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-023",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be retained'. Name the actor and use an active verb.",
+          "Match": "be retained"
+        },
+        {
+          "Element": "RF-028",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-030",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be retained'. Name the actor and use an active verb.",
+          "Match": "be retained"
+        },
+        {
+          "Element": "RF-037",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'being entered'. Name the actor and use an active verb.",
+          "Match": "being entered"
+        },
+        {
+          "Element": "RF-038",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is submitted'. Name the actor and use an active verb.",
+          "Match": "is submitted"
+        },
+        {
+          "Element": "RF-040",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is recorded'. Name the actor and use an active verb.",
+          "Match": "is recorded"
+        },
+        {
+          "Element": "RF-046",
+          "Check": "ears.PassiveVoiceAdverb",
+          "Message": "EARS requires active voice: 'was not distributed'. Name the actor and use an active verb.",
+          "Match": "was not distributed"
+        },
+        {
+          "Element": "RF-046",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'been sold'. Name the actor and use an active verb.",
+          "Match": "been sold"
+        },
+        {
+          "Element": "RF-051",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is created'. Name the actor and use an active verb.",
+          "Match": "is created"
+        },
+        {
+          "Element": "RF-053",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'being entered'. Name the actor and use an active verb.",
+          "Match": "being entered"
+        },
+        {
+          "Element": "RF-053",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be added'. Name the actor and use an active verb.",
+          "Match": "be added"
+        },
+        {
+          "Element": "RF-056",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'was inactivated'. Name the actor and use an active verb.",
+          "Match": "was inactivated"
+        },
+        {
+          "Element": "RF-056",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'was completed'. Name the actor and use an active verb.",
+          "Match": "was completed"
+        },
+        {
+          "Element": "RF-061",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is changed'. Name the actor and use an active verb.",
+          "Match": "is changed"
+        },
+        {
+          "Element": "RF-064",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is created'. Name the actor and use an active verb.",
+          "Match": "is created"
+        },
+        {
+          "Element": "RF-066",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be added'. Name the actor and use an active verb.",
+          "Match": "be added"
+        },
+        {
+          "Element": "RF-069",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'been investigated'. Name the actor and use an active verb.",
+          "Match": "been investigated"
+        },
+        {
+          "Element": "RF-070",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is recorded'. Name the actor and use an active verb.",
+          "Match": "is recorded"
+        },
+        {
+          "Element": "RF-071",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is received'. Name the actor and use an active verb.",
+          "Match": "is received"
+        },
+        {
+          "Element": "RF-074",
+          "Check": "ears.PassiveVoiceAdverb",
+          "Message": "EARS requires active voice: 'is not accepted'. Name the actor and use an active verb.",
+          "Match": "is not accepted"
+        },
+        {
+          "Element": "RF-076",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is selected'. Name the actor and use an active verb.",
+          "Match": "is selected"
+        },
+        {
+          "Element": "RF-077",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is scanned'. Name the actor and use an active verb.",
+          "Match": "is scanned"
+        },
+        {
+          "Element": "RF-081",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be added'. Name the actor and use an active verb.",
+          "Match": "be added"
+        },
+        {
+          "Element": "RF-090",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-091",
+          "Check": "ears.PassiveVoiceAdverb",
+          "Message": "EARS requires active voice: 'was actually performed'. Name the actor and use an active verb.",
+          "Match": "was actually performed"
+        },
+        {
+          "Element": "RF-092",
+          "Check": "ears.PassiveVoiceAdverb",
+          "Message": "EARS requires active voice: 'were actually performed'. Name the actor and use an active verb.",
+          "Match": "were actually performed"
+        },
+        {
+          "Element": "RF-093",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-094",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is referred'. Name the actor and use an active verb.",
+          "Match": "is referred"
+        },
+        {
+          "Element": "RF-097",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-098",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-099",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'been paid'. Name the actor and use an active verb.",
+          "Match": "been paid"
+        },
+        {
+          "Element": "RF-099",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-100",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'was sold'. Name the actor and use an active verb.",
+          "Match": "was sold"
+        },
+        {
+          "Element": "RF-100",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'been returned'. Name the actor and use an active verb.",
+          "Match": "been returned"
+        },
+        {
+          "Element": "RF-105",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-106",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is confirmed'. Name the actor and use an active verb.",
+          "Match": "is confirmed"
+        },
+        {
+          "Element": "RF-113",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is selected'. Name the actor and use an active verb.",
+          "Match": "is selected"
+        },
+        {
+          "Element": "RF-115",
+          "Check": "ears.WeakWords",
+          "Message": "Weak word 'Good' found. EARS requirements should be precise and unambiguous.",
+          "Match": "Good"
+        }
+      ]
+    },
+    {
+      "Name": "catalogo-luna",
+      "Slot": "B",
+      "Model": "SS - GPT-6-LUNA",
+      "Tool": "Vale + vale-ears",
+      "Elements": 115,
+      "Counted": 104,
+      "Alerts": [
+        {
+          "Element": "RF-018",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is withheld'. Name the actor and use an active verb.",
+          "Match": "is withheld"
+        },
+        {
+          "Element": "RF-021",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be saved'. Name the actor and use an active verb.",
+          "Match": "be saved"
+        },
+        {
+          "Element": "RF-034",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be viewed'. Name the actor and use an active verb.",
+          "Match": "be viewed"
+        },
+        {
+          "Element": "RF-037",
+          "Check": "ears.PassiveVoiceAdverb",
+          "Message": "EARS requires active voice: 'was not sold'. Name the actor and use an active verb.",
+          "Match": "was not sold"
+        },
+        {
+          "Element": "RF-038",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-045",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'are changed'. Name the actor and use an active verb.",
+          "Match": "are changed"
+        },
+        {
+          "Element": "RF-047",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be saved'. Name the actor and use an active verb.",
+          "Match": "be saved"
+        },
+        {
+          "Element": "RF-049",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'been investigated'. Name the actor and use an active verb.",
+          "Match": "been investigated"
+        },
+        {
+          "Element": "RF-058",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is referred'. Name the actor and use an active verb.",
+          "Match": "is referred"
+        },
+        {
+          "Element": "RF-062",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is submitted'. Name the actor and use an active verb.",
+          "Match": "is submitted"
+        },
+        {
+          "Element": "RF-065",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'been sold'. Name the actor and use an active verb.",
+          "Match": "been sold"
+        },
+        {
+          "Element": "RF-065",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'been returned'. Name the actor and use an active verb.",
+          "Match": "been returned"
+        },
+        {
+          "Element": "RF-066",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-069",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'was performed'. Name the actor and use an active verb.",
+          "Match": "was performed"
+        },
+        {
+          "Element": "RF-072",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-077",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be determined'. Name the actor and use an active verb.",
+          "Match": "be determined"
+        },
+        {
+          "Element": "RF-080",
+          "Check": "ears.WeakWords",
+          "Message": "Weak word 'Good' found. EARS requirements should be precise and unambiguous.",
+          "Match": "Good"
+        },
+        {
+          "Element": "RF-082",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-097",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be paid'. Name the actor and use an active verb.",
+          "Match": "be paid"
+        }
+      ]
+    },
+    {
+      "Name": "catalogo-union",
+      "Slot": "unión",
+      "Model": "SS - GPT-6-SOL",
+      "Tool": "Vale + vale-ears",
+      "Elements": 122,
+      "Counted": 114,
+      "Alerts": [
+        {
+          "Element": "RF-014",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is created'. Name the actor and use an active verb.",
+          "Match": "is created"
+        },
+        {
+          "Element": "RF-015",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'been sold'. Name the actor and use an active verb.",
+          "Match": "been sold"
+        },
+        {
+          "Element": "RF-016",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'was invalid'. Name the actor and use an active verb.",
+          "Match": "was invalid"
+        },
+        {
+          "Element": "RF-018",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is blocked'. Name the actor and use an active verb.",
+          "Match": "is blocked"
+        },
+        {
+          "Element": "RF-020",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-023",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be saved'. Name the actor and use an active verb.",
+          "Match": "be saved"
+        },
+        {
+          "Element": "RF-028",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-030",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be retained'. Name the actor and use an active verb.",
+          "Match": "be retained"
+        },
+        {
+          "Element": "RF-045",
+          "Check": "ears.PassiveVoiceAdverb",
+          "Message": "EARS requires active voice: 'was not distributed'. Name the actor and use an active verb.",
+          "Match": "was not distributed"
+        },
+        {
+          "Element": "RF-045",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'been sold'. Name the actor and use an active verb.",
+          "Match": "been sold"
+        },
+        {
+          "Element": "RF-047",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-055",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'was inactivated'. Name the actor and use an active verb.",
+          "Match": "was inactivated"
+        },
+        {
+          "Element": "RF-055",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'was completed'. Name the actor and use an active verb.",
+          "Match": "was completed"
+        },
+        {
+          "Element": "RF-060",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be saved'. Name the actor and use an active verb.",
+          "Match": "be saved"
+        },
+        {
+          "Element": "RF-062",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'are investigated'. Name the actor and use an active verb.",
+          "Match": "are investigated"
+        },
+        {
+          "Element": "RF-063",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is recorded'. Name the actor and use an active verb.",
+          "Match": "is recorded"
+        },
+        {
+          "Element": "RF-064",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is received'. Name the actor and use an active verb.",
+          "Match": "is received"
+        },
+        {
+          "Element": "RF-067",
+          "Check": "ears.PassiveVoiceAdverb",
+          "Message": "EARS requires active voice: 'is not accepted'. Name the actor and use an active verb.",
+          "Match": "is not accepted"
+        },
+        {
+          "Element": "RF-081",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'was sold'. Name the actor and use an active verb.",
+          "Match": "was sold"
+        },
+        {
+          "Element": "RF-082",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'been paid'. Name the actor and use an active verb.",
+          "Match": "been paid"
+        },
+        {
+          "Element": "RF-082",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-086",
+          "Check": "ears.PassiveVoiceAdverb",
+          "Message": "EARS requires active voice: 'were actually performed'. Name the actor and use an active verb.",
+          "Match": "were actually performed"
+        },
+        {
+          "Element": "RF-088",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-089",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is confirmed'. Name the actor and use an active verb.",
+          "Match": "is confirmed"
+        },
+        {
+          "Element": "RF-097",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'are selected'. Name the actor and use an active verb.",
+          "Match": "are selected"
+        },
+        {
+          "Element": "RF-098",
+          "Check": "ears.WeakWords",
+          "Message": "Weak word 'Good' found. EARS requirements should be precise and unambiguous.",
+          "Match": "Good"
+        },
+        {
+          "Element": "RF-099",
+          "Check": "ears.Syntax",
+          "Message": "Requirement containing 'shall' does not match EARS templates.",
+          "Match": "SHALL"
+        },
+        {
+          "Element": "RF-099",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'be added'. Name the actor and use an active verb.",
+          "Match": "be added"
+        },
+        {
+          "Element": "RI-001",
+          "Check": "ears.PassiveVoice",
+          "Message": "EARS requires active voice: 'is scanned'. Name the actor and use an active verb.",
+          "Match": "is scanned"
+        }
+      ]
+    },
+    {
+      "Name": "backlog-sol",
+      "Slot": "A",
+      "Model": "SS - GPT-6-SOL",
+      "Tool": "AQUSA",
+      "Elements": 50,
+      "Counted": 50,
+      "Alerts": [
+        {
+          "Element": "HU-002",
+          "Check": "atomic.conjunctions",
+          "Message": "As an authorized user, I want to have vouchers numbered [* and *] organized into coded batches, so that I can identify every created voucher and its production grouping.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-008",
+          "Check": "atomic.conjunctions",
+          "Message": "As a permitted user, I want to manage distributor status [* and *] inspect a distributor's transaction history, so that I can track purchased, sold and returned vouchers.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-024",
+          "Check": "atomic.conjunctions",
+          "Message": "As an authorized user, I want to record a provider's summary claims form [* and *] its received treatment forms, so that I can identify discrepancies before affected claims are accepted [* or *] paid.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-032",
+          "Check": "atomic.conjunctions",
+          "Message": "As an authorized user, I want to identify the patient [* and *] visit from a scanned slip and check visit order, so that I can avoid repeat [* or *] out-of-order treatment claims.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-050",
+          "Check": "atomic.conjunctions",
+          "Message": "As an authorized user, I want to use the voucher system [* and *] its standard reports on the specified platform, so that I can support pilot operations and later geographic and volume growth.",
+          "Match": ""
+        }
+      ]
+    },
+    {
+      "Name": "backlog-luna",
+      "Slot": "B",
+      "Model": "SS - GPT-6-LUNA",
+      "Tool": "AQUSA",
+      "Elements": 28,
+      "Counted": 28,
+      "Alerts": [
+        {
+          "Element": "HU-002",
+          "Check": "atomic.conjunctions",
+          "Message": "As authorized user, I want to create vouchers with assigned codes [* and *] configured run minimums, so that I can prepare valid voucher stock for the pilot.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-003",
+          "Check": "atomic.conjunctions",
+          "Message": "As authorized user, I want to prepare a voucher with client [* and *] partner portions and identified visit slips, so that I can provide the correct printed voucher and visit barcodes.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-004",
+          "Check": "atomic.conjunctions",
+          "Message": "As authorized user, I want to amend validity dates [* and *] withhold [* or *] release an individual voucher, so that I can control which vouchers can be used.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-005",
+          "Check": "atomic.conjunctions",
+          "Message": "As permitted user, I want to create [* and *] maintain distributor records and view their voucher history, so that I can manage the pilot distribution network.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-012",
+          "Check": "atomic.conjunctions",
+          "Message": "As user, I want to record provider staff [* and *] inspect a selected provider's claims, so that I can support claim entry and provider review.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-013",
+          "Check": "atomic.conjunctions",
+          "Message": "As authorized user, I want to record each provider submission [* and *] reconcile its treatment forms, so that I can retain receipt evidence and investigate discrepancies before claims proceed.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-015",
+          "Check": "atomic.conjunctions",
+          "Message": "As authorized user, I want to maintain the clinical selection masters [* and *] approved TA-OBA treatment matrix, so that I can guide claim entry by syndrome and visit.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-018",
+          "Check": "atomic.conjunctions",
+          "Message": "As authorized user, I want to verify claim thumbprints [* and *] track confirmed provider events, so that I can place uncertain claims on hold and apply provider inactivation rules.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-021",
+          "Check": "atomic.conjunctions",
+          "Message": "As authorized user, I want to record feedback for a selected client [* or *] partner [* and *] visit, so that I can associate responses with the right treatment record.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-027",
+          "Check": "atomic.conjunctions",
+          "Message": "As system administrator, I want to deploy [* and *] operate the system using the required platform and defined quality targets, so that I can support the pilot and subsequent growth.",
+          "Match": ""
+        }
+      ]
+    },
+    {
+      "Name": "backlog-union",
+      "Slot": "unión",
+      "Model": "SS - GPT-6-SOL",
+      "Tool": "AQUSA",
+      "Elements": 34,
+      "Counted": 34,
+      "Alerts": [
+        {
+          "Element": "HU-004",
+          "Check": "atomic.conjunctions",
+          "Message": "As an authorized user, I want to amend voucher validity [* and *] withhold [* or *] release individual vouchers, so that I can enforce voucher-use restrictions without changing other voucher details.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-005",
+          "Check": "atomic.conjunctions",
+          "Message": "As a permitted user, I want to maintain distributor records [* and *] inspect their voucher histories, so that I can manage and trace the pilot distribution network.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-008",
+          "Check": "atomic.conjunctions",
+          "Message": "As an authorized user, I want to allocate eligible vouchers through a salesperson [* and *] generate the distributor invoice, so that I can trace wholesale stock and charge the applicable rate.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-013",
+          "Check": "atomic.conjunctions",
+          "Message": "As a permitted user, I want to maintain provider payment terms [* and *] shared reimbursable drug prices, so that I can apply treatment-date rates and recalculate affected accepted claims.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-016",
+          "Check": "atomic.conjunctions",
+          "Message": "As an authorized user, I want to record provider submissions [* and *] process received [* or *] corrected treatment forms, so that I can investigate discrepancies and retain rejection history before claims become payable.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-023",
+          "Check": "atomic.conjunctions",
+          "Message": "As an authorized user, I want to calculate a claim using the authoritative matrix [* and *] effective contracted rates, so that I can determine its payable amount and first-visit laboratory fee.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-024",
+          "Check": "atomic.conjunctions",
+          "Message": "As an authorized user, I want to verify claim thumbprints [* and *] record confirmed provider events, so that I can hold unverifiable claims and inactivate providers above the event threshold.",
+          "Match": ""
+        },
+        {
+          "Element": "HU-027",
+          "Check": "atomic.conjunctions",
+          "Message": "As an authorized user, I want to associate feedback with one client [* or *] partner visit [* and *] record client responses, so that I can retain feedback without altering claim treatment details.",
+          "Match": ""
+        }
+      ]
+    }
+  ]
+}

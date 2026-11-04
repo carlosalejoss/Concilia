@@ -1,0 +1,3982 @@
+{
+  "Project": "PURE · microcare",
+  "Extracted": "04-11-2026 12:04",
+  "Phases": [
+    {
+      "Name": "catalogo",
+      "JobId": "ebcacde4-be51-4691-88e3-2ed2fc092ff7",
+      "Proposals": [
+        {
+          "Slot": "A",
+          "Model": "SS - GPT-6-SOL",
+          "Elements": [
+            {
+              "Id": "RF-001",
+              "Text": "the Voucher Management System SHALL provide authorized users with the ability to create vouchers for the Mbarara pilot.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-002",
+              "Text": "WHEN vouchers are created, the Voucher Management System SHALL assign each voucher a unique voucher number and its project, group-batch, batch and security codes.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-003",
+              "Text": "the Voucher Management System SHALL use the project-code pattern illustrated by P001 and the group-batch-code pattern illustrated by GP0001, with the remaining code-format and uniqueness rules [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-004",
+              "Text": "WHEN the Voucher Management System creates a group-batch, the Voucher Management System SHALL assign exactly 100 batches to it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-005",
+              "Text": "WHEN the Voucher Management System creates a batch, the Voucher Management System SHALL assign exactly 10 vouchers to it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-006",
+              "Text": "the Voucher Management System SHALL provide an authorized user with the ability to configure the minimum quantity of vouchers per creation run, with the initial quantity [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-007",
+              "Text": "IF a voucher-creation request is below the configured minimum quantity, THEN the Voucher Management System SHALL reject the request.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-008",
+              "Text": "WHEN a voucher is created, the Voucher Management System SHALL start its validity on its creation date and determine its expiry using [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-009",
+              "Text": "the Voucher Management System SHALL provide authorized users with the ability to amend voucher validity dates, including the dates of vouchers already sold.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-010",
+              "Text": "IF a voucher has expired, THEN the Voucher Management System SHALL reject its sale.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-011",
+              "Text": "IF a voucher has expired, THEN the Voucher Management System SHALL reject its use for treatment.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-012",
+              "Text": "IF a voucher was invalid on the treatment date, THEN the Voucher Management System SHALL prevent acceptance of its treatment claim.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-013",
+              "Text": "the Voucher Management System SHALL provide an authorized user with the ability to withhold or release an individual voucher.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-014",
+              "Text": "IF an action is blocked by a voucher's withheld status under the [TBD] withholding rules, THEN the Voucher Management System SHALL reject that action.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-015",
+              "Text": "IF a user attempts to edit or delete a created voucher, THEN the Voucher Management System SHALL reject the attempt, apart from authorized validity amendments and withholding changes.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-016",
+              "Text": "WHEN preparing a voucher for printing, the Voucher Management System SHALL produce two portions, one for the client and one for the partner, sharing one voucher number and containing three separately identified visit slips per person.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-017",
+              "Text": "WHEN producing a visit-slip barcode, the Voucher Management System SHALL encode the shared voucher number, security code, client or partner identity, and initial consultation, first follow-up or second follow-up identity.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-018",
+              "Text": "WHEN producing vouchers, the Voucher Management System SHALL include the maximum retail price on each voucher.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-019",
+              "Text": "the Voucher Management System SHALL provide users with the ability to record distributors by unique code, name, business type, proprietor name, designation, geographical address, contact number, email address and active or deactivated status.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-020",
+              "Text": "IF a distributor's code, name, business type, proprietor name or address is missing, THEN the Voucher Management System SHALL reject creation of that distributor.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-021",
+              "Text": "the Voucher Management System SHALL provide users with the ability to maintain distributor geographical address values for district, sub-district, county, sub-county, village or town, and street or road.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-022",
+              "Text": "IF a distributor code already exists, THEN the Voucher Management System SHALL reject creation of the duplicate code.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-023",
+              "Text": "IF a distributor name already exists, THEN the Voucher Management System SHALL warn the user and allow the same name to be retained or changed.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-024",
+              "Text": "the Voucher Management System SHALL provide permitted users with the ability to add, edit, activate, deactivate, view and print distributor records.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-025",
+              "Text": "IF a distributor has child records, THEN the Voucher Management System SHALL reject deletion of that distributor.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-026",
+              "Text": "the Voucher Management System SHALL provide permitted users with the ability to view a selected distributor's history by batch, purchase date, quantity purchased, quantity sold, quantity returned and balance quantity, and to print that history when permitted.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-027",
+              "Text": "the Voucher Management System SHALL provide users with the ability to maintain individual MSIU salespeople by code, name, date of birth, age, gender, communication address, contact number and email address for pilot distribution tracking.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-028",
+              "Text": "IF a salesperson's code, name, date of birth, age, gender or communication address is missing, THEN the Voucher Management System SHALL reject creation of that salesperson.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-029",
+              "Text": "IF a salesperson code already exists, THEN the Voucher Management System SHALL reject creation of the duplicate code.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-030",
+              "Text": "IF a salesperson name already exists, THEN the Voucher Management System SHALL warn the user and allow the same name to be retained or changed.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-031",
+              "Text": "the Voucher Management System SHALL provide users with the ability to maintain the wholesale voucher rate used in distribution invoices.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-032",
+              "Text": "WHEN recording a distribution, the Voucher Management System SHALL record the selected distributor and salesperson, the current system date, the requested quantity, the allocated batch and voucher numbers, and cash as the distribution payment mode.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-033",
+              "Text": "WHEN recording a distribution, the Voucher Management System SHALL generate a distribution invoice number and calculate the invoice amount as the number of vouchers allocated multiplied by the wholesale rate applicable on the distribution date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-034",
+              "Text": "WHEN a distributor requests vouchers, the Voucher Management System SHALL allocate unassigned, unexpired and non-withheld vouchers in ascending voucher-number order.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-035",
+              "Text": "IF eligible stock is less than the quantity requested by a distributor, THEN the Voucher Management System SHALL reject the entire allocation without allocating any vouchers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-036",
+              "Text": "WHEN allocating vouchers to a distributor, the Voucher Management System SHALL show each allocated batch number, voucher number and validity date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-037",
+              "Text": "WHILE a distribution is being entered, the Voucher Management System SHALL allow a user to add a missing distributor or salesperson in the respective master and resume the distribution without closing it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-038",
+              "Text": "IF a distribution date later than the current system date is submitted, THEN the Voucher Management System SHALL reject it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-039",
+              "Text": "WHEN an authorized VMU user enters a distributor-supplied retail sale, the Voucher Management System SHALL record its single voucher number, customer name and place of living, actual sale date, place of sale and actual amount paid.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-040",
+              "Text": "WHEN a retail sale is recorded, the Voucher Management System SHALL use the fixed approved retail price and derive retail-sales totals from individual sale records.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-041",
+              "Text": "IF an actual retail-sale amount exceeds the voucher's maximum retail price, THEN the Voucher Management System SHALL reject the sale.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-042",
+              "Text": "IF a retail-sale date is in the future, THEN the Voucher Management System SHALL reject the sale while permitting entry of its actual past date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-043",
+              "Text": "the Voucher Management System SHALL provide users with distributor-wise, salesperson-wise and batch-wise distribution and sales information.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-044",
+              "Text": "WHEN recording a distributor return, the Voucher Management System SHALL record the distributor, salesperson, return date, returned quantity, return amount, and batch and voucher numbers for each returned voucher.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-045",
+              "Text": "WHEN recording a distributor return, the Voucher Management System SHALL default its date to the current system date and reject a future return date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-046",
+              "Text": "IF a returned voucher was not distributed to the returning distributor or has been sold or used, THEN the Voucher Management System SHALL reject its return.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-047",
+              "Text": "WHEN accepting a distributor return, the Voucher Management System SHALL restore the returned vouchers to saleable stock and calculate the refund using each voucher's originally invoiced wholesale rate.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-048",
+              "Text": "the Voucher Management System SHALL provide users with the ability to maintain an approved Mbarara service-provider network that includes private, NGO, faith-based and government-hospital providers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-049",
+              "Text": "the Voucher Management System SHALL record each service provider's code, name, physical and communication addresses, health sub-district, locality, facility level and type, registration body, contact person and designation, contact number, email address and active or inactive status.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-050",
+              "Text": "IF a new service provider lacks any specified master field other than contact number or email address, THEN the Voucher Management System SHALL reject creation of that provider.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-051",
+              "Text": "WHEN a service provider is created, the Voucher Management System SHALL automatically generate its provider code with the SP suffix.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-052",
+              "Text": "IF the name of a new service provider already exists, THEN the Voucher Management System SHALL ask whether to continue and save the duplicate name only if the user confirms.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-053",
+              "Text": "WHILE a service provider is being entered, the Voucher Management System SHALL offer selectable geographical, health sub-district, locality, facility-level, facility-type and registration-body master values and allow missing values to be added before returning to the provider entry.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-054",
+              "Text": "the Voucher Management System SHALL provide permitted users with the ability to add, amend, delete, activate and inactivate service-provider master records and their payment terms.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-055",
+              "Text": "WHEN offering service providers for new data entry, the Voucher Management System SHALL list active providers, while making both active and inactive providers available for reports.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-056",
+              "Text": "IF a provider was inactivated after a treatment was completed, THEN the Voucher Management System SHALL allow submission of a claim for that earlier treatment.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-057",
+              "Text": "the Voucher Management System SHALL record each provider's agreed payment mode as cash or bank transfer, bank account number, bank name, and submission and payment frequency as monthly or twice per calendar month.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-058",
+              "Text": "the Voucher Management System SHALL maintain each provider's effective-dated initial-consultation, first-follow-up and second-follow-up consultation fees and initial-visit laboratory fee as numeric amounts defaulting to zero.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-059",
+              "Text": "IF effective periods for provider fees or drug prices overlap, THEN the Voucher Management System SHALL reject the overlapping period.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-060",
+              "Text": "WHEN selecting provider fees or drug prices for a claim, the Voucher Management System SHALL use the rates effective on its treatment date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-061",
+              "Text": "WHEN an applicable provider fee or drug price is changed retrospectively, the Voucher Management System SHALL recalculate affected accepted claims.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-062",
+              "Text": "the Voucher Management System SHALL provide users with the ability to view a selected provider's claims by claim number, date, system-entry date, amount, status and remarks.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-063",
+              "Text": "the Voucher Management System SHALL record each provider staff member's provider, staff code, name, staff type and optional qualification.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-064",
+              "Text": "WHEN a provider staff member is created, the Voucher Management System SHALL generate a staff code from the provider code, SC and a numeric suffix of [TBD] length.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-065",
+              "Text": "IF a provider staff name already exists, THEN the Voucher Management System SHALL warn the user while allowing creation of the staff member.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-066",
+              "Text": "WHILE entering provider staff, the Voucher Management System SHALL offer staff types from a maintainable staff-type master and allow a missing type to be added before resuming staff entry.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-067",
+              "Text": "WHEN a provider submits treatment forms, the Voucher Management System SHALL record the provider, current submission date, count stated on the summary claims form, count physically received and each received treatment-form number.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-068",
+              "Text": "WHEN recording a submission, the Voucher Management System SHALL check that the number of individual treatment-form numbers equals the number of forms physically received.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-069",
+              "Text": "IF the count stated on a summary claims form differs from the physically received count, THEN the Voucher Management System SHALL permit receipt with a documented discrepancy and prevent acceptance or payment of affected claims until missing or extra forms have been investigated.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-070",
+              "Text": "WHEN a submission is recorded, the Voucher Management System SHALL produce a printable receipt listing the provider, submission date and time, stated and received counts, and individual treatment-form numbers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-071",
+              "Text": "WHEN a treatment form is received, the Voucher Management System SHALL log its receipt and associate its paper treatment-form number with its submission.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-072",
+              "Text": "IF a received treatment form is incomplete or contains apparently false information, THEN the Voucher Management System SHALL mark it rejected and quarantined, record the reason, and prevent acceptance of a claim from that submission.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-073",
+              "Text": "WHEN an authorized reviewer processes a corrected treatment form in the following month's batch, the Voucher Management System SHALL permit resubmission under its original form number while retaining the prior rejection and new submission.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-074",
+              "Text": "WHILE a claim is not accepted, the Voucher Management System SHALL exclude it from payable claims.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-075",
+              "Text": "WHEN entering a claim from a received treatment form, the Voucher Management System SHALL select a received form number not yet entered for that submission and generate a claim number using the provider or hospital code and an eight-digit suffix.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-076",
+              "Text": "WHEN a received treatment-form number is selected, the Voucher Management System SHALL populate the claim's submitted date and service provider from the form receipt.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-077",
+              "Text": "WHEN a voucher slip is scanned for claim entry, the Voucher Management System SHALL obtain its voucher number, patient type and visit type from the barcode.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-078",
+              "Text": "the Voucher Management System SHALL capture each claim's treatment-form number, generated claim number, submission date, provider, voucher number, visit type, patient type, patient name, age, gender, address, optional contact number, doctor, conditional doctor's notes, conditional HIV details, patient status, calculated claim amount and claim status.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-079",
+              "Text": "IF a required claim-header field is missing, THEN the Voucher Management System SHALL prevent acceptance of the claim, with doctor's notes required only when clinically indicated and HIV details required only when such information exists.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-080",
+              "Text": "WHEN entering claim demographics and clinical staff, the Voucher Management System SHALL offer male or female gender, maintainable geographical address values, and doctors selected from the provider's staff records.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-081",
+              "Text": "WHILE entering a claim, the Voucher Management System SHALL allow missing geographical address master values to be added before resuming claim entry.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-082",
+              "Text": "the Voucher Management System SHALL maintain selectable masters for syndromes, clinical examinations, diagnoses, laboratory tests, other measures, patient statuses, claim statuses, referral reasons and claim quarantine or rejection reasons.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-083",
+              "Text": "the Voucher Management System SHALL maintain a drugs master with generic name, drug code, drug name and one reimbursable retail price per drug applicable to all providers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-084",
+              "Text": "the Voucher Management System SHALL maintain the approved TA-OBA treatment matrix by syndrome and visit for clinical examinations, diagnoses, laboratory tests, drugs and other measures, with its content [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-085",
+              "Text": "WHEN entering an initial-consultation claim, the Voucher Management System SHALL permit the syndrome, clinical examination, diagnosis, laboratory test, drug name, frequency, number of days, quantity and other-measure details supported by the approved treatment matrix.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-086",
+              "Text": "WHEN entering a follow-up claim, the Voucher Management System SHALL permit diagnosis and drug name, frequency, number of days and quantity, together with syndromes, examinations, laboratory tests and other measures when supported by the approved treatment matrix.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-087",
+              "Text": "WHEN entering clinical details for a visit, the Voucher Management System SHALL allow multiple syndrome, examination, diagnosis, laboratory-test, drug and other-measure entries and require only the clinical fields specified for that syndrome and visit by the approved matrix.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-088",
+              "Text": "IF a treatment claim deviates from the treatment matrix, THEN the Voucher Management System SHALL permit its acceptance and capture its justification according to [TBD] permitted-deviation and justification rules.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-089",
+              "Text": "WHEN calculating a claim, the Voucher Management System SHALL use the approved treatment matrix as authoritative if its payable amount differs from an amount derived from provider terms and drug prices.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-090",
+              "Text": "WHEN calculating consultation, laboratory and drug components of a claim, the Voucher Management System SHALL apply [TBD] component and discrepancy rules within the treatment matrix's authoritative payable amount.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-091",
+              "Text": "IF no laboratory test was actually performed at an initial consultation, THEN the Voucher Management System SHALL exclude the initial-visit laboratory fee from that claim's calculated components.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-092",
+              "Text": "WHEN one or more laboratory tests were actually performed at an initial consultation, the Voucher Management System SHALL count one contracted initial-visit laboratory fee rather than one fee per test.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-093",
+              "Text": "WHEN recording monetary amounts for vouchers, sales, returns, drugs or claims, the Voucher Management System SHALL use whole currency units and round per item using a [TBD] rounding method and [TBD] currency.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-094",
+              "Text": "WHEN a patient is referred, the Voucher Management System SHALL record the referred-to destination and a reason selected from the referral-reason master.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-095",
+              "Text": "IF a referral destination is outside the approved provider network, THEN the Voucher Management System SHALL require its name, location and referral reason and exclude that destination's treatment from voucher reimbursement.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-096",
+              "Text": "the Voucher Management System SHALL support an initial consultation and at most a first and second follow-up separately for the client and partner under the same voucher number.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-097",
+              "Text": "IF a claim repeats or is out of order for that voucher, patient type and visit, THEN the Voucher Management System SHALL reject it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-098",
+              "Text": "IF an accepted claim already exists for a voucher number, patient type and visit, THEN the Voucher Management System SHALL prevent acceptance of another claim for that combination.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-099",
+              "Text": "IF a duplicate claim for a voucher number, patient type and visit has already been paid, THEN the Voucher Management System SHALL reject that duplicate.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-100",
+              "Text": "WHEN assessing claim eligibility, the Voucher Management System SHALL accept a claim only if its voucher was sold, has not been returned or withheld, was valid on the treatment date and has no accepted claim for that patient and visit.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-101",
+              "Text": "IF claim eligibility fails for a reason other than an already paid duplicate, THEN the Voucher Management System SHALL quarantine the claim for review without accepting it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-102",
+              "Text": "WHEN processing a claim, the Voucher Management System SHALL capture its status and the reason whenever the status is rejection or quarantine.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-103",
+              "Text": "the Voucher Management System SHALL provide authorized users with the ability to amend claim information.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-104",
+              "Text": "WHEN processing a paper claim form, the Voucher Management System SHALL capture and compare its patient's thumbprint with previous prints for the same voucher and patient type using a [TBD] digitization and comparison process.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-105",
+              "Text": "IF a claim's thumbprint is unreadable, a prior print is absent or the thumbprint reader is unavailable, THEN the Voucher Management System SHALL put the claim on hold.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-106",
+              "Text": "WHEN a thumbprint mismatch is confirmed for the same voucher and patient type, the Voucher Management System SHALL count the mismatch as a provider event over all time.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-107",
+              "Text": "WHEN a confirmed claim irregularity belongs to [TBD] fraud-event categories, the Voucher Management System SHALL count it with thumbprint mismatches toward the provider's all-time event total.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-108",
+              "Text": "IF a provider's all-time total of counted fraud events and thumbprint mismatches exceeds two, THEN the Voucher Management System SHALL automatically inactivate that provider.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-109",
+              "Text": "the Voucher Management System SHOULD BE ABLE TO display a warning when a provider's counted thumbprint mismatches exceed two.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-110",
+              "Text": "WHEN preparing provider payment information, the Voucher Management System SHALL calculate accepted claims and produce financial and medical payment reports for MSIU to arrange payment, without initiating provider payments.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-111",
+              "Text": "WHEN preparing provider submission and payment reports, the Voucher Management System SHALL distinguish monthly from twice-per-calendar-month providers using [TBD] period boundaries and cutoffs.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-112",
+              "Text": "WHEN capturing client feedback, the Voucher Management System SHALL associate the feedback record with a voucher, a selected client or partner and a selected visit.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-113",
+              "Text": "WHEN a feedback visit is selected, the Voucher Management System SHALL populate patient details including the claim-form address, treated syndromes, laboratory tests, drugs and referral details from the corresponding treatment claim without permitting changes to populated treatment information.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-114",
+              "Text": "WHEN capturing feedback, the Voucher Management System SHALL record client-reported treatment success using [TBD] response values rather than populate success from a claim.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-115",
+              "Text": "WHEN capturing feedback, the Voucher Management System SHALL record the client's treatment, counseling and privacy satisfaction using the values Not at all, Moderate, Good and Completely.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-116",
+              "Text": "WHEN displaying partner-treated status on feedback, the Voucher Management System SHALL derive it from an accepted partner claim for the voucher.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-117",
+              "Text": "the Voucher Management System SHALL produce a monthly report after claim collection of clean claims payable without reservation.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-118",
+              "Text": "the Voucher Management System SHALL produce a monthly report after claim collection of claims for which payment is withheld pending clarification.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-119",
+              "Text": "the Voucher Management System SHALL produce a claim report for each provider and a summary report covering all providers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-120",
+              "Text": "the Voucher Management System SHALL produce quarterly summaries for each provider and all providers combined.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-121",
+              "Text": "the Voucher Management System SHALL report frequencies of treated syndromes and patient sex and age.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-122",
+              "Text": "the Voucher Management System SHALL report frequencies of primary clients and notified partners.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-123",
+              "Text": "the Voucher Management System SHALL report counts of correctly documented cases, incorrectly documented cases, cases treated according to algorithms, justified treatment alterations and treatment errors using [TBD] data sources and classification and calculation rules.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-124",
+              "Text": "the Voucher Management System SHALL produce a summary comparing providers by syndromes treated, documentation quality and treatment behavior using [TBD] indicator definitions.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-125",
+              "Text": "the Voucher Management System SHALL produce quarterly and half-yearly trends for the specified indicators by provider and for all providers combined using [TBD] time periods and comparison rules.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-126",
+              "Text": "the Voucher Management System SHALL provide a system administrator with the ability to create user groups containing a unique group code, unique group name, screen name and allowed or disallowed new, edit, delete, view and print privileges.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-127",
+              "Text": "WHEN a user accesses a screen action, the Voucher Management System SHALL apply that user's group-level new, edit, delete, view or print permission for the action, with the groups and permissions for individual records [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-128",
+              "Text": "the Voucher Management System SHALL provide for creation of individual users under user groups with a selected group, unique user name, password and password-verification entry.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-129",
+              "Text": "IF a user's password and verification do not match, THEN the Voucher Management System SHALL reject creation of the user.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-130",
+              "Text": "IF a proposed user-group name or individual user name already exists, THEN the Voucher Management System SHALL reject creation with that name.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-131",
+              "Text": "the Voucher Management System SHALL enforce [TBD] password strength, failed-login lockout, verified password-reset and idle-session timeout rules.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-001",
+              "Text": "WHEN printing reports, the Voucher Management System SHALL mask patient identity, HIV data and thumbprints.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-002",
+              "Text": "the Voucher Management System SHALL apply [TBD] confidentiality, sensitive-data access, access-and-change audit, retention and disposal rules for patient identity, HIV information and thumbprints.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-003",
+              "Text": "The interactive response time of the Voucher Management System SHALL BE [TBD] seconds for the pilot and later geographic and volume growth.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-004",
+              "Text": "The standard-report generation time of the Voucher Management System SHALL BE [TBD] seconds for the pilot and later geographic and volume growth.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-005",
+              "Text": "The availability of the Voucher Management System SHALL BE [TBD] percent for the pilot and later growth.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-006",
+              "Text": "The concurrent-user capacity of the Voucher Management System SHALL BE [TBD] users for the pilot and later growth.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-007",
+              "Text": "The daily and peak transaction capacity of the Voucher Management System SHALL BE [TBD] transactions per day and [TBD] transactions per peak period for the pilot and later growth.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-008",
+              "Text": "the Voucher Management System SHALL support the anticipated sale of 20,000 vouchers during the one-year Mbarara pilot and allow later growth in geography and voucher volume.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RT-001",
+              "Text": "the Voucher Management System SHALL use Oracle 9i as its database platform.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RT-002",
+              "Text": "the Voucher Management System SHALL use Visual Basic for its front end.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RT-003",
+              "Text": "the Voucher Management System SHALL use Crystal Reports 9 for reports.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            }
+          ]
+        },
+        {
+          "Slot": "B",
+          "Model": "SS - GPT-6-LUNA",
+          "Elements": [
+            {
+              "Id": "RF-001",
+              "Text": "the Voucher Management System SHALL support the one-year Mbarara pilot and its anticipated sales of 20,000 vouchers, including tracking by distributor and individual salesperson.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-002",
+              "Text": "the Voucher Management System SHOULD BE ABLE TO support later growth in geography and voucher volume.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-003",
+              "Text": "the Voucher Management System SHALL support approved Mbarara pilot providers that are private, NGO, faith-based, or government hospitals.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-004",
+              "Text": "the Voucher Management System SHALL allow voucher creation only by an authorized user.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-005",
+              "Text": "the Voucher Management System SHALL create each group-batch with 100 batches and each batch with exactly 10 vouchers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-006",
+              "Text": "the Voucher Management System SHALL generate project codes in the P001 format and group-batch codes in the GP0001 format, and generate batch, voucher, and security codes using [TBD: format, allowed characters, length, and uniqueness scope].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-007",
+              "Text": "the Voucher Management System SHALL allow an authorized user to configure the minimum number of vouchers per creation run, with the minimum value [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-008",
+              "Text": "IF a voucher-creation run is below the configured minimum, THEN the Voucher Management System SHALL reject the run.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-009",
+              "Text": "the Voucher Management System SHALL produce voucher codes in barcode form for printing on the vouchers and their slips.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-010",
+              "Text": "the Voucher Management System SHALL encode the shared voucher number, client-or-partner identity, visit type, and security code in each client or partner visit barcode.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-011",
+              "Text": "the Voucher Management System SHALL create one shared voucher number with a client portion and a partner portion, and three separately identified visit slips for each person for the initial consultation, first follow-up, and second follow-up.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-012",
+              "Text": "the Voucher Management System SHALL store the maximum retail price (MRP) for each voucher.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-013",
+              "Text": "the Voucher Management System SHALL prevent editing or deleting a created voucher.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-014",
+              "Text": "the Voucher Management System SHALL start voucher validity on creation; the rule that determines the validity end date is [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-015",
+              "Text": "WHEN an authorized user amends a voucher validity date, the Voucher Management System SHALL apply the amended date to vouchers already sold.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-016",
+              "Text": "WHEN a voucher has expired, the Voucher Management System SHALL reject its distribution, retail sale, treatment, and claim acceptance.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-017",
+              "Text": "the Voucher Management System SHALL allow an authorized user to withhold a voucher and subsequently release it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-018",
+              "Text": "WHEN a voucher is withheld, the Voucher Management System SHALL reject the actions designated as blocked for that voucher, with the blocked actions [TBD: distribution, retail sale, treatment, claim acceptance, and/or payment].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-019",
+              "Text": "the Voucher Management System SHALL maintain distributor records containing distributor code, name, business type, proprietor name, designation, address, contact number, email, and active-or-deactivated status, with the starred fields in the source mandatory.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-020",
+              "Text": "IF a distributor code already exists, THEN the Voucher Management System SHALL reject creation of another distributor with that code.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-021",
+              "Text": "WHEN a user enters a distributor name that already exists, the Voucher Management System SHALL warn the user and allow the duplicate name to be saved or changed.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-022",
+              "Text": "the Voucher Management System SHALL maintain individual salesperson records containing salesperson code, name, date of birth, age, gender, communication address, contact number, and email, without requiring the future sales-team master.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-023",
+              "Text": "the Voucher Management System SHALL record each distribution transaction with the distributor, salesperson, distribution date, requested quantity, allocated voucher and batch numbers, validity dates, wholesale invoice amount, cash payment mode, and an automatically generated distribution invoice number.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-024",
+              "Text": "WHEN a user requests voucher allocation to a distributor, the Voucher Management System SHALL allocate unassigned, unexpired, and non-withheld vouchers in ascending voucher-number order.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-025",
+              "Text": "IF eligible voucher stock is insufficient for a distribution request, THEN the Voucher Management System SHALL reject the entire request without partial allocation.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-026",
+              "Text": "the Voucher Management System SHALL generate a distribution invoice number automatically for each distribution transaction.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-027",
+              "Text": "the Voucher Management System SHALL calculate the distribution invoice amount as the allocated quantity multiplied by the wholesale rate from the settings master applicable to the sale date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-028",
+              "Text": "the Voucher Management System SHALL set the distribution date to the current system date and reject a future distribution date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-029",
+              "Text": "the Voucher Management System SHALL record each retail sale by voucher number, customer, actual sale date, place of sale, amount, and supplying distributor, based on details supplied by the distributor and entered by an authorized VMU user.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-030",
+              "Text": "IF a retail-sale transaction attempts to sell more than one voucher to one customer at a time, THEN the Voucher Management System SHALL reject the transaction.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-031",
+              "Text": "the Voucher Management System SHALL accept a past actual retail-sale date and reject a future retail-sale date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-032",
+              "Text": "the Voucher Management System SHALL use a fixed approved retail price and record the actual amount paid for each retail sale.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-033",
+              "Text": "IF a retail-sale amount exceeds the voucher's MRP, THEN the Voucher Management System SHALL reject the sale.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-034",
+              "Text": "the Voucher Management System SHALL provide a distributor sales history showing batch number, purchase date, quantity purchased, quantity sold, quantity returned, and balance quantity, and allow the history for a selected distributor to be viewed and printed subject to user permission.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-035",
+              "Text": "the Voucher Management System SHALL record a sales return with distributor, salesperson, return date, return amount, number of vouchers, batch number, and voucher number.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-036",
+              "Text": "the Voucher Management System SHALL permit a distributor to return only vouchers distributed to that distributor that remain unsold and unused.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-037",
+              "Text": "IF a returned voucher was not sold to the returning distributor or is not eligible for return, THEN the Voucher Management System SHALL reject the return of that voucher.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-038",
+              "Text": "WHEN the Voucher Management System accepts a return, it SHALL make the returned voucher saleable again and calculate the refund using the original invoiced wholesale rate.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-039",
+              "Text": "the Voucher Management System SHALL represent voucher prices, sales, returns, drug prices, and claims in whole currency units and round per item, using [TBD: currency and rounding method].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-040",
+              "Text": "the Voucher Management System SHALL maintain service-provider records for code, provider name, physical and communication addresses, health sub-district, locality, facility level and type, registration body, contact person, designation, contact number, email, and active-or-inactive status, with only contact number and email non-mandatory.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-041",
+              "Text": "the Voucher Management System SHOULD PROVIDE the user with the ability to review a duplicate service-provider-name warning and choose Yes to save the provider or No to prevent saving it.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-042",
+              "Text": "the Voucher Management System SHALL list active service providers for data-entry selection and all service providers for reporting.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-043",
+              "Text": "the Voucher Management System SHALL store service-provider status as Active or Inactive and support status changes in accordance with MSIU management decisions.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-044",
+              "Text": "the Voucher Management System SHALL maintain service-provider payment terms for payment mode (Cash or Bank), bank account number, bank name, payment type (Bi-Monthly or Monthly), validity dates, first-visit consultation fee, first-follow-up consultation fee, second-follow-up consultation fee, and first-visit lab fee.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-045",
+              "Text": "the Voucher Management System SHALL select service-provider fees and drug prices by treatment date, disallow overlapping effective periods, and recalculate accepted claims when rates are changed retrospectively.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-046",
+              "Text": "the Voucher Management System SHALL maintain service-provider staff records containing service provider, staff code, staff name, staff type, and qualification, with qualification non-mandatory, and generate the staff code using the service-provider code, SC, and a three-digit suffix.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-047",
+              "Text": "WHEN a user enters a service-provider staff name that already exists, the Voucher Management System SHALL warn the user and allow the new staff record to be saved.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-048",
+              "Text": "the Voucher Management System SHALL record a provider claim-submission receipt with provider, current submission date, number of forms mentioned, number physically available, and the treatment-form numbers received; the counts SHALL be numeric and mandatory.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-049",
+              "Text": "WHEN the number of forms mentioned differs from the number physically available, the Voucher Management System SHALL permit receipt with a documented discrepancy and prevent acceptance or payment of affected claims until the missing or extra forms have been investigated.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-050",
+              "Text": "the Voucher Management System SHALL print a receipt for claim submission showing provider, submission date and time, forms mentioned, forms available, and the received treatment-form numbers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-051",
+              "Text": "the Voucher Management System SHALL log each received treatment form before processing it as a claim.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-052",
+              "Text": "IF a received treatment form is incomplete or apparently contains false data, THEN the Voucher Management System SHALL mark it Rejected and Quarantined, record the reason, and not accept a claim from it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-053",
+              "Text": "WHEN an authorized reviewer processes a corrected rejected form, the Voucher Management System SHALL allow resubmission under the same treatment-form number in the following month's batch and retain the new submission and prior rejection status.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-054",
+              "Text": "the Voucher Management System SHALL record a claim's treatment-form number, claim number, submission date, treatment date, service provider, voucher number, visit count, patient type, patient name, age, gender, address, contact number, doctor, doctor's note, HIV details when present, patient status, claim amount, and claim status.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-055",
+              "Text": "the Voucher Management System SHALL generate a claim number using the hospital code as a suffix and eight digits, populate submission date and provider from the selected receipt form, and capture voucher number, visit count, and patient type from the visit barcode.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-056",
+              "Text": "the Voucher Management System SHALL require all listed claim-header fields for acceptance except contact number, require doctor's notes only when clinically indicated, and require HIV details only when such information exists.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-057",
+              "Text": "WHEN patient status is Referral, the Voucher Management System SHALL capture the referred-to provider and referral reason selected from the referral master.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-058",
+              "Text": "WHEN a patient is referred outside the approved provider network, the Voucher Management System SHALL record the destination's name and location and the referral reason without reimbursing that provider's treatment through the voucher.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-059",
+              "Text": "the Voucher Management System SHALL capture initial-consultation syndrome, clinical examination, diagnosis, laboratory tests, drugs with frequency, number of days and quantity, and other measures, together with diagnosis and drugs for each follow-up.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-060",
+              "Text": "the Voucher Management System SHALL allow syndromes, examinations, laboratory tests, and other measures at follow-up visits when supported by the approved treatment matrix, and require only the clinical fields specified for that syndrome and visit.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-061",
+              "Text": "the Voucher Management System SHALL support one initial consultation followed by at most two follow-ups separately for the client and partner.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-062",
+              "Text": "IF a claim repeats a visit or is submitted out of visit order for the same patient and voucher, THEN the Voucher Management System SHALL reject it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-063",
+              "Text": "the Voucher Management System SHALL apply [TBD: permitted follow-up intervals and provider-change rules] when validating visits.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-064",
+              "Text": "the Voucher Management System SHALL use voucher number, patient type, and visit to identify a unique payable claim, while using treatment-form number to identify its paper form.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-065",
+              "Text": "the Voucher Management System SHALL accept a treatment claim only if its voucher has been sold, has not been returned or withheld, was valid on the treatment date, and has no accepted claim for that patient and visit, and SHALL quarantine other eligibility failures for review.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-066",
+              "Text": "IF a claim is a duplicate of an already paid claim for the same voucher, patient type, and visit, THEN the Voucher Management System SHALL reject it and SHALL NOT accept a second claim for that visit.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-067",
+              "Text": "the Voucher Management System SHALL accept a claim that deviates from the treatment matrix; the approved TA-OBA matrix by syndrome and visit, permitted deviations, and any required justification are [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-068",
+              "Text": "the Voucher Management System SHALL use the approved treatment matrix as authoritative when its amount differs from an amount derived from provider terms and drug prices, with [TBD: consultation, laboratory, and drug component calculations and discrepancy effects on payment].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-069",
+              "Text": "WHEN an initial-consultation claim includes one or more laboratory tests actually performed, the Voucher Management System SHALL include one contracted laboratory fee, and SHALL include no first-visit laboratory fee when no test was performed.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-070",
+              "Text": "the Voucher Management System SHALL use one reimbursable retail price for each drug across all service providers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-071",
+              "Text": "the Voucher Management System SHALL capture thumbprints from claim forms and compare them with prior prints for the same patient and voucher, with the paper-form digitization and comparison method [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-072",
+              "Text": "WHEN a thumbprint is unreadable, a prior print is absent, or the thumbprint reader is unavailable, the Voucher Management System SHALL place the claim on hold.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-073",
+              "Text": "WHEN a service provider has more than two thumbprint-mismatch events over all time, the Voucher Management System SHALL automatically set that provider's status to Inactive.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-074",
+              "Text": "the Voucher Management System SHALL allow a service provider to submit a claim for treatment completed before that provider became inactive.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-075",
+              "Text": "WHEN an authorized user amends a claim, the Voucher Management System SHALL permit the amendment.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-076",
+              "Text": "the Voucher Management System SHALL maintain masters for drugs, syndromes, clinical examinations, diagnoses, laboratory tests, other measures, patient statuses, claim statuses, referral reasons, and claim quarantine or rejection reasons.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-077",
+              "Text": "the Voucher Management System SHALL maintain drug generic name, drug code, drug name, and retail price, and allow the applicable retail price to be determined by treatment date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-078",
+              "Text": "the Voucher Management System SHALL record client feedback by selecting the client or partner and one visit, and capture voucher number, client details, syndromes treated, laboratory tests, drugs, treatment success, referral, treatment satisfaction, counseling satisfaction, privacy satisfaction, and partner-treated status.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-079",
+              "Text": "WHEN a feedback record selects a patient and visit, the Voucher Management System SHALL populate the address, syndrome, laboratory, drug, and referral details from the corresponding claim and derive partner-treated status from an accepted partner claim.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-080",
+              "Text": "the Voucher Management System SHALL obtain treatment-success responses from patient feedback, use the values Not at all, Moderate, Good, and Completely for treatment, counseling, and privacy satisfaction, and use [TBD: treatment-success response values].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-081",
+              "Text": "the Voucher Management System SHALL prevent users from changing treatment details automatically populated in a feedback record.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-082",
+              "Text": "WHEN a required master value is unavailable during distribution, provider, staff, or claim entry, the Voucher Management System SHALL allow the user to open the relevant master, enter the value, and return to the active entry screen without closing it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-083",
+              "Text": "the Voucher Management System SHALL provide drop-down selection menus on transaction screens, including patient-profile and medicine-cost selections on the claim-entry screen.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-084",
+              "Text": "the Voucher Management System SHALL provide a step-by-step user manual.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-085",
+              "Text": "the Voucher Management System SHALL assign roles and screen-level New, Edit, Delete, View, and Print permissions through user groups, with the user-group and permission assignments [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-086",
+              "Text": "the Voucher Management System SHALL allow only the system administrator to create user groups.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-087",
+              "Text": "the Voucher Management System SHALL allow any number of individual users under a user group and require group name, user name, password, and verify-password entries, saving the user only when the password and verify-password values match.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-088",
+              "Text": "IF a user attempts to create a user group or individual user with an existing name, THEN the Voucher Management System SHALL reject the creation.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-089",
+              "Text": "the Voucher Management System SHALL permit deletion of entered records [TBD: record types, user groups permitted, and treatment after finalization], without making vouchers deletable or feedback treatment details editable.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-090",
+              "Text": "the Voucher Management System SHALL enforce [TBD: confidentiality and access restrictions] for patient identity, HIV information, and thumbprints.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-091",
+              "Text": "the Voucher Management System SHALL record [TBD: required access and change audit events] for sensitive information.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-092",
+              "Text": "the Voucher Management System SHALL retain and dispose of records according to [TBD: retention periods and disposal rules].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-093",
+              "Text": "the Voucher Management System SHALL apply the automatic fraud-event rule to [TBD: confirmed claim irregularities other than thumbprint mismatches].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-094",
+              "Text": "the Voucher Management System SHALL mask patient identity, HIV data, and thumbprints in every printed report.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-095",
+              "Text": "the Voucher Management System SHALL calculate provider claim amounts and produce payment reports for MSIU, without initiating provider payments.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-096",
+              "Text": "the Voucher Management System SHALL support monthly and twice-per-calendar-month provider claim and payment-report frequencies, with [TBD: submission and payment period boundaries and cutoffs].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-097",
+              "Text": "the Voucher Management System SHALL provide monthly-after-collection reports for clean claims to be paid without reservation and for claims whose payment is withheld pending clarification.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-098",
+              "Text": "the Voucher Management System SHALL provide reports of claims per provider.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-099",
+              "Text": "the Voucher Management System SHALL provide reports summarizing all providers and quarterly summary reports for each provider and all providers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-100",
+              "Text": "the Voucher Management System SHALL report syndrome-treatment frequencies and patient-population information by sex and age.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-101",
+              "Text": "the Voucher Management System SHALL report frequencies of primary clients and notified partners.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-102",
+              "Text": "the Voucher Management System SHALL report correctly documented cases, incorrectly documented cases, cases treated according to algorithms, cases with justified treatment alterations, treatment errors, provider comparisons, and quarterly and half-yearly trends for each provider and all providers, using [TBD: data sources, numerators, denominators, classification rules, time periods, and trend-comparison method].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RI-001",
+              "Text": "the Voucher Management System SHALL interface with a barcode reader to capture voucher verification, claim-entry, and voucher-use details, including the voucher number, patient type, and visit type encoded in a visit barcode.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RI-002",
+              "Text": "the Voucher Management System SHALL interface with a thumbprint reader for claim-form verification.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-001",
+              "Text": "The password-strength requirement of the Voucher Management System SHALL BE [TBD].",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-002",
+              "Text": "The failed-login threshold and account-lockout duration of the Voucher Management System SHALL BE [TBD: attempts and duration].",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-003",
+              "Text": "the Voucher Management System SHALL implement a verified password-reset process [TBD: verification method].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-004",
+              "Text": "The idle-session timeout of the Voucher Management System SHALL BE [TBD] minutes.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-005",
+              "Text": "The interactive response time of the Voucher Management System SHALL BE [TBD] seconds for the pilot and [TBD] seconds for expansion.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-006",
+              "Text": "The report-generation time of the Voucher Management System SHALL BE [TBD] seconds for the pilot and [TBD] seconds for expansion.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-007",
+              "Text": "The availability of the Voucher Management System SHALL BE [TBD] percent for the pilot and [TBD] percent for expansion.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-008",
+              "Text": "The concurrent-user capacity of the Voucher Management System SHALL BE [TBD] users for the pilot and [TBD] users for expansion.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-009",
+              "Text": "The daily and peak transaction capacity of the Voucher Management System SHALL BE [TBD] transactions per day and [TBD] peak transactions for the pilot, and [TBD] transactions per day and [TBD] peak transactions for expansion.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-010",
+              "Text": "The intrusion-control level of the Voucher Management System SHALL BE [TBD].",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RT-001",
+              "Text": "the Voucher Management System SHALL use Oracle 9i, Visual Basic for its front end, and Crystal Reports 9 for reports.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            }
+          ]
+        },
+        {
+          "Slot": "unión",
+          "Model": "SS - GPT-6-SOL",
+          "Elements": [
+            {
+              "Id": "RF-001",
+              "Text": "the Voucher Management System SHALL support the one-year Mbarara pilot and its anticipated sale of 20,000 vouchers with distributor and individual-salesperson tracking.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-002",
+              "Text": "the Voucher Management System SHOULD BE ABLE TO support later growth in geographic coverage and voucher volume beyond the Mbarara pilot.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-003",
+              "Text": "the Voucher Management System SHALL provide authorized users with the ability to create vouchers for the Mbarara pilot.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-004",
+              "Text": "WHEN creating a voucher, the Voucher Management System SHALL assign it a unique voucher number and project, group-batch, batch and security codes.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-005",
+              "Text": "the Voucher Management System SHALL generate project codes in the P001 pattern and group-batch codes in the GP0001 pattern, with the allowed characters, lengths and uniqueness scope of all codes and the remaining code formats [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-006",
+              "Text": "WHEN creating vouchers, the Voucher Management System SHALL place exactly 100 batches in each group-batch and exactly 10 vouchers in each batch.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-007",
+              "Text": "the Voucher Management System SHALL provide an authorized user with the ability to configure the minimum number of vouchers per creation run, with the initial minimum [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-008",
+              "Text": "IF a voucher-creation request contains fewer vouchers than the configured minimum, THEN the Voucher Management System SHALL reject the request.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-009",
+              "Text": "WHEN preparing vouchers for printing, the Voucher Management System SHALL render their voucher codes as barcodes on the vouchers and their visit slips.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-010",
+              "Text": "WHEN producing a client or partner visit barcode, the Voucher Management System SHALL encode the shared voucher number, security code, patient type and initial-consultation, first-follow-up or second-follow-up visit type.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-011",
+              "Text": "WHEN preparing a voucher for printing, the Voucher Management System SHALL produce client and partner portions under one voucher number with three separately identified visit slips per person.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-012",
+              "Text": "WHEN producing a voucher, the Voucher Management System SHALL store and print its maximum retail price.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-013",
+              "Text": "IF a user attempts to edit or delete an existing voucher other than through an authorized validity-date amendment or withholding-status change, THEN the Voucher Management System SHALL reject the attempt.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-014",
+              "Text": "WHEN a voucher is created, the Voucher Management System SHALL start its validity on the creation date and determine its expiry by [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-015",
+              "Text": "WHEN an authorized user amends a voucher's validity date, the Voucher Management System SHALL apply the amended date to that voucher even if it has already been sold.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-016",
+              "Text": "IF a voucher has expired at retail sale or treatment or was invalid on the treatment date of a claim, THEN the Voucher Management System SHALL reject the sale, treatment or claim acceptance respectively.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-017",
+              "Text": "the Voucher Management System SHALL provide an authorized user with the ability to withhold and subsequently release an individual voucher.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-018",
+              "Text": "IF an action is blocked by a voucher's withheld status under [TBD] withholding rules, THEN the Voucher Management System SHALL reject that action.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-019",
+              "Text": "the Voucher Management System SHALL maintain distributor records with unique code, name, business type, proprietor name, designation, geographical address, contact number, email address and active or deactivated status.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-020",
+              "Text": "IF distributor code, name, business type, proprietor name or address is missing during distributor creation, THEN the Voucher Management System SHALL reject the creation.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-021",
+              "Text": "the Voucher Management System SHALL provide users with the ability to maintain distributor address values for district, sub-district, county, sub-county, village or town and street or road.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-022",
+              "Text": "IF a distributor code already exists, THEN the Voucher Management System SHALL reject creation of another distributor with that code.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-023",
+              "Text": "IF a distributor name already exists, THEN the Voucher Management System SHALL warn the user and allow the duplicate name to be saved or changed.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-024",
+              "Text": "the Voucher Management System SHALL provide permitted users with the ability to add, edit, activate, deactivate, view and print distributor records.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-025",
+              "Text": "IF a distributor has child records, THEN the Voucher Management System SHALL reject deletion of that distributor.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-026",
+              "Text": "the Voucher Management System SHALL provide permitted users with the ability to view and print a selected distributor's history by batch number, purchase date, quantities purchased, sold and returned, and remaining balance.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-027",
+              "Text": "the Voucher Management System SHALL maintain individual MSIU salesperson records for the pilot with code, name, birth date, age, gender, communication address, contact number and email address without requiring the future country-wide sales-team master.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-028",
+              "Text": "IF a salesperson code, name, birth date, age, gender or communication address is missing, THEN the Voucher Management System SHALL reject creation of that salesperson.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-029",
+              "Text": "IF a salesperson code already exists, THEN the Voucher Management System SHALL reject creation of another salesperson with that code.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-030",
+              "Text": "IF a salesperson name already exists, THEN the Voucher Management System SHALL warn the user and permit that name to be retained or changed.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-031",
+              "Text": "the Voucher Management System SHALL provide users with the ability to maintain the wholesale voucher rate used for distribution invoices.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-032",
+              "Text": "WHEN recording a distribution, the Voucher Management System SHALL record the distributor, individual salesperson, current system date, requested quantity, allocated batch and voucher numbers, voucher validity dates and cash payment mode and show the allocated voucher details.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-033",
+              "Text": "WHEN recording a distribution, the Voucher Management System SHALL generate its invoice number and calculate its invoice amount as allocated voucher quantity multiplied by the wholesale rate applicable on the distribution date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-034",
+              "Text": "WHEN allocating vouchers to a distributor, the Voucher Management System SHALL select unassigned, unexpired and non-withheld vouchers in ascending voucher-number order.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-035",
+              "Text": "IF eligible voucher stock is less than the quantity requested for a distribution, THEN the Voucher Management System SHALL reject the entire request without allocating any vouchers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-036",
+              "Text": "WHEN entering a distribution date, the Voucher Management System SHALL set it to the current system date and reject a future date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-037",
+              "Text": "WHEN an authorized VMU user enters a distributor-supplied retail sale, the Voucher Management System SHALL record its single voucher number, supplying distributor, customer name and living address, actual sale date, place of sale and actual amount paid.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-038",
+              "Text": "IF a retail-sale transaction contains more than one voucher for the same customer at one time, THEN the Voucher Management System SHALL reject the transaction.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-039",
+              "Text": "IF a retail-sale date is in the future, THEN the Voucher Management System SHALL reject the sale while allowing entry of its actual past date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-040",
+              "Text": "WHEN recording retail sales, the Voucher Management System SHALL use the fixed approved retail price, retain each actual amount paid and derive sales totals from individual sale records.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-041",
+              "Text": "IF an actual retail-sale amount exceeds the voucher's printed maximum retail price, THEN the Voucher Management System SHALL reject the sale.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-042",
+              "Text": "the Voucher Management System SHALL provide distributor-wise, individual-salesperson-wise and batch-wise distribution and sales information.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-043",
+              "Text": "WHEN recording a distributor return, the Voucher Management System SHALL capture the distributor, salesperson, return date, return quantity, return amount and each returned batch and voucher number.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-044",
+              "Text": "WHEN entering a distributor return, the Voucher Management System SHALL default its date to the current system date and reject a future return date.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-045",
+              "Text": "IF a voucher was not distributed to the returning distributor or has been sold or used, THEN the Voucher Management System SHALL reject its return.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-046",
+              "Text": "WHEN accepting a distributor return, the Voucher Management System SHALL restore the returned voucher to saleable stock and calculate its refund using the originally invoiced wholesale rate.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-047",
+              "Text": "WHEN recording voucher prices, sales, returns, drug prices or claims, the Voucher Management System SHALL use whole [TBD] currency units and round each item using [TBD] rounding rules.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-048",
+              "Text": "the Voucher Management System SHALL support an approved Mbarara pilot provider network including private, NGO, faith-based and government-hospital providers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-049",
+              "Text": "the Voucher Management System SHALL maintain each provider's code, name, physical and communication addresses, health sub-district, locality, facility level and type, registration body, contact person, designation, contact number, email address and active or inactive status.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-050",
+              "Text": "IF any provider master field other than contact number or email address is missing during creation, THEN the Voucher Management System SHALL reject that provider's creation.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-051",
+              "Text": "WHEN creating a service provider, the Voucher Management System SHALL automatically generate its numeric provider code with the SP suffix.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-052",
+              "Text": "IF a new service provider's name already exists, THEN the Voucher Management System SHALL warn the user and save the duplicate name only if the user confirms.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-053",
+              "Text": "WHEN offering service providers for new data entry, the Voucher Management System SHALL list active providers while making both active and inactive providers available for reports.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-054",
+              "Text": "the Voucher Management System SHALL provide permitted users with the ability to add, amend and delete service-provider records and payment terms and to change provider activation status according to MSIU management decisions.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-055",
+              "Text": "IF a provider was inactivated after a treatment was completed, THEN the Voucher Management System SHALL allow submission of the claim for that earlier treatment.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-056",
+              "Text": "the Voucher Management System SHALL maintain each provider's cash or bank-transfer payment mode, bank name and account, monthly or twice-per-calendar-month payment frequency, and effective-dated numeric initial-consultation, first-follow-up, second-follow-up and initial-visit laboratory fees defaulting to zero.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-057",
+              "Text": "WHEN maintaining or applying provider fees and drug prices, the Voucher Management System SHALL reject overlapping effective periods, select rates effective on the treatment date and recalculate affected accepted claims after retrospective rate changes.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-058",
+              "Text": "the Voucher Management System SHALL provide users with the ability to view a selected provider's claims by claim number, claim date, system-entry date, amount, status and remarks.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-059",
+              "Text": "WHEN creating provider staff, the Voucher Management System SHALL record provider, staff name, staff type and optional qualification and generate a staff code from the provider code, SC and a numeric suffix of [TBD] length.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-060",
+              "Text": "IF a provider staff name already exists, THEN the Voucher Management System SHALL warn the user and allow the new staff record to be saved.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-061",
+              "Text": "WHEN receiving a provider's claim submission, the Voucher Management System SHALL record the provider, current submission date, numeric stated and physically received form counts and each received treatment-form number and check that the number of listed forms equals the physically received count.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-062",
+              "Text": "IF a provider's stated form count differs from the physically received count, THEN the Voucher Management System SHALL allow receipt with a documented discrepancy and prevent acceptance or payment of affected claims until missing or extra forms are investigated.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-063",
+              "Text": "WHEN a claim submission is recorded, the Voucher Management System SHALL produce a printable receipt with the provider, submission date and time, stated and received counts and individual treatment-form numbers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-064",
+              "Text": "WHEN a treatment form is received, the Voucher Management System SHALL log its receipt and associate its paper form number with the submission before processing it as a claim.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-065",
+              "Text": "IF a received treatment form is incomplete or contains apparently false information, THEN the Voucher Management System SHALL mark it rejected and quarantined, record the reason and prevent acceptance of a claim from that submission.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-066",
+              "Text": "WHEN an authorized reviewer processes a corrected rejected treatment form in the following month's batch, the Voucher Management System SHALL permit resubmission under the same form number while retaining the previous rejection and new submission.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-067",
+              "Text": "WHILE a claim is not accepted, the Voucher Management System SHALL exclude it from payable claims.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-068",
+              "Text": "WHEN selecting a received treatment-form number not yet entered for that submission, the Voucher Management System SHALL generate a claim number using an eight-digit number and hospital-code suffix and populate the submission date and provider from the form receipt.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-069",
+              "Text": "the Voucher Management System SHALL capture each claim's treatment-form number, claim number, submission and treatment dates, provider, voucher number, visit type, patient type, patient name, age, gender, address, optional contact number, doctor, conditional doctor's notes, conditional HIV details, patient status, calculated claim amount and claim status.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-070",
+              "Text": "IF a required claim-header field is missing, THEN the Voucher Management System SHALL prevent acceptance, with contact number optional, doctor's notes required only when clinically indicated and HIV details required only when such information exists.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-071",
+              "Text": "WHEN entering a claim, the Voucher Management System SHALL offer dropdown selections for patient profiles, medicine costs, male or female gender, maintainable address values and doctors from the provider's staff records.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-072",
+              "Text": "the Voucher Management System SHALL maintain selectable masters for syndromes, clinical examinations, diagnoses, laboratory tests, other measures, patient statuses, claim statuses, referral reasons and claim quarantine or rejection reasons.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-073",
+              "Text": "the Voucher Management System SHALL maintain a drugs master with generic name, drug code, drug name and one treatment-date-effective reimbursable retail price per drug for all providers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-074",
+              "Text": "the Voucher Management System SHALL maintain the approved TA-OBA treatment matrix by syndrome and visit with [TBD] clinical content and permit acceptance of a deviating claim while recording its justification under [TBD] deviation rules.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-075",
+              "Text": "WHEN entering an initial-consultation claim, the Voucher Management System SHALL permit syndrome, clinical examination, diagnosis, laboratory test, drug name, frequency, number of days, quantity and other-measure details supported by the approved treatment matrix.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-076",
+              "Text": "WHEN entering a follow-up claim, the Voucher Management System SHALL allow diagnosis and drug name, frequency, days and quantity together with multiple syndromes, examinations, laboratory tests, drugs and other measures where the approved matrix supports them, requiring only the fields specified for that syndrome and visit.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-077",
+              "Text": "the Voucher Management System SHALL support one initial consultation and at most two ordered follow-ups separately for the client and partner under the same voucher number.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-078",
+              "Text": "IF a claim repeats a visit or is out of visit order for the same voucher and patient type, THEN the Voucher Management System SHALL reject it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-079",
+              "Text": "WHEN validating a follow-up visit, the Voucher Management System SHALL apply [TBD] follow-up interval and provider-change rules.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-080",
+              "Text": "the Voucher Management System SHALL identify a unique payable claim by voucher number, patient type and visit while using the treatment-form number to identify its paper form and preventing a second accepted claim for that visit.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-081",
+              "Text": "WHEN assessing claim eligibility, the Voucher Management System SHALL accept a claim only if its voucher was sold, not returned or withheld, valid on the treatment date and without an accepted claim for that patient and visit, quarantining other non-paid-duplicate eligibility failures for review.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-082",
+              "Text": "IF a duplicate claim for the same voucher, patient type and visit has already been paid, THEN the Voucher Management System SHALL reject the duplicate.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-083",
+              "Text": "WHEN a claim records a referral, the Voucher Management System SHALL capture its destination and reason selected from the referral-reason master.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-084",
+              "Text": "IF a referral destination is outside the approved service-provider network, THEN the Voucher Management System SHALL require its name, location and referral reason and exclude that destination's treatment from voucher reimbursement.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-085",
+              "Text": "WHEN calculating a claim, the Voucher Management System SHALL use the approved treatment matrix as authoritative over a conflicting provider-fee and drug-price amount while applying [TBD] consultation, laboratory, drug-component and discrepancy rules.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-086",
+              "Text": "WHEN calculating an initial-consultation claim, the Voucher Management System SHALL include one contracted laboratory fee if one or more tests were actually performed and no laboratory fee otherwise.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-087",
+              "Text": "WHEN processing a paper treatment claim, the Voucher Management System SHALL capture and compare its patient's thumbprint with earlier prints for the same voucher and patient type using a [TBD] digitization and comparison procedure.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-088",
+              "Text": "IF a claim's thumbprint is unreadable, an earlier print is unavailable or the thumbprint reader is unavailable, THEN the Voucher Management System SHALL place that claim on hold.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-089",
+              "Text": "WHEN a thumbprint mismatch for a voucher and patient type is confirmed, the Voucher Management System SHALL count it in the provider's all-time event total.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-090",
+              "Text": "WHEN a confirmed claim irregularity belongs to [TBD] fraud-event categories, the Voucher Management System SHALL count it together with thumbprint mismatches in the provider's all-time event total.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-091",
+              "Text": "IF a provider's all-time total of counted fraud events and thumbprint mismatches exceeds two, THEN the Voucher Management System SHALL automatically inactivate that provider.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-092",
+              "Text": "the Voucher Management System SHOULD BE ABLE TO display a warning when a provider's counted thumbprint mismatches exceed two.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-093",
+              "Text": "the Voucher Management System SHALL provide authorized users with the ability to amend claim information.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-094",
+              "Text": "WHEN preparing provider payment information, the Voucher Management System SHALL calculate accepted claims and produce financial and medical payment reports for MSIU without initiating provider payments.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-095",
+              "Text": "WHEN preparing provider claim-submission and payment reports, the Voucher Management System SHALL distinguish monthly from twice-per-calendar-month providers using [TBD] submission and payment period boundaries and cutoffs.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-096",
+              "Text": "WHEN capturing client feedback, the Voucher Management System SHALL associate its voucher number, client or partner patient type and selected visit with the feedback record.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-097",
+              "Text": "WHEN a feedback patient and visit are selected, the Voucher Management System SHALL populate the corresponding claim's patient address, treated syndromes, laboratory tests, drugs and referral without allowing changes to those treatment details and derive partner-treated status from an accepted partner claim.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-098",
+              "Text": "WHEN capturing feedback, the Voucher Management System SHALL record client-reported treatment success using [TBD] response values and the client's treatment, counseling and privacy satisfaction using Not at all, Moderate, Good or Completely.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-099",
+              "Text": "WHILE entering a distribution, provider, provider-staff or claim record, the Voucher Management System SHALL allow a missing applicable distributor, salesperson, geographic, facility or staff-type master value to be added and resume the active entry without closing it.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-100",
+              "Text": "the Voucher Management System SHALL permit deletion of entered non-voucher records according to [TBD] record-type, user-group and post-finalization rules.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-101",
+              "Text": "the Voucher Management System SHALL provide only the system administrator with the ability to create user groups recording a group code, unique group name and per-screen new, edit, delete, view and print permissions.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-102",
+              "Text": "WHEN a user requests a screen action, the Voucher Management System SHALL apply that user's group-level new, edit, delete, view or print permission, with the groups and record-specific assignments [TBD].",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-103",
+              "Text": "WHEN creating a user under a selected user group, the Voucher Management System SHALL require a user name, password and verification entry and reject creation unless password and verification match.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-104",
+              "Text": "IF a proposed user-group name or individual user name already exists, THEN the Voucher Management System SHALL reject creation with that name.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-105",
+              "Text": "the Voucher Management System SHALL produce monthly post-collection reports of clean claims payable without reservation and claims whose payment is withheld pending clarification.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-106",
+              "Text": "the Voucher Management System SHALL produce a claim report for each provider and a summary claim report for all providers.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-107",
+              "Text": "the Voucher Management System SHALL produce quarterly summary reports for each provider and all providers combined.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-108",
+              "Text": "the Voucher Management System SHALL report frequencies of treated syndromes and patient sex and age.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-109",
+              "Text": "the Voucher Management System SHALL report frequencies of primary clients and notified partners.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RF-110",
+              "Text": "the Voucher Management System SHALL report documentation quality, algorithm adherence, justified treatment alterations, treatment errors, comparisons of providers and quarterly and half-yearly trends for individual providers and all providers using [TBD] sources, indicator definitions, calculation rules, periods and comparison methods.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RI-001",
+              "Text": "WHEN a voucher visit slip is scanned for claim entry or voucher verification, the Voucher Management System SHALL interface with the barcode reader to capture its voucher number, patient type and visit type.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RI-002",
+              "Text": "the Voucher Management System SHALL interface with a thumbprint reader for claim-form verification.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-001",
+              "Text": "WHEN printing reports, the Voucher Management System SHALL mask patient identity, HIV information and thumbprints.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-002",
+              "Text": "the Voucher Management System SHALL apply [TBD] confidentiality and access restrictions, access-and-change audit logging, retention periods and disposal rules to patient identity, HIV information and thumbprints.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-003",
+              "Text": "the Voucher Management System SHALL enforce [TBD] password-strength rules, failed-login threshold and lockout duration, verified password-reset procedure and idle-session timeout.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-004",
+              "Text": "The intrusion-control level of the Voucher Management System SHALL BE [TBD].",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-005",
+              "Text": "The interactive response time of the Voucher Management System SHALL BE [TBD] seconds for the pilot and [TBD] seconds for later expansion.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-006",
+              "Text": "The standard-report generation time of the Voucher Management System SHALL BE [TBD] seconds for the pilot and [TBD] seconds for later expansion.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-007",
+              "Text": "The availability of the Voucher Management System SHALL BE [TBD] percent for the pilot and [TBD] percent for later expansion.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-008",
+              "Text": "The concurrent-user capacity of the Voucher Management System SHALL BE [TBD] users for the pilot and [TBD] users for later expansion.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RNF-009",
+              "Text": "The daily and peak transaction capacity of the Voucher Management System SHALL BE [TBD] transactions per day and [TBD] per peak period for the pilot, and [TBD] transactions per day and [TBD] per peak period for later expansion.",
+              "Notation": "MASTeR",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            },
+            {
+              "Id": "RT-001",
+              "Text": "the Voucher Management System SHALL use Oracle 9i for its database, Visual Basic for its front end and Crystal Reports 9 for reporting.",
+              "Notation": "EARS",
+              "Role": null,
+              "Means": null,
+              "Ends": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "backlog",
+      "JobId": "4db486c5-3895-4400-a4a8-18752ba2980e",
+      "Proposals": [
+        {
+          "Slot": "A",
+          "Model": "SS - GPT-6-SOL",
+          "Elements": [
+            {
+              "Id": "HU-001",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "create vouchers for the Mbarara pilot",
+              "Ends": "supply vouchers for the pilot's anticipated sales"
+            },
+            {
+              "Id": "HU-002",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "have vouchers numbered and organized into coded batches",
+              "Ends": "identify every created voucher and its production grouping"
+            },
+            {
+              "Id": "HU-003",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "configure the minimum number of vouchers per creation run",
+              "Ends": "prevent runs below the configured minimum"
+            },
+            {
+              "Id": "HU-004",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "prepare coded client and partner voucher portions for printing",
+              "Ends": "identify each person's visits under the shared voucher"
+            },
+            {
+              "Id": "HU-005",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "amend validity dates without changing other voucher details",
+              "Ends": "keep sold and unsold vouchers subject to their current validity"
+            },
+            {
+              "Id": "HU-006",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "withhold or release an individual voucher",
+              "Ends": "control its availability under the approved withholding rules"
+            },
+            {
+              "Id": "HU-007",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "maintain identifiable distributor records and addresses",
+              "Ends": "associate voucher transactions with the right distributor"
+            },
+            {
+              "Id": "HU-008",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "manage distributor status and inspect a distributor's transaction history",
+              "Ends": "track purchased, sold and returned vouchers"
+            },
+            {
+              "Id": "HU-009",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "maintain individual MSIU salesperson records",
+              "Ends": "track pilot sales without a country-wide sales-team master"
+            },
+            {
+              "Id": "HU-010",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "maintain the wholesale voucher rate",
+              "Ends": "price distribution invoices consistently"
+            },
+            {
+              "Id": "HU-011",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record a distributor's voucher allocation through an individual salesperson",
+              "Ends": "trace stock assigned to a distributor"
+            },
+            {
+              "Id": "HU-012",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "receive an invoice for a recorded voucher distribution",
+              "Ends": "know the wholesale amount for the allocated vouchers"
+            },
+            {
+              "Id": "HU-013",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized VMU user",
+              "Means": "enter distributor-supplied retail sales one voucher at a time",
+              "Ends": "trace each sale and derive sales totals from actual transactions"
+            },
+            {
+              "Id": "HU-014",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "view distribution and sales information by distributor, salesperson and batch",
+              "Ends": "follow pilot voucher movement and retail sales"
+            },
+            {
+              "Id": "HU-015",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record returned unsold and unused vouchers",
+              "Ends": "restore eligible stock and determine the original-rate refund"
+            },
+            {
+              "Id": "HU-016",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "register approved pilot service providers",
+              "Ends": "identify eligible facilities in the Mbarara network"
+            },
+            {
+              "Id": "HU-017",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "maintain providers, payment terms and their activation status",
+              "Ends": "reflect MSIU management decisions without losing earlier treatment claims"
+            },
+            {
+              "Id": "HU-018",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "maintain payment modes, frequencies and provider fees",
+              "Ends": "make contracted terms available when claims and reports are calculated"
+            },
+            {
+              "Id": "HU-019",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "maintain nonoverlapping effective periods for provider fees and drug prices",
+              "Ends": "use treatment-date rates for claims and recalculate affected claims after changes"
+            },
+            {
+              "Id": "HU-020",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "view claims belonging to a selected provider",
+              "Ends": "inspect that provider's claim amounts and statuses"
+            },
+            {
+              "Id": "HU-021",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "register a provider's staff",
+              "Ends": "associate treating doctors and other staff with their provider"
+            },
+            {
+              "Id": "HU-022",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "maintain clinical and claim-status selection values",
+              "Ends": "make approved values available during claim entry"
+            },
+            {
+              "Id": "HU-023",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "maintain drugs and their reimbursable retail prices",
+              "Ends": "apply the same drug price to all providers for a treatment date"
+            },
+            {
+              "Id": "HU-024",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record a provider's summary claims form and its received treatment forms",
+              "Ends": "identify discrepancies before affected claims are accepted or paid"
+            },
+            {
+              "Id": "HU-025",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "log each received treatment form before claim processing",
+              "Ends": "keep incomplete or apparently false submissions out of payable claims"
+            },
+            {
+              "Id": "HU-026",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized reviewer",
+              "Means": "process a corrected rejected form in the following month's batch",
+              "Ends": "reconsider a claim while retaining its earlier rejection"
+            },
+            {
+              "Id": "HU-027",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "enter required header details for a received treatment form",
+              "Ends": "make the claim identifiable and assessable"
+            },
+            {
+              "Id": "HU-028",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "select available patient, price, address and doctor values during claim entry",
+              "Ends": "use maintained records when completing claims"
+            },
+            {
+              "Id": "HU-029",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "maintain the approved treatment matrix by syndrome and visit",
+              "Ends": "assess recorded treatments and their justified deviations"
+            },
+            {
+              "Id": "HU-030",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record initial-consultation clinical details",
+              "Ends": "support the treatment claim under the approved matrix"
+            },
+            {
+              "Id": "HU-031",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record the clinical details applicable to a follow-up",
+              "Ends": "support follow-up claims without requiring unsupported fields"
+            },
+            {
+              "Id": "HU-032",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "identify the patient and visit from a scanned slip and check visit order",
+              "Ends": "avoid repeat or out-of-order treatment claims"
+            },
+            {
+              "Id": "HU-033",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "check voucher eligibility and unique payable-claim identifiers",
+              "Ends": "prevent an ineligible or duplicate claim from being accepted or paid"
+            },
+            {
+              "Id": "HU-034",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record a claim's referral destination and reason",
+              "Ends": "document referrals without reimbursing out-of-network treatment"
+            },
+            {
+              "Id": "HU-035",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "calculate claim amounts using the treatment matrix and applicable fees",
+              "Ends": "prepare eligible claims for provider payment reporting"
+            },
+            {
+              "Id": "HU-036",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "compare a paper claim's patient thumbprint with earlier prints",
+              "Ends": "hold claims whose identity check cannot be completed"
+            },
+            {
+              "Id": "HU-037",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "track confirmed provider events and their activation consequences",
+              "Ends": "prevent further active-provider entry after the defined threshold"
+            },
+            {
+              "Id": "HU-038",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "amend claim information",
+              "Ends": "correct entered claim details when permitted"
+            },
+            {
+              "Id": "HU-039",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "calculate accepted claims and prepare payment reports for MSIU",
+              "Ends": "support external payment arrangements without initiating payment in the system"
+            },
+            {
+              "Id": "HU-040",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "associate feedback with a voucher's client or partner visit",
+              "Ends": "retrieve the relevant treatment without changing it"
+            },
+            {
+              "Id": "HU-041",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record the client's treatment outcome and satisfaction responses",
+              "Ends": "retain client-reported feedback about treatment and service"
+            },
+            {
+              "Id": "HU-042",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "produce provider and combined claim reports",
+              "Ends": "review claims for a provider and across providers"
+            },
+            {
+              "Id": "HU-043",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "view frequencies of treated syndromes and patients",
+              "Ends": "inspect the stated treatment and participation measures"
+            },
+            {
+              "Id": "HU-044",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "compare provider care-quality indicators and trends",
+              "Ends": "review documentation and treatment performance over time"
+            },
+            {
+              "Id": "HU-045",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "add a missing applicable master value without abandoning my current record",
+              "Ends": "continue distribution, provider, staff or claim entry"
+            },
+            {
+              "Id": "HU-046",
+              "Text": null,
+              "Notation": null,
+              "Role": "the system administrator",
+              "Means": "create groups with screen-action permissions",
+              "Ends": "control which actions group members can perform"
+            },
+            {
+              "Id": "HU-047",
+              "Text": null,
+              "Notation": null,
+              "Role": "the system administrator",
+              "Means": "create users in a selected group with verified passwords",
+              "Ends": "give each user a distinct account"
+            },
+            {
+              "Id": "HU-048",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "delete entered non-voucher records when permitted",
+              "Ends": "correct records within their authorized lifecycle"
+            },
+            {
+              "Id": "HU-049",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "handle patient identity, HIV information and thumbprints under defined safeguards",
+              "Ends": "protect sensitive details during use and over their retention period"
+            },
+            {
+              "Id": "HU-050",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "use the voucher system and its standard reports on the specified platform",
+              "Ends": "support pilot operations and later geographic and volume growth"
+            }
+          ]
+        },
+        {
+          "Slot": "B",
+          "Model": "SS - GPT-6-LUNA",
+          "Elements": [
+            {
+              "Id": "HU-001",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "configure the system for the Mbarara pilot and later growth in geography and voucher volume",
+              "Ends": "support the one-year pilot and its anticipated sales while allowing growth beyond it"
+            },
+            {
+              "Id": "HU-002",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "create vouchers with assigned codes and configured run minimums",
+              "Ends": "prepare valid voucher stock for the pilot"
+            },
+            {
+              "Id": "HU-003",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "prepare a voucher with client and partner portions and identified visit slips",
+              "Ends": "provide the correct printed voucher and visit barcodes"
+            },
+            {
+              "Id": "HU-004",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "amend validity dates and withhold or release an individual voucher",
+              "Ends": "control which vouchers can be used"
+            },
+            {
+              "Id": "HU-005",
+              "Text": null,
+              "Notation": null,
+              "Role": "permitted user",
+              "Means": "create and maintain distributor records and view their voucher history",
+              "Ends": "manage the pilot distribution network"
+            },
+            {
+              "Id": "HU-006",
+              "Text": null,
+              "Notation": null,
+              "Role": "user",
+              "Means": "record individual MSIU salesperson details for the pilot",
+              "Ends": "track sales by salesperson without requiring the later country-wide sales-team master"
+            },
+            {
+              "Id": "HU-007",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "allocate eligible vouchers and record a distributor invoice",
+              "Ends": "track voucher stock and wholesale distribution"
+            },
+            {
+              "Id": "HU-008",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized VMU user",
+              "Means": "enter each distributor-supplied retail sale against a voucher",
+              "Ends": "retain sale details and derive accurate sales totals"
+            },
+            {
+              "Id": "HU-009",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "record eligible distributor returns and calculate refunds",
+              "Ends": "restore returned vouchers to saleable stock"
+            },
+            {
+              "Id": "HU-010",
+              "Text": null,
+              "Notation": null,
+              "Role": "permitted user",
+              "Means": "maintain service-provider records and activation status",
+              "Ends": "manage the approved Mbarara pilot network"
+            },
+            {
+              "Id": "HU-011",
+              "Text": null,
+              "Notation": null,
+              "Role": "permitted user",
+              "Means": "maintain effective-dated provider fees and reimbursable drug prices",
+              "Ends": "apply the rates valid on each treatment date"
+            },
+            {
+              "Id": "HU-012",
+              "Text": null,
+              "Notation": null,
+              "Role": "user",
+              "Means": "record provider staff and inspect a selected provider's claims",
+              "Ends": "support claim entry and provider review"
+            },
+            {
+              "Id": "HU-013",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "record each provider submission and reconcile its treatment forms",
+              "Ends": "retain receipt evidence and investigate discrepancies before claims proceed"
+            },
+            {
+              "Id": "HU-014",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "enter a received treatment form and capture its visit slip barcode",
+              "Ends": "identify the claim and populate its required header accurately"
+            },
+            {
+              "Id": "HU-015",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "maintain the clinical selection masters and approved TA-OBA treatment matrix",
+              "Ends": "guide claim entry by syndrome and visit"
+            },
+            {
+              "Id": "HU-016",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "validate the voucher visit sequence and claim eligibility",
+              "Ends": "prevent invalid or duplicate payable claims"
+            },
+            {
+              "Id": "HU-017",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "record referral destinations and calculate claims under approved rules",
+              "Ends": "retain referral information and determine payable amounts correctly"
+            },
+            {
+              "Id": "HU-018",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "verify claim thumbprints and track confirmed provider events",
+              "Ends": "place uncertain claims on hold and apply provider inactivation rules"
+            },
+            {
+              "Id": "HU-019",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "amend claim information",
+              "Ends": "correct claim records when authorized"
+            },
+            {
+              "Id": "HU-020",
+              "Text": null,
+              "Notation": null,
+              "Role": "MSIU user",
+              "Means": "calculate accepted claims and produce provider payment reports",
+              "Ends": "arrange provider payments outside the system"
+            },
+            {
+              "Id": "HU-021",
+              "Text": null,
+              "Notation": null,
+              "Role": "authorized user",
+              "Means": "record feedback for a selected client or partner and visit",
+              "Ends": "associate responses with the right treatment record"
+            },
+            {
+              "Id": "HU-022",
+              "Text": null,
+              "Notation": null,
+              "Role": "permitted user",
+              "Means": "generate the listed standard claim and service reports",
+              "Ends": "review claims, providers and service patterns"
+            },
+            {
+              "Id": "HU-023",
+              "Text": null,
+              "Notation": null,
+              "Role": "permitted user",
+              "Means": "generate clinical quality, provider comparison and trend reports",
+              "Ends": "review treatment documentation and performance"
+            },
+            {
+              "Id": "HU-024",
+              "Text": null,
+              "Notation": null,
+              "Role": "system administrator",
+              "Means": "create user groups and users with assigned screen permissions",
+              "Ends": "control access to system actions"
+            },
+            {
+              "Id": "HU-025",
+              "Text": null,
+              "Notation": null,
+              "Role": "permitted user",
+              "Means": "delete an entered non-voucher record when allowed",
+              "Ends": "support the client's permitted deletion process"
+            },
+            {
+              "Id": "HU-026",
+              "Text": null,
+              "Notation": null,
+              "Role": "permitted user",
+              "Means": "handle sensitive patient data under defined access, audit and retention controls",
+              "Ends": "protect patient identity, HIV information and thumbprints"
+            },
+            {
+              "Id": "HU-027",
+              "Text": null,
+              "Notation": null,
+              "Role": "system administrator",
+              "Means": "deploy and operate the system using the required platform and defined quality targets",
+              "Ends": "support the pilot and subsequent growth"
+            },
+            {
+              "Id": "HU-028",
+              "Text": null,
+              "Notation": null,
+              "Role": "user",
+              "Means": "add a missing applicable master value without leaving an active entry",
+              "Ends": "complete the current transaction using the needed selection value"
+            }
+          ]
+        },
+        {
+          "Slot": "unión",
+          "Model": "SS - GPT-6-SOL",
+          "Elements": [
+            {
+              "Id": "HU-001",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "configure the Mbarara pilot and allow subsequent geographic and voucher-volume growth",
+              "Ends": "operate the first release without requiring country-wide sales-team management"
+            },
+            {
+              "Id": "HU-002",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "create uniquely coded vouchers in fixed batches subject to a configurable run minimum",
+              "Ends": "prepare identifiable voucher stock for the pilot"
+            },
+            {
+              "Id": "HU-003",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "prepare barcoded client and partner portions and their visit slips",
+              "Ends": "identify each person's three visits under one voucher number"
+            },
+            {
+              "Id": "HU-004",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "amend voucher validity and withhold or release individual vouchers",
+              "Ends": "enforce voucher-use restrictions without changing other voucher details"
+            },
+            {
+              "Id": "HU-005",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "maintain distributor records and inspect their voucher histories",
+              "Ends": "manage and trace the pilot distribution network"
+            },
+            {
+              "Id": "HU-006",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "maintain individual MSIU salesperson records",
+              "Ends": "attribute pilot sales without a country-wide sales-team master"
+            },
+            {
+              "Id": "HU-007",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "maintain the voucher wholesale rate and apply whole-unit monetary rules",
+              "Ends": "make distribution invoices and other recorded amounts consistent"
+            },
+            {
+              "Id": "HU-008",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "allocate eligible vouchers through a salesperson and generate the distributor invoice",
+              "Ends": "trace wholesale stock and charge the applicable rate"
+            },
+            {
+              "Id": "HU-009",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized VMU user",
+              "Means": "record each distributor-supplied retail sale against one voucher",
+              "Ends": "trace actual customers and amounts and derive sales totals"
+            },
+            {
+              "Id": "HU-010",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "view distribution and sales information by distributor, salesperson and batch",
+              "Ends": "follow voucher movement and pilot retail activity"
+            },
+            {
+              "Id": "HU-011",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record eligible unsold voucher returns and calculate refunds",
+              "Ends": "restore saleable stock at the original invoiced wholesale rate"
+            },
+            {
+              "Id": "HU-012",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "maintain approved Mbarara providers and their activation status",
+              "Ends": "keep the eligible network current while allowing claims for earlier treatments"
+            },
+            {
+              "Id": "HU-013",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "maintain provider payment terms and shared reimbursable drug prices",
+              "Ends": "apply treatment-date rates and recalculate affected accepted claims"
+            },
+            {
+              "Id": "HU-014",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "view a selected provider's claims and their statuses",
+              "Ends": "inspect recorded claim amounts and remarks"
+            },
+            {
+              "Id": "HU-015",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "register a provider's staff and generated staff code",
+              "Ends": "associate doctors and other staff with their provider"
+            },
+            {
+              "Id": "HU-016",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record provider submissions and process received or corrected treatment forms",
+              "Ends": "investigate discrepancies and retain rejection history before claims become payable"
+            },
+            {
+              "Id": "HU-017",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "enter a received form's identifiable claim header using maintained selections",
+              "Ends": "provide complete claim information for acceptance checks"
+            },
+            {
+              "Id": "HU-018",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "maintain clinical selection values and the syndrome-and-visit treatment matrix",
+              "Ends": "guide claim entry and record justified treatment deviations"
+            },
+            {
+              "Id": "HU-019",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record the matrix-supported clinical details of an initial consultation",
+              "Ends": "document the first treatment visit for its claim"
+            },
+            {
+              "Id": "HU-020",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record clinical details permitted for a follow-up by syndrome and visit",
+              "Ends": "document follow-up claims without requiring unsupported fields"
+            },
+            {
+              "Id": "HU-021",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "verify scanned visits, visit order and unique payable-claim eligibility",
+              "Ends": "prevent ineligible, repeated and duplicate payable claims"
+            },
+            {
+              "Id": "HU-022",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "record a claim's referral destination and reason",
+              "Ends": "document out-of-network referrals without reimbursing their treatment"
+            },
+            {
+              "Id": "HU-023",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "calculate a claim using the authoritative matrix and effective contracted rates",
+              "Ends": "determine its payable amount and first-visit laboratory fee"
+            },
+            {
+              "Id": "HU-024",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "verify claim thumbprints and record confirmed provider events",
+              "Ends": "hold unverifiable claims and inactivate providers above the event threshold"
+            },
+            {
+              "Id": "HU-025",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "amend entered claim information when permitted",
+              "Ends": "correct claim details under the defined authority and lifecycle rules"
+            },
+            {
+              "Id": "HU-026",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "calculate accepted claims and prepare payment information for MSIU",
+              "Ends": "support payment arrangements outside the system"
+            },
+            {
+              "Id": "HU-027",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "associate feedback with one client or partner visit and record client responses",
+              "Ends": "retain feedback without altering claim treatment details"
+            },
+            {
+              "Id": "HU-028",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "produce provider claim summaries and treatment and patient frequencies",
+              "Ends": "review the specified claim and service measures"
+            },
+            {
+              "Id": "HU-029",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "compare clinical quality indicators across providers and over time",
+              "Ends": "review documentation and treatment performance using the pending indicator definitions"
+            },
+            {
+              "Id": "HU-030",
+              "Text": null,
+              "Notation": null,
+              "Role": "an authorized user",
+              "Means": "add an applicable missing master value without closing the active entry",
+              "Ends": "complete distribution, provider, provider-staff or claim records"
+            },
+            {
+              "Id": "HU-031",
+              "Text": null,
+              "Notation": null,
+              "Role": "the system administrator",
+              "Means": "create user groups and accounts with screen-action permissions",
+              "Ends": "control access to system records and actions"
+            },
+            {
+              "Id": "HU-032",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "delete entered non-voucher records when allowed",
+              "Ends": "correct records without allowing voucher deletion"
+            },
+            {
+              "Id": "HU-033",
+              "Text": null,
+              "Notation": null,
+              "Role": "a permitted user",
+              "Means": "handle sensitive patient information under defined safeguards",
+              "Ends": "protect identity, HIV information and thumbprints in use and in reports"
+            },
+            {
+              "Id": "HU-034",
+              "Text": null,
+              "Notation": null,
+              "Role": "the system administrator",
+              "Means": "deploy the specified technology stack and assess pilot and expansion targets",
+              "Ends": "support voucher operations and reports as the system grows"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

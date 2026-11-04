@@ -488,6 +488,11 @@ En palabras sencillas: antes, el árbitro tenía que copiar a mano cada condici�
 - **Todo a la primera,** sin reparaciones ni ejecuciones detenidas, y en inglés. LUNA propone en todas las fases.
 - **Las decisiones del cliente no se inventan:** 28 sugerencias empiezan por «A decidir por el cliente:» (el prefijo sale en español, porque el prompt lo da así), y lo que queda abierto llega al catálogo como `[TBD]` (24 requisitos).
 - **El árbitro del backlog adopta la granularidad de B:** 14 historias de la unión juntan 2 o 3 de A, y de los criterios de las historias unidas no cita 74 de 176.
+- **Con métricas externas (paso 104, `docs/evaluacion/metricas-externas.md`):**
+  - historias con dos acciones, según AQUSA revisado a mano: SOL 6,0, LUNA 21,4 y la unión 17,6 por cada 100. Las 6 de la unión juntan historias atómicas de SOL;
+  - requisitos EARS con un defecto real, según Vale y `vale-ears`: 5,1, 9,6 y 7,0.
+
+  Para la próxima versión del árbitro del backlog: no juntar historias de A que ya son atómicas solo porque B las tiene en una.
 
 ### Qué hay que mejorar
 

@@ -3031,3 +3031,38 @@ Paso 105 hecho: el flujo completo con un documento público de PURE, en inglés,
 - **Qué se hizo:** `docs/contenido-memoria.md`, ordenado según la estructura de la memoria (introducción, 2.1, 2.2, 2.3, conclusiones y aspectos transversales), con lo imprescindible marcado y el documento de origen de cada cifra. Separa en la 2.3 lo ya medido (pasos 65, 103, 105, 116, 123, calibración y costes) de lo pendiente que responde a la hipótesis (104, 106, 118 a 121), y lista las amenazas a la validez.
 - **Comprobado contra el borrador** (`memoria/tfg/memoria.tex`, por palabras clave): faltan el resultado del experimento del sesgo del árbitro, la versión congelada `evaluacion-1`, las opciones de lectura de las iteraciones (A y C, pasos 116 y 123) y las amenazas a la validez junto a los resultados. Lo demás está cubierto.
 - **Sin cambios** en el código, los prompts ni el borrador de la memoria.
+
+## 04-11-2026, 12:30 (sesión)
+
+Paso 104 hecho: métricas externas de calidad sobre lo que generó el paso 105.
+
+- **Herramientas, en `C:\TFG\herramientas\`, fuera del repositorio:**
+  - **AQUSA:** `RELabUU/aqusa-core`, commit `3043743`.
+    - Python 3.8.20 creado con `uv` 0.12.24, con `nltk` 3.4.5 y `yattag` 1.11.1 exactos. `uv` no ofrece la 3.7 del README para Windows.
+    - Los datos de NLTK, en su propia carpeta.
+    - Con historias de prueba marca bien la que hace dos cosas. Una sin «so that» no es defecto en QUS.
+    - Esta versión solo aplica 6 criterios de QUS.
+  - **Vale 3.24.0 y `vale-ears` 0.1.0,** con SHA-256 comprobado:
+    - no distingue mayúsculas y la minúscula inicial pasa;
+    - `ears.Syntax` no admite comas dentro de la condición ni dos condiciones;
+    - el vocabulario del paquete, si se activa, anula `ears.Shall` (no se activa, como en su README).
+  - **Versiones:** con al menos dos semanas. Se descartó `uv` 0.13.7, publicada el día anterior.
+- **`scripts/evaluacion/metricas-externas.cs`:**
+  - **`extraer`:** API y `data/runs/`, solo las salidas de A y B de los trabajos del 105. La lanzó el autor, porque los permisos impiden a Claude leer `data/` (ahí está también el documento interno B), y el autor lo eligió así frente a dar permiso o usar solo la API.
+  - **`medir`:** AQUSA y Vale. La lanzó Claude.
+  - **Historias:** «As {como}, I want to {quiero}, so that I can {para}», porque `quiero` y `para` empiezan por un verbo.
+  - **Requisitos:** solo los EARS.
+  - **Pruebas:** `medir` se probó antes solo con la unión, sacada de la API, y esa prueba se borró.
+- **Revisión a mano de cada aviso:**
+  - **`ears.Syntax`:** 17 de 18 son comas en la condición; el real es el RF-038 de LUNA, con «it» de sujeto.
+  - **`ears.WeakWords`:** los 3 avisos son «Good», un valor de la escala.
+  - **La voz pasiva:** solo cuenta en la respuesta del sistema, tras «SHALL»; en la condición es el uso normal de EARS.
+  - **AQUSA:** 15 de 23 avisos `atomic.conjunctions` son dos acciones; el resto, dos objetos de una acción.
+- **Resultado:**
+  - requisitos EARS con un defecto real: SOL 5,1, LUNA 9,6 y la unión 7,0 por cada 100;
+  - historias con dos acciones: 6,0, 21,4 y 17,6.
+
+  Las 6 historias de la unión con dos acciones juntan cada una 2 o 3 historias atómicas de SOL: confirma con una herramienta externa el hallazgo del paso 105.
+- **No se hizo** clínicas en inglés: habría que generarlo de nuevo, con coste.
+- **Pendiente para el autor:** revisar los casos dudosos de la revisión (pasivas dentro de la respuesta, historias de la unión) si van a la memoria.
+- **Siguiente:** el paso 106 (prueba como analista con ReservaSalas), que necesita al autor editando en el navegador.

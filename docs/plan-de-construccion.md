@@ -23,7 +23,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
   - Hecho el 115 (desde cero, frente a lo anterior), en Docker y revisado por el autor en el navegador el 27-10-2026.
   - Hecho el 116 (la prueba real con clínicas en dos iteraciones), el 27-10 y el 03-11-2026: resultados en `docs/resultados-paso-116/`.
   - Hechos el 122 (sus mejoras, 03-11-2026) y el 123 (la opción C con una documentación grande, 04-11-2026: leerlo todo no cabe y la opción C funciona).
-- **En curso:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo. Hechos el 117 (la versión congelada, `docs/evaluacion/version.md`) y el 105 (PURE en inglés, `docs/evaluacion/pure.md`), los dos el 04-11-2026; el siguiente es el 104.
+- **En curso:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo. Hechos el 117 (la versión congelada, `docs/evaluacion/version.md`), el 105 (PURE en inglés, `docs/evaluacion/pure.md`) y el 104 (métricas externas, `docs/evaluacion/metricas-externas.md`), los tres el 04-11-2026; el siguiente es el 106.
 
 ### Lo que queda, en orden
 
@@ -40,7 +40,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 6. ~~117, congelar la versión, con una prueba barata en inglés antes~~ (04-11-2026, etiqueta `evaluacion-1` en `6d34025`).
 7. ~~105, el flujo con un documento de PURE, en inglés~~ (04-11-2026, 9,29 $).
-8. 104, AQUSA y `vale-ears` sobre lo del 105.
+8. ~~104, AQUSA y `vale-ears` sobre lo del 105~~ (04-11-2026).
 9. 106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53).
 10. 118, la referencia: revisar las trampas y hacer la lista de funcionalidades.
 11. 119, las 9 ejecuciones de clínicas.
@@ -660,7 +660,22 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
   - Escribe `docs/evaluacion/pure.md`: el documento, las cifras del informe (tokens, minutos, coste, de A, de B, unión y discrepancias), qué fue bien y qué mal, y el bloque en palabras sencillas.
   - **Mira si LUNA propone preguntas** (04-11-2026, autor, como recomendaba Claude): en la ronda centrada en inglés del paso 123 su propuesta fue válida, pero vacía. En lugar de repetir aquella ronda, se comprueba aquí y en las repeticiones del paso 119 si vuelve a pasar con un documento en inglés.
   - Regenera `docs/costes/costes.md`. (`costes.cs` muestra ya por su nombre los proyectos «PURE …», 04-11-2026.)
-- [ ] 104. Métricas externas de calidad (27-10-2026, detalles de Claude). Mide la calidad con herramientas de otros y no solo con las de Concilia. Las dos trabajan en inglés: se aplican al catálogo y al backlog del paso 105, y a las tres propuestas de cada fase (SOL, LUNA y la unión), lo que completa la comparación del paso 120. Unas 3–4 horas, la mayor parte en instalar y probar las herramientas; sin coste.
+- [x] 104. Métricas externas de calidad (27-10-2026, detalles de Claude). Mide la calidad con herramientas de otros y no solo con las de Concilia. Las dos trabajan en inglés: se aplican al catálogo y al backlog del paso 105, y a las tres propuestas de cada fase (SOL, LUNA y la unión), lo que completa la comparación del paso 120. Unas 3–4 horas, la mayor parte en instalar y probar las herramientas; sin coste.
+  **Hecho el 04-11-2026** por Claude, a petición del autor; instalación, criterios y resultados en `docs/evaluacion/metricas-externas.md`.
+  - **Herramientas, en `C:\TFG\herramientas\`:**
+    - AQUSA (`aqusa-core` `3043743`) con Python 3.8.20, `nltk` 3.4.5 y `yattag` 1.11.1; `uv` no ofrece la 3.7 para Windows;
+    - Vale 3.24.0 con `vale-ears` 0.1.0, con el SHA-256 comprobado. No distingue mayúsculas. Su vocabulario anula `ears.Shall` si se activa, así que no se activa.
+  - **Script:** `scripts/evaluacion/metricas-externas.cs`, con dos órdenes:
+    - `extraer`, que lanza el autor, porque lee `data/runs/`, a la que Claude no tiene acceso;
+    - `medir`.
+
+    Historias: «As {como}, I want to {quiero}, so that I can {para}».
+  - **Resultado, tras revisar cada aviso a mano:**
+    - requisitos EARS con un defecto real: SOL 5,1 por cada 100, LUNA 9,6 y la unión 7,0;
+    - historias con dos acciones: SOL 6,0, LUNA 21,4 y la unión 17,6.
+
+    Las 6 historias de la unión con dos acciones juntan cada una 2 o 3 historias atómicas de SOL. En bruto las herramientas exageran: 63 de 90 avisos de Vale y 8 de 23 de AQUSA son falsas alarmas.
+  - **No se hizo** lo de clínicas en inglés («si da tiempo»): habría que generarlo de nuevo, con coste.
   - **AQUSA** (Lucassen, Dalpiaz y otros, Universidad de Utrecht, revista *Requirements Engineering*, 2016) revisa historias de usuario con parte de los 13 criterios del marco QUS: bien formadas («As a… I want… so that…»), atómicas (una sola cosa), mínimas (sin texto de más), únicas, uniformes… Es una herramienta en Python.
   - **`vale-ears`** (`tbhb/vale-ears`, MIT) es un estilo para el corrector Vale con cuatro reglas:
     - `ears.Syntax`: cada frase con *shall* sigue uno de los cinco patrones EARS;
