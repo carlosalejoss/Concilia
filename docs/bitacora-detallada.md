@@ -2928,3 +2928,11 @@ Hito 23 empezado: paso 117 (la versión congelada que se evalúa).
 - **Cifras:** introducción, unas 2.070 palabras; capítulo 2, unas 4.400; total, unas 6.500 de 10.000. El PDF tiene 30 páginas con las preliminares y las figuras. Compila sin errores.
 - **Matices que señala el texto:** el diagrama de despliegue muestra la API de Anthropic para el mockup, pero en la versión evaluada el mockup va por la pasarela con SOL; se dice así.
 - **Pendientes:** la revisión del autor; la 2.3 y las conclusiones, cuando las pida.
+
+## 04-11-2026, 10:20 (sesión)
+
+**Resumen para la bitácora (04-11-2026, memoria: título y diagrama de despliegue)**
+
+- **Título del TFG (autor):** «Evaluación del uso de grandes modelos de lenguaje (LLMs) para la automatización del análisis de un proyecto software» / «Evaluation of the Use of Large Language Models (LLMs) for Automating Software Project Analysis», en la portada, la página del resumen y las propiedades del PDF. Para que la portada siga en una página, dos espacios en blanco más cortos (3,56 → 2,2 cm y 1,76 → 1,2 cm).
+- **Diagrama de despliegue fiel a la versión evaluada (petición del autor):** se quita la API de Anthropic (el mockup va por la pasarela con SOL desde el proyecto grande de ejemplo), la pasarela dice «SOL: A, árbitro, sugerencias y mockup», la configuración ya no menciona el token de la suscripción, y Hugging Face sube a la altura del modelo de embeddings. Editado el SVG con un script y convertido a PNG con Edge sin ventana, al mismo tamaño (3744 × 2020). Los originales quedan como `memoria/diagrama-despliegue-con-anthropic.svg` y `.png`.
+- **Texto de la 2.2.1:** los servicios externos pasan de tres a dos (pasarela y Hugging Face).
