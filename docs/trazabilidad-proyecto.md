@@ -57,6 +57,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 27-10 | Hito 23, nuevos pasos (sin código) | Al repasar la propuesta del TFG se ve que ningún paso medía la hipótesis; el autor añade los pasos 117 a 121: versión congelada, referencia revisada por el autor, repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL |
 | 04-11 | Memoria, capítulo 1 | Introducción redactada en `memoria/tfg/memoria.tex` (fuera de git): objetivos O1 a O6, alcance, contexto, métodos y herramientas, con 18 referencias comprobadas |
 | 04-11 | Memoria, capítulo 2 (2.1 y 2.2) | Especificación sobre el diagrama de alto nivel y construcción con los diagramas de despliegue, estados y secuencia, comprobados contra el código; la 2.3, vacía hasta que el autor diga qué quiere |
+| 04-11 | Memoria, lista de contenido | `docs/contenido-memoria.md`: lo que tiene peso en el proyecto y debe estar en la memoria, por secciones, con lo imprescindible marcado; en el borrador faltan el experimento del sesgo, la versión congelada y las opciones de lectura de las iteraciones |
 | 20-10 | Documentación de la API (fuera del plan) | Swagger UI con los 42 endpoints documentados, que se actualiza sola y que los tests mantienen completa |
 
 ## Etapas

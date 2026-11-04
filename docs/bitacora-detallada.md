@@ -3022,3 +3022,12 @@ Paso 105 hecho: el flujo completo con un documento público de PURE, en inglés,
 - **Errores propios corregidos al revisar:** «C#» sin escapar (rompía la compilación), «pruebas de la web» (solo hay lint y compilación) y la cifra del 99 % (son pares, no requisitos).
 - **Cifras:** introducción, unas 2.160 palabras; capítulo 2, unas 5.850 (con la tabla y el listado); capítulo 3, unas 1.530; total, unas 9.550. **Por encima de lo razonable** con la 2.3 sin escribir: se propone al autor recortar y llevar detalle a los anexos.
 - **Pendientes que se proponen al autor:** recorte y anexos (hoy con texto de relleno), capturas de la interfaz, lista de acrónimos y una breve comparación con otras aproximaciones en la introducción.
+
+## 04-11-2026, 10:55 (sesión)
+
+**Resumen para la bitácora (04-11-2026, lista de contenido de la memoria)**
+
+- **Encargo del autor:** analizar todo el proyecto, sobre todo `docs/`, y sacar la lista de lo que tiene peso y debería estar en una memoria profesional y técnica; después, guardarla en `docs/`.
+- **Qué se hizo:** `docs/contenido-memoria.md`, ordenado según la estructura de la memoria (introducción, 2.1, 2.2, 2.3, conclusiones y aspectos transversales), con lo imprescindible marcado y el documento de origen de cada cifra. Separa en la 2.3 lo ya medido (pasos 65, 103, 105, 116, 123, calibración y costes) de lo pendiente que responde a la hipótesis (104, 106, 118 a 121), y lista las amenazas a la validez.
+- **Comprobado contra el borrador** (`memoria/tfg/memoria.tex`, por palabras clave): faltan el resultado del experimento del sesgo del árbitro, la versión congelada `evaluacion-1`, las opciones de lectura de las iteraciones (A y C, pasos 116 y 123) y las amenazas a la validez junto a los resultados. Lo demás está cubierto.
+- **Sin cambios** en el código, los prompts ni el borrador de la memoria.
