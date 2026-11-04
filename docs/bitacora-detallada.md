@@ -3004,3 +3004,21 @@ Paso 105 hecho: el flujo completo con un documento público de PURE, en inglés,
   - **valoración personal:** un borrador marcado para que el autor lo haga suyo.
 - **Pendiente**, con `% PENDIENTE` en el `.tex`: el resultado de la validación en el resumen del trabajo, el objetivo O6 y la valoración de la hipótesis.
 - **Cifras:** introducción, unas 2.070 palabras; capítulo 2, unas 4.700; capítulo 3, unas 1.530; total, unas 8.300 de 10.000. Quedan unas 1.700 para la 2.3 y lo pendiente de las conclusiones.
+
+## 04-11-2026, 10:50 (sesión)
+
+**Resumen para la bitácora (04-11-2026, memoria: revisión con ojos de tribunal)**
+
+- **Encargo del autor (permanente):** revisar la memoria como un miembro del tribunal, para que todo lo que aporta valor esté reflejado y quede profesional y técnica, y contar en el chat cada cambio.
+- **Contenido añadido** (todo comprobado contra el código y `docs/`):
+  - 2.2.4, evolución de los prompts: tabla de v1 a v0.13 con el cambio principal y el resultado medido de cada versión (cifras de `evolucion-prompt-requisitos.md` y de la trazabilidad);
+  - 2.2.5, calidad del software: 1.028 tests (xUnit), las referencias en Python con pruebas de mutación, los embeddings frente a la biblioteca de sus autores, el flujo completo con el proveedor simulado sin llamar a la pasarela, la instantánea de la v0.12, el test de OpenAPI y la integración continua (GitHub Actions);
+  - 2.1: párrafo «Seguimiento y medición» (consola en directo, informe y CSV, vista A | árbitro | B, volver a arbitrar) y, en el mockup, el `.zip` de estilo y las 8 direcciones de estilo;
+  - 2.2.1: usuario sin privilegios en el contenedor y el mockup en un `iframe` con `sandbox`;
+  - 2.2.3, paso 6: cifras de la calibración (37 de 48, 77 %; 99 % del consenso de los árbitros) y por qué no se calibró con el árbitro; paso 7: un listado con un requisito del árbitro de ReservaSalas (`de`, `discrepancia`, `explicacion`);
+  - 1.3: palabras clave de EARS en español; elección de bibliotecas por licencia (JsonSchema.Net y QuestPDF descartadas, MigraDoc fijada en la 6.2.4 MIT); OpenAPI y Swagger;
+  - estructura de la memoria y entradilla de la 2.2, con las dos subsecciones nuevas.
+- **Presentación:** «Tabla» en lugar de «Cuadro»; índice de listados en castellano (antes «Listings», vacío) y con tildes; Inconsolata para el texto monoespaciado (antes una fuente de mapa de bits muy espaciada); más interlineado en la tabla de prompts.
+- **Errores propios corregidos al revisar:** «C#» sin escapar (rompía la compilación), «pruebas de la web» (solo hay lint y compilación) y la cifra del 99 % (son pares, no requisitos).
+- **Cifras:** introducción, unas 2.160 palabras; capítulo 2, unas 5.850 (con la tabla y el listado); capítulo 3, unas 1.530; total, unas 9.550. **Por encima de lo razonable** con la 2.3 sin escribir: se propone al autor recortar y llevar detalle a los anexos.
+- **Pendientes que se proponen al autor:** recorte y anexos (hoy con texto de relleno), capturas de la interfaz, lista de acrónimos y una breve comparación con otras aproximaciones en la introducción.
