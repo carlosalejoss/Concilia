@@ -930,7 +930,7 @@ Propuesta del team leader y aprobada por el autor, después de que un documento 
 
 ### Resultados
 
-Primera comparación (09-10-2026): una ronda de preguntas con el documento B, en un proyecto nuevo para cada versión. A = SOL, B = LUNA y árbitro = SOL. El documento B es técnico-funcional, interno y anonimizado (solo cifras agregadas): 613 líneas en `input/documentacion.txt`, unos 27.000 tokens estimados. Cabe entero en la ventana. La ronda falló al principio por el error que contaba dos veces el documento (commit `7410b24`), no por su tamaño.
+Primera comparación (09-10-2026): una ronda de preguntas con el documento B, en un proyecto nuevo para cada versión. A = SOL, B = LUNA y árbitro = SOL. El documento B es técnico-funcional, interno y anonimizado (solo cifras agregadas): 613 líneas en `input/documentacion.txt`, unos 27.000 tokens estimados. Cabe entero en la ventana. La ronda falló al principio por el error que contaba dos veces el documento (commit `38a68f0`), no por su tamaño.
 
 Las cifras de cada run suman todos sus intentos. El tiempo es el del run entero.
 

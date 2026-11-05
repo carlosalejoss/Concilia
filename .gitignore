@@ -25,6 +25,8 @@ coverage/
 
 # Editores y sistema
 .idea/
+# Ajustes personales de Claude Code (los del proyecto, en .claude/settings.json, sí se suben)
+.claude/settings.local.json
 .DS_Store
 Thumbs.db
 

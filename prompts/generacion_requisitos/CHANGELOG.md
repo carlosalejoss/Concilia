@@ -186,7 +186,7 @@ Hito 6 (`docs/hito-6-catalogo-v1.3.md`), tras la primera ejecución grande del h
 **Carpeta**
 - Nuevos `prompt_requisitos_v1.3.md`, `anexo_reparacion_v1.3.md`, `requirements_v1.3.schema.json` y, en cada ejemplo, `catalogo_ejemplo_v1.3.json` y `catalogo_ejemplo_v1.3.enriquecido.json`.
 - Los ficheros v1.2 (`prompt_requisitos_v1.2.md`, `anexo_reparacion_v1.2.md`, `requirements.schema.json`, `catalogo_ejemplo.json` y su enriquecido) se mantienen mientras los use el código C#; se quitan en el paso 31.
-- `validar_catalogo.py` y `test_validador.py` pasan a ser la v1.3; la v1.2 está en el historial de git (commit `54310cd`).
+- `validar_catalogo.py` y `test_validador.py` pasan a ser la v1.3; la v1.2 está en el historial de git (commit `841acc3`).
 
 **Prompt**
 - Independencia: no menciona al otro modelo ni al árbitro.
@@ -225,7 +225,7 @@ Hito 6 (`docs/hito-6-catalogo-v1.3.md`), tras la primera ejecución grande del h
 Revisión de la v1.1 antes de la primera medición con PURE (documentos en inglés). Solo entra lo que falsearía o bloquearía esa medición; lo que conviene decidir con datos queda pendiente (ver la justificación v1.2 en el proyecto de Claude).
 
 **Carpeta**
-- Solo queda la versión vigente: `prompt_requisitos_v1.2.md` y `anexo_reparacion_v1.2.md`. `prompt_requisitos_v1.md` y los ficheros v1.1 siguen en el historial de git (commits `466145f` y `2c4d128`). Sustituye a la nota de la v1 que conservaba `prompt_requisitos_v1.md` para la ablación: las variantes de la ablación se construyen a partir de la versión vigente.
+- Solo queda la versión vigente: `prompt_requisitos_v1.2.md` y `anexo_reparacion_v1.2.md`. `prompt_requisitos_v1.md` y los ficheros v1.1 siguen en el historial de git (commits `57ceb3e` y `1548100`). Sustituye a la nota de la v1 que conservaba `prompt_requisitos_v1.md` para la ablación: las variantes de la ablación se construyen a partir de la versión vigente.
 - Nuevo `ejemplo_en/` (LibraryLoan, en inglés) y `test_fragmentar.py`.
 
 **Prompt**

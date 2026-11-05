@@ -11,4 +11,4 @@ Los dos scripts necesitan `pip install "jsonschema>=4.18"`. Hay que regenerarlos
 
 Los ficheros se guardan con saltos de línea `\n`. Un caso (`case-31.json`) no es JSON a propósito.
 
-Las fixtures del catálogo v1.2 (`mut-XX.json`, `warn-XX.json`, `expected-codes.json`, `export_codes.py`) se retiraron en el paso 31; están en el historial de git (commit `82e2416`).
+Las fixtures del catálogo v1.2 (`mut-XX.json`, `warn-XX.json`, `expected-codes.json`, `export_codes.py`) se retiraron en el paso 31; están en el historial de git (commit `81d9024`).

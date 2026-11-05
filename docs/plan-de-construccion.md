@@ -38,7 +38,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Hito 23, evaluación** (en este orden; cada paso dice qué hace el autor y qué hace Claude):
 
-6. ~~117, congelar la versión, con una prueba barata en inglés antes~~ (04-11-2026, etiqueta `evaluacion-1` en `6d34025`).
+6. ~~117, congelar la versión, con una prueba barata en inglés antes~~ (04-11-2026, etiqueta `evaluacion-1` en `bbe1167`).
 7. ~~105, el flujo con un documento de PURE, en inglés~~ (04-11-2026, 9,29 $).
 8. ~~104, AQUSA y `vale-ears` sobre lo del 105~~ (04-11-2026).
 9. 106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53).
@@ -333,7 +333,7 @@ Propuesta del team leader, aprobada por el autor el 09-10-2026. Va antes del hit
 | Hasta 30 turnos por run (antes 10), configurable; el tiempo máximo no cambia. | Autor (propuesta de Claude) |
 | No se conserva el modo «todo en el prompt» como opción: la medida de partida (paso 67) queda como referencia. | Autor |
 
-- [x] 67. Medida de partida (el autor, 09-10-2026; resultados en `docs/evolucion-prompt-requisitos.md`): la ronda de preguntas con el documento grande, todo en el prompt, con la corrección del presupuesto (commit `7410b24`).
+- [x] 67. Medida de partida (el autor, 09-10-2026; resultados en `docs/evolucion-prompt-requisitos.md`): la ronda de preguntas con el documento grande, todo en el prompt, con la corrección del presupuesto (commit `38a68f0`).
 - [x] 68. Runner: registra las llamadas a `Read` (archivo, líneas, si fue bien) y las compactaciones de contexto; `ReadCoverage` dice qué líneas quedan sin leer; una petición puede dejar `input/` fuera del presupuesto (`InputFilesInBudget`). Tests con un fixture sintético.
 - [x] 69. Fases y mockup con lectura por partes: `input/documentacion.txt`, `Read` y `Write`, 30 turnos, comprobación de lectura completa con reparación, tope total de documentación y prompts v0.1 (redactados por Claude, revisados por el autor). Tests con `Fake`.
 - [x] 70. Web: tamaño estimado de la documentación en el paso «Documentos» y aviso por encima de 80.000 tokens.
@@ -608,8 +608,8 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
 - [x] 117. Congelar la versión que se evalúa (27-10-2026, autor). Así los resultados son comparables entre sí y el tribunal puede repetir el paso 105 con la misma versión. Unos 15 minutos, sin coste. Se hace con el hito 22 cerrado y antes de la primera ejecución de la evaluación.
   **Hecho el 04-11-2026** por Claude, a petición del autor; detalle en `docs/evaluacion/version.md`.
   - **Prueba en inglés:** la ronda de preguntas normal (v0.12) con el documento del paso 105, porque la del paso 123 era una ronda centrada (v0.13). Salió válida a la primera, sin reparaciones, en 4 minutos y por 0,50 $: 39 preguntas en inglés (18 de las dos propuestas, 19 solo de A y 2 solo de B). LUNA propuso 20. No hizo falta corregir nada. El proyecto se borró y su resultado está en `docs/evaluacion/prueba-ingles-paso-117/`.
-  - **Comprobado:** `git status` limpio y todos los tests en verde. Las imágenes de Docker (03-11-2026) son del código del paso 122 (`d0dc673`), el último con código, y los 30 prompts y esquemas del repositorio están byte a byte en la imagen. Claude Code 2.1.283.
-  - **Etiqueta `evaluacion-1`:** creada el 04-11-2026 en el commit de este paso (`6d34025`), sin push, con el visto bueno del autor.
+  - **Comprobado:** `git status` limpio y todos los tests en verde. Las imágenes de Docker (03-11-2026) son del código del paso 122 (`f063fd6`), el último con código, y los 30 prompts y esquemas del repositorio están byte a byte en la imagen. Claude Code 2.1.283.
+  - **Etiqueta `evaluacion-1`:** creada el 04-11-2026 en el commit de este paso (`bbe1167`), sin push, con el visto bueno del autor.
   **Qué haces tú** (o Claude, si se lo pides):
   1. **Antes de congelar, haz una prueba barata en inglés** (añadido el 27-10-2026). El flujo en inglés no se ha probado nunca con modelos: los prompts lo admiten (`idioma`), pero ningún test ni ninguna ejecución real lo ha usado.
      - Crea el proyecto del paso 105 con el idioma en inglés, sube el documento de PURE y lanza solo la ronda de preguntas. Cuesta en torno a 1 $.

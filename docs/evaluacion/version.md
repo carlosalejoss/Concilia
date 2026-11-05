@@ -8,8 +8,9 @@ Si durante la evaluación un error obliga a cambiar código o prompts, se crea l
 
 ### Código
 
-- **La etiqueta** `evaluacion-1` está en el commit del paso 117, `6d34025` (04-11-2026), que solo añade documentación. Es local: no se ha subido al remoto.
-- **El código** es el del paso 122, commit `d0dc673` (03-11-2026, 13:34). Desde entonces solo han cambiado `docs/` y `CLAUDE.md`.
+- **La etiqueta** `evaluacion-1` está en el commit del paso 117, `bbe1167` (04-11-2026), que solo añade documentación. Es local: no se ha subido al remoto.
+- **El código** es el del paso 122, commit `f063fd6` (03-11-2026, 13:34). Desde entonces solo han cambiado `docs/` y `CLAUDE.md`.
+- **Hashes nuevos (05-11-2026):** el autor reescribió el historial para quitar de los mensajes la línea `Co-Authored-By` de Claude. Cambiaron todos los hashes, pero no el contenido, el autor ni las fechas de ningún commit: `bbe1167` era `6d34025` y `f063fd6` era `d0dc673`. Las referencias de la documentación se actualizaron entonces.
 - **Las imágenes de Docker** se construyeron con ese código:
 
   | Imagen | Id | Construida |
