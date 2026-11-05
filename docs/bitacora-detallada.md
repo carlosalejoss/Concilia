@@ -3109,3 +3109,22 @@ Nombre de la «opción C».
 - **Dónde se cambia:** solo en la documentación (CLAUDE.md, el plan, la trazabilidad, la evolución de los prompts, el contenido de la memoria, los resultados de los pasos 116 y 123, la hoja de respuestas y el CHANGELOG de los prompts), con «en el diseño, opción C» donde se cuenta la decisión. Esta bitácora no se reescribe: en las entradas anteriores, «opción C» es la lectura relacionada, «opción A» la lectura completa y «opción B» «solo lo nuevo».
 - **El código no cambia ahora** (comentarios y textos de la API que dicen «option C» u «opción C»), para no tocar la versión congelada `evaluacion-1`; se cambia después de la evaluación.
 
+
+## 05-11-2026, 08:45 (sesión)
+
+**Resumen para la bitácora (05-11-2026, memoria: nueve anexos más)**
+
+- **Encargo del autor:** añadir los nueve anexos propuestos y buscar más candidatos. Los anexos no cuentan para el límite de palabras.
+- **Anexos nuevos** (14 en total, en este orden: A instalación, B cronología, C decisiones, D modelo de datos, E API, F evolución de los prompts, G prompt del árbitro, H validaciones, I calibración, J pruebas, K proyectos de ejemplo, L coste, M incidencias, N ejemplos de entregables):
+  - **cronología:** etapas por fechas y la evolución del número de tests (de 289 a 1.028);
+  - **decisiones de diseño:** 23 decisiones con las alternativas descartadas y el motivo, sacadas de `CLAUDE.md`, el plan, la bitácora y la trazabilidad;
+  - **modelo de datos:** diagrama en TikZ de las 8 tablas (comprobado contra `AppDbContext` y las entidades: relaciones, índices únicos, borrado en cascada, papeles `A`, `B`, `ARB`, `SUG`, `MOCK` y los 6 orígenes de una versión) y una descripción de cada tabla;
+  - **API:** las 63 operaciones en 10 grupos, generadas desde `docs/api/openapi.json` con un script;
+  - **prompt del árbitro del catálogo** (v0.12) entero, copiado en `memoria/tfg/anexos/`;
+  - **validaciones:** los códigos de error, avisos y correcciones automáticas, sacados de los comentarios de `PhaseValidator`, `PlatformFixes` y los demás validadores;
+  - **pruebas:** 532 métodos (1.028 casos) por área, más 167 pruebas de Python;
+  - **proyectos de ejemplo:** los dos proyectos, las 26 trampas del grande y los 18 cambios de la segunda iteración;
+  - **incidencias:** 22 fallos de las pruebas reales con su causa y su solución.
+- **Referencias desde el cuerpo** a cada anexo nuevo y descripción de los anexos en la 1.4. «Lectura relacionada» en lugar de describir la opción C sin nombre.
+- **Al revisar:** la fuente de la memoria es ahora Latin Modern (el preámbulo se cambió fuera de esta sesión, presumiblemente el autor: se respeta); `"` rompe la compilación con `babel` en español; la `matrix` de TikZ dentro de `\resizebox` necesita `ampersand replacement`; el diagrama se rehízo sin flechas que crucen cajas.
+- **Extensión:** 9.244 palabras de texto corrido (9.959 con pies, tablas y listados), con la 2.3 sin escribir. PDF de 76 páginas.
