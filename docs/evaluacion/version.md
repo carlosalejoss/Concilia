@@ -90,6 +90,8 @@ El flujo en inglés solo se había probado en la ronda centrada del paso 123 (pr
 ### Cambios después de la etiqueta que no tocan la aplicación
 
 - **04-11-2026, paso 105:** `scripts/evaluacion/costes.cs` muestra por su nombre los proyectos «PURE …», que son públicos, en lugar de anonimizarlos. Es un script de evaluación: no cambia la API, la web ni los prompts.
+- **04-11-2026, paso 104:** un script nuevo, `scripts/evaluacion/metricas-externas.cs`, que lee los resultados y ejecuta AQUSA y Vale fuera de la aplicación.
+- **05-11-2026, paso 106:** `costes.cs` reconoce los proyectos de ReservaSalas por el prefijo «ReservaSalas», no solo «ReservaSalasHito911.v2», para que «ReservaSalas analista» no salga anonimizado.
 
 ### En palabras sencillas
 

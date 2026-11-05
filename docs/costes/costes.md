@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 04-11-2026 10:10, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 05-11-2026 12:08, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -125,6 +125,11 @@ Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ron
 | PURE · microcare | Backlog | 1 | 233.619 | 49.260 | 0,72 | 5 |
 | PURE · microcare | Mockup | 1 | 1.431.393 | 394.238 | 6,81 | 25 |
 | **PURE · microcare** | **Total** | 5 | **2.208.114** | **576.164** | **9,29** | **46** |
+| ReservaSalas analista | Preguntas | 2 | 116.640 | 16.759 | 0,29 | 3 |
+| ReservaSalas analista | Sugerencias de respuesta | 1 | 16.200 | 6.011 | 0,09 | 1 |
+| ReservaSalas analista | Catálogo | 1 | 109.161 | 43.419 | 0,39 | 6 |
+| ReservaSalas analista | Backlog | 1 | 90.908 | 29.944 | 0,33 | 3 |
+| **ReservaSalas analista** | **Total** | 5 | **332.909** | **96.133** | **1,11** | **12** |
 
 ## 4. Antes y después: la misma fase con distintas versiones del prompt
 

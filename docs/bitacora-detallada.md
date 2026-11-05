@@ -16,7 +16,7 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 ## Qué falta o está incompleto
 
 - **Antes del 28-09-2026 por la mañana:** el hito 0 (pasos 1 a 5) y los primeros commits del autor se hicieron antes de esta conversación. Su entrada está reconstruida con el plan y git.
-- **Trabajo hecho fuera de esta conversación:** la especificación del runner (`442a4cf`, 28-09), las pruebas de mutación del validador y el prompt v1.2 (`2c4d128`, 29-09), la aprobación de la especificación v1.3 (`54310cd`, 02-10) y la planificación de la iteración v0 con los prompts v0 (`d45059f` y `f90664a`, 08-10) los trajo el autor desde su propio proyecto de Claude. Aquí solo consta lo que dicen los commits y lo que se comentó después.
+- **Trabajo hecho fuera de esta conversación:** la especificación del runner (`4521f9c`, 28-09), las pruebas de mutación del validador y el prompt v1.2 (`1548100`, 29-09), la aprobación de la especificación v1.3 (`841acc3`, 02-10) y la planificación de la iteración v0 con los prompts v0 (`444c1c9` y `91c6a52`, 08-10) los trajo el autor desde su propio proyecto de Claude. Aquí solo consta lo que dicen los commits y lo que se comentó después.
 - **Días sin conversación:** 03-10, 04-10, 06-10, 07-10, 10-10, 11-10 y 12-10 (no hubo trabajo con Claude Code; tampoco hay commits).
 - **Tramos reconstruidos:** 30-09 por la tarde, 01-10, 02-10 por la tarde, 08-10 por la mañana y 13-10 por la tarde.
 - **Excluido:** la explicación completa de la plataforma preparada para la reunión con el tutor del 30-09-2026 (arquitectura, recorrido, guion de 5 minutos y preguntas probables). No es un resumen de bitácora; si hace falta, se puede recuperar aparte.
@@ -28,13 +28,13 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 > Reconstruida a partir de `docs/plan-de-construccion.md` y del historial de git. Este trabajo se hizo antes de abrir la conversación con Claude Code, así que no hubo resumen de bitácora.
 
 - **Qué se hizo:**
-  - **Paso 1:** repositorio privado con README y `.gitignore` (commits `19a032c`, `ce51efe`, `3423478` y `5cc2475`, del autor).
+  - **Paso 1:** repositorio privado con README y `.gitignore` (commits `37822fb`, `9e81829`, `4950bc1` y `ab2d94c`, del autor).
   - **Paso 2:** herramientas instaladas y comprobadas: .NET 10, Node LTS, Docker y Git.
   - **Paso 3:** credenciales de la pasarela LiteLLM guardadas fuera del repositorio.
   - **Paso 4:** lista de modelos de la pasarela y una llamada de chat a cada uno.
   - **Paso 5:** prueba de humo de `claude -p` contra la pasarela, con y sin herramientas, capturando la salida en stream-json. Esas capturas, saneadas, sirvieron después como fixtures del parser del runner (paso 17).
-  - Hito 0 marcado como completado en el plan (`db45c6d`).
-  - El autor añadió el esquema JSON y el validador en Python del catálogo EARS/MASTeR (prompt v1, `466145f`), en `prompts/generacion_requisitos/`. Es la referencia que después se portó a C#.
+  - Hito 0 marcado como completado en el plan (`5fe0ccb`).
+  - El autor añadió el esquema JSON y el validador en Python del catálogo EARS/MASTeR (prompt v1, `57ceb3e`), en `prompts/generacion_requisitos/`. Es la referencia que después se portó a C#.
 - **Decisiones:** stack (React 19 + TypeScript + Vite + Tailwind, .NET 10, Docker), patrón A ‖ B → árbitro y modelos de la pasarela, tal como recogen el README y CLAUDE.md desde el principio.
 
 ---
@@ -71,8 +71,8 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 ### Resumen para la bitácora (hasta aquí)
 
 **Qué se hizo:**
-- Paso 6: se creó la solución .NET, con la API, Core y los tests, y el endpoint `GET /health`. Commit `3dbc4fc`.
-- Paso 7: se creó el frontend con Vite, React 19, TypeScript y Tailwind v4, con una página que muestra el estado de la API. Commit `f777306`.
+- Paso 6: se creó la solución .NET, con la API, Core y los tests, y el endpoint `GET /health`. Commit `c66e112`.
+- Paso 7: se creó el frontend con Vite, React 19, TypeScript y Tailwind v4, con una página que muestra el estado de la API. Commit `902a74b`.
 
 **Decisiones tomadas:**
 - xUnit para los tests, que van en `tests/`.
@@ -97,14 +97,14 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 ### Resumen para la bitácora
 
 **Qué se hizo (hito 1, pasos 6 a 11):**
-- **Solución .NET y `/health`**: commit `3dbc4fc`.
-- **Frontend Vite + React 19 + Tailwind v4**: commit `f777306`.
-- **Decisión de base de datos**: commit `0766c71`.
-- **Docker y compose con `db`, `api` y `web`**: commit `6931ed2`.
-- **EF Core + PostgreSQL y migración de `Projects`**: commit `e3ab08e`.
-- **Crear y listar proyectos**: commit `2d62d0e`.
-- **Corrección de versiones de EF Core**: commit `a7a1ba5`.
-- **CI en GitHub Actions**: commit `b0b1dbc`.
+- **Solución .NET y `/health`**: commit `c66e112`.
+- **Frontend Vite + React 19 + Tailwind v4**: commit `902a74b`.
+- **Decisión de base de datos**: commit `b703c18`.
+- **Docker y compose con `db`, `api` y `web`**: commit `8b1f8c0`.
+- **EF Core + PostgreSQL y migración de `Projects`**: commit `4b654c1`.
+- **Crear y listar proyectos**: commit `76dfc76`.
+- **Corrección de versiones de EF Core**: commit `51ff37c`.
+- **CI en GitHub Actions**: commit `510045b`.
 
 **Decisiones tomadas:**
 - **Base de datos:** PostgreSQL (imagen `postgres:18-alpine`, con un volumen con nombre para que los datos persistan). Se cierra así esta decisión abierta.
@@ -137,7 +137,7 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 
 **Qué se hizo:**
 - Primer arranque real del hito 1 con Docker, con un `.env` local que no se sube al repositorio.
-- Se documentó la puesta en marcha en el README. Commit `6fc5733`.
+- Se documentó la puesta en marcha en el README. Commit `c3e8da9`.
 
 **Decisiones tomadas:**
 - En local, `POSTGRES_PASSWORD` se genera aleatoria en el `.env`.
@@ -158,12 +158,12 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 ### Resumen para la bitácora (desde el último resumen)
 
 **Qué se hizo:**
-- **Hito 1 cerrado:** probado en el navegador por el autor. Commit `538ab9b`.
-- **Paso 12:** subida de archivos con metadatos (nombre, tipo, tamaño y SHA-256). Commit `8c83084`.
-- **Paso 13:** vista de proyecto con zona de arrastrar y soltar y lista de archivos. Commit `db2af97`.
-- **Paso 14:** texto de `.txt` y `.md`, con detección de UTF-8 o Windows-1252. Commit `9534677`.
-- **Paso 15:** límites de 10 MB y tipos permitidos (`.txt`, `.md`, `.pdf` y `.docx`). Commit `4ba7d02`.
-- **Paso 15b (nuevo):** texto de `.docx` y `.pdf`. Commit `063b699`.
+- **Hito 1 cerrado:** probado en el navegador por el autor. Commit `7fdd5c1`.
+- **Paso 12:** subida de archivos con metadatos (nombre, tipo, tamaño y SHA-256). Commit `13c6e2e`.
+- **Paso 13:** vista de proyecto con zona de arrastrar y soltar y lista de archivos. Commit `c471c40`.
+- **Paso 14:** texto de `.txt` y `.md`, con detección de UTF-8 o Windows-1252. Commit `c875295`.
+- **Paso 15:** límites de 10 MB y tipos permitidos (`.txt`, `.md`, `.pdf` y `.docx`). Commit `0ed3eb0`.
+- **Paso 15b (nuevo):** texto de `.docx` y `.pdf`. Commit `bdd956f`.
 
 **Decisiones tomadas:**
 - La interfaz no se pule hasta que exista el árbitro, como dice el plan (confirmado por el autor).
@@ -191,9 +191,9 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 ### Resumen para la bitácora (desde el último resumen)
 
 **Qué se hizo:**
-- **Hito 2 cerrado:** probado por el autor en el navegador. Commit `086125b`.
-- **Reglas de seguridad:** copiadas a CLAUDE.md. Commit `0986087`.
-- **Pasos 16 a 19 del hito 3:** el contrato del runner, el parser de stream-json, el lanzamiento del proceso y el veredicto con reintentos. Commits `5e63ac1`, `6c92b83`, `7f609f6` y `eabde19`.
+- **Hito 2 cerrado:** probado por el autor en el navegador. Commit `74052fb`.
+- **Reglas de seguridad:** copiadas a CLAUDE.md. Commit `c1351ba`.
+- **Pasos 16 a 19 del hito 3:** el contrato del runner, el parser de stream-json, el lanzamiento del proceso y el veredicto con reintentos. Commits `e9b6792`, `532f9a0`, `49b18c7` y `860ec24`.
 - **Tests:** son 111 en total.
 
 **Decisiones tomadas:**
@@ -224,9 +224,9 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 
 **Qué se hizo:**
 - Revisión del núcleo del runner por el autor: aprobado.
-- **Ventana de los modelos:** registrada como decisión vigente. Commit `c61b406`.
-- **Pasos 20, 21 y 22:** hechos. Commits `e687251`, `f2036fd` y `3c763f9`.
-- **Corrección del presupuesto de entrada.** Commit `d52aea3`.
+- **Ventana de los modelos:** registrada como decisión vigente. Commit `0be7742`.
+- **Pasos 20, 21 y 22:** hechos. Commits `89cadf6`, `19cfdfb` y `31cd245`.
+- **Corrección del presupuesto de entrada.** Commit `9c13ac9`.
 - **Tests:** son 128 en total.
 
 **Decisiones tomadas:**
@@ -265,7 +265,7 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 - **Prueba en el navegador con `Fake`:** correcta, tras forzar la recarga (la versión anterior estaba en la caché del navegador).
 - **Prueba real del autor:** `SS - GPT-6-SOL` y `SS - GPT-6-LUNA` terminan en `Done`, con veredicto `hecho` y `resumen.md`.
 - **Ventana de contexto:** Claude Code asumió 128000 tokens, así que `CLAUDE_CODE_MAX_CONTEXT_TOKENS` tiene efecto.
-- **Hito 3 cerrado.** Commit `8bc9387`.
+- **Hito 3 cerrado.** Commit `52caac3`.
 
 **Decisiones tomadas:**
 - La ventana verificada (128k con `CLAUDE_CODE_MAX_CONTEXT_TOKENS`) queda registrada en CLAUDE.md como hecho verificado.
@@ -293,15 +293,15 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 
 | Paso | Contenido | Commit |
 |---|---|---|
-| 6 | Solución .NET 10 con `ReqArbiter.Api`, `ReqArbiter.Core` y `ReqArbiter.Tests`; endpoint `GET /health` con un test de integración | `3dbc4fc` |
-| 7 | Frontend con Vite, React 19, TypeScript y Tailwind v4; página con el estado de `/health` | `f777306` |
-| — | Decisión de base de datos: PostgreSQL | `0766c71` |
-| 8 | Dockerfiles de la API y la web, `docker-compose.yml` con `db`, `api` y `web`, y `.env.example` | `6931ed2` |
-| 9 | EF Core con PostgreSQL; migración `CreateProjects` aplicada al arrancar | `e3ab08e` |
-| 10 | Crear y listar proyectos desde la web; primer flujo de punta a punta | `2d62d0e` |
-| — | Corrección: versiones de EF Core alineadas entre la API y los tests | `a7a1ba5` |
-| 11 | GitHub Actions mínimo: compila y testea la API, y compila y pasa el linter del frontend | `b0b1dbc` |
-| — | README con la puesta en marcha y la carpeta `tests/`; hito cerrado | `6fc5733`, `538ab9b` |
+| 6 | Solución .NET 10 con `ReqArbiter.Api`, `ReqArbiter.Core` y `ReqArbiter.Tests`; endpoint `GET /health` con un test de integración | `c66e112` |
+| 7 | Frontend con Vite, React 19, TypeScript y Tailwind v4; página con el estado de `/health` | `902a74b` |
+| — | Decisión de base de datos: PostgreSQL | `b703c18` |
+| 8 | Dockerfiles de la API y la web, `docker-compose.yml` con `db`, `api` y `web`, y `.env.example` | `8b1f8c0` |
+| 9 | EF Core con PostgreSQL; migración `CreateProjects` aplicada al arrancar | `4b654c1` |
+| 10 | Crear y listar proyectos desde la web; primer flujo de punta a punta | `76dfc76` |
+| — | Corrección: versiones de EF Core alineadas entre la API y los tests | `51ff37c` |
+| 11 | GitHub Actions mínimo: compila y testea la API, y compila y pasa el linter del frontend | `510045b` |
+| — | README con la puesta en marcha y la carpeta `tests/`; hito cerrado | `c3e8da9`, `7fdd5c1` |
 
 **Criterio de "hecho":** el autor comprobó en el navegador que un proyecto creado sigue ahí tras reiniciar los contenedores.
 
@@ -309,12 +309,12 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 
 | Paso | Contenido | Commit |
 |---|---|---|
-| 12 | Subida de archivos: se guardan en `data/projects/{id}/` y se registran nombre, tipo, tamaño y SHA-256 | `8c83084` |
-| 13 | Vista de proyecto con zona de arrastrar y soltar y lista de archivos | `db2af97` |
-| 14 | Extracción de texto de `.txt` y `.md` (UTF-8, o Windows-1252 como alternativa) y visualización en la web | `9534677` |
-| 15 | Límite de 10 MB y tipos permitidos (`.txt`, `.md`, `.pdf`, `.docx`), con mensajes claros | `4ba7d02` |
-| 15b | **Paso nuevo:** extracción de texto de `.docx` (DocumentFormat.OpenXml) y `.pdf` (PdfPig) | `063b699` |
-| — | Hito cerrado | `086125b` |
+| 12 | Subida de archivos: se guardan en `data/projects/{id}/` y se registran nombre, tipo, tamaño y SHA-256 | `13c6e2e` |
+| 13 | Vista de proyecto con zona de arrastrar y soltar y lista de archivos | `c471c40` |
+| 14 | Extracción de texto de `.txt` y `.md` (UTF-8, o Windows-1252 como alternativa) y visualización en la web | `c875295` |
+| 15 | Límite de 10 MB y tipos permitidos (`.txt`, `.md`, `.pdf`, `.docx`), con mensajes claros | `0ed3eb0` |
+| 15b | **Paso nuevo:** extracción de texto de `.docx` (DocumentFormat.OpenXml) y `.pdf` (PdfPig) | `bdd956f` |
+| — | Hito cerrado | `74052fb` |
 
 **Criterio de "hecho":** el autor subió `.txt`, `.md`, `.docx` y `.pdf` y vio su texto en la web.
 
@@ -322,18 +322,18 @@ Recopilación de todos los resúmenes para la bitácora que Claude Code fue dand
 
 | Paso | Contenido | Commit |
 |---|---|---|
-| — | Reglas de seguridad de `docs/hito-3-runner.md` copiadas a CLAUDE.md | `0986087` |
-| 16 | Contrato del runner (`IRunnerProvider`, `RunRequest`, `RunResult`) y `FakeProvider` | `5e63ac1` |
-| 17 | Proyecto `ReqArbiter.Runner`, parser de stream-json y fixtures reales y sintéticos | `6c92b83` |
-| 18 | Lanzamiento del proceso con entorno explícito, latido, tiempo máximo, `SecretRedactor`, presupuesto de entrada y `FakeClaude` | `7f609f6` |
-| 19 | Veredicto, evaluación de la ejecución y hasta dos reintentos si el veredicto falta o no es válido | `eabde19` |
+| — | Reglas de seguridad de `docs/hito-3-runner.md` copiadas a CLAUDE.md | `c1351ba` |
+| 16 | Contrato del runner (`IRunnerProvider`, `RunRequest`, `RunResult`) y `FakeProvider` | `e9b6792` |
+| 17 | Proyecto `ReqArbiter.Runner`, parser de stream-json y fixtures reales y sintéticos | `532f9a0` |
+| 18 | Lanzamiento del proceso con entorno explícito, latido, tiempo máximo, `SecretRedactor`, presupuesto de entrada y `FakeClaude` | `49b18c7` |
+| 19 | Veredicto, evaluación de la ejecución y hasta dos reintentos si el veredicto falta o no es válido | `860ec24` |
 | — | Revisión del núcleo del runner por el autor: aprobado | — |
-| — | Ventana de contexto registrada como decisión | `c61b406` |
-| 20 | `LiteLlmProvider`, selección de proveedor y Claude Code 2.1.283 en la imagen de la API | `e687251` |
-| — | Corrección: el presupuesto de entrada cuenta también los archivos de `input/` | `d52aea3` |
-| 21 | Entidad `Run`, cola (`Channel`), worker en segundo plano (`BackgroundService`), endpoints y progreso por SSE | `f2036fd` |
-| 22 | Web: botón "Ejecutar resumen", lista de ejecuciones, consola en vivo y resultado | `3c763f9` |
-| — | Hito cerrado y ventana de contexto verificada | `8bc9387` |
+| — | Ventana de contexto registrada como decisión | `0be7742` |
+| 20 | `LiteLlmProvider`, selección de proveedor y Claude Code 2.1.283 en la imagen de la API | `89cadf6` |
+| — | Corrección: el presupuesto de entrada cuenta también los archivos de `input/` | `9c13ac9` |
+| 21 | Entidad `Run`, cola (`Channel`), worker en segundo plano (`BackgroundService`), endpoints y progreso por SSE | `19cfdfb` |
+| 22 | Web: botón "Ejecutar resumen", lista de ejecuciones, consola en vivo y resultado | `31cd245` |
+| — | Hito cerrado y ventana de contexto verificada | `52caac3` |
 
 **Criterio de "hecho":**
 - **Con `Fake`:** el flujo completo funciona en el navegador.
@@ -528,22 +528,22 @@ Las decisiones anteriores se mantienen en el historial; aquí solo se indica qu�
 ### Resumen para la bitácora (hito 4: doble modelo, sin árbitro)
 
 **Qué se hizo:**
-- **Paso 23 (`ffde01f`): la misma tarea a A y B en paralelo.**
+- **Paso 23 (`4579f3c`): la misma tarea a A y B en paralelo.**
   - Nueva entidad **trabajo** (`Job`), que agrupa dos ejecuciones de la misma entrada: la de la posición A (`SS - GPT-6-SOL`) y la de la posición B (`SS - GPT-6-LUNA`).
   - Qué modelo ocupa cada posición es configuración (`Runner:ModelA` y `Runner:ModelB`, también desde `.env`).
   - Endpoints nuevos: `POST /projects/{id}/jobs`, `GET /projects/{id}/jobs` y `GET /jobs/{id}`.
   - Tests del `JobRunner` con un proveedor falso que usa una barrera. Así se comprueba que A y B arrancan a la vez de verdad, sin depender de tiempos.
-- **Paso 24 (`bf70334`): vista A/B en la web.**
+- **Paso 24 (`0acdeb1`): vista A/B en la web.**
   - Dos columnas con la consola en vivo (SSE) y el resultado de cada modelo.
   - La lista de trabajos se recarga mientras haya ejecuciones sin terminar.
 - **Prueba real contra la pasarela:** la hizo el autor con SOL y LUNA. Los dos terminaron con veredicto `hecho`.
 - **Problema detectado en esa prueba:**
   - SOL usó `Bash` e intentó cargar el skill `claude-api`, aunque solo se habían permitido `Read` y `Write`.
   - La causa es que `--allowedTools` solo decide qué herramientas se aprueban sin preguntar; no quita las demás.
-- **Corrección (`c9e156c`):**
+- **Corrección (`f52dcf8`):**
   - El runner pasa también `--tools "Read,Write"` (las únicas herramientas que existen en la ejecución) y `--disable-slash-commands` (sin skills).
   - El autor lo verificó: los dos modelos solo usan `Read` y `Write`.
-- **Cierre del hito (`a63c463`):** plan marcado y CLAUDE.md actualizado con lo verificado.
+- **Cierre del hito (`aafae23`):** plan marcado y CLAUDE.md actualizado con lo verificado.
 
 **Mediciones (tarea de resumen, mismo documento):**
 
@@ -567,7 +567,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - Volver al proveedor `Fake` en el `.env` después de las pruebas reales (el autor lo hizo).
 - El árbitro que compara A y B queda para un hito posterior. Siguen abiertas las decisiones sobre él: qué modelo hace de árbitro, el origen de los embeddings y el umbral de "discrepancia grave".
 
-**Nota:** entre el hito 4 y el 5, el autor añadió el prompt de requisitos v1.2 con un validador más estricto, un ejemplo en inglés y tests de mutaciones del validador (`2c4d128` y `dec0657`). Son la base del hito 5.
+**Nota:** entre el hito 4 y el 5, el autor añadió el prompt de requisitos v1.2 con un validador más estricto, un ejemplo en inglés y tests de mutaciones del validador (`1548100` y `e4322e7`). Son la base del hito 5.
 
 ---
 
@@ -577,13 +577,13 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 
 **Qué se hizo:**
 - **Diagnóstico de LUNA:** en cada respuesta agotaba los 32.000 tokens de salida, de los que unos 28.000 eran razonamiento. Su `Write` llegaba cortado y lo repetía hasta agotar los 30 minutos.
-- **Tope de salida a 64.000 tokens** con `CLAUDE_CODE_MAX_OUTPUT_TOKENS` (`67fd451`).
+- **Tope de salida a 64.000 tokens** con `CLAUDE_CODE_MAX_OUTPUT_TOKENS` (`dbe984c`).
   - El código de Claude Code 2.1.283 confirma que, para modelos que no reconoce, acepta hasta 128.000.
-  - El "salida máxima 32000" de `modelUsage` es solo el valor por defecto. La consola muestra ahora los dos valores (`53949f3`).
-- **Lotes en paralelo, hasta 5 por modelo** (`976c5d4`).
-- **Corte inmediato** de la ejecución cuando una llamada a herramienta llega con JSON incompleto (`431c6a6`).
-- **Paso 27, reparación** con los errores del validador (`1891787`). `VerdictRetryRunner` pasa a llamarse `RetryRunner`, con una política de reintento que decide quien lo usa.
-- **Paso 28, unión de lotes, endpoint y vista del catálogo** en la web (`6f503da`).
+  - El "salida máxima 32000" de `modelUsage` es solo el valor por defecto. La consola muestra ahora los dos valores (`a996032`).
+- **Lotes en paralelo, hasta 5 por modelo** (`49fe5d5`).
+- **Corte inmediato** de la ejecución cuando una llamada a herramienta llega con JSON incompleto (`516f8c6`).
+- **Paso 27, reparación** con los errores del validador (`19067ed`). `VerdictRetryRunner` pasa a llamarse `RetryRunner`, con una política de reintento que decide quien lo usa.
+- **Paso 28, unión de lotes, endpoint y vista del catálogo** en la web (`3bf7608`).
 - **Tests:** son 289.
 
 **Decisiones tomadas:**
@@ -617,7 +617,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 
 **Qué se hizo:**
 - **Prueba real con `LiteLlm`:** subiendo el `DOC-01.txt` de ReservaSalas, A (SOL) y B (LUNA) generan catálogos válidos, visibles en la web.
-- **Cierre:** el hito 5 queda completado (`aafb579`).
+- **Cierre:** el hito 5 queda completado (`ca4ec39`).
 - **Incidencia de configuración:** la API no arrancaba (HTTP 502) porque el `.env` tenía `RUNNER_PROVIDER=#LiteLlm`. En un `.env`, un `#` pegado al valor forma parte del valor. La API rechazó el proveedor desconocido al arrancar, como estaba previsto.
 
 **Métricas:** las de la tabla anterior. Ninguno de los dos necesitó reparación y ambos tardaron 2 turnos.
@@ -639,12 +639,12 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 
 **Resumen para la bitácora (30-09-2026, tarde): primera prueba con un documento grande**
 
-> Reconstruida a partir de la conversación (no hubo un resumen con ese título) y del commit `1d40e33`.
+> Reconstruida a partir de la conversación (no hubo un resumen con ese título) y del commit `a9d99b9`.
 
 - **Qué se hizo:**
   - Prueba del catálogo v1.2 con un documento técnico interno grande (Markdown, 608 fragmentos, 22 lotes), con 5 lotes por modelo a la vez.
   - Primeras reparaciones reales, todas resueltas en el segundo intento: LUNA, lote 1, cita no literal (C6); SOL, lote 3, recuentos del veredicto; SOL, lote 5, término vago (C5).
-  - **Verificación pendiente cerrada:** el lote 2 de SOL terminó `Done` con 41.880 tokens de salida, así que la pasarela deja pasar más de 32.000. Anotado en CLAUDE.md (`1d40e33`).
+  - **Verificación pendiente cerrada:** el lote 2 de SOL terminó `Done` con 41.880 tokens de salida, así que la pasarela deja pasar más de 32.000. Anotado en CLAUDE.md (`a9d99b9`).
 - **Hallazgos:**
   - Con 6 de 22 lotes, SOL llevaba ya 405 requisitos y 72 preguntas, válidos y con métricas al 100 %: el catálogo apuntaba a unos 1.500 requisitos por modelo.
   - Causas del exceso: detalles de diseño e implementación tratados como requisitos, detalles visuales, parejas de la regla G4, repeticiones entre lotes y una regla G2 muy estricta.
@@ -660,7 +660,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 
 **Resumen para la bitácora (01-10-2026): análisis de la v1.2 y especificación de la v1.3**
 
-> Reconstruida a partir de la conversación (no hubo un resumen con ese título) y del commit `e555de2`.
+> Reconstruida a partir de la conversación (no hubo un resumen con ese título) y del commit `b0fd4f4`.
 
 - **Qué se hizo:**
   - **Análisis del documento grande con la v1.2** (cifras agregadas):
@@ -669,7 +669,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
     - El 53 % (SOL) y el 54 % (LUNA) de los requisitos salían de secciones que no son especificación: diseño técnico y notas sobre el proyecto.
     - El 46 % de la salida de SOL y el 72 % de la de LUNA se gastó en intentos que acabaron fallando.
     - De las 271 preguntas de SOL, 108 eran del tipo «¿qué pasa si falla?».
-  - **Especificación del hito 6, catálogo v1.3** (`docs/hito-6-catalogo-v1.3.md`, `e555de2`), con el plan (pasos 29 a 34) y CLAUDE.md al día.
+  - **Especificación del hito 6, catálogo v1.3** (`docs/hito-6-catalogo-v1.3.md`, `b0fd4f4`), con el plan (pasos 29 a 34) y CLAUDE.md al día.
 - **Decisiones del autor:**
   - **Independencia de A y B:** el prompt no menciona al otro modelo ni al árbitro; cada uno construye su catálogo como si fuera el único, y el árbitro se diseña en consecuencia (emparejamiento de varios a varios).
   - Dejar de generar los requisitos que no deberían existir.
@@ -700,8 +700,8 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - `RNF` en las ramas D3–D5;
   - retirada de C4.
 
-  CLAUDE.md lo recoge (`54310cd`).
-- **Paso 30 (`82e2416`): referencia en Python de la v1.3.**
+  CLAUDE.md lo recoge (`841acc3`).
+- **Paso 30 (`81d9024`): referencia en Python de la v1.3.**
   - **Prompt y anexo:** los del autor.
   - **Esquema 1.3:** inventario, ids por tipo, criterios y descartes por sección.
   - **Normalizador:** renumeración, vínculos, slots, etiquetas y citas tolerantes, con el fragmento corregido si la cita está literal en otro.
@@ -735,7 +735,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 
 ### Resumen para la bitácora (hito 6, paso 31)
 
-**Qué se hizo (`4d9cc24`):**
+**Qué se hizo (`80f8689`):**
 - Port a C# del catálogo v1.3: normalizador, validador por niveles, C19–C22, render, índice en el prompt, revisión con aceptación parcial y una reparación configurable, unión por tipo y `FakeCatalog` 1.3.
 - Paridad exacta con Python en 61 casos, comparando el resultado completo, no solo los códigos.
 - Retirada de los ficheros v1.2.
@@ -768,12 +768,12 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 
 **Resumen para la bitácora (02-10-2026, tarde): historial del prompt y resultados de la v1.3**
 
-> Reconstruida a partir de la conversación y de los commits `6768a96` y `9f0c34f` (no hubo un resumen con ese título después del paso 31).
+> Reconstruida a partir de la conversación y de los commits `ddfc385` y `35858a2` (no hubo un resumen con ese título después del paso 31).
 
 - **Qué se hizo:**
-  - **`docs/evolucion-prompt-requisitos.md`** (`6768a96`): una sección por versión del prompt de requisitos con *Qué hace*, *Resultados* y *Qué hay que mejorar*, su tabla resumen y cómo se mide. Pensado como material para la memoria del TFG.
+  - **`docs/evolucion-prompt-requisitos.md`** (`ddfc385`): una sección por versión del prompt de requisitos con *Qué hace*, *Resultados* y *Qué hay que mejorar*, su tabla resumen y cómo se mide. Pensado como material para la memoria del TFG.
   - **Regla nueva en CLAUDE.md:** cada cambio del prompt (texto, anexo, esquema o validador) o cada medición con modelos actualiza ese documento en el mismo commit; de los documentos internos, solo cifras agregadas y anonimizadas.
-  - **Resultados de la v1.3 con el documento grande** (`9f0c34f`), frente a la v1.2:
+  - **Resultados de la v1.3 con el documento grande** (`35858a2`), frente a la v1.2:
     - requisitos: SOL de 1.133 a 456 (−60 %) y LUNA de 862 a 284 (−67 %, sobre 18 lotes);
     - requisitos con detalles de implementación: del 33 % al 9 % (SOL) y del 30 % al 2 % (LUNA);
     - lotes reparados: de 13 a 4 (SOL) y de 17 a 8 (LUNA); salida perdida en intentos fallidos: del 46 % al 3 % y del 72 % al 10 %;
@@ -790,19 +790,19 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 ### Resumen para la bitácora (05-10-2026)
 
 **Qué se hizo**
-- **Prompt de requisitos v1.4 integrado** (`7f04c01`).
+- **Prompt de requisitos v1.4 integrado** (`3b3dda5`).
   - La plataforma monta `req-1.4` con el esquema 1.3.
   - Se retiran del repositorio el prompt y el anexo v1.3 (quedan en el historial de git).
   - El texto del prompt y del anexo es el del autor, sin cambios.
   - Nueva sección v1.4 en `docs/evolucion-prompt-requisitos.md`; los resultados quedan pendientes.
-- **Normalizador** (`9739332`).
+- **Normalizador** (`5794b33`).
   - Quita la palabra clave del principio de `condition`, `trigger`, `states` y `feature` y lo anota como `FIX`. Es la red de seguridad de la regla R-h; ya no sale «SI si…».
   - Hecho en Python y en C#, con 2 casos de prueba nuevos.
-- **Validador** (`4859d56`).
+- **Validador** (`2dbf618`).
   - Quita el descarte entero de un fragmento citado, con `FIX`.
   - Una sección descartada que tiene fragmentos citados se sustituye por descartes enteros de sus fragmentos no citados.
   - Hecho en Python y en C#; los fixtures de paridad pasan de 61 a 64.
-- **Runner** (`e9ec11b`): un lote perdido por inactividad de la pasarela (`HeartbeatLost`) se repite una vez con el mismo prompt.
+- **Runner** (`0472720`): un lote perdido por inactividad de la pasarela (`HeartbeatLost`) se repite una vez con el mismo prompt.
 
 **Decisiones**
 - Desaparece el aviso C17. Lo que antes contaba se mide ahora con los `FIX` de `DISCARDED[i]` y `SECTION[i]`.
@@ -869,14 +869,14 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 
 #### Qué se hizo
 
-**1. Integración del prompt de requisitos v1.4** (`7f04c01`)
+**1. Integración del prompt de requisitos v1.4** (`3b3dda5`)
 - La plataforma monta `req-1.4` con el esquema 1.3, sin cambiar el texto que redactó el autor.
 - Se retiran del repositorio el prompt y el anexo v1.3; quedan en el historial de git.
 
 **2. Tres cambios de la plataforma que acompañan a la v1.4.** Los dos primeros se hicieron a la vez en el validador de referencia en Python y en su port en C#, y la paridad entre ambos pasó de 61 a 64 casos.
-- **Normalizador** (`9739332`): quita la palabra clave del principio de `condition`, `trigger`, `states` y `feature`, y lo anota como `FIX`. Ya no sale «SI si…».
-- **Validador** (`4859d56`): ya no avisa con C17. Quita el descarte entero de un fragmento que se cita (`FIX`). Si se descartó entera una sección con fragmentos citados, la sustituye por descartes de los fragmentos no citados, con el motivo de la sección.
-- **Runner** (`e9ec11b`): un lote que termina en `HeartbeatLost` se repite una vez con el mismo prompt. No cuenta como reparación ni cambia la numeración del anexo.
+- **Normalizador** (`5794b33`): quita la palabra clave del principio de `condition`, `trigger`, `states` y `feature`, y lo anota como `FIX`. Ya no sale «SI si…».
+- **Validador** (`2dbf618`): ya no avisa con C17. Quita el descarte entero de un fragmento que se cita (`FIX`). Si se descartó entera una sección con fragmentos citados, la sustituye por descartes de los fragmentos no citados, con el motivo de la sección.
+- **Runner** (`0472720`): un lote que termina en `HeartbeatLost` se repite una vez con el mismo prompt. No cuenta como reparación ni cambia la numeración del anexo.
 
 **3. Medición de la v1.4 con el documento técnico interno** (608 fragmentos, 22 lotes). Algunas cifras se contaron a mano y son aproximadas.
 
@@ -896,7 +896,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - Propuesta del catálogo v2 en `docs/propuesta-catalogo-v2.md`.
 - Resultados de la v1.4 registrados en `docs/evolucion-prompt-requisitos.md`.
 - Cierre del hito 6 y nuevo hito 7 en el plan.
-- Todo ello en el commit `b165209`.
+- Todo ello en el commit `1c57701`.
 
 #### Decisiones tomadas
 
@@ -929,7 +929,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - un catálogo escrito con veredicto `bloqueada` no se valida y se pierde entero;
   - el "sin actividad" de la v1.3 puede deberse a razonamientos largos de LUNA y no a la pasarela, porque los lotes empiezan de 5 en 5 y llegan juntos a los 15 minutos. Está sin comprobar.
 - **LUNA tarda más:** razona más (hasta 28.000 de 32.000 tokens en el hito 5), reescribe el catálogo (8 de 27 intentos en la v1.3) y es más estricta consigo misma.
-- **Entorno:** Microsoft Defender for Endpoint (corporativo) bloquea `FakeClaude.exe` durante un tiempo después de cada compilación. Por eso fallan 28 tests del runner con "Acceso denegado". El commit `e9ec11b` se hizo sin poder ejecutarlos, y queda anotado en su mensaje.
+- **Entorno:** Microsoft Defender for Endpoint (corporativo) bloquea `FakeClaude.exe` durante un tiempo después de cada compilación. Por eso fallan 28 tests del runner con "Acceso denegado". El commit `0472720` se hizo sin poder ejecutarlos, y queda anotado en su mensaje.
 
 #### Pendientes
 
@@ -987,12 +987,12 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 
 **Resumen para la bitácora (08-10-2026, mañana): planificación de la iteración v0**
 
-> Reconstruida a partir del plan, de CLAUDE.md y de los commits `d45059f` y `f90664a`. La planificación se hizo fuera de esta conversación (el autor la trajo ya hecha).
+> Reconstruida a partir del plan, de CLAUDE.md y de los commits `444c1c9` y `91c6a52`. La planificación se hizo fuera de esta conversación (el autor la trajo ya hecha).
 
 - **Qué se hizo:**
   - **Pregunta del autor sobre la suscripción:** Claude confirmó en el código que la plataforma no usa ninguna cuenta ni suscripción de Claude. Claude Code es solo el programa cliente; los modelos son los de la empresa a través de la pasarela LiteLLM (`ANTHROPIC_BASE_URL` y `ANTHROPIC_AUTH_TOKEN`), con un entorno construido de cero y un `CLAUDE_CONFIG_DIR` vacío por ejecución.
-  - **Planificación de la iteración v0** (`d45059f`): hitos 8 a 13, el flujo completo con prompts básicos (proyecto → archivos → rondas de preguntas → catálogo → validación → backlog → validación → mockup). Tiene prioridad sobre el hito 7, que queda aplazado.
-  - **Paso 41, prompts v0** (`f90664a`): prompts, esquemas y ejemplo en `prompts/v0/`, con `validar_v0.py` como referencia del validador.
+  - **Planificación de la iteración v0** (`444c1c9`): hitos 8 a 13, el flujo completo con prompts básicos (proyecto → archivos → rondas de preguntas → catálogo → validación → backlog → validación → mockup). Tiene prioridad sobre el hito 7, que queda aplazado.
+  - **Paso 41, prompts v0** (`91c6a52`): prompts, esquemas y ejemplo en `prompts/v0/`, con `validar_v0.py` como referencia del validador.
 - **Decisiones del autor** (tabla de decisiones de la v0 en el plan):
   - prompts muy básicos en todas las fases; la calidad se trabaja después;
   - árbitro solo con LLM (los embeddings, más adelante), `SS - GPT-6-SOL`, con las propuestas anónimas en orden aleatorio;
@@ -1214,12 +1214,12 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 > Reconstruida a partir de la conversación y de los commits (no hubo un resumen con ese título).
 
 - **Qué se hizo:**
-  - **Borrar un proyecto** desde sus ajustes, con confirmación escribiendo su nombre; la API lo comprueba, no borra un proyecto con un trabajo en curso y borra todo lo suyo en la base de datos y en disco (`f07310f`).
-  - **Portada** con el logotipo y una frase que explica la herramienta, **buscador de proyectos** junto al «+» y fechas sin hora en la barra lateral (`9ba0c93`).
-  - **Lector de documentos** lateral con formato, **barra lateral minimizable** con transición, el logotipo lleva a la portada, **pantalla de preguntas más ligera** (sugerencia de la IA plegada, «para qué», fuentes y nota del árbitro más discretos, estado como icono) y el paso «Catálogo» pasa a llamarse «Requisitos» (`141d8c4`).
-  - Iconos `<` y `>` para la barra lateral (`899cdd7`); barra lateral más oscura y sin barra de desplazamiento (`46408e0`).
-  - **Icono de la pestaña** con el logotipo de la aplicación (`3061df9`), con el fichero renombrado para saltar la caché del navegador (`329ae0b`).
-  - **Cambio de nombre a Concilia** (`9985aa5`): lo visible, los proyectos .NET y sus espacios de nombres (`Concilia.*`), la solución, las imágenes de Docker y las claves del navegador.
+  - **Borrar un proyecto** desde sus ajustes, con confirmación escribiendo su nombre; la API lo comprueba, no borra un proyecto con un trabajo en curso y borra todo lo suyo en la base de datos y en disco (`32dd762`).
+  - **Portada** con el logotipo y una frase que explica la herramienta, **buscador de proyectos** junto al «+» y fechas sin hora en la barra lateral (`f3a9bed`).
+  - **Lector de documentos** lateral con formato, **barra lateral minimizable** con transición, el logotipo lleva a la portada, **pantalla de preguntas más ligera** (sugerencia de la IA plegada, «para qué», fuentes y nota del árbitro más discretos, estado como icono) y el paso «Catálogo» pasa a llamarse «Requisitos» (`0d8f724`).
+  - Iconos `<` y `>` para la barra lateral (`91ff233`); barra lateral más oscura y sin barra de desplazamiento (`d6d8ef0`).
+  - **Icono de la pestaña** con el logotipo de la aplicación (`916aae7`), con el fichero renombrado para saltar la caché del navegador (`9695d3c`).
+  - **Cambio de nombre a Concilia** (`36b1e5c`): lo visible, los proyectos .NET y sus espacios de nombres (`Concilia.*`), la solución, las imágenes de Docker y las claves del navegador.
 - **Decisiones del autor:**
   - nombre Concilia, de *conciliar* dos versiones (entre las propuestas: Contrapunto, Concilia, Cotejo, Cauce);
   - el resto de los ajustes de la interfaz, tal como los pidió.
@@ -1296,7 +1296,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Qué se hizo:**
   - Recuperación de todos los resúmenes de bitácora de la conversación con Claude Code (28-09 a 15-10) en `docs/bitacora-detallada.md`. Los tramos sin resumen se reconstruyeron a partir del resto de la conversación, de git y del plan.
   - Visión de alto nivel del proyecto en `docs/trazabilidad-proyecto.md`: línea de tiempo, etapas, evolución de los prompts, decisiones abiertas y siguientes pasos.
-  - El autor movió los dos ficheros de `memoria/` a `docs/`, y quedaron en git (`cebff42`).
+  - El autor movió los dos ficheros de `memoria/` a `docs/`, y quedaron en git (`1b00271`).
 - **Decisiones del autor:**
   - Claude Code mantiene al día los dos ficheros al terminar cada sesión, sin que se le pida.
   - El resumen de bitácora ya no se da en el chat: se escribe directamente en `docs/bitacora-detallada.md`.
@@ -2003,7 +2003,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
     - las grabaciones de Claude Code de los tests están saneadas;
     - los documentos internos solo aparecen anonimizados, con cifras agregadas, y ningún nombre de proyecto interno.
   - **A valorar por el autor (riesgo bajo):**
-    - tres commits (`dec0657`, `d45059f`, `f90664a`) llevan en su mensaje un enlace a una sesión de Claude Code, que solo puede abrir su dueño. Quitarlo exigiría reescribir el historial y forzar el push, y se desaconseja;
+    - tres commits (`e4322e7`, `444c1c9`, `91c6a52`) llevan en su mensaje un enlace a una sesión de Claude Code, que solo puede abrir su dueño. Quitarlo exigiría reescribir el historial y forzar el push, y se desaconseja;
     - el nombre de la empresa, los nombres de los modelos de la pasarela y sus precios por token, que conviene confirmar con la tutora de empresa;
     - el ejemplo del prompt del mockup (socio, TPV y junta) deja ver el dominio del proyecto de prueba del documento C, sin datos;
     - la licencia sigue sin definir.
@@ -2115,7 +2115,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
 - **Decisiones del autor (22-10):**
   - Gherkin con las palabras clave siempre en inglés y el texto tal cual (Claude recomendaba las del idioma del proyecto); todos los `.feature` en un `.zip`.
   - Un CSV por herramienta, Jira y Azure DevOps; en Azure DevOps, el proceso Agile.
-- **Paso 97** (commit `c230161`):
+- **Paso 97** (commit `b3b2a5e`):
   - `BacklogExport` arma una vez el contenido del backlog para los formatos de exportación;
   - `BacklogGherkin` escribe un `.feature` por épica: épica → `Feature`, historia → `Rule` con su narrativa y sus tareas, criterio → `Scenario`, con los ids como etiquetas. Cada fichero se comprueba con el analizador oficial (`Gherkin` 42.0.1, MIT) antes de entregarlo;
   - **descubierto al probar el analizador:** no rechaza nunca una línea de texto libre, pero `Scenario: …`, `Rule: …` o `Background: …` abren otro elemento, `@…` se vuelve etiqueta y `# …` desaparece como comentario. Esas líneas llevan «- » delante. `Parser.Parse(string)` toma el texto como una ruta de fichero: hay que pasarle un `StringReader`;
@@ -2186,7 +2186,7 @@ LUNA no usaba herramientas de más y aun así su consumo bajó casi dos tercios.
   - Por pantalla, 0,43 $ frente a 0,41 $; por historia, 0,14 $ en los dos. El coste sube porque hay más historias, no porque cada pantalla cueste más.
   - Esta vez no hubo fallos de la pasarela.
 - **Estilo (paso 94):** al proyecto 33 le toca la dirección 1 de 8, «cálida y cercana». El `.html` la sigue: variables `--crema` y `--terracota`, títulos en serif (Georgia), esquinas de 26 px y navegación con pestañas. El autor: «el diseño del mockup tiene muy buena pinta».
-- **Reconstrucción a las 10:05:** la API y la web se reiniciaron con una imagen nueva mientras se medía el mockup, ya terminado (`GET /jobs/active` en 204). No fue desde esta sesión; probablemente la otra, que tenía pendiente probar en Docker las descargas del backlog. La imagen lleva la corrección de las duraciones (commit `fdfb58a`): el mockup interrumpido que contaba 101 horas cuenta ahora 11,7 minutos.
+- **Reconstrucción a las 10:05:** la API y la web se reiniciaron con una imagen nueva mientras se medía el mockup, ya terminado (`GET /jobs/active` en 204). No fue desde esta sesión; probablemente la otra, que tenía pendiente probar en Docker las descargas del backlog. La imagen lleva la corrección de las duraciones (commit `f7bcfb1`): el mockup interrumpido que contaba 101 horas cuenta ahora 11,7 minutos.
 - **Tablas de coste regeneradas** con el mockup y con las duraciones corregidas: los minutos del proyecto interno 1 pasan de 8.997 a 37, y los del 3, de 14.713 a 1.343. Lo que queda en el 3 es el mockup del 14-10, que siguió abierto mientras el equipo estaba suspendido por la noche: es una limitación ya conocida.
 - **Siguiente prueba:** el mockup sin `.zip` del banco de alimentos (proyecto 32), al que le toca la dirección 0, «institucional y sobria», para comprobar que el estilo cambia de un proyecto a otro. Después, cerrar el hito 18.
 - **Criterio de cierre del hito 18 en este proyecto:** el flujo completo terminó sin errores internos y todas las reparaciones cupieron. El único fallo, el primer catálogo, se debió al error del paso 92, corregido el 20-10.
@@ -2880,7 +2880,7 @@ Hito 23 empezado: paso 117 (la versión congelada que se evalúa).
 - **Comprobaciones antes de congelar:**
   - `git status` limpio;
   - 1.028 tests de .NET, lint y build de la web, y los tests de Python (16, 105 y 46; `jsonschema` en un entorno virtual del scratchpad);
-  - imágenes del 03-11 (13:44 y 13:46), posteriores al commit del paso 122 (`d0dc673`, 13:34). Desde entonces solo han cambiado `docs/` y `CLAUDE.md`, y los 30 prompts y esquemas de `prompts/v0/` están byte a byte en la `Concilia.Core.dll` de la imagen;
+  - imágenes del 03-11 (13:44 y 13:46), posteriores al commit del paso 122 (`f063fd6`, 13:34). Desde entonces solo han cambiado `docs/` y `CLAUDE.md`, y los 30 prompts y esquemas de `prompts/v0/` están byte a byte en la `Concilia.Core.dll` de la imagen;
   - `claude --version` en el contenedor: 2.1.283, la de las 419 ejecuciones guardadas con versión.
 - **`docs/evaluacion/version.md`:**
   - el commit, las imágenes y los tests;
@@ -2891,7 +2891,7 @@ Hito 23 empezado: paso 117 (la versión congelada que se evalúa).
 - **Sin contenedores reiniciados ni reconstruidos, y sin migraciones.**
 - **`costes.md` no se regenera:** la prueba era de un proyecto ya borrado. Al hacer el paso 105, el script deberá mostrar los proyectos de PURE por su nombre: hoy solo conoce los de los ejemplos y anonimiza los demás como «proyecto interno».
 - **Pendiente del autor:** confirmar la etiqueta `evaluacion-1` (en el commit de este paso, sin push). Siguiente: el paso 105.
-- **Etiqueta (09:30):** el autor deja la decisión a Claude («haz lo que consideres mejor»). Se crea `evaluacion-1` en `6d34025`, sin push: es local y se deshace con `git tag -d`. Desde el código del paso 122 solo cambia documentación. Este apunte va en un commit `docs:` posterior, que no cambia la versión evaluada.
+- **Etiqueta (09:30):** el autor deja la decisión a Claude («haz lo que consideres mejor»). Se crea `evaluacion-1` en `bbe1167`, sin push: es local y se deshace con `git tag -d`. Desde el código del paso 122 solo cambia documentación. Este apunte va en un commit `docs:` posterior, que no cambia la versión evaluada.
 
 ## 04-11-2026, 09:35 (sesión)
 
@@ -3128,3 +3128,37 @@ Nombre de la «opción C».
 - **Referencias desde el cuerpo** a cada anexo nuevo y descripción de los anexos en la 1.4. «Lectura relacionada» en lugar de describir la opción C sin nombre.
 - **Al revisar:** la fuente de la memoria es ahora Latin Modern (el preámbulo se cambió fuera de esta sesión, presumiblemente el autor: se respeta); `"` rompe la compilación con `babel` en español; la `matrix` de TikZ dentro de `\resizebox` necesita `ampersand replacement`; el diagrama se rehízo sin flechas que crucen cajas.
 - **Extensión:** 9.244 palabras de texto corrido (9.959 con pies, tablas y listados), con la 2.3 sin escribir. PDF de 76 páginas.
+
+## 05-11-2026, 10:30 (sesión)
+
+**Resumen para la bitácora (05-11-2026, repositorio: qué se sube y quién aparece como autor)**
+
+- **Encargo del autor:** revisar qué carpetas y ficheros están en GitHub y quitar a Claude de los commits, para salir solo él como contributor.
+- **Revisión de lo subido:** nada sensible (sin claves; `.env`, `data/`, `models/` y `memoria/` ignorados; solo direcciones `.invalid` y `localhost`). Se mantienen `CLAUDE.md` (instrucciones del proyecto), `.claude/settings.json` (ajustes compartidos: impiden leer `.env` y `data/`) y la skill `frontend-design` en `.agents/` con `skills-lock.json` (con su licencia; documenta el diseño del hito 14). Se añade `.claude/settings.local.json` al `.gitignore`.
+- **Historial reescrito:** 257 de los 266 commits llevaban `Co-Authored-By: Claude`. Se quitó esa línea de cada mensaje (`git filter-branch --msg-filter`, en una copia aparte); se comprobó commit a commit que el contenido, el autor, las fechas y el resto del mensaje no cambian. La etiqueta `evaluacion-1` se movió a su commit nuevo (sigue sin subir). Copia de la historia anterior en la rama local `backup/antes-de-quitar-coautor`.
+- **Hashes:** cambiaron todos. Las referencias de la documentación se actualizaron (91 en esta bitácora, más CLAUDE.md, el plan, la versión congelada, la evolución de los prompts, el CHANGELOG y el README de las mutaciones); `docs/evaluacion/version.md` dice los antiguos: `bbe1167` era `6d34025` y `f063fd6` era `d0dc673`.
+- **Para que no se repita:** `attribution` vacío en `.claude/settings.json` y una línea en «Convenciones» de CLAUDE.md.
+- **Push forzado** de `main` a GitHub con el visto bueno del autor (`--force-with-lease`): el remoto ya no tiene ningún `Co-Authored-By`. Pendiente: que GitHub refresque la lista de contributors (puede tardar), y borrar la rama de copia cuando el autor lo vea bien.
+
+## 05-11-2026, 12:20 (sesión)
+
+Paso 106 hecho, empezado el 04-11-2026: la prueba como analista con ReservaSalas. Cierra los pasos 49 y 53.
+
+- **Reparto mixto,** elegido por el autor entre tres opciones (todo el autor, mixto, todo Claude). Si Claude hiciera también de analista, se mediría a una IA revisando a otra IA. Claude:
+  - lanzó las dos rondas;
+  - respondió como cliente, partiendo de las sugerencias: 5 tal cual (`ia`), 11 editadas con una decisión concreta (`ia-editada`) y la de la segunda ronda escrita sin sugerencia (`usuario`). Las respuestas están en `docs/evaluacion/analista/`;
+  - generó el catálogo y el backlog.
+
+  El autor los revisó como analista y apuntó sus tiempos.
+- **Proyecto 41,** «ReservaSalas analista», con el sistema «el sistema ReservaSalas». Se cambió el nombre que se pone por defecto, que habría metido «analista» en cada requisito.
+- **Resultados:**
+  - **primera ronda:** 16 preguntas;
+  - **segunda ronda:** 1 pregunta, ninguna repetida. Detecta que la respuesta «como mucho 4 horas» contradice la aprobación de las reservas de más de 4 horas con más de 20 asistentes;
+  - **catálogo:** 27 requisitos y 9 discrepancias, todas DEBERÍA frente a DEBERÁ, en requisitos que citan respuestas aceptadas tal cual escritas como «Proponemos…». El árbitro eligió DEBERÁ en las 9;
+  - **backlog:** 12 historias, sin discrepancias;
+  - **el autor no cambió nada:** 3,3 minutos el catálogo y 16 el backlog;
+  - **coste de todo:** 1,11 $.
+- **`costes.cs`:** reconoce los proyectos de ReservaSalas por el prefijo; anotado en `version.md` como cambio que no toca la aplicación. `costes.md` regenerado.
+- **Limitaciones, anotadas:** el proyecto es muy pequeño, el revisor es el autor y la revisión del catálogo fue rápida. La métrica de cambios del usuario sigue sin ediciones reales.
+- **Commits sin `Co-Authored-By`** desde el 05-11-2026, por decisión del autor (`CLAUDE.md`).
+- **Siguiente:** el paso 118 (la referencia), que hace el autor: revisar las 26 trampas y escribir la lista de funcionalidades sin mirar los catálogos.

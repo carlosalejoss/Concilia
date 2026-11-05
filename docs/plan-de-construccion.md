@@ -13,7 +13,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - Desde el 26-10-2026 (autor): el hito 22 son las iteraciones del proyecto (pasos 109 a 116), y la evaluación pasa a ser el hito 23, el último. Los pasos 103 a 106 de la evaluación conservan su número.
 - Desde el 27-10-2026 (autor): el hito 23 suma los pasos 117 a 121 (versión congelada, referencia revisada por el autor, repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL).
 
-## Dónde estamos (04-11-2026)
+## Dónde estamos (05-11-2026)
 
 - **Hechos:** los hitos 17 (embeddings en local), 18 y 18b (fiabilidad y calidad, prompts v0.11 y v0.12), 19 (exportar), 20 (trazabilidad y comparación) y 21 (historial de versiones), revisados por el autor.
 - **Hecho, a falta de que el autor revise sus resultados:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026.
@@ -23,7 +23,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
   - Hecho el 115 (desde cero, frente a lo anterior), en Docker y revisado por el autor en el navegador el 27-10-2026.
   - Hecho el 116 (la prueba real con clínicas en dos iteraciones), el 27-10 y el 03-11-2026: resultados en `docs/resultados-paso-116/`.
   - Hechos el 122 (sus mejoras, 03-11-2026) y el 123 (la lectura relacionada con una documentación grande, 04-11-2026: leerlo todo no cabe y la lectura relacionada funciona).
-- **En curso:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo. Hechos el 117 (la versión congelada, `docs/evaluacion/version.md`), el 105 (PURE en inglés, `docs/evaluacion/pure.md`) y el 104 (métricas externas, `docs/evaluacion/metricas-externas.md`), los tres el 04-11-2026; el siguiente es el 106.
+- **En curso:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo. Hechos el 117 (la versión congelada, `docs/evaluacion/version.md`), el 105 (PURE en inglés, `docs/evaluacion/pure.md`) el 104 (métricas externas, `docs/evaluacion/metricas-externas.md`), los tres el 04-11-2026, y el 106 (la prueba como analista, `docs/evaluacion/analista.md`, 05-11-2026); el siguiente es el 118, que hace el autor.
 
 ### Lo que queda, en orden
 
@@ -41,7 +41,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 6. ~~117, congelar la versión, con una prueba barata en inglés antes~~ (04-11-2026, etiqueta `evaluacion-1` en `bbe1167`).
 7. ~~105, el flujo con un documento de PURE, en inglés~~ (04-11-2026, 9,29 $).
 8. ~~104, AQUSA y `vale-ears` sobre lo del 105~~ (04-11-2026).
-9. 106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53).
+9. ~~106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53)~~ (05-11-2026).
 10. 118, la referencia: revisar las trampas y hacer la lista de funcionalidades.
 11. 119, las 9 ejecuciones de clínicas.
 12. 120, las hojas de revisión y la comparación con un solo modelo.
@@ -262,7 +262,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
 - [x] 46. Tabla `Questions` y su migración. `POST /projects/{id}/question-rounds` lanza el trabajo `questions`. Cuando termina el árbitro, la plataforma renumera las preguntas (`P-001`… por proyecto) y las guarda como pendientes, con su origen y la nota del árbitro.
 - [x] 47. Endpoints para responder, editar la respuesta, descartar (con motivo opcional) y reabrir una pregunta, con tests. Las respuestas son la información del proyecto que reciben el catálogo y el backlog.
 - [x] 48. Web: rondas con sus preguntas y filtro de pendientes. Se puede contestar o descartar, y se ven el origen (A, B o ambas) y la explicación del árbitro. Un contador de pendientes muestra por qué el catálogo está bloqueado.
-- [ ] 49. Prueba real con ReservaSalas (SOL, LUNA y árbitro SOL) y dos rondas: tokens, tiempos y preguntas repetidas entre rondas. (09-10-2026: hecha la primera ronda, con sus tokens y tiempos en `docs/evolucion-prompt-requisitos.md`; falta la segunda.)
+- [x] 49. Prueba real con ReservaSalas (SOL, LUNA y árbitro SOL) y dos rondas: tokens, tiempos y preguntas repetidas entre rondas. (09-10-2026: hecha la primera ronda, con sus tokens y tiempos en `docs/evolucion-prompt-requisitos.md`; falta la segunda.) (04-11-2026, en el paso 106: la segunda ronda no repite ninguna pregunta; su única pregunta detecta una contradicción entre una respuesta y el documento.)
 - [x] 49b. Sugerencias de respuesta con IA (añadido el 09-10-2026, a petición del autor):
   - prompt `prompts/v0/sugerir_respuestas.md`, con su esquema, sus comprobaciones y su ejemplo (el autor lo revisa);
   - trabajo `answer-suggestions` con un solo run (`SUG`, `RUNNER_MODEL_SUGGESTIONS`): `POST /question-rounds/{id}/suggestions` (todas las pendientes de la ronda) y `POST /questions/{id}/suggestion` (una); uno a la vez por proyecto;
@@ -283,7 +283,7 @@ Todos los roles admiten `Fake`. Cada proveedor construye su propio entorno:
   - Se editan texto, tipo, notación, obligatoriedad y fuentes, y se pueden añadir y borrar requisitos.
   - Las discrepancias aparecen destacadas, con la explicación del árbitro y una casilla «revisada».
   - Un catálogo validado es de solo lectura. «Reabrir» lo devuelve a borrador y desactualiza el backlog y el mockup.
-- [ ] 53. Prueba real con ReservaSalas: generar, editar y validar. Resultados en la sección v0 de `docs/evolucion-prompt-requisitos.md`. (09-10-2026: generado y validado, con resultados; falta editarlo.)
+- [x] 53. Prueba real con ReservaSalas: generar, editar y validar. Resultados en la sección v0 de `docs/evolucion-prompt-requisitos.md`. (09-10-2026: generado y validado, con resultados; falta editarlo.) (05-11-2026, en el paso 106: el autor revisó el catálogo como analista y no cambió ningún requisito; las 9 discrepancias eran de obligatoriedad.)
 
 **Hecho cuando:** tras validar un catálogo editado y recargar, solo se ve la versión editada, y el original del árbitro sigue en `data/jobs/{id}/`.
 
@@ -707,7 +707,7 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
   - Resultados en `docs/evaluacion/metricas-externas.md`: defectos por cada 100 historias o requisitos de SOL, LUNA y la unión, con ejemplos y el bloque en palabras sencillas.
   - Si da tiempo, lo mismo con el proyecto de clínicas generado en inglés.
   - Limitación: AQUSA tiene una precisión del 72 % según sus autores, así que sus avisos se cuentan, pero no se dan por buenos sin mirarlos.
-- [ ] 106. Una prueba editando de verdad, como un analista (27-10-2026, detalles de Claude). Hasta ahora todas las respuestas fueron sugerencias de la IA aceptadas tal cual y nadie editó el catálogo ni el backlog, así que la métrica de cambios del usuario (paso 64) no tiene datos. Incluye los pasos 49 (segunda ronda de preguntas) y 53 (editar el catálogo), que siguen pendientes, y se hace con ReservaSalas porque esos dos pasos son de ese ejemplo. Coste: unos pocos dólares, porque ReservaSalas es pequeño. Tiempo: el que tardes en revisar, unas 2–3 horas.
+- [x] 106. Una prueba editando de verdad, como un analista (27-10-2026, detalles de Claude). Hasta ahora todas las respuestas fueron sugerencias de la IA aceptadas tal cual y nadie editó el catálogo ni el backlog, así que la métrica de cambios del usuario (paso 64) no tiene datos. Incluye los pasos 49 (segunda ronda de preguntas) y 53 (editar el catálogo), que siguen pendientes, y se hace con ReservaSalas porque esos dos pasos son de ese ejemplo. Coste: unos pocos dólares, porque ReservaSalas es pequeño. Tiempo: el que tardes en revisar, unas 2–3 horas.
   **Qué haces tú:**
   1. **Crea el proyecto «ReservaSalas analista»,** sube `prompts/generacion_requisitos/ejemplo/fuentes/DOC-01.txt` y cierra la documentación.
   2. **Primera ronda de preguntas.** Respóndelas tú, como lo haría un cliente, aunque te ayudes de las sugerencias, que puedes editar.
@@ -727,6 +727,13 @@ El 27-10-2026 el autor añade los pasos 117 a 121, que propuso Claude al repasar
     - el bloque en palabras sencillas.
   - Marca como hechos los pasos 49 y 53.
   - Cuánto corrige un analista y cuánto tarda es lo que mejor dice si la automatización ahorra trabajo, que es la pregunta del título del TFG.
+  **Hecho el 04 y el 05-11-2026,** con un reparto mixto que eligió el autor: Claude lanzó las rondas, respondió como cliente y generó el catálogo y el backlog, y el autor los revisó como analista. Resultados en `docs/evaluacion/analista.md`.
+  - **Resultado:**
+    - el autor no cambió nada: 27 requisitos y 12 historias conservados, en unos 3 y 16 minutos de revisión;
+    - las 9 discrepancias del catálogo eran todas DEBERÍA frente a DEBERÁ, en requisitos que citan respuestas aceptadas tal cual y escritas como propuesta;
+    - la segunda ronda no repite nada;
+    - todo el flujo, 1,11 $.
+  - **Limitaciones:** el proyecto es muy pequeño, el revisor es el autor y las respuestas de cliente las escribió Claude. La métrica de cambios del usuario sigue sin ediciones reales.
 
 ### Los pasos 118 a 121: Concilia frente a un solo modelo
 

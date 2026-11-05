@@ -1017,6 +1017,15 @@ La trazabilidad sí funciona: cada requisito cita las preguntas en que se apoya 
 
 Esta ejecución no mide la revisión humana (nada se editó) ni la repetición de preguntas entre rondas (hubo una sola ronda).
 
+**Pasos 49 y 53, cerrados con el paso 106 (04 y 05-11-2026).** El mismo `DOC-01.txt`, con la versión `evaluacion-1` (prompts v0.12), en el proyecto «ReservaSalas analista». Claude respondió como cliente y el autor revisó como analista. Detalle en `docs/evaluacion/analista.md`.
+
+- **Segunda ronda (paso 49):** 1 minuto y 0,10 $, con una sola pregunta nueva y ninguna repetida de la primera ronda (16 preguntas). La nueva detecta una contradicción entre una respuesta de la primera ronda (como mucho 4 horas) y el documento (aprobación para más de 4 horas con más de 20 asistentes).
+- **Editar el catálogo (paso 53):**
+  - el autor revisó los 27 requisitos en unos 3 minutos y no cambió ninguno;
+  - las 9 discrepancias que marcó el árbitro eran todas de obligatoriedad (DEBERÍA frente a DEBERÁ), en requisitos que citan respuestas aceptadas tal cual y escritas como propuesta («Proponemos…»);
+  - el backlog (12 historias), igual: 16 minutos y ningún cambio.
+- **Todo el flujo:** 1,11 $.
+
 ### Qué hay que mejorar
 
 Se sabe de antemano, porque se ha simplificado a propósito:

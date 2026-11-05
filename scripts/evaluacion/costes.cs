@@ -30,7 +30,7 @@ var api = args.Length > 0 ? args[0].TrimEnd('/') : "http://localhost:8080";
 var es = CultureInfo.GetCultureInfo("es-ES");
 const string Main = "Clinicas Veterinarias";
 // The documents of the PURE dataset are public (steps 105 and 123): their projects ("PURE …") keep their name too.
-string[] examples = ["Clinicas Veterinarias", "Banco De Alimentos", "ReservaSalasHito911.v2", "PURE"];
+string[] examples = ["Clinicas Veterinarias", "Banco De Alimentos", "ReservaSalas", "PURE"];
 
 var prices = JsonNode.Parse(File.ReadAllText(Path.Combine("scripts", "evaluacion", "precios.json")))!.AsObject()
     .Where(p => !p.Key.StartsWith('_'))

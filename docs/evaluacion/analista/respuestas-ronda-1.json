@@ -1,0 +1,18 @@
+{
+  "P-001": "Las reservas se hacen con un máximo de 30 días de antelación, en horario de 8:00 a 20:00 de lunes a viernes, con una duración mínima de 30 minutos y máxima de 4 horas. El número de asistentes va de 1 a la capacidad de la sala. No se admiten fechas pasadas y la hora de inicio debe ser anterior a la de fin.",
+  "P-002": null,
+  "P-003": null,
+  "P-004": "Lo indica el administrador, con fecha y hora de inicio y de fin. Las reservas confirmadas afectadas se cancelan y se avisa por correo a sus solicitantes. Durante ese período no se admiten nuevas reservas de la sala.",
+  "P-005": "Sí, el módulo de catering está contratado, pero no entra en esta versión: queda para una versión posterior.",
+  "P-006": "No aplica en esta versión: el catering queda fuera.",
+  "P-007": "Lo activa y lo desactiva el administrador para fechas concretas, y se aplica a toda la empresa.",
+  "P-008": null,
+  "P-009": null,
+  "P-010": null,
+  "P-011": "La sincronización con el calendario corporativo ya la hace una herramienta externa de la empresa; ReservaSalas no la implementa en esta versión. La integración con Outlook queda para una versión futura.",
+  "P-012": "Consultar la disponibilidad y crear una reserva deben responder en menos de 2 segundos con hasta 200 usuarios a la vez, en la red de la oficina.",
+  "P-013": "Se aplaza: queda como mejora futura.",
+  "P-014": "No aplica en esta versión: la exportación queda fuera.",
+  "P-015": "Las dos últimas versiones estables de Chrome y de Edge.",
+  "P-016": "No hay registro de entrada: el administrador lo comprueba a mano. ReservaSalas le ofrece una lista mensual con sala, fecha, horario y solicitante, desde la que marca cada reserva como utilizada o no utilizada."
+}
