@@ -49,7 +49,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Hito 24, el backlog en GitHub** (06-11-2026, en la rama `feat/github-export`, sin tocar `evaluacion-1`):
 
-- 124, el `.zip` que crea los issues con `gh`: código hecho, falta la prueba real (ver el hito 24).
+- ~~124, el `.zip` que crea los issues con `gh`~~ (06-11-2026, probado en real; falta ver el botón en la web e integrar la rama).
 
 **Después del plan:**
 
@@ -868,7 +868,7 @@ GitHub, a diferencia de Jira y Azure DevOps, no tiene importador de archivos: cu
 
 ### Pasos
 
-- [ ] 124. El `.zip` para GitHub. `BacklogGitHub`, `GET /projects/{id}/backlog-github.zip` y el botón «GitHub» en la barra del backlog. **Hecho el 06-11-2026:** el código, sus tests y una prueba del script con un `gh` simulado (crear, simular, corte a medias y retomar, repetir, segunda iteración con cambios, otra generación, `gh` antiguo y un título con `$(…)`). **Falta la prueba real** en el repositorio privado del autor, con `gh` instalado: sobre todo, que `gh` lee la marca con su filtro, que los sub-issues funcionan en un repositorio personal y cuánto tarda.
+- [x] 124. El `.zip` para GitHub. `BacklogGitHub`, `GET /projects/{id}/backlog-github.zip` y el botón «GitHub» en la barra del backlog. Hecho el 06-11-2026: el código, sus tests, una prueba del script con un `gh` simulado (crear, simular, corte a medias y retomar, repetir, segunda iteración con cambios, otra generación, `gh` antiguo y un título con `$(…)`) y la prueba real con ReservaSalas (`docs/resultados-paso-124/README.md`): 67 issues con su jerarquía en 5 minutos, repetir no crea nada y una iteración simulada detecta lo nuevo, lo modificado y lo eliminado. Unos 5 segundos por issue, más que los 2 de pausa: `gh` hace varias llamadas. **Falta:** ver el botón en la web tras reconstruir Docker, y que el autor decida cuándo se integra la rama.
 
 **Hecho cuando:** un backlog real está en GitHub, una segunda ejecución no crea nada y una iteración nueva crea solo lo nuevo y avisa del resto.
 
