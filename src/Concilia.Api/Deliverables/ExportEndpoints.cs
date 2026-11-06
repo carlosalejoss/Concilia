@@ -77,6 +77,25 @@ public static class ExportEndpoints
             .WithDescription("Un CSV para importar el backlog guardado en cada herramienta, con una fila por épica, historia y tarea, cada una detrás de su padre. **Jira:** la jerarquía va con `Issue ID` y `Parent ID` (épica → `Story` → `Sub-task`), con `Epic Name` en las épicas y los ids de Concilia en columnas `Labels`; la descripción de cada historia lleva su «Como… quiero… para…», los criterios de aceptación en Gherkin y los requisitos. **Azure DevOps** (proceso Agile): `ID` vacío y el título en `Title 1`, `Title 2` o `Title 3` según el nivel (`Epic` → `User Story` → `Task`), los criterios en `Acceptance Criteria` y los ids en `Tags`. Separado por comas, UTF-8 sin BOM. Una historia con una discrepancia sin revisar lleva también `discrepancia-sin-revisar`, y cada elemento, `iteracion-N` por cada iteración del proyecto de la que sale (una épica, las de sus historias; una tarea, las de su historia).")
             .Produces<Stream>(StatusCodes.Status200OK, "text/csv")
             .Produces(StatusCodes.Status404NotFound);
+
+        // Step 124: the backlog for GitHub, which has no importer of files: a
+        // .zip with the bodies of the issues and a script that creates them.
+        app.MapGet("/projects/{projectId:int}/backlog-github.zip", async (int projectId, AppDbContext db) =>
+        {
+            var (project, backlog) = await BacklogAsync(db, projectId);
+            if (backlog is null)
+            {
+                return Results.NotFound();
+            }
+            var current = await DeliverableEndpoints.CurrentAsync(db, projectId, DeliverableKind.Backlog);
+            var generation = await DeliverableVersions.GenerationAsync(db, current!);
+            return Results.File(BacklogGitHub.Write(backlog, generation), "application/zip", $"backlog-{ExportFiles.Slug(project!)}-github.zip");
+        })
+            .WithTags(ApiTags.Deliverables)
+            .WithSummary("Exporta el backlog para importarlo en GitHub")
+            .WithDescription("GitHub no importa archivos, así que es un `.zip` con `importar.sh`, que crea los issues con GitHub CLI desde el equipo del usuario (Concilia no recibe ningún token), un cuerpo por issue en `cuerpos/` y un `README.md`. Épicas, historias y tareas son issues unidos como sub-issues, con las etiquetas `epica`, `historia` y `tarea`, `iteracion-N` y `discrepancia-sin-revisar`. Cada historia lleva su «Como… quiero… para…», sus criterios en Gherkin y sus requisitos. La última línea de cada cuerpo, invisible, identifica el issue: al repetir el script solo se crea lo nuevo, y lo modificado o eliminado en Concilia se lista con el comando que lo aplica, sin tocarlo. Si el repositorio tiene issues de otra generación desde cero, el script se para. Del backlog guardado, validado o en borrador.")
+            .Produces<Stream>(StatusCodes.Status200OK, "application/zip")
+            .Produces(StatusCodes.Status404NotFound);
     }
 
     // The saved backlog of a project and the name of the project, or nulls.

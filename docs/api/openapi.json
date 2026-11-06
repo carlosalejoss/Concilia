@@ -217,6 +217,41 @@
         }
       }
     },
+    "/projects/{projectId}/backlog-github.zip": {
+      "get": {
+        "tags": [
+          "Entregables"
+        ],
+        "summary": "Exporta el backlog para importarlo en GitHub",
+        "description": "GitHub no importa archivos, así que es un `.zip` con `importar.sh`, que crea los issues con GitHub CLI desde el equipo del usuario (Concilia no recibe ningún token), un cuerpo por issue en `cuerpos/` y un `README.md`. Épicas, historias y tareas son issues unidos como sub-issues, con las etiquetas `epica`, `historia` y `tarea`, `iteracion-N` y `discrepancia-sin-revisar`. Cada historia lleva su «Como… quiero… para…», sus criterios en Gherkin y sus requisitos. La última línea de cada cuerpo, invisible, identifica el issue: al repetir el script solo se crea lo nuevo, y lo modificado o eliminado en Concilia se lista con el comando que lo aplica, sin tocarlo. Si el repositorio tiene issues de otra generación desde cero, el script se para. Del backlog guardado, validado o en borrador.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "$ref": "#/components/schemas/Stream"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/projects/{projectId}/traceability": {
       "get": {
         "tags": [

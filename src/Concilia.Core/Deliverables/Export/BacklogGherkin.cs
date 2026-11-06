@@ -102,13 +102,13 @@ public static class BacklogGherkin
     // A step per line of the text: the first with its keyword, the rest with
     // And. A text with nothing to say still gives a step, so the scenario
     // keeps its three parts.
-    private static void Steps(StringBuilder text, string keyword, string value)
+    internal static void Steps(StringBuilder text, string keyword, string value, string indent = "      ")
     {
         var lines = Lines(value);
         if (lines.Count == 0)
             lines = ["(sin indicar)"];
         for (var i = 0; i < lines.Count; i++)
-            text.Append($"      {(i == 0 ? keyword : "And")} {lines[i]}\n");
+            text.Append($"{indent}{(i == 0 ? keyword : "And")} {lines[i]}\n");
     }
 
     // Free text under a Feature or a Rule. The parser never rejects a line

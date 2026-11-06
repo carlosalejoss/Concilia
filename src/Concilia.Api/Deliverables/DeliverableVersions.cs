@@ -170,17 +170,37 @@ public static class DeliverableVersions
             .OrderByDescending(v => v.Number)
             .Select(v => new { v.JobId, v.Origin, v.Content })
             .ToListAsync();
-        // From the newest: each version of an update adds the job of the version
-        // before it, the catalog it started from (which may be an update too).
-        var jobs = new HashSet<Guid> { d.JobId };
-        for (var i = 0; i < versions.Count - 1; i++)
-            if (versions[i].Origin == VersionOrigin.Updated && jobs.Contains(versions[i].JobId))
-                jobs.Add(versions[i + 1].JobId);
+        var jobs = JobChain(versions.Select(v => (v.JobId, v.Origin)).ToList(), d.JobId);
         var contents = versions.Where(v => jobs.Contains(v.JobId)).Select(v => v.Content).ToList();
         return contents
             .SelectMany(c => d.Kind == DeliverableKind.Catalog ? CatalogDraft.Ids(c) : BacklogDraft.Ids(c))
             .Distinct()
             .ToList();
+    }
+
+    // Step 124: the job that generated a draft from scratch, the same for all
+    // the updates on it. While it does not change, an id means the same thing.
+    public static async Task<Guid> GenerationAsync(AppDbContext db, Deliverable d)
+    {
+        var versions = await db.DeliverableVersions
+            .Where(v => v.ProjectId == d.ProjectId && v.Kind == d.Kind)
+            .OrderByDescending(v => v.Number)
+            .Select(v => new { v.JobId, v.Origin })
+            .ToListAsync();
+        return JobChain(versions.Select(v => (v.JobId, v.Origin)).ToList(), d.JobId)[^1];
+    }
+
+    // The job of a draft followed by those it comes from through its updates;
+    // the last one generated it. versions: all of them, newest first. Each
+    // version of an update adds the job of the version before it, the deliverable
+    // it started from (which may be an update too).
+    public static List<Guid> JobChain(IReadOnlyList<(Guid JobId, VersionOrigin Origin)> versions, Guid job)
+    {
+        var jobs = new List<Guid> { job };
+        for (var i = 0; i < versions.Count - 1; i++)
+            if (versions[i].Origin == VersionOrigin.Updated && jobs.Contains(versions[i].JobId) && !jobs.Contains(versions[i + 1].JobId))
+                jobs.Add(versions[i + 1].JobId);
+        return jobs;
     }
 
     // At start-up: each deliverable without versions gets its first one, as

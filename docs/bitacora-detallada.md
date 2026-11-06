@@ -3162,3 +3162,17 @@ Paso 106 hecho, empezado el 04-11-2026: la prueba como analista con ReservaSalas
 - **Limitaciones, anotadas:** el proyecto es muy pequeño, el revisor es el autor y la revisión del catálogo fue rápida. La métrica de cambios del usuario sigue sin ediciones reales.
 - **Commits sin `Co-Authored-By`** desde el 05-11-2026, por decisión del autor (`CLAUDE.md`).
 - **Siguiente:** el paso 118 (la referencia), que hace el autor: revisar las 26 trampas y escribir la lista de funcionalidades sin mirar los catálogos.
+
+## 06-11-2026, 09:25 (sesión)
+
+Hito 24, nuevo a petición del autor: el backlog en GitHub (paso 124), en la rama `feat/github-export`, sin tocar `main` ni `evaluacion-1`.
+
+- **Investigación:** GitHub no tiene importador de archivos, a diferencia de Jira y Azure DevOps. Sí tiene sub-issues (100 por padre, 8 niveles), `parent_issue_id` al crear un issue y `gh issue create --parent` desde la versión 2.94. Límites: 80 creaciones por minuto y 500 por hora. Los issue types son de las organizaciones.
+- **Decisiones del autor:** camino A (`.zip` con un script que usa `gh`; Concilia no recibe tokens), repositorio personal con el tipo como etiqueta, tareas como sub-issues, sin Projects, borradores permitidos y, al repetir tras una iteración, nivel 2: crear lo nuevo y avisar del resto sin tocarlo.
+- **Cambios de criterio durante la sesión:**
+  - Claude propuso primero «solo crear» y un fichero local con lo creado. Los dos se descartan: «solo crear» deja GitHub desfasado sin avisar, y el `.zip` de la iteración siguiente no traería ese fichero. El estado vive en GitHub, en una marca invisible en cada cuerpo.
+  - Los ids solo son estables a través de las actualizaciones: una generación desde cero vuelve a numerar. Por eso la marca lleva la generación y el script se para si no coincide. Comprobado en el código (`DeliverableVersions`), que se reparte ahora en `JobChain`.
+- **Hecho:** `BacklogGitHub`, el endpoint, el botón «GitHub», `BacklogGitHubTests`. Pasan los 1.038 tests.
+- **Prueba con un `gh` simulado,** en la que salieron dos fallos corregidos: `crear` iba entre comillas y el comando impreso mostraba los acentos como `\303\263`. Funcionan crear, simular, corte a medias y retomar, repetir, segunda iteración con cambios, otra generación, `gh` antiguo y un título con `$(…)`, que no se ejecuta.
+- **Pendiente:** la prueba real en el repositorio privado del autor, para la que el autor tiene que instalar `gh` y autenticarse. Sin ella no está comprobado que el filtro de `gh` lea la marca ni que los sub-issues funcionen en un repositorio personal.
+- **Mejoras futuras,** en «Después», punto 9: uso para cualquier usuario de la web, organizaciones, Projects y nivel 3.

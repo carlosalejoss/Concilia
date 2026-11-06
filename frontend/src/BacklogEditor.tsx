@@ -126,6 +126,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
           { href: `/projects/${project.id}/backlog-gherkin.zip`, label: 'Gherkin' },
           { href: `/projects/${project.id}/backlog-jira.csv`, label: 'CSV Jira' },
           { href: `/projects/${project.id}/backlog-azure-devops.csv`, label: 'CSV Azure DevOps' },
+          { href: `/projects/${project.id}/backlog-github.zip`, label: 'GitHub' },
         ]}
       />
 

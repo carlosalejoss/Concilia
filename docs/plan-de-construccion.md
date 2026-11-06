@@ -47,6 +47,10 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 12. 120, las hojas de revisión y la comparación con un solo modelo.
 13. 121, SOL ‖ SOL.
 
+**Hito 24, el backlog en GitHub** (06-11-2026, en la rama `feat/github-export`, sin tocar `evaluacion-1`):
+
+- 124, el `.zip` que crea los issues con `gh`: código hecho, falta la prueba real (ver el hito 24).
+
 **Después del plan:**
 
 14. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. Está en `memoria/tfg/memoria.tex`, fuera de git, y se compila con MiKTeX (instalado el 22-10-2026) y `memoria/tfg/compilar.ps1`. Estructura del autor (22-10-2026): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema, 2.3 validación de la solución); 3 Conclusiones. **Empezada el 04-11-2026:** la introducción, redactada.
@@ -837,6 +841,37 @@ Decidido el 27-10-2026: el autor propuso comparar una ejecución de SOL, una de 
 
 **Hecho cuando:** el capítulo de evaluación tiene datos de los experimentos (sesgo del árbitro, calidad con métricas externas, cambios del usuario, variación entre repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL), todos con la versión congelada del paso 117 y frente a la referencia revisada por el autor, de la actualización por iteraciones (paso 116) y de al menos un documento público.
 
+## Hito 24: el backlog en GitHub
+
+Añadido por el autor el 06-11-2026, que quiere saber si funciona antes de presentar la memoria para poder incluirlo en ella. Se hace en la rama `feat/github-export`: `main` y la etiqueta `evaluacion-1` no se tocan. Las exportaciones salen de lo guardado, así que integrarlo no obliga a repetir ninguna ejecución (sería `evaluacion-2`).
+
+GitHub, a diferencia de Jira y Azure DevOps, no tiene importador de archivos: cualquier archivo necesita algo que lo lea y llame a su API.
+
+**Decisiones del autor (06-11-2026):**
+
+- camino A: un `.zip` con un script que lanza el usuario con GitHub CLI (`gh`), en lugar de un botón en Concilia. Concilia no recibe ningún token;
+- repositorio personal: el tipo va como etiqueta (`epica`, `historia`, `tarea`), porque los issue types son de las organizaciones;
+- las tareas son sub-issues, como en Jira y Azure DevOps;
+- sin GitHub Projects;
+- se puede exportar un borrador, con su etiqueta `discrepancia-sin-revisar`;
+- al repetir el script tras una iteración, nivel 2: crear lo nuevo y avisar de lo modificado y eliminado, con el comando que lo aplica, sin tocar nada de lo que ya hay. No se reescribe ni se cierra nada solo, porque se perdería lo hecho en GitHub.
+
+**Detalles de Claude:**
+
+- El estado vive en GitHub, no en un fichero local, porque el `.zip` de la iteración siguiente es una descarga nueva. La última línea de cada cuerpo, invisible, es `<!-- concilia:HU-001 generacion=ab12cd34 hash=… -->`.
+- `generacion` es el trabajo que generó el backlog desde cero (`DeliverableVersions.GenerationAsync`): una actualización conserva los ids, pero una generación nueva vuelve a numerar y su `HU-012` puede ser otra historia. Si el repositorio tiene otra generación, el script se para sin crear nada.
+- El hash cubre el título, el padre y el cuerpo, no las etiquetas: revisar una discrepancia no es modificar la historia.
+- En los textos libres, `@ana` y `#12` van como código, para que no avisen a un usuario real ni enlacen otro issue, y `<` se escapa, para que `<reglas>` no desaparezca y un texto no pueda falsificar la marca.
+- Los requisitos van en el cuerpo y no como etiquetas, que llenarían el repositorio.
+- Lo cerrado en GitHub ni se recrea ni se avisa.
+- Dos segundos entre issues: `gh` puede hacer más de una llamada por issue y GitHub limita a 80 creaciones por minuto y 500 por hora. Si corta, se repite el script y sigue por donde iba.
+
+### Pasos
+
+- [ ] 124. El `.zip` para GitHub. `BacklogGitHub`, `GET /projects/{id}/backlog-github.zip` y el botón «GitHub» en la barra del backlog. **Hecho el 06-11-2026:** el código, sus tests y una prueba del script con un `gh` simulado (crear, simular, corte a medias y retomar, repetir, segunda iteración con cambios, otra generación, `gh` antiguo y un título con `$(…)`). **Falta la prueba real** en el repositorio privado del autor, con `gh` instalado: sobre todo, que `gh` lee la marca con su filtro, que los sub-issues funcionan en un repositorio personal y cuánto tarda.
+
+**Hecho cuando:** un backlog real está en GitHub, una segunda ejecución no crea nada y una iteración nueva crea solo lo nuevo y avisa del resto.
+
 ## Después
 
 Por este orden:
@@ -859,3 +894,8 @@ Por este orden:
    - **en el prompt:** pedir al árbitro que no junte historias de A que ya son atómicas solo porque B tiene una que las cubre.
    No se hace durante la evaluación, porque cambiaría la versión congelada.
 8. **Renombrar en el código la «opción C» como «lectura relacionada»** (04-11-2026, autor). El nombre ya está cambiado en la documentación (y la «opción A» es la «lectura completa»), pero el código sigue diciendo «option C» u «opción C»: los comentarios de `FocusedRoundInput`, `FocusedRound`, `CatalogUpdateRound`, `RelatedContext` y `scripts/evaluacion/medir-fragmentos-relacionados.cs`, y las descripciones de la API de `QuestionEndpoints` (con ellas, `docs/api/openapi.json`, que se regenera al compilar en Debug). Para encontrarlos: `grep -rn "option C\|opción C" src scripts`. No se hace durante la evaluación porque cambiaría la versión congelada; no cambia el comportamiento, así que no obliga a repetir ninguna ejecución.
+9. **Mejoras futuras del backlog en GitHub** (hito 24, 06-11-2026, autor):
+   - **para cualquier usuario de la web,** con un botón en Concilia que llame a la API de GitHub (el camino B), sin `gh` y sin Git Bash;
+   - **organizaciones:** usar los issue types en lugar de las etiquetas;
+   - **GitHub Projects:** añadir los issues a un tablero;
+   - **nivel 3 de las iteraciones:** además de avisar en la consola, dejar un comentario en cada issue afectado, para que el aviso quede donde se trabaja, sin repetirlo en cada ejecución.

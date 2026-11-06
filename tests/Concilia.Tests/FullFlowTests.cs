@@ -165,6 +165,12 @@ public class FullFlowTests
         Assert.StartsWith("\"ID\",\"Work Item Type\"", await azure.Content.ReadAsStringAsync());
         Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync($"/projects/{id}/backlog-trello.csv")).StatusCode);
 
+        // Step 124: and as a .zip with the script that creates the issues in GitHub.
+        var github = await client.GetAsync($"/projects/{id}/backlog-github.zip");
+        Assert.Equal("backlog-reservasalas-github.zip", github.Content.Headers.ContentDisposition!.FileName);
+        using (var zip = new System.IO.Compression.ZipArchive(await github.Content.ReadAsStreamAsync()))
+            Assert.NotNull(zip.GetEntry("importar.sh"));
+
         // Step 99: with the backlog, the requirements know their stories.
         trace = await Json(await client.GetAsync($"/projects/{id}/traceability"));
         Assert.NotEmpty(trace["stories"]!.AsArray());

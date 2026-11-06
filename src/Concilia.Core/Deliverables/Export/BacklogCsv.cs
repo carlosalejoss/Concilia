@@ -103,7 +103,7 @@ public static class BacklogCsv
 
     // A title in one line: neither Jira nor Azure DevOps accepts a summary or
     // a title with line breaks.
-    private static string OneLine(string text) =>
+    internal static string OneLine(string text) =>
         string.Join(' ', text.ReplaceLineEndings("\n").Split('\n').Select(l => l.Trim()).Where(l => l.Length > 0));
 
     // A CSV row: every field in quotes, the quotes inside doubled, CRLF at the end.
