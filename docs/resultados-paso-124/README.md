@@ -37,4 +37,8 @@ Se hizo con `--simular` y un backlog retocado (una historia modificada, una tare
 - La segunda iteración se simuló: no se creó `T-050` ni se cerró `T-012` en GitHub, aunque crear un issue bajo un padre existente es lo mismo que hizo con los 67.
 - Se probó con un proyecto pequeño y en un solo sistema operativo. No se probó en Linux ni en macOS.
 - El corte por los límites de GitHub solo se probó con un `gh` simulado: en esta prueba no hubo ninguno.
-- El botón de la web falta por verse tras reconstruir Docker; el endpoint lo cubre `FullFlowTests`.
+- El botón de la web falta por verse tras reconstruir Docker, que hace el autor; el endpoint lo cubre `FullFlowTests`.
+
+## Después de la prueba
+
+El mismo 06-11-2026, a petición del autor, Claude borró los 67 issues del repositorio, tras comprobar que todos llevaban la marca de Concilia y que no había ninguno más. Quedan las etiquetas (`epica`, `historia`, `tarea` e `iteracion-1`), que reutiliza cualquier importación nueva, y GitHub no reutiliza los números: el siguiente issue será el 68. Las cifras de arriba quedan como registro de la prueba, porque en el repositorio ya no se pueden ver. Al autor le convence cómo se veían los issues; importará el backlog del proyecto en el que trabaja.

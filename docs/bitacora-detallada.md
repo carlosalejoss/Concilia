@@ -3177,3 +3177,14 @@ Hito 24, nuevo a petición del autor: el backlog en GitHub (paso 124), en la ram
 - **Prueba real,** con `gh` 2.103.3 y el backlog de ReservaSalas en un repositorio privado del autor (`docs/resultados-paso-124/README.md`): 67 issues (Claude dijo 40 o 50 antes de contarlos) con su jerarquía en 5 minutos, repetir no crea nada, el filtro lee la marca y los sub-issues funcionan en un repositorio personal. La iteración se simuló con `--simular`, para no dejar datos inventados. Unos 5 segundos por issue, no los 2 de pausa: clínicas tardaría unos 25 minutos, no los 10 que dijo Claude.
 - **Pendiente:** ver el botón en la web tras reconstruir Docker y decidir cuándo se integra la rama.
 - **Mejoras futuras,** en «Después», punto 9: uso para cualquier usuario de la web, organizaciones, Projects y nivel 3.
+
+## 06-11-2026, 12:05 (sesión)
+
+Cierre del paso 124 con las decisiones del autor.
+
+- **Borrado:** el autor quería importar el backlog del proyecto en el que trabaja, no ReservaSalas. Claude comprobó que los 67 issues del repositorio llevaban la marca de Concilia y que no había ninguno más, y los borró (0 fallos, 0 issues restantes). Quedan las cuatro etiquetas, que se reutilizan. GitHub no reutiliza los números: el siguiente issue será el 68.
+- **Formato:** al autor le convence cómo se ven los issues; no se cambia nada.
+- **Docker:** lo reconstruye el autor para ver el botón «GitHub». Antes del paso 119 tiene que volver a `evaluacion-1`, anotado en el plan.
+- **Paso 125, nuevo:** integrar `feat/github-export` en `main` y crear `evaluacion-2`, después de los pasos 118 a 121. En «Lo que queda» es el punto 14; la memoria y lo de «Después» pasan a ser el 15 y el 16.
+- **Memoria (`memoria/tfg/`, fuera de git):** incluye GitHub en herramientas, fase 3 del backlog, O3, trabajos futuros y los anexos de cronología, decisiones (2 filas), API (64 operaciones), pruebas (542 métodos y 1.038 casos) y entregables (ejemplo y resultados). Se dice que la exportación es posterior a la versión evaluada: los 1.028 tests de esa versión se conservan y las cifras de hitos y pasos llevan un `% PENDIENTE` para el paso 125. La captura del backlog no muestra el botón «GitHub».
+- **Pendiente:** que el autor vea el botón; la captura si quiere actualizarla; el paso 118.

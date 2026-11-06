@@ -13,7 +13,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - Desde el 26-10-2026 (autor): el hito 22 son las iteraciones del proyecto (pasos 109 a 116), y la evaluación pasa a ser el hito 23, el último. Los pasos 103 a 106 de la evaluación conservan su número.
 - Desde el 27-10-2026 (autor): el hito 23 suma los pasos 117 a 121 (versión congelada, referencia revisada por el autor, repeticiones, Concilia frente a un solo modelo y SOL ‖ SOL).
 
-## Dónde estamos (05-11-2026)
+## Dónde estamos (06-11-2026)
 
 - **Hechos:** los hitos 17 (embeddings en local), 18 y 18b (fiabilidad y calidad, prompts v0.11 y v0.12), 19 (exportar), 20 (trazabilidad y comparación) y 21 (historial de versiones), revisados por el autor.
 - **Hecho, a falta de que el autor revise sus resultados:** el hito 22, iteraciones del proyecto, diseñado con el autor el 26-10-2026.
@@ -23,6 +23,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
   - Hecho el 115 (desde cero, frente a lo anterior), en Docker y revisado por el autor en el navegador el 27-10-2026.
   - Hecho el 116 (la prueba real con clínicas en dos iteraciones), el 27-10 y el 03-11-2026: resultados en `docs/resultados-paso-116/`.
   - Hechos el 122 (sus mejoras, 03-11-2026) y el 123 (la lectura relacionada con una documentación grande, 04-11-2026: leerlo todo no cabe y la lectura relacionada funciona).
+- **En una rama aparte:** el hito 24, el backlog en GitHub (paso 124, 06-11-2026), probado en real y ya en la memoria; se integra en el paso 125, tras los pasos 118 a 121.
 - **En curso:** el hito 23 (evaluación), con sus pasos explicados uno a uno más abajo. Hechos el 117 (la versión congelada, `docs/evaluacion/version.md`), el 105 (PURE en inglés, `docs/evaluacion/pure.md`) el 104 (métricas externas, `docs/evaluacion/metricas-externas.md`), los tres el 04-11-2026, y el 106 (la prueba como analista, `docs/evaluacion/analista.md`, 05-11-2026); el siguiente es el 118, que hace el autor.
 
 ### Lo que queda, en orden
@@ -43,18 +44,19 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 8. ~~104, AQUSA y `vale-ears` sobre lo del 105~~ (04-11-2026).
 9. ~~106, la prueba como analista con ReservaSalas (cierra los pasos 49 y 53)~~ (05-11-2026).
 10. 118, la referencia: revisar las trampas y hacer la lista de funcionalidades.
-11. 119, las 9 ejecuciones de clínicas.
+11. 119, las 9 ejecuciones de clínicas, con la imagen de `evaluacion-1`: si Docker se construyó desde `feat/github-export`, se reconstruye antes.
 12. 120, las hojas de revisión y la comparación con un solo modelo.
 13. 121, SOL ‖ SOL.
 
 **Hito 24, el backlog en GitHub** (06-11-2026, en la rama `feat/github-export`, sin tocar `evaluacion-1`):
 
-- ~~124, el `.zip` que crea los issues con `gh`~~ (06-11-2026, probado en real; falta ver el botón en la web e integrar la rama).
+- ~~124, el `.zip` que crea los issues con `gh`~~ (06-11-2026, probado en real; el autor reconstruye Docker y ve el botón en la web).
+- 14. 125, integrar la rama en `main` y crear la etiqueta `evaluacion-2`, cuando estén hechos los pasos 118 a 121.
 
 **Después del plan:**
 
-14. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. Está en `memoria/tfg/memoria.tex`, fuera de git, y se compila con MiKTeX (instalado el 22-10-2026) y `memoria/tfg/compilar.ps1`. Estructura del autor (22-10-2026): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema, 2.3 validación de la solución); 3 Conclusiones. **Empezada el 04-11-2026:** la introducción, redactada.
-15. Lo que queda en «Después», al final de este plan: el hito 7 (catálogo v2, aplazado), la aprobación por umbral y las mejoras futuras de las iteraciones (punto 5).
+15. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. Está en `memoria/tfg/memoria.tex`, fuera de git, y se compila con MiKTeX (instalado el 22-10-2026) y `memoria/tfg/compilar.ps1`. Estructura del autor (22-10-2026): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema, 2.3 validación de la solución); 3 Conclusiones. **Empezada el 04-11-2026:** la introducción, redactada.
+16. Lo que queda en «Después», al final de este plan: el hito 7 (catálogo v2, aplazado), la aprobación por umbral y las mejoras futuras de las iteraciones (punto 5).
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
 - ~~si se hace un CSV solo con lo nuevo de una iteración~~ (cerrado el 04-11-2026 sin hacerlo, como mejora futura);
@@ -870,7 +872,9 @@ GitHub, a diferencia de Jira y Azure DevOps, no tiene importador de archivos: cu
 
 - [x] 124. El `.zip` para GitHub. `BacklogGitHub`, `GET /projects/{id}/backlog-github.zip` y el botón «GitHub» en la barra del backlog. Hecho el 06-11-2026: el código, sus tests, una prueba del script con un `gh` simulado (crear, simular, corte a medias y retomar, repetir, segunda iteración con cambios, otra generación, `gh` antiguo y un título con `$(…)`) y la prueba real con ReservaSalas (`docs/resultados-paso-124/README.md`): 67 issues con su jerarquía en 5 minutos, repetir no crea nada y una iteración simulada detecta lo nuevo, lo modificado y lo eliminado. Unos 5 segundos por issue, más que los 2 de pausa: `gh` hace varias llamadas. **Falta:** ver el botón en la web tras reconstruir Docker, y que el autor decida cuándo se integra la rama.
 
-**Hecho cuando:** un backlog real está en GitHub, una segunda ejecución no crea nada y una iteración nueva crea solo lo nuevo y avisa del resto.
+- [ ] 125. Integrar la rama y crear `evaluacion-2` (autor, 06-11-2026). Va después de los pasos 118 a 121, para no cambiar la versión durante la evaluación. Se integra `feat/github-export` en `main`, se crea la etiqueta `evaluacion-2`, sin push, y se añade en `docs/evaluacion/version.md` qué cambió y por qué: solo la exportación a GitHub. No se repite ninguna ejecución con modelos, porque las exportaciones salen de lo guardado.
+
+**Hecho cuando:** un backlog real está en GitHub, una segunda ejecución no crea nada y una iteración nueva crea solo lo nuevo y avisa del resto; y la rama está en `main`, con `evaluacion-2`.
 
 ## Después
 
@@ -879,7 +883,7 @@ Por este orden:
 1. Mejorar los prompts fase a fase sobre el flujo que ya funciona. En el catálogo, se retoma el hito 7 con los prompts v2 del autor.
 2. ~~Árbitro con embeddings.~~ Pasa al hito 17 (16-10-2026).
 3. Aprobación por umbral y evaluación: precision, recall y F1 frente a la versión validada y a listas de referencia hechas a mano. (27-10-2026, autor: la evaluación pasa al hito 23, paso 120; aquí queda la aprobación por umbral.)
-4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación. (Sustituido el 22-10-2026 por el autor: 1 Introducción; 2 Desarrollo, con 2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución; 3 Conclusiones. Empezada el 04-11-2026; ver «Lo que queda, en orden», punto 14.)
+4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación. (Sustituido el 22-10-2026 por el autor: 1 Introducción; 2 Desarrollo, con 2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución; 3 Conclusiones. Empezada el 04-11-2026; ver «Lo que queda, en orden», punto 15.)
 5. **Mejoras futuras de las iteraciones del proyecto** (decididas con el autor el 04-11-2026, como recomendaba Claude: no se hacen antes de evaluar; van a la memoria como hallazgos y trabajo futuro):
    - **Leer todo cuando la documentación es pequeña y la lectura relacionada cuando es grande.** Con unos 26.000 tokens, leerlo todo costó 0,95 $ frente a 1,67 $ con la misma detección (paso 116); con unos 96.000, leerlo todo no cabe y solo funciona la lectura relacionada (paso 123). No se hace ahora porque solo hay una ejecución de cada caso (el coste de una misma fase varía mucho), habría que fijar un umbral que no se ha medido, y cambiar la lectura justo antes de congelar la versión (paso 117) obligaría a repetir las mediciones. La lectura relacionada funciona en todos los tamaños; leerlo todo solo ahorraría céntimos en los proyectos pequeños.
    - **Un CSV para Jira o Azure DevOps solo con lo nuevo de una iteración,** para no duplicar lo ya importado. Era la decisión abierta del hito 22; se cierra sin hacerlo porque solo sirve a quien ya importó el backlog y después lo actualiza, un caso que no entra en la evaluación.

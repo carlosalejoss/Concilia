@@ -109,7 +109,8 @@ Lista de lo que pesa en el proyecto y debería aparecer en la memoria del TFG, s
 - **Exportaciones** (hito 19):
   - Word y PDF, con MigraDoc fijado en la 6.2.4 porque desde la 6.5.0 es AGPL;
   - Gherkin comprobado con el analizador oficial: una línea que empezaba por `Scenario:` creaba un escenario de más;
-  - CSV para Jira, importado en un Jira Cloud real (límite de 250 elementos por fichero), y para Azure DevOps.
+  - CSV para Jira, importado en un Jira Cloud real (límite de 250 elementos por fichero), y para Azure DevOps;
+  - GitHub (hito 24, posterior a la versión evaluada): un `.zip` con un script que crea los issues con `gh`, 67 con su jerarquía en la prueba real.
 - **Implementación de las iteraciones:** `FocusPlan`, el tope de 20.000 tokens de lo relacionado, `CatalogUpdate`, `BacklogImpact` (sin IA) y `PreviousVersion`.
 - ★ **Evolución de los prompts** (`docs/evolucion-prompt-requisitos.md`):
   - por lotes: la v1.2 dio 1.133 y 862 requisitos con un documento grande, la v1.3 456 y 284, y la v1.4 255 y 214;
@@ -185,6 +186,7 @@ Lista de lo que pesa en el proyecto y debería aparecer en la memoria del TFG, s
   - catálogo v2 (aplazado), aprobación por umbral y leerlo todo cuando la documentación es pequeña;
   - textos de la plataforma en el idioma del proyecto y CSV solo con lo nuevo;
   - abaratar el mockup, partir el CSV de Jira en ficheros de 250 y probar Azure DevOps en real;
+  - GitHub para cualquier usuario desde la web, organizaciones y Projects;
   - autenticación y varios usuarios.
 - **Cambios de rumbo, como gestión del proyecto:**
   - 08-10, la iteración v0;
