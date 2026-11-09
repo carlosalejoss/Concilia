@@ -53,10 +53,14 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 - ~~124, el `.zip` que crea los issues con `gh`~~ (06-11-2026, probado en real; el autor reconstruye Docker y ve el botón en la web).
 - 14. 125, integrar la rama en `main` y crear la etiqueta `evaluacion-2`, cuando estén hechos los pasos 118 a 121.
 
+**Hito 25, mejoras tras la evaluación:**
+
+15. 126, que el aviso de un par «mismo» separado diga en qué requisito está el otro, después del paso 125.
+
 **Después del plan:**
 
-15. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. Está en `memoria/tfg/memoria.tex`, fuera de git, y se compila con MiKTeX (instalado el 22-10-2026) y `memoria/tfg/compilar.ps1`. Estructura del autor (22-10-2026): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema, 2.3 validación de la solución); 3 Conclusiones. **Empezada el 04-11-2026:** la introducción, redactada.
-16. Lo que queda en «Después», al final de este plan: el hito 7 (catálogo v2, aplazado), la aprobación por umbral y las mejoras futuras de las iteraciones (punto 5).
+16. Redactar la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. Está en `memoria/tfg/memoria.tex`, fuera de git, y se compila con MiKTeX (instalado el 22-10-2026) y `memoria/tfg/compilar.ps1`. Estructura del autor (22-10-2026): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema, 2.3 validación de la solución); 3 Conclusiones. **Empezada el 04-11-2026:** la introducción, redactada.
+17. Lo que queda en «Después», al final de este plan: el hito 7 (catálogo v2, aplazado), la aprobación por umbral y las mejoras futuras de las iteraciones (punto 5).
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
 - ~~si se hace un CSV solo con lo nuevo de una iteración~~ (cerrado el 04-11-2026 sin hacerlo, como mejora futura);
@@ -875,6 +879,17 @@ GitHub, a diferencia de Jira y Azure DevOps, no tiene importador de archivos: cu
 - [ ] 125. Integrar la rama y crear `evaluacion-2` (autor, 06-11-2026). Va después de los pasos 118 a 121, para no cambiar la versión durante la evaluación. Se integra `feat/github-export` en `main`, se crea la etiqueta `evaluacion-2`, sin push, y se añade en `docs/evaluacion/version.md` qué cambió y por qué: solo la exportación a GitHub. No se repite ninguna ejecución con modelos, porque las exportaciones salen de lo guardado.
 
 **Hecho cuando:** un backlog real está en GitHub, una segunda ejecución no crea nada y una iteración nueva crea solo lo nuevo y avisa del resto; y la rama está en `main`, con `evaluacion-2`.
+
+## Hito 25: mejoras tras la evaluación
+
+Añadido por el autor el 09-11-2026, al revisar una discrepancia del proyecto LasCuarenta. Cambia el código, así que espera a que la evaluación termine (pasos 118 a 121) y a que el paso 125 cree `evaluacion-2`: se hace en `main`, después de esa etiqueta.
+
+- [ ] 126. Que el aviso de un par «mismo» separado diga en qué elemento de la unión está el otro. Hoy (`ArbiterDeviations`, desviación `SplitSame`) el aviso cita el texto de la propuesta original: «… que el árbitro dejó en otro elemento». Si el árbitro lo reescribió o lo unió con otros, esa frase ya no está en el catálogo y no se puede encontrar. En LasCuarenta, el aviso de RF-068 (Guiñote) citaba una regla de Tute que parecía faltar y estaba en RF-081, unida con otras dos. El aviso añadirá el id del elemento donde acabó («… que el árbitro dejó en RF-081») y seguirá citando el texto.
+  - **Qué se queda igual:** cuándo se marca una desviación, cuántas hay, los prompts y las salidas de los modelos.
+  - **Qué cambia:** solo el texto de la explicación de la plataforma, en el catálogo y el backlog. Vale para los trabajos nuevos; las explicaciones ya guardadas no se reescriben.
+  - **Cómo se comprueba:** un test de `ArbiterDeviations` con un par «mismo» separado que comprueba el id del otro elemento en la explicación de cada uno.
+
+**Hecho cuando:** el aviso de un par «mismo» separado dice el id del elemento donde está el otro, y se puede ir a él desde el catálogo o el backlog.
 
 ## Después
 

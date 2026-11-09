@@ -3188,3 +3188,13 @@ Cierre del paso 124 con las decisiones del autor.
 - **Paso 125, nuevo:** integrar `feat/github-export` en `main` y crear `evaluacion-2`, después de los pasos 118 a 121. En «Lo que queda» es el punto 14; la memoria y lo de «Después» pasan a ser el 15 y el 16.
 - **Memoria (`memoria/tfg/`, fuera de git):** incluye GitHub en herramientas, fase 3 del backlog, O3, trabajos futuros y los anexos de cronología, decisiones (2 filas), API (64 operaciones), pruebas (542 métodos y 1.038 casos) y entregables (ejemplo y resultados). Se dice que la exportación es posterior a la versión evaluada: los 1.028 tests de esa versión se conservan y las cifras de hitos y pasos llevan un `% PENDIENTE` para el paso 125. La captura del backlog no muestra el botón «GitHub».
 - **Pendiente:** que el autor vea el botón; la captura si quiere actualizarla; el paso 118.
+
+## 09-11-2026, 10:17 (sesión)
+
+**Resumen para la bitácora (09-11-2026, paso 126 añadido al plan a raíz de una discrepancia de LasCuarenta)**
+
+- **Qué vio el autor:** al revisar la discrepancia de RF-068 (Guiñote), el aviso de la plataforma citaba una regla de Tute que no encontraba en el catálogo.
+- **Qué se comprobó con los datos del trabajo:** la regla no se perdió. El árbitro unió tres requisitos de Tute de una misma propuesta en RF-081, así que la frase citada ya no existe tal cual. RF-068 y RF-081 son reglas distintas: en Guiñote se puede jugar cualquier carta si gana el compañero, y en Tute la obligación sigue. Es un falso aviso (similitud 0,91), de la misma familia que «un año» y «ocho años» (paso 107).
+- **Decisión del autor:** añadir un paso para cuando se descongele la evaluación: que el aviso diga el id del elemento donde está el otro. Es el paso 126, en el hito 25 nuevo, después de `evaluacion-2` (paso 125). No se cambia código ahora.
+- **Visto y sin paso:** el aviso se muestra bajo la etiqueta «Discrepancia entre los modelos», aunque el árbitro no marcó discrepancia y los modelos no se contradicen.
+- **Pendientes:** los pasos 118 a 121, el 125 y el 126.
