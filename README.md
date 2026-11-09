@@ -1,316 +1,240 @@
 # Concilia
 
-Plataforma web que genera **catálogos de requisitos**, **backlogs ágiles** y un **prototipo navegable** a partir de la documentación de un proyecto, con verificación cruzada entre modelos de IA: dos modelos hacen cada tarea por separado y un tercero, el **árbitro**, compara sus resultados y los une en uno solo, señalando lo que no cuadra para que lo revise el usuario.
+Concilia convierte la documentación de un proyecto de software en **preguntas para el cliente**, un **catálogo de requisitos**, un **backlog ágil** y un **prototipo navegable**, con verificación cruzada entre modelos de IA: dos modelos hacen cada tarea por separado y un tercero, el **árbitro**, compara sus resultados, los une y señala lo que no cuadra para que lo revise una persona.
 
-El nombre viene de *conciliar* dos versiones. Es el Trabajo Fin de Grado del autor, desarrollado durante sus prácticas en el equipo de análisis de software de Integra Tecnología (Zaragoza).
+El nombre viene de *conciliar* dos versiones. Es un Trabajo Fin de Grado de la Universidad de Zaragoza, desarrollado durante unas prácticas en Integra Tecnología.
 
-## Estado
+## Por qué
 
-El flujo funciona de principio a fin: documentos → preguntas → requisitos → backlog → mockup, con prompts básicos (iteración v0, de la v0.1 a la v0.12, y la v0.13 para trabajar por iteraciones) probados con los modelos de la pasarela de la empresa. El árbitro parte de un emparejamiento por embeddings calculado en local, y la plataforma corrige sola los errores de formato más comunes. Cada trabajo deja un informe con sus tokens, tiempos, coste, acuerdos y discrepancias entre modelos y los cambios del usuario: es la base de la evaluación. Lo que queda está en la [hoja de ruta](#hoja-de-ruta) y en [`docs/plan-de-construccion.md`](docs/plan-de-construccion.md).
+Un modelo de IA por sí solo puede olvidar información, inventar o contradecirse, y no hay una forma barata de saberlo. Concilia repite cada tarea con dos modelos independientes y compara las salidas: lo que coincide da más confianza, y las discrepancias llegan al analista antes de validar. La hipótesis del trabajo es que este patrón es más fiable que usar un único modelo.
 
-## La idea
-
-Un modelo de IA por sí solo puede olvidar información, inventar o contradecirse, y no hay una forma barata de saberlo. Concilia reduce ese riesgo repitiendo cada tarea con dos modelos independientes y comparando ambas salidas: lo que coincide da más confianza, y las discrepancias se marcan para que el usuario las revise antes de validar.
-
-La hipótesis del TFG es que este patrón mejora la fiabilidad frente a usar un único modelo.
-
-## Cómo funciona
+## Qué hace
 
 ```mermaid
-flowchart TD
-    D[Documentos del proyecto] --> P[Preguntas al cliente]
-    P -->|el usuario responde,<br/>con sugerencias de la IA| R[Requisitos]
-    R -->|el usuario revisa y valida| B[Backlog]
-    B -->|el usuario revisa y valida| M[Mockup navegable]
+flowchart LR
+    D[Documentos] --> P[Preguntas]
+    P -->|el analista responde| R[Requisitos]
+    R -->|el analista valida| B[Backlog]
+    B -->|el analista valida| M[Prototipo]
 ```
 
-| Paso | Qué hace | Cómo |
+| Fase | Resultado | Quién lo genera |
 | --- | --- | --- |
-| Documentos | Sube la documentación: Word, PDF, Excel, CSV, PowerPoint, páginas web, correos, transcripciones de reuniones, texto, Markdown, JSON, YAML o XML. La documentación se agrupa en iteraciones (las tandas en que la manda el cliente) y cada una se cierra con «Cerrar documentación» antes de lanzar las fases que la leen. Un `.zip` con un mockup del cliente sirve de referencia de estilo. | La plataforma extrae el texto y lo divide en fragmentos citables (`DOC-01#F007`). |
-| Preguntas | Las dudas que hay que aclarar con el cliente, en rondas. La IA puede proponer cada respuesta. Cuando llega documentación nueva, una ronda puede centrarse en ella: pregunta lo nuevo, las contradicciones con lo anterior, con una respuesta o con un requisito validado, y propone revisar las preguntas pendientes. | Modelo A ‖ modelo B → árbitro |
-| Requisitos | El catálogo en EARS y MASTeR, con sus fuentes y las preguntas en que se apoya. Con documentación nueva, el catálogo validado se puede actualizar solo con ella: lo nuevo se añade, y lo que la IA propone modificar o eliminar lo acepta o rechaza el usuario antes de validar; cada requisito guarda su historial. Desde cada requisito se ve su trazabilidad: el texto de sus fragmentos, las respuestas en que se apoya y las historias que lo cubren (y, desde cada historia, al revés). Se descarga en Word o PDF. | Modelo A ‖ modelo B → árbitro |
-| Backlog | Épicas, historias, criterios de aceptación en Gherkin y tareas. Cuando el catálogo se actualiza, el backlog validado se puede actualizar solo con lo que cambió: la plataforma calcula qué historias afecta, y lo que la IA propone modificar o eliminar lo revisa el usuario. Se descarga como ficheros `.feature` de Gherkin, como CSV para importarlo en Jira o en Azure DevOps y como `.zip` con un script que crea los issues en GitHub. | Modelo A ‖ modelo B → árbitro |
-| Mockup | Un prototipo navegable de toda la aplicación: inicio de sesión con usuarios de prueba, una aplicación por rol y navegación real. | Un modelo, por pasos: el diseño, cada pantalla, y la plataforma junta y corrige lo que no encaja. |
+| **Documentos** | El texto de Word, PDF, Excel, CSV, PowerPoint, HTML, correos, transcripciones, Markdown, JSON, YAML o XML, dividido en fragmentos citables (`DOC-01#F007`). | La plataforma |
+| **Preguntas** | Las dudas que hay que aclarar con el cliente, por rondas. La IA puede sugerir cada respuesta. | Modelo A ‖ modelo B → árbitro |
+| **Requisitos** | Catálogo en [EARS](https://en.wikipedia.org/wiki/Easy_Approach_to_Requirements_Syntax) y MASTeR, con las fuentes y las respuestas en que se apoya cada requisito. Se exporta a Word y PDF. | Modelo A ‖ modelo B → árbitro |
+| **Backlog** | Épicas, historias, criterios de aceptación en Gherkin y tareas. Se exporta a [Gherkin, Jira, Azure DevOps y GitHub](#llevar-el-backlog-a-otras-herramientas). | Modelo A ‖ modelo B → árbitro |
+| **Prototipo** | Una aplicación navegable con inicio de sesión, un espacio por rol y datos de prueba. | Un modelo, pantalla a pantalla |
 
-En las tres fases con árbitro, A y B reciben el mismo prompt y no saben uno del otro. El árbitro recibe las dos propuestas en orden aleatorio, sin saber de qué modelo es cada una, y marca para cada elemento si viene de las dos, de una sola o si hay una discrepancia. Antes, la plataforma empareja las dos propuestas por significado con embeddings calculados en local, sin IA generativa, y el árbitro parte de ese emparejamiento. Si el árbitro se aparta de él (une lo que los números ven distinto o separa lo que ven igual), la plataforma lo marca como discrepancia. Si uno de los dos modelos falla, el trabajo falla: no se acepta la salida de un solo modelo. El usuario revisa cada discrepancia antes de validar, y cada paso solo ve la versión validada del anterior. Cada vez que el catálogo, el backlog o el mockup se generan, se editan o se validan, queda una versión en su historial, con su fecha y su origen: se puede ver, comparar con la actual y recuperar, sin perder la que había.
+Además:
 
-Los modelos se ejecutan con Claude Code en modo no interactivo (`claude -p`): leen sus entradas por partes con `Read`, escriben su salida con `Write` y terminan con un veredicto. La plataforma valida cada salida (esquema, referencias, que se haya leído todo). Los errores de formato más comunes (un número de línea citado como fragmento, ids mal numerados, un elemento que el árbitro olvidó) los corrige ella sola, con un aviso. Para el resto pide una reparación: el modelo corrige con `Edit` solo las líneas de su salida que tienen errores.
+- **Iteraciones:** la documentación se agrupa en las tandas en que llega. Con una tanda nueva, las preguntas se centran en lo nuevo, y el catálogo y el backlog validados se actualizan con un conjunto de cambios que el analista acepta o rechaza.
+- **Trazabilidad:** de cada requisito a sus fragmentos, sus respuestas y sus historias, y de cada historia a sus requisitos.
+- **Historial de versiones:** cada versión del catálogo, el backlog y el prototipo se puede ver, comparar con la actual y recuperar.
+- **Comparación e informes:** una vista de A, B y el árbitro lado a lado, y por cada trabajo sus tokens, tiempos, coste, acuerdos, discrepancias y cambios del analista.
 
-### Notaciones de requisitos
+### Cómo se verifica
 
-- **[EARS](https://en.wikipedia.org/wiki/Easy_Approach_to_Requirements_Syntax)** es la notación por defecto: plantillas con palabras clave fijas, fáciles de generar y de comprobar automáticamente.
-- **MASTeR** (plantillas SOPHIST) se usa para requisitos no funcionales o complejos y para expresar el grado de obligatoriedad (shall, should, may).
+1. A y B reciben el mismo prompt y no saben uno del otro. Si uno falla, el trabajo falla: nunca se presenta como verificado el resultado de un solo modelo.
+2. La plataforma empareja las dos propuestas por significado, con *embeddings* calculados en local.
+3. El árbitro recibe las propuestas anónimas y en orden aleatorio, parte de ese emparejamiento y las une.
+4. Lo que el árbitro marca, y lo que decide en contra del emparejamiento, llega al analista como discrepancia.
+5. Cada salida se valida (esquema, referencias, que se haya leído toda la documentación). La plataforma corrige sola los errores con una única solución posible; para el resto, el modelo repara solo las líneas afectadas.
 
-La comparación entre notaciones se apoya en [Großer et al., 2024](https://link.springer.com/article/10.1007/s00766-024-00427-0).
+Cada fase solo ve la versión validada de la anterior.
 
 ## Stack
 
 | Capa | Tecnología |
 | --- | --- |
-| Frontend | React 19, TypeScript, Vite y Tailwind |
-| Backend | .NET 10 (ASP.NET Core) y EF Core |
+| Web | React 19, TypeScript, Vite y Tailwind |
+| API | .NET 10 (ASP.NET Core), EF Core y OpenAPI 3.1 con Swagger UI |
 | Base de datos | PostgreSQL |
-| Modelos de IA | Pasarela LiteLLM de la empresa; qué modelo hace cada papel (A, B, árbitro, sugerencias, mockup) es configuración |
-| Ejecución de los modelos | Runner en .NET que lanza Claude Code no interactivo (`claude -p`), con salida stream-json y veredicto final obligatorio |
-| Embeddings | `paraphrase-multilingual-MiniLM-L12-v2` (Apache 2.0) en ONNX, con ONNX Runtime dentro de la API: en local, sin enviar datos fuera |
-| Documentación de la API | OpenAPI 3.1 generado por ASP.NET Core (Microsoft.AspNetCore.OpenApi) y Swagger UI (Swashbuckle.AspNetCore.SwaggerUI, MIT) |
-| Exportación | Word con DocumentFormat.OpenXml (MIT), PDF con MigraDoc 6.2.4 (MIT, la última versión con esa licencia) y la fuente IBM Plex Sans (OFL), Gherkin comprobado con el analizador oficial de Cucumber (MIT) y GitHub CLI, que lanza el usuario, para crear los issues |
-| Despliegue | Docker y Docker Compose |
+| Modelos | Claude Code en modo no interactivo (`claude -p`), conectado a una pasarela LiteLLM; el modelo de cada papel es configuración |
+| *Embeddings* | `paraphrase-multilingual-MiniLM-L12-v2` con ONNX Runtime, dentro de la API |
+| Despliegue | Docker Compose |
 
-## Estructura del repositorio
+## Puesta en marcha
 
-```text
-concilia/
-├── docs/        # plan de construcción, decisiones por hito, evolución de los prompts y api/openapi.json
-├── prompts/     # prompts versionados: v0/ (el flujo actual) y generacion_requisitos/ (catálogo v1.x y v2)
-├── src/         # solución .NET: Concilia.Api, Concilia.Core (dominio) y Concilia.Runner
-├── tests/       # tests de la solución .NET
-├── frontend/    # aplicación React
-├── ejemplos/    # dos proyectos ficticios (mediano y grande) con su documentación de análisis
-├── scripts/     # descarga del modelo de embeddings, su calibración y los scripts de evaluación y costes
-├── models/      # modelo de embeddings descargado para desarrollo local (ignorado por git)
-└── data/        # archivos de cada proyecto, trabajo y ejecución (ignorado por git)
-```
-
-## Hoja de ruta
-
-- [x] **Hitos 0 a 4.** Repositorio, esqueleto en Docker, subida de archivos, primera llamada a un modelo con progreso en vivo y dos modelos en paralelo.
-- [x] **Hitos 5 y 6.** Primer catálogo real y catálogo v1.3–v1.4 por lotes (se conserva como experimento).
-- [x] **Hitos 8 a 12b.** Iteración v0: el flujo completo con árbitro, preguntas con sugerencias de la IA, catálogo, backlog y mockup, editables y validables en la web, y lectura de la documentación por partes.
-- [x] **Hitos 14 a 16.** Interfaz organizada por pasos, más tipos de archivo, referencia de estilo del mockup y el mockup como una sola aplicación navegable.
-- [x] **Hito 13.** Test del flujo completo, informe automático por trabajo, flujo completo con los dos proyectos ficticios de `ejemplos/` y documentación al día.
-- [x] **Hito 17.** Embeddings en local: emparejamiento de A y B por significado, con umbrales calibrados, y árbitro guiado por ese emparejamiento.
-- [x] **Hito 18.** Fiabilidad y calidad: correcciones automáticas de formato, reparación editando, sugerencias prudentes, estilos del mockup, trabajos interrumpidos y tablas de coste en tiempo y dinero, probados con el flujo completo del proyecto grande de ejemplo.
-- [x] **Hito 18b.** El árbitro tras la prueba real: el del catálogo consulta solo las fuentes que necesita y el del backlog conserva los criterios citándolos por su id (prompts v0.12).
-- [x] **Hito 19.** Exportar los entregables: el catálogo a Word y PDF, y el backlog a Gherkin y a CSV para Jira y Azure DevOps.
-- [x] **Hito 20.** Trazabilidad visual (de cada requisito a su origen en la documentación) y comparación lado a lado de A, B y el árbitro en cada trabajo, con el emparejamiento por embeddings.
-- [x] **Hito 21.** Historial de versiones de los entregables: cada versión se guarda con su fecha y su origen, y se puede ver, comparar con la actual y recuperar.
-- [x] **Hito 22.** Iteraciones del proyecto: la documentación se agrupa en iteraciones (pasos 109 a 116, con ids estables, la iteración de cada elemento, las preguntas centradas en lo nuevo, la actualización del catálogo y del backlog y, al generar desde cero, qué es igual, qué cambió, qué es nuevo y qué desapareció frente a la versión anterior; prueba real en `docs/resultados-paso-116/`: actualizar conserva el 91 % de los requisitos y el 95 % de las historias validadas, por un coste parecido al de empezar de cero), y las preguntas, el catálogo y el backlog se rehacen con todas o se actualizan solo con las nuevas, conservando lo validado y diciendo de qué iteración viene cada elemento y qué cambió y por qué.
-- [ ] **Hito 23.** Evaluación, en curso desde el 04-11-2026, con la versión ya congelada: Concilia frente a un solo modelo (precisión, recall, F1 y coste frente a listas de referencia), cuánto varía cada fase entre repeticiones, SOL ‖ SOL, métricas externas, un documento público y actualizar frente a empezar de cero, todo con una versión congelada.
-- [ ] **Hito 24.** El backlog en GitHub: hecho y probado en real en la rama `feat/github-export`, a falta de integrarla en `main` tras la evaluación (paso 125). Ver [Subir el backlog a GitHub](#subir-el-backlog-a-github).
-- [ ] **Hito 7 (aplazado).** Catálogo v2, de arriba abajo, con los prompts del autor.
-
-## Ejecutar el proyecto desde cero
-
-Guía paso a paso para ponerlo en marcha en un ordenador sin nada instalado. Con los pasos 1 a 6 la aplicación funciona en **modo simulado**: el proveedor `Fake` imita a los modelos, así que se puede recorrer todo el flujo sin coste y sin credenciales. El paso 7 conecta los modelos reales.
-
-**Qué hace falta:**
-- Windows 10/11, macOS o Linux;
-- unos 8 GB de RAM y unos 10 GB libres en disco: las imágenes de Docker, las de compilación y el modelo de embeddings, de 470 MB;
-- conexión a Internet la primera vez, para descargar las imágenes y el modelo.
-
-### 1. Instalar Git
-
-Descárgalo de <https://git-scm.com/downloads> e instálalo con las opciones por defecto. Compruébalo en una terminal (PowerShell en Windows):
-
-```bash
-git --version
-```
-
-### 2. Instalar Docker Desktop
-
-1. Descárgalo de <https://www.docker.com/products/docker-desktop/> e instálalo. En Windows, acepta usar **WSL 2** cuando el instalador lo proponga y reinicia si te lo pide.
-2. Abre Docker Desktop y espera a que indique que el motor está en marcha (*Engine running*). Tiene que estar abierto siempre que uses Concilia.
-3. Compruébalo:
-
-   ```bash
-   docker --version
-   docker compose version
-   ```
-
-### 3. Descargar el código
-
-El repositorio es público, en <https://github.com/carlosalejoss/Concilia>:
+Hace falta [Git](https://git-scm.com/downloads) y [Docker Desktop](https://www.docker.com/products/docker-desktop/) abierto, unos 8 GB de RAM y 10 GB libres en disco.
 
 ```bash
 git clone https://github.com/carlosalejoss/Concilia.git concilia
 cd concilia
+cp .env.example .env        # en PowerShell: Copy-Item .env.example .env
 ```
 
-Todos los comandos siguientes se ejecutan desde esa carpeta, la raíz del repositorio.
-
-### 4. Crear el fichero de configuración `.env`
-
-Copia la plantilla:
-
-```bash
-# PowerShell (Windows)
-Copy-Item .env.example .env
-
-# Git Bash, macOS o Linux
-cp .env.example .env
-```
-
-Abre `.env` con cualquier editor y escribe una contraseña para la base de datos, la que quieras (solo se usa dentro de Docker):
-
-```text
-POSTGRES_PASSWORD=una-contraseña-cualquiera
-```
-
-Deja el resto vacío por ahora: es el modo simulado. `.env` nunca se sube al repositorio.
-
-### 5. Arrancar la aplicación
+Escribe en `.env` una contraseña cualquiera para la base de datos (`POSTGRES_PASSWORD=...`) y arranca:
 
 ```bash
 docker compose up --build -d
 ```
 
-- **La primera vez tarda varios minutos:** descarga las imágenes base, compila la API y la web, e incluye el modelo de embeddings. Las siguientes veces es mucho más rápido.
-- Comprueba que los tres servicios están en marcha (`db` debe decir *healthy*):
+La primera vez tarda varios minutos. Después abre <http://localhost:8080>, crea un proyecto y sube los documentos de [`ejemplos/mediano-banco-de-alimentos/`](ejemplos/mediano-banco-de-alimentos/).
 
-  ```bash
-  docker compose ps
-  ```
+Sin más configuración funciona en **modo simulado**: el proveedor `Fake` imita a los modelos, de modo que se puede recorrer todo el flujo en segundos, sin coste ni credenciales.
 
-### 6. Abrir Concilia y hacer una primera prueba
+### Usar modelos reales
 
-1. Abre <http://localhost:8080>. Si quieres comprobar la API, <http://localhost:8080/health> debe responder `{"status":"ok"}`. La documentación de la API, con todos sus endpoints y la opción de probarlos, está en <http://localhost:8080/swagger>.
-2. Crea un proyecto y, en **Documentos**, sube los ficheros de [`ejemplos/mediano-banco-de-alimentos/`](ejemplos/).
-3. Sigue los pasos de la barra superior: preguntas, respuestas, catálogo, backlog y mockup. En modo simulado cada tarea termina en segundos, con resultados de prueba.
-
-### 7. Usar los modelos reales (opcional)
-
-Añade al `.env` los datos de la pasarela LiteLLM de la empresa. Pídeselos al equipo y no los compartas ni los subas al repositorio:
+Añade a `.env` los datos de tu pasarela LiteLLM y aplica los cambios con `docker compose up -d`:
 
 ```text
 RUNNER_PROVIDER=LiteLlm
 LITELLM_BASE_URL=<dirección de la pasarela>
 LITELLM_API_KEY=<clave de la pasarela>
+RUNNER_MODEL_A=<id del modelo A>
+RUNNER_MODEL_B=<id del modelo B>
+RUNNER_MODEL_ARBITER=<id del modelo árbitro>
+RUNNER_MODEL_SUGGESTIONS=<id del modelo de las sugerencias>
 MOCKUP_PROVIDER=LiteLlm
-MOCKUP_MODEL=SS - GPT-6-SOL
+MOCKUP_MODEL=<id del modelo del prototipo>
 ```
 
-- **Valores por defecto:** los modelos de cada papel (`RUNNER_MODEL_A`, `RUNNER_MODEL_B`, `RUNNER_MODEL_ARBITER`, `RUNNER_MODEL_SUGGESTIONS`) los tienen, y `.env.example` explica cada variable.
-- **Mockup con la suscripción de Claude:** `MOCKUP_PROVIDER=ClaudeSubscription` y `CLAUDE_CODE_OAUTH_TOKEN`, de `claude setup-token`. Es solo para uso del autor.
-- **Aplicar los cambios** (no hace falta volver a compilar):
+[`.env.example`](.env.example) explica todas las variables. Con modelos reales cada tarea tiene coste: el flujo completo de un proyecto grande ronda los 22 $ ([detalle por fase](docs/costes/costes.md)).
 
-  ```bash
-  docker compose up -d
-  ```
-
-- **Coste:** con modelos reales cada tarea cuesta dinero. Las cifras de referencia están en [`docs/costes/costes.md`](docs/costes/costes.md); el flujo completo del proyecto grande de ejemplo cuesta unos 22 $.
-
-### 8. Parar, volver a arrancar y actualizar
+### Operación
 
 | Para… | Comando |
 | --- | --- |
-| Parar la aplicación (los datos se conservan) | `docker compose down` |
-| Volver a arrancarla | `docker compose up -d` |
-| Actualizar a una versión nueva del código | `git pull` y después `docker compose up --build -d` |
-| Borrar todos los datos (proyectos, documentos y resultados) | `docker compose down -v` y borrar la carpeta `data/` |
+| Parar (los datos se conservan) | `docker compose down` |
+| Volver a arrancar | `docker compose up -d` |
+| Actualizar el código | `git pull` y `docker compose up --build -d` |
+| Ver qué dice la API | `docker compose logs api` |
+| Borrar todos los datos | `docker compose down -v` y borrar la carpeta `data/` |
 
-**Los datos se guardan** en el volumen de la base de datos y en la carpeta `data/`, y sobreviven a `docker compose down`.
+Reconstruir la API interrumpe los trabajos en curso: al arrancar quedan cerrados como fallidos y se pueden volver a lanzar.
 
-**Reconstruir la API interrumpe los trabajos en curso:** hazlo sin ninguno en marcha. Si se interrumpe uno, al arrancar queda cerrado como fallido y se puede volver a lanzar; un mockup se puede reanudar.
-
-### 9. Problemas frecuentes
+### Problemas frecuentes
 
 | Problema | Solución |
 | --- | --- |
-| `Cannot connect to the Docker daemon` o un error de *pipe* en Windows | Docker Desktop no está abierto: ábrelo y espera a que diga *Engine running*. |
-| `Set POSTGRES_PASSWORD in .env` | Falta el `.env` o su contraseña (paso 4). |
-| El puerto 8080 está ocupado | Cierra el programa que lo usa, o cambia `"8080:80"` por, por ejemplo, `"8081:80"` en `docker-compose.yml` y abre <http://localhost:8081>. |
-| La primera construcción falla al descargar algo, como el modelo de embeddings | Suele ser la red. Vuelve a lanzar `docker compose up --build -d`. Detrás de un proxy de empresa, configúralo en Docker Desktop (*Settings → Resources → Proxies*). |
-| La web abre, pero no aparece nada o da errores | Mira lo que dice la API con `docker compose logs api`. Los registros nunca muestran la clave ni la dirección de la pasarela. |
-| `Falta el fichero del modelo de embeddings` | La imagen no tiene el modelo: reconstrúyela con `docker compose up --build -d`. Como apaño, `EMBEDDINGS_PROVIDER=Fake` en `.env` arranca sin él, sin el emparejamiento real. |
+| `Cannot connect to the Docker daemon` | Abre Docker Desktop y espera a que indique *Engine running*. |
+| `Set POSTGRES_PASSWORD in .env` | Falta `.env` o su contraseña. |
+| El puerto 8080 está ocupado | Cambia `"8080:80"` en `docker-compose.yml`, por ejemplo por `"8081:80"`. |
+| Falla la primera construcción al descargar algo | Suele ser la red: repite el comando. Detrás de un proxy, configúralo en Docker Desktop (*Settings → Resources → Proxies*). |
 
-### Desarrollo sin Docker
+## Llevar el backlog a otras herramientas
 
-Con .NET 10 y Node 24 instalados:
+En la barra de **Backlog** están las descargas: **Gherkin** (un `.feature` por épica), **CSV Jira**, **CSV Azure DevOps** y **GitHub**. Salen de la versión guardada, así que conviene revisar y validar el backlog antes.
 
-- **API:** `dotnet run --project src/Concilia.Api --launch-profile http`, que escucha en <http://localhost:5292>. Necesita una base de datos PostgreSQL en la cadena de conexión `ConnectionStrings__Default`; el endpoint `/health` funciona sin ella.
-- **Web:** `npm install` y `npm run dev` dentro de `frontend/`, en <http://localhost:5173>. Reenvía las llamadas a la API.
-- **Documentación de la API:** Swagger UI en <http://localhost:5292/swagger> (se abre al arrancar la API) y el documento OpenAPI en `/openapi/v1.json`. Ver [La API](#la-api).
-- **Tests:** `dotnet test src/Concilia.slnx`. Ninguno llama a la pasarela; el del flujo completo usa `Fake` y una base de datos en memoria.
-- **Embeddings:** fuera de Docker, `.\scripts\descargar-modelo-embeddings.ps1` deja el modelo en `models/` (470 MB, con el SHA-256 comprobado), y la API lo usa con `Embeddings__Provider=Onnx` y `Embeddings__ModelPath` apuntando a esa carpeta. Sin él, la API usa `Fake` y los tests que necesitan el modelo se saltan (también en GitHub Actions).
+Cada importación en Jira o Azure DevOps crea elementos nuevos: repetirla, por ejemplo tras una iteración, los duplica. Solo el script de GitHub distingue lo que ya está.
 
-## Subir el backlog a GitHub
+| Destino | Qué crea | Límite por importación | Probado en real |
+| --- | --- | --- | --- |
+| Jira Cloud | Épica → historia → subtarea | 250 elementos sin ser administrador | Sí |
+| Azure DevOps | Epic → User Story → Task | 1.000 elementos | No, solo el formato del fichero |
+| GitHub | Issues unidos como sub-issues | 500 creaciones por hora, las del propio GitHub | Sí |
 
-GitHub no importa archivos, así que Concilia da un `.zip` con un script que lanzas tú con tu cuenta: Concilia no recibe ningún token. Crea un issue por épica, historia y tarea, unidos como sub-issues (dentro de cada épica, sus historias; dentro de cada historia, sus tareas). Por ahora está en la rama `feat/github-export`, que se integra en `main` en el paso 125 del plan.
+### Importar en Jira Cloud
 
-**Antes de empezar**, una sola vez:
+Necesitas un espacio y los permisos de crear elementos y de hacer cambios masivos. La ruta y los nombres pueden variar según el idioma y la versión de tu Jira ([documentación de Atlassian](https://support.atlassian.com/jira-software-cloud/docs/create-issues-using-the-csv-importer/)).
 
-- Instala [GitHub CLI](https://cli.github.com), versión 2.94 o superior, y Git Bash, que viene con [Git](https://git-scm.com/downloads) (paso 1 de arriba).
-- Inicia sesión con `gh auth login`.
-- Crea un repositorio, mejor privado y sin seguidores: cada issue creado envía una notificación.
+1. Descarga el fichero con **CSV Jira**.
+2. En Jira, ve a **Filters → Search work items**, abre **More actions (•••)** y elige **Import work items from CSV**.
+3. Selecciona el fichero, deja sin marcar el fichero de configuración y pulsa **Next**.
+4. Elige el espacio de destino y comprueba que el delimitador es la coma.
+5. Asigna las columnas:
 
-**Para subirlo:**
+   | Columna del CSV | Campo de Jira |
+   | --- | --- |
+   | `Issue ID` | Issue ID |
+   | `Parent ID` | Parent |
+   | `Issue Type` | Issue Type (`Epic`, `Story` y `Sub-task`, con sus equivalentes en tu idioma) |
+   | `Summary` | Summary |
+   | `Description` | Description |
+   | Todas las `Labels` | Labels |
+   | `Epic Name` | Epic Name, o sin asignar si tu espacio no lo tiene |
 
-1. **Espera a que el backlog esté generado,** y mejor revisado y validado. También se puede descargar en borrador, pero si después lo generas otra vez desde cero, el script se parará: esa generación vuelve a numerar los ids y necesita otro repositorio.
-2. **Descarga el `.zip`.** En tu proyecto, entra en **Backlog** y pulsa **GitHub**. Si no ves el botón, recarga con Ctrl+F5.
-3. **Descomprímelo.** En Windows, clic derecho sobre el `.zip` y **Extraer todo**.
-4. **Abre Git Bash en esa carpeta,** donde está `importar.sh`: clic derecho en un hueco vacío y **Open Git Bash here** (si no aparece, en **Mostrar más opciones**).
-5. **Comprueba que `gh` funciona:**
+6. Pulsa **Validate** y después **Begin import**. La validación puede contar menos elementos de los que crea, porque las subtareas se crean al final.
 
-   ```bash
-   gh auth status
-   ```
+**Si tienes más de 250 elementos y no eres administrador**, pide a un administrador que lo importe desde **Settings → System → External System Import → CSV**, o divide el CSV por épicas con un editor de texto: cada fichero con la fila de cabecera y cada elemento junto a su padre.
 
-   Debe decir que has iniciado sesión. Si dice `command not found`, ejecuta `export PATH="/c/Program Files/GitHub CLI:$PATH"` y repite el comando.
-6. **Haz un ensayo, que no crea nada,** con tu usuario y tu repositorio:
+### Importar en Azure DevOps
+
+Necesitas un proyecto con el **proceso Agile**, que es el que tiene *User Story*, y pertenecer a **Project Administrators** ([documentación de Microsoft](https://learn.microsoft.com/es-es/azure/devops/boards/queries/import-work-items-from-csv)).
+
+1. Descarga el fichero con **CSV Azure DevOps**.
+2. En tu proyecto, ve a **Boards → Queries → Import work items**.
+3. Pulsa **Choose file**, selecciona el fichero y pulsa **Import**. Los elementos aparecen sin guardar y aún sin número.
+4. Corrige los que salgan marcados en rojo.
+5. Pulsa **Save items**.
+
+Si superas los 1.000 elementos, divide el CSV por épicas, como en Jira.
+
+### Subir el backlog a GitHub
+
+GitHub no importa archivos, así que Concilia da un `.zip` con un script que lanzas tú con tu cuenta; Concilia no recibe ningún token. Por ahora está en la rama `feat/github-export`.
+
+Una sola vez, instala [GitHub CLI](https://cli.github.com) 2.94 o superior, inicia sesión con `gh auth login` y crea un repositorio, mejor privado y sin seguidores, porque cada issue creado envía una notificación. En Windows, usa Git Bash, que viene con Git.
+
+1. Descarga el `.zip` con **GitHub** y descomprímelo.
+2. Abre un terminal en esa carpeta, donde está `importar.sh`. En Windows: clic derecho en un hueco vacío y **Open Git Bash here** (si no aparece, en **Mostrar más opciones**).
+3. Comprueba la sesión con `gh auth status`. Si dice `command not found`, ejecuta `export PATH="/c/Program Files/GitHub CLI:$PATH"` y repite.
+4. Haz un ensayo, que no crea nada:
 
    ```bash
    bash importar.sh tu-usuario/tu-repositorio --simular
    ```
 
-   Muestra lo que crearía. Con el repositorio vacío, debería ser todo el backlog.
-7. **Súbelo de verdad:**
+5. Si lo que muestra te cuadra, súbelo. Tarda unos 5 segundos por issue:
 
    ```bash
    bash importar.sh tu-usuario/tu-repositorio
    ```
 
-   Tarda unos 5 segundos por issue (100 issues, unos 8 minutos). No cierres la ventana mientras trabaja.
-8. **Míralo en GitHub,** en la pestaña **Issues** del repositorio: dentro de cada épica están sus historias, y dentro de cada historia, sus tareas.
+Si se corta a medias, vuelve a lanzarlo: sigue por donde iba y no duplica nada. Si lo ha cortado GitHub por sus límites, espera unos minutos antes.
 
-**Si se corta a medias,** vuelve a lanzar el comando del paso 7: sigue por donde iba y no duplica nada. Si lo ha cortado GitHub por sus límites, espera unos minutos antes.
+Tras una iteración, descarga el `.zip` de nuevo y lanza el mismo comando. Crea solo lo nuevo; lo modificado o eliminado no se toca, y el script da el comando que aplica cada cambio. Un backlog generado otra vez desde cero vuelve a numerar sus ids y necesita otro repositorio: si lo detecta, el script se para sin crear nada. No borres la última línea del cuerpo de un issue, invisible al leerlo (`<!-- concilia:… -->`), porque es la que lo identifica.
 
-**Después de una iteración,** descarga de nuevo el `.zip` y lanza el mismo comando. Crea solo lo nuevo. Lo modificado o eliminado en Concilia no se toca, para no perder lo que hayas hecho en GitHub: el script te da el comando que aplica cada cambio. El `README.md` del `.zip` lo explica con más detalle.
+## Desarrollo
 
-**No borres la última línea del cuerpo de un issue,** invisible al leerlo (`<!-- concilia:… -->`): es lo que lo identifica. Sin ella, el script lo volvería a crear.
+Con .NET 10 y Node 24:
 
-## La API
+| Para… | Comando |
+| --- | --- |
+| Arrancar la API, en <http://localhost:5292> (necesita PostgreSQL en `ConnectionStrings__Default`) | `dotnet run --project src/Concilia.Api --launch-profile http` |
+| Arrancar la web, en <http://localhost:5173> | `npm install` y `npm run dev`, dentro de `frontend/` |
+| Ejecutar los tests | `dotnet test src/Concilia.slnx` |
+| Descargar el modelo de *embeddings* (470 MB) | `.\scripts\descargar-modelo-embeddings.ps1` |
 
-La web habla con la API REST de ASP.NET Core, y la API está documentada con **OpenAPI 3.1** y **Swagger UI**, con los colores de Concilia y modo claro y oscuro:
+Los tests no llaman a ningún modelo real. Sin el modelo de *embeddings*, la API usa `Fake` y los tests que lo necesitan se saltan.
 
-- **Swagger UI:** `/swagger` (<http://localhost:8080/swagger> en Docker). Los endpoints van agrupados en el orden del flujo (proyectos, documentos, preguntas, catálogo y backlog, entregables, mockup, trabajos, ejecuciones e informes), cada uno con su descripción, sus parámetros, lo que devuelve en cada caso y el esquema de sus datos, y se pueden probar desde la página.
-- **Documento OpenAPI:** `/openapi/v1.json`, y una copia en [`docs/api/openapi.json`](docs/api/openapi.json) para verlo sin arrancar nada.
+La API está documentada con OpenAPI 3.1. Con la aplicación en marcha, Swagger UI está en <http://localhost:8080/swagger>, y hay una copia del documento en [`docs/api/openapi.json`](docs/api/openapi.json). Un test falla si un endpoint queda sin documentar.
 
-La documentación se actualiza sola:
-
-1. El documento se genera a partir de los propios endpoints cada vez que se pide, así que un endpoint nuevo o cambiado aparece sin tocar nada más. Su descripción va en el código, junto al endpoint (`WithSummary`, `WithDescription`, `Produces`).
-2. Cada compilación en Debug reescribe `docs/api/openapi.json`, de modo que los cambios de la API se ven en git.
-3. Los tests (`OpenApiDocumentTests`) fallan si un endpoint queda sin grupo, sin resumen o sin decir qué devuelve, o si la copia de `docs/api/` no coincide con la API. En GitHub Actions avisan de un cambio subido sin documentar.
+```text
+concilia/
+├── src/         # solución .NET: Concilia.Api, Concilia.Core y Concilia.Runner
+├── tests/       # tests de la solución .NET
+├── frontend/    # aplicación React
+├── prompts/     # prompts versionados
+├── ejemplos/    # dos proyectos ficticios con su documentación
+├── scripts/     # modelo de embeddings, calibración, evaluación y costes
+├── docs/        # plan de construcción, resultados y evolución de los prompts
+└── data/        # archivos de cada proyecto y trabajo (fuera de git)
+```
 
 ## Evaluación
 
-Cada trabajo tiene su informe en la vista de ejecuciones («Informe del trabajo»):
+La evaluación se hace con una versión congelada, [descrita aquí](docs/evaluacion/version.md), y está en curso.
 
-- tokens (los de las ejecuciones sin dato, estimados aparte), duración y reparaciones;
-- los elementos que propuso cada modelo y qué hizo el árbitro con ellos: de los dos, solo de uno, con discrepancia o descartados;
-- lo que cambió el usuario antes de validar;
-- en las preguntas, quién escribió cada respuesta.
+| Pregunta | Estado |
+| --- | --- |
+| ¿El árbitro prefiere la propuesta de su propio modelo? | No ([experimento](docs/experimento-sesgo-arbitro.md)) |
+| ¿Funciona con un documento público y en inglés? | Sí, con un documento del conjunto PURE ([resultados](docs/evaluacion/pure.md)) |
+| ¿Qué calidad miden herramientas externas (AQUSA y `vale-ears`)? | [Resultados](docs/evaluacion/metricas-externas.md) |
+| ¿Cómo se usa como analista? | [Prueba](docs/evaluacion/analista.md) |
+| ¿Es más fiable que un solo modelo? ¿Cuánto varía entre repeticiones? | En curso |
 
-Todos los trabajos de un proyecto se descargan como CSV, un trabajo por fila, desde la misma vista. La evolución de cada versión de los prompts, con sus resultados medidos, está en [`docs/evolucion-prompt-requisitos.md`](docs/evolucion-prompt-requisitos.md); el coste en tiempo y dinero de cada fase y versión, en [`docs/costes/costes.md`](docs/costes/costes.md). Un experimento comprobó si el árbitro prefiere la propuesta de su propio modelo, y no la prefiere ([`docs/experimento-sesgo-arbitro.md`](docs/experimento-sesgo-arbitro.md)).
+La evolución de los prompts está en [`docs/evolucion-prompt-requisitos.md`](docs/evolucion-prompt-requisitos.md), y lo que queda por hacer, en [`docs/plan-de-construccion.md`](docs/plan-de-construccion.md).
 
-Lo que queda de la evaluación es el hito 23 de [`docs/plan-de-construccion.md`](docs/plan-de-construccion.md). Cada paso explica qué hace el autor y qué hace Claude, y sus resultados irán a `docs/evaluacion/`:
+## Seguridad y datos
 
-- la comparación que responde a la hipótesis: cada trabajo ya contiene una propuesta de SOL solo (A) y otra de LUNA sola (B), y se miden frente a la unión del árbitro, con una referencia hecha por el autor, en recall, precisión, F1 y coste;
-- cuánto varía cada fase entre 3 repeticiones;
-- SOL ‖ SOL;
-- AQUSA y `vale-ears` como métricas externas (hecho: [`docs/evaluacion/metricas-externas.md`](docs/evaluacion/metricas-externas.md));
-- un documento público del dataset PURE (hecho: [`docs/evaluacion/pure.md`](docs/evaluacion/pure.md), el flujo completo en inglés por 9,29 $);
-- una prueba editando como un analista (hecha: [`docs/evaluacion/analista.md`](docs/evaluacion/analista.md));
-- todo con una versión congelada, descrita en [`docs/evaluacion/version.md`](docs/evaluacion/version.md): código, prompts, modelos, umbrales y versión de Claude Code (etiqueta `evaluacion-1`, 04-11-2026).
-
-## Configuración y secretos
-
-Las credenciales y las direcciones de servicios internos se pasan por variables de entorno y **nunca** se suben al repositorio. El archivo `.env` está en `.gitignore`; el repositorio solo incluye `.env.example`, con los nombres de las variables y sin valores. La plataforma oculta la clave y la dirección de la pasarela en los registros, los eventos y la base de datos.
+Las credenciales se pasan por variables de entorno y `.env` nunca se sube al repositorio. La plataforma oculta la clave y la dirección de la pasarela en registros, eventos y base de datos. Los *embeddings* se calculan en local; el texto de los documentos sí llega a los modelos configurados, así que elige una pasarela adecuada para tus datos.
 
 ## Licencia
 
-Sin definir; pendiente de acordar con la tutora y con la empresa.
+Sin definir todavía.
 
 ## Autoría
 
-Autor: `Carlos Alejos Fumanal` · Tutores: `Francisco Javier Zarazaga-Soria & Patricia Berdejo`
+Carlos Alejos Fumanal. Tutores: Francisco Javier Zarazaga-Soria y Patricia Berdejo.

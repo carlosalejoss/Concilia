@@ -3206,3 +3206,13 @@ Guía de uso de la exportación a GitHub, a petición del autor.
 - **El autor sube a GitHub el backlog del proyecto en el que trabaja,** descargado con el botón «GitHub» de la web: el botón queda visto. El resultado de esa subida no está registrado todavía.
 - **`README.md`:** nueva sección «Subir el backlog a GitHub», con los requisitos, los ocho pasos, qué hacer si se corta, qué pasa tras una iteración y la marca que no se debe borrar. También en la tabla del stack y la hoja de ruta (hito 24, sin marcar hasta el paso 125).
 - **Lo que no cambia:** el `README.md` que va dentro del `.zip` ya explica el uso y no se toca, para no cambiar código por esto. La memoria tampoco, porque su anexo de entregables ya explica el funcionamiento y una guía de uso no le aporta.
+
+## 09-11-2026, 12:30 (sesión)
+
+`README.md` reescrito a petición del autor, para que sea profesional y explique el proyecto sin quedarse corto ni pasarse.
+
+- **Fuera:** las referencias internas («pídeselos al equipo», «solo para uso del autor», versiones de prompts y números de paso), la guía de instalación desde un ordenador vacío, ahora en unas líneas, la hoja de ruta hito a hito (sigue en el plan) y el detalle interno de cómo se autodocumenta la API.
+- **Dentro:** sección «Llevar el backlog a otras herramientas», con los pasos de Jira Cloud, Azure DevOps y GitHub y una tabla con el límite de cada destino y si se probó en real.
+- **Jira:** la correspondencia de columnas es la de la importación real del 23-10-2026; los menús y el límite de 250 elementos, de la documentación de Atlassian. Atlassian dice que este importador no asigna jerarquías, pero en la prueba real sí las creó.
+- **Azure DevOps:** pasos de la documentación de Microsoft. Sigue sin probarse en real, y el README lo dice.
+- **Sin cambios de código.** La sección «Subir el backlog a GitHub» conserva su enlace.
