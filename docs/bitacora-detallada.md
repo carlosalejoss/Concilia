@@ -3229,3 +3229,12 @@ LasCuarenta, un proyecto universitario del autor de otra asignatura, recorre el 
 - **Cambio de criterio:** `costes.md` se regenera en cuanto hay ejecuciones nuevas, sin esperar al final (autor, 06-11-2026).
 - **Publicación:** a petición del autor, la rama `feat/github-export` se sube a GitHub sin integrarla en `main`; la integración sigue siendo el paso 125.
 - **Pendientes:** decidir si el autor aproxima sus tiempos y si se pasan las métricas externas a LasCuarenta; los pasos 118 a 121, el 125 y el 126.
+
+## 09-11-2026, 13:21 (sesión)
+
+Ficha de LasCuarenta en `docs/evaluacion/lascuarenta.md`, con la información que da el autor.
+
+- **Tiempos del autor, no medidos y muy aproximados:** preguntas 2–3 horas; catálogo 20 minutos y backlog 35, que son lo que podría tardar si lo leyera todo; mockup sin revisar.
+- **Revisión real:** solo las discrepancias. Por eso, validar sin cambios no se presenta como prueba de calidad.
+- **Mockup:** impresión general del autor, «no está mal».
+- **Pendiente:** decidir si se pasan AQUSA y `vale-ears` a LasCuarenta; los pasos 118 a 121, el 125 y el 126.
