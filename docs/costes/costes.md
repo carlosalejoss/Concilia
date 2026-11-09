@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 05-11-2026 12:08, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 09-11-2026 11:21, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -130,6 +130,12 @@ Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ron
 | ReservaSalas analista | Catálogo | 1 | 109.161 | 43.419 | 0,39 | 6 |
 | ReservaSalas analista | Backlog | 1 | 90.908 | 29.944 | 0,33 | 3 |
 | **ReservaSalas analista** | **Total** | 5 | **332.909** | **96.133** | **1,11** | **12** |
+| LasCuarenta | Preguntas | 13 | 5.540.125 | 302.863 | 9,96 | 41 |
+| LasCuarenta | Sugerencias de respuesta | 17 | 2.734.809 | 20.274 | 5,67 | 9 |
+| LasCuarenta | Catálogo | 1 | 478.052* | 86.892* | 1,32* | 8 |
+| LasCuarenta | Backlog | 1 | 316.922 | 62.776 | 0,88 | 5 |
+| LasCuarenta | Mockup | 1 | 878.448 | 235.456 | 4,11 | 17 |
+| **LasCuarenta** | **Total** | 33 | **9.948.356*** | **708.261*** | **21,95*** | **80** |
 
 ## 4. Antes y después: la misma fase con distintas versiones del prompt
 

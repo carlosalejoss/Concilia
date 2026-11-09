@@ -15,7 +15,7 @@
 //   4. antes y después: la misma fase del mismo proyecto con distintas
 //      versiones del prompt;
 //   5. el coste por papel (A, B, árbitro, mockup) y modelo.
-// Los proyectos que no son de ejemplo ni de PURE salen anonimizados («proyecto interno 1»…).
+// Los proyectos que no son de ejemplo, de PURE ni del autor salen anonimizados («proyecto interno 1»…).
 //
 // Uso, desde la raíz del repositorio, con la aplicación en marcha:
 //   dotnet run scripts/evaluacion/costes.cs
@@ -29,8 +29,9 @@ using System.Text.Json.Nodes;
 var api = args.Length > 0 ? args[0].TrimEnd('/') : "http://localhost:8080";
 var es = CultureInfo.GetCultureInfo("es-ES");
 const string Main = "Clinicas Veterinarias";
-// The documents of the PURE dataset are public (steps 105 and 123): their projects ("PURE …") keep their name too.
-string[] examples = ["Clinicas Veterinarias", "Banco De Alimentos", "ReservaSalas", "PURE"];
+// The documents of the PURE dataset are public (steps 105 and 123) and LasCuarenta is a university project
+// of the author (06-11-2026): those projects keep their name too.
+string[] examples = ["Clinicas Veterinarias", "Banco De Alimentos", "ReservaSalas", "PURE", "LasCuarenta"];
 
 var prices = JsonNode.Parse(File.ReadAllText(Path.Combine("scripts", "evaluacion", "precios.json")))!.AsObject()
     .Where(p => !p.Key.StartsWith('_'))

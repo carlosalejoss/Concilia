@@ -59,4 +59,4 @@ Sirve para sumar el coste de un trabajo o de una fase. Una ejecución concreta p
 - **Los tiempos** no sirven si el portátil se suspendió durante el trabajo (hay trabajos de mockup de más de 1.000 minutos por eso).
 - **Sin consola guardada** (antes del 15-10-2026), una ejecución sin dato no se puede estimar; su cifra lleva `≥`.
 - **El estimador** se ajustó con los datos hasta el 19-10-2026. Conviene volver a ajustarlo cuando haya muchas más ejecuciones.
-- **Proyectos internos:** los que no son de ejemplo salen anonimizados y solo con cifras agregadas.
+- **Proyectos internos:** los que no son de ejemplo, de PURE ni del autor (LasCuarenta) salen anonimizados y solo con cifras agregadas.

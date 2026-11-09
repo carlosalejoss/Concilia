@@ -3216,3 +3216,16 @@ Guía de uso de la exportación a GitHub, a petición del autor.
 - **Jira:** la correspondencia de columnas es la de la importación real del 23-10-2026; los menús y el límite de 250 elementos, de la documentación de Atlassian. Atlassian dice que este importador no asigna jerarquías, pero en la prueba real sí las creó.
 - **Azure DevOps:** pasos de la documentación de Microsoft. Sigue sin probarse en real, y el README lo dice.
 - **Sin cambios de código.** La sección «Subir el backlog a GitHub» conserva su enlace.
+
+## 09-11-2026, 11:22 (sesión)
+
+LasCuarenta, un proyecto universitario del autor de otra asignatura, recorre el flujo completo en Concilia; `docs/costes/costes.md` se pone al día.
+
+- **Qué se usó:** 4 documentos, unos 29.500 tokens, entre el 06 y el 09-11-2026, con el código de la rama `feat/github-export` (Docker estaba construido desde ella).
+- **Resultado:** 13 rondas, 94 preguntas (81 respondidas por el autor, 8 sugerencias de la IA tal cual, 4 editadas, 1 descartada), catálogo de 142 requisitos, backlog de 40 historias y mockup, todo a la primera y sin reparaciones. El autor validó el catálogo y el backlog sin cambiar ningún elemento; el mockup sigue en borrador.
+- **Coste total:** 21,95 $ y 80 minutos de modelos (estimación parcial: una ejecución del catálogo no tiene dato). Preguntas 9,96 $, sugerencias 5,67 $, mockup 4,11 $, catálogo 1,32 $ y backlog 0,88 $. Las preguntas y las sugerencias suman el 71 % del coste: el proyecto repartió las dudas en muchas rondas.
+- **Tiempo del autor:** no se midió. Las cifras de minutos son solo de los modelos.
+- **Cambio en `scripts/evaluacion/costes.cs`:** LasCuarenta conserva su nombre en las tablas, porque no es un proyecto interno.
+- **Cambio de criterio:** `costes.md` se regenera en cuanto hay ejecuciones nuevas, sin esperar al final (autor, 06-11-2026).
+- **Publicación:** a petición del autor, la rama `feat/github-export` se sube a GitHub sin integrarla en `main`; la integración sigue siendo el paso 125.
+- **Pendientes:** decidir si el autor aproxima sus tiempos y si se pasan las métricas externas a LasCuarenta; los pasos 118 a 121, el 125 y el 126.
