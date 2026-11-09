@@ -2,6 +2,8 @@
 
 Prueba del 06-11-2026 con el backlog validado de ReservaSalas del paso 106 (proyecto 41) en un repositorio privado y personal del autor, con GitHub CLI 2.103.3 en Git Bash sobre Windows. El `.zip` se generó con `BacklogGitHub` desde un script, porque la API en Docker seguía con el código anterior: el botón de la web no se ha probado.
 
+La guía paso a paso para subir un backlog está en el [`README.md`](../../README.md#subir-el-backlog-a-github).
+
 ## En palabras sencillas
 
 Se comprobó que un backlog generado por Concilia acaba en GitHub con su estructura completa: cada tarea dentro de su historia y cada historia dentro de su épica. Volver a lanzar el script no duplica nada. Si el backlog cambia, crea solo lo nuevo y avisa del resto sin tocarlo, para no pisar lo que se haya hecho en GitHub. Demuestra que el backlog encaja en GitHub sin construir una integración completa: basta con generar un archivo y que el usuario lo lance con su propia cuenta.
@@ -41,4 +43,4 @@ Se hizo con `--simular` y un backlog retocado (una historia modificada, una tare
 
 ## Después de la prueba
 
-El mismo 06-11-2026, a petición del autor, Claude borró los 67 issues del repositorio, tras comprobar que todos llevaban la marca de Concilia y que no había ninguno más. Quedan las etiquetas (`epica`, `historia`, `tarea` e `iteracion-1`), que reutiliza cualquier importación nueva, y GitHub no reutiliza los números: el siguiente issue será el 68. Las cifras de arriba quedan como registro de la prueba, porque en el repositorio ya no se pueden ver. Al autor le convence cómo se veían los issues; importará el backlog del proyecto en el que trabaja.
+El mismo 06-11-2026, a petición del autor, Claude borró los 67 issues del repositorio, tras comprobar que todos llevaban la marca de Concilia y que no había ninguno más. Quedan las etiquetas (`epica`, `historia`, `tarea` e `iteracion-1`), que reutiliza cualquier importación nueva, y GitHub no reutiliza los números: el siguiente issue será el 68. Las cifras de arriba quedan como registro de la prueba, porque en el repositorio ya no se pueden ver. Al autor le convence cómo se veían los issues; importará el backlog del proyecto en el que trabaja. El 09-11-2026 lo descarga con el botón «GitHub» de la web, con lo que el botón queda visto, y lo sube al mismo repositorio.

@@ -50,7 +50,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Hito 24, el backlog en GitHub** (06-11-2026, en la rama `feat/github-export`, sin tocar `evaluacion-1`):
 
-- ~~124, el `.zip` que crea los issues con `gh`~~ (06-11-2026, probado en real; el autor reconstruye Docker y ve el botón en la web).
+- ~~124, el `.zip` que crea los issues con `gh`~~ (06-11-2026, probado en real; botón visto por el autor el 09-11-2026; guía de uso en `README.md`, «Subir el backlog a GitHub»).
 - 14. 125, integrar la rama en `main` y crear la etiqueta `evaluacion-2`, cuando estén hechos los pasos 118 a 121.
 
 **Hito 25, mejoras tras la evaluación:**

@@ -3198,3 +3198,11 @@ Cierre del paso 124 con las decisiones del autor.
 - **Decisión del autor:** añadir un paso para cuando se descongele la evaluación: que el aviso diga el id del elemento donde está el otro. Es el paso 126, en el hito 25 nuevo, después de `evaluacion-2` (paso 125). No se cambia código ahora.
 - **Visto y sin paso:** el aviso se muestra bajo la etiqueta «Discrepancia entre los modelos», aunque el árbitro no marcó discrepancia y los modelos no se contradicen.
 - **Pendientes:** los pasos 118 a 121, el 125 y el 126.
+
+## 09-11-2026, 11:35 (sesión)
+
+Guía de uso de la exportación a GitHub, a petición del autor.
+
+- **El autor sube a GitHub el backlog del proyecto en el que trabaja,** descargado con el botón «GitHub» de la web: el botón queda visto. El resultado de esa subida no está registrado todavía.
+- **`README.md`:** nueva sección «Subir el backlog a GitHub», con los requisitos, los ocho pasos, qué hacer si se corta, qué pasa tras una iteración y la marca que no se debe borrar. También en la tabla del stack y la hoja de ruta (hito 24, sin marcar hasta el paso 125).
+- **Lo que no cambia:** el `README.md` que va dentro del `.zip` ya explica el uso y no se toca, para no cambiar código por esto. La memoria tampoco, porque su anexo de entregables ya explica el funcionamiento y una guía de uso no le aporta.

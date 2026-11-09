@@ -54,7 +54,7 @@ La comparación entre notaciones se apoya en [Großer et al., 2024](https://link
 | Ejecución de los modelos | Runner en .NET que lanza Claude Code no interactivo (`claude -p`), con salida stream-json y veredicto final obligatorio |
 | Embeddings | `paraphrase-multilingual-MiniLM-L12-v2` (Apache 2.0) en ONNX, con ONNX Runtime dentro de la API: en local, sin enviar datos fuera |
 | Documentación de la API | OpenAPI 3.1 generado por ASP.NET Core (Microsoft.AspNetCore.OpenApi) y Swagger UI (Swashbuckle.AspNetCore.SwaggerUI, MIT) |
-| Exportación | Word con DocumentFormat.OpenXml (MIT), PDF con MigraDoc 6.2.4 (MIT, la última versión con esa licencia) y la fuente IBM Plex Sans (OFL), y Gherkin comprobado con el analizador oficial de Cucumber (MIT) |
+| Exportación | Word con DocumentFormat.OpenXml (MIT), PDF con MigraDoc 6.2.4 (MIT, la última versión con esa licencia) y la fuente IBM Plex Sans (OFL), Gherkin comprobado con el analizador oficial de Cucumber (MIT) y GitHub CLI, que lanza el usuario, para crear los issues |
 | Despliegue | Docker y Docker Compose |
 
 ## Estructura del repositorio
@@ -87,6 +87,7 @@ concilia/
 - [x] **Hito 21.** Historial de versiones de los entregables: cada versión se guarda con su fecha y su origen, y se puede ver, comparar con la actual y recuperar.
 - [x] **Hito 22.** Iteraciones del proyecto: la documentación se agrupa en iteraciones (pasos 109 a 116, con ids estables, la iteración de cada elemento, las preguntas centradas en lo nuevo, la actualización del catálogo y del backlog y, al generar desde cero, qué es igual, qué cambió, qué es nuevo y qué desapareció frente a la versión anterior; prueba real en `docs/resultados-paso-116/`: actualizar conserva el 91 % de los requisitos y el 95 % de las historias validadas, por un coste parecido al de empezar de cero), y las preguntas, el catálogo y el backlog se rehacen con todas o se actualizan solo con las nuevas, conservando lo validado y diciendo de qué iteración viene cada elemento y qué cambió y por qué.
 - [ ] **Hito 23.** Evaluación, en curso desde el 04-11-2026, con la versión ya congelada: Concilia frente a un solo modelo (precisión, recall, F1 y coste frente a listas de referencia), cuánto varía cada fase entre repeticiones, SOL ‖ SOL, métricas externas, un documento público y actualizar frente a empezar de cero, todo con una versión congelada.
+- [ ] **Hito 24.** El backlog en GitHub: hecho y probado en real en la rama `feat/github-export`, a falta de integrarla en `main` tras la evaluación (paso 125). Ver [Subir el backlog a GitHub](#subir-el-backlog-a-github).
 - [ ] **Hito 7 (aplazado).** Catálogo v2, de arriba abajo, con los prompts del autor.
 
 ## Ejecutar el proyecto desde cero
@@ -222,6 +223,51 @@ Con .NET 10 y Node 24 instalados:
 - **Documentación de la API:** Swagger UI en <http://localhost:5292/swagger> (se abre al arrancar la API) y el documento OpenAPI en `/openapi/v1.json`. Ver [La API](#la-api).
 - **Tests:** `dotnet test src/Concilia.slnx`. Ninguno llama a la pasarela; el del flujo completo usa `Fake` y una base de datos en memoria.
 - **Embeddings:** fuera de Docker, `.\scripts\descargar-modelo-embeddings.ps1` deja el modelo en `models/` (470 MB, con el SHA-256 comprobado), y la API lo usa con `Embeddings__Provider=Onnx` y `Embeddings__ModelPath` apuntando a esa carpeta. Sin él, la API usa `Fake` y los tests que necesitan el modelo se saltan (también en GitHub Actions).
+
+## Subir el backlog a GitHub
+
+GitHub no importa archivos, así que Concilia da un `.zip` con un script que lanzas tú con tu cuenta: Concilia no recibe ningún token. Crea un issue por épica, historia y tarea, unidos como sub-issues (dentro de cada épica, sus historias; dentro de cada historia, sus tareas). Por ahora está en la rama `feat/github-export`, que se integra en `main` en el paso 125 del plan.
+
+**Antes de empezar**, una sola vez:
+
+- Instala [GitHub CLI](https://cli.github.com), versión 2.94 o superior, y Git Bash, que viene con [Git](https://git-scm.com/downloads) (paso 1 de arriba).
+- Inicia sesión con `gh auth login`.
+- Crea un repositorio, mejor privado y sin seguidores: cada issue creado envía una notificación.
+
+**Para subirlo:**
+
+1. **Espera a que el backlog esté generado,** y mejor revisado y validado. También se puede descargar en borrador, pero si después lo generas otra vez desde cero, el script se parará: esa generación vuelve a numerar los ids y necesita otro repositorio.
+2. **Descarga el `.zip`.** En tu proyecto, entra en **Backlog** y pulsa **GitHub**. Si no ves el botón, recarga con Ctrl+F5.
+3. **Descomprímelo.** En Windows, clic derecho sobre el `.zip` y **Extraer todo**.
+4. **Abre Git Bash en esa carpeta,** donde está `importar.sh`: clic derecho en un hueco vacío y **Open Git Bash here** (si no aparece, en **Mostrar más opciones**).
+5. **Comprueba que `gh` funciona:**
+
+   ```bash
+   gh auth status
+   ```
+
+   Debe decir que has iniciado sesión. Si dice `command not found`, ejecuta `export PATH="/c/Program Files/GitHub CLI:$PATH"` y repite el comando.
+6. **Haz un ensayo, que no crea nada,** con tu usuario y tu repositorio:
+
+   ```bash
+   bash importar.sh tu-usuario/tu-repositorio --simular
+   ```
+
+   Muestra lo que crearía. Con el repositorio vacío, debería ser todo el backlog.
+7. **Súbelo de verdad:**
+
+   ```bash
+   bash importar.sh tu-usuario/tu-repositorio
+   ```
+
+   Tarda unos 5 segundos por issue (100 issues, unos 8 minutos). No cierres la ventana mientras trabaja.
+8. **Míralo en GitHub,** en la pestaña **Issues** del repositorio: dentro de cada épica están sus historias, y dentro de cada historia, sus tareas.
+
+**Si se corta a medias,** vuelve a lanzar el comando del paso 7: sigue por donde iba y no duplica nada. Si lo ha cortado GitHub por sus límites, espera unos minutos antes.
+
+**Después de una iteración,** descarga de nuevo el `.zip` y lanza el mismo comando. Crea solo lo nuevo. Lo modificado o eliminado en Concilia no se toca, para no perder lo que hayas hecho en GitHub: el script te da el comando que aplica cada cambio. El `README.md` del `.zip` lo explica con más detalle.
+
+**No borres la última línea del cuerpo de un issue,** invisible al leerlo (`<!-- concilia:… -->`): es lo que lo identifica. Sin ella, el script lo volvería a crear.
 
 ## La API
 
