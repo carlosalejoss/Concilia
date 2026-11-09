@@ -59,7 +59,7 @@ Sobre el mockup, una impresión general: «no está mal». No lo revisó con det
 
 ## Observaciones
 
-1. **El coste se concentra en las preguntas.** Preguntas y sugerencias son el 71 % del total. Cada ronda cuesta unos 0,77 $, y las siete últimas traen entre 1 y 6 preguntas, porque cada ronda vuelve a leer toda la documentación aunque haya poco que preguntar. Es un dato para valorar si conviene avisar de que una ronda rinde poco.
+1. **Las rondas convergen, que es lo que se busca.** El objetivo del autor es repetir rondas hasta llegar a 0 preguntas, o hasta que las que salgan sean tan poco relevantes que se pueda pasar al catálogo. Las preguntas nuevas bajan de 35 a 1 o 2 (35, 11, 9, 7, 8, 4, 4, 3, 3, 1, 6, 1 y 2), con un repunte a 6 en la undécima ronda. No se llegó a 0: el autor pasó al catálogo tras una última ronda con 2. Ese camino tiene un coste: preguntas y sugerencias son el 71 % del total, unos 0,77 $ por ronda, porque cada ronda vuelve a leer toda la documentación aunque ya queden pocas dudas. El coste es parte del método, no un fallo; lo que se podría mejorar es que las últimas rondas salgan más baratas.
 2. **LUNA aporta poco en las últimas rondas:** en las siete últimas propone 0 o 1 preguntas, y SOL entre 0 y 6.
 3. **Un aviso confuso:** al revisar la discrepancia de RF-068, el aviso de la plataforma citaba un requisito que se había unido a otro (paso 126 del plan).
 
