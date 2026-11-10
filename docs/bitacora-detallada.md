@@ -3423,3 +3423,11 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - «Enfoque»: los modelos van por la pasarela «y por OpenCode Go», y se exporta también a GitHub. Para que quepa, «Entity Framework Core» pasa a «EF Core» y «CSV para Jira y Azure DevOps» a «Jira, Azure DevOps y GitHub»;
   - «Fases»: sin cambios.
 - **Riesgo anotado:** OpenCode Go no se ha probado todavía con Claude Code (paso 129). Si fallase entero y B volviera a LUNA, «distintos fabricantes» y «OpenCode Go» dejarían de ser ciertos. Hay un candidato de reserva (Claude Haiku 5.5, por Go).
+- **Memoria, a petición del autor:** el punto 5 de «Cosas que añadir a la memoria» pasa de resumen a proceso completo de la elección, listo para llevar al texto principal:
+  - los criterios y cómo se mide «razonar como SOL», con el problema de las fuentes (versiones del índice mezcladas);
+  - los dos filtros y los dos candidatos, con una tabla frente a SOL y LUNA;
+  - la revisión del autor, con una tabla de los nueve modelos;
+  - los criterios relajados, la elección del tercero y el coste esperado;
+  - lo que queda por comprobar, las lecciones, las fuentes y dónde va.
+
+  Compila (88 páginas) sin desbordes en la sección nueva.
