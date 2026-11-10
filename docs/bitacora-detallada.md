@@ -3431,3 +3431,15 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - lo que queda por comprobar, las lecciones, las fuentes y dónde va.
 
   Compila (88 páginas) sin desbordes en la sección nueva.
+
+## 10-11-2026, 13:24 (sesión, idea del autor)
+
+- **Idea del autor:** construir, a medida que llega la documentación, un «documento de verdad» (análisis funcional) para que las rondas centradas lo lean en lugar de los documentos de iteraciones anteriores, y quizá también las generales.
+- **Análisis de Claude, con los datos de los pasos 116 y 123:**
+  - **Ya existe en parte:** el catálogo validado y las respuestas van en el prompt de las rondas centradas, y de lo antiguo solo se leen los fragmentos relacionados.
+  - **No ahorra por otros motivos:**
+    - las consultas a lo antiguo, porque cada turno reenvía todo el contexto (A leyó unos 780.000 tokens al actualizar frente a 209.000 desde cero);
+    - una documentación pequeña (unos 23.000 tokens), que es más barata de leer entera;
+    - con documentación grande, la lectura relacionada ya funciona (PEPPOL, 0,87 $).
+  - **Un documento nuevo perdería detalle, rompería la trazabilidad** (no es una fuente citable), costaría otra tarea de IA por iteración y crearía dos verdades. En las rondas generales quitaría independencia a A y B.
+- **Decisión del autor: no se toca nada.** La idea y por qué se descarta van a la memoria, punto 6 de «Cosas que añadir», por si se considera necesario. Lo único útil, anotar aparte los tokens de caché, ya es la decisión abierta del paso 128. Leer todo con documentación pequeña sigue en «Después».
