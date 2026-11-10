@@ -2,6 +2,13 @@
 
 Lista de lo que pesa en el proyecto y debería aparecer en la memoria del TFG, sacada de `docs/`, del README, del código y de los tests el 04-11-2026. Va ordenada según la estructura de la memoria (1 Introducción; 2.1 Especificación; 2.2 Construcción; 2.3 Validación; 3 Conclusiones). Cada punto dice de qué documento salen sus cifras.
 
+> **Actualización del 10-11-2026 (cambio de rumbo).** El modelo B pasa de LUNA a un modelo de otro fabricante por OpenCode Go, y la evaluación se repite desde cero (hitos 25 a 27 del plan). Lo que hay que contar de ello está redactado en la sección temporal «Cosas que añadir a la memoria», al final de `memoria/tfg/memoria.tex`. En esta lista entra así:
+>
+> - ★ **Por qué se cambia B y qué se gana** (1, 2.2 y 2.3): LUNA no tenía capacidad suficiente, y un modelo de otro fabricante hace la verificación cruzada más independiente, que es la base de la hipótesis.
+> - ★ **Las medidas tomadas por LUNA son comunes a todos los modelos** (2.2): redes de seguridad que solo actúan si hay un error. Lo que limita de verdad viene de los 128k de la pasarela.
+> - ★ **El coste para una empresa que paga por uso** (2.3 y anexo de coste): por fase y del flujo completo, también para B, aunque se pague con una suscripción.
+> - ★ **La evaluación 2** (2.3): con el nuevo B y comparada con la evaluación 1, midiendo por separado lo que aporta el cambio de modelo y lo que aportan los prompts v0.14.
+
 **★ = imprescindible.** El resto entra si cabe o va a un anexo. La memoria es de tipo B (unas 10.000 palabras sin resumen, índices, bibliografía ni anexos) y el borrador ronda ya las 9.550 con la 2.3 sin escribir, así que hay que elegir y llevar el detalle a los anexos.
 
 ## 1. Introducción: problema, hipótesis y forma de trabajo
@@ -17,7 +24,7 @@ Lista de lo que pesa en el proyecto y debería aparecer en la memoria del TFG, s
   - fuera de alcance: autenticación, varios usuarios y prioridad P0–P3.
 - **Contexto técnico:**
   - modelos solo a través de la pasarela LiteLLM, con una ventana de 128k tokens;
-  - SOL cuesta 20 veces más que LUNA (`docs/costes/costes.md`);
+  - SOL cuesta 20 veces más que LUNA (`docs/costes/costes.md`). Desde el 10-11-2026, B es un modelo de otro fabricante por OpenCode Go, fuera de la pasarela (autorizado por el autor, solo con documentos ficticios o públicos);
   - solo datos ficticios o públicos; el documento B está autorizado y va anonimizado.
 - ★ **Método de trabajo:**
   - un plan por hitos (0 a 23) y unos 120 pasos, con un commit por paso: 259 commits en unas 5 semanas (`docs/plan-de-construccion.md`);
@@ -182,16 +189,19 @@ Lista de lo que pesa en el proyecto y debería aparecer en la memoria del TFG, s
   - los modelos fallan más en el formato que en el criterio;
   - un árbitro LLM necesita una referencia independiente;
   - el humano en el bucle no se puede quitar.
-- **Trabajo futuro** («Después» de `docs/plan-de-construccion.md`):
-  - catálogo v2 (aplazado), aprobación por umbral y leerlo todo cuando la documentación es pequeña;
-  - textos de la plataforma en el idioma del proyecto y CSV solo con lo nuevo;
-  - abaratar el mockup, partir el CSV de Jira en ficheros de 250 y probar Azure DevOps en real;
-  - GitHub para cualquier usuario desde la web, organizaciones y Projects;
-  - autenticación y varios usuarios.
+- **Trabajo futuro** («Después» de `docs/plan-de-construccion.md`; actualizado el 10-11-2026):
+  - aprobación por umbral y leerlo todo cuando la documentación es pequeña;
+  - CSV solo con lo nuevo, partir el CSV de Jira en ficheros de 250 y probar Azure DevOps en real;
+  - GitHub para cualquier usuario desde la web (el botón, sin `gh`);
+  - autenticación y varios usuarios;
+  - ya no son trabajo futuro:
+    - se hacen antes de la evaluación 2: los textos en el idioma del proyecto, y los issue types de las organizaciones y GitHub Projects en la exportación a GitHub (pasos 140 y 142);
+    - quitados del plan el 10-11-2026: el catálogo v2 (su idea del inventario de funcionalidades puede entrar en los prompts v0.14) y abaratar el mockup.
 - **Cambios de rumbo, como gestión del proyecto:**
   - 08-10, la iteración v0;
   - 26-10, se añade el hito 22;
-  - 27-10, el hito 23 se amplía al ver que ningún paso medía la hipótesis.
+  - 27-10, el hito 23 se amplía al ver que ningún paso medía la hipótesis;
+  - 10-11, se cambia el modelo B por falta de capacidad de LUNA y se repite la evaluación desde cero. ★ Lección: elegir el segundo modelo por su capacidad y su independencia, no solo por su precio.
 
 ## Aspectos profesionales transversales
 
@@ -212,7 +222,7 @@ Lista de lo que pesa en el proyecto y debería aparecer en la memoria del TFG, s
 Comprobado con una búsqueda de palabras clave en `memoria/tfg/memoria.tex` el 04-11-2026 (10:50):
 
 - **El resultado del experimento del sesgo del árbitro:** la introducción cita el riesgo, pero no el experimento ni su resultado. Va en la 2.3.
-- **La versión congelada `evaluacion-1`:** no aparece. Va al principio de la 2.3, como garantía de que las mediciones son comparables.
+- **La versión congelada:** no aparece. Va al principio de la 2.3, como garantía de que las mediciones son comparables. (Desde el 10-11-2026 será `evaluacion-2`, la de la evaluación nueva; `evaluacion-1` se cita como la versión de la evaluación 1, interrumpida.)
 - **La lectura relacionada y su comparación con leerlo todo:** las iteraciones están, pero no las tres opciones de lectura ni los pasos 116 y 123.
 - **Las amenazas a la validez:** hoy, solo en la valoración crítica. En la 2.3 conviene decirlas junto a los resultados.
 

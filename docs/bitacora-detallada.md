@@ -3349,3 +3349,19 @@ Ficha de LasCuarenta en `docs/evaluacion/lascuarenta.md`, con la información qu
   - con uno barato, unos 7 $.
 - **Hecho:** el plan (criterio obligatorio en el paso 127, suscripción y límite a mitad de tarea en el control del consumo, paso 142 concretado, botón de GitHub en «Después»), `CLAUDE.md`, la trazabilidad y la memoria de Claude.
 - **Pendientes:** el paso 127 (estudio de los candidatos).
+
+## 10-11-2026, 10:14 (sesión, continuación)
+
+- **Revisión de todos los documentos** (a petición del autor), buscando referencias viejas al hito 7, a la rama, al mockup quitado, a `evaluacion-2` y a la tabla de consumo a mano. Corregido:
+  - **`CLAUDE.md`:** el hito 7, quitado del plan; la exportación a GitHub, integrada en `main` y con sus mejoras en el paso 142.
+  - **`docs/contenido-memoria.md`:** una nota con lo nuevo imprescindible (cambio de B, medidas comunes, coste para una empresa y evaluación 2), el trabajo futuro al día, el cambio de rumbo del 10-11 como lección y la versión congelada que será `evaluacion-2`.
+  - **`docs/evaluacion/version.md`:** nota de que la evaluación 1 está interrumpida y de que la 2 tendrá su propia versión.
+  - **`docs/experimento-sesgo-arbitro.md`:** nota de que se repite con el nuevo B en el paso 136, con tope de consumo.
+  - **`docs/costes/README.md`:** la sección «Desde el 10-11-2026» (nuevo B, coste para una empresa, `consumo.md` y paso 137).
+  - **Trazabilidad:** la fila del catálogo v2 en la tabla de prompts.
+  - **Memoria:** el punto 4 de «Cosas que añadir», con lo que cambia en lo ya escrito (trabajos futuros, cronología, registro de decisiones y versión congelada). No se toca el texto principal; compila.
+  - **Memoria de Claude:** la estructura de la memoria (en paralelo, con la sección temporal) y el experimento del sesgo (se repite).
+- **Sin cambios, con motivo:**
+  - los documentos de resultados (`pure.md`, `lascuarenta.md`, `analista.md`…), que son históricos y dicen con qué versión se obtuvieron;
+  - `docs/evolucion-prompt-requisitos.md`, porque no ha cambiado ningún prompt ni se ha medido nada;
+  - el README y `.env.example` en lo que toca a OpenCode, que se actualizan con el código del paso 128.

@@ -1,5 +1,9 @@
 # Versión que se evalúa
 
+> **Evaluación 1 interrumpida el 10-11-2026 (autor).** El modelo B pasa de LUNA a un modelo de otro fabricante por OpenCode Go (hito 25 del plan). La evaluación se repite desde cero en el hito 27, con su propia versión congelada (`evaluacion-2`, paso 133), descrita en `docs/evaluacion-2/version.md` cuando exista.
+>
+> Esta versión y los resultados obtenidos con ella (pasos 117, 105, 104 y 106) se conservan como la evidencia del cambio de B y como el «antes» de la comparación. Por eso no se añaden aquí más etiquetas, aunque lo diga el párrafo de abajo.
+
 Paso 117 del plan. Todas las ejecuciones del hito 23 se hacen con la versión de una etiqueta, y cada resultado dice con cuál se obtuvo. Así los resultados son comparables entre sí y el tribunal puede repetir el paso 105 con la misma versión.
 
 Si durante la evaluación un error obliga a cambiar código o prompts, se crea la etiqueta siguiente (`evaluacion-2`…), se añade aquí una sección con qué cambió y por qué, y se repiten las ejecuciones afectadas.

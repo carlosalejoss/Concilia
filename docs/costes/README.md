@@ -45,7 +45,7 @@ Sirve para sumar el coste de un trabajo o de una fase. Una ejecución concreta p
 
 - **El flujo completo** (preguntas, sugerencias, catálogo, backlog y mockup) cuesta **22,25 $ y 105 minutos** en el proyecto grande de ejemplo, y **8,76 $ y 55 minutos** en el mediano.
 - **El mockup es la mayor parte del coste:** el 69 % en el proyecto grande (15,46 $) y el 74 % en el mediano. Si hay que ahorrar, es el primer sitio donde mirar.
-- **B (LUNA) cuesta el 0,5 % del flujo del proyecto grande** (0,11 $), frente al 12 % de A (SOL, 2,64 $): la verificación cruzada con un segundo modelo barato añade muy poco coste.
+- **B (LUNA) cuesta el 0,5 % del flujo del proyecto grande** (0,11 $), frente al 12 % de A (SOL, 2,64 $). (Desde el 10-11-2026, B pasa a un modelo de otro fabricante por OpenCode Go, más capaz y más caro, así que esta proporción cambiará; ver «Desde el 10-11-2026», al final.) La verificación cruzada con un segundo modelo barato añade muy poco coste.
 - **El árbitro con embeddings (v0.10) frente al anterior (v0.9),** con las mismas propuestas del catálogo grande y SOL:
   - un arbitraje que sale a la primera cuesta unos **1,40 $**, frente a **1,58–1,98 $** con la v0.9, y lee unos 414.000 tokens de entrada frente a 449.000–682.000 (estimados);
   - la media de la v0.10 sube a 2,44 $ por una ejecución que necesitó una reparación (4,53 $, con 1,15 M tokens reales en el intento fallido);
@@ -60,3 +60,10 @@ Sirve para sumar el coste de un trabajo o de una fase. Una ejecución concreta p
 - **Sin consola guardada** (antes del 15-10-2026), una ejecución sin dato no se puede estimar; su cifra lleva `≥`.
 - **El estimador** se ajustó con los datos hasta el 19-10-2026. Conviene volver a ajustarlo cuando haya muchas más ejecuciones.
 - **Proyectos internos:** los que no son de ejemplo, de PURE ni del autor (LasCuarenta) salen anonimizados y solo con cifras agregadas.
+
+## Desde el 10-11-2026
+
+- **Nuevo modelo B:** un modelo de otro fabricante, contratado con OpenCode Go (suscripción de 10 $ al mes). Su coste se calcula igual que el de SOL, por token a precio de lista (los precios por uso de OpenCode), con la nota de que se pagó con la suscripción. Así las tablas dicen lo que pagaría una empresa que pagase por uso.
+- **El coste es una parte central de la memoria:** en todo lo que se haga se miden los tokens y el precio para una empresa, por fase y del flujo completo.
+- **`consumo.md` (paso 144 del plan):** todo el consumo, de SOL y de OpenCode, en un solo fichero, por proyecto y con el coste de cada tarea. Lo generará este mismo script, con lo que queda de cada límite de Go arriba.
+- **El paso 137** dará el coste para una empresa de cada configuración: SOL solo, SOL ‖ LUNA, SOL ‖ nuevo B y SOL ‖ SOL.

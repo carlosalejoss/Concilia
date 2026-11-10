@@ -2,6 +2,12 @@
 
 Material para el capítulo de evaluación de la memoria. **Prioridad alta** (autor, 16-10-2026): afecta al valor de la verificación cruzada, que es la idea central del TFG.
 
+> **Se repite con el nuevo modelo B** (autor, 10-11-2026; paso 136 del plan). B pasa de LUNA a un modelo de otro fabricante por OpenCode Go, y sus propuestas serán mejores, así que el resultado puede cambiar.
+>
+> - Se hacen 3 arbitrajes con SOL y 3 con el nuevo B de árbitro, sobre las mismas propuestas de un trabajo de la evaluación 2.
+> - Hay tope de consumo: primero los de preguntas, y los de catálogo solo si queda margen en el plan mensual de Go.
+> - Los resultados irán en `docs/evaluacion-2/sesgo-arbitro.md`. Lo de abajo es el experimento con LUNA (16-10-2026).
+
 ## Origen
 
 En el flujo completo del proyecto grande de ejemplo (clínicas veterinarias, ficticio, de `ejemplos/`, 15-10-2026), A y el árbitro eran `SS - GPT-6-SOL` y B era `SS - GPT-6-LUNA`. La unión del árbitro se parecía mucho a la propuesta de A:

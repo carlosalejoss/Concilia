@@ -477,7 +477,7 @@ A propone mucho más que B, y la unión se parece mucho a A: lo que aporta solo 
 | Catálogo v1 a v1.2 | 28-09 y 29-09 | Prompt del autor con esquema, fragmentos citados y validador estricto |
 | Catálogo v1.3 | 02-10 | Independencia de A y B, un requisito por capacidad, inventario, normalizador y aceptación parcial |
 | Catálogo v1.4 | 05-10 | Ajustes sobre la v1.3; el proceso por lotes toca techo |
-| Catálogo v2 | 05-10 (aplazado) | De arriba abajo: inventario global y requisitos por funcionalidad |
+| Catálogo v2 | 05-10 (aplazado; quitado del plan el 10-11) | De arriba abajo: inventario global y requisitos por funcionalidad |
 | v0 | 08-10 | Prompts básicos para las cinco fases del flujo |
 | v0.1 a v0.3 | 09-10 | Lectura de la documentación por partes, con un plan de lectura exacto |
 | v0.4 | 13-10 | Mockup por partes |
