@@ -49,7 +49,17 @@ public static class ApiDocumentation
     public static IServiceCollection AddApiDocumentation(this IServiceCollection services) =>
         services.AddOpenApi(DocumentName, options => options
             .AddDocumentTransformer(DescribeDocument)
+            .AddOperationTransformer(OneLineEnding)
             .AddSchemaTransformer(NumbersAsNumbers));
+
+    // A description written over several lines (""") keeps the line endings
+    // of the source file: "\r\n" in a Windows checkout and "\n" in Linux (CI,
+    // Docker). With "\n" always, the document is the same on every machine.
+    private static Task OneLineEnding(OpenApiOperation operation, OpenApiOperationTransformerContext context, CancellationToken cancellationToken)
+    {
+        operation.Description = operation.Description?.ReplaceLineEndings("\n");
+        return Task.CompletedTask;
+    }
 
     // The title, the front page and the groups, in the order of the flow.
     private static Task DescribeDocument(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)

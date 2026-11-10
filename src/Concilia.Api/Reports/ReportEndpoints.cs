@@ -44,10 +44,12 @@ public static class ReportEndpoints
                 return Results.NotFound();
             }
             var jobs = await db.Jobs.Where(j => j.ProjectId == projectId).OrderByDescending(j => j.CreatedAt).ToListAsync();
+            // Each line ends in "\r\n", as CSV asks (RFC 4180), and not in the
+            // line ending of the machine (AppendLine), which is "\n" in Docker.
             var csv = new StringBuilder();
-            csv.AppendLine(string.Join(';', Columns));
+            csv.Append(string.Join(';', Columns)).Append("\r\n");
             foreach (var job in jobs)
-                csv.AppendLine(string.Join(';', Row(await BuildAsync(db, storage, embedder, options, job)).Select(Cell)));
+                csv.Append(string.Join(';', Row(await BuildAsync(db, storage, embedder, options, job)).Select(Cell))).Append("\r\n");
             return Results.File(Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csv.ToString())).ToArray(),
                 "text/csv; charset=utf-8", $"informe-proyecto-{projectId}.csv");
         })

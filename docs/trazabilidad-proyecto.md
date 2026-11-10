@@ -66,6 +66,11 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 06-11 a 09-11 | LasCuarenta, proyecto universitario del autor, por el flujo completo (caso adicional, no sustituye a los pasos 118 a 121) | 13 rondas, 142 requisitos y 40 historias, sin reparaciones ni cambios del autor al validar; 21,95 $ y 80 minutos de modelos (el 71 % en preguntas y sugerencias). El tiempo del autor no se midió (unas 3–4 horas por su estimación, sin mockup; solo leyó las discrepancias). Ficha en `docs/evaluacion/lascuarenta.md`. |
 | 10-11 | Cambio de rumbo: el modelo B por OpenCode Go (sin código) | LUNA no tiene capacidad suficiente: B pasa a un modelo de otro fabricante con OpenCode Go (solo B; lo demás sigue en SOL). La evaluación 1 se interrumpe y se repetirá desde cero (hitos 25 a 27). Todo en `main`: rama de GitHub integrada y borrada, historia antigua guardada en un `.bundle`. El coste para una empresa, parte central de la memoria |
 | 10-11 | Hito 25, paso 127: candidatos para B (estudio, sin coste) | Solo dos modelos de Go igualan o superan a SOL en las pruebas que separan a LUNA de SOL (índice de Artificial Analysis y Terminal-Bench 4.x): Kimi K3.1 Pro y Gemini 4 Argon, aprobados por el autor. Claude Haiku 5.5, de reserva por su protocolo nativo. Los nueve descartados que propuso el autor, comprobados uno a uno: ninguno llega a SOL |
+| 10-11 | El CI de GitHub, de nuevo en verde (arreglo, sin cambio funcional) | Fallaba desde el 20-10 por dos tests que solo fallan en Linux: la copia de OpenAPI con saltos `
+` de Windows y el CSV del informe con `
+` de Linux. El documento OpenAPI usa siempre `
+` y el CSV siempre `
+` (RFC 4180) |
 | 20-10 | Documentación de la API (fuera del plan) | Swagger UI con los 42 endpoints documentados, que se actualiza sola y que los tests mantienen completa |
 
 ## Etapas
@@ -443,7 +448,9 @@ El autor lo pide para incluirlo en la memoria si funciona. GitHub no tiene impor
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
 - **Qué hay:** el documento OpenAPI 3.1 de la API (`/openapi/v1.json`), generado por ASP.NET Core, y Swagger UI encima (`/swagger`, también en <http://localhost:8080/swagger> con Docker), con los colores de Concilia en claro y en oscuro. Los 42 endpoints van en 10 grupos en el orden del flujo, cada uno con su resumen, su descripción en español, sus parámetros y lo que devuelve en cada caso (incluidos los `400` con los mensajes de la web, los `404` y los `202` de las tareas en segundo plano).
-- **Se actualiza sola, en tres capas:** el documento sale de los propios endpoints en cada petición; cada compilación en Debug reescribe la copia `docs/api/openapi.json`, así que los cambios de la API se ven en git; y `OpenApiDocumentTests` falla si un endpoint queda sin grupo, sin resumen o sin decir qué devuelve, o si la copia no coincide. CLAUDE.md pide documentar cada endpoint nuevo junto a su código.
+- **Se actualiza sola, en tres capas:** el documento sale de los propios endpoints en cada petición; cada compilación en Debug reescribe la copia `docs/api/openapi.json`, así que los cambios de la API se ven en git; y `OpenApiDocumentTests` falla si un endpoint queda sin grupo, sin resumen o sin decir qué devuelve, o si la copia no coincide. CLAUDE.md pide documentar cada endpoint nuevo junto a su código. Hasta el 10-11 la comparación de la copia fallaba en el CI (Linux) porque una descripción en varias líneas llevaba los saltos `
+` del checkout de Windows; desde entonces las descripciones se normalizan a `
+`.
 - **Librerías:** `Microsoft.AspNetCore.OpenApi` (la oficial de .NET 10) y `Swashbuckle.AspNetCore.SwaggerUI` 10.2.3 (MIT), solo la interfaz; la 10.3 tenía un día y se descartó por prudencia.
 - **Para la memoria, en palabras sencillas:** cualquiera puede ver qué ofrece la API y probarla desde el navegador sin leer el código, y esa descripción no se queda vieja: está escrita al lado de cada endpoint y los tests no dejan subir uno sin ella.
 
@@ -541,4 +548,4 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 ## Cifras de seguimiento
 
 - **Commits:** 269 entre el 28-09 y el 05-11-2026.
-- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99), 937 (22-10, paso 100), 943 (22-10, pasos 107 y 108), 948 (23-10, paso 101), 951 (23-10, paso 102), 966 (26-10, paso 109), 974 (26-10, paso 110) y 983 (26-10, paso 111), 990 (26-10, instantánea de la v0.12), 1.002 (26-10, paso 112), 1.013 (27-10, paso 113), 1.020 (27-10, paso 114), 1.024 (27-10, paso 115), 1.025 (27-10, ronda que lo lee todo del paso 116) , 1.026 (27-10, arreglo de `REF-PREG`) y 1.028 (03-11, paso 122).
+- **Tests de C#:** 289 (30-09), 339 (02-10), 620 (08-10), 759 (13-10), 835 (16-10), 890 (19-10; 6 de ellos se saltan sin el modelo de embeddings), 897 (20-10, paso 96), 903 (20-10, con la corrección del paso 92 y los de la documentación de la API), 908 (22-10, paso 97), 912 (22-10, paso 98 con su revisión) 918 (22-10, paso 99), 937 (22-10, paso 100), 943 (22-10, pasos 107 y 108), 948 (23-10, paso 101), 951 (23-10, paso 102), 966 (26-10, paso 109), 974 (26-10, paso 110) y 983 (26-10, paso 111), 990 (26-10, instantánea de la v0.12), 1.002 (26-10, paso 112), 1.013 (27-10, paso 113), 1.020 (27-10, paso 114), 1.024 (27-10, paso 115), 1.025 (27-10, ronda que lo lee todo del paso 116) , 1.026 (27-10, arreglo de `REF-PREG`) 1.028 (03-11, paso 122) y 1.038 (10-11, con los del paso 124).

@@ -3443,3 +3443,14 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
     - con documentación grande, la lectura relacionada ya funciona (PEPPOL, 0,87 $).
   - **Un documento nuevo perdería detalle, rompería la trazabilidad** (no es una fuente citable), costaría otra tarea de IA por iteración y crearía dos verdades. En las rondas generales quitaría independencia a A y B.
 - **Decisión del autor: no se toca nada.** La idea y por qué se descarta van a la memoria, punto 6 de «Cosas que añadir», por si se considera necesario. Lo único útil, anotar aparte los tokens de caché, ya es la decisión abierta del paso 128. Leer todo con documentación pequeña sigue en «Después».
+
+## 10-11-2026, 13:30 (sesión, el CI de GitHub en rojo)
+
+- **Qué pasaba:** al autor le llegaban correos de GitHub con el CI fallido. Fallaba desde el 20-10 (`5bc9d4e`, el primer push tras documentar la API): 16 ejecuciones seguidas en rojo, siempre por los mismos dos tests, que solo fallan en Linux (GitHub Actions); en Windows pasaban y por eso no se veía en local.
+  - `The_copy_in_docs_matches_the_api`: la descripción de «Sube un archivo», escrita en varias líneas con `"""`, arrastra los saltos del fichero fuente: `\r\n` en Windows (`core.autocrlf=true`) y `\n` en Linux, así que `docs/api/openapi.json` no coincidía con el documento generado en el CI.
+  - `A_catalog_from_scratch_is_compared_with_the_version_before_it`: el CSV del informe del proyecto usaba `AppendLine`, con el salto del sistema (`\n` en Linux y en Docker), y el test corta por `\r\n`.
+- **Arreglos:**
+  - `ApiDocumentation`: la descripción de cada endpoint pasa siempre a `\n` (`OneLineEnding`), para que el documento sea el mismo en cualquier equipo; copia regenerada en Debug.
+  - `ReportEndpoints`: cada línea del CSV termina en `\r\n`, como pide RFC 4180. También cambia el CSV que se descarga desde Docker, que antes salía con `\n`.
+- **Comprobado:** 1.038 tests en Debug en Windows, sin errores. En Linux se confirmará con el siguiente run del CI, tras el push del autor.
+- **Lección:** un test que solo se ejecuta en local no basta; conviene mirar el estado del CI tras cada push.

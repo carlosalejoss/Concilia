@@ -680,7 +680,7 @@
           "Documentos"
         ],
         "summary": "Sube un archivo",
-        "description": "Formulario `multipart/form-data` con el archivo en el campo `file` (hasta 10 MB).\r\n\r\n- **Documentación:** `.txt`, `.md`, `.docx`, `.pdf`, `.xlsx`, `.csv`, `.pptx`, `.html`/`.htm`, `.eml`, `.msg`, `.vtt`, `.srt`, `.json`, `.yaml`/`.yml` y `.xml`. Se extrae su texto al subirlo; un archivo dañado se rechaza sin guardar nada. Va a la iteración abierta; si no hay ninguna, se rechaza.\r\n- **Referencia de estilo del mockup:** un `.zip` con páginas u hojas de estilo. No es documentación: solo lo lee el mockup. Es del proyecto, no de una iteración, y se sube siempre.\r\n\r\nUn documento nuevo deja desactualizados el catálogo, el backlog y el mockup; una referencia de estilo, solo el mockup.",
+        "description": "Formulario `multipart/form-data` con el archivo en el campo `file` (hasta 10 MB).\n\n- **Documentación:** `.txt`, `.md`, `.docx`, `.pdf`, `.xlsx`, `.csv`, `.pptx`, `.html`/`.htm`, `.eml`, `.msg`, `.vtt`, `.srt`, `.json`, `.yaml`/`.yml` y `.xml`. Se extrae su texto al subirlo; un archivo dañado se rechaza sin guardar nada. Va a la iteración abierta; si no hay ninguna, se rechaza.\n- **Referencia de estilo del mockup:** un `.zip` con páginas u hojas de estilo. No es documentación: solo lo lee el mockup. Es del proyecto, no de una iteración, y se sube siempre.\n\nUn documento nuevo deja desactualizados el catálogo, el backlog y el mockup; una referencia de estilo, solo el mockup.",
         "parameters": [
           {
             "name": "projectId",
