@@ -163,7 +163,7 @@ Si superas los 1.000 elementos, divide el CSV por épicas, como en Jira.
 
 ### Subir el backlog a GitHub
 
-GitHub no importa archivos, así que Concilia da un `.zip` con un script que lanzas tú con tu cuenta; Concilia no recibe ningún token. Por ahora está en la rama `feat/github-export`.
+GitHub no importa archivos, así que Concilia da un `.zip` con un script que lanzas tú con tu cuenta; Concilia no recibe ningún token.
 
 Una sola vez, instala [GitHub CLI](https://cli.github.com) 2.94 o superior, inicia sesión con `gh auth login` y crea un repositorio, mejor privado y sin seguidores, porque cada issue creado envía una notificación. En Windows, usa Git Bash, que viene con Git.
 
@@ -215,7 +215,7 @@ concilia/
 
 ## Evaluación
 
-La evaluación se hace con una versión congelada, [descrita aquí](docs/evaluacion/version.md), y está en curso.
+La primera evaluación (modelo B = LUNA, versión [descrita aquí](docs/evaluacion/version.md)) se interrumpió el 10-11-2026. El modelo B pasa a un modelo de otro fabricante, y la evaluación se repetirá desde cero con él. La tabla recoge lo que dio la primera.
 
 | Pregunta | Estado |
 | --- | --- |
@@ -223,7 +223,7 @@ La evaluación se hace con una versión congelada, [descrita aquí](docs/evaluac
 | ¿Funciona con un documento público y en inglés? | Sí, con un documento del conjunto PURE ([resultados](docs/evaluacion/pure.md)) |
 | ¿Qué calidad miden herramientas externas (AQUSA y `vale-ears`)? | [Resultados](docs/evaluacion/metricas-externas.md) |
 | ¿Cómo se usa como analista? | [Prueba](docs/evaluacion/analista.md) |
-| ¿Es más fiable que un solo modelo? ¿Cuánto varía entre repeticiones? | En curso |
+| ¿Es más fiable que un solo modelo? ¿Cuánto varía entre repeticiones? | En la evaluación 2, con el nuevo modelo B |
 
 La evolución de los prompts está en [`docs/evolucion-prompt-requisitos.md`](docs/evolucion-prompt-requisitos.md), y lo que queda por hacer, en [`docs/plan-de-construccion.md`](docs/plan-de-construccion.md).
 

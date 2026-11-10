@@ -64,6 +64,7 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 04-11 | Memoria, lista de contenido | `docs/contenido-memoria.md`: lo que tiene peso en el proyecto y debe estar en la memoria, por secciones, con lo imprescindible marcado; en el borrador faltan el experimento del sesgo, la versión congelada y las opciones de lectura de las iteraciones |
 | 06-11 | Hito 24, el backlog en GitHub (paso 124, en la rama `feat/github-export`) | GitHub no importa archivos: un `.zip` con un script que crea los issues con `gh`, como sub-issues; al repetirlo crea lo nuevo y avisa del resto. Prueba real con ReservaSalas: 67 issues con su jerarquía en 5 minutos, y repetir no crea nada |
 | 06-11 a 09-11 | LasCuarenta, proyecto universitario del autor, por el flujo completo (caso adicional, no sustituye a los pasos 118 a 121) | 13 rondas, 142 requisitos y 40 historias, sin reparaciones ni cambios del autor al validar; 21,95 $ y 80 minutos de modelos (el 71 % en preguntas y sugerencias). El tiempo del autor no se midió (unas 3–4 horas por su estimación, sin mockup; solo leyó las discrepancias). Ficha en `docs/evaluacion/lascuarenta.md`. |
+| 10-11 | Cambio de rumbo: el modelo B por OpenCode Go (sin código) | LUNA no tiene capacidad suficiente: B pasa a un modelo de otro fabricante con OpenCode Go (solo B; lo demás sigue en SOL). La evaluación 1 se interrumpe y se repetirá desde cero (hitos 25 a 27). Todo en `main`: rama de GitHub integrada y borrada, historia antigua guardada en un `.bundle`. El coste para una empresa, parte central de la memoria |
 | 20-10 | Documentación de la API (fuera del plan) | Swagger UI con los 42 endpoints documentados, que se actualiza sola y que los tests mantienen completa |
 
 ## Etapas
@@ -396,9 +397,31 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
   - **Resultado:** el autor no cambia nada (27 requisitos y 12 historias) en unos 19 minutos. Las 9 discrepancias del catálogo eran DEBERÍA frente a DEBERÁ, en requisitos que citan respuestas escritas como propuesta. La segunda ronda no repite preguntas y detecta una contradicción. Coste: 1,11 $.
   - **Límites:** el proyecto es muy pequeño y el revisor es el autor. La métrica de cambios del usuario sigue sin ediciones reales.
 
-### 16. Hito 24: el backlog en GitHub (06-11, en rama aparte)
+### 16. Hito 24: el backlog en GitHub (06-11; integrado en `main` el 10-11)
 
-El autor lo pide para incluirlo en la memoria si funciona. GitHub no tiene importador de archivos, así que Concilia da un `.zip` con un script que el usuario lanza con `gh`, sin que Concilia reciba ningún token. El estado vive en GitHub, en una marca invisible en cada issue con su id, su generación y un hash: repetir el script crea solo lo nuevo y lista lo modificado y eliminado con el comando que lo aplica, sin tocarlo. La generación hace falta porque una generación desde cero vuelve a numerar los ids. Prueba real con ReservaSalas (`docs/resultados-paso-124/README.md`): 67 issues con su jerarquía en 5 minutos, repetir no crea nada y una iteración simulada avisa de lo modificado y lo eliminado. Al autor le convence cómo se ven y pide borrar esos issues para importar el proyecto en el que trabaja. Está en `feat/github-export`, sin tocar `main` ni `evaluacion-1`; la rama se integra en el paso 125, tras los pasos 118 a 121, con la etiqueta `evaluacion-2`. La memoria ya lo incluye.
+El autor lo pide para incluirlo en la memoria si funciona. GitHub no tiene importador de archivos, así que Concilia da un `.zip` con un script que el usuario lanza con `gh`, sin que Concilia reciba ningún token. El estado vive en GitHub, en una marca invisible en cada issue con su id, su generación y un hash: repetir el script crea solo lo nuevo y lista lo modificado y eliminado con el comando que lo aplica, sin tocarlo. La generación hace falta porque una generación desde cero vuelve a numerar los ids. Prueba real con ReservaSalas (`docs/resultados-paso-124/README.md`): 67 issues con su jerarquía en 5 minutos, repetir no crea nada y una iteración simulada avisa de lo modificado y lo eliminado. Al autor le convence cómo se ven y pide borrar esos issues para importar el proyecto en el que trabaja. Se hizo en `feat/github-export` y se integró en `main` el 10-11-2026 (paso 125, adelantado por el cambio de rumbo de la etapa 17). La memoria ya lo incluye.
+
+### 17. Cambio de rumbo: el modelo B por OpenCode Go (10-11, sin código)
+
+- **Por qué:** LUNA no tiene capacidad suficiente para leer tanta información y procesarla con un resultado válido y útil:
+  - como árbitro de un catálogo grande, 2 válidos de 6;
+  - aporta casi nada a la unión: en clínicas, 6 preguntas, 1 requisito y ninguna historia;
+  - más defectos con las métricas externas: EARS 9,6 frente a 5,1 de SOL, e historias con dos acciones 21,4 frente a 6,0;
+  - propuesta vacía en PEPPOL.
+  
+  Además, SOL y LUNA son de la misma familia (GPT-6): con un modelo de otro fabricante, la verificación cruzada es más independiente, que es la base de la hipótesis.
+- **Qué cambia:** solo el modelo B, con OpenCode Go (plan Go, 10 $ al mes).
+  - A, árbitro, sugerencias y mockup siguen siendo SOL por la pasarela.
+  - El runner sigue siendo Claude Code: OpenCode Go lo admite, y para B solo cambian la dirección y la clave.
+  - Mismas condiciones para B: 128.000 tokens, los mismos prompts y planes de lectura.
+- **Lo que se hizo por LUNA se queda:** son redes de seguridad comunes a todos los modelos que solo actúan si hay un error (tope de salida, corte del `Write` incompleto, reintento por inactividad, `offset`/`limit` exactos, correcciones automáticas, reparar editando). Lo que de verdad limita viene de los 128.000 tokens de la pasarela, que siguen para SOL. Se revisan con datos en el paso 132.
+- **Plan:**
+  - hito 25: estudio de candidatos, proveedor por papel, prueba de humo, elección con clínicas, flujo frente a LUNA y cierre;
+  - hito 26: el paso 126 y lo de «Después» que el autor decida hacer antes;
+  - hito 27: la evaluación 2 desde cero, comparada con la 1.
+- **Coste:** desde ahora, en todo se mide el precio para una empresa que pagase por token. B también se calcula por token, con la nota de la suscripción.
+- **Repositorio:** solo `main`. La rama de GitHub, integrada y borrada; la historia de antes de quitar el coautor, en `C:\TFG\concilia-historia-antigua.bundle`. `evaluacion-1` queda en local como marca histórica.
+- **Memoria:** se trabaja en paralelo, con una sección temporal al final, «Cosas que añadir a la memoria», con este cambio, el coste para una empresa y la evaluación 2.
 
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
@@ -468,6 +491,10 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - Abaratar las pantallas del mockup. (El historial de mockups lo trae el hito 21: desde el paso 101 se guarda la página de cada mockup generado.)
 - ~~Del hito 23: la referencia del catálogo y del backlog en el paso 120~~: cerrada por el autor el 27-10-2026. El proyecto grande, con una lista de funcionalidades hecha por el autor (cobertura), una muestra revisada a ciegas (precisión) y las 26 trampas revisadas. SOL solo y LUNA solo son las propuestas de A y B de cada trabajo de Concilia.
 - ~~Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración~~: cerrada por el autor el 04-11-2026 sin hacerlo, como mejora futura. ~~El tope de fragmentos relacionados~~: cerrado por el autor el mismo día, 20.000 tokens, tras medirlo con clínicas (`docs/fragmentos-relacionados.md`).
+- **Desde el 10-11-2026:**
+  - qué modelo de OpenCode Go es el nuevo B (candidatos en el paso 127, elección en el 130);
+  - antes o después de la evaluación 2, cada punto de «Después» del plan, con la recomendación de Claude en cada uno;
+  - si el nuevo B puede hacer de árbitro en el experimento del sesgo (paso 136).
 
 ## Siguientes pasos
 
@@ -480,9 +507,12 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 5. ~~**Hito 20, trazabilidad visual y comparación de A, B y el árbitro**~~: la trazabilidad en un panel lateral (paso 99) y la comparación de A, B y el árbitro, con los embeddings guardados una sola vez para el informe y el CSV (paso 100), los dos el 22-10-2026. Revisado en el navegador por Claude y por el autor (23-10-2026): cerrado.
 6. ~~**Hito 21, historial de versiones de los entregables**~~: cada versión se guarda con su fecha y su origen (paso 101) y se puede ver, comparar con la actual y recuperar (paso 102), los dos el 23-10-2026. Revisado en el navegador por el autor (26-10-2026): cerrado.
 7. ~~**Hito 22, iteraciones del proyecto**~~ (pasos 109 a 116, completado el 03-11-2026 a falta de que el autor revise los resultados): ~~iteraciones en Documentos~~ (paso 109) y ~~ids estables~~ (paso 110), los dos el 26-10-2026; ~~la iteración de cada elemento~~ (paso 111, revisado por el autor el mismo día); ~~preguntas centradas~~ (paso 112, revisado el 27-10); ~~actualizar el catálogo y el backlog~~ (pasos 113 y 114, revisados el 27-10); ~~desde cero frente a lo anterior~~ (paso 115, revisado el 27-10); ~~la prueba real con clínicas en dos iteraciones~~ (paso 116, 03-11); ~~sus mejoras~~ (paso 122, 03-11); ~~la lectura relacionada con una documentación grande~~ (paso 123, 04-11).
-8. **Hito 23, evaluación** (en curso; ~~la versión congelada, paso 117~~, 04-11-2026, etiqueta `evaluacion-1`; ~~PURE en inglés, paso 105~~, 04-11-2026, 9,29 $; ~~métricas externas, paso 104~~, 04-11-2026; ~~la prueba como analista, paso 106~~, 05-11-2026; siguiente, el paso 118): métricas externas, un documento de PURE, una prueba editando de verdad y la comparación entre actualizar y empezar de cero. Desde el 27-10-2026 (autor), además: la versión congelada antes de evaluar (paso 117), la referencia revisada por el autor (118), 3 repeticiones de cada fase para ver cuánto varía (119), Concilia frente a un solo modelo con recall, precisión, F1 y coste, que es la comparación que responde a la hipótesis (120), y SOL ‖ SOL, para saber si lo que aporta el patrón viene de usar dos modelos distintos (121). Orden: 117, 105, 104, 106, 118, 119, 120 y 121. Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`.
-9. **Hito 24, el backlog en GitHub** (paso 124, en la rama `feat/github-export`): probado en real, incluido en la memoria y con su guía de uso en `README.md`, reescrito el 09-11 con los pasos de Jira y Azure DevOps; el autor ya lo usa desde la web con su proyecto (09-11). El paso 125 integra la rama y crea `evaluacion-2`, tras los pasos 118 a 121.
-- **Hito 25 (añadido el 09-11-2026), paso 126:** después de `evaluacion-2`, que el aviso de un par «mismo» separado diga en qué requisito o historia está el otro. Sale de un falso aviso en LasCuarenta: citaba una regla de Tute que parecía faltar y estaba en RF-081.
+8. **Hito 23, evaluación 1** (interrumpida el 10-11-2026 por el cambio del modelo B; lo hecho queda como evidencia del cambio y como el «antes»; ~~la versión congelada, paso 117~~, 04-11-2026, etiqueta `evaluacion-1`; ~~PURE en inglés, paso 105~~, 04-11-2026, 9,29 $; ~~métricas externas, paso 104~~, 04-11-2026; ~~la prueba como analista, paso 106~~, 05-11-2026; siguiente, el paso 118): métricas externas, un documento de PURE, una prueba editando de verdad y la comparación entre actualizar y empezar de cero. Desde el 27-10-2026 (autor), además: la versión congelada antes de evaluar (paso 117), la referencia revisada por el autor (118), 3 repeticiones de cada fase para ver cuánto varía (119), Concilia frente a un solo modelo con recall, precisión, F1 y coste, que es la comparación que responde a la hipótesis (120), y SOL ‖ SOL, para saber si lo que aporta el patrón viene de usar dos modelos distintos (121). Orden: 117, 105, 104, 106, 118, 119, 120 y 121. Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`.
+9. ~~**Hito 24, el backlog en GitHub**~~ (paso 124): probado en real, incluido en la memoria y con su guía de uso en `README.md`, reescrito el 09-11 con los pasos de Jira y Azure DevOps; el autor ya lo usa desde la web con su proyecto (09-11). Integrado en `main` el 10-11-2026 (paso 125).
+- **Desde el 10-11-2026, en este orden** (detalle en «Lo que queda, en orden» del plan):
+  - **hito 25, el modelo B por OpenCode Go** (pasos 127 a 132; el siguiente es el 127, estudio de los candidatos);
+  - **hito 26, antes de la evaluación 2:** el paso 126 (que el aviso de un par «mismo» separado diga en qué elemento está el otro; sale de un falso aviso en LasCuarenta) y lo de «Después» que el autor decida hacer antes;
+  - **hito 27, la evaluación 2** desde cero (pasos 133, 118, 134, 135, 119, 120, 121, 136 y 137).
 10. **Después:** hito 7 (catálogo v2) y redactar la memoria. Estructura del autor (22-10-2026, sustituye a la del 14-10): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución); 3 Conclusiones. **La memoria, empezada el 04-11-2026:** redactadas la introducción (unas 2.070 palabras) y las secciones 2.1 y 2.2 (unas 4.400 palabras, con los cuatro diagramas); la 2.3 y las conclusiones, pendientes. Unas 6.500 de las 10.000 palabras.
 
 - ~~**Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub~~. Todas decididas:

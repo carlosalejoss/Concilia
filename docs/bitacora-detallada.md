@@ -3238,3 +3238,58 @@ Ficha de LasCuarenta en `docs/evaluacion/lascuarenta.md`, con la información qu
 - **Revisión real:** solo las discrepancias. Por eso, validar sin cambios no se presenta como prueba de calidad.
 - **Mockup:** impresión general del autor, «no está mal».
 - **Pendiente:** decidir si se pasan AQUSA y `vale-ears` a LasCuarenta; los pasos 118 a 121, el 125 y el 126.
+
+## 10-11-2026, 09:14 (sesión)
+
+- **Qué pide el autor:** LUNA no es apta para el proyecto, porque no tiene capacidad para leer tanta información y procesarla con un resultado válido. Quiere usar OpenCode Go para el modelo B, saber qué se adaptó por LUNA, dejar solo la rama `main` y rehacer el plan con la integración de OpenCode Go antes de una evaluación nueva.
+- **Inventario de lo hecho por LUNA** (todo en `src/`, `prompts/` y los documentos de evolución):
+  - **Las medidas:**
+    - tope de salida de 64.000 tokens (hito 5);
+    - corte del `Write` con JSON incompleto;
+    - reintento por inactividad;
+    - `offset`/`limit` exactos en el plan de lectura (v0.2);
+    - pista de `REF-FRAG`;
+    - claves repetidas que se juntan solas;
+    - las correcciones `REF-LINEA`, `TIPO`, `ARB-FALTA` e `ID-SEQ`;
+    - reparar editando (paso 90);
+    - la línea del error de esquema (paso 122).
+  - **Ninguna perjudica a un modelo mejor:** son redes de seguridad que solo actúan si hay un error y dejan un aviso.
+  - **No fue por LUNA:** leer por partes (hito 12b, propuesta del team leader por los 128k), la lectura relacionada y las fuentes del árbitro. Vienen del límite de 128.000 tokens de la pasarela, que sigue para SOL.
+  - **Lo que el autor recordaba como «el reintento con LUNA fallaba siempre»** son reparaciones que no corregían nada (números de línea, P-064, `should`) o que no cabían. Las resolvieron esas medidas.
+- **OpenCode Go** (consultado en `opencode.ai/docs/go`):
+  - unos 30 modelos de varios fabricantes, 10 $ al mes, con un límite en dólares por modelo (15 $ al mes en Go: 3 $ cada 5 h y 7,5 $ a la semana);
+  - admite Claude Code como cliente: para B basta con cambiar `ANTHROPIC_BASE_URL` y la clave. El runner no se reescribe.
+- **Decisiones del autor:**
+  - **B por OpenCode Go con el plan Go.** Solo B; A, árbitro, sugerencias y mockup, siempre SOL por la pasarela.
+  - **Proveedor externo autorizado** por el autor, solo con documentos ficticios o públicos; basta con la norma.
+  - **Mismas condiciones para B:** 128.000 tokens, los mismos prompts y planes de lectura.
+  - **Elección del modelo:** estudio de 3 candidatos y pruebas reales.
+  - **Coste para una empresa:** el coste de B se calcula por token, con los precios por uso de OpenCode y la nota de la suscripción. Desde ahora el coste es central en la memoria: en todo se mide el precio para una empresa que pagase por uso, por fase y del flujo completo.
+  - **Evaluación 2 desde cero,** comparada con la 1. No se repite el 106; se mantiene SOL ‖ SOL y no se hace B ‖ B; se repite el experimento del sesgo del árbitro.
+  - **Repositorio:** todo en `main`, sin versiones congeladas hasta las evaluaciones finales.
+  - **El paso 126** va antes de la evaluación.
+  - **La memoria se trabaja en paralelo,** con una sección temporal al final, «Cosas que añadir a la memoria».
+  - **Lo de «Después»:** cada punto lo decide el autor (antes o después de la evaluación 2), con la recomendación de Claude.
+- **Hecho:**
+  - **Paso 125 adelantado:**
+    - `feat/github-export` integrada en `main` (sin conflictos), subida y borrada en local y en GitHub;
+    - la rama `backup/antes-de-quitar-coautor`, guardada en `C:\TFG\concilia-historia-antigua.bundle` (verificado) y borrada;
+    - quitado un worktree vacío del paso 107;
+    - `evaluacion-1` se conserva en local como marca histórica.
+  - **Plan:**
+    - hito 23 marcado como evaluación 1 interrumpida;
+    - hito 25 nuevo, el modelo B por OpenCode Go (pasos 127 a 132);
+    - hito 26, antes de la evaluación 2 (el 126 y lo de «Después» que se decida);
+    - hito 27, la evaluación 2 (133, 118, 134, 135, 119, 120, 121, 136 y 137);
+    - en cada punto de «Después», la recomendación de Claude.
+  - **`CLAUDE.md`, README y trazabilidad,** al día.
+  - **Memoria:** la sección «Cosas que añadir a la memoria», con el cambio de B (por qué, cómo, qué se queda, qué se gana y dónde va), el coste para una empresa y la evaluación 2. Compila.
+- **Cambio de criterio:**
+  - «Modelos: solo a través de la pasarela LiteLLM» pasa a tener una segunda excepción, el modelo B por OpenCode Go.
+  - La evaluación 1 con LUNA (`evaluacion-1`) se interrumpe.
+  - El paso 125 ya no espera a los pasos 118 a 121 y no crea `evaluacion-2`, que se crea en el 133.
+  - El paso 126 pasa de después a antes de la evaluación.
+- **Pendientes:**
+  - que el autor decida lo de «Después» y si el nuevo B puede hacer de árbitro en el paso 136;
+  - el paso 127 (estudio de los candidatos);
+  - contratar Go y crear la clave (paso 129).
