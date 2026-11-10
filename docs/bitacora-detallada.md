@@ -3293,3 +3293,33 @@ Ficha de LasCuarenta en `docs/evaluacion/lascuarenta.md`, con la información qu
   - que el autor decida lo de «Después» y si el nuevo B puede hacer de árbitro en el paso 136;
   - el paso 127 (estudio de los candidatos);
   - contratar Go y crear la clave (paso 129).
+
+## 10-11-2026, 09:29 (sesión, continuación)
+
+- **El autor decide «Después» punto por punto,** con la recomendación de Claude delante:
+  - **Antes de la evaluación 2,** en el hito 26 (pasos 138 a 143):
+    - la duración real de cada repetición (138);
+    - renombrar la «opción C» (139);
+    - los textos en el idioma del proyecto (140);
+    - la marca de la plataforma para las historias de la unión que juntan varias de una misma propuesta (141);
+    - las mejoras de GitHub (142);
+    - los prompts mejorados v0.14 (143), con el cambio del árbitro del backlog dentro.
+  - **Los prompts, con el matiz de Claude:** primero se mide el nuevo B con los prompts v0.12 (paso 131, frente a LUNA) y después la v0.14 frente al 131. Así se sabe qué aporta cada cambio sin evaluar dos veces.
+  - **Después:** la aprobación por umbral, leerlo todo con documentación pequeña y el CSV solo con lo nuevo.
+  - **Quitados del plan:** abaratar las pantallas del mockup y el mockup con la suscripción y `frontend-design`.
+  - **Por decidir:** el hito 7 (el autor duda de que haga falta).
+- **Experimento del sesgo (paso 136):** el nuevo B puede hacer de árbitro solo en los nuevos arbitrajes y sin gastar el plan mensual de Go. Primero los de preguntas, que son baratos; los de catálogo, solo si queda margen.
+- **Consumo de OpenCode Go:**
+  - sin «Extra Usage» (el autor no quiere pagar de más);
+  - antes de cada tarea con B, Claude estima su coste a precio de lista (los límites de Go son dólares a esos precios);
+  - cada uso se anota en `docs/opencode-go/consumo.md`;
+  - si no cabe, se espera.
+- **Hecho:**
+  - el plan (hito 26 con los pasos 138 a 143, control del consumo en el hito 25, tope en el 136, «Después» reescrito);
+  - `CLAUDE.md`, la trazabilidad y la memoria (orden de los cambios y límite de la suscripción; compila);
+  - en la memoria de Claude, la regla del consumo, y borrado el recuerdo del mockup aparcado.
+- **Pendientes:**
+  - el hito 7;
+  - del paso 142, cuáles de las cuatro mejoras y el token de GitHub del camino B;
+  - si la evaluación 2 no cabe en un mes de Go: esperar o subir un mes a Go Plus;
+  - el paso 127.

@@ -49,32 +49,36 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 **Hito 26, antes de la evaluación 2:**
 
 7. **126,** que el aviso de un par «mismo» separado diga en qué elemento está el otro.
-8. **Lo de «Después» que el autor decida hacer antes de evaluar.** Cada punto de «Después» lleva la recomendación de Claude, pendiente de que decida el autor.
+8. **138,** la duración real de cada repetición de una tarea.
+9. **139,** renombrar en el código la «opción C» como «lectura relacionada».
+10. **140,** los textos de la plataforma en el idioma del proyecto.
+11. **141,** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta.
+12. **142,** mejoras del backlog en GitHub (por concretar con el autor cuáles, y el token del camino B).
+13. **143,** los prompts mejorados (v0.14), medidos frente al paso 131.
 
 **Hito 27, evaluación 2** (en este orden):
 
-9. **133,** congelar la versión (`evaluacion-2`), con los hitos 25 y 26 terminados.
-10. **118,** la referencia del autor: revisar las trampas y hacer la lista de funcionalidades. No depende del modelo.
-11. **134,** el flujo con el documento de PURE, en inglés, con el nuevo B (repite el 105).
-12. **135,** AQUSA y `vale-ears` sobre lo del 134 (repite el 104).
-13. **119,** las 9 ejecuciones de clínicas.
-14. **120,** las hojas de revisión y la comparación con un solo modelo.
-15. **121,** SOL ‖ SOL.
-16. **136,** el sesgo del árbitro con el nuevo B (repite el 103).
-17. **137,** el coste para una empresa que paga por uso: por fase y del flujo completo, de cada configuración.
+14. **133,** congelar la versión (`evaluacion-2`), con los hitos 25 y 26 terminados.
+15. **118,** la referencia del autor: revisar las trampas y hacer la lista de funcionalidades. No depende del modelo.
+16. **134,** el flujo con el documento de PURE, en inglés, con el nuevo B (repite el 105).
+17. **135,** AQUSA y `vale-ears` sobre lo del 134 (repite el 104).
+18. **119,** las 9 ejecuciones de clínicas.
+19. **120,** las hojas de revisión y la comparación con un solo modelo.
+20. **121,** SOL ‖ SOL.
+21. **136,** el sesgo del árbitro con el nuevo B (repite el 103), con tope de consumo de Go.
+22. **137,** el coste para una empresa que paga por uso: por fase y del flujo completo, de cada configuración.
 
 **En paralelo, desde el 10-11-2026 (autor):** la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. Está en `memoria/tfg/memoria.tex`, fuera de git, y se compila con MiKTeX (instalado el 22-10-2026) y `memoria/tfg/compilar.ps1`.
 - **Estructura del autor (22-10-2026):** 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema, 2.3 validación de la solución); 3 Conclusiones.
 - **Empezada el 04-11-2026.**
 - **Lo que hay que llevar a su sitio** está en su sección temporal «Cosas que añadir a la memoria», al final de `memoria.tex` (10-11-2026).
 
-**Después de la evaluación:** lo que el autor deje en «Después».
+**Después de la evaluación:** lo que queda en «Después»: la aprobación por umbral, leerlo todo cuando la documentación es pequeña y el CSV solo con lo nuevo de una iteración. El hito 7 está por decidir.
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
 - ~~si se hace un CSV solo con lo nuevo de una iteración~~ (cerrado el 04-11-2026 sin hacerlo, como mejora futura);
-- abaratar las pantallas del mockup: ¿antes o después de la evaluación 2? Por decidir por el autor (en «Después», punto 10);
-- la licencia del repositorio, por acordar con la tutora y con la empresa (README);
-- el mockup con la suscripción y la skill `frontend-design`, aparcado desde el 15-10-2026 (en «Después», punto 11).
+- la licencia del repositorio, por acordar con la tutora y con la empresa (README).
+- Quitados del plan el 10-11-2026 (autor: no se hacen): abaratar las pantallas del mockup y el mockup con la suscripción y la skill `frontend-design`.
 
 ## Hito 0: preparación y prueba de humo (completado)
 
@@ -922,6 +926,7 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
 | El modelo se elige entre 3 candidatos: primero un estudio y después pruebas reales. | Autor |
 | El autor puede usar un proveedor externo a la pasarela. Solo con documentos ficticios o públicos; basta con la norma, sin bloqueo en la plataforma. | Autor |
 | El coste de B se calcula por token, con los precios por uso de OpenCode, igual que SOL, con una nota de que se pagó con la suscripción. Así las cifras dicen lo que pagaría una empresa que pagase por uso. | Autor |
+| Vigilar el consumo de OpenCode Go y no pagar de más: sin «Extra Usage». Si una tarea no cabe en lo que queda del límite de 5 horas, de la semana o del mes, se espera (ver «Control del consumo», abajo). | Autor |
 | Las medidas que se tomaron por LUNA se mantienen: son redes de seguridad comunes a todos los modelos, que solo actúan si hay un error y dejan un aviso. Lo que de verdad limita (leer por partes, la lectura relacionada, las fuentes del árbitro) viene de los 128.000 tokens de la pasarela, que siguen para SOL. Se revisan con datos en el paso 132. | Propuesta de Claude, aprobada por el autor |
 
 **Qué se queda igual:** el runner, los prompts, las validaciones y correcciones de la plataforma, el emparejamiento, el árbitro y el mockup. Sin configurar el proveedor de B, todo funciona como hoy (LUNA por la pasarela).
@@ -931,6 +936,13 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
 - con «Extra Usage», al pasar el límite se sigue pagando por uso;
 - los modelos que entrenan con los datos están bloqueados por defecto. Unos guardan las peticiones 0 días y otros 30, y se puede limitar a la UE y EE. UU.;
 - admite Claude Code como cliente validado.
+
+**Control del consumo de OpenCode Go** (autor, 10-11-2026: el plan no es infinito y no quiere pagar de más):
+- **Los límites de Go son dólares a precio de lista,** con los mismos precios por token que usa Concilia para calcular el coste. Por eso los tokens de cada ejecución de B (informe del trabajo y `docs/costes/costes.md`) dicen cuánto límite gasta.
+- **`docs/opencode-go/consumo.md`:** una fila por cada cosa que use OpenCode Go (fecha, paso, modelo, tokens y dólares a precio de lista) y lo que queda del mes, de la semana y de las 5 horas de cada modelo.
+- **Antes de lanzar algo con B,** Claude estima su coste con las ejecuciones parecidas que ya hay y lo compara con lo que queda. Si no cabe, se espera a que se renueve el límite, sin activar «Extra Usage».
+- **El autor puede comprobar el consumo real** en la consola de OpenCode, en su espacio de trabajo, y Claude ajusta la tabla si no coincide.
+- **Cada modelo tiene su propio límite,** así que las pruebas de los candidatos que no se elijan no gastan el del modelo elegido.
 
 - [ ] 127. **Estudio de los candidatos** (Claude; sin coste). Claude propone los 3 mejores para el papel de B en `docs/opencode-go/candidatos.md`, y el autor los aprueba. Criterios:
   - **otro fabricante:** se descartan GPT 6 Luna (es LUNA) y GPT 5.6 Luna;
@@ -1006,14 +1018,56 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
 
 ## Hito 26: antes de la evaluación 2
 
-Lo que cambia el código o los prompts y debe estar hecho antes de congelar la versión de la evaluación 2, para no tener que evaluar dos veces. El paso 126 lo pidió el autor el 09-11-2026 para después de la evaluación; el 10-11-2026 pide no dejarlo fuera y pasa aquí. Los puntos de «Después» que el autor decida hacer antes se añaden a este hito.
+Lo que cambia el código o los prompts y debe estar hecho antes de congelar la versión de la evaluación 2, para no tener que evaluar dos veces. El paso 126 lo pidió el autor el 09-11-2026 para después de la evaluación; el 10-11-2026 pide no dejarlo fuera y pasa aquí. Los puntos de «Después» que el autor decidió hacer antes (10-11-2026) son los pasos 138 a 143.
+
+**Orden:** 126, 138, 139, 140, 141, 142 y 143.
+- Primero lo que no cambia ninguna salida de los modelos.
+- Los prompts mejorados (143) van los últimos, porque se miden con el flujo completo y con la plataforma ya cambiada.
 
 - [ ] 126. Que el aviso de un par «mismo» separado diga en qué elemento de la unión está el otro. Hoy (`ArbiterDeviations`, desviación `SplitSame`) el aviso cita el texto de la propuesta original: «… que el árbitro dejó en otro elemento». Si el árbitro lo reescribió o lo unió con otros, esa frase ya no está en el catálogo y no se puede encontrar. En LasCuarenta, el aviso de RF-068 (Guiñote) citaba una regla de Tute que parecía faltar y estaba en RF-081, unida con otras dos. El aviso añadirá el id del elemento donde acabó («… que el árbitro dejó en RF-081») y seguirá citando el texto.
   - **Qué se queda igual:** cuándo se marca una desviación, cuántas hay, los prompts y las salidas de los modelos.
   - **Qué cambia:** solo el texto de la explicación de la plataforma, en el catálogo y el backlog. Vale para los trabajos nuevos; las explicaciones ya guardadas no se reescriben.
   - **Cómo se comprueba:** un test de `ArbiterDeviations` con un par «mismo» separado que comprueba el id del otro elemento en la explicación de cada uno.
 
-**Hecho cuando:** el aviso de un par «mismo» separado dice el id del elemento donde está el otro, y se puede ir a él desde el catálogo o el backlog; y están hechos los puntos de «Después» que el autor haya puesto antes de la evaluación.
+- [ ] 138. **La duración real de cada repetición de una tarea** («Después», punto 5c).
+  - **Hoy:** las repeticiones se guardan al final, con la hora de inicio del primer intento, y todas salen con la duración total. La del trabajo sí es real (pasos 116 y 123).
+  - **Por qué antes:** con el coste y el tiempo como parte central de la memoria, las duraciones deben ser reales.
+  - **Qué se queda igual:** las salidas de los modelos y la duración de cada trabajo.
+  - **Cómo se comprueba:** un test con un trabajo que repite una tarea, en el que cada intento tiene su propia duración.
+- [ ] 139. **Renombrar en el código la «opción C» como «lectura relacionada»** («Después», punto 8; autor, 04-11-2026).
+  - La documentación ya usa los nombres nuevos (y la «opción A» es la «lectura completa»), pero el código sigue diciendo «option C» u «opción C»:
+    - los comentarios de `FocusedRoundInput`, `FocusedRound`, `CatalogUpdateRound`, `RelatedContext` y `scripts/evaluacion/medir-fragmentos-relacionados.cs`;
+    - las descripciones de la API de `QuestionEndpoints` (con ellas, `docs/api/openapi.json`, que se regenera al compilar en Debug).
+  - Para encontrarlos: `grep -rn "option C\|opción C" src scripts`.
+  - No cambia el comportamiento.
+- [ ] 140. **Los textos de la plataforma en el idioma del proyecto** («Después», punto 6; paso 105). En un proyecto en inglés, el contenido de los modelos sale en inglés, pero no lo que pone la plataforma:
+  - la narrativa de las historias («Como… quiero… para…») y «Tarea», en la web, la comparación y Gherkin;
+  - los títulos, leyendas y anexos de Word y PDF;
+  - el prefijo «A decidir por el cliente:», que pide así el prompt de sugerencias.
+
+  **Por qué antes:** la evaluación 2 repite PURE en inglés (paso 134). Así la web y las exportaciones salen enteras en inglés, y AQUSA lee la narrativa tal cual. No cambia ninguna salida de los modelos, salvo el prefijo de las sugerencias, que va en su prompt.
+- [ ] 141. **Que la plataforma marque las historias de la unión que juntan varias de una misma propuesta** («Después», punto 7, la parte sin IA; pasos 104 y 105).
+  - **El problema:** en PURE, las 6 historias de la unión con dos acciones juntan cada una 2 o 3 historias atómicas de SOL. En los demás backlogs, el árbitro junta varias de A en una de un 0 % a un 57 % de las veces.
+  - **Qué se hace:** la plataforma marca esa historia como discrepancia, como ya hace con las demás desviaciones del árbitro (paso 88).
+  - **Antes,** en el paso 131 se mira si sigue pasando con el nuevo B, porque los datos de ahora son con LUNA.
+  - **Cómo se comprueba:** un test de `ArbiterDeviations` con una historia de la unión que junta dos de A.
+- [ ] 142. **Mejoras del backlog en GitHub** («Después», punto 9; hito 24):
+  - **para cualquier usuario de la web,** con un botón en Concilia que llame a la API de GitHub (el camino B), sin `gh` y sin Git Bash;
+  - **organizaciones:** usar los issue types en lugar de las etiquetas;
+  - **GitHub Projects:** añadir los issues a un tablero;
+  - **nivel 3 de las iteraciones:** además de avisar en la consola, dejar un comentario en cada issue afectado, para que el aviso quede donde se trabaja, sin repetirlo en cada ejecución.
+
+  **Por concretar con el autor antes de empezar:**
+  - cuáles de las cuatro;
+  - el camino B obliga a que Concilia reciba un token de GitHub. Va en contra de la decisión del 06-11-2026 («Concilia no recibe ningún token»), así que hay que decidir dónde se guarda y quién lo pone.
+- [ ] 143. **Los prompts mejorados (v0.14)** («Después», punto 1; autor, 10-11-2026). Se hace después del paso 131 y se mide aparte, para saber qué mejora viene del cambio de B y qué de los prompts.
+  - **Qué se mejora** se decide con lo que fallen SOL y el nuevo B en los pasos 130 y 131, más lo ya conocido:
+    - que el árbitro del backlog no junte historias de A que ya son atómicas solo porque B tiene una que las cubre («Después», punto 7);
+    - 39 de las 40 sugerencias de PURE eran suposiciones (paso 105).
+  - **Cómo se trabaja,** como en los pasos 112 a 114: Claude propone los cambios, el autor los revisa antes del código, y se actualizan `prompts/v0/CHANGELOG.md` y `docs/evolucion-prompt-requisitos.md`.
+  - **Cómo se comprueba:** el flujo de clínicas con la v0.14 y el nuevo B, frente al paso 131 (misma B, prompts v0.12): calidad, reparaciones, correcciones automáticas, coste para una empresa y minutos. Los modos de siempre tienen una instantánea de la v0.12 (`V012SnapshotTests`), que se actualiza a propósito.
+
+**Hecho cuando:** están hechos los pasos 126 y 138 a 143, y los prompts v0.14 están medidos frente al paso 131.
 
 ## Hito 27: evaluación 2 (SOL ‖ nuevo B)
 
@@ -1024,7 +1078,9 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 - **Resultados** en `docs/evaluacion-2/`, aparte de los de la evaluación 1, que se quedan en `docs/evaluacion/`.
 - **Coste estimado:**
   - **SOL por la pasarela:** unos 20–30 $ el 119, 30–50 $ el 121, unos 9 $ el 134 y unos 7 $ el 136.
-  - **El nuevo B, a precio de lista:** unos 10–15 $ en total. Supera los 7,5 $ semanales de Go y ronda sus 15 $ mensuales, así que hay que repartirlo en dos o tres semanas o activar «Extra Usage» con un tope. Se confirma con el modelo elegido.
+  - **El nuevo B, a precio de lista:** unos 10–15 $ en total. Supera los 7,5 $ semanales de Go y ronda sus 15 $ mensuales.
+    - Se reparte en dos o tres semanas, sin «Extra Usage» (autor, 10-11-2026), con el control del consumo del hito 25.
+    - Se confirma con el modelo elegido en el paso 130, antes de congelar.
 
 - [ ] 133. **Congelar la versión** (como el 117), con los hitos 25 y 26 terminados.
   - **Una prueba barata en inglés** antes de congelar: la ronda de preguntas de PURE con el nuevo B, porque en inglés no se ha probado.
@@ -1048,7 +1104,11 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 - [ ] 121. SOL ‖ SOL (instrucciones en el hito 23; el autor lo mantiene el 10-11-2026). Separa lo que aporta tener dos modelos distintos de lo que aporta hacer dos intentos. No se hace «B ‖ B» (autor, 10-11-2026).
 - [ ] 136. **El sesgo del árbitro con el nuevo B** (repite el 103; autor, 10-11-2026: las propuestas de B serán mejores y el resultado puede cambiar).
   - Con «Volver a arbitrar», sobre las mismas propuestas de una ronda de preguntas y un catálogo del paso 119, se hacen 3 arbitrajes con SOL y 3 con el nuevo B de árbitro, y se compara qué parte de la unión viene de A y de B.
-  - El nuevo B solo hace de árbitro en este experimento: un nuevo arbitraje no cambia el proyecto.
+  - El nuevo B solo hace de árbitro en este experimento: un nuevo arbitraje no cambia el proyecto (autor, 10-11-2026).
+  - **Con tope de consumo** (autor, 10-11-2026: que no se gaste el plan mensual de Go en esta prueba):
+    - primero los 3 arbitrajes de preguntas, que son baratos;
+    - los de catálogo, que gastan mucho más (unos 900.000 tokens de entrada cada uno), solo si lo que queda del mes los cubre con margen después de los pasos 119 y 134;
+    - si no, se hacen menos (2) o solo los de preguntas, y se dice en los resultados.
   - Resultados en `docs/evaluacion-2/sesgo-arbitro.md`.
 - [ ] 137. **El coste para una empresa que paga por uso** (autor, 10-11-2026: el coste es una parte central de la memoria).
   - Con los precios por token de `precios.json`, el coste por fase (preguntas, sugerencias, catálogo, backlog y mockup) y del flujo completo de clínicas en cada configuración: SOL solo, SOL ‖ LUNA, SOL ‖ nuevo B y SOL ‖ SOL.
@@ -1067,55 +1127,26 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 
 ## Después
 
-**Antes o después de la evaluación 2: lo decide el autor** (10-11-2026). Cada punto lleva la recomendación de Claude y su motivo. Lo que el autor ponga antes pasa al hito 26; lo que deje para después se queda aquí y va a la memoria como trabajo futuro.
+**Decidido por el autor el 10-11-2026, punto por punto,** con la recomendación de Claude delante:
+- **pasan al hito 26, antes de la evaluación 2:** los puntos 1, 5c, 6, 7, 8 y 9;
+- **se quedan aquí, para después:** los puntos 3, 5a y 5b, que van a la memoria como trabajo futuro;
+- **por decidir:** el hito 7 (punto 1b);
+- **quitados del plan:** abaratar las pantallas del mockup y el mockup con la suscripción y la skill `frontend-design` (autor: no se hacen).
 
-Por este orden:
-
-1. Mejorar los prompts fase a fase sobre el flujo que ya funciona. En el catálogo, se retoma el hito 7 con los prompts v2 del autor.
-   **¿Antes o después? Por decidir.** El autor se inclina por antes, para no evaluar dos veces.
-   - **Claude recomienda antes, pero midiendo cada cambio por separado:**
-     - primero el cambio de B con los prompts de siempre (paso 131, frente a LUNA);
-     - después los prompts mejorados (v0.14), medidos con clínicas frente al 131, como cada versión en `docs/evolucion-prompt-requisitos.md`.
-
-     Así se sabe qué aporta cada cambio y la evaluación completa se hace una sola vez. Evaluar dos veces cuesta el doble y no hace falta: la evaluación 1 ya da el «antes».
-   - **Qué se mejora** se decide con lo que fallen SOL y el nuevo B en los pasos 130 y 131, más lo ya conocido:
-     - el árbitro del backlog que junta historias (punto 7);
-     - 39 de 40 sugerencias de PURE eran suposiciones (paso 105).
-   - **El hito 7** (catálogo v2 de arriba abajo, que espera los prompts del autor desde el 05-10-2026): Claude lo pondría después, salvo que el autor tenga ya sus prompts. Es rehacer el catálogo entero, y de su esquema actual dependen las iteraciones, la actualización, el emparejamiento y el árbitro.
+1. ~~Mejorar los prompts fase a fase sobre el flujo que ya funciona.~~ Pasa al hito 26, paso 143 (10-11-2026, autor).
+   - Se hace midiendo cada cambio por separado: primero el nuevo B con los prompts de siempre (paso 131, frente a LUNA) y después los prompts mejorados frente al 131.
+   - La evaluación completa se hace una sola vez, al final.
+   - **1b. El hito 7** (catálogo v2 de arriba abajo, con los prompts v2 del autor): **por decidir.** El autor duda de que haga falta (10-11-2026).
 2. ~~Árbitro con embeddings.~~ Pasa al hito 17 (16-10-2026).
-3. Aprobación por umbral y evaluación: precision, recall y F1 frente a la versión validada y a listas de referencia hechas a mano. (27-10-2026, autor: la evaluación pasa al hito 23, paso 120; aquí queda la aprobación por umbral.)
-   **¿Antes o después? Por decidir.** Claude recomienda después. Es aprobar sin revisión lo que A y B dicen igual por encima de un umbral, y en parte ya lo hacen los umbrales del paso 88. Cambia cómo revisa el usuario, no lo que generan los modelos, y la evaluación 2 no lo mide (no se repite la prueba como analista).
+3. **Aprobación por umbral:** aprobar sin revisión lo que A y B dicen igual por encima de un umbral. En parte ya lo hacen los umbrales del paso 88. **Después** (autor, 10-11-2026): cambia cómo revisa el usuario, no lo que generan los modelos, y la evaluación 2 no lo mide. (La evaluación con precision, recall y F1 pasó al paso 120 el 27-10-2026.)
 4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación. (Sustituido el 22-10-2026 por el autor: 1 Introducción; 2 Desarrollo, con 2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución; 3 Conclusiones. Empezada el 04-11-2026. Desde el 10-11-2026 se trabaja en paralelo: ver «Lo que queda, en orden».)
-5. **Mejoras futuras de las iteraciones del proyecto** (decididas con el autor el 04-11-2026, como recomendaba Claude: no se hacen antes de evaluar; van a la memoria como hallazgos y trabajo futuro):
-   - **Leer todo cuando la documentación es pequeña y la lectura relacionada cuando es grande.** Con unos 26.000 tokens, leerlo todo costó 0,95 $ frente a 1,67 $ con la misma detección (paso 116); con unos 96.000, leerlo todo no cabe y solo funciona la lectura relacionada (paso 123). No se hace ahora porque solo hay una ejecución de cada caso (el coste de una misma fase varía mucho), habría que fijar un umbral que no se ha medido, y cambiar la lectura justo antes de congelar la versión (paso 117) obligaría a repetir las mediciones. La lectura relacionada funciona en todos los tamaños; leerlo todo solo ahorraría céntimos en los proyectos pequeños.
-     **¿Antes o después? Por decidir.** Claude recomienda después. Solo afecta a las rondas centradas y a las actualizaciones, y la evaluación 2 usa las rondas de siempre, que ya lo leen todo. Además habría que medir un umbral.
-   - **Un CSV para Jira o Azure DevOps solo con lo nuevo de una iteración,** para no duplicar lo ya importado. Era la decisión abierta del hito 22; se cierra sin hacerlo porque solo sirve a quien ya importó el backlog y después lo actualiza, un caso que no entra en la evaluación.
-     **¿Antes o después? Por decidir.** Claude recomienda después: trabajo futuro.
-   - **La duración real de cada repetición de una tarea:** hoy las repeticiones se guardan al final, con la hora de inicio del primer intento, y todas salen con la duración total (la del trabajo sí es real; pasos 116 y 123).
-     **¿Antes o después? Por decidir.** Claude recomienda antes. Con el coste y el tiempo como parte central de la memoria, las duraciones deben ser reales. Es pequeño y no cambia ninguna salida de los modelos.
-6. **Los textos de la plataforma en el idioma del proyecto** (paso 105, 04-11-2026): en un proyecto en inglés, el contenido de los modelos sale en inglés, pero no lo que pone la plataforma:
-   - la narrativa de las historias («Como… quiero… para…») y «Tarea» en la web, la comparación y Gherkin;
-   - los títulos, leyendas y anexos de Word y PDF;
-   - el prefijo «A decidir por el cliente:», que pide así el prompt de sugerencias.
-   No se hace durante la evaluación porque cambia el código (sería `evaluacion-2`), aunque no obligaría a repetir ninguna ejecución con modelos: las exportaciones salen de lo guardado.
-   **¿Antes o después? Por decidir.** Claude recomienda antes. La evaluación 2 repite PURE en inglés (paso 134). Así la web y las exportaciones salen enteras en inglés, y AQUSA puede leer la narrativa tal cual. No cambia ninguna salida de los modelos.
-7. **Que el árbitro del backlog no junte historias atómicas de una misma propuesta** (pasos 104 y 105, 04-11-2026). Se decide con las repeticiones del paso 119. En PURE, las 6 historias de la unión con dos acciones juntan cada una 2 o 3 historias atómicas de SOL; en los demás backlogs, el árbitro junta varias de A en una de un 0 % a un 57 % de las veces. Dos piezas:
-   - **la más fiable, sin IA:** la plataforma marca como discrepancia la historia de la unión que junta varias de una misma propuesta, como ya hace con las demás desviaciones del árbitro (paso 88);
-   - **en el prompt:** pedir al árbitro que no junte historias de A que ya son atómicas solo porque B tiene una que las cubre.
-   No se hace durante la evaluación, porque cambiaría la versión congelada.
-   **¿Antes o después? Por decidir.** Claude recomienda antes. La marca de la plataforma, sin IA, va aparte; el cambio del prompt, dentro de la mejora de prompts del punto 1. Antes se mira en el paso 131 si sigue pasando con el nuevo B, porque los datos de ahora son con LUNA. Afecta a la calidad del backlog que mide la evaluación.
-8. **Renombrar en el código la «opción C» como «lectura relacionada»** (04-11-2026, autor). El nombre ya está cambiado en la documentación (y la «opción A» es la «lectura completa»), pero el código sigue diciendo «option C» u «opción C»: los comentarios de `FocusedRoundInput`, `FocusedRound`, `CatalogUpdateRound`, `RelatedContext` y `scripts/evaluacion/medir-fragmentos-relacionados.cs`, y las descripciones de la API de `QuestionEndpoints` (con ellas, `docs/api/openapi.json`, que se regenera al compilar en Debug). Para encontrarlos: `grep -rn "option C\|opción C" src scripts`. No se hace durante la evaluación porque cambiaría la versión congelada; no cambia el comportamiento, así que no obliga a repetir ninguna ejecución.
-   **¿Antes o después? Por decidir.** Claude recomienda antes. Es trivial, no cambia el comportamiento, y ahora no hay versión congelada.
-9. **Mejoras futuras del backlog en GitHub** (hito 24, 06-11-2026, autor):
-   - **para cualquier usuario de la web,** con un botón en Concilia que llame a la API de GitHub (el camino B), sin `gh` y sin Git Bash;
-   - **organizaciones:** usar los issue types en lugar de las etiquetas;
-   - **GitHub Projects:** añadir los issues a un tablero;
-   - **nivel 3 de las iteraciones:** además de avisar en la consola, dejar un comentario en cada issue afectado, para que el aviso quede donde se trabaja, sin repetirlo en cada ejecución.
-
-   **¿Antes o después? Por decidir.** Claude recomienda después: trabajo futuro. La evaluación no lo mide y lo que hay ya funciona.
-10. **Abaratar las pantallas del mockup** (abierto desde el 15-10-2026). Cada pantalla lee el armazón entero, y el mockup es la fase más cara: 17–21 $ en clínicas, frente a unos 5 $ del resto del flujo.
-    **¿Antes o después? Por decidir.** Claude recomienda después. Es rediseñar cómo se construye un mockup que el autor ya dio por bueno, y la hipótesis no mide el mockup.
-    - El coste actual se documenta tal cual en el paso 137, y la mejora va como trabajo futuro.
-    - Si el autor quiere un apartado de reducción de coste en la memoria, es la palanca más grande y tendría que ir antes.
-11. **El mockup con la suscripción y la skill `frontend-design`** (aparcado desde el 15-10-2026).
-    **¿Antes o después? Por decidir.** Claude recomienda después o descartarlo: el autor decidió el 10-11-2026 que el mockup sea siempre SOL.
+5. **Mejoras futuras de las iteraciones del proyecto** (04-11-2026):
+   - **Leer todo cuando la documentación es pequeña y la lectura relacionada cuando es grande.** **Después** (autor, 10-11-2026).
+     - Con unos 26.000 tokens, leerlo todo costó 0,95 $ frente a 1,67 $ con la misma detección (paso 116). Con unos 96.000, leerlo todo no cabe y solo funciona la lectura relacionada (paso 123).
+     - Solo afecta a las rondas centradas y a las actualizaciones, que la evaluación 2 no usa, y habría que medir un umbral.
+   - **Un CSV para Jira o Azure DevOps solo con lo nuevo de una iteración,** para no duplicar lo ya importado. **Después** (autor, 10-11-2026): trabajo futuro.
+   - ~~La duración real de cada repetición de una tarea.~~ Pasa al hito 26, paso 138 (10-11-2026, autor).
+6. ~~Los textos de la plataforma en el idioma del proyecto.~~ Pasa al hito 26, paso 140 (10-11-2026, autor).
+7. ~~Que el árbitro del backlog no junte historias atómicas de una misma propuesta.~~ Pasa al hito 26 (10-11-2026, autor): la marca de la plataforma, en el paso 141, y el cambio del prompt, dentro de los prompts mejorados del paso 143.
+8. ~~Renombrar en el código la «opción C» como «lectura relacionada».~~ Pasa al hito 26, paso 139 (10-11-2026, autor).
+9. ~~Mejoras del backlog en GitHub.~~ Pasa al hito 26, paso 142 (10-11-2026, autor).

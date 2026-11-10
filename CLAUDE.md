@@ -13,7 +13,7 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
 
   **Cambio de rumbo del 10-11-2026 (autor).** LUNA no tiene capacidad suficiente para el proyecto: el modelo B pasa a un modelo de otro fabricante por OpenCode Go (hito 25, pasos 127 a 132), y es la prioridad.
   - La evaluación 1 (SOL ‖ LUNA, hito 23) se interrumpe con los pasos 117, 105, 104 y 106 hechos: son la evidencia del cambio.
-  - La evaluación se hace de nuevo desde cero en el hito 27 (pasos 133, 118, 134, 135, 119, 120, 121, 136 y 137), tras el hito 26 (el paso 126 y lo de «Después» que el autor decida hacer antes; cada punto de «Después» lleva la recomendación de Claude, pendiente de que decida el autor).
+  - La evaluación se hace de nuevo desde cero en el hito 27 (pasos 133, 118, 134, 135, 119, 120, 121, 136 y 137), tras el hito 26. El hito 26 lo forman el paso 126 y lo de «Después» que el autor decidió el mismo día hacer antes (pasos 138 a 143); los prompts mejorados v0.14 (paso 143), medidos frente al flujo con el nuevo B y los prompts v0.12 (paso 131). Abaratar las pantallas del mockup y el mockup con la suscripción y `frontend-design`, quitados del plan.
   - Paso 125 hecho el mismo día: `feat/github-export` integrada en `main`, subida y borrada. La rama `backup/antes-de-quitar-coautor`, guardada en `C:\TFG\concilia-historia-antigua.bundle` y borrada. Solo existe `main`, y la etiqueta `evaluacion-1` queda en local como marca histórica.
   - La memoria se trabaja en paralelo; lo que hay que llevar a su sitio está en su sección temporal «Cosas que añadir a la memoria», al final de `memoria.tex`.
   - Siguiente: el paso 127 (estudio de los candidatos).
@@ -28,6 +28,11 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
   - **Solo B:** A, el árbitro, las sugerencias y el mockup siguen siendo `SS - GPT-6-SOL` por la pasarela.
   - **Norma:** el autor puede usar ese proveedor externo, solo con documentos ficticios o públicos (sin bloqueo en la plataforma; nunca el documento B interno).
   - **Mismas condiciones para B:** 128.000 tokens de contexto, los mismos prompts y planes de lectura.
+  - **Consumo vigilado y sin pagar de más:**
+    - sin «Extra Usage»;
+    - antes de lanzar algo con B, Claude estima su coste a precio de lista (los límites de Go son dólares a esos precios) y lo compara con lo que queda de las 5 horas, de la semana y del mes;
+    - cada uso se anota en `docs/opencode-go/consumo.md`;
+    - si no cabe, se espera.
   - **Motivo:** LUNA no tiene capacidad suficiente para leer tanta información y procesarla con un resultado válido. Además es de la misma familia que SOL, y un modelo de otro fabricante hace más independiente la verificación cruzada.
 - Runner: proceso hijo `claude -p`, con el prompt por entrada estándar, `--output-format stream-json --verbose` y veredicto final obligatorio (`VEREDICTO: {...}`). Proveedores: `LiteLlm` y `Fake`. No existe proveedor de suscripción personal ni debe crearse. (Sustituida el 08-10-2026 por decisión del autor: el mockup usa el proveedor `ClaudeSubscription`; ver «Iteración v0».) (Ampliada el 10-11-2026, autor: un proveedor por papel y el proveedor `OpenCodeGo` para el modelo B, paso 128.)
   - El runner sigue siendo Claude Code; no se usa el programa `opencode`. Para B solo cambian la dirección (`https://opencode.ai/inference/go/anthropic`) y la clave (`OPENCODE_GO_API_KEY`, en `ANTHROPIC_AUTH_TOKEN` del hijo).
@@ -138,8 +143,10 @@ Del hito 23: ninguna. La referencia del catálogo y del backlog del paso 120 la 
 
 Abiertas desde el 10-11-2026 (las decide el autor):
 - qué modelo de OpenCode Go es el nuevo B: los 3 candidatos, en el paso 127; la elección, en el paso 130;
-- antes o después de la evaluación 2, cada punto de «Después» del plan (Claude dejó su recomendación en cada uno);
-- si el nuevo B puede hacer de árbitro en el experimento del sesgo (paso 136), solo en los nuevos arbitrajes, que no cambian el proyecto.
+- si se hace el hito 7 (catálogo v2): el autor duda de que haga falta;
+- del paso 142 (mejoras de GitHub): cuáles de las cuatro, y dónde se guarda el token de GitHub del camino B.
+
+Cerradas el 10-11-2026: lo demás de «Después», punto por punto (ver el plan), y que el nuevo B haga de árbitro en el experimento del sesgo (paso 136), solo en los nuevos arbitrajes y con tope de consumo de Go.
 
 ## Runner y pasarela (verificado)
 

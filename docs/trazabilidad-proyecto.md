@@ -417,9 +417,10 @@ El autor lo pide para incluirlo en la memoria si funciona. GitHub no tiene impor
 - **Lo que se hizo por LUNA se queda:** son redes de seguridad comunes a todos los modelos que solo actúan si hay un error (tope de salida, corte del `Write` incompleto, reintento por inactividad, `offset`/`limit` exactos, correcciones automáticas, reparar editando). Lo que de verdad limita viene de los 128.000 tokens de la pasarela, que siguen para SOL. Se revisan con datos en el paso 132.
 - **Plan:**
   - hito 25: estudio de candidatos, proveedor por papel, prueba de humo, elección con clínicas, flujo frente a LUNA y cierre;
-  - hito 26: el paso 126 y lo de «Después» que el autor decida hacer antes;
+  - hito 26: el paso 126 y lo de «Después» que el autor decidió hacer antes (pasos 138 a 143: duración real de las repeticiones, renombrar la «opción C», textos en el idioma del proyecto, marca de las historias que juntan varias, mejoras de GitHub y prompts v0.14). Los prompts se miden frente al flujo con el nuevo B y los prompts de siempre, para saber qué aporta cada cambio sin evaluar dos veces;
   - hito 27: la evaluación 2 desde cero, comparada con la 1.
-- **Coste:** desde ahora, en todo se mide el precio para una empresa que pagase por token. B también se calcula por token, con la nota de la suscripción.
+- **Coste:** desde ahora, en todo se mide el precio para una empresa que pagase por token. B también se calcula por token, con la nota de la suscripción. El consumo de Go se vigila sin pagar de más: sin «Extra Usage», con una tabla de consumo y con una estimación antes de cada tarea.
+- **Quitados del plan:** abaratar las pantallas del mockup y el mockup con la suscripción y `frontend-design`. Quedan para después: la aprobación por umbral, leerlo todo con documentación pequeña y el CSV solo con lo nuevo. Por decidir: el hito 7.
 - **Repositorio:** solo `main`. La rama de GitHub, integrada y borrada; la historia de antes de quitar el coautor, en `C:\TFG\concilia-historia-antigua.bundle`. `evaluacion-1` queda en local como marca histórica.
 - **Memoria:** se trabaja en paralelo, con una sección temporal al final, «Cosas que añadir a la memoria», con este cambio, el coste para una empresa y la evaluación 2.
 
@@ -488,13 +489,15 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 ## Decisiones que siguen abiertas
 
 - ~~Umbral de «discrepancia grave»~~: cerrado por el autor el 19-10-2026. Dos umbrales del emparejamiento (0,90 y 0,70, paso 87), y la discrepancia la marcan las desviaciones del árbitro respecto al emparejamiento (paso 88). El origen de los embeddings lo decidió el autor el 16-10-2026: un modelo local.
-- Abaratar las pantallas del mockup. (El historial de mockups lo trae el hito 21: desde el paso 101 se guarda la página de cada mockup generado.)
+- ~~Abaratar las pantallas del mockup.~~ Quitado del plan por el autor el 10-11-2026: no se hace.
 - ~~Del hito 23: la referencia del catálogo y del backlog en el paso 120~~: cerrada por el autor el 27-10-2026. El proyecto grande, con una lista de funcionalidades hecha por el autor (cobertura), una muestra revisada a ciegas (precisión) y las 26 trampas revisadas. SOL solo y LUNA solo son las propuestas de A y B de cada trabajo de Concilia.
 - ~~Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración~~: cerrada por el autor el 04-11-2026 sin hacerlo, como mejora futura. ~~El tope de fragmentos relacionados~~: cerrado por el autor el mismo día, 20.000 tokens, tras medirlo con clínicas (`docs/fragmentos-relacionados.md`).
 - **Desde el 10-11-2026:**
   - qué modelo de OpenCode Go es el nuevo B (candidatos en el paso 127, elección en el 130);
-  - antes o después de la evaluación 2, cada punto de «Después» del plan, con la recomendación de Claude en cada uno;
-  - si el nuevo B puede hacer de árbitro en el experimento del sesgo (paso 136).
+  - si se hace el hito 7 (catálogo v2);
+  - del paso 142, qué mejoras de GitHub se hacen y dónde se guarda el token del camino B.
+  
+  Cerradas el mismo día: el resto de «Después», punto por punto, y que el nuevo B haga de árbitro en el experimento del sesgo, con tope de consumo.
 
 ## Siguientes pasos
 
@@ -511,14 +514,14 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 9. ~~**Hito 24, el backlog en GitHub**~~ (paso 124): probado en real, incluido en la memoria y con su guía de uso en `README.md`, reescrito el 09-11 con los pasos de Jira y Azure DevOps; el autor ya lo usa desde la web con su proyecto (09-11). Integrado en `main` el 10-11-2026 (paso 125).
 - **Desde el 10-11-2026, en este orden** (detalle en «Lo que queda, en orden» del plan):
   - **hito 25, el modelo B por OpenCode Go** (pasos 127 a 132; el siguiente es el 127, estudio de los candidatos);
-  - **hito 26, antes de la evaluación 2:** el paso 126 (que el aviso de un par «mismo» separado diga en qué elemento está el otro; sale de un falso aviso en LasCuarenta) y lo de «Después» que el autor decida hacer antes;
+  - **hito 26, antes de la evaluación 2:** el paso 126 (que el aviso de un par «mismo» separado diga en qué elemento está el otro; sale de un falso aviso en LasCuarenta) y los pasos 138 a 143 (lo de «Después» que el autor decidió hacer antes, con los prompts v0.14 los últimos);
   - **hito 27, la evaluación 2** desde cero (pasos 133, 118, 134, 135, 119, 120, 121, 136 y 137).
 10. **Después:** hito 7 (catálogo v2) y redactar la memoria. Estructura del autor (22-10-2026, sustituye a la del 14-10): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución); 3 Conclusiones. **La memoria, empezada el 04-11-2026:** redactadas la introducción (unas 2.070 palabras) y las secciones 2.1 y 2.2 (unas 4.400 palabras, con los cuatro diagramas); la 2.3 y las conclusiones, pendientes. Unas 6.500 de las 10.000 palabras.
 
 - ~~**Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub~~. Todas decididas:
   - los embeddings en local (hito 17) y el analizador de Gherkin (paso 97), ya hechos;
   - AQUSA y `vale-ears` (paso 104) y el dataset PURE (paso 105), en el hito 23.
-- **Aparcado (15-10-2026):** rehacer el mockup del proyecto grande de ejemplo con la suscripción del autor (Sonnet 5.5) y la skill `frontend-design`, para ver si mejora la calidad; se retoma tras el paso 65. Riesgos: agotar el límite de 5 horas de la suscripción (se puede reanudar) y cambiar dos cosas a la vez, el modelo y las skills.
+- ~~**Aparcado (15-10-2026):**~~ Quitado del plan por el autor el 10-11-2026: el mockup es siempre SOL. Era: rehacer el mockup del proyecto grande de ejemplo con la suscripción del autor (Sonnet 5.5) y la skill `frontend-design`, para ver si mejora la calidad; se retoma tras el paso 65. Riesgos: agotar el límite de 5 horas de la suscripción (se puede reanudar) y cambiar dos cosas a la vez, el modelo y las skills.
 
 ## Cifras de seguimiento
 
