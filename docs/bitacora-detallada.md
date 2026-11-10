@@ -3335,3 +3335,17 @@ Ficha de LasCuarenta en `docs/evaluacion/lascuarenta.md`, con la información qu
 - **Pendientes:**
   - explicar al autor en detalle las mejoras de GitHub (paso 142);
   - hablar del presupuesto de Go si la evaluación 2 no cabe en un mes.
+
+## 10-11-2026, 10:07 (sesión, continuación)
+
+- **GitHub, paso 142** (autor, tras la explicación de Claude): se hacen los issue types en las organizaciones, GitHub Projects y los comentarios del nivel 3, todo en el script con `gh`, sin token en Concilia. El botón «Subir a GitHub» de la web (camino B) pasa a «Después» como mejora futura, porque obligaría a que Concilia recibiera un token.
+- **Presupuesto de Go** (autor): que el coste pese al elegir el modelo y contratar en el paso 129, no antes, repartiendo el trabajo por meses. Con una condición:
+  - **el nuevo B tiene que razonar como SOL,** para no repetir el error de LUNA: la capacidad es obligatoria y el precio solo decide entre los capaces;
+  - **suscripción:** plan Go cada mes desde el paso 129 hasta febrero de 2027 incluido;
+  - **Go Plus (40 $),** solo en caso de extrema necesidad: a pocas semanas del depósito, sin el TFG acabado y sin uso.
+- **Fechas:** depósito a finales de enero de 2027 y defensa en febrero de 2027. Anotadas en el plan («Dónde estamos») y en la memoria de Claude.
+- **Estimación de Claude** con los tokens de LUNA (±50 %):
+  - con un modelo del nivel de SOL, unos 23–25 $ a precio de lista de aquí al final, unos dos meses de Go;
+  - con uno barato, unos 7 $.
+- **Hecho:** el plan (criterio obligatorio en el paso 127, suscripción y límite a mitad de tarea en el control del consumo, paso 142 concretado, botón de GitHub en «Después»), `CLAUDE.md`, la trazabilidad y la memoria de Claude.
+- **Pendientes:** el paso 127 (estudio de los candidatos).

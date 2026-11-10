@@ -420,7 +420,12 @@ El autor lo pide para incluirlo en la memoria si funciona. GitHub no tiene impor
   - hito 26: el paso 126 y lo de «Después» que el autor decidió hacer antes (pasos 138 a 143: duración real de las repeticiones, renombrar la «opción C», textos en el idioma del proyecto, marca de las historias que juntan varias, mejoras de GitHub y prompts v0.14). Los prompts se miden frente al flujo con el nuevo B y los prompts de siempre, para saber qué aporta cada cambio sin evaluar dos veces;
   - hito 27: la evaluación 2 desde cero, comparada con la 1.
 - **Coste:** desde ahora, en todo se mide el precio para una empresa que pagase por token. B también se calcula por token, con la nota de la suscripción. El consumo de Go se vigila sin pagar de más: sin «Extra Usage», con una estimación antes de cada tarea y con todo el consumo (SOL y Go) en `docs/costes/consumo.md`, por proyecto y con el coste de cada tarea, generado por un script (paso 144).
-- **Quitados del plan:** abaratar las pantallas del mockup y el mockup con la suscripción y `frontend-design`. El hito 7 (catálogo v2), también quitado: la iteración v0 ya sustituyó los lotes que rediseñaba, y su idea del inventario de funcionalidades queda como candidata a los prompts v0.14. Quedan para después: la aprobación por umbral, leerlo todo con documentación pequeña y el CSV solo con lo nuevo.
+- **El modelo y la suscripción:**
+  - el nuevo B tiene que razonar como SOL (condición obligatoria; el precio solo decide entre los que cumplen);
+  - plan Go cada mes desde el paso 129 hasta febrero de 2027 (defensa; depósito a finales de enero);
+  - Go Plus solo en caso de extrema necesidad.
+- **GitHub (paso 142):** issue types en las organizaciones, GitHub Projects y comentarios en los issues afectados por una iteración, todo en el script con `gh`, sin token en Concilia. El botón de la web, para después.
+- **Quitados del plan:** abaratar las pantallas del mockup y el mockup con la suscripción y `frontend-design`. El hito 7 (catálogo v2), también quitado: la iteración v0 ya sustituyó los lotes que rediseñaba, y su idea del inventario de funcionalidades queda como candidata a los prompts v0.14. Quedan para después: la aprobación por umbral, leerlo todo con documentación pequeña, el CSV solo con lo nuevo y el botón «Subir a GitHub» en la web.
 - **Repositorio:** solo `main`. La rama de GitHub, integrada y borrada; la historia de antes de quitar el coautor, en `C:\TFG\concilia-historia-antigua.bundle`. `evaluacion-1` queda en local como marca histórica.
 - **Memoria:** se trabaja en paralelo, con una sección temporal al final, «Cosas que añadir a la memoria», con este cambio, el coste para una empresa y la evaluación 2.
 
@@ -494,9 +499,8 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - ~~Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración~~: cerrada por el autor el 04-11-2026 sin hacerlo, como mejora futura. ~~El tope de fragmentos relacionados~~: cerrado por el autor el mismo día, 20.000 tokens, tras medirlo con clínicas (`docs/fragmentos-relacionados.md`).
 - **Desde el 10-11-2026:**
   - qué modelo de OpenCode Go es el nuevo B (candidatos en el paso 127, elección en el 130);
-  - del paso 142, qué mejoras de GitHub se hacen y dónde se guarda el token del camino B.
-  
-  Cerradas el mismo día: el resto de «Después», punto por punto, y que el nuevo B haga de árbitro en el experimento del sesgo, con tope de consumo.
+
+  Cerradas el mismo día: el resto de «Después», punto por punto; las mejoras de GitHub del paso 142 (issue types, Projects y nivel 3; el botón de la web, para después); y que el nuevo B haga de árbitro en el experimento del sesgo, con tope de consumo.
 
 ## Siguientes pasos
 

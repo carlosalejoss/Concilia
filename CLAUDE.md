@@ -28,6 +28,8 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
   - **Solo B:** A, el árbitro, las sugerencias y el mockup siguen siendo `SS - GPT-6-SOL` por la pasarela.
   - **Norma:** el autor puede usar ese proveedor externo, solo con documentos ficticios o públicos (sin bloqueo en la plataforma; nunca el documento B interno).
   - **Mismas condiciones para B:** 128.000 tokens de contexto, los mismos prompts y planes de lectura.
+  - **Capacidad obligatoria:** el nuevo B tiene que razonar como SOL; nunca otro modelo flojo como LUNA. El precio solo decide entre los que cumplen.
+  - **Suscripción:** el plan Go cada mes, desde el primer uso (paso 129) hasta febrero de 2027 incluido (defensa; el depósito es a finales de enero). Go Plus (40 $) solo en caso de extrema necesidad: a pocas semanas del depósito, sin el TFG acabado y sin uso.
   - **Consumo vigilado y sin pagar de más:**
     - sin «Extra Usage»;
     - antes de lanzar algo con B, Claude estima su coste a precio de lista (los límites de Go son dólares a esos precios) y lo compara con lo que queda de las 5 horas, de la semana y del mes;
@@ -143,9 +145,8 @@ Del hito 23: ninguna. La referencia del catálogo y del backlog del paso 120 la 
 
 Abiertas desde el 10-11-2026 (las decide el autor):
 - qué modelo de OpenCode Go es el nuevo B: los 3 candidatos, en el paso 127; la elección, en el paso 130;
-- del paso 142 (mejoras de GitHub): cuáles de las cuatro, y dónde se guarda el token de GitHub del camino B.
 
-Cerradas el 10-11-2026: lo demás de «Después», punto por punto (ver el plan); el hito 7 (catálogo v2), quitado del plan, con su idea del inventario de funcionalidades como candidata a los prompts v0.14; y que el nuevo B haga de árbitro en el experimento del sesgo (paso 136), solo en los nuevos arbitrajes y con tope de consumo de Go.
+Cerradas el 10-11-2026: lo demás de «Después», punto por punto (ver el plan); del paso 142, los issue types en las organizaciones, GitHub Projects y los comentarios del nivel 3 (sin token en Concilia), y el botón «Subir a GitHub» de la web pasa a «Después» como mejora futura; el hito 7 (catálogo v2), quitado del plan, con su idea del inventario de funcionalidades como candidata a los prompts v0.14; y que el nuevo B haga de árbitro en el experimento del sesgo (paso 136), solo en los nuevos arbitrajes y con tope de consumo de Go.
 
 ## Runner y pasarela (verificado)
 

@@ -29,6 +29,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
   - `feat/github-export` está integrada y borrada, también en GitHub.
   - La historia de antes de quitar el coautor (rama `backup/antes-de-quitar-coautor`) está guardada en `C:\TFG\concilia-historia-antigua.bundle`, fuera del repositorio, y la rama está borrada.
   - La etiqueta `evaluacion-1` se conserva, solo en local, como marca histórica de la evaluación 1: los documentos de los pasos 104 a 106 la citan.
+- **Fechas que mandan** (autor, 10-11-2026): el depósito del TFG es a finales de enero de 2027 y la defensa en febrero de 2027. La evaluación 2 tiene que estar terminada con tiempo antes del depósito.
 - **Siguiente:** el paso 127.
 
 ### Lo que queda, en orden
@@ -54,7 +55,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 10. **139,** renombrar en el código la «opción C» como «lectura relacionada».
 11. **140,** los textos de la plataforma en el idioma del proyecto.
 12. **141,** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta.
-13. **142,** mejoras del backlog en GitHub (por concretar con el autor cuáles, y el token del camino B).
+13. **142,** mejoras del backlog en GitHub: issue types en las organizaciones, GitHub Projects y comentarios en los issues afectados por una iteración.
 14. **143,** los prompts mejorados (v0.14), medidos frente al paso 131.
 
 **Hito 27, evaluación 2** (en este orden):
@@ -74,7 +75,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 - **Empezada el 04-11-2026.**
 - **Lo que hay que llevar a su sitio** está en su sección temporal «Cosas que añadir a la memoria», al final de `memoria.tex` (10-11-2026).
 
-**Después de la evaluación:** lo que queda en «Después»: la aprobación por umbral, leerlo todo cuando la documentación es pequeña y el CSV solo con lo nuevo de una iteración.
+**Después de la evaluación:** lo que queda en «Después»: la aprobación por umbral, leerlo todo cuando la documentación es pequeña, el CSV solo con lo nuevo de una iteración y el botón «Subir a GitHub» en la web.
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
 - ~~si se hace un CSV solo con lo nuevo de una iteración~~ (cerrado el 04-11-2026 sin hacerlo, como mejora futura);
@@ -931,6 +932,8 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
 | El modelo se elige entre 3 candidatos: primero un estudio y después pruebas reales. | Autor |
 | El autor puede usar un proveedor externo a la pasarela. Solo con documentos ficticios o públicos; basta con la norma, sin bloqueo en la plataforma. | Autor |
 | El coste de B se calcula por token, con los precios por uso de OpenCode, igual que SOL, con una nota de que se pagó con la suscripción. Así las cifras dicen lo que pagaría una empresa que pagase por uso. | Autor |
+| El nuevo B tiene que razonar como SOL: no se vuelve a elegir un modelo que no sea capaz, como LUNA. La capacidad es una condición obligatoria; el precio solo decide entre los que la cumplen. | Autor |
+| Plan Go (10 $) cada mes, desde que se use por primera vez (paso 129) hasta febrero de 2027 incluido, el mes de la defensa. Go Plus (40 $) solo en caso de extrema necesidad: a pocas semanas del depósito (finales de enero de 2027), sin el TFG acabado y sin uso disponible. | Autor |
 | Vigilar el consumo de OpenCode Go y no pagar de más: sin «Extra Usage». Si una tarea no cabe en lo que queda del límite de 5 horas, de la semana o del mes, se espera (ver «Control del consumo», abajo). | Autor |
 | Las medidas que se tomaron por LUNA se mantienen: son redes de seguridad comunes a todos los modelos, que solo actúan si hay un error y dejan un aviso. Lo que de verdad limita (leer por partes, la lectura relacionada, las fuentes del árbitro) viene de los 128.000 tokens de la pasarela, que siguen para SOL. Se revisan con datos en el paso 132. | Propuesta de Claude, aprobada por el autor |
 
@@ -948,8 +951,16 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
 - **Antes de lanzar algo con B,** Claude estima su coste con las ejecuciones parecidas que ya hay y lo compara con lo que queda. Si no cabe, se espera a que se renueve el límite, sin activar «Extra Usage».
 - **El autor puede comprobar el consumo real** en la consola de OpenCode, en su espacio de trabajo, y Claude ajusta la tabla si no coincide.
 - **Cada modelo tiene su propio límite,** así que las pruebas de los candidatos que no se elijan no gastan el del modelo elegido.
+- **Se contrata en el paso 129, no antes,** y se reparte el trabajo por meses: los hitos 25 y 26 en el primero o los primeros, y la evaluación 2 después, siempre antes del depósito. Con un modelo del nivel de SOL, la estimación ronda los 23–25 $ a precio de lista de aquí al final, unos dos meses de Go. Al llegar al tope de un mes, se espera al siguiente.
+- **Qué pasa al llegar al límite a mitad de una tarea:** se comprueba en el paso 129. Si la tarea falla y se pierde lo gastado, ninguna tarea se lanza sin que su estimación quepa en lo que queda de las 5 horas.
 
-- [ ] 127. **Estudio de los candidatos** (Claude; sin coste). Claude propone los 3 mejores para el papel de B en `docs/opencode-go/candidatos.md`, y el autor los aprueba. Criterios:
+- [ ] 127. **Estudio de los candidatos** (Claude; sin coste). Claude propone los 3 mejores para el papel de B en `docs/opencode-go/candidatos.md`, y el autor los aprueba.
+  - **Condición obligatoria:** razonar como SOL (autor, 10-11-2026).
+    - Se comparan en fuentes públicas con SOL (GPT-6): razonamiento, trabajo como agente con herramientas y seguir instrucciones largas.
+    - Los que queden claramente por debajo, como LUNA, se descartan aunque sean baratos.
+  - **El precio decide entre los que la cumplen:** cuánto costaría el resto del proyecto y cuántos meses de Go supone.
+
+  Criterios:
   - **otro fabricante:** se descartan GPT 6 Luna (es LUNA) y GPT 5.6 Luna;
   - **sin modelos que entrenan con los datos:** fuera los «Contributor» y los gratuitos, que además dan `403` fuera de OpenCode;
   - **calidad comprobable en fuentes públicas:**
@@ -1072,15 +1083,23 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
   - **Qué se hace:** la plataforma marca esa historia como discrepancia, como ya hace con las demás desviaciones del árbitro (paso 88).
   - **Antes,** en el paso 131 se mira si sigue pasando con el nuevo B, porque los datos de ahora son con LUNA.
   - **Cómo se comprueba:** un test de `ArbiterDeviations` con una historia de la unión que junta dos de A.
-- [ ] 142. **Mejoras del backlog en GitHub** («Después», punto 9; hito 24):
-  - **para cualquier usuario de la web,** con un botón en Concilia que llame a la API de GitHub (el camino B), sin `gh` y sin Git Bash;
-  - **organizaciones:** usar los issue types en lugar de las etiquetas;
-  - **GitHub Projects:** añadir los issues a un tablero;
-  - **nivel 3 de las iteraciones:** además de avisar en la consola, dejar un comentario en cada issue afectado, para que el aviso quede donde se trabaja, sin repetirlo en cada ejecución.
+- [ ] 142. **Mejoras del backlog en GitHub** («Después», punto 9; hito 24). Elegidas por el autor el 10-11-2026, con la explicación de Claude delante; las tres siguen en el script que lanza el usuario con `gh`, así que Concilia sigue sin recibir ningún token:
+  - **Issue types en las organizaciones.**
+    - Cuando el repositorio es de una organización, el tipo nativo de GitHub (Epic, Feature, Task…, según los que tenga configurados) en lugar de la etiqueta. En un repositorio personal, la etiqueta, como hoy.
+    - Para probarlo hace falta una organización gratuita de GitHub (la crea el autor).
+    - Unas 2–3 horas.
+  - **GitHub Projects.**
+    - Añadir los issues a un tablero (Pendiente, En curso, Hecho), con la iteración y la épica como campos.
+    - Pide un permiso más para `gh` (`gh auth refresh -s project`), que el script explica si falta.
+    - Unas 4 horas.
+  - **Nivel 3 de las iteraciones.**
+    - Al repetir el script tras una iteración, además de avisar en la consola, deja un comentario en cada issue modificado o eliminado («esta historia cambió en la iteración 2: …»), sin repetirlo si se vuelve a lanzar.
+    - Sigue sin cambiar ni cerrar nada solo.
+    - Unas 2–3 horas.
 
-  **Por concretar con el autor antes de empezar:**
-  - cuáles de las cuatro;
-  - el camino B obliga a que Concilia reciba un token de GitHub. Va en contra de la decisión del 06-11-2026 («Concilia no recibe ningún token»), así que hay que decidir dónde se guarda y quién lo pone.
+  **Cómo se comprueba:** con el `gh` simulado del paso 124 y una prueba real en un repositorio de prueba del autor (personal y de organización), que después se borra.
+
+  **No se hace:** el botón «Subir a GitHub» en la web (el camino B). Pasa a «Después» como mejora futura (autor, 10-11-2026), porque obligaría a que Concilia recibiera un token de GitHub.
 - [ ] 143. **Los prompts mejorados (v0.14)** («Después», punto 1; autor, 10-11-2026). Se hace después del paso 131 y se mide aparte, para saber qué mejora viene del cambio de B y qué de los prompts.
   - **Qué se mejora** se decide con lo que fallen SOL y el nuevo B en los pasos 130 y 131, más lo ya conocido:
     - que el árbitro del backlog no junte historias de A que ya son atómicas solo porque B tiene una que las cubre («Después», punto 7);
@@ -1101,7 +1120,8 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 - **Coste estimado:**
   - **SOL por la pasarela:** unos 20–30 $ el 119, 30–50 $ el 121, unos 9 $ el 134 y unos 7 $ el 136.
   - **El nuevo B, a precio de lista:** unos 10–15 $ en total. Supera los 7,5 $ semanales de Go y ronda sus 15 $ mensuales.
-    - Se reparte en dos o tres semanas, sin «Extra Usage» (autor, 10-11-2026), con el control del consumo del hito 25.
+    - Se reparte en varias semanas, sin «Extra Usage», con el control del consumo del hito 25. Si no cabe en un mes, se espera al siguiente.
+    - Todo antes del depósito (finales de enero de 2027). Go Plus solo si, a pocas semanas del depósito, falta uso y el TFG no está acabado (autor, 10-11-2026).
     - Se confirma con el modelo elegido en el paso 130, antes de congelar.
 
 - [ ] 133. **Congelar la versión** (como el 117), con los hitos 25 y 26 terminados.
@@ -1150,8 +1170,8 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 ## Después
 
 **Decidido por el autor el 10-11-2026, punto por punto,** con la recomendación de Claude delante:
-- **pasan al hito 26, antes de la evaluación 2:** los puntos 1, 5c, 6, 7, 8 y 9;
-- **se quedan aquí, para después:** los puntos 3, 5a y 5b, que van a la memoria como trabajo futuro;
+- **pasan al hito 26, antes de la evaluación 2:** los puntos 1, 5c, 6, 7, 8 y 9 (este, salvo el botón de la web);
+- **se quedan aquí, para después:** los puntos 3, 5a y 5b y el botón «Subir a GitHub» del punto 9, que van a la memoria como trabajo futuro;
 - **quitados del plan:** el hito 7 (punto 1b), abaratar las pantallas del mockup y el mockup con la suscripción y la skill `frontend-design` (autor: no se hacen).
 
 1. ~~Mejorar los prompts fase a fase sobre el flujo que ya funciona.~~ Pasa al hito 26, paso 143 (10-11-2026, autor).
@@ -1170,4 +1190,7 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 6. ~~Los textos de la plataforma en el idioma del proyecto.~~ Pasa al hito 26, paso 140 (10-11-2026, autor).
 7. ~~Que el árbitro del backlog no junte historias atómicas de una misma propuesta.~~ Pasa al hito 26 (10-11-2026, autor): la marca de la plataforma, en el paso 141, y el cambio del prompt, dentro de los prompts mejorados del paso 143.
 8. ~~Renombrar en el código la «opción C» como «lectura relacionada».~~ Pasa al hito 26, paso 139 (10-11-2026, autor).
-9. ~~Mejoras del backlog en GitHub.~~ Pasa al hito 26, paso 142 (10-11-2026, autor).
+9. ~~Mejoras del backlog en GitHub.~~ Pasan al hito 26, paso 142 (10-11-2026, autor), salvo una:
+   - **El botón «Subir a GitHub» en la web** (el camino B): Concilia llamaría a la API de GitHub, sin `gh` ni Git Bash, para cualquier usuario de la web. **Después** (autor, 10-11-2026): mejora futura.
+   - Obligaría a que Concilia recibiera un token de GitHub, en contra de la decisión del 06-11-2026. Para un solo usuario iría en `.env`, como las demás claves.
+   - Es la mayor de las mejoras (1–2 días): rehacer en C# lo que hace el script.
