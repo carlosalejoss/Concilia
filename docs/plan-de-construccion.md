@@ -30,7 +30,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
   - La historia de antes de quitar el coautor (rama `backup/antes-de-quitar-coautor`) está guardada en `C:\TFG\concilia-historia-antigua.bundle`, fuera del repositorio, y la rama está borrada.
   - La etiqueta `evaluacion-1` se conserva, solo en local, como marca histórica de la evaluación 1: los documentos de los pasos 104 a 106 la citan.
 - **Fechas que mandan** (autor, 10-11-2026): el depósito del TFG es a finales de enero de 2027 y la defensa en febrero de 2027. La evaluación 2 tiene que estar terminada con tiempo antes del depósito.
-- **Siguiente:** el paso 127.
+- **Paso 127 hecho (10-11-2026):** candidatos Kimi K3.1 Pro y Gemini 4 Argon, aprobados por el autor, y Claude Haiku 5.5 de reserva (`docs/opencode-go/candidatos.md`).
+- **Siguiente:** el paso 128.
 
 ### Lo que queda, en orden
 
@@ -40,7 +41,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Hito 25, el modelo B por OpenCode Go:**
 
-1. **127,** estudio de los candidatos: Claude propone los 3 mejores y el autor los aprueba.
+1. ~~**127,** estudio de los candidatos~~ (hecho el 10-11-2026): Kimi K3.1 Pro y Gemini 4 Argon, y Claude Haiku 5.5 de reserva.
 2. **128,** un proveedor por papel en el runner (código y tests).
 3. **144,** todo el consumo (SOL y OpenCode Go) en un solo fichero, por proyecto y con el coste de cada tarea, antes del primer uso de Go.
 4. **129,** la cuenta, la clave y la prueba de humo. El autor contrata Go y crea la clave; Claude prueba los 3 candidatos.
@@ -954,7 +955,16 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
 - **Se contrata en el paso 129, no antes,** y se reparte el trabajo por meses: los hitos 25 y 26 en el primero o los primeros, y la evaluación 2 después, siempre antes del depósito. Con un modelo del nivel de SOL, la estimación ronda los 23–25 $ a precio de lista de aquí al final, unos dos meses de Go. Al llegar al tope de un mes, se espera al siguiente.
 - **Qué pasa al llegar al límite a mitad de una tarea:** se comprueba en el paso 129. Si la tarea falla y se pierde lo gastado, ninguna tarea se lanza sin que su estimación quepa en lo que queda de las 5 horas.
 
-- [ ] 127. **Estudio de los candidatos** (Claude; sin coste). Claude propone los 3 mejores para el papel de B en `docs/opencode-go/candidatos.md`, y el autor los aprueba.
+- [x] 127. **Estudio de los candidatos** (Claude; sin coste). Claude propone los 3 mejores para el papel de B en `docs/opencode-go/candidatos.md`, y el autor los aprueba.
+  - **Hecho el 10-11-2026.** Solo dos modelos de Go igualan o superan a SOL en el índice de Artificial Analysis (v5.0.1: SOL 44, LUNA 28) y en Terminal-Bench 4.x, las pruebas que separan a LUNA de SOL:
+    - **Kimi K3.1 Pro** (Moonshot AI): 46 y 65,7, a 2 / 10 $ por millón de tokens. Riesgo: es lento.
+    - **Gemini 4 Argon** (Google): 50 y 57,4, a 4 / 20 $ (2 / 10 $ hasta el 30-11-2026). Riesgo: el coste para una empresa.
+
+    Los dos van con el protocolo traducido por OpenCode.
+  - **Claude Haiku 5.5** (36 y 33–39), de reserva, por ser el único con el protocolo nativo de Claude Code. Lo elige el autor como recomendaba Claude, frente a GLM-5.3 o a no tener tercero.
+  - **Revisión del autor:** propuso nueve descartados a partir de la comparación de OpenCode (`opencode.ai/data/compare`). Esa página solo da la ficha técnica: *reasoning* es «Sí/No» y no hay pruebas de calidad. Con datos, ninguno llega a SOL.
+  - **Criterios relajados:** al autor no le importa que el modelo sea mejor que SOL (ya se admitía) ni que entrene con los datos. No cambia la elección.
+  - **Pendiente para el paso 128:** si el coste cobra las lecturas de caché a su precio o, como hoy, a precio completo.
   - **Condición obligatoria:** razonar como SOL (autor, 10-11-2026).
     - Se comparan en fuentes públicas con SOL (GPT-6): razonamiento, trabajo como agente con herramientas y seguir instrucciones largas.
     - Los que queden claramente por debajo, como LUNA, se descartan aunque sean baratos.
@@ -1012,18 +1022,21 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
   4. Pégala en `.env` como `OPENCODE_GO_API_KEY=oc_sk_…`. No la pegues en el chat ni en ningún otro fichero: `.env` no se sube a git y Claude no lo lee.
   5. Pon `RUNNER_PROVIDER_B=OpenCodeGo` y reinicia la API, sin tareas en marcha.
 
-  **Qué hace Claude**, con cada uno de los 3 candidatos como B:
+  **Qué hace Claude**, con cada uno de los 3 candidatos como B (Kimi K3.1 Pro, Gemini 4 Argon y Claude Haiku 5.5):
   - una ejecución de prueba como la del hito 3 (resumen de un documento);
   - una ronda de preguntas de ReservaSalas (A y árbitro SOL).
 
   Comprueba:
   - que solo usa `Read`, `Write` y `Edit`;
   - que la consola lee bien sus eventos;
-  - que el evento final trae los tokens (si no, el estimador del paso 95);
-  - la línea del veredicto, las compactaciones y el español.
+  - que el evento final trae los tokens (si no, el estimador del paso 95), y cuántos llegan como caché;
+  - la línea del veredicto, las compactaciones y el español;
+  - la velocidad, sobre todo la de Kimi K3.1 Pro (32 tokens/s según Artificial Analysis), frente a los 15 minutos sin salida y 30 en total de cada fase;
+  - que el límite de cada modelo es independiente: la documentación de Go lo da a entender, pero no lo dice.
 
   Coste: céntimos.
 - [ ] 130. **Elegir el modelo** con el proyecto de clínicas y los prompts de siempre (v0.12).
+  - **Candidatos:** Kimi K3.1 Pro y Gemini 4 Argon. Claude Haiku 5.5 entra solo si uno de los dos falla en el paso 129, y solo puede ser B si fallan los dos (autor, 10-11-2026).
   - **Preguntas:** una ronda por candidato, cada una en un proyecto propio, porque una segunda ronda ve las preguntas de la primera.
   - **Catálogo:** en un proyecto con las preguntas respondidas una vez, el catálogo con cada candidato como B y una vez con LUNA, como referencia en las mismas condiciones. Entre uno y otro se cambia `RUNNER_MODEL_B` y se reinicia la API.
   - **Se mide:**

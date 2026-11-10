@@ -16,7 +16,8 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
   - La evaluación se hace de nuevo desde cero en el hito 27 (pasos 133, 118, 134, 135, 119, 120, 121, 136 y 137), tras el hito 26. El hito 26 lo forman el paso 126 y lo de «Después» que el autor decidió el mismo día hacer antes (pasos 138 a 143); los prompts mejorados v0.14 (paso 143), medidos frente al flujo con el nuevo B y los prompts v0.12 (paso 131). Abaratar las pantallas del mockup y el mockup con la suscripción y `frontend-design`, quitados del plan.
   - Paso 125 hecho el mismo día: `feat/github-export` integrada en `main`, subida y borrada. La rama `backup/antes-de-quitar-coautor`, guardada en `C:\TFG\concilia-historia-antigua.bundle` y borrada. Solo existe `main`, y la etiqueta `evaluacion-1` queda en local como marca histórica.
   - La memoria se trabaja en paralelo; lo que hay que llevar a su sitio está en su sección temporal «Cosas que añadir a la memoria», al final de `memoria.tex`.
-  - Siguiente: el paso 127 (estudio de los candidatos).
+  - Paso 127 hecho el mismo día (`docs/opencode-go/candidatos.md`). Candidatos aprobados por el autor: Kimi K3.1 Pro y Gemini 4 Argon, los dos únicos de Go que igualan o superan a SOL en el índice de Artificial Analysis y en Terminal-Bench 4.x. Claude Haiku 5.5 queda de reserva, por ser el único con el protocolo nativo de Claude Code: se prueba en el 129 y solo puede ser B si fallan los otros dos. Al autor no le importa que el modelo sea mejor que SOL ni que entrene con los datos; no cambia la elección.
+  - Siguiente: el paso 128.
 
   Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`; los pasos del hito 23 explican qué hace el autor y qué hace Claude. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El proyecto se llama Concilia desde el 13-10-2026 (antes ReqArbiter, nombre provisional).
 
@@ -144,7 +145,8 @@ Ninguna del hito 22. El CSV solo con lo nuevo de una iteración lo cerró el aut
 Del hito 23: ninguna. La referencia del catálogo y del backlog del paso 120 la cerró el autor el 27-10-2026, dejando los detalles a Claude: el proyecto grande (clínicas), con una lista de funcionalidades hecha por el autor sin mirar los catálogos (cobertura) y una muestra de 30 requisitos por propuesta revisada a ciegas (precisión), más las 26 trampas de `ejemplos/README.md` revisadas por el autor. SOL solo y LUNA solo son las propuestas de A y B de cada trabajo, no ejecuciones aparte. Instrucciones en los pasos 118 a 121 del plan. El tope de fragmentos relacionados lo cerró el autor el 26-10-2026 (20.000 tokens, tras medirlo en el paso 112), y las demás decisiones del hito, el mismo día.
 
 Abiertas desde el 10-11-2026 (las decide el autor):
-- qué modelo de OpenCode Go es el nuevo B: los 3 candidatos, en el paso 127; la elección, en el paso 130;
+- qué modelo de OpenCode Go es el nuevo B: la elección, en el paso 130 (los candidatos los cerró el autor el 10-11-2026 en el paso 127);
+- para el paso 128: si el coste cobra las lecturas de caché a su precio o, como hoy, a precio completo (Claude recomienda lo de hoy, y anotar aparte los tokens de caché);
 
 Cerradas el 10-11-2026: lo demás de «Después», punto por punto (ver el plan); del paso 142, los issue types en las organizaciones, GitHub Projects y los comentarios del nivel 3 (sin token en Concilia), y el botón «Subir a GitHub» de la web pasa a «Después» como mejora futura; el hito 7 (catálogo v2), quitado del plan, con su idea del inventario de funcionalidades como candidata a los prompts v0.14; y que el nuevo B haga de árbitro en el experimento del sesgo (paso 136), solo en los nuevos arbitrajes y con tope de consumo de Go.
 

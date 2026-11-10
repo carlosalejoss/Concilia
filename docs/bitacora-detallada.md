@@ -3365,3 +3365,51 @@ Ficha de LasCuarenta en `docs/evaluacion/lascuarenta.md`, con la información qu
   - los documentos de resultados (`pure.md`, `lascuarenta.md`, `analista.md`…), que son históricos y dicen con qué versión se obtuvieron;
   - `docs/evolucion-prompt-requisitos.md`, porque no ha cambiado ningún prompt ni se ha medido nada;
   - el README y `.env.example` en lo que toca a OpenCode, que se actualizan con el código del paso 128.
+
+## 10-11-2026, 11:07 (sesión, hito 25, paso 127)
+
+- **Encargo del autor:** hacer el hito 25 y solo ese hito, un paso cada vez, empezando por el 127 (estudio de los candidatos). Paradas que decide el autor: los candidatos (127), la clave de Go (129), el modelo (130) y quitar medidas de LUNA (132).
+- **Estudio** (`docs/opencode-go/candidatos.md`, datos del 10-11-2026):
+  - **Fuentes:**
+    - la documentación de OpenCode Go: 32 modelos, precios, límites, protocolo, retención y regiones;
+    - la de Claude Code con OpenCode: dirección `https://opencode.ai/inference/go/anthropic` y clave en `ANTHROPIC_AUTH_TOKEN`, como prevé el paso 128. Traduce las peticiones para los modelos que no hablan Anthropic, sin decir cómo trata las herramientas ni la caché;
+    - las fichas de Artificial Analysis y BenchLM.
+  - **Criterio de «razona como SOL»:** las pruebas que separan a LUNA de SOL:
+    - el índice de Artificial Analysis v5.0.1: SOL 44, LUNA 28;
+    - Terminal-Bench 4.x: SOL 50,3, LUNA 15,2.
+
+    AA-LCR (documentos largos) no separa (83,3 frente a 83,7) y no decide.
+  - **Hallazgo:** BenchLM mezcla versiones del índice. DeepSeek V4 Pro tenía 53 en la v4.1.1 y tiene 23 en la v5.0.1, y algunas cifras son del propio fabricante. Se usa solo la v5.0.1 de la ficha de Artificial Analysis.
+  - **Propuesta de Claude:** Kimi K3.1 Pro (46 y 65,7; 2 / 10 $) y Gemini 4 Argon (50 y 57,4; 4 / 20 $, 2 / 10 $ hasta el 30-11-2026), los dos únicos que cumplen; Claude Haiku 5.5 (36), de reserva, por su protocolo nativo.
+  - **Riesgos:**
+    - Kimi es lento: 32 tokens/s y 157 s hasta el primer token, frente a los 15 minutos sin salida y 30 en total de cada fase;
+    - Argon sale caro para una empresa cuando acabe el descuento;
+    - los dos van con el protocolo traducido.
+- **Revisión del autor:** propuso nueve descartados (Muse Spark 1.3, Beam 1.0, LongCat-2.5, DeepSeek V4 Pro y V4.1 Flash, Qwen3.8 Max, GLM, MiMo-V2.6-Pro y Kimi K3). Se fijaba en *reasoning* y en la longitud del contexto de `opencode.ai/es/data/compare`. Dijo además que pueden ser mejores que SOL y que no le importa que entrenen con los datos.
+  - **Comprobación de Claude:**
+    - esa página solo da la ficha técnica: *reasoning* es «Sí/No» y la ventana ronda el millón de tokens en todos;
+    - las cifras que los igualaban con SOL venían de Terminal-Bench 2.1 (saturada, 86–91 % en casi todos) o de índices antiguos;
+    - ninguno llega a SOL: Muse Spark 1.3, 14,9 en Terminal-Bench 4.1; Beam 1.0, 18 en el índice; DeepSeek V4 Pro, 23, e inventa el 94 %;
+    - Kimi K3 no es gratis: 3 / 15 $.
+
+    Es cierto que casi todos superan a SOL en GDPval-AA (tareas de oficina), pero esa prueba apenas separa a LUNA de SOL.
+  - **Los dos criterios:**
+    - mejores que SOL siempre se admitió;
+    - que entrenen con los datos, con documentos ficticios o públicos, no parece mal, pero no cambia nada: solo lo hacen los Muse Spark Contributor (flojos como agente) e Iceman Free.
+  - Añadido al documento como «Revisión con la lista del autor».
+- **Decisiones del autor:**
+  - aprueba Kimi K3.1 Pro y Gemini 4 Argon;
+  - el tercero, tras la comparación de Claude: Claude Haiku 5.5 de reserva, frente a GLM-5.3 o a ninguno. En capacidad empataban (los dos por debajo de SOL), y Haiku es el único que no pasa por la traducción. Se prueba en el 129, entra en el 130 solo si Kimi o Argon fallan en el 129 y solo puede ser B si fallan los dos.
+- **Coste estimado** (con los tokens de A en el flujo de clínicas como referencia; techo, porque Concilia cobra la caché a precio completo):
+  - B en un flujo, 2,65 $ con Kimi y 5,29 $ con Argon;
+  - el flujo para una empresa, de 6,79 $ con LUNA a 9,33 $ con Kimi;
+  - el resto del proyecto, 18–28 $ con Kimi y 35–55 $ con Argon. Con los dos, unos dos meses de Go.
+- **Hecho:**
+  - `docs/opencode-go/candidatos.md`;
+  - el plan: 127 hecho, y en 129 y 130 los candidatos, la caché, la velocidad y la independencia de los límites;
+  - `CLAUDE.md` y la trazabilidad;
+  - la memoria: punto 5 de «Cosas que añadir», que compila.
+- **Sin cambios:** `docs/evolucion-prompt-requisitos.md` y `docs/costes/`, porque no se ha medido nada.
+- **Pendientes:**
+  - el paso 128 (un proveedor por papel en el runner);
+  - decidir al empezarlo si el coste cobra la caché a su precio (Claude recomienda seguir a precio completo y anotar aparte los tokens de caché).
