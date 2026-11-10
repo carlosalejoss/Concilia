@@ -3413,3 +3413,13 @@ Ficha de LasCuarenta en `docs/evaluacion/lascuarenta.md`, con la información qu
 - **Pendientes:**
   - el paso 128 (un proveedor por papel en el runner);
   - decidir al empezarlo si el coste cobra la caché a su precio (Claude recomienda seguir a precio completo y anotar aparte los tokens de caché).
+
+## 10-11-2026, 11:08 (sesión)
+
+Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a OpenCode Go (hito 25). Sin código; el texto de la propuesta no se guarda en el repositorio.
+
+- **Cambios propuestos al autor:**
+  - «Objetivos»: «dos modelos de distintos fabricantes», porque es lo que hace más independiente la verificación cruzada tras el cambio de B;
+  - «Enfoque»: los modelos van por la pasarela «y por OpenCode Go», y se exporta también a GitHub. Para que quepa, «Entity Framework Core» pasa a «EF Core» y «CSV para Jira y Azure DevOps» a «Jira, Azure DevOps y GitHub»;
+  - «Fases»: sin cambios.
+- **Riesgo anotado:** OpenCode Go no se ha probado todavía con Claude Code (paso 129). Si fallase entero y B volviera a LUNA, «distintos fabricantes» y «OpenCode Go» dejarían de ser ciertos. Hay un candidato de reserva (Claude Haiku 5.5, por Go).
