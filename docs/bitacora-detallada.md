@@ -3323,3 +3323,15 @@ Ficha de LasCuarenta en `docs/evaluacion/lascuarenta.md`, con la información qu
   - del paso 142, cuáles de las cuatro mejoras y el token de GitHub del camino B;
   - si la evaluación 2 no cabe en un mes de Go: esperar o subir un mes a Go Plus;
   - el paso 127.
+
+## 10-11-2026, 09:56 (sesión, continuación)
+
+- **Fichero de consumo** (autor): en un mismo fichero, el consumo de SOL y el de OpenCode, por proyecto y con el coste de cada tarea.
+  - Será `docs/costes/consumo.md`, generado por `scripts/evaluacion/costes.cs` (paso 144 nuevo, entre el 128 y el 129, antes del primer uso de Go) y regenerado tras cada tarea.
+  - Lleva un resumen arriba con lo que queda de cada límite de Go, y una fila por tarea con el modelo, el proveedor, los tokens y los dólares de cada papel.
+  - Sustituye a la tabla a mano en `docs/opencode-go/consumo.md` de la entrada anterior.
+- **Hito 7 quitado del plan** (el autor lo deja a Claude). Rediseñaba el catálogo por lotes de la v1.x, que la iteración v0 ya sustituyó. Su idea del inventario de funcionalidades queda como candidata a los prompts v0.14 (paso 143), solo si los pasos 130 y 131 muestran que faltan funcionalidades.
+- **Prompts v0.14:** los propone Claude y los revisa el autor antes del código (confirmado).
+- **Pendientes:**
+  - explicar al autor en detalle las mejoras de GitHub (paso 142);
+  - hablar del presupuesto de Go si la evaluación 2 no cabe en un mes.

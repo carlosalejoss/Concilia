@@ -41,39 +41,40 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 1. **127,** estudio de los candidatos: Claude propone los 3 mejores y el autor los aprueba.
 2. **128,** un proveedor por papel en el runner (código y tests).
-3. **129,** la cuenta, la clave y la prueba de humo. El autor contrata Go y crea la clave; Claude prueba los 3 candidatos.
-4. **130,** elegir el modelo con la ronda de preguntas y el catálogo de clínicas. Decide el autor.
-5. **131,** el flujo de clínicas con el modelo elegido, frente al de LUNA.
-6. **132,** cerrar el cambio: revisar con datos las medidas que se tomaron por LUNA, los valores por defecto y la documentación.
+3. **144,** todo el consumo (SOL y OpenCode Go) en un solo fichero, por proyecto y con el coste de cada tarea, antes del primer uso de Go.
+4. **129,** la cuenta, la clave y la prueba de humo. El autor contrata Go y crea la clave; Claude prueba los 3 candidatos.
+5. **130,** elegir el modelo con la ronda de preguntas y el catálogo de clínicas. Decide el autor.
+6. **131,** el flujo de clínicas con el modelo elegido, frente al de LUNA.
+7. **132,** cerrar el cambio: revisar con datos las medidas que se tomaron por LUNA, los valores por defecto y la documentación.
 
 **Hito 26, antes de la evaluación 2:**
 
-7. **126,** que el aviso de un par «mismo» separado diga en qué elemento está el otro.
-8. **138,** la duración real de cada repetición de una tarea.
-9. **139,** renombrar en el código la «opción C» como «lectura relacionada».
-10. **140,** los textos de la plataforma en el idioma del proyecto.
-11. **141,** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta.
-12. **142,** mejoras del backlog en GitHub (por concretar con el autor cuáles, y el token del camino B).
-13. **143,** los prompts mejorados (v0.14), medidos frente al paso 131.
+8. **126,** que el aviso de un par «mismo» separado diga en qué elemento está el otro.
+9. **138,** la duración real de cada repetición de una tarea.
+10. **139,** renombrar en el código la «opción C» como «lectura relacionada».
+11. **140,** los textos de la plataforma en el idioma del proyecto.
+12. **141,** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta.
+13. **142,** mejoras del backlog en GitHub (por concretar con el autor cuáles, y el token del camino B).
+14. **143,** los prompts mejorados (v0.14), medidos frente al paso 131.
 
 **Hito 27, evaluación 2** (en este orden):
 
-14. **133,** congelar la versión (`evaluacion-2`), con los hitos 25 y 26 terminados.
-15. **118,** la referencia del autor: revisar las trampas y hacer la lista de funcionalidades. No depende del modelo.
-16. **134,** el flujo con el documento de PURE, en inglés, con el nuevo B (repite el 105).
-17. **135,** AQUSA y `vale-ears` sobre lo del 134 (repite el 104).
-18. **119,** las 9 ejecuciones de clínicas.
-19. **120,** las hojas de revisión y la comparación con un solo modelo.
-20. **121,** SOL ‖ SOL.
-21. **136,** el sesgo del árbitro con el nuevo B (repite el 103), con tope de consumo de Go.
-22. **137,** el coste para una empresa que paga por uso: por fase y del flujo completo, de cada configuración.
+15. **133,** congelar la versión (`evaluacion-2`), con los hitos 25 y 26 terminados.
+16. **118,** la referencia del autor: revisar las trampas y hacer la lista de funcionalidades. No depende del modelo.
+17. **134,** el flujo con el documento de PURE, en inglés, con el nuevo B (repite el 105).
+18. **135,** AQUSA y `vale-ears` sobre lo del 134 (repite el 104).
+19. **119,** las 9 ejecuciones de clínicas.
+20. **120,** las hojas de revisión y la comparación con un solo modelo.
+21. **121,** SOL ‖ SOL.
+22. **136,** el sesgo del árbitro con el nuevo B (repite el 103), con tope de consumo de Go.
+23. **137,** el coste para una empresa que paga por uso: por fase y del flujo completo, de cada configuración.
 
 **En paralelo, desde el 10-11-2026 (autor):** la memoria. Es de tipo B: unas 20 páginas, resumen en castellano e inglés y el anexo VII sobre el uso de la IA. Está en `memoria/tfg/memoria.tex`, fuera de git, y se compila con MiKTeX (instalado el 22-10-2026) y `memoria/tfg/compilar.ps1`.
 - **Estructura del autor (22-10-2026):** 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema, 2.3 validación de la solución); 3 Conclusiones.
 - **Empezada el 04-11-2026.**
 - **Lo que hay que llevar a su sitio** está en su sección temporal «Cosas que añadir a la memoria», al final de `memoria.tex` (10-11-2026).
 
-**Después de la evaluación:** lo que queda en «Después»: la aprobación por umbral, leerlo todo cuando la documentación es pequeña y el CSV solo con lo nuevo de una iteración. El hito 7 está por decidir.
+**Después de la evaluación:** lo que queda en «Después»: la aprobación por umbral, leerlo todo cuando la documentación es pequeña y el CSV solo con lo nuevo de una iteración.
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
 - ~~si se hace un CSV solo con lo nuevo de una iteración~~ (cerrado el 04-11-2026 sin hacerlo, como mejora futura);
@@ -151,9 +152,13 @@ Especificación: `docs/hito-6-catalogo-v1.3.md`.
 
 **Resultado:** con el documento técnico, el catálogo pasó de 1.133 y 862 requisitos (v1.2) a 255 y 214 (v1.4), casi sin reparaciones y con la mitad de tokens, pero sigue lejos de lo revisable. El límite está en el proceso por lotes; se cierra el hito y se pasa al hito 7.
 
-## Hito 7: catálogo v2, de arriba abajo
+## Hito 7: catálogo v2, de arriba abajo (quitado del plan)
 
 Propuesta: `docs/propuesta-catalogo-v2.md`.
+
+**Quitado del plan el 10-11-2026** (autor, que dudaba de que hiciera falta y lo dejó a Claude). Los pasos 35 a 40 no se harán.
+- **Por qué no hace falta:** el hito 7 rediseñaba el catálogo por lotes de la v1.x, y la iteración v0 ya sustituyó los lotes: cada modelo lee toda la documentación. Rehacer el catálogo ahora afectaría a las iteraciones, la actualización, el emparejamiento y el árbitro, que dependen de su esquema.
+- **Lo que se conserva:** su idea principal, primero un inventario de funcionalidades y después los requisitos de cada una para que no falte ninguna. Pasa como candidata a los prompts v0.14 (paso 143), solo si los pasos 130 y 131 muestran que faltan funcionalidades.
 
 **Aplazado (08-10-2026):** el autor prioriza el flujo completo con prompts básicos (iteración v0, hitos 8 a 13). Lo ya hecho (validadores y unión del catálogo v2) se conserva. El hito se retoma después, como mejora del prompt del catálogo.
 
@@ -939,7 +944,7 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
 
 **Control del consumo de OpenCode Go** (autor, 10-11-2026: el plan no es infinito y no quiere pagar de más):
 - **Los límites de Go son dólares a precio de lista,** con los mismos precios por token que usa Concilia para calcular el coste. Por eso los tokens de cada ejecución de B (informe del trabajo y `docs/costes/costes.md`) dicen cuánto límite gasta.
-- **`docs/opencode-go/consumo.md`:** una fila por cada cosa que use OpenCode Go (fecha, paso, modelo, tokens y dólares a precio de lista) y lo que queda del mes, de la semana y de las 5 horas de cada modelo.
+- **`docs/costes/consumo.md` (paso 144):** un solo fichero con todo el consumo, de SOL por la pasarela y del modelo de OpenCode Go, organizado por proyecto y, dentro de cada uno, con el coste de cada tarea lanzada. Arriba, lo que queda del mes, de la semana y de las 5 horas de cada modelo de Go. Lo genera un script, no se escribe a mano.
 - **Antes de lanzar algo con B,** Claude estima su coste con las ejecuciones parecidas que ya hay y lo compara con lo que queda. Si no cabe, se espera a que se renueve el límite, sin activar «Extra Usage».
 - **El autor puede comprobar el consumo real** en la consola de OpenCode, en su espacio de trabajo, y Claude ajusta la tabla si no coincide.
 - **Cada modelo tiene su propio límite,** así que las pruebas de los candidatos que no se elijan no gastan el del modelo elegido.
@@ -972,6 +977,22 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
     - que ninguna clave llegue donde no debe;
     - que sin configurar nada todo sea como hoy.
   - **Documentación:** `.env.example`, README (puesta en marcha), `CLAUDE.md` y `docs/api/openapi.json` si cambia algún endpoint.
+- [ ] 144. **Todo el consumo en un solo fichero** (autor, 10-11-2026: el de SOL y el de OpenCode juntos, para verlo de un vistazo, por proyecto y con el coste de cada tarea). Va antes del primer uso de Go (paso 129), para anotarlo desde el principio.
+  - **Cómo:** `scripts/evaluacion/costes.cs`, que ya lee de la API cada trabajo con sus ejecuciones y sus tokens, escribe además `docs/costes/consumo.md`. Se regenera tras cada tarea, como `costes.md`, así que no hay que anotar nada a mano ni se puede olvidar.
+  - **Qué lleva:**
+    - **Resumen arriba:**
+      - el gasto total de SOL (pasarela) y de cada modelo de Go;
+      - de cada modelo de Go, lo gastado y lo que queda del mes, de la semana y de las últimas 5 horas frente a sus límites;
+      - el gasto de cada proyecto.
+    - **Una sección por proyecto,** con una fila por cada tarea lanzada, de la más reciente a la más antigua:
+      - fecha, fase (preguntas, sugerencias, catálogo, backlog, mockup, nuevo arbitraje…) y trabajo;
+      - de cada papel (A, B, árbitro, sugerencias o mockup): modelo, proveedor, tokens de entrada y de salida, y dólares;
+      - el total de la tarea y si falló o se repitió. Lo gastado en intentos fallidos también cuenta en el límite.
+    - Las ejecuciones sin dato de consumo, estimadas (paso 95), con su marca.
+  - **Precios:** todo por token, a precio de lista (`precios.json`). Lo de Go lleva la nota de que se paga con la suscripción. Los proyectos internos salen anonimizados, como en `costes.md`.
+  - **Los límites de Go** van en `precios.json`, para cambiarlos sin tocar el script si OpenCode los cambia.
+  - **Cómo se comprueba:** se genera con los proyectos que ya hay (SOL y LUNA) y los totales cuadran con `costes.md`.
+
 - [ ] 129. **La cuenta, la clave y la prueba de humo.**
   **Qué haces tú:**
   1. Entra en <https://opencode.ai>, crea la cuenta y contrata **Go** en tu espacio de trabajo (*workspace*).
@@ -1063,7 +1084,8 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
 - [ ] 143. **Los prompts mejorados (v0.14)** («Después», punto 1; autor, 10-11-2026). Se hace después del paso 131 y se mide aparte, para saber qué mejora viene del cambio de B y qué de los prompts.
   - **Qué se mejora** se decide con lo que fallen SOL y el nuevo B en los pasos 130 y 131, más lo ya conocido:
     - que el árbitro del backlog no junte historias de A que ya son atómicas solo porque B tiene una que las cubre («Después», punto 7);
-    - 39 de las 40 sugerencias de PURE eran suposiciones (paso 105).
+    - 39 de las 40 sugerencias de PURE eran suposiciones (paso 105);
+    - solo si faltan funcionalidades en los pasos 130 y 131: la idea del hito 7, que el modelo haga primero un inventario de funcionalidades y después los requisitos de cada una.
   - **Cómo se trabaja,** como en los pasos 112 a 114: Claude propone los cambios, el autor los revisa antes del código, y se actualizan `prompts/v0/CHANGELOG.md` y `docs/evolucion-prompt-requisitos.md`.
   - **Cómo se comprueba:** el flujo de clínicas con la v0.14 y el nuevo B, frente al paso 131 (misma B, prompts v0.12): calidad, reparaciones, correcciones automáticas, coste para una empresa y minutos. Los modos de siempre tienen una instantánea de la v0.12 (`V012SnapshotTests`), que se actualiza a propósito.
 
@@ -1130,13 +1152,12 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 **Decidido por el autor el 10-11-2026, punto por punto,** con la recomendación de Claude delante:
 - **pasan al hito 26, antes de la evaluación 2:** los puntos 1, 5c, 6, 7, 8 y 9;
 - **se quedan aquí, para después:** los puntos 3, 5a y 5b, que van a la memoria como trabajo futuro;
-- **por decidir:** el hito 7 (punto 1b);
-- **quitados del plan:** abaratar las pantallas del mockup y el mockup con la suscripción y la skill `frontend-design` (autor: no se hacen).
+- **quitados del plan:** el hito 7 (punto 1b), abaratar las pantallas del mockup y el mockup con la suscripción y la skill `frontend-design` (autor: no se hacen).
 
 1. ~~Mejorar los prompts fase a fase sobre el flujo que ya funciona.~~ Pasa al hito 26, paso 143 (10-11-2026, autor).
    - Se hace midiendo cada cambio por separado: primero el nuevo B con los prompts de siempre (paso 131, frente a LUNA) y después los prompts mejorados frente al 131.
    - La evaluación completa se hace una sola vez, al final.
-   - **1b. El hito 7** (catálogo v2 de arriba abajo, con los prompts v2 del autor): **por decidir.** El autor duda de que haga falta (10-11-2026).
+   - **1b. ~~El hito 7~~** (catálogo v2 de arriba abajo): quitado del plan el 10-11-2026. Su idea del inventario de funcionalidades pasa como candidata al paso 143 (ver el hito 7).
 2. ~~Árbitro con embeddings.~~ Pasa al hito 17 (16-10-2026).
 3. **Aprobación por umbral:** aprobar sin revisión lo que A y B dicen igual por encima de un umbral. En parte ya lo hacen los umbrales del paso 88. **Después** (autor, 10-11-2026): cambia cómo revisa el usuario, no lo que generan los modelos, y la evaluación 2 no lo mide. (La evaluación con precision, recall y F1 pasó al paso 120 el 27-10-2026.)
 4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación. (Sustituido el 22-10-2026 por el autor: 1 Introducción; 2 Desarrollo, con 2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución; 3 Conclusiones. Empezada el 04-11-2026. Desde el 10-11-2026 se trabaja en paralelo: ver «Lo que queda, en orden».)

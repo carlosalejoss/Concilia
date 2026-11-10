@@ -419,8 +419,8 @@ El autor lo pide para incluirlo en la memoria si funciona. GitHub no tiene impor
   - hito 25: estudio de candidatos, proveedor por papel, prueba de humo, elección con clínicas, flujo frente a LUNA y cierre;
   - hito 26: el paso 126 y lo de «Después» que el autor decidió hacer antes (pasos 138 a 143: duración real de las repeticiones, renombrar la «opción C», textos en el idioma del proyecto, marca de las historias que juntan varias, mejoras de GitHub y prompts v0.14). Los prompts se miden frente al flujo con el nuevo B y los prompts de siempre, para saber qué aporta cada cambio sin evaluar dos veces;
   - hito 27: la evaluación 2 desde cero, comparada con la 1.
-- **Coste:** desde ahora, en todo se mide el precio para una empresa que pagase por token. B también se calcula por token, con la nota de la suscripción. El consumo de Go se vigila sin pagar de más: sin «Extra Usage», con una tabla de consumo y con una estimación antes de cada tarea.
-- **Quitados del plan:** abaratar las pantallas del mockup y el mockup con la suscripción y `frontend-design`. Quedan para después: la aprobación por umbral, leerlo todo con documentación pequeña y el CSV solo con lo nuevo. Por decidir: el hito 7.
+- **Coste:** desde ahora, en todo se mide el precio para una empresa que pagase por token. B también se calcula por token, con la nota de la suscripción. El consumo de Go se vigila sin pagar de más: sin «Extra Usage», con una estimación antes de cada tarea y con todo el consumo (SOL y Go) en `docs/costes/consumo.md`, por proyecto y con el coste de cada tarea, generado por un script (paso 144).
+- **Quitados del plan:** abaratar las pantallas del mockup y el mockup con la suscripción y `frontend-design`. El hito 7 (catálogo v2), también quitado: la iteración v0 ya sustituyó los lotes que rediseñaba, y su idea del inventario de funcionalidades queda como candidata a los prompts v0.14. Quedan para después: la aprobación por umbral, leerlo todo con documentación pequeña y el CSV solo con lo nuevo.
 - **Repositorio:** solo `main`. La rama de GitHub, integrada y borrada; la historia de antes de quitar el coautor, en `C:\TFG\concilia-historia-antigua.bundle`. `evaluacion-1` queda en local como marca histórica.
 - **Memoria:** se trabaja en paralelo, con una sección temporal al final, «Cosas que añadir a la memoria», con este cambio, el coste para una empresa y la evaluación 2.
 
@@ -494,7 +494,6 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - ~~Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración~~: cerrada por el autor el 04-11-2026 sin hacerlo, como mejora futura. ~~El tope de fragmentos relacionados~~: cerrado por el autor el mismo día, 20.000 tokens, tras medirlo con clínicas (`docs/fragmentos-relacionados.md`).
 - **Desde el 10-11-2026:**
   - qué modelo de OpenCode Go es el nuevo B (candidatos en el paso 127, elección en el 130);
-  - si se hace el hito 7 (catálogo v2);
   - del paso 142, qué mejoras de GitHub se hacen y dónde se guarda el token del camino B.
   
   Cerradas el mismo día: el resto de «Después», punto por punto, y que el nuevo B haga de árbitro en el experimento del sesgo, con tope de consumo.
@@ -516,7 +515,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
   - **hito 25, el modelo B por OpenCode Go** (pasos 127 a 132; el siguiente es el 127, estudio de los candidatos);
   - **hito 26, antes de la evaluación 2:** el paso 126 (que el aviso de un par «mismo» separado diga en qué elemento está el otro; sale de un falso aviso en LasCuarenta) y los pasos 138 a 143 (lo de «Después» que el autor decidió hacer antes, con los prompts v0.14 los últimos);
   - **hito 27, la evaluación 2** desde cero (pasos 133, 118, 134, 135, 119, 120, 121, 136 y 137).
-10. **Después:** hito 7 (catálogo v2) y redactar la memoria. Estructura del autor (22-10-2026, sustituye a la del 14-10): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución); 3 Conclusiones. **La memoria, empezada el 04-11-2026:** redactadas la introducción (unas 2.070 palabras) y las secciones 2.1 y 2.2 (unas 4.400 palabras, con los cuatro diagramas); la 2.3 y las conclusiones, pendientes. Unas 6.500 de las 10.000 palabras.
+10. **Después:** ~~hito 7 (catálogo v2)~~ (quitado del plan el 10-11-2026) y redactar la memoria, que desde el 10-11-2026 se trabaja en paralelo. Estructura del autor (22-10-2026, sustituye a la del 14-10): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución); 3 Conclusiones. **La memoria, empezada el 04-11-2026:** redactadas la introducción (unas 2.070 palabras) y las secciones 2.1 y 2.2 (unas 4.400 palabras, con los cuatro diagramas); la 2.3 y las conclusiones, pendientes. Unas 6.500 de las 10.000 palabras.
 
 - ~~**Por decidir (16-10-2026):** herramientas externas candidatas tras una búsqueda en GitHub~~. Todas decididas:
   - los embeddings en local (hito 17) y el analizador de Gherkin (paso 97), ya hechos;
