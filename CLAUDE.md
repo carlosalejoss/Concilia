@@ -25,7 +25,8 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
     - tokens de caché aparte en cada ejecución (migración `AddRunCacheTokens`);
     - `precios.json` con la caché y los candidatos, y `costes.cs` con el coste principal (caché a su precio) y la columna «A precio completo»;
     - 1.053 tests.
-  - Siguiente: el paso 144.
+  - Paso 144 hecho el 11-11-2026. `costes.cs` escribe también `docs/costes/consumo.md`: lo que queda de cada límite de Go, el gasto por proveedor y modelo y por proyecto, y cada tarea con una fila por papel. Los límites van en `precios.json` (`limite_mes_go` de cada modelo y `_go.inicio_suscripcion`, que se pone en el paso 129).
+  - Siguiente: el paso 129. Empieza el autor: contratar Go, poner la clave en `.env` y `RUNNER_PROVIDER_B=OpenCodeGo`.
 
   Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`; los pasos del hito 23 explican qué hace el autor y qué hace Claude. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El proyecto se llama Concilia desde el 13-10-2026 (antes ReqArbiter, nombre provisional).
 

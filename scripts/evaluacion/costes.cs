@@ -15,6 +15,9 @@
 //   4. antes y después: la misma fase del mismo proyecto con distintas
 //      versiones del prompt;
 //   5. el coste por papel (A, B, árbitro, mockup) y modelo.
+// Y docs/costes/consumo.md (paso 144, autor, 10-11-2026): todo el consumo, de SOL
+// por la pasarela y de los modelos de OpenCode Go, por proyecto y con el coste de
+// cada tarea, más lo que queda de cada límite de Go. Se regenera tras cada tarea.
 // Dos costes (autor, 10-11-2026): el principal cobra las lecturas de caché a su
 // precio, porque es lo que de verdad se paga; el otro, a precio completo como se
 // calculaba hasta entonces, sirve para comparar con lo de antes. Las ejecuciones
@@ -37,10 +40,16 @@ const string Main = "Clinicas Veterinarias";
 // of the author (06-11-2026): those projects keep their name too.
 string[] examples = ["Clinicas Veterinarias", "Clínicas", "Banco De Alimentos", "ReservaSalas", "PURE", "LasCuarenta"];
 
-var prices = JsonNode.Parse(File.ReadAllText(Path.Combine("scripts", "evaluacion", "precios.json")))!.AsObject()
+var priceFile = JsonNode.Parse(File.ReadAllText(Path.Combine("scripts", "evaluacion", "precios.json")))!.AsObject();
+var prices = priceFile
     .Where(p => !p.Key.StartsWith('_'))
     .ToDictionary(p => p.Key, p => new Price(p.Value!["entrada"]!.GetValue<double>(), p.Value["salida"]!.GetValue<double>(),
-        p.Value["cache"]?.GetValue<double>(), p.Value["suscripcion"]?.GetValue<string>()));
+        p.Value["cache"]?.GetValue<double>(), p.Value["suscripcion"]?.GetValue<string>(), p.Value["limite_mes_go"]?.GetValue<double>()));
+// The limits of OpenCode Go (step 144): the start of the subscription and the share of the monthly limit per week and per 5 hours.
+var go = priceFile["_go"];
+DateTimeOffset? goStart = go?["inicio_suscripcion"] is JsonValue start ? DateTimeOffset.Parse(start.GetValue<string>(), CultureInfo.InvariantCulture) : null;
+var goWeekShare = go?["semana"]?.GetValue<double>() ?? 0.5;
+var goFiveHourShare = go?["cinco_horas"]?.GetValue<double>() ?? 0.2;
 
 using var http = new HttpClient { BaseAddress = new Uri(api), Timeout = TimeSpan.FromMinutes(10) };
 var jobs = new List<JobCost>();
@@ -69,7 +78,9 @@ foreach (var project in (await http.GetFromJsonAsync<JsonArray>("/projects"))!.O
             // Step 128: the part of the input read from the cache (only with real usage, since then).
             long? cacheRead = real ? run["cacheReadTokens"]?.GetValue<long>() : null;
             return new RunCost(run["slot"]?.GetValue<string>() ?? "", run["model"]!.GetValue<string>(), run["promptVersion"]?.GetValue<string>() ?? "",
-                started, input, output, !real && input is not null, cacheRead);
+                started, input, output, !real && input is not null, cacheRead,
+                run["provider"]?.GetValue<string>() ?? "", run["startedAt"]?.GetValue<DateTimeOffset>(),
+                run["attempt"]?.GetValue<int>() ?? 1, run["state"]?.GetValue<string>() ?? "");
         }).Where(r => r.Started).ToList();
         if (runCosts.Count == 0) continue;
         // What the matching of the arbiter cost: kept with the result since it is measured; for the
@@ -90,7 +101,8 @@ foreach (var project in (await http.GetFromJsonAsync<JsonArray>("/projects"))!.O
         }
         jobs.Add(new JobCost(shown, job["kind"]!.GetValue<string>(), report["phase"]?.GetValue<string>(), report["rearbitrationOf"] is not null,
             job["createdAt"]!.GetValue<DateTimeOffset>(), report["succeeded"]!.GetValue<bool>(), report["seconds"]?.GetValue<double>(),
-            report["repairs"]!.GetValue<int>(), time?["seconds"]?.GetValue<double>(), time?["cpuSeconds"]?.GetValue<double>(), measuredLater, runCosts));
+            report["repairs"]!.GetValue<int>(), time?["seconds"]?.GetValue<double>(), time?["cpuSeconds"]?.GetValue<double>(), measuredLater, runCosts,
+            job["id"]!.GetValue<string>()));
     }
 }
 
@@ -203,7 +215,132 @@ Directory.CreateDirectory(Path.Combine("docs", "costes"));
 File.WriteAllText(Path.Combine("docs", "costes", "costes.md"), md.ToString(), new UTF8Encoding(false));
 Console.Write(md);
 
+// ---- docs/costes/consumo.md (step 144) ----
+// Everything spent, experiments included: what counts against the limits is what
+// was run, failed attempts too. The cost of OpenCode Go uses the main cost (the
+// cache at its price), which is how OpenCode counts its limits, at list price.
+
+var now = DateTimeOffset.Now;
+var allRuns = jobs.SelectMany(j => j.Runs).ToList();
+var goModels = prices.Where(p => p.Value.GoMonthlyLimit is not null).Select(p => p.Key).ToList();
+static bool OnGo(RunCost r) => r.Provider == "OpenCodeGo";
+
+// The current month of Go: from the day of the subscription, the same day of each month.
+DateTimeOffset? goMonthStart = null;
+if (goStart is { } subscribed)
+{
+    var cycle = subscribed;
+    while (cycle.AddMonths(1) <= now) cycle = cycle.AddMonths(1);
+    goMonthStart = cycle;
+}
+
+var cm = new StringBuilder();
+cm.AppendLine("# Consumo de los modelos");
+cm.AppendLine();
+cm.AppendLine($"Generado por `scripts/evaluacion/costes.cs` el {now:dd-MM-yyyy HH:mm}, con los datos guardados de cada ejecución (paso 144). Se regenera tras cada tarea, junto con `costes.md`.");
+cm.AppendLine();
+cm.AppendLine("**Cómo leer las cifras:**");
+cm.AppendLine("- **Todo lo que se ha ejecutado,** también los experimentos y los intentos fallidos: todo cuenta en el límite.");
+cm.AppendLine("- **Coste:** tokens × precio por token de `precios.json` (sección 1 de `costes.md`), con la entrada leída de la caché a su precio. «A precio completo», como se calculaba hasta el 10-11-2026.");
+cm.AppendLine("- **OpenCode Go** se paga con la suscripción Go (10 $ al mes), con un límite en dólares a precio de lista por modelo. La cifra es lo que pagaría una empresa por uso y lo que gasta del límite. Gemini 4 Argon tiene un 50 % de descuento hasta el 30-11-2026: hasta entonces, gasta del límite la mitad de lo que dice la tabla.");
+cm.AppendLine("- `*`: con ejecuciones sin dato de consumo, estimadas a partir de su consola (paso 95). `≥`: con ejecuciones sin dato ni estimación, así que es un mínimo.");
+cm.AppendLine();
+
+cm.AppendLine("## 1. Lo que queda de cada límite de OpenCode Go");
+cm.AppendLine();
+if (goMonthStart is null)
+    cm.AppendLine("Sin suscripción todavía: se contrata en el paso 129 y su fecha va en `precios.json` (`_go.inicio_suscripcion`). Hasta entonces no hay mes de Go; la semana y las 5 horas se calculan igual.");
+else
+    cm.AppendLine($"Mes de Go desde el {goMonthStart:dd-MM-yyyy} (suscripción del {goStart:dd-MM-yyyy}). La semana son los últimos 7 días y las 5 horas, las últimas 5 horas: OpenCode no dice si sus ventanas son móviles o fijas, y se comprueba con su consola.");
+cm.AppendLine();
+cm.AppendLine("| Modelo | Mes: gastado / límite | Mes: queda | Semana: gastado / límite | Semana: queda | 5 horas: gastado / límite | 5 horas: queda |");
+cm.AppendLine("| --- | --- | --- | --- | --- | --- | --- |");
+foreach (var model in goModels)
+{
+    var monthly = prices[model].GoMonthlyLimit!.Value;
+    string Window(DateTimeOffset? from, double limit)
+    {
+        if (from is null) return "— | —";
+        var runs = allRuns.Where(r => OnGo(r) && r.Model == model && r.StartedAt >= from).ToList();
+        var spent = runs.Sum(r => CostOf(r) ?? 0);
+        var mark = runs.Any(r => r.Estimated) ? "*" : "";
+        return $"{spent.ToString("F2", es)}{mark} / {limit.ToString("F2", es)} | {Math.Max(0, limit - spent).ToString("F2", es)}";
+    }
+    cm.AppendLine($"| {model} | {Window(goMonthStart, monthly)} | {Window(now.AddDays(-7), monthly * goWeekShare)} | {Window(now.AddHours(-5), monthly * goFiveHourShare)} |");
+}
+cm.AppendLine();
+
+cm.AppendLine("## 2. Gasto total, por proveedor y modelo");
+cm.AppendLine();
+cm.AppendLine("| Proveedor | Modelo | Ejecuciones | Tokens de entrada | Tokens de salida | De ellos, leídos de la caché | Coste (USD) | A precio completo (USD) |");
+cm.AppendLine("| --- | --- | --- | --- | --- | --- | --- | --- |");
+foreach (var group in allRuns.GroupBy(r => (r.Provider, r.Model)).OrderBy(g => g.Key.Provider).ThenByDescending(g => g.Sum(r => CostOf(r) ?? 0)))
+{
+    var runs = group.ToList();
+    var cached = runs.Where(r => r.CacheRead is not null).ToList();
+    cm.AppendLine($"| {ProviderName(group.Key.Provider)} | {group.Key.Model} | {runs.Count} | {Tokens(runs, r => r.Input)} | {Tokens(runs, r => r.Output)} | " +
+        $"{(cached.Count == 0 ? "—" : cached.Sum(r => r.CacheRead!.Value).ToString("N0", es))} | {Money(runs)} | {Money(runs, FullCostOf)} |");
+}
+cm.AppendLine();
+cm.AppendLine("«De ellos, leídos de la caché»: solo las ejecuciones desde el paso 128, que lo guardan aparte.");
+cm.AppendLine();
+
+cm.AppendLine("## 3. Gasto por proyecto");
+cm.AppendLine();
+cm.AppendLine("| Proyecto | Tareas | Pasarela (USD) | OpenCode Go (USD) | Total (USD) | A precio completo (USD) | Última tarea |");
+cm.AppendLine("| --- | --- | --- | --- | --- | --- | --- |");
+var byProject = jobs.GroupBy(j => j.Project).OrderByDescending(g => g.Max(j => j.Created)).ToList();
+// The mockups made with the author's subscription have no price: they go apart.
+static bool Priced(RunCost r) => r.Provider != "ClaudeSubscription";
+foreach (var project in byProject)
+{
+    var runs = project.SelectMany(j => j.Runs).ToList();
+    var priced = runs.Where(Priced).ToList();
+    var unpriced = runs.Count - priced.Count;
+    string Or(IEnumerable<RunCost> some, Func<RunCost, double?>? cost = null) => some.Any() ? Money(some, cost) : "—";
+    cm.AppendLine($"| {project.Key} | {project.Count()} | {Or(runs.Where(r => r.Provider == "LiteLlm"))} | {Or(runs.Where(OnGo))} | " +
+        $"{Or(priced)}{(unpriced > 0 ? " (más el mockup con la suscripción, sin precio)" : "")} | {Or(priced, FullCostOf)} | {project.Max(j => j.Created).ToLocalTime():dd-MM-yyyy HH:mm} |");
+}
+cm.AppendLine();
+
+cm.AppendLine("## 4. Cada tarea, por proyecto");
+cm.AppendLine();
+cm.AppendLine("De la más reciente a la más antigua. Una fila por papel; «Ejecuciones» cuenta también los intentos repetidos.");
+foreach (var project in byProject)
+{
+    cm.AppendLine();
+    cm.AppendLine($"### {project.Key}");
+    cm.AppendLine();
+    cm.AppendLine("| Fecha | Tarea | Resultado | Papel | Modelo | Proveedor | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) |");
+    cm.AppendLine("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |");
+    foreach (var j in project.OrderByDescending(j => j.Created))
+    {
+        var repeated = j.Runs.Count(r => r.Attempt > 1);
+        var result = (j.Succeeded ? "válido" : "fallido") + (repeated > 0 ? $", {repeated} {(repeated == 1 ? "repetición" : "repeticiones")}" : "");
+        var first = true;
+        foreach (var role in j.Runs.GroupBy(r => (Role(r.Slot), r.Model, r.Provider)).OrderBy(g => g.Key.Item1))
+        {
+            var runs = role.ToList();
+            var head = first ? $"{j.Created.ToLocalTime():dd-MM-yyyy HH:mm} | {Name(j)} (`{j.Id[..8]}`) | {result}" : " | | ";
+            cm.AppendLine($"| {head} | {role.Key.Item1} | {role.Key.Model} | {ProviderName(role.Key.Provider)} | {runs.Count} | " +
+                $"{Tokens(runs, r => r.Input)} | {Tokens(runs, r => r.Output)} | {Money(runs)} |");
+            first = false;
+        }
+        cm.AppendLine($"| | **Total de la tarea** | | | | | {j.Runs.Count} | **{Tokens(j.Runs, r => r.Input)}** | **{Tokens(j.Runs, r => r.Output)}** | **{Money(j.Runs)}** |");
+    }
+}
+
+File.WriteAllText(Path.Combine("docs", "costes", "consumo.md"), cm.ToString(), new UTF8Encoding(false));
+
 // ---- Helpers ----
+
+static string ProviderName(string provider) => provider switch
+{
+    "LiteLlm" => "pasarela",
+    "OpenCodeGo" => "OpenCode Go (suscripción)",
+    "ClaudeSubscription" => "suscripción del autor",
+    _ => provider,
+};
 
 string Tokens(IEnumerable<RunCost> runs, Func<RunCost, long?> of)
 {
@@ -263,11 +400,14 @@ static string Role(string slot) => slot switch
     _ => "Mockup",
 };
 
-record RunCost(string Slot, string Model, string Prompt, bool Started, long? Input, long? Output, bool Estimated, long? CacheRead = null);
+// Provider, StartedAt, Attempt and State: for docs/costes/consumo.md (step 144).
+record RunCost(string Slot, string Model, string Prompt, bool Started, long? Input, long? Output, bool Estimated, long? CacheRead = null,
+    string Provider = "", DateTimeOffset? StartedAt = null, int Attempt = 1, string State = "");
 
 // Dollars per million tokens. Cache: reading from the cache (null if unknown).
 // Subscription: the plan it is paid with (OpenCode Go), or null if paid per use.
-record Price(double In, double Out, double? Cache, string? Subscription);
+// GoMonthlyLimit: the monthly limit of a model of OpenCode Go, in dollars at list price.
+record Price(double In, double Out, double? Cache, string? Subscription, double? GoMonthlyLimit = null);
 
 record JobCost(string Project, string Kind, string? Phase, bool Rearbitration, DateTimeOffset Created, bool Succeeded, double? Seconds,
-    int Repairs, double? MatchingSeconds, double? MatchingCpu, bool MatchingMeasuredLater, List<RunCost> Runs);
+    int Repairs, double? MatchingSeconds, double? MatchingCpu, bool MatchingMeasuredLater, List<RunCost> Runs, string Id = "");

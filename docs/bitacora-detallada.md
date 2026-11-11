@@ -3541,3 +3541,23 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - **Docker:** reconstruido con la migración aplicada y la configuración de siempre (A y árbitro SOL 6, B LUNA). `costes.md` regenerado.
   - **Documentación:** README (un proveedor por papel y OpenCode Go en la puesta en marcha; seguridad), `.env.example`, `docker-compose.yml`, `docs/api/openapi.json` (campos nuevos y la descripción de `/jobs/arbiter-models`), `CLAUDE.md`, plan y trazabilidad. Memoria: punto 8 de «Cosas que añadir», que compila.
 - **Pendiente:** el paso 144 (todo el consumo en un solo fichero, con los límites de Go en `precios.json`).
+
+## 11-11-2026, 12:54 (sesión, hito 25, paso 144)
+
+- **Paso 144 hecho** (el autor: «vamos con el siguiente paso»). `scripts/evaluacion/costes.cs` escribe también `docs/costes/consumo.md`:
+  1. lo que queda de cada límite de Go de los tres candidatos (mes, semana y 5 horas);
+  2. el gasto por proveedor y modelo, con los tokens leídos de la caché (desde el paso 128);
+  3. el gasto por proyecto: pasarela, OpenCode Go, total y a precio completo;
+  4. cada tarea de cada proyecto, de la más reciente a la más antigua: una fila por papel (modelo, proveedor, ejecuciones, tokens y coste), el total de la tarea, si falló y cuántas repeticiones tuvo.
+- **Criterios:**
+  - entra todo lo ejecutado, experimentos e intentos fallidos incluidos, porque todo cuenta en el límite;
+  - el coste de Go es el principal (caché a su precio), como cuenta OpenCode sus límites;
+  - los mockups con la suscripción del autor van aparte, sin precio;
+  - los proyectos internos, anonimizados como en `costes.md`.
+- **Límites en `precios.json`:**
+  - el mensual de cada modelo (`limite_mes_go`: Kimi 15, Argon 30 y Haiku 15 $);
+  - en `_go`, `inicio_suscripcion` (vacío hasta el paso 129) y la parte de la semana (0,5) y de las 5 horas (0,2), según la documentación de Go.
+- **Ventanas:** el mes empieza el día de la suscripción; la semana y las 5 horas, móviles. OpenCode no dice cómo son, y se comprobará con su consola en el paso 129. Argon tiene descuento hasta el 30-11: hasta entonces gasta del límite la mitad de lo que dice la tabla (anotado en el fichero).
+- **Comprobación:** los totales por proyecto cuadran con `costes.md` en los proyectos sin experimentos (PURE · microcare 9,29 $, LasCuarenta 21,95 $, Banco de Alimentos 15,99 $, «Clínicas SOL 6.1» 16,67 $ e internos 1 y 2, 4,04 $ y 4,78 $). `costes.md` no cambia salvo la fecha.
+- **Documentación:** `docs/costes/README.md` (ficheros y la sección «Desde el 10-11-2026», con la caché y `consumo.md`), plan, `CLAUDE.md`, trazabilidad y la memoria (una frase en el punto 2, sobre el límite de la suscripción; compila).
+- **Pendiente:** el paso 129. Empieza el autor: contratar Go, crear la clave, ponerla en `.env` con `RUNNER_PROVIDER_B=OpenCodeGo` y decir la fecha de la suscripción para `precios.json`.

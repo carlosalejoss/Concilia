@@ -7,9 +7,10 @@ Petición del autor (19-10-2026): medir cuánto cuesta cada fase del proceso, en
 | Fichero | Qué es |
 | --- | --- |
 | [`costes.md`](costes.md) | **Las tablas:** cada trabajo del proyecto grande de ejemplo, el flujo completo de cada proyecto, el antes y el después de cada cambio de prompt y el coste por papel y modelo. |
+| [`consumo.md`](consumo.md) | **Todo el consumo** (paso 144), de SOL por la pasarela y de los modelos de OpenCode Go. Arriba, lo que queda de cada límite de Go (mes, semana y 5 horas), el gasto por proveedor y modelo y el gasto por proyecto. Debajo, cada tarea de cada proyecto, de la más reciente a la más antigua, con el modelo, el proveedor, los tokens y el coste de cada papel. Incluye los experimentos y los intentos fallidos, porque todo cuenta en el límite. |
 | [`estimador.md`](estimador.md) | El ajuste del estimador de las ejecuciones sin dato y su error. |
-| `../../scripts/evaluacion/costes.cs` | Genera `costes.md` con la aplicación en marcha: `dotnet run scripts/evaluacion/costes.cs`. Se puede volver a generar en cualquier momento, y cada ejecución nueva entra sola. |
-| `../../scripts/evaluacion/precios.json` | Los precios por modelo, editables. |
+| `../../scripts/evaluacion/costes.cs` | Genera `costes.md` y `consumo.md` con la aplicación en marcha: `dotnet run scripts/evaluacion/costes.cs`. Se puede volver a generar en cualquier momento, y cada ejecución nueva entra sola. Se regenera tras cada tarea. |
+| `../../scripts/evaluacion/precios.json` | Los precios por modelo, editables: entrada, salida y lectura de caché, con qué se paga y, en los de OpenCode Go, su límite mensual. En `_go`, el día de la suscripción y la parte del límite de cada semana y de cada 5 horas. |
 | `../../scripts/evaluacion/ajustar-estimador.cs` | Vuelve a ajustar el estimador con los datos que haya y mide su error: `dotnet run scripts/evaluacion/ajustar-estimador.cs`. |
 
 ## De dónde salen las cifras
@@ -65,5 +66,8 @@ Sirve para sumar el coste de un trabajo o de una fase. Una ejecución concreta p
 
 - **Nuevo modelo B:** un modelo de otro fabricante, contratado con OpenCode Go (suscripción de 10 $ al mes). Su coste se calcula igual que el de SOL, por token a precio de lista (los precios por uso de OpenCode), con la nota de que se pagó con la suscripción. Así las tablas dicen lo que pagaría una empresa que pagase por uso.
 - **El coste es una parte central de la memoria:** en todo lo que se haga se miden los tokens y el precio para una empresa, por fase y del flujo completo.
-- **`consumo.md` (paso 144 del plan):** todo el consumo, de SOL y de OpenCode, en un solo fichero, por proyecto y con el coste de cada tarea. Lo generará este mismo script, con lo que queda de cada límite de Go arriba.
+- **La caché, a su precio (paso 128, autor, 10-11-2026):** cada ejecución guarda aparte los tokens que lee de la caché. El coste principal los cobra a su precio (SOL 6 0,20 $, SOL 6.1 0,10 $ y LUNA 0,01 $ por millón), que es lo que de verdad se paga. La columna «A precio completo» lo calcula como antes, para comparar. Las ejecuciones de antes del paso 128 salen igual en las dos.
+- **`consumo.md` (paso 144, hecho el 11-11-2026):** todo el consumo, de SOL y de OpenCode, en un solo fichero, por proyecto y con el coste de cada tarea, y lo que queda de cada límite de Go arriba.
+  - **Ventanas:** el mes de Go empieza el día de la suscripción (`_go.inicio_suscripcion` en `precios.json`, que se pone en el paso 129); la semana y las 5 horas se toman como ventanas móviles. Se comprueba con la consola de OpenCode, y si no cuadra se ajusta.
+  - **Cómo se comprobó:** sus totales por proyecto cuadran con los de `costes.md` en los proyectos sin experimentos (PURE · microcare 9,29 $, LasCuarenta 21,95 $, Banco de Alimentos 15,99 $, «Clínicas SOL 6.1» 16,67 $ y los internos 1 y 2, 4,04 $ y 4,78 $).
 - **El paso 137** dará el coste para una empresa de cada configuración: SOL solo, SOL ‖ LUNA, SOL ‖ nuevo B y SOL ‖ SOL.

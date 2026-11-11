@@ -33,7 +33,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 127 hecho (10-11-2026):** candidatos Kimi K3.1 Pro y Gemini 4 Argon, aprobados por el autor, y Claude Haiku 5.5 de reserva (`docs/opencode-go/candidatos.md`).
 - **Paso 145 hecho (11-11-2026):** SOL 6.1 frente a SOL 6. Se mantiene SOL 6 (autor), porque SOL 6.1 tarda entre 2,2 y 4,8 veces más y cuesta un 46 % más, sin ganar fiabilidad (`docs/sol-6.1/comparacion.md`).
 - **Paso 128 hecho (11-11-2026):** un proveedor por papel, el proveedor `OpenCodeGo` y los tokens de caché guardados aparte, con los dos cálculos del coste.
-- **Siguiente:** el paso 144.
+- **Paso 144 hecho (11-11-2026):** `docs/costes/consumo.md`, con todo el consumo por proyecto y tarea y lo que queda de cada límite de Go.
+- **Siguiente:** el paso 129 (lo empieza el autor: contratar Go y poner la clave).
 
 ### Lo que queda, en orden
 
@@ -45,7 +46,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 1. ~~**127,** estudio de los candidatos~~ (hecho el 10-11-2026): Kimi K3.1 Pro y Gemini 4 Argon, y Claude Haiku 5.5 de reserva. ~~**145,** SOL 6.1 frente a SOL 6~~ (añadido y hecho el 11-11-2026): se mantiene SOL 6.
 2. ~~**128,** un proveedor por papel en el runner (código y tests)~~ (hecho el 11-11-2026).
-3. **144,** todo el consumo (SOL y OpenCode Go) en un solo fichero, por proyecto y con el coste de cada tarea, antes del primer uso de Go.
+3. ~~**144,** todo el consumo (SOL y OpenCode Go) en un solo fichero, por proyecto y con el coste de cada tarea, antes del primer uso de Go~~ (hecho el 11-11-2026).
 4. **129,** la cuenta, la clave y la prueba de humo. El autor contrata Go y crea la clave; Claude prueba los 3 candidatos.
 5. **130,** elegir el modelo con la ronda de preguntas y el catálogo de clínicas. Decide el autor.
 6. **131,** el flujo de clínicas con el modelo elegido, frente al de LUNA.
@@ -1027,7 +1028,16 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
     - que ninguna clave llegue donde no debe;
     - que sin configurar nada todo sea como hoy.
   - **Documentación:** `.env.example`, README (puesta en marcha), `CLAUDE.md` y `docs/api/openapi.json` si cambia algún endpoint.
-- [ ] 144. **Todo el consumo en un solo fichero** (autor, 10-11-2026: el de SOL y el de OpenCode juntos, para verlo de un vistazo, por proyecto y con el coste de cada tarea). Va antes del primer uso de Go (paso 129), para anotarlo desde el principio.
+- [x] 144. **Todo el consumo en un solo fichero** (autor, 10-11-2026: el de SOL y el de OpenCode juntos, para verlo de un vistazo, por proyecto y con el coste de cada tarea). Va antes del primer uso de Go (paso 129), para anotarlo desde el principio.
+  - **Hecho el 11-11-2026.** `costes.cs` escribe también `docs/costes/consumo.md`:
+    1. lo que queda de cada límite de Go (mes, semana y 5 horas) de los tres candidatos;
+    2. el gasto por proveedor y modelo, con los tokens leídos de la caché;
+    3. el gasto por proyecto (pasarela, OpenCode Go y total, también a precio completo);
+    4. cada tarea de cada proyecto, de la más reciente a la más antigua, con una fila por papel (modelo, proveedor, ejecuciones, tokens y coste) y su total, y si falló o se repitió.
+  - **Límites en `precios.json`:** el mensual de cada modelo (`limite_mes_go`: Kimi 15, Argon 30 y Haiku 15 $) y, en `_go`, el día de la suscripción (`inicio_suscripcion`, vacío hasta el paso 129) y la parte de la semana (50 %) y de las 5 horas (20 %).
+  - **Ventanas:** el mes de Go empieza el día de la suscripción; la semana y las 5 horas, móviles. OpenCode no lo documenta: se comprueba con su consola en el paso 129.
+  - **Coste:** el principal (caché a su precio), que es como OpenCode cuenta sus límites.
+  - **Comprobado:** los totales por proyecto cuadran con `costes.md` en los proyectos sin experimentos. Los mockups hechos con la suscripción del autor van aparte, sin precio.
   - **Cómo:** `scripts/evaluacion/costes.cs`, que ya lee de la API cada trabajo con sus ejecuciones y sus tokens, escribe además `docs/costes/consumo.md`. Se regenera tras cada tarea, como `costes.md`, así que no hay que anotar nada a mano ni se puede olvidar.
   - **Qué lleva:**
     - **Resumen arriba:**
