@@ -502,6 +502,12 @@ En palabras sencillas: antes, el árbitro tenía que copiar a mano cada condici�
 - **Decisión del autor:** se mantiene SOL 6.
 - **Hallazgo:** con un catálogo validado de 329 requisitos, el árbitro del backlog compacta dos veces sin escribir la salida, con los dos modelos. Su prompt y sus entradas no caben en 128.000 tokens con un catálogo tan grande.
 
+**Con los candidatos a modelo B por OpenCode Go (paso 129, 11-11-2026, `docs/opencode-go/humo.md`).** Ronda de preguntas de ReservaSalas, A y árbitro SOL.
+- **Resultado:** Kimi K3.1 Pro, Gemini 4 Argon y Claude Haiku 5.5 salen válidos a la primera, sin reparaciones ni correcciones automáticas, con solo `Read` (`offset` y `limit` exactos) y `Write`, y en español.
+- **Preguntas de B:** 9, 8 y 11.
+- **Lo que aporta B a la unión:** 1, 0 y 4 preguntas solo suyas.
+- **Salida de B:** 4.732, 20.490 y 5.704 tokens.
+
 ### Qué hay que mejorar
 
 - **Que el árbitro del backlog quepa con catálogos grandes** (paso 145): en la v0.14 (paso 143), que lea solo los requisitos que citan las historias que tiene que decidir, como el del catálogo con `input/fuentes.txt`.

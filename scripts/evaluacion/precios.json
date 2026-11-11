@@ -4,7 +4,7 @@
   "_nota_haiku": "Claude Haiku 5.5 cobra según el contexto de cada petición: 0,10 / 0,50 / 0,01 hasta 100.000 tokens y 0,50 / 2,50 / 0,05 por encima. Claude Code solo da el total, así que se usa el precio alto: es un techo.",
   "_go": {
     "_nota": "Límites del plan Go (10 $ al mes), en dólares a precio de lista, por modelo (documentación de OpenCode Go, 10-11-2026): el mensual va en cada modelo como 'limite_mes_go'; el de 5 horas es el 20 % y el semanal el 50 %. 'inicio_suscripcion' es el día en que se contrata (paso 129): el mes de Go empieza ese día de cada mes. OpenCode no dice si la semana y las 5 horas son ventanas móviles o fijas: se toman móviles (los últimos 7 días y las últimas 5 horas) y se comprueba con la consola de OpenCode.",
-    "inicio_suscripcion": null,
+    "inicio_suscripcion": "2026-11-11T00:00:00+01:00",
     "semana": 0.5,
     "cinco_horas": 0.2
   },

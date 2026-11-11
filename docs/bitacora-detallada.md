@@ -3561,3 +3561,32 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Comprobación:** los totales por proyecto cuadran con `costes.md` en los proyectos sin experimentos (PURE · microcare 9,29 $, LasCuarenta 21,95 $, Banco de Alimentos 15,99 $, «Clínicas SOL 6.1» 16,67 $ e internos 1 y 2, 4,04 $ y 4,78 $). `costes.md` no cambia salvo la fecha.
 - **Documentación:** `docs/costes/README.md` (ficheros y la sección «Desde el 10-11-2026», con la caché y `consumo.md`), plan, `CLAUDE.md`, trazabilidad y la memoria (una frase en el punto 2, sobre el límite de la suscripción; compila).
 - **Pendiente:** el paso 129. Empieza el autor: contratar Go, crear la clave, ponerla en `.env` con `RUNNER_PROVIDER_B=OpenCodeGo` y decir la fecha de la suscripción para `precios.json`.
+
+## 11-11-2026, 13:31 (sesión, hito 25, paso 129)
+
+- **El autor contrata OpenCode Go el 11-11-2026** y crea la clave.
+  - Claude le explicó los campos del formulario: el espacio de trabajo con Go, nombre `concilia`, caducidad Custom de 140 días y permisos Restricted con Models en Request.
+  - El autor la puso en `.env` con el esqueleto que le dio Claude: `OPENCODE_GO_API_KEY`, `RUNNER_PROVIDER_B=OpenCodeGo` y `RUNNER_MODEL_B=kimi-k3.1-pro`. Claude no la leyó.
+  - Fecha en `precios.json` (`_go.inicio_suscripcion`).
+- **Cambio respecto al plan, aprobado por el autor:** sin la prueba de resumen del hito 3, cuyo endpoint ya no existe. Solo la ronda de preguntas de ReservaSalas (`DOC-01.txt` del ejemplo, ficticio) con cada candidato como B, en un proyecto propio, con el nombre del sistema «el sistema ReservaSalas» (lección del paso 145).
+- **Antes de lanzar,** Claude dio la estimación frente a los límites, todos sin gastar: como mucho 0,14 $ (Kimi), 0,28 $ (Argon) y 0,04 $ (Haiku).
+- **Resultados** (`docs/opencode-go/humo.md`): los tres válidos a la primera, sin reparaciones.
+  - Solo `Read` (`offset` y `limit` exactos) y `Write`, consola correcta, veredicto en español, sin compactar y con la caché aparte.
+  - **Minutos de B:** 2,8 (Kimi), 5,0 (Argon) y 0,5 (Haiku).
+  - **Salida:** 4.732, 20.490 y 5.704 tokens.
+  - **Coste de B:** 0,07, 0,45 (0,23 con el descuento) y 0,02 $.
+  - **Preguntas solo de B en la unión:** 1, 0 y 4.
+  - **La traducción del protocolo no dio problemas,** ni el «Missing API Key» de un hilo de GitHub.
+- **Hallazgos:**
+  - Claude Code asume 200.000 tokens de ventana con Haiku, porque lo reconoce como modelo de Anthropic, y no hace caso a `CLAUDE_CODE_MAX_CONTEXT_TOKENS`. Con Kimi y Argon, 128.000. Anotado: si hubiera que elegir Haiku, antes habría que resolverlo;
+  - Argon razona mucho y sale unas 6 veces más caro que Kimi en esta ronda.
+- **Preguntas del autor:**
+  - **Cómo se cambia de Kimi a Argon:** con la variable en la orden de `docker compose`, que tiene prioridad sobre `.env`, sin tocarlo.
+  - **Si es una vulnerabilidad:** no, porque exige ya el control del equipo. Pero Claude vio que la web se publicaba en todas las interfaces de red, sin usuarios y con tareas que gastan. Con el visto bueno del autor, se publica solo en `127.0.0.1:8080` (commit `fix:` aparte, con el README) y se aplicó entre dos rondas, sin nada en marcha.
+- **Al terminar,** la API queda con lo que dice `.env` (B = Kimi). `costes.md` y `consumo.md` regenerados:
+  - Go gastado: Kimi 0,07, Argon 0,45 y Haiku 0,02 $, cada uno de su límite;
+  - pasarela: 0,32 $.
+- **Documentación:** plan, `CLAUDE.md`, trazabilidad, `docs/evolucion-prompt-requisitos.md` y memoria (punto 9 y la medida de seguridad en el punto 8; compila).
+- **Pendientes:**
+  - que el autor compare el consumo con la consola de OpenCode, por modelo, para confirmar que cada uno tiene su límite y que las cifras cuadran;
+  - el paso 130.

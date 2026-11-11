@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 11-11-2026 12:52, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 11-11-2026 13:29, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -149,6 +149,12 @@ Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ron
 | Clínicas SOL 6.1 | Catálogo | 3 | 2.348.462* | 306.396* | 5,45* | 5,45* | 48 |
 | Clínicas SOL 6.1 | Backlog | 2 | 3.723.072* | 191.165* | 8,22* | 8,22* | 53 |
 | **Clínicas SOL 6.1** | **Total** | 7 | **7.220.431*** | **596.852*** | **16,67*** | **16,67*** | **137** |
+| ReservaSalas humo Kimi | Preguntas | 1 | 55.912 | 12.832 | 0,18 | 0,24 | 4 |
+| **ReservaSalas humo Kimi** | **Total** | 1 | **55.912** | **12.832** | **0,18** | **0,24** | **4** |
+| ReservaSalas humo Argon | Preguntas | 1 | 51.385 | 26.991 | 0,54 | 0,60 | 6 |
+| **ReservaSalas humo Argon** | **Total** | 1 | **51.385** | **26.991** | **0,54** | **0,60** | **6** |
+| ReservaSalas humo Haiku | Preguntas | 1 | 83.213 | 14.114 | 0,14 | 0,20 | 2 |
+| **ReservaSalas humo Haiku** | **Total** | 1 | **83.213** | **14.114** | **0,14** | **0,20** | **2** |
 
 ## 4. Antes y después: la misma fase con distintas versiones del prompt
 

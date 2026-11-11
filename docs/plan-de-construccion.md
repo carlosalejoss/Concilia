@@ -34,7 +34,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 145 hecho (11-11-2026):** SOL 6.1 frente a SOL 6. Se mantiene SOL 6 (autor), porque SOL 6.1 tarda entre 2,2 y 4,8 veces más y cuesta un 46 % más, sin ganar fiabilidad (`docs/sol-6.1/comparacion.md`).
 - **Paso 128 hecho (11-11-2026):** un proveedor por papel, el proveedor `OpenCodeGo` y los tokens de caché guardados aparte, con los dos cálculos del coste.
 - **Paso 144 hecho (11-11-2026):** `docs/costes/consumo.md`, con todo el consumo por proyecto y tarea y lo que queda de cada límite de Go.
-- **Siguiente:** el paso 129 (lo empieza el autor: contratar Go y poner la clave).
+- **Paso 129 hecho (11-11-2026):** Go contratado por el autor el 11-11-2026. Los tres candidatos funcionan por OpenCode Go a la primera (`docs/opencode-go/humo.md`).
+- **Siguiente:** el paso 130 (elegir el modelo con clínicas).
 
 ### Lo que queda, en orden
 
@@ -47,7 +48,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 1. ~~**127,** estudio de los candidatos~~ (hecho el 10-11-2026): Kimi K3.1 Pro y Gemini 4 Argon, y Claude Haiku 5.5 de reserva. ~~**145,** SOL 6.1 frente a SOL 6~~ (añadido y hecho el 11-11-2026): se mantiene SOL 6.
 2. ~~**128,** un proveedor por papel en el runner (código y tests)~~ (hecho el 11-11-2026).
 3. ~~**144,** todo el consumo (SOL y OpenCode Go) en un solo fichero, por proyecto y con el coste de cada tarea, antes del primer uso de Go~~ (hecho el 11-11-2026).
-4. **129,** la cuenta, la clave y la prueba de humo. El autor contrata Go y crea la clave; Claude prueba los 3 candidatos.
+4. ~~**129,** la cuenta, la clave y la prueba de humo~~ (hecho el 11-11-2026).
 5. **130,** elegir el modelo con la ronda de preguntas y el catálogo de clínicas. Decide el autor.
 6. **131,** el flujo de clínicas con el modelo elegido, frente al de LUNA.
 7. **132,** cerrar el cambio: revisar con datos las medidas que se tomaron por LUNA, los valores por defecto y la documentación.
@@ -1053,7 +1054,18 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
   - **Los límites de Go** van en `precios.json`, para cambiarlos sin tocar el script si OpenCode los cambia.
   - **Cómo se comprueba:** se genera con los proyectos que ya hay (SOL y LUNA) y los totales cuadran con `costes.md`.
 
-- [ ] 129. **La cuenta, la clave y la prueba de humo.**
+- [x] 129. **La cuenta, la clave y la prueba de humo.**
+  - **Hecho el 11-11-2026** (`docs/opencode-go/humo.md`):
+    - el autor contrató Go el 11-11-2026 (`_go.inicio_suscripcion` en `precios.json`) y puso la clave en `.env`;
+    - la prueba de resumen del hito 3 ya no existe en la API, así que se hizo solo la ronda de ReservaSalas (autor);
+    - **los tres funcionan a la primera:** solo `Read` y `Write`, consola, tokens con la caché aparte, veredicto, español y sin compactar;
+    - **B tardó** 2,8 minutos con Kimi, 5,0 con Argon y 0,5 con Haiku, y **costó** 0,07 $, 0,45 $ (0,23 $ con el descuento) y 0,02 $. Argon escribe 20.490 tokens de salida, frente a 4.732 de Kimi;
+    - la traducción del protocolo no dio problemas.
+  - **Hallazgo:** Claude Code asume 200.000 tokens de ventana con Haiku (lo reconoce como modelo de Anthropic) y no los 128.000 del runner. Si hubiera que elegirlo, antes habría que resolverlo.
+  - **Pendiente:**
+    - que el autor compare el consumo con la consola de OpenCode y confirme que cada modelo tiene su límite;
+    - qué pasa al llegar al límite a mitad de una tarea no se puede probar sin gastarlo. Se sigue la regla de lanzar solo lo que quepa en las 5 horas.
+  - **Además:** la web pasa a publicarse solo en `127.0.0.1` (commit aparte), porque la plataforma no tiene usuarios y sus tareas gastan.
   **Qué haces tú:**
   1. Entra en <https://opencode.ai>, crea la cuenta y contrata **Go** en tu espacio de trabajo (*workspace*).
   2. En **Settings › Privacy**, deja bloqueados los modelos que entrenan con los datos y las regiones en Europa y Estados Unidos (vienen así por defecto).
