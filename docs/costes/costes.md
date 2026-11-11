@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 09-11-2026 11:21, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 11-11-2026 11:02, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -136,6 +136,14 @@ Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ron
 | LasCuarenta | Backlog | 1 | 316.922 | 62.776 | 0,88 | 5 |
 | LasCuarenta | Mockup | 1 | 878.448 | 235.456 | 4,11 | 17 |
 | **LasCuarenta** | **Total** | 33 | **9.948.356*** | **708.261*** | **21,95*** | **80** |
+| Clínicas SOL 6 | Preguntas | 1 | 420.028 | 51.106 | 1,01 | 8 |
+| Clínicas SOL 6 | Sugerencias de respuesta | 1 | 145.805 | 13.000 | 0,42 | 2 |
+| **Clínicas SOL 6** | **Total** | 2 | **565.833** | **64.106** | **1,43** | **10** |
+| Clínicas SOL 6.1 | Preguntas | 1 | 971.640 | 72.931 | 2,37 | 25 |
+| Clínicas SOL 6.1 | Sugerencias de respuesta | 1 | 177.257 | 26.360 | 0,62 | 11 |
+| Clínicas SOL 6.1 | Catálogo | 3 | 2.348.462* | 306.396* | 5,45* | 48 |
+| Clínicas SOL 6.1 | Backlog | 2 | 3.723.072* | 191.165* | 8,22* | 53 |
+| **Clínicas SOL 6.1** | **Total** | 7 | **7.220.431*** | **596.852*** | **16,67*** | **137** |
 
 ## 4. Antes y después: la misma fase con distintas versiones del prompt
 

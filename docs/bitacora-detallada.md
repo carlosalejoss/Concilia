@@ -3454,3 +3454,49 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - `ReportEndpoints`: cada línea del CSV termina en `\r\n`, como pide RFC 4180. También cambia el CSV que se descarga desde Docker, que antes salía con `\n`.
 - **Comprobado:** 1.038 tests en Debug en Windows, sin errores. En Linux se confirmará con el siguiente run del CI, tras el push del autor.
 - **Lección:** un test que solo se ejecuta en local no basta; conviene mirar el estado del CI tras cada push.
+
+## 11-11-2026, 12:08 (sesión, hito 25, paso 145)
+
+- **Precio de la caché** (autor, 10-11): dos cálculos.
+  - **El principal y el de la memoria:** las lecturas de caché a su precio.
+  - **Otro a precio completo,** solo para comparar con lo de antes. Al autor no le importa que lo anterior no se pueda comparar con el principal.
+  - **Precios de lista de la caché:** SOL 6 0,20 $, SOL 6.1 0,10 $ y LUNA 0,01 $ por millón.
+  - Se aplica en el paso 128: hoy la plataforma solo guarda el total de entrada (`RunEvaluator` junta la caché con la entrada nueva). La consola guardada tampoco trae el desglose.
+- **Paso 145, nuevo, antes del 128** (autor): medir SOL 6.1 frente a SOL 6 en A, árbitro y sugerencias antes de cambiar. Solo datos objetivos; el autor no revisa el contenido.
+  - **Diseño de Claude, aprobado:**
+    - clínicas con los prompts v0.12 y B LUNA en todo;
+    - una ronda de preguntas y sus sugerencias en dos proyectos nuevos, «Clínicas SOL 6» y «Clínicas SOL 6.1»;
+    - los dos catálogos en «Clínicas SOL 6.1», con las mismas 92 respuestas;
+    - los dos backlogs desde el mismo catálogo validado (el de SOL 6, 329 requisitos, con sus 21 discrepancias marcadas como revisadas).
+  - **Cómo se cambia de modelo:** recreando la API con `RUNNER_MODEL_A`, `RUNNER_MODEL_ARBITER` y `RUNNER_MODEL_SUGGESTIONS` en el entorno (tienen prioridad sobre `.env`, que no se toca), siempre sin tareas en marcha. Se explicó al autor, que preguntó cómo se había cambiado.
+  - **Docker:** imagen reconstruida con `main` (`3737ad7`). Al terminar, la API queda con SOL 6.
+  - **Respuestas:** todas las sugerencias eran suposiciones, así que «Aprobar todas» no aprobaba ninguna. Se guardaron tal cual (origen `ia`).
+  - **Incidencia de montaje:**
+    - **qué pasó:** la plataforma toma el nombre del proyecto como nombre del sistema («el sistema Clínicas SOL 6.1»). La ronda preguntó si la documentación de «Plataforma Huellas» era la de ese sistema (P-091), su respuesta «A decidir por el cliente…» se guardó tal cual, y el primer catálogo con SOL 6.1 se bloqueó a los 48 segundos;
+    - **arreglo:** nombre del sistema «la Plataforma Huellas» en los dos proyectos y la pregunta de identidad confirmada (P-091 y P-001);
+    - **lo que no se sabe:** si SOL 6 se habría bloqueado igual.
+  - **Resultados** (`docs/sol-6.1/comparacion.md`):
+    - **preguntas:** 7,6 frente a 24,9 minutos, y 1,01 frente a 2,37 $;
+    - **sugerencias:** 2,3 frente a 11,0 minutos, y 0,42 frente a 0,62 $;
+    - **catálogo:** 13,3 frente a 28,7 minutos, y 2,46 frente a 2,67 $;
+    - **las tres fases:** 23 frente a 65 minutos, y 3,89 frente a 5,66 $ (+46 %);
+    - **volumen:** SOL 6.1 hace 90 preguntas frente a 45, y 234 requisitos de A frente a 305 con las mismas respuestas (la unión, 190 frente a 329);
+    - **fiabilidad parecida:**
+      - SOL 6.1 no agota ningún tiempo (máximo 15,5 minutos), pero va justo;
+      - SOL 6.1 tuvo una reparación en el backlog (`quier`);
+      - el acuerdo del árbitro con los embeddings es de 83,0 % y 84,1 %.
+  - **Los dos backlogs fallaron igual:** el árbitro compactó dos veces sin escribir la salida, con un catálogo de 329 requisitos. En el de SOL 6, además, A y B se quedaron 15 minutos sin salida a la vez y terminaron en la repetición (apunta a la pasarela).
+  - **LUNA:** reparó en 4 de 7 trabajos y `REF-LINEA` actuó 8 veces. El autor preguntó por esos avisos y se le explicó que son de LUNA, no de SOL 6.1.
+  - **Coste:** 18,10 $ (5,52 con SOL 6 y 12,58 con SOL 6.1), frente a los 10–11 estimados. Lo subieron los backlogs fallidos y el árbitro de SOL 6.1 (2,7 millones de tokens estimados). `docs/costes/costes.md` regenerado; `costes.cs` reconoce «Clínicas» (con tilde) como proyecto de ejemplo.
+- **Decisión del autor:** se mantiene SOL 6, como recomendaba Claude. Motivos:
+  - entre 2,2 y 4,8 veces más tiempo;
+  - un 46 % más de coste;
+  - sin ganancia de fiabilidad;
+  - el doble de preguntas para el cliente;
+  - con Kimi, también lento, los flujos se alargarían más.
+
+  Se vigila que la empresa no retire SOL 6.
+- **Hallazgo abierto:** el backlog con un catálogo grande no cabe en el árbitro. En el plan, en «Abierto, sin paso todavía»: se mira en el paso 131.
+- **Memoria:** punto 7 de «Cosas que añadir», con la justificación completa y la tabla. Compila (92 páginas).
+- **Arreglo de paso:** la fila del CI del 10-11 en la línea de tiempo de la trazabilidad estaba partida por saltos de línea literales.
+- **Pendiente:** el paso 128.

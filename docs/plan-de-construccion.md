@@ -31,6 +31,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
   - La etiqueta `evaluacion-1` se conserva, solo en local, como marca histórica de la evaluación 1: los documentos de los pasos 104 a 106 la citan.
 - **Fechas que mandan** (autor, 10-11-2026): el depósito del TFG es a finales de enero de 2027 y la defensa en febrero de 2027. La evaluación 2 tiene que estar terminada con tiempo antes del depósito.
 - **Paso 127 hecho (10-11-2026):** candidatos Kimi K3.1 Pro y Gemini 4 Argon, aprobados por el autor, y Claude Haiku 5.5 de reserva (`docs/opencode-go/candidatos.md`).
+- **Paso 145 hecho (11-11-2026):** SOL 6.1 frente a SOL 6. Se mantiene SOL 6 (autor), porque SOL 6.1 tarda entre 2,2 y 4,8 veces más y cuesta un 46 % más, sin ganar fiabilidad (`docs/sol-6.1/comparacion.md`).
 - **Siguiente:** el paso 128.
 
 ### Lo que queda, en orden
@@ -41,7 +42,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Hito 25, el modelo B por OpenCode Go:**
 
-1. ~~**127,** estudio de los candidatos~~ (hecho el 10-11-2026): Kimi K3.1 Pro y Gemini 4 Argon, y Claude Haiku 5.5 de reserva.
+1. ~~**127,** estudio de los candidatos~~ (hecho el 10-11-2026): Kimi K3.1 Pro y Gemini 4 Argon, y Claude Haiku 5.5 de reserva. ~~**145,** SOL 6.1 frente a SOL 6~~ (añadido y hecho el 11-11-2026): se mantiene SOL 6.
 2. **128,** un proveedor por papel en el runner (código y tests).
 3. **144,** todo el consumo (SOL y OpenCode Go) en un solo fichero, por proyecto y con el coste de cada tarea, antes del primer uso de Go.
 4. **129,** la cuenta, la clave y la prueba de humo. El autor contrata Go y crea la clave; Claude prueba los 3 candidatos.
@@ -80,7 +81,8 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
 - ~~si se hace un CSV solo con lo nuevo de una iteración~~ (cerrado el 04-11-2026 sin hacerlo, como mejora futura);
-- la licencia del repositorio, por acordar con la tutora y con la empresa (README).
+- la licencia del repositorio, por acordar con la tutora y con la empresa (README);
+- el backlog de un catálogo grande (329 requisitos, paso 145): su árbitro compacta dos veces sin escribir la salida, con SOL 6 y con SOL 6.1. Se mira si vuelve a pasar en el paso 131 y entonces se decide qué hacer.
 - Quitados del plan el 10-11-2026 (autor: no se hacen): abaratar las pantallas del mockup y el mockup con la suscripción y la skill `frontend-design`.
 
 ## Hito 0: preparación y prueba de humo (completado)
@@ -964,7 +966,7 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
   - **Claude Haiku 5.5** (36 y 33–39), de reserva, por ser el único con el protocolo nativo de Claude Code. Lo elige el autor como recomendaba Claude, frente a GLM-5.3 o a no tener tercero.
   - **Revisión del autor:** propuso nueve descartados a partir de la comparación de OpenCode (`opencode.ai/data/compare`). Esa página solo da la ficha técnica: *reasoning* es «Sí/No» y no hay pruebas de calidad. Con datos, ninguno llega a SOL.
   - **Criterios relajados:** al autor no le importa que el modelo sea mejor que SOL (ya se admitía) ni que entrene con los datos. No cambia la elección.
-  - **Pendiente para el paso 128:** si el coste cobra las lecturas de caché a su precio o, como hoy, a precio completo.
+  - **Precio de la caché** (autor, 10-11-2026): ver el paso 128.
   - **Condición obligatoria:** razonar como SOL (autor, 10-11-2026).
     - Se comparan en fuentes públicas con SOL (GPT-6): razonamiento, trabajo como agente con herramientas y seguir instrucciones largas.
     - Los que queden claramente por debajo, como LUNA, se descartan aunque sean baratos.
@@ -981,6 +983,18 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
   - **protocolo:** si habla Anthropic de forma nativa o lo traduce OpenCode, que es un riesgo para las llamadas a herramientas;
   - **coste:** cuánto costaría un flujo de clínicas por token y cuántos caben en los límites de Go;
   - **retención de los datos y región.**
+- [x] 145. **SOL 6.1 frente a SOL 6** (autor, 11-11-2026, antes del paso 128). Antes de cambiar A, el árbitro y las sugerencias a `SS - GPT-6.1-SOL`, más capaz en las fuentes públicas (índice 55 frente a 44) y al mismo precio por token, se mide con datos objetivos, sin revisar el contenido a mano.
+  - **Cómo:** clínicas con los prompts v0.12, B LUNA en todo. Cada fase parte de la misma entrada con los dos modelos: una ronda de preguntas y sus sugerencias en cada uno de dos proyectos («Clínicas SOL 6» y «Clínicas SOL 6.1»); los dos catálogos con las mismas 92 respuestas; los dos backlogs desde el mismo catálogo validado. El modelo se cambia recreando la API con `RUNNER_MODEL_A`, `RUNNER_MODEL_ARBITER` y `RUNNER_MODEL_SUGGESTIONS`, sin tocar `.env`.
+  - **Resultados** (`docs/sol-6.1/comparacion.md`):
+    - preguntas, sugerencias y catálogo: 23 minutos y 3,89 $ con SOL 6, frente a 65 minutos y 5,66 $ con SOL 6.1;
+    - SOL 6.1 hace el doble de preguntas (90 frente a 45) y menos requisitos con las mismas respuestas (234 frente a 305);
+    - ninguno agota el tiempo, y los dos backlogs fallan igual (ver abajo).
+
+    La prueba costó 18,10 $.
+  - **Decisión del autor:** se mantiene SOL 6, como recomendaba Claude. Se vigila que la empresa no lo retire.
+  - **Hallazgos:**
+    - el árbitro del backlog no cabe en 128.000 tokens con un catálogo de 329 requisitos, con ninguno de los dos modelos. Abierto, sin paso todavía;
+    - la plataforma toma el nombre del proyecto como nombre del sistema, y con una respuesta pendiente sobre la identidad del sistema SOL 6.1 se bloquea.
 - [ ] 128. **Un proveedor por papel en el runner** (código). Hoy los papeles A, B, árbitro y sugerencias comparten el proveedor `LiteLlm`; solo el mockup tiene el suyo.
   - **Un proveedor por papel**, como el mockup (`RUNNER_PROVIDER_B`, vacío = `LiteLlm`), y un proveedor nuevo `OpenCodeGo`: dirección pública por defecto y la clave en `OPENCODE_GO_API_KEY`.
   - **Separación de las claves:**
@@ -990,7 +1004,9 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
   - **Si falta la clave** con B en `OpenCodeGo`, un error claro al lanzar la tarea.
   - **Informes y costes:**
     - cada ejecución guarda su proveedor;
-    - `precios.json` lleva los precios por token de los candidatos;
+    - `precios.json` lleva los precios por token de los candidatos, también el de la caché. Los de SOL y LUNA son los de lista (autor, 10-11-2026): SOL 6 0,20 $, SOL 6.1 0,10 $ y LUNA 0,01 $ por millón;
+    - cada ejecución guarda aparte sus tokens de caché (lectura y escritura). Hoy solo se guarda el total de entrada;
+    - **dos cálculos del coste** (autor, 10-11-2026). El principal y el de la memoria cobra las lecturas de caché a su precio, porque es lo que de verdad se paga. Otro, a precio completo como hasta ahora, sirve solo para comparar con lo de antes (LUNA y todo lo medido desde octubre);
     - `costes.cs` da el coste para una empresa con la nota de la suscripción.
   - **Nuevo arbitraje:** el modelo de B aparece entre los elegibles (`/jobs/arbiter-models`), para el paso 136.
   - **Tests con `Fake`,** sin llamar a ningún servicio:

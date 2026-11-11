@@ -66,11 +66,8 @@ Plataforma web que, a partir de la documentación de un sistema, genera pregunta
 | 06-11 a 09-11 | LasCuarenta, proyecto universitario del autor, por el flujo completo (caso adicional, no sustituye a los pasos 118 a 121) | 13 rondas, 142 requisitos y 40 historias, sin reparaciones ni cambios del autor al validar; 21,95 $ y 80 minutos de modelos (el 71 % en preguntas y sugerencias). El tiempo del autor no se midió (unas 3–4 horas por su estimación, sin mockup; solo leyó las discrepancias). Ficha en `docs/evaluacion/lascuarenta.md`. |
 | 10-11 | Cambio de rumbo: el modelo B por OpenCode Go (sin código) | LUNA no tiene capacidad suficiente: B pasa a un modelo de otro fabricante con OpenCode Go (solo B; lo demás sigue en SOL). La evaluación 1 se interrumpe y se repetirá desde cero (hitos 25 a 27). Todo en `main`: rama de GitHub integrada y borrada, historia antigua guardada en un `.bundle`. El coste para una empresa, parte central de la memoria |
 | 10-11 | Hito 25, paso 127: candidatos para B (estudio, sin coste) | Solo dos modelos de Go igualan o superan a SOL en las pruebas que separan a LUNA de SOL (índice de Artificial Analysis y Terminal-Bench 4.x): Kimi K3.1 Pro y Gemini 4 Argon, aprobados por el autor. Claude Haiku 5.5, de reserva por su protocolo nativo. Los nueve descartados que propuso el autor, comprobados uno a uno: ninguno llega a SOL |
-| 10-11 | El CI de GitHub, de nuevo en verde (arreglo, sin cambio funcional) | Fallaba desde el 20-10 por dos tests que solo fallan en Linux: la copia de OpenAPI con saltos `
-` de Windows y el CSV del informe con `
-` de Linux. El documento OpenAPI usa siempre `
-` y el CSV siempre `
-` (RFC 4180) |
+| 11-11 | Hito 25, paso 145: SOL 6.1 frente a SOL 6 (18,10 $) | Con clínicas y la misma entrada en cada fase, SOL 6.1 tarda entre 2,2 y 4,8 veces más y cuesta un 46 % más (65 minutos y 5,66 $ frente a 23 y 3,89 $), sin ganar fiabilidad, y hace el doble de preguntas. Se mantiene SOL 6. Hallazgo: el árbitro del backlog no cabe con un catálogo de 329 requisitos, con ninguno de los dos |
+| 10-11 | El CI de GitHub, de nuevo en verde (arreglo, sin cambio funcional) | Fallaba desde el 20-10 por dos tests que solo fallan en Linux: la copia de OpenAPI con saltos `\r\n` de Windows y el CSV del informe con `\n` de Linux. El documento OpenAPI usa siempre `\n` y el CSV siempre `\r\n` (RFC 4180) |
 | 20-10 | Documentación de la API (fuera del plan) | Swagger UI con los 42 endpoints documentados, que se actualiza sola y que los tests mantienen completa |
 
 ## Etapas
@@ -444,6 +441,16 @@ El autor lo pide para incluirlo en la memoria si funciona. GitHub no tiene impor
   - **De reserva:** Claude Haiku 5.5 (36), el único con el protocolo nativo de Claude Code. Cubre el riesgo de que la traducción rompa a los dos a la vez.
   - **Revisión del autor:** nueve descartados, a partir de la comparación de OpenCode, que solo da la ficha técnica (*reasoning* «Sí/No»). Las cifras que los igualaban con SOL venían de Terminal-Bench 2.1, ya saturada, o de versiones antiguas del índice. Ninguno llega a SOL.
   - **Coste estimado:** el resto del proyecto como B cuesta unos 18–28 $ con Kimi y 35–55 $ con Argon a precio de lista; con los dos, unos dos meses de Go. El flujo de clínicas para una empresa pasaría de 6,79 $ con LUNA a unos 9,33 $ con Kimi.
+- **Coste con la caché** (autor, 10-11): el coste principal cobra las lecturas de caché a su precio, y otro a precio completo sirve para comparar con lo de antes. Hace falta guardar los tokens de caché aparte (paso 128).
+- **Paso 145, SOL 6.1 frente a SOL 6 (11-11, `docs/sol-6.1/comparacion.md`):**
+  - **Por qué:** SOL 6.1 es más capaz en las fuentes públicas (índice 55 frente a 44) y cuesta lo mismo por token.
+  - **Cómo:** se midió antes de cambiar, con clínicas, la misma entrada en cada fase y B LUNA.
+  - **Resultados:**
+    - preguntas, sugerencias y catálogo: 65 minutos y 5,66 $ con SOL 6.1, frente a 23 y 3,89 $ con SOL 6;
+    - SOL 6.1 hace el doble de preguntas (90 frente a 45) y menos requisitos con las mismas respuestas (234 frente a 305);
+    - fiabilidad parecida.
+  - **Decisión del autor:** se mantiene SOL 6. La prueba costó 18,10 $.
+  - **Hallazgo abierto:** con un catálogo de 329 requisitos, el árbitro del backlog compacta dos veces sin escribir la salida, con los dos modelos.
 
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
@@ -517,7 +524,8 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - ~~Del hito 22 (26-10-2026): si se hace un CSV solo con lo nuevo de una iteración~~: cerrada por el autor el 04-11-2026 sin hacerlo, como mejora futura. ~~El tope de fragmentos relacionados~~: cerrado por el autor el mismo día, 20.000 tokens, tras medirlo con clínicas (`docs/fragmentos-relacionados.md`).
 - **Desde el 10-11-2026:**
   - qué modelo de OpenCode Go es el nuevo B: elección en el paso 130 (~~los candidatos~~, cerrados por el autor el 10-11-2026 en el paso 127: Kimi K3.1 Pro y Gemini 4 Argon, con Claude Haiku 5.5 de reserva);
-  - para el paso 128: si el coste cobra las lecturas de caché a su precio o, como hoy, a precio completo;
+  - ~~para el paso 128, el precio de la caché~~: cerrado por el autor el 10-11-2026. El coste principal cobra las lecturas de caché a su precio, y otro cálculo a precio completo sirve para comparar con lo de antes;
+  - el backlog de un catálogo grande (paso 145: el árbitro no cabe con 329 requisitos): se mira en el paso 131;
 
   Cerradas el mismo día: el resto de «Después», punto por punto; las mejoras de GitHub del paso 142 (issue types, Projects y nivel 3; el botón de la web, para después); y que el nuevo B haga de árbitro en el experimento del sesgo, con tope de consumo.
 
@@ -535,7 +543,7 @@ Acordados con el autor el 16-10-2026 y recogidos en `docs/plan-de-construccion.m
 8. **Hito 23, evaluación 1** (interrumpida el 10-11-2026 por el cambio del modelo B; lo hecho queda como evidencia del cambio y como el «antes»; ~~la versión congelada, paso 117~~, 04-11-2026, etiqueta `evaluacion-1`; ~~PURE en inglés, paso 105~~, 04-11-2026, 9,29 $; ~~métricas externas, paso 104~~, 04-11-2026; ~~la prueba como analista, paso 106~~, 05-11-2026; siguiente, el paso 118): métricas externas, un documento de PURE, una prueba editando de verdad y la comparación entre actualizar y empezar de cero. Desde el 27-10-2026 (autor), además: la versión congelada antes de evaluar (paso 117), la referencia revisada por el autor (118), 3 repeticiones de cada fase para ver cuánto varía (119), Concilia frente a un solo modelo con recall, precisión, F1 y coste, que es la comparación que responde a la hipótesis (120), y SOL ‖ SOL, para saber si lo que aporta el patrón viene de usar dos modelos distintos (121). Orden: 117, 105, 104, 106, 118, 119, 120 y 121. Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`.
 9. ~~**Hito 24, el backlog en GitHub**~~ (paso 124): probado en real, incluido en la memoria y con su guía de uso en `README.md`, reescrito el 09-11 con los pasos de Jira y Azure DevOps; el autor ya lo usa desde la web con su proyecto (09-11). Integrado en `main` el 10-11-2026 (paso 125).
 - **Desde el 10-11-2026, en este orden** (detalle en «Lo que queda, en orden» del plan):
-  - **hito 25, el modelo B por OpenCode Go** (pasos 127 a 132; ~~el 127, estudio de los candidatos~~, hecho el 10-11-2026; el siguiente es el 128, un proveedor por papel en el runner);
+  - **hito 25, el modelo B por OpenCode Go** (pasos 127 a 132; ~~el 127, estudio de los candidatos~~, hecho el 10-11-2026; ~~el 145, SOL 6.1 frente a SOL 6~~, hecho el 11-11-2026 (se mantiene SOL 6); el siguiente es el 128, un proveedor por papel en el runner);
   - **hito 26, antes de la evaluación 2:** el paso 126 (que el aviso de un par «mismo» separado diga en qué elemento está el otro; sale de un falso aviso en LasCuarenta) y los pasos 138 a 143 (lo de «Después» que el autor decidió hacer antes, con los prompts v0.14 los últimos);
   - **hito 27, la evaluación 2** desde cero (pasos 133, 118, 134, 135, 119, 120, 121, 136 y 137).
 10. **Después:** ~~hito 7 (catálogo v2)~~ (quitado del plan el 10-11-2026) y redactar la memoria, que desde el 10-11-2026 se trabaja en paralelo. Estructura del autor (22-10-2026, sustituye a la del 14-10): 1 Introducción; 2 Desarrollo (2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución); 3 Conclusiones. **La memoria, empezada el 04-11-2026:** redactadas la introducción (unas 2.070 palabras) y las secciones 2.1 y 2.2 (unas 4.400 palabras, con los cuatro diagramas); la 2.3 y las conclusiones, pendientes. Unas 6.500 de las 10.000 palabras.

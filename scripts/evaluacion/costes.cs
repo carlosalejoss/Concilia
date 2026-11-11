@@ -31,7 +31,7 @@ var es = CultureInfo.GetCultureInfo("es-ES");
 const string Main = "Clinicas Veterinarias";
 // The documents of the PURE dataset are public (steps 105 and 123) and LasCuarenta is a university project
 // of the author (06-11-2026): those projects keep their name too.
-string[] examples = ["Clinicas Veterinarias", "Banco De Alimentos", "ReservaSalas", "PURE", "LasCuarenta"];
+string[] examples = ["Clinicas Veterinarias", "Clínicas", "Banco De Alimentos", "ReservaSalas", "PURE", "LasCuarenta"];
 
 var prices = JsonNode.Parse(File.ReadAllText(Path.Combine("scripts", "evaluacion", "precios.json")))!.AsObject()
     .Where(p => !p.Key.StartsWith('_'))

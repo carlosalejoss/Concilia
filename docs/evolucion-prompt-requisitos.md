@@ -494,8 +494,17 @@ En palabras sencillas: antes, el árbitro tenía que copiar a mano cada condici�
 
   Para la próxima versión del árbitro del backlog: no juntar historias de A que ya son atómicas solo porque B las tiene en una.
 
+**Con SOL 6.1 en A, árbitro y sugerencias (paso 145, 11-11-2026, `docs/sol-6.1/comparacion.md`).**
+- **Cómo:** clínicas, B LUNA en todo y la misma entrada en cada fase con los dos modelos.
+- **Tiempo y coste:** preguntas, sugerencias y catálogo tardan 65 minutos y cuestan 5,66 $ con SOL 6.1, frente a 23 minutos y 3,89 $ con SOL 6.
+- **Volumen:** SOL 6.1 hace 90 preguntas frente a 45, y 234 requisitos de A frente a 305 con las mismas respuestas.
+- **Fiabilidad:** parecida. Ninguno agota el tiempo.
+- **Decisión del autor:** se mantiene SOL 6.
+- **Hallazgo:** con un catálogo validado de 329 requisitos, el árbitro del backlog compacta dos veces sin escribir la salida, con los dos modelos. Su prompt y sus entradas no caben en 128.000 tokens con un catálogo tan grande.
+
 ### Qué hay que mejorar
 
+- **Que el árbitro del backlog quepa con catálogos grandes** (paso 145): se mira si vuelve a pasar en el paso 131.
 - **Que la plataforma no marque como desviación un par «mismo» con cifras distintas** que el árbitro separa: los embeddings no ven la diferencia entre «un año» y «ocho años», y esos avisos son falsos. Es el mismo criterio de cifras que ya usa `fuentes.txt`.
 - Repetir el arbitraje del catálogo para saber si la unión más atómica se mantiene o es variación del árbitro.
 - Que el árbitro no lea su propia conversación guardada después de compactar (`claude-config/`): no es un fichero de `LECTURA`. Hoy le ayuda a recuperar lo resumido, pero no está previsto ni medido.
