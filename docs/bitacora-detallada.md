@@ -3608,3 +3608,4 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
     - Acuerdo del árbitro con los embeddings: 82 %.
   - **Ronda con Argon:** lanzada a las 13:00 (hora peninsular, 12:59 UTC). Estimación: unos 1,85 $ a precio de lista (0,92 $ del límite con el descuento) y unos 20–25 minutos.
 - **El autor tiene que irse:** se deja guardado aquí. Pendiente de la ronda de Argon, los tres catálogos y el documento `docs/opencode-go/seleccion.md`.
+- **Ronda de Argon parada** a petición del autor, que tenía que irse: se reinició la API con la configuración de `.env` (B = Kimi), y la plataforma la cerró como fallida («Cancelada: la API se estaba deteniendo»). Llevaba unos 2 minutos, sin datos de consumo. Mañana se repite desde el principio, en el mismo proyecto «Clínicas B Argon», antes de los catálogos.
