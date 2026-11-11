@@ -267,6 +267,8 @@ public class JobWorker(
         run.ResultText = result.ResultText;
         run.InputTokens = result.Usage?.InputTokens;
         run.OutputTokens = result.Usage?.OutputTokens;
+        run.CacheReadTokens = result.Usage?.CacheReadTokens;
+        run.CacheCreationTokens = result.Usage?.CacheCreationTokens;
         run.NumTurns = result.NumTurns;
         run.ErrorMessage = result.ErrorMessage;
         run.ClaudeCodeVersion = result.ClaudeCodeVersion;

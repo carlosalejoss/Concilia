@@ -45,7 +45,7 @@ public class RunnerSetupTests
         };
 
         Assert.Equal("ClaudeSubscription", ResolveMockup(settings).Name);
-        Assert.IsType<FakeProvider>(Resolve(settings));
+        Assert.Equal("Fake", Resolve(settings).Name);
     }
 
     [Fact]
@@ -65,14 +65,14 @@ public class RunnerSetupTests
             ["CLAUDE_CODE_OAUTH_TOKEN"] = FakeOAuthToken,
         }));
 
-        Assert.Contains("Fake y LiteLlm", error.Message);
+        Assert.Contains("Fake, LiteLlm y OpenCodeGo", error.Message);
         Assert.DoesNotContain(FakeOAuthToken, error.Message);
     }
 
     [Fact]
     public void Fake_is_the_default_and_needs_no_secrets()
     {
-        Assert.IsType<FakeProvider>(Resolve([]));
+        Assert.Equal("Fake", Resolve([]).Name);
     }
 
     [Fact]
@@ -122,7 +122,8 @@ public class RunnerSetupTests
     {
         var error = Assert.Throws<InvalidOperationException>(() => Resolve(new() { ["Runner:Provider"] = "Suscripcion" }));
 
-        Assert.Contains("Fake y LiteLlm", error.Message);
+        Assert.Contains("Runner:Provider", error.Message);
+        Assert.Contains("Fake, LiteLlm y OpenCodeGo", error.Message);
     }
 
     [Theory]

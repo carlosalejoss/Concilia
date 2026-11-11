@@ -50,7 +50,7 @@ Cada fase solo ve la versión validada de la anterior.
 | Web | React 19, TypeScript, Vite y Tailwind |
 | API | .NET 10 (ASP.NET Core), EF Core y OpenAPI 3.1 con Swagger UI |
 | Base de datos | PostgreSQL |
-| Modelos | Claude Code en modo no interactivo (`claude -p`), conectado a una pasarela LiteLLM; el modelo de cada papel es configuración |
+| Modelos | Claude Code en modo no interactivo (`claude -p`), conectado a una pasarela LiteLLM o, para el modelo B, a OpenCode Go; el modelo y el proveedor de cada papel son configuración |
 | *Embeddings* | `paraphrase-multilingual-MiniLM-L12-v2` con ONNX Runtime, dentro de la API |
 | Despliegue | Docker Compose |
 
@@ -91,6 +91,16 @@ MOCKUP_MODEL=<id del modelo del prototipo>
 ```
 
 [`.env.example`](.env.example) explica todas las variables. Con modelos reales cada tarea tiene coste: el flujo completo de un proyecto grande ronda los 22 $ ([detalle por fase](docs/costes/costes.md)).
+
+**Un proveedor por papel.** Cada papel puede ir por un proveedor distinto (`RUNNER_PROVIDER_A`, `_B`, `_ARBITER` y `_SUGGESTIONS`; vacíos, el de `RUNNER_PROVIDER`). Desde el hito 25, el modelo B va por [OpenCode Go](https://opencode.ai/docs/go) y el resto sigue en la pasarela:
+
+```text
+RUNNER_PROVIDER_B=OpenCodeGo
+RUNNER_MODEL_B=<id del modelo en OpenCode Go, por ejemplo kimi-k3.1-pro>
+OPENCODE_GO_API_KEY=<clave de un espacio de trabajo con Go>
+```
+
+El runner sigue siendo Claude Code: para B solo cambian la dirección (la pública de OpenCode Go para Claude Code, por defecto) y la clave. La clave de OpenCode solo llega a los procesos de B, y la de la pasarela nunca llega a ellos. Sin la clave, la API arranca, pero no deja lanzar las tareas que usan B y dice qué variable falta. Úsalo solo con documentos ficticios o públicos.
 
 ### Operación
 
@@ -229,7 +239,7 @@ La evolución de los prompts está en [`docs/evolucion-prompt-requisitos.md`](do
 
 ## Seguridad y datos
 
-Las credenciales se pasan por variables de entorno y `.env` nunca se sube al repositorio. La plataforma oculta la clave y la dirección de la pasarela en registros, eventos y base de datos. Los *embeddings* se calculan en local; el texto de los documentos sí llega a los modelos configurados, así que elige una pasarela adecuada para tus datos.
+Las credenciales se pasan por variables de entorno y `.env` nunca se sube al repositorio. La plataforma oculta la clave y la dirección de la pasarela, y la clave de OpenCode Go, en registros, eventos y base de datos; cada proceso de un modelo recibe solo las credenciales de su proveedor. Los *embeddings* se calculan en local; el texto de los documentos sí llega a los modelos configurados, así que elige una pasarela adecuada para tus datos.
 
 ## Licencia
 

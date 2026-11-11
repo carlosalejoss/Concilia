@@ -15,6 +15,10 @@
 //   4. antes y después: la misma fase del mismo proyecto con distintas
 //      versiones del prompt;
 //   5. el coste por papel (A, B, árbitro, mockup) y modelo.
+// Dos costes (autor, 10-11-2026): el principal cobra las lecturas de caché a su
+// precio, porque es lo que de verdad se paga; el otro, a precio completo como se
+// calculaba hasta entonces, sirve para comparar con lo de antes. Las ejecuciones
+// anteriores al paso 128 no guardan la caché aparte y salen igual en los dos.
 // Los proyectos que no son de ejemplo, de PURE ni del autor salen anonimizados («proyecto interno 1»…).
 //
 // Uso, desde la raíz del repositorio, con la aplicación en marcha:
@@ -35,7 +39,8 @@ string[] examples = ["Clinicas Veterinarias", "Clínicas", "Banco De Alimentos",
 
 var prices = JsonNode.Parse(File.ReadAllText(Path.Combine("scripts", "evaluacion", "precios.json")))!.AsObject()
     .Where(p => !p.Key.StartsWith('_'))
-    .ToDictionary(p => p.Key, p => (In: p.Value!["entrada"]!.GetValue<double>(), Out: p.Value["salida"]!.GetValue<double>()));
+    .ToDictionary(p => p.Key, p => new Price(p.Value!["entrada"]!.GetValue<double>(), p.Value["salida"]!.GetValue<double>(),
+        p.Value["cache"]?.GetValue<double>(), p.Value["suscripcion"]?.GetValue<string>()));
 
 using var http = new HttpClient { BaseAddress = new Uri(api), Timeout = TimeSpan.FromMinutes(10) };
 var jobs = new List<JobCost>();
@@ -61,8 +66,10 @@ foreach (var project in (await http.GetFromJsonAsync<JsonArray>("/projects"))!.O
             long? output = real ? line["outputTokens"]!.GetValue<long>() : line["estimatedOutputTokens"]?.GetValue<long>();
             // Simulated runs (the Fake provider) cost nothing and are left out.
             var started = run!["startedAt"] is not null && run["provider"]?.GetValue<string>() != "Fake";
+            // Step 128: the part of the input read from the cache (only with real usage, since then).
+            long? cacheRead = real ? run["cacheReadTokens"]?.GetValue<long>() : null;
             return new RunCost(run["slot"]?.GetValue<string>() ?? "", run["model"]!.GetValue<string>(), run["promptVersion"]?.GetValue<string>() ?? "",
-                started, input, output, !real && input is not null);
+                started, input, output, !real && input is not null, cacheRead);
         }).Where(r => r.Started).ToList();
         if (runCosts.Count == 0) continue;
         // What the matching of the arbiter cost: kept with the result since it is measured; for the
@@ -87,7 +94,19 @@ foreach (var project in (await http.GetFromJsonAsync<JsonArray>("/projects"))!.O
     }
 }
 
-double? CostOf(RunCost r) =>
+// The main cost: the input read from the cache at its price, the rest of the input
+// (new and written to the cache) at the input price. Without the cache apart (runs
+// from before step 128, or estimated) it is the full price.
+double? CostOf(RunCost r)
+{
+    if (r.Input is not { } i || r.Output is not { } o || !prices.TryGetValue(r.Model, out var p)) return null;
+    if (r.CacheRead is { } read && p.Cache is { } cache)
+        return ((i - read) * p.In + read * cache + o * p.Out) / 1_000_000;
+    return (i * p.In + o * p.Out) / 1_000_000;
+}
+
+// The cost at full price, as computed until 10-11-2026: to compare with what came before.
+double? FullCostOf(RunCost r) =>
     r.Input is { } i && r.Output is { } o && prices.TryGetValue(r.Model, out var p) ? (i * p.In + o * p.Out) / 1_000_000 : null;
 
 var md = new StringBuilder();
@@ -97,27 +116,30 @@ md.AppendLine($"Generado por `scripts/evaluacion/costes.cs` el {DateTime.Now:dd-
 md.AppendLine();
 md.AppendLine("**Cómo leer las cifras:**");
 md.AppendLine("- **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.");
-md.AppendLine("- **Coste:** tokens × precio del modelo (sección 1), en dólares. Los embeddings se calculan en local y no cuestan dinero, solo tiempo.");
+md.AppendLine("- **Coste:** tokens × precio del modelo (sección 1), en dólares. Desde el paso 128 la entrada leída de la caché se cobra a su precio, que es lo que de verdad se paga (autor, 10-11-2026). Las ejecuciones de antes no guardaban la caché aparte y van a precio completo. Los embeddings se calculan en local y no cuestan dinero, solo tiempo.");
+md.AppendLine("- **A precio completo:** toda la entrada al precio de entrada, como se calculaba hasta el 10-11-2026. Solo sirve para comparar con lo de antes.");
+md.AppendLine("- **Suscripción:** los modelos de OpenCode Go (el modelo B desde el hito 25) se pagan con la suscripción Go (10 $ al mes). Su coste se calcula por token, con los precios por uso de OpenCode: es lo que pagaría una empresa que pagase por uso.");
 md.AppendLine("- **Minutos:** desde que se crea el trabajo hasta que termina. No sirven si el equipo se suspendió durante el trabajo.");
 md.AppendLine();
 
 md.AppendLine("## 1. Precios");
 md.AppendLine();
-md.AppendLine("| Modelo | Entrada (USD por millón de tokens) | Salida (USD por millón de tokens) |");
-md.AppendLine("| --- | --- | --- |");
+md.AppendLine("| Modelo | Entrada (USD por millón de tokens) | Salida (USD por millón de tokens) | Lectura de caché (USD por millón de tokens) | Se paga con |");
+md.AppendLine("| --- | --- | --- | --- | --- |");
 foreach (var (model, p) in prices)
-    md.AppendLine($"| {model} | {p.In.ToString("F2", es)} | {p.Out.ToString("F2", es)} |");
+    md.AppendLine($"| {model} | {p.In.ToString("F2", es)} | {p.Out.ToString("F2", es)} | {(p.Cache is { } c ? c.ToString("F2", es) : "—")} | " +
+        $"{(p.Subscription is { } sub ? $"suscripción {sub}; el coste es por token" : "pago por uso")} |");
 md.AppendLine();
 
 md.AppendLine($"## 2. Cada trabajo del proyecto grande de ejemplo ({Main}, también en sus nuevas pruebas)");
 md.AppendLine();
 md.AppendLine("Los trabajos de un nuevo arbitraje sin tiempo de embeddings son anteriores al paso 100: su emparejamiento se guarda desde entonces y ya no se vuelve a calcular (medido después, tardaba entre 15 y 37 s).");
 md.AppendLine();
-md.AppendLine("| Proyecto | Fecha | Trabajo | Prompt | Resultado | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) | Minutos | Reparaciones | Embeddings (s / s de CPU) |");
-md.AppendLine("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |");
+md.AppendLine("| Proyecto | Fecha | Trabajo | Prompt | Resultado | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) | A precio completo (USD) | Minutos | Reparaciones | Embeddings (s / s de CPU) |");
+md.AppendLine("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |");
 foreach (var j in jobs.Where(j => j.Project.StartsWith(Main, StringComparison.Ordinal)).OrderBy(j => j.Created))
     md.AppendLine($"| {j.Project} | {j.Created.ToLocalTime():dd-MM HH:mm} | {Name(j)} | {Version(j)} | {(j.Succeeded ? "válido" : "fallido")} | {j.Runs.Count} | " +
-        $"{Tokens(j.Runs, r => r.Input)} | {Tokens(j.Runs, r => r.Output)} | {Money(j.Runs)} | {Minutes(j.Seconds)} | {j.Repairs} | " +
+        $"{Tokens(j.Runs, r => r.Input)} | {Tokens(j.Runs, r => r.Output)} | {Money(j.Runs)} | {Money(j.Runs, FullCostOf)} | {Minutes(j.Seconds)} | {j.Repairs} | " +
         $"{(j.MatchingSeconds is { } s ? $"{s.ToString("F1", es)} / {j.MatchingCpu!.Value.ToString("F1", es)}{(j.MatchingMeasuredLater ? " (medido después)" : "")}" : "—")} |");
 md.AppendLine();
 
@@ -125,17 +147,17 @@ md.AppendLine("## 3. El flujo completo de cada proyecto, por fase");
 md.AppendLine();
 md.AppendLine("Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ronda que lo lee todo del paso 116). Si una fase se repitió, cuentan todas sus ejecuciones: es lo que costó llegar al resultado.");
 md.AppendLine();
-md.AppendLine("| Proyecto | Fase | Trabajos | Tokens de entrada | Tokens de salida | Coste (USD) | Minutos |");
-md.AppendLine("| --- | --- | --- | --- | --- | --- | --- |");
+md.AppendLine("| Proyecto | Fase | Trabajos | Tokens de entrada | Tokens de salida | Coste (USD) | A precio completo (USD) | Minutos |");
+md.AppendLine("| --- | --- | --- | --- | --- | --- | --- | --- |");
 foreach (var project in jobs.Where(InFlow).GroupBy(j => j.Project))
 {
     foreach (var phase in project.GroupBy(Name).OrderBy(g => g.Min(j => j.Created)))
     {
         var runs = phase.SelectMany(j => j.Runs).ToList();
-        md.AppendLine($"| {project.Key} | {phase.Key} | {phase.Count()} | {Tokens(runs, r => r.Input)} | {Tokens(runs, r => r.Output)} | {Money(runs)} | {Minutes(phase.Sum(j => j.Seconds ?? 0))} |");
+        md.AppendLine($"| {project.Key} | {phase.Key} | {phase.Count()} | {Tokens(runs, r => r.Input)} | {Tokens(runs, r => r.Output)} | {Money(runs)} | {Money(runs, FullCostOf)} | {Minutes(phase.Sum(j => j.Seconds ?? 0))} |");
     }
     var all = project.SelectMany(j => j.Runs).ToList();
-    md.AppendLine($"| **{project.Key}** | **Total** | {project.Count()} | **{Tokens(all, r => r.Input)}** | **{Tokens(all, r => r.Output)}** | **{Money(all)}** | **{Minutes(project.Sum(j => j.Seconds ?? 0))}** |");
+    md.AppendLine($"| **{project.Key}** | **Total** | {project.Count()} | **{Tokens(all, r => r.Input)}** | **{Tokens(all, r => r.Output)}** | **{Money(all)}** | **{Money(all, FullCostOf)}** | **{Minutes(project.Sum(j => j.Seconds ?? 0))}** |");
 }
 md.AppendLine();
 
@@ -165,15 +187,15 @@ md.AppendLine();
 
 md.AppendLine($"## 5. Coste por papel y modelo ({Main}, flujo completo)");
 md.AppendLine();
-md.AppendLine("| Papel | Modelo | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) | Parte del coste |");
-md.AppendLine("| --- | --- | --- | --- | --- | --- | --- |");
+md.AppendLine("| Papel | Modelo | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) | A precio completo (USD) | Parte del coste |");
+md.AppendLine("| --- | --- | --- | --- | --- | --- | --- | --- |");
 var mainRuns = jobs.Where(j => j.Project == Main && InFlow(j)).SelectMany(j => j.Runs).ToList();
 var mainTotal = mainRuns.Sum(r => CostOf(r) ?? 0);
 foreach (var role in mainRuns.GroupBy(r => (Role(r.Slot), r.Model)).OrderByDescending(g => g.Sum(r => CostOf(r) ?? 0)))
 {
     var runs = role.ToList();
     var cost = runs.Sum(r => CostOf(r) ?? 0);
-    md.AppendLine($"| {role.Key.Item1} | {role.Key.Model} | {runs.Count} | {Tokens(runs, r => r.Input)} | {Tokens(runs, r => r.Output)} | {Money(runs)} | {(mainTotal == 0 ? "—" : (cost / mainTotal).ToString("P1", es))} |");
+    md.AppendLine($"| {role.Key.Item1} | {role.Key.Model} | {runs.Count} | {Tokens(runs, r => r.Input)} | {Tokens(runs, r => r.Output)} | {Money(runs)} | {Money(runs, FullCostOf)} | {(mainTotal == 0 ? "—" : (cost / mainTotal).ToString("P1", es))} |");
 }
 md.AppendLine();
 
@@ -191,12 +213,14 @@ string Tokens(IEnumerable<RunCost> runs, Func<RunCost, long?> of)
     return list.Any(r => r.Estimated) ? sum + "*" : sum;
 }
 
-string Money(IEnumerable<RunCost> runs)
+// cost: CostOf (the main one) unless another is given (FullCostOf).
+string Money(IEnumerable<RunCost> runs, Func<RunCost, double?>? cost = null)
 {
+    cost ??= CostOf;
     var list = runs.ToList();
     if (list.Any(r => !prices.ContainsKey(r.Model))) return "sin precio"; // a model of the subscription (the mockup with Sonnet)
-    var sum = list.Sum(r => CostOf(r) ?? 0).ToString("F2", es);
-    if (list.Any(r => CostOf(r) is null)) return "≥ " + sum;
+    var sum = list.Sum(r => cost(r) ?? 0).ToString("F2", es);
+    if (list.Any(r => cost(r) is null)) return "≥ " + sum;
     return list.Any(r => r.Estimated) ? sum + "*" : sum;
 }
 
@@ -239,7 +263,11 @@ static string Role(string slot) => slot switch
     _ => "Mockup",
 };
 
-record RunCost(string Slot, string Model, string Prompt, bool Started, long? Input, long? Output, bool Estimated);
+record RunCost(string Slot, string Model, string Prompt, bool Started, long? Input, long? Output, bool Estimated, long? CacheRead = null);
+
+// Dollars per million tokens. Cache: reading from the cache (null if unknown).
+// Subscription: the plan it is paid with (OpenCode Go), or null if paid per use.
+record Price(double In, double Out, double? Cache, string? Subscription);
 
 record JobCost(string Project, string Kind, string? Phase, bool Rearbitration, DateTimeOffset Created, bool Succeeded, double? Seconds,
     int Repairs, double? MatchingSeconds, double? MatchingCpu, bool MatchingMeasuredLater, List<RunCost> Runs);

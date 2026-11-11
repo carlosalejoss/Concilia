@@ -20,6 +20,35 @@ public class PhaseJobTests
 {
     private static readonly Project Project = new() { Id = 1, Name = "ReservaSalas", SystemName = "el sistema ReservaSalas" };
 
+    // Every role on the Fake provider (no role configured: all go to the default one).
+    private static readonly RunnerProviders AllFake = new(new FakeProvider(), []);
+
+    [Fact]
+    public void Each_run_stores_the_provider_of_its_model_and_a_role_that_cannot_run_refuses_the_job()
+    {
+        var options = new RunnerOptions { ModelB = "kimi-k3.1-pro" };
+        var fake = new FakeProvider();
+        var withKey = new RunnerProviders(fake,
+        [
+            ("A", options.ModelA, new RunnerProviders.Entry("LiteLlm", fake, null)),
+            ("B", options.ModelB, new RunnerProviders.Entry("OpenCodeGo", fake, null)),
+            ("Arbiter", options.ModelArbiter, new RunnerProviders.Entry("LiteLlm", fake, null)),
+        ]);
+        var withoutKey = new RunnerProviders(fake,
+            [("B", options.ModelB, new RunnerProviders.Entry("OpenCodeGo", null, "Falta OPENCODE_GO_API_KEY."))]);
+        var input = new PhaseInput { SystemName = "", Language = "" };
+
+        var created = PhaseJobs.Create(Project, Documents(), PhaseKind.Questions, input, [], options, withKey, new Random(1));
+        var refused = PhaseJobs.Create(Project, Documents(), PhaseKind.Questions, input, [], options, withoutKey, new Random(1));
+        var suggestions = PhaseJobs.Create(Project, Documents(), PhaseKind.Suggestions, input, [], options, withoutKey, new Random(1));
+
+        Assert.Equal(["A LiteLlm", "B OpenCodeGo", "ARB LiteLlm"], created.Runs.Select(r => $"{r.Slot} {r.Provider}"));
+        Assert.Null(refused.Job);
+        Assert.Contains("OPENCODE_GO_API_KEY", refused.Error);
+        // The suggestions do not use B: they are not refused.
+        Assert.Null(suggestions.Error);
+    }
+
     private static List<CatalogDocument> Documents() =>
         [new("DOC-01", "DOC-01.txt", File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts", "ejemplo", "fuentes", "DOC-01.txt")))];
 
@@ -52,7 +81,7 @@ public class PhaseJobTests
         public NewPhaseJob Create(PhaseKind kind, PhaseInput? input = null, IReadOnlyList<string>? answered = null,
                                   IReadOnlyList<string>? pending = null) =>
             PhaseJobs.Create(Project, Documents(), kind, input ?? new PhaseInput { SystemName = "", Language = "" },
-                             answered ?? [], new RunnerOptions(), "Fake", new Random(7), pending);
+                             answered ?? [], new RunnerOptions(), AllFake, new Random(7), pending);
 
         public async Task<PhaseJobResult> RunAsync(NewPhaseJob created)
         {
@@ -168,13 +197,13 @@ public class PhaseJobTests
     {
         var setup = new Setup(new FakeProvider());
 
-        var empty = PhaseJobs.Create(Project, [], PhaseKind.Questions, new PhaseInput { SystemName = "", Language = "" }, [], new RunnerOptions(), "Fake", new Random(1));
+        var empty = PhaseJobs.Create(Project, [], PhaseKind.Questions, new PhaseInput { SystemName = "", Language = "" }, [], new RunnerOptions(), AllFake, new Random(1));
         // About 120,000 tokens: read by parts it is fine with the default
         // limit (300,000), and refused with a lower one.
         var document = new CatalogDocument("DOC-01", "enorme.txt", string.Concat(Enumerable.Repeat("Una frase de relleno para el documento. ", 10_000)));
-        var fits = PhaseJobs.Create(Project, [document], PhaseKind.Questions, new PhaseInput { SystemName = "", Language = "" }, [], new RunnerOptions(), "Fake", new Random(1));
+        var fits = PhaseJobs.Create(Project, [document], PhaseKind.Questions, new PhaseInput { SystemName = "", Language = "" }, [], new RunnerOptions(), AllFake, new Random(1));
         var huge = PhaseJobs.Create(Project, [document], PhaseKind.Questions, new PhaseInput { SystemName = "", Language = "" }, [],
-                                    new RunnerOptions { MaxDocumentationTokens = 50_000 }, "Fake", new Random(1));
+                                    new RunnerOptions { MaxDocumentationTokens = 50_000 }, AllFake, new Random(1));
 
         Assert.Contains("no tiene archivos con texto", empty.Error);
         Assert.Null(fits.Error);

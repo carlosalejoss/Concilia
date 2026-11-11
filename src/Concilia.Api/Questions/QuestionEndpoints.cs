@@ -41,7 +41,7 @@ public static class QuestionEndpoints
         // the questions already asked (so they are not asked again). When the
         // arbiter ends, JobWorker stores its questions as pending (StoreRoundAsync).
         questions.MapPost("/projects/{projectId:int}/question-rounds",
-            (int projectId, [FromBody] QuestionRoundRequest? request, AppDbContext db, JobQueue queue, IRunnerProvider provider,
+            (int projectId, [FromBody] QuestionRoundRequest? request, AppDbContext db, JobQueue queue, RunnerProviders provider,
                 RunnerOptions options, FileStorage storage, ITextEmbedder embedder) =>
                 LaunchRoundAsync(projectId, request?.Focus, readAll: false, db, queue, provider, options, storage, embedder))
             .WithSummary("Lanza una ronda de preguntas")
@@ -51,7 +51,7 @@ public static class QuestionEndpoints
         // Step 116: the same centred round reading everything (option A), an
         // experiment whose questions are not added to the project (ReadAllRound).
         questions.MapPost("/projects/{projectId:int}/question-rounds/read-all",
-            async (int projectId, QuestionRoundRequest request, AppDbContext db, JobQueue queue, IRunnerProvider provider,
+            async (int projectId, QuestionRoundRequest request, AppDbContext db, JobQueue queue, RunnerProviders provider,
                 RunnerOptions options, FileStorage storage, ITextEmbedder embedder) =>
         {
             if (request.Focus is not { Count: > 0 })
@@ -68,7 +68,7 @@ public static class QuestionEndpoints
         // answered questions. Only when the step is available: at least one
         // finished round and no pending question.
         phases.MapPost("/projects/{projectId:int}/catalog-jobs",
-            async (int projectId, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+            async (int projectId, AppDbContext db, JobQueue queue, RunnerProviders provider, RunnerOptions options, FileStorage storage) =>
         {
             var project = await db.Projects.FindAsync(projectId);
             if (project is null)
@@ -97,7 +97,7 @@ public static class QuestionEndpoints
                 Answers = PhasePrompt.AnswersBlock(answered.Select(QuestionRules.ForPrompt)),
             };
             var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
-            var created = PhaseJobs.Create(project, documents, PhaseKind.Catalog, input, answered.Select(q => q.Code).ToList(), options, provider.Name, Random.Shared);
+            var created = PhaseJobs.Create(project, documents, PhaseKind.Catalog, input, answered.Select(q => q.Code).ToList(), options, provider, Random.Shared);
             return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
         })
             .WithSummary("Lanza el catálogo de requisitos")
@@ -109,7 +109,7 @@ public static class QuestionEndpoints
         // the answers marked as new when given after validating the catalog; the
         // arbiter joins them, and the platform applies them to the working copy.
         phases.MapPost("/projects/{projectId:int}/catalog-update-jobs",
-            async (int projectId, CatalogUpdateRequest request, AppDbContext db, JobQueue queue, IRunnerProvider provider,
+            async (int projectId, CatalogUpdateRequest request, AppDbContext db, JobQueue queue, RunnerProviders provider,
                 RunnerOptions options, FileStorage storage, ITextEmbedder embedder) =>
         {
             var project = await db.Projects.FindAsync(projectId);
@@ -154,7 +154,7 @@ public static class QuestionEndpoints
             input = input! with { Answers = CatalogUpdateRound.AnswersBlock(answered.Select(QuestionRules.ForPrompt), newAnswers.ToHashSet()) };
             focus = focus! with { Questions = [], NewAnswers = newAnswers };
             var created = PhaseJobs.Create(project, documents, PhaseKind.CatalogUpdate, input, answered.Select(q => q.Code).ToList(),
-                options, provider.Name, Random.Shared, focus: focus);
+                options, provider, Random.Shared, focus: focus);
             return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
         })
             .WithSummary("Actualiza el catálogo validado con unas iteraciones")
@@ -167,7 +167,7 @@ public static class QuestionEndpoints
         // backlog came from to the validated one now; A ‖ B write the changes
         // only over that, and the platform applies them to the working copy.
         phases.MapPost("/projects/{projectId:int}/backlog-update-jobs",
-            async (int projectId, CatalogUpdateRequest request, AppDbContext db, JobQueue queue, IRunnerProvider provider,
+            async (int projectId, CatalogUpdateRequest request, AppDbContext db, JobQueue queue, RunnerProviders provider,
                 RunnerOptions options, FileStorage storage) =>
         {
             var project = await db.Projects.FindAsync(projectId);
@@ -233,7 +233,7 @@ public static class QuestionEndpoints
             };
             var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
             var created = PhaseJobs.Create(project, documents, PhaseKind.BacklogUpdate, input, answered.Select(q => q.Code).ToList(),
-                options, provider.Name, Random.Shared, focus: new FocusPlan(iterations, [], []));
+                options, provider, Random.Shared, focus: new FocusPlan(iterations, [], []));
             return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
         })
             .WithSummary("Actualiza el backlog validado con unas iteraciones")
@@ -244,7 +244,7 @@ public static class QuestionEndpoints
         // fields of its schema) and the answered questions. Only when the
         // catalog is validated.
         phases.MapPost("/projects/{projectId:int}/backlog-jobs",
-            async (int projectId, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+            async (int projectId, AppDbContext db, JobQueue queue, RunnerProviders provider, RunnerOptions options, FileStorage storage) =>
         {
             var project = await db.Projects.FindAsync(projectId);
             if (project is null)
@@ -275,7 +275,7 @@ public static class QuestionEndpoints
                 Catalog = CatalogDraft.ForNextPhase(catalog!.Content),
             };
             var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
-            var created = PhaseJobs.Create(project, documents, PhaseKind.Backlog, input, answered.Select(q => q.Code).ToList(), options, provider.Name, Random.Shared);
+            var created = PhaseJobs.Create(project, documents, PhaseKind.Backlog, input, answered.Select(q => q.Code).ToList(), options, provider, Random.Shared);
             return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
         })
             .WithSummary("Lanza el backlog")
@@ -286,7 +286,7 @@ public static class QuestionEndpoints
         // answered: each question keeps the suggestion for the user to use, edit
         // or ignore (StoreSuggestionsAsync, when the job ends).
         questions.MapPost("/question-rounds/{jobId:guid}/suggestions",
-            async (Guid jobId, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+            async (Guid jobId, AppDbContext db, JobQueue queue, RunnerProviders provider, RunnerOptions options, FileStorage storage) =>
         {
             var round = await db.Jobs.FindAsync(jobId);
             if (round is null || round.Kind != PhasePlan.JobKind(PhaseKind.Questions))
@@ -305,7 +305,7 @@ public static class QuestionEndpoints
 
         // The suggested answer for one pending question.
         questions.MapPost("/questions/{id:int}/suggestion",
-            async (int id, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+            async (int id, AppDbContext db, JobQueue queue, RunnerProviders provider, RunnerOptions options, FileStorage storage) =>
         {
             var question = await db.Questions.FindAsync(id);
             if (question is null)
@@ -436,7 +436,7 @@ public static class QuestionEndpoints
     // A suggestions job: one model, a single run (RUNNER_MODEL_SUGGESTIONS),
     // with all the documentation, the answers so far and the pending questions
     // to answer. One at a time per project.
-    private static async Task<IResult> SuggestAsync(AppDbContext db, JobQueue queue, IRunnerProvider provider,
+    private static async Task<IResult> SuggestAsync(AppDbContext db, JobQueue queue, RunnerProviders provider,
         RunnerOptions options, FileStorage storage, int projectId, List<Question> pending)
     {
         if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
@@ -471,7 +471,7 @@ public static class QuestionEndpoints
         };
         var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
         var created = PhaseJobs.Create(project, documents, PhaseKind.Suggestions, input, answered.Select(q => q.Code).ToList(),
-            options, provider.Name, Random.Shared, pending.Select(q => q.Code).ToList());
+            options, provider, Random.Shared, pending.Select(q => q.Code).ToList());
         return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
     }
 
@@ -490,7 +490,7 @@ public static class QuestionEndpoints
     // A round of questions (step 112: centred on focus, if any; step 116:
     // reading everything, as an experiment). Both endpoints share it.
     private static async Task<IResult> LaunchRoundAsync(int projectId, List<int>? focusRequest, bool readAll, AppDbContext db, JobQueue queue,
-        IRunnerProvider provider, RunnerOptions options, FileStorage storage, ITextEmbedder embedder)
+        RunnerProviders provider, RunnerOptions options, FileStorage storage, ITextEmbedder embedder)
     {
         var project = await db.Projects.FindAsync(projectId);
         if (project is null)
@@ -528,7 +528,7 @@ public static class QuestionEndpoints
             }
             (input, focus) = (focusedInput!, plan);
         }
-        var created = PhaseJobs.Create(project, documents, PhaseKind.Questions, input, [], options, provider.Name, Random.Shared, focus: focus,
+        var created = PhaseJobs.Create(project, documents, PhaseKind.Questions, input, [], options, provider, Random.Shared, focus: focus,
             jobKind: readAll ? ReadAllRound.JobKind : null);
         return await PhaseJobs.EnqueueAsync(db, queue, storage, created);
     }

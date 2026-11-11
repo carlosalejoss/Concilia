@@ -421,6 +421,12 @@ namespace Concilia.Api.Persistence.Migrations
                     b.Property<int>("Attempt")
                         .HasColumnType("integer");
 
+                    b.Property<long?>("CacheCreationTokens")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("CacheReadTokens")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ClaudeCodeVersion")
                         .HasColumnType("text");
 

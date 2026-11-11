@@ -58,7 +58,8 @@ public class ClaudeCliRunnerTests
 
         var (result, _) = await Run(Request(temp.Path, Directive("tools-sol.jsonl", writeFiles: [Output]), Output));
 
-        Assert.Equal(new TokenUsage(1772 + 15442 + 28904, 148), result.Usage);
+        // The total input, and apart the cache read and the cache written (step 128).
+        Assert.Equal(new TokenUsage(1772 + 15442 + 28904, 148, CacheReadTokens: 28904, CacheCreationTokens: 15442), result.Usage);
     }
 
     [Fact]

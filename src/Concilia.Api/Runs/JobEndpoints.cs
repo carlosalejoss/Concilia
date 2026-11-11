@@ -22,7 +22,7 @@ public static class JobEndpoints
         // Launch the catalog task to model A and model B. Answers 202 at once;
         // the progress of each run is followed with GET /runs/{id}/events.
         group.MapPost("/projects/{projectId:int}/jobs",
-            async (int projectId, AppDbContext db, JobQueue queue, IRunnerProvider provider,
+            async (int projectId, AppDbContext db, JobQueue queue, RunnerProviders provider,
                    RunnerOptions options, CatalogOptions catalogOptions, FileStorage storage) =>
         {
             if (!await db.Projects.AnyAsync(p => p.Id == projectId))
@@ -32,6 +32,11 @@ public static class JobEndpoints
             if (await ActiveJobs.RefuseIfBusyAsync(db) is { } busy)
             {
                 return busy; // one task at a time in the whole platform
+            }
+            // A role whose provider cannot run (OpenCode Go without its key, step 128).
+            if (provider.ErrorFor([options.ModelA, options.ModelB]) is { } providerError)
+            {
+                return Results.ValidationProblem(new Dictionary<string, string[]> { ["project"] = [providerError] });
             }
 
             // The documents are the project files with extracted text, numbered
@@ -69,7 +74,7 @@ public static class JobEndpoints
                 Slot = slot,
                 LotNumber = lot.Number,
                 LotTotal = lot.Total,
-                Provider = provider.Name,
+                Provider = provider.NameFor(model),
                 Model = model,
                 State = RunState.Queued,
                 CreatedAt = now,

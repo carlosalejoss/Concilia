@@ -108,7 +108,8 @@ public static class ReportEndpoints
             r.InputTokens, r.OutputTokens, r.NumTurns,
             r.StartedAt is { } start && r.FinishedAt is { } end ? (end - start).TotalSeconds : null,
             r.ErrorMessage,
-            estimates.GetValueOrDefault(r.Id)?.InputTokens, estimates.GetValueOrDefault(r.Id)?.OutputTokens)).ToList();
+            estimates.GetValueOrDefault(r.Id)?.InputTokens, estimates.GetValueOrDefault(r.Id)?.OutputTokens,
+            r.CacheReadTokens, r.CacheCreationTokens, r.Provider)).ToList();
 
         var folder = storage.JobFolder(job.Id);
         var result = ReadResult(folder);

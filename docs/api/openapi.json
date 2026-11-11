@@ -1424,7 +1424,7 @@
           "Trabajos"
         ],
         "summary": "Modelos que pueden hacer de árbitro",
-        "description": "Los configurados para A, B y el árbitro, sin repetir; los ids van a la pasarela tal cual.",
+        "description": "Los configurados para A, B y el árbitro, sin repetir. Cada uno se ejecuta con el proveedor de su papel: el de B, por OpenCode Go si está configurado así (paso 128).",
         "responses": {
           "200": {
             "description": "OK",
@@ -5353,6 +5353,20 @@
             ],
             "format": "int64"
           },
+          "cacheReadTokens": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "cacheCreationTokens": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
           "numTurns": {
             "type": [
               "null",
@@ -5450,6 +5464,26 @@
               "integer"
             ],
             "format": "int64"
+          },
+          "cacheReadTokens": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "cacheCreationTokens": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "provider": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

@@ -3510,3 +3510,34 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - **en «Después», punto 10:** una comprobación previa en la plataforma que estime si el árbitro cabrá.
 
   Actualizados el plan, `CLAUDE.md`, la trazabilidad, `docs/evolucion-prompt-requisitos.md`, `docs/sol-6.1/comparacion.md` y el punto 7 de la memoria, que compila.
+
+## 11-11-2026, 12:45 (sesión, hito 25, paso 128)
+
+- **Paso 128 hecho** (el autor dio el visto bueno): un proveedor por papel en el runner.
+  - **Configuración:** `Runner:ProviderA`, `ProviderB`, `ProviderArbiter` y `ProviderSuggestions` (`RUNNER_PROVIDER_A`…); vacíos, `Runner:Provider`.
+  - **Encaminamiento:** `RunnerProviders` es el `IRunnerProvider` que reciben los ejecutores, y manda cada ejecución al proveedor de su modelo.
+    - **Por qué por modelo:** `RunRequest` lleva el modelo y no el papel, y cada papel tiene su modelo. Los ejecutores no cambian, y el nuevo arbitraje con el modelo de B (paso 136) va por OpenCode Go sin más.
+    - **Límite:** dos papeles con el mismo modelo y distinto proveedor impiden arrancar (mensaje claro).
+  - **`OpenCodeGoProvider`:**
+    - reutiliza `GatewaySettings` (`ANTHROPIC_BASE_URL` y `ANTHROPIC_AUTH_TOKEN` del hijo, y el `SecretRedactor` las oculta);
+    - dirección por defecto `https://opencode.ai/inference/go/anthropic` (`OPENCODE_GO_BASE_URL`, opcional) y clave en `OPENCODE_GO_API_KEY`;
+    - el contexto (128.000) y el tope de salida, como SOL.
+  - **Sin la clave,** la API arranca (decisión del plan: el error, al lanzar la tarea). `PhaseJobs.Create`, el nuevo arbitraje y el catálogo v1.4 rechazan la tarea con un mensaje que nombra la variable. Las sugerencias no usan B y no se rechazan.
+  - **Cada ejecución guarda su proveedor** (`NameFor(model)`) y, aparte, `CacheReadTokens` y `CacheCreationTokens` (migración `AddRunCacheTokens`; nulos en las de antes). Salen en el informe (`RunLine`, también el proveedor).
+  - **Hallazgo:** la consola real de SOL que usan los tests (`tools-sol.jsonl`) ya traía `cache_read_input_tokens` y `cache_creation_input_tokens`. La pasarela informa de la caché; la plataforma la sumaba a la entrada y la perdía.
+  - **`precios.json`:**
+    - caché de lista de SOL 6 (0,20), SOL 6.1 (0,10) y LUNA (0,01);
+    - Kimi K3.1 Pro (2 / 10 / 0,20);
+    - Gemini 4 Argon a precio de lista (4 / 20 / 0,20; con descuento hasta el 30-11);
+    - Claude Haiku 5.5 a su precio alto (0,50 / 2,50 / 0,05: Claude Code solo da el total, así que es un techo);
+    - los tres con `suscripcion: OpenCode Go`.
+  - **`costes.cs`:**
+    - el coste principal cobra la caché leída a su precio y la escrita como entrada;
+    - columna «A precio completo» en las secciones 2, 3 y 5;
+    - la tabla de precios con la caché y con qué se paga, y la nota de la suscripción en «Cómo leer».
+
+    Las ejecuciones de antes salen igual en los dos.
+  - **Tests:** 1.053 en verde (15 nuevos en `RoleProvidersTests` y uno en `PhaseJobTests`; actualizados los que esperaban un `FakeProvider` directo o el mensaje antiguo, y el de la caché de `ClaudeCliRunnerTests`).
+  - **Docker:** reconstruido con la migración aplicada y la configuración de siempre (A y árbitro SOL 6, B LUNA). `costes.md` regenerado.
+  - **Documentación:** README (un proveedor por papel y OpenCode Go en la puesta en marcha; seguridad), `.env.example`, `docker-compose.yml`, `docs/api/openapi.json` (campos nuevos y la descripción de `/jobs/arbiter-models`), `CLAUDE.md`, plan y trazabilidad. Memoria: punto 8 de «Cosas que añadir», que compila.
+- **Pendiente:** el paso 144 (todo el consumo en un solo fichero, con los límites de Go en `precios.json`).

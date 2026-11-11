@@ -9,6 +9,14 @@ public class RunnerOptions
     // "Fake" (default: no model, no secrets) or "LiteLlm" (the real gateway).
     public string Provider { get; set; } = "Fake";
 
+    // The provider of each role (step 128): empty means Provider. Besides Fake and
+    // LiteLlm, "OpenCodeGo" (model B since 10-11-2026). RUNNER_PROVIDER_A, _B,
+    // _ARBITER and _SUGGESTIONS.
+    public string? ProviderA { get; set; }
+    public string? ProviderB { get; set; }
+    public string? ProviderArbiter { get; set; }
+    public string? ProviderSuggestions { get; set; }
+
     // Fake only: the pause between its events, so the web shows them arriving
     // one by one (0 in the test of the whole flow).
     public int FakeStepDelayMs { get; set; } = 300;
@@ -86,9 +94,12 @@ public static class RunnerSetup
     public const string MockupKey = "mockup";
 
     // Registers the IRunnerProvider of each role chosen in the configuration:
-    // the default one (A, B, arbiter, suggestions) and the mockup one (keyed
-    // "mockup"). With missing variables it throws here, so the API fails at
-    // start-up with a clear message instead of failing later on the first run.
+    // RunnerProviders for the analysis roles (A, B, arbiter, suggestions), which
+    // sends each run to the provider of its role, and the mockup one (keyed
+    // "mockup"). With missing gateway variables it throws here, so the API fails
+    // at start-up with a clear message instead of failing later on the first
+    // run. A missing OpenCode Go key does not stop the API: only the tasks of
+    // its roles are refused (RunnerProviders.ErrorFor).
     public static IServiceCollection AddRunnerProvider(this IServiceCollection services, IConfiguration configuration)
     {
         var options = configuration.GetSection("Runner").Get<RunnerOptions>() ?? new RunnerOptions();
@@ -96,15 +107,64 @@ public static class RunnerSetup
         var mockup = configuration.GetSection("Mockup").Get<MockupOptions>() ?? new MockupOptions();
         services.AddSingleton(mockup);
 
-        services.AddSingleton(CreateProvider("Runner", options.Provider, options, configuration, allowSubscription: false));
-        services.AddKeyedSingleton(MockupKey, CreateProvider("Mockup", mockup.Provider, options, configuration, allowSubscription: true));
+        var providers = CreateRoleProviders(options, configuration);
+        services.AddSingleton(providers);
+        services.AddSingleton<IRunnerProvider>(providers);
+        services.AddKeyedSingleton(MockupKey, CreateProvider("Mockup:Provider", mockup.Provider, options, configuration, allowSubscription: true));
         return services;
+    }
+
+    // One provider per role. Roles with the same provider name share one
+    // instance (the default case: the four on Runner:Provider).
+    private static RunnerProviders CreateRoleProviders(RunnerOptions options, IConfiguration configuration)
+    {
+        var created = new Dictionary<string, RunnerProviders.Entry>(StringComparer.OrdinalIgnoreCase);
+        RunnerProviders.Entry EntryFor(string role, string? name)
+        {
+            var chosen = string.IsNullOrWhiteSpace(name) ? options.Provider : name.Trim();
+            if (created.TryGetValue(chosen, out var existing)) return existing;
+            var setting = string.IsNullOrWhiteSpace(name) ? "Runner:Provider" : $"Runner:Provider{role}";
+            var entry = chosen.Equals("OpenCodeGo", StringComparison.OrdinalIgnoreCase)
+                ? OpenCodeGoEntry(options, configuration)
+                : new RunnerProviders.Entry("", CreateProvider(setting, chosen, options, configuration, allowSubscription: false), null);
+            entry = entry with { ProviderName = entry.Provider?.Name ?? "OpenCodeGo" };
+            created[chosen] = entry;
+            return entry;
+        }
+
+        var roles = new List<(string Role, string Model, RunnerProviders.Entry Entry)>
+        {
+            ("A", options.ModelA, EntryFor("A", options.ProviderA)),
+            ("B", options.ModelB, EntryFor("B", options.ProviderB)),
+            ("Arbiter", options.ModelArbiter, EntryFor("Arbiter", options.ProviderArbiter)),
+            ("Suggestions", options.ModelSuggestions, EntryFor("Suggestions", options.ProviderSuggestions)),
+        };
+        var defaultEntry = EntryFor("", options.Provider);
+        // The default provider runs the models of no role (none in the flow). If it
+        // cannot run (OpenCode Go without key), the first role provider that can,
+        // and if none can, Fake: every role task is refused anyway (ErrorFor).
+        var fallback = defaultEntry.Provider
+            ?? roles.Select(r => r.Entry.Provider).FirstOrDefault(p => p is not null)
+            ?? new FakeProvider();
+        return new RunnerProviders(fallback, roles);
+    }
+
+    // OpenCode Go (model B since 10-11-2026). Without its key the role has no
+    // provider, only the reason, and its tasks are refused when launched.
+    private static RunnerProviders.Entry OpenCodeGoEntry(RunnerOptions options, IConfiguration configuration)
+    {
+        var key = configuration[OpenCodeGoProvider.ApiKeyVariable];
+        var error = OpenCodeGoProvider.MissingKeyError(key);
+        if (error is not null) return new RunnerProviders.Entry("OpenCodeGo", null, error);
+        var settings = OpenCodeGoProvider.SettingsFrom(configuration[OpenCodeGoProvider.BaseUrlVariable], key!);
+        return new RunnerProviders.Entry("OpenCodeGo", new OpenCodeGoProvider(options.ClaudeExecutable, settings), null);
     }
 
     // The subscription is only allowed for the mockup: it is the author's own
     // account (decision of 08-10-2026), never for the analysis roles.
+    // setting: the configuration key the name comes from, for the error message.
     private static IRunnerProvider CreateProvider(
-        string section, string name, RunnerOptions options, IConfiguration configuration, bool allowSubscription) =>
+        string setting, string name, RunnerOptions options, IConfiguration configuration, bool allowSubscription) =>
         name.ToLowerInvariant() switch
         {
             // The small delay lets the web show the fake events arriving one by one.
@@ -118,7 +178,7 @@ public static class RunnerSetup
                 options.ClaudeExecutable,
                 ClaudeSubscriptionProvider.SettingsFrom(configuration[SubscriptionSettings.TokenVariable])),
             _ => throw new InvalidOperationException(
-                $"{section}:Provider desconocido: \"{name}\". Los valores válidos son " +
-                (allowSubscription ? "Fake, ClaudeSubscription y LiteLlm." : "Fake y LiteLlm.")),
+                $"{setting} desconocido: \"{name}\". Los valores válidos son " +
+                (allowSubscription ? "Fake, ClaudeSubscription y LiteLlm." : "Fake, LiteLlm y OpenCodeGo.")),
         };
 }

@@ -47,11 +47,15 @@ public static class PhaseJobs
     // input already carries the files of the focus (FocusedRoundInput).
     public static NewPhaseJob Create(
         Project project, IReadOnlyList<CatalogDocument> documents, PhaseKind kind, PhaseInput input,
-        IReadOnlyList<string> answeredQuestionIds, RunnerOptions options, string providerName, Random random,
+        IReadOnlyList<string> answeredQuestionIds, RunnerOptions options, RunnerProviders providers, Random random,
         IReadOnlyList<string>? pendingQuestionIds = null, FocusPlan? focus = null, string? jobKind = null)
     {
         if (documents.Count == 0)
             return new NewPhaseJob(null, [], null, "El proyecto no tiene archivos con texto. Sube algún documento con texto.");
+        // A role whose provider cannot run (OpenCode Go without its key, step 128).
+        var models = kind == PhaseKind.Suggestions ? [options.ModelSuggestions] : new[] { options.ModelA, options.ModelB, options.ModelArbiter };
+        if (providers.ErrorFor(models) is { } providerError)
+            return new NewPhaseJob(null, [], null, providerError);
 
         var fragments = documents.SelectMany(d => Fragmenter.FragmentDocument(d.Id, d.Text)).ToList();
         var fullInput = input with
@@ -84,7 +88,7 @@ public static class PhaseJobs
             ProjectId = project.Id,
             JobId = job.Id,
             Slot = slot,
-            Provider = providerName,
+            Provider = providers.NameFor(model),
             Model = model,
             State = RunState.Queued,
             CreatedAt = now,

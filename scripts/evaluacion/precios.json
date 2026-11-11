@@ -1,6 +1,11 @@
 {
-  "_nota": "Dólares por millón de tokens, de la configuración de la pasarela LiteLLM de la empresa (captura del autor, 19-10-2026). Un modelo que no está aquí sale sin coste en las tablas.",
-  "SS - GPT-6-SOL": { "entrada": 2.00, "salida": 10.00 },
-  "SS - GPT-6-LUNA": { "entrada": 0.10, "salida": 0.50 },
-  "SS - GPT-6.1-SOL": { "entrada": 2.00, "salida": 10.00 }
+  "_nota": "Dólares por millón de tokens. SOL y LUNA: de la configuración de la pasarela LiteLLM de la empresa (captura del autor, 19-10-2026); la caché, precio de lista (autor, 10-11-2026). Los modelos de OpenCode Go (paso 127): precios por uso de su documentación, consultada el 10-11-2026; se pagan con la suscripción Go, pero se calculan por token para dar lo que pagaría una empresa que pagase por uso. 'cache' es el precio de leer de la caché; escribir en ella se cobra como entrada. Un modelo que no está aquí sale sin coste en las tablas.",
+  "_nota_gemini": "Gemini 4 Argon: precio de lista. Hasta el 30-11-2026 OpenCode le aplica un 50 % de descuento (2 / 10 / 0,10).",
+  "_nota_haiku": "Claude Haiku 5.5 cobra según el contexto de cada petición: 0,10 / 0,50 / 0,01 hasta 100.000 tokens y 0,50 / 2,50 / 0,05 por encima. Claude Code solo da el total, así que se usa el precio alto: es un techo.",
+  "SS - GPT-6-SOL": { "entrada": 2.00, "salida": 10.00, "cache": 0.20 },
+  "SS - GPT-6-LUNA": { "entrada": 0.10, "salida": 0.50, "cache": 0.01 },
+  "SS - GPT-6.1-SOL": { "entrada": 2.00, "salida": 10.00, "cache": 0.10 },
+  "kimi-k3.1-pro": { "entrada": 2.00, "salida": 10.00, "cache": 0.20, "suscripcion": "OpenCode Go" },
+  "gemini-4-argon": { "entrada": 4.00, "salida": 20.00, "cache": 0.20, "suscripcion": "OpenCode Go" },
+  "claude-haiku-5-5": { "entrada": 0.50, "salida": 2.50, "cache": 0.05, "suscripcion": "OpenCode Go" }
 }

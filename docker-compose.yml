@@ -40,6 +40,12 @@ services:
       Storage__RootPath: /data
       # Fake (default) or LiteLlm. With LiteLlm the two LITELLM_* variables are required.
       Runner__Provider: ${RUNNER_PROVIDER:-Fake}
+      # Provider of each role (empty = Runner__Provider). Model B goes through
+      # OpenCode Go since 10-11-2026: RUNNER_PROVIDER_B=OpenCodeGo (step 128).
+      Runner__ProviderA: ${RUNNER_PROVIDER_A:-}
+      Runner__ProviderB: ${RUNNER_PROVIDER_B:-}
+      Runner__ProviderArbiter: ${RUNNER_PROVIDER_ARBITER:-}
+      Runner__ProviderSuggestions: ${RUNNER_PROVIDER_SUGGESTIONS:-}
       # Models A and B of every job (roles are configuration).
       Runner__ModelA: "${RUNNER_MODEL_A:-SS - GPT-6-SOL}"
       Runner__ModelB: "${RUNNER_MODEL_B:-SS - GPT-6-LUNA}"
@@ -56,6 +62,10 @@ services:
       # Only the api service receives the gateway variables.
       LITELLM_BASE_URL: ${LITELLM_BASE_URL:-}
       LITELLM_API_KEY: ${LITELLM_API_KEY:-}
+      # OpenCode Go: its key only reaches the child processes of the roles that
+      # use it, never a gateway child (and the gateway key never reaches them).
+      OPENCODE_GO_API_KEY: ${OPENCODE_GO_API_KEY:-}
+      OPENCODE_GO_BASE_URL: ${OPENCODE_GO_BASE_URL:-}
       # Mockup: Fake (default), ClaudeSubscription (needs CLAUDE_CODE_OAUTH_TOKEN) or LiteLlm.
       Mockup__Provider: ${MOCKUP_PROVIDER:-Fake}
       Mockup__Model: ${MOCKUP_MODEL:-claude-sonnet-5-5}

@@ -18,7 +18,12 @@ public enum VerdictState
 // Parsed from the final "VEREDICTO: {...}" line of the model.
 public record Verdict(VerdictState State, string? Reason);
 
-public record TokenUsage(long InputTokens, long OutputTokens);
+// InputTokens is the whole input: new input plus the tokens written to and read
+// from the cache (Claude Code gives the three apart). The cache ones are kept
+// apart too since step 128, because providers charge them differently: a cache
+// read costs about a tenth (author, 10-11-2026: the main cost counts them at
+// their price).
+public record TokenUsage(long InputTokens, long OutputTokens, long CacheReadTokens = 0, long CacheCreationTokens = 0);
 
 public record RunResult
 {

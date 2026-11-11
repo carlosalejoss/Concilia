@@ -60,6 +60,11 @@ public class Run
     public string? ResultText { get; set; }
     public long? InputTokens { get; set; }
     public long? OutputTokens { get; set; }
+
+    // Part of InputTokens that was read from or written to the cache (step 128).
+    // Null in the runs from before, which kept only the total.
+    public long? CacheReadTokens { get; set; }
+    public long? CacheCreationTokens { get; set; }
     public int? NumTurns { get; set; }
     public string? ErrorMessage { get; set; }
 }

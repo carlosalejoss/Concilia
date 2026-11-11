@@ -35,11 +35,11 @@ public static class Rearbitration
 
         group.MapGet("/jobs/arbiter-models", (RunnerOptions options) => Results.Ok(Models(options)))
             .WithSummary("Modelos que pueden hacer de árbitro")
-            .WithDescription("Los configurados para A, B y el árbitro, sin repetir; los ids van a la pasarela tal cual.")
+            .WithDescription("Los configurados para A, B y el árbitro, sin repetir. Cada uno se ejecuta con el proveedor de su papel: el de B, por OpenCode Go si está configurado así (paso 128).")
             .Produces<IReadOnlyList<string>>();
 
         group.MapPost("/jobs/{jobId:guid}/rearbitrate",
-            async (Guid jobId, RearbitrationRequest body, AppDbContext db, JobQueue queue, IRunnerProvider provider, RunnerOptions options, FileStorage storage) =>
+            async (Guid jobId, RearbitrationRequest body, AppDbContext db, JobQueue queue, RunnerProviders provider, RunnerOptions options, FileStorage storage) =>
         {
             var source = await db.Jobs.FindAsync(jobId);
             if (source is null)
@@ -58,6 +58,11 @@ public static class Rearbitration
             if (!Models(options).Contains(body.Model))
             {
                 return Refuse($"Modelo desconocido: «{body.Model}». Elige uno de: {string.Join(", ", Models(options))}.");
+            }
+            // The model of B goes through its own provider (OpenCode Go, step 128).
+            if (provider.ErrorFor(body.Model) is { } providerError)
+            {
+                return Refuse(providerError);
             }
 
             // The last attempt of A and of B must have ended with a valid output.
@@ -93,7 +98,7 @@ public static class Rearbitration
                 ProjectId = source.ProjectId,
                 JobId = job.Id,
                 Slot = "ARB",
-                Provider = provider.Name,
+                Provider = provider.NameFor(body.Model),
                 Model = body.Model,
                 State = RunState.Queued,
                 CreatedAt = now,

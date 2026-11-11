@@ -14,9 +14,12 @@ namespace Concilia.Core.Reports;
 // One run of the job. Seconds: from its start to its end (for a repair, the
 // whole run, since the attempts share the start). Estimated tokens (step
 // 95): only for a run without usage, from its saved console (UsageEstimator).
+// Cache tokens (step 128): the part of InputTokens read from or written to the
+// cache; null in the runs from before, which kept only the total.
 public record RunLine(string Slot, int? Lot, int Attempt, string Model, string State,
     long? InputTokens, long? OutputTokens, int? Turns, double? Seconds, string? Error,
-    long? EstimatedInputTokens = null, long? EstimatedOutputTokens = null);
+    long? EstimatedInputTokens = null, long? EstimatedOutputTokens = null,
+    long? CacheReadTokens = null, long? CacheCreationTokens = null, string? Provider = null);
 
 // What each model proposed and what the arbiter made of it: A and B (null if
 // that model did not end well), the elements of the merge, by origin, those

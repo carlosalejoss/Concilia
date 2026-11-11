@@ -32,7 +32,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Fechas que mandan** (autor, 10-11-2026): el depósito del TFG es a finales de enero de 2027 y la defensa en febrero de 2027. La evaluación 2 tiene que estar terminada con tiempo antes del depósito.
 - **Paso 127 hecho (10-11-2026):** candidatos Kimi K3.1 Pro y Gemini 4 Argon, aprobados por el autor, y Claude Haiku 5.5 de reserva (`docs/opencode-go/candidatos.md`).
 - **Paso 145 hecho (11-11-2026):** SOL 6.1 frente a SOL 6. Se mantiene SOL 6 (autor), porque SOL 6.1 tarda entre 2,2 y 4,8 veces más y cuesta un 46 % más, sin ganar fiabilidad (`docs/sol-6.1/comparacion.md`).
-- **Siguiente:** el paso 128.
+- **Paso 128 hecho (11-11-2026):** un proveedor por papel, el proveedor `OpenCodeGo` y los tokens de caché guardados aparte, con los dos cálculos del coste.
+- **Siguiente:** el paso 144.
 
 ### Lo que queda, en orden
 
@@ -43,7 +44,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 **Hito 25, el modelo B por OpenCode Go:**
 
 1. ~~**127,** estudio de los candidatos~~ (hecho el 10-11-2026): Kimi K3.1 Pro y Gemini 4 Argon, y Claude Haiku 5.5 de reserva. ~~**145,** SOL 6.1 frente a SOL 6~~ (añadido y hecho el 11-11-2026): se mantiene SOL 6.
-2. **128,** un proveedor por papel en el runner (código y tests).
+2. ~~**128,** un proveedor por papel en el runner (código y tests)~~ (hecho el 11-11-2026).
 3. **144,** todo el consumo (SOL y OpenCode Go) en un solo fichero, por proyecto y con el coste de cada tarea, antes del primer uso de Go.
 4. **129,** la cuenta, la clave y la prueba de humo. El autor contrata Go y crea la clave; Claude prueba los 3 candidatos.
 5. **130,** elegir el modelo con la ronda de preguntas y el catálogo de clínicas. Decide el autor.
@@ -998,7 +999,16 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
   - **Hallazgos:**
     - el árbitro del backlog no cabe en 128.000 tokens con un catálogo de 329 requisitos, con ninguno de los dos modelos. Se arregla en los prompts v0.14 (paso 143) y, hasta entonces, se vigila el tamaño del catálogo;
     - la plataforma toma el nombre del proyecto como nombre del sistema, y con una respuesta pendiente sobre la identidad del sistema SOL 6.1 se bloquea.
-- [ ] 128. **Un proveedor por papel en el runner** (código). Hoy los papeles A, B, árbitro y sugerencias comparten el proveedor `LiteLlm`; solo el mockup tiene el suyo.
+- [x] 128. **Un proveedor por papel en el runner** (código). Hoy los papeles A, B, árbitro y sugerencias comparten el proveedor `LiteLlm`; solo el mockup tiene el suyo.
+  - **Hecho el 11-11-2026.**
+    - **Proveedor de cada papel:** `Runner:ProviderA`, `ProviderB`, `ProviderArbiter` y `ProviderSuggestions` (`RUNNER_PROVIDER_A`…; vacíos, `Runner:Provider`).
+    - **`RunnerProviders`:** es el `IRunnerProvider` que reciben los ejecutores y manda cada ejecución al proveedor de su modelo. Los ejecutores no cambian, y un nuevo arbitraje con el modelo de B va también por OpenCode Go. Si dos papeles comparten modelo con proveedores distintos, la API no arranca.
+    - **`OpenCodeGoProvider`:** reutiliza `GatewaySettings`, con la dirección pública por defecto (`OPENCODE_GO_BASE_URL`, opcional) y la clave en `OPENCODE_GO_API_KEY`. Sin la clave, la API arranca, y las tareas de los papeles que lo usan se rechazan con un mensaje que nombra la variable (`PhaseJobs`, nuevo arbitraje y catálogo v1.4).
+    - **Cada ejecución guarda su proveedor y, aparte, sus tokens de caché** (`CacheReadTokens` y `CacheCreationTokens`, migración `AddRunCacheTokens`), que también salen en el informe. Una consola real de SOL por la pasarela ya los traía separados: la pasarela informa de la caché.
+    - **`precios.json`:** el precio de la caché (SOL 6 0,20, SOL 6.1 0,10 y LUNA 0,01 $) y los tres candidatos (Kimi K3.1 Pro, Gemini 4 Argon a precio de lista y Claude Haiku 5.5 a su precio alto), con la suscripción.
+    - **`costes.cs`:** el coste principal cobra la caché a su precio y una columna «A precio completo» lo compara con lo de antes. Las tablas llevan la nota de la suscripción.
+    - **Tests:** 1.053, todos en verde. Cubren el proveedor de cada papel, el encaminamiento por modelo, la clave que falta, que ninguna clave llega al hijo que no debe, la máscara de la clave de OpenCode, la caché aparte y que sin configurar nada todo es como antes.
+    - **En Docker,** con la migración aplicada y la configuración de siempre.
   - **Un proveedor por papel**, como el mockup (`RUNNER_PROVIDER_B`, vacío = `LiteLlm`), y un proveedor nuevo `OpenCodeGo`: dirección pública por defecto y la clave en `OPENCODE_GO_API_KEY`.
   - **Separación de las claves:**
     - el proceso de B recibe la dirección y la clave de OpenCode, con los mismos `CLAUDE_CODE_MAX_CONTEXT_TOKENS`, tope de salida y herramientas;

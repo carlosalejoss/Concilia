@@ -31,7 +31,9 @@ public static class RunEvaluator
             DurationMs = result?.DurationMs,
             TerminalReason = result?.TerminalReason,
             IsError = result?.IsError,
-            Usage = result?.Usage is { } u ? new TokenUsage(u.TotalInputTokens, u.OutputTokens) : null,
+            Usage = result?.Usage is { } u
+                ? new TokenUsage(u.TotalInputTokens, u.OutputTokens, u.CacheReadInputTokens, u.CacheCreationInputTokens)
+                : null,
             Warnings = warnings,
         };
 
