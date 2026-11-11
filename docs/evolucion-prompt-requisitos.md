@@ -504,7 +504,7 @@ En palabras sencillas: antes, el árbitro tenía que copiar a mano cada condici�
 
 ### Qué hay que mejorar
 
-- **Que el árbitro del backlog quepa con catálogos grandes** (paso 145): se mira si vuelve a pasar en el paso 131.
+- **Que el árbitro del backlog quepa con catálogos grandes** (paso 145): en la v0.14 (paso 143), que lea solo los requisitos que citan las historias que tiene que decidir, como el del catálogo con `input/fuentes.txt`.
 - **Que la plataforma no marque como desviación un par «mismo» con cifras distintas** que el árbitro separa: los embeddings no ven la diferencia entre «un año» y «ocho años», y esos avisos son falsos. Es el mismo criterio de cifras que ya usa `fuentes.txt`.
 - Repetir el arbitraje del catálogo para saber si la unión más atómica se mantiene o es variación del árbitro.
 - Que el árbitro no lea su propia conversación guardada después de compactar (`claude-config/`): no es un fichero de `LECTURA`. Hoy le ayuda a recuperar lo resumido, pero no está previsto ni medido.

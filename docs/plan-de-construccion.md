@@ -82,7 +82,10 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
 - ~~si se hace un CSV solo con lo nuevo de una iteración~~ (cerrado el 04-11-2026 sin hacerlo, como mejora futura);
 - la licencia del repositorio, por acordar con la tutora y con la empresa (README);
-- el backlog de un catálogo grande (329 requisitos, paso 145): su árbitro compacta dos veces sin escribir la salida, con SOL 6 y con SOL 6.1. Se mira si vuelve a pasar en el paso 131 y entonces se decide qué hacer.
+- ~~el backlog de un catálogo grande~~ (329 requisitos, paso 145): su árbitro compacta dos veces sin escribir la salida, con SOL 6 y con SOL 6.1. Decidido el 11-11-2026 (el autor lo deja a Claude):
+  - el árbitro del backlog leerá solo los requisitos que necesita, en los prompts v0.14 (paso 143);
+  - hasta entonces, antes de cada backlog de los pasos 130 y 131, se mira el tamaño del catálogo;
+  - la comprobación previa en la plataforma, en «Después», punto 10.
 - Quitados del plan el 10-11-2026 (autor: no se hacen): abaratar las pantallas del mockup y el mockup con la suscripción y la skill `frontend-design`.
 
 ## Hito 0: preparación y prueba de humo (completado)
@@ -993,7 +996,7 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
     La prueba costó 18,10 $.
   - **Decisión del autor:** se mantiene SOL 6, como recomendaba Claude. Se vigila que la empresa no lo retire.
   - **Hallazgos:**
-    - el árbitro del backlog no cabe en 128.000 tokens con un catálogo de 329 requisitos, con ninguno de los dos modelos. Abierto, sin paso todavía;
+    - el árbitro del backlog no cabe en 128.000 tokens con un catálogo de 329 requisitos, con ninguno de los dos modelos. Se arregla en los prompts v0.14 (paso 143) y, hasta entonces, se vigila el tamaño del catálogo;
     - la plataforma toma el nombre del proyecto como nombre del sistema, y con una respuesta pendiente sobre la identidad del sistema SOL 6.1 se bloquea.
 - [ ] 128. **Un proveedor por papel en el runner** (código). Hoy los papeles A, B, árbitro y sugerencias comparten el proveedor `LiteLlm`; solo el mockup tiene el suyo.
   - **Un proveedor por papel**, como el mockup (`RUNNER_PROVIDER_B`, vacío = `LiteLlm`), y un proveedor nuevo `OpenCodeGo`: dirección pública por defecto y la clave en `OPENCODE_GO_API_KEY`.
@@ -1067,6 +1070,7 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
 - [ ] 131. **El flujo de clínicas con el modelo elegido:** preguntas, sugerencias, catálogo y backlog. El mockup no, porque es de SOL y no depende de B.
   - **Comparación** con el mismo flujo con LUNA y la v0.12 («Clinicas Veterinarias v0.11»), fase a fase: coste para una empresa, minutos, reparaciones, correcciones automáticas y lo que aporta B.
   - **Además,** si el árbitro del backlog sigue juntando historias atómicas de una misma propuesta («Después», punto 7).
+  - **Antes de lanzar el backlog** (aquí y en el paso 130), Claude mira cuántos requisitos tiene el catálogo validado. Por encima de unos 250, avisa al autor antes de gastar: con 329, el árbitro del backlog no cupo (paso 145).
   - **Resultados** en `docs/evolucion-prompt-requisitos.md`, en `docs/costes/costes.md` y en la sección «Cosas que añadir a la memoria».
 - [ ] 132. **Cerrar el cambio.**
   - **Revisar con datos las medidas que se tomaron por LUNA:**
@@ -1132,6 +1136,10 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
 - [ ] 143. **Los prompts mejorados (v0.14)** («Después», punto 1; autor, 10-11-2026). Se hace después del paso 131 y se mide aparte, para saber qué mejora viene del cambio de B y qué de los prompts.
   - **Qué se mejora** se decide con lo que fallen SOL y el nuevo B en los pasos 130 y 131, más lo ya conocido:
     - que el árbitro del backlog no junte historias de A que ya son atómicas solo porque B tiene una que las cubre («Después», punto 7);
+    - **que el árbitro del backlog quepa con catálogos grandes** (paso 145; el autor deja la decisión a Claude, 11-11-2026). Decidido: va en la v0.14 aunque no falle en los pasos 130 y 131, porque un B que aporte más agranda la unión.
+      - **Hoy:** lee entero el catálogo validado, además de las dos propuestas y el emparejamiento, con las respuestas en el prompt. Con 329 requisitos no cabe en 128.000 tokens, con SOL 6 ni con SOL 6.1.
+      - **Cambio:** que lea solo los requisitos que citan las historias que tiene que decidir, como el árbitro del catálogo con `input/fuentes.txt` (paso 107). La cobertura de cada requisito ya la comprueba la plataforma (aviso `COB`).
+      - **Cómo se comprueba:** con el flujo de clínicas del paso 143 y, además, con el catálogo de 329 requisitos de «Clínicas SOL 6.1» (paso 145), donde hoy falla;
     - 39 de las 40 sugerencias de PURE eran suposiciones (paso 105);
     - solo si faltan funcionalidades en los pasos 130 y 131: la idea del hito 7, que el modelo haga primero un inventario de funcionalidades y después los requisitos de cada una.
   - **Cómo se trabaja,** como en los pasos 112 a 114: Claude propone los cambios, el autor los revisa antes del código, y se actualizan `prompts/v0/CHANGELOG.md` y `docs/evolucion-prompt-requisitos.md`.
@@ -1223,3 +1231,6 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
    - **El botón «Subir a GitHub» en la web** (el camino B): Concilia llamaría a la API de GitHub, sin `gh` ni Git Bash, para cualquier usuario de la web. **Después** (autor, 10-11-2026): mejora futura.
    - Obligaría a que Concilia recibiera un token de GitHub, en contra de la decisión del 06-11-2026. Para un solo usuario iría en `.env`, como las demás claves.
    - Es la mayor de las mejoras (1–2 días): rehacer en C# lo que hace el script.
+10. **Comprobar antes de lanzar el backlog si su árbitro cabrá** (paso 145; el autor deja la decisión a Claude, 11-11-2026).
+    - **Qué haría:** la plataforma estima los tokens que leerá el árbitro (catálogo validado, propuestas y respuestas) y avisa, o no deja lanzarlo, por encima de un umbral, como el tope de documentación de 300.000 tokens.
+    - **Por qué después:** con el cambio del árbitro en el paso 143, el límite sube mucho y la comprobación pierde utilidad. Se retoma si el problema vuelve a aparecer con la v0.14.

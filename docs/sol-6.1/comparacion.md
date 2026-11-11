@@ -119,7 +119,10 @@ LUNA dio 249 requisitos en el catálogo de SOL 6 y 144 en el de SOL 6.1 con la m
 
 **Se vigila:** que la empresa no retire SOL 6 de la pasarela. Si lo hace, esta prueba dice lo que cuesta cambiar.
 
-**Se anota, sin decidir todavía:** el backlog de un catálogo de unos 330 requisitos no cabe en el contexto del árbitro con ninguno de los dos modelos. Va en el plan como problema abierto.
+**El límite del backlog** (decidido el 11-11-2026; el autor lo deja a Claude): el backlog de un catálogo de unos 330 requisitos no cabe en el contexto del árbitro con ninguno de los dos modelos.
+- **El arreglo:** en los prompts v0.14 (paso 143), el árbitro del backlog leerá solo los requisitos que citan las historias que tiene que decidir, como el del catálogo con `input/fuentes.txt` (paso 107). Se comprobará también con el catálogo de 329 requisitos de esta prueba.
+- **Hasta entonces:** antes de cada backlog de los pasos 130 y 131 se mira el tamaño del catálogo validado y, por encima de unos 250 requisitos, se avisa al autor antes de gastar.
+- **Una comprobación previa en la plataforma** queda en «Después».
 
 ## En palabras sencillas
 

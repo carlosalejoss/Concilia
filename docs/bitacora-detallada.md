@@ -3500,3 +3500,13 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Memoria:** punto 7 de «Cosas que añadir», con la justificación completa y la tabla. Compila (92 páginas).
 - **Arreglo de paso:** la fila del CI del 10-11 en la línea de tiempo de la trazabilidad estaba partida por saltos de línea literales.
 - **Pendiente:** el paso 128.
+- **El límite del backlog con catálogos grandes** (el autor pidió la explicación y dejó la decisión a Claude). Se aplicó la recomendación:
+  - **el arreglo,** en los prompts v0.14 (paso 143), ya decidido y no condicional:
+    - el árbitro del backlog leerá solo los requisitos que citan las historias que tiene que decidir, como el del catálogo con `input/fuentes.txt` (paso 107);
+    - la cobertura ya la comprueba la plataforma (`COB`);
+    - se comprobará también con el catálogo de 329 requisitos de «Clínicas SOL 6.1»;
+  - **por qué ya:** un B que aporte de verdad agranda la unión, y nos acercaría al límite justo en los pasos 131, 143 y la evaluación 2. Fallar cuesta dinero de la pasarela y del límite de Go;
+  - **hasta entonces,** antes de cada backlog de los pasos 130 y 131, Claude mira el tamaño del catálogo validado y, por encima de unos 250 requisitos, avisa antes de gastar;
+  - **en «Después», punto 10:** una comprobación previa en la plataforma que estime si el árbitro cabrá.
+
+  Actualizados el plan, `CLAUDE.md`, la trazabilidad, `docs/evolucion-prompt-requisitos.md`, `docs/sol-6.1/comparacion.md` y el punto 7 de la memoria, que compila.

@@ -450,7 +450,11 @@ El autor lo pide para incluirlo en la memoria si funciona. GitHub no tiene impor
     - SOL 6.1 hace el doble de preguntas (90 frente a 45) y menos requisitos con las mismas respuestas (234 frente a 305);
     - fiabilidad parecida.
   - **Decisión del autor:** se mantiene SOL 6. La prueba costó 18,10 $.
-  - **Hallazgo abierto:** con un catálogo de 329 requisitos, el árbitro del backlog compacta dos veces sin escribir la salida, con los dos modelos.
+  - **Hallazgo:** con un catálogo de 329 requisitos, el árbitro del backlog compacta dos veces sin escribir la salida, con los dos modelos.
+  - **Qué se hace** (el autor lo deja a Claude):
+    - en la v0.14 (paso 143), el árbitro del backlog lee solo los requisitos que citan sus historias, como el del catálogo en el paso 107;
+    - hasta entonces, aviso al autor si un catálogo validado pasa de unos 250 requisitos antes de lanzar su backlog;
+    - una comprobación previa en la plataforma, en «Después».
 
 ### Documentación de la API (20-10, a petición del autor, fuera del plan)
 
@@ -525,7 +529,7 @@ El detalle y las mediciones de cada versión están en `docs/evolucion-prompt-re
 - **Desde el 10-11-2026:**
   - qué modelo de OpenCode Go es el nuevo B: elección en el paso 130 (~~los candidatos~~, cerrados por el autor el 10-11-2026 en el paso 127: Kimi K3.1 Pro y Gemini 4 Argon, con Claude Haiku 5.5 de reserva);
   - ~~para el paso 128, el precio de la caché~~: cerrado por el autor el 10-11-2026. El coste principal cobra las lecturas de caché a su precio, y otro cálculo a precio completo sirve para comparar con lo de antes;
-  - el backlog de un catálogo grande (paso 145: el árbitro no cabe con 329 requisitos): se mira en el paso 131;
+  - ~~el backlog de un catálogo grande~~ (paso 145: el árbitro no cabe con 329 requisitos): decidido el 11-11-2026, el autor lo deja a Claude. Se arregla en la v0.14 (paso 143), leyendo solo los requisitos necesarios, y hasta entonces se vigila el tamaño del catálogo antes de cada backlog;
 
   Cerradas el mismo día: el resto de «Después», punto por punto; las mejoras de GitHub del paso 142 (issue types, Projects y nivel 3; el botón de la web, para después); y que el nuevo B haga de árbitro en el experimento del sesgo, con tope de consumo.
 
