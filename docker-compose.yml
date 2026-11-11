@@ -87,7 +87,10 @@ services:
     build: ./frontend
     image: concilia-web
     ports:
-      - "8080:80"
+      # Only on this machine (127.0.0.1): the platform has no users or passwords,
+      # and its tasks spend money (the gateway and the OpenCode Go limits). Without
+      # the address, Docker publishes it on every network interface.
+      - "127.0.0.1:8080:80"
     depends_on:
       - api
 

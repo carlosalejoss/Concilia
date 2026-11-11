@@ -120,7 +120,7 @@ Reconstruir la API interrumpe los trabajos en curso: al arrancar quedan cerrados
 | --- | --- |
 | `Cannot connect to the Docker daemon` | Abre Docker Desktop y espera a que indique *Engine running*. |
 | `Set POSTGRES_PASSWORD in .env` | Falta `.env` o su contraseña. |
-| El puerto 8080 está ocupado | Cambia `"8080:80"` en `docker-compose.yml`, por ejemplo por `"8081:80"`. |
+| El puerto 8080 está ocupado | Cambia `"127.0.0.1:8080:80"` en `docker-compose.yml`, por ejemplo por `"127.0.0.1:8081:80"`. |
 | Falla la primera construcción al descargar algo | Suele ser la red: repite el comando. Detrás de un proxy, configúralo en Docker Desktop (*Settings → Resources → Proxies*). |
 
 ## Llevar el backlog a otras herramientas
@@ -239,7 +239,7 @@ La evolución de los prompts está en [`docs/evolucion-prompt-requisitos.md`](do
 
 ## Seguridad y datos
 
-Las credenciales se pasan por variables de entorno y `.env` nunca se sube al repositorio. La plataforma oculta la clave y la dirección de la pasarela, y la clave de OpenCode Go, en registros, eventos y base de datos; cada proceso de un modelo recibe solo las credenciales de su proveedor. Los *embeddings* se calculan en local; el texto de los documentos sí llega a los modelos configurados, así que elige una pasarela adecuada para tus datos.
+Las credenciales se pasan por variables de entorno y `.env` nunca se sube al repositorio. La plataforma oculta la clave y la dirección de la pasarela, y la clave de OpenCode Go, en registros, eventos y base de datos; cada proceso de un modelo recibe solo las credenciales de su proveedor. Los *embeddings* se calculan en local; el texto de los documentos sí llega a los modelos configurados, así que elige una pasarela adecuada para tus datos. La plataforma no tiene usuarios ni contraseñas, así que solo escucha en el propio equipo (`127.0.0.1:8080`): desde otro equipo de la red no se puede abrir ni lanzar tareas que gasten.
 
 ## Licencia
 
