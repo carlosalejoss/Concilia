@@ -3590,3 +3590,21 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Pendientes:**
   - que el autor compare el consumo con la consola de OpenCode, por modelo, para confirmar que cada uno tiene su límite y que las cifras cuadran;
   - el paso 130.
+
+## 11-11-2026, 14:02 (sesión, hito 25, paso 130 en curso)
+
+- **Paso 129 cerrado por el autor.** Comparó el consumo con la consola de OpenCode, que da cada modelo por separado:
+  - **tokens:** cuadran (entrada nueva + caché leída + caché escrita = la entrada de Concilia, y la salida);
+  - **Kimi:** 0,07 $, como `consumo.md`;
+  - **Argon:** 0,22 $, porque OpenCode ya aplica el 50 % de descuento hasta el 30-11 y lo descuenta así del límite. Ajustado: `descuento_go` en `precios.json` y `costes.cs` lo aplica solo a la sección de límites de `consumo.md`. El coste para una empresa sigue a precio de lista;
+  - **Haiku:** menos de 0,01 $, porque sus peticiones fueron al tramo bajo (menos de 100.000 tokens). `precios.json` usa el alto como techo. Sin corregir: Haiku no pasa al paso 130.
+- **Paso 130 empezado** (el autor da el visto bueno).
+  - **Montaje:**
+    - una ronda de preguntas de clínicas con Kimi y otra con Argon como B, en «Clínicas B Kimi» y «Clínicas B Argon», con el sistema «la Plataforma Huellas»;
+    - la referencia con LUNA es la ronda de «Clínicas SOL 6» del paso 145 (mismo día, mismos prompts, A y árbitro SOL 6);
+    - los tres catálogos (Kimi, Argon y LUNA), en «Clínicas SOL 6», con sus 45 preguntas ya respondidas.
+  - **Ronda con Kimi:** válida a la primera, sin reparaciones ni compactaciones; 14,1 minutos (B 11,3, A 2,6); unos 0,32 $ de B.
+    - B propone 35 preguntas, frente a 11 de LUNA. La unión queda en 59: 22 de ambos, 24 solo de A y 13 solo de B (con LUNA, 1).
+    - Acuerdo del árbitro con los embeddings: 82 %.
+  - **Ronda con Argon:** lanzada a las 13:00 (hora peninsular, 12:59 UTC). Estimación: unos 1,85 $ a precio de lista (0,92 $ del límite con el descuento) y unos 20–25 minutos.
+- **El autor tiene que irse:** se deja guardado aquí. Pendiente de la ronda de Argon, los tres catálogos y el documento `docs/opencode-go/seleccion.md`.

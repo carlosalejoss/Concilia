@@ -44,7 +44,9 @@ var priceFile = JsonNode.Parse(File.ReadAllText(Path.Combine("scripts", "evaluac
 var prices = priceFile
     .Where(p => !p.Key.StartsWith('_'))
     .ToDictionary(p => p.Key, p => new Price(p.Value!["entrada"]!.GetValue<double>(), p.Value["salida"]!.GetValue<double>(),
-        p.Value["cache"]?.GetValue<double>(), p.Value["suscripcion"]?.GetValue<string>(), p.Value["limite_mes_go"]?.GetValue<double>()));
+        p.Value["cache"]?.GetValue<double>(), p.Value["suscripcion"]?.GetValue<string>(), p.Value["limite_mes_go"]?.GetValue<double>(),
+        p.Value["descuento_go"]?["factor"]?.GetValue<double>(),
+        p.Value["descuento_go"]?["hasta"] is JsonValue until ? DateTimeOffset.Parse(until.GetValue<string>(), CultureInfo.InvariantCulture) : null));
 // The limits of OpenCode Go (step 144): the start of the subscription and the share of the monthly limit per week and per 5 hours.
 var go = priceFile["_go"];
 DateTimeOffset? goStart = go?["inicio_suscripcion"] is JsonValue start ? DateTimeOffset.Parse(start.GetValue<string>(), CultureInfo.InvariantCulture) : null;
@@ -242,7 +244,7 @@ cm.AppendLine();
 cm.AppendLine("**Cómo leer las cifras:**");
 cm.AppendLine("- **Todo lo que se ha ejecutado,** también los experimentos y los intentos fallidos: todo cuenta en el límite.");
 cm.AppendLine("- **Coste:** tokens × precio por token de `precios.json` (sección 1 de `costes.md`), con la entrada leída de la caché a su precio. «A precio completo», como se calculaba hasta el 10-11-2026.");
-cm.AppendLine("- **OpenCode Go** se paga con la suscripción Go (10 $ al mes), con un límite en dólares a precio de lista por modelo. La cifra es lo que pagaría una empresa por uso y lo que gasta del límite. Gemini 4 Argon tiene un 50 % de descuento hasta el 30-11-2026: hasta entonces, gasta del límite la mitad de lo que dice la tabla.");
+cm.AppendLine("- **OpenCode Go** se paga con la suscripción Go (10 $ al mes), con un límite en dólares a precio de lista por modelo. La cifra es lo que pagaría una empresa por uso y lo que gasta del límite. Gemini 4 Argon tiene un 50 % de descuento hasta el 30-11-2026: la sección 1 descuenta del límite el precio rebajado, como hace OpenCode (comprobado con su consola); las demás secciones dan el precio de lista.");
 cm.AppendLine("- `*`: con ejecuciones sin dato de consumo, estimadas a partir de su consola (paso 95). `≥`: con ejecuciones sin dato ni estimación, así que es un mínimo.");
 cm.AppendLine();
 
@@ -262,7 +264,8 @@ foreach (var model in goModels)
     {
         if (from is null) return "— | —";
         var runs = allRuns.Where(r => OnGo(r) && r.Model == model && r.StartedAt >= from).ToList();
-        var spent = runs.Sum(r => CostOf(r) ?? 0);
+        // What OpenCode takes from the limit: a temporary discount applies (Argon until 30-11-2026).
+        var spent = runs.Sum(r => (CostOf(r) ?? 0) * (r.StartedAt <= prices[model].GoDiscountUntil ? prices[model].GoDiscount!.Value : 1));
         var mark = runs.Any(r => r.Estimated) ? "*" : "";
         return $"{spent.ToString("F2", es)}{mark} / {limit.ToString("F2", es)} | {Math.Max(0, limit - spent).ToString("F2", es)}";
     }
@@ -407,7 +410,9 @@ record RunCost(string Slot, string Model, string Prompt, bool Started, long? Inp
 // Dollars per million tokens. Cache: reading from the cache (null if unknown).
 // Subscription: the plan it is paid with (OpenCode Go), or null if paid per use.
 // GoMonthlyLimit: the monthly limit of a model of OpenCode Go, in dollars at list price.
-record Price(double In, double Out, double? Cache, string? Subscription, double? GoMonthlyLimit = null);
+// GoDiscount and GoDiscountUntil: a temporary discount of OpenCode Go, which it applies to its limit too.
+record Price(double In, double Out, double? Cache, string? Subscription, double? GoMonthlyLimit = null,
+    double? GoDiscount = null, DateTimeOffset? GoDiscountUntil = null);
 
 record JobCost(string Project, string Kind, string? Phase, bool Rearbitration, DateTimeOffset Created, bool Succeeded, double? Seconds,
     int Repairs, double? MatchingSeconds, double? MatchingCpu, bool MatchingMeasuredLater, List<RunCost> Runs, string Id = "");

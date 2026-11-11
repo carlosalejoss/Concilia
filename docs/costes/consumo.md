@@ -1,11 +1,11 @@
 # Consumo de los modelos
 
-Generado por `scripts/evaluacion/costes.cs` el 11-11-2026 13:29, con los datos guardados de cada ejecución (paso 144). Se regenera tras cada tarea, junto con `costes.md`.
+Generado por `scripts/evaluacion/costes.cs` el 11-11-2026 13:44, con los datos guardados de cada ejecución (paso 144). Se regenera tras cada tarea, junto con `costes.md`.
 
 **Cómo leer las cifras:**
 - **Todo lo que se ha ejecutado,** también los experimentos y los intentos fallidos: todo cuenta en el límite.
 - **Coste:** tokens × precio por token de `precios.json` (sección 1 de `costes.md`), con la entrada leída de la caché a su precio. «A precio completo», como se calculaba hasta el 10-11-2026.
-- **OpenCode Go** se paga con la suscripción Go (10 $ al mes), con un límite en dólares a precio de lista por modelo. La cifra es lo que pagaría una empresa por uso y lo que gasta del límite. Gemini 4 Argon tiene un 50 % de descuento hasta el 30-11-2026: hasta entonces, gasta del límite la mitad de lo que dice la tabla.
+- **OpenCode Go** se paga con la suscripción Go (10 $ al mes), con un límite en dólares a precio de lista por modelo. La cifra es lo que pagaría una empresa por uso y lo que gasta del límite. Gemini 4 Argon tiene un 50 % de descuento hasta el 30-11-2026: la sección 1 descuenta del límite el precio rebajado, como hace OpenCode (comprobado con su consola); las demás secciones dan el precio de lista.
 - `*`: con ejecuciones sin dato de consumo, estimadas a partir de su consola (paso 95). `≥`: con ejecuciones sin dato ni estimación, así que es un mínimo.
 
 ## 1. Lo que queda de cada límite de OpenCode Go
@@ -15,7 +15,7 @@ Mes de Go desde el 11-11-2026 (suscripción del 11-11-2026). La semana son los �
 | Modelo | Mes: gastado / límite | Mes: queda | Semana: gastado / límite | Semana: queda | 5 horas: gastado / límite | 5 horas: queda |
 | --- | --- | --- | --- | --- | --- | --- |
 | kimi-k3.1-pro | 0,07 / 15,00 | 14,93 | 0,07 / 7,50 | 7,43 | 0,07 / 3,00 | 2,93 |
-| gemini-4-argon | 0,45 / 30,00 | 29,55 | 0,45 / 15,00 | 14,55 | 0,45 / 6,00 | 5,55 |
+| gemini-4-argon | 0,22 / 30,00 | 29,78 | 0,22 / 15,00 | 14,78 | 0,22 / 6,00 | 5,78 |
 | claude-haiku-5-5 | 0,02 / 15,00 | 14,98 | 0,02 / 7,50 | 7,48 | 0,02 / 3,00 | 2,98 |
 
 ## 2. Gasto total, por proveedor y modelo
