@@ -32,7 +32,14 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
     - Claude Code asume 200.000 tokens con Haiku, no los 128.000 del runner.
 
     La web se publica solo en `127.0.0.1:8080` desde ese día.
-  - Siguiente: el paso 130.
+  - Paso 130 hecho el 12-11-2026 (`docs/opencode-go/seleccion.md`). **El autor elige Kimi K3.1 Pro (`kimi-k3.1-pro`) como modelo B.** Con clínicas, frente a Argon y LUNA:
+    - aporta 13 preguntas solo suyas (Argon 8, LUNA 1);
+    - en el catálogo deja solo 6 requisitos de SOL sin pareja (Argon 37, LUNA 41), con un acuerdo del árbitro con los embeddings del 95,8 %;
+    - cuesta 0,61 $ de B por catálogo (Argon 2,19 $);
+    - es lento: 15,4 minutos de B en el catálogo.
+
+    Argon necesitó un arreglo: Claude Code corta una respuesta sin bytes durante 5 minutos, y ahora los procesos de OpenCode Go esperan hasta 15 (commit `dc30d8b`). Sus intentos cortados se pagaron.
+  - Siguiente: el paso 131.
 
   Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`; los pasos del hito 23 explican qué hace el autor y qué hace Claude. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El proyecto se llama Concilia desde el 13-10-2026 (antes ReqArbiter, nombre provisional).
 
@@ -42,6 +49,7 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
 - Patrón: cada tarea se lanza a Modelo A y Modelo B en paralelo; un Árbitro compara, pregunta al usuario si hay discrepancias graves y fusiona. Se aplica a tres fases: dudas, catálogo de requisitos y backlog.
 - Modelos: solo a través de la pasarela LiteLLM de la empresa. Excepción desde el 08-10-2026: el mockup (ver «Iteración v0»). Ids exactos: `SS - GPT-6-SOL` y `SS - GPT-6-LUNA` (llevan prefijo y espacios). El reparto de roles es configuración. (Cambiada el 10-11-2026, autor: el modelo B pasa de LUNA a un modelo de otro fabricante contratado con OpenCode Go, con el plan Go de 10 $ al mes; se elige entre 3 candidatos en los pasos 127 a 130.)
   - **Solo B:** A, el árbitro, las sugerencias y el mockup siguen siendo `SS - GPT-6-SOL` por la pasarela.
+  - **El nuevo B es Kimi K3.1 Pro** (`kimi-k3.1-pro`, de Moonshot AI), elegido por el autor el 12-11-2026 en el paso 130.
   - **Norma:** el autor puede usar ese proveedor externo, solo con documentos ficticios o públicos (sin bloqueo en la plataforma; nunca el documento B interno).
   - **Mismas condiciones para B:** 128.000 tokens de contexto, los mismos prompts y planes de lectura.
   - **Capacidad obligatoria:** el nuevo B tiene que razonar como SOL; nunca otro modelo flojo como LUNA. El precio solo decide entre los que cumplen.
@@ -161,7 +169,7 @@ Ninguna del hito 22. El CSV solo con lo nuevo de una iteración lo cerró el aut
 Del hito 23: ninguna. La referencia del catálogo y del backlog del paso 120 la cerró el autor el 27-10-2026, dejando los detalles a Claude: el proyecto grande (clínicas), con una lista de funcionalidades hecha por el autor sin mirar los catálogos (cobertura) y una muestra de 30 requisitos por propuesta revisada a ciegas (precisión), más las 26 trampas de `ejemplos/README.md` revisadas por el autor. SOL solo y LUNA solo son las propuestas de A y B de cada trabajo, no ejecuciones aparte. Instrucciones en los pasos 118 a 121 del plan. El tope de fragmentos relacionados lo cerró el autor el 26-10-2026 (20.000 tokens, tras medirlo en el paso 112), y las demás decisiones del hito, el mismo día.
 
 Abiertas desde el 10-11-2026 (las decide el autor):
-- qué modelo de OpenCode Go es el nuevo B: la elección, en el paso 130 (los candidatos los cerró el autor el 10-11-2026 en el paso 127);
+- ~~qué modelo de OpenCode Go es el nuevo B~~: cerrado por el autor el 12-11-2026 en el paso 130, Kimi K3.1 Pro (`kimi-k3.1-pro`);
 - ~~para el paso 128: el precio de la caché~~: cerrado por el autor el 10-11-2026. Dos cálculos: el principal, con las lecturas de caché a su precio (el de la memoria), y otro a precio completo, solo para comparar con lo de antes. Precios de caché de lista: SOL 6 0,20 $, SOL 6.1 0,10 $ y LUNA 0,01 $ por millón;
 - ~~el backlog de un catálogo grande~~ (paso 145): decidido el 11-11-2026 (el autor lo deja a Claude). El árbitro del backlog leerá solo los requisitos que necesita, en los prompts v0.14 (paso 143); hasta entonces, antes de cada backlog de los pasos 130 y 131, se avisa al autor si el catálogo validado pasa de unos 250 requisitos. La comprobación previa en la plataforma, en «Después»;
 

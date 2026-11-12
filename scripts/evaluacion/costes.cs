@@ -52,6 +52,10 @@ var go = priceFile["_go"];
 DateTimeOffset? goStart = go?["inicio_suscripcion"] is JsonValue start ? DateTimeOffset.Parse(start.GetValue<string>(), CultureInfo.InvariantCulture) : null;
 var goWeekShare = go?["semana"]?.GetValue<double>() ?? 0.5;
 var goFiveHourShare = go?["cinco_horas"]?.GetValue<double>() ?? 0.2;
+// Consumption of Go the platform does not record (cut or cancelled runs), taken from the OpenCode console.
+var goAdjustments = (go?["ajustes"]?.AsArray() ?? []).Select(a => new GoAdjustment(
+    DateTimeOffset.Parse(a!["fecha"]!.GetValue<string>(), CultureInfo.InvariantCulture), a["modelo"]!.GetValue<string>(),
+    a["coste_limite"]!.GetValue<double>(), a["coste_lista"]!.GetValue<double>(), a["motivo"]!.GetValue<string>())).ToList();
 
 using var http = new HttpClient { BaseAddress = new Uri(api), Timeout = TimeSpan.FromMinutes(10) };
 var jobs = new List<JobCost>();
@@ -266,12 +270,23 @@ foreach (var model in goModels)
         var runs = allRuns.Where(r => OnGo(r) && r.Model == model && r.StartedAt >= from).ToList();
         // What OpenCode takes from the limit: a temporary discount applies (Argon until 30-11-2026).
         var spent = runs.Sum(r => (CostOf(r) ?? 0) * (r.StartedAt <= prices[model].GoDiscountUntil ? prices[model].GoDiscount!.Value : 1));
-        var mark = runs.Any(r => r.Estimated) ? "*" : "";
+        // Plus what the platform did not record (cut or cancelled runs), from the OpenCode console.
+        var adjusted = goAdjustments.Where(a => a.Model == model && a.Date >= from).ToList();
+        spent += adjusted.Sum(a => a.LimitCost);
+        var mark = (runs.Any(r => r.Estimated) ? "*" : "") + (adjusted.Count > 0 ? "†" : "");
         return $"{spent.ToString("F2", es)}{mark} / {limit.ToString("F2", es)} | {Math.Max(0, limit - spent).ToString("F2", es)}";
     }
     cm.AppendLine($"| {model} | {Window(goMonthStart, monthly)} | {Window(now.AddDays(-7), monthly * goWeekShare)} | {Window(now.AddHours(-5), monthly * goFiveHourShare)} |");
 }
 cm.AppendLine();
+if (goAdjustments.Count > 0)
+{
+    cm.AppendLine("`†`: incluye consumo que la plataforma no registra (ejecuciones cortadas o canceladas, sin evento final), tomado de la consola de OpenCode (`_go.ajustes` en `precios.json`):");
+    cm.AppendLine();
+    foreach (var a in goAdjustments.OrderByDescending(a => a.Date))
+        cm.AppendLine($"- {a.Date.ToLocalTime():dd-MM-yyyy HH:mm}, {a.Model}: {a.LimitCost.ToString("F2", es)} $ del límite ({a.ListCost.ToString("F2", es)} $ a precio de lista). {a.Reason}.");
+    cm.AppendLine();
+}
 
 cm.AppendLine("## 2. Gasto total, por proveedor y modelo");
 cm.AppendLine();
@@ -416,3 +431,6 @@ record Price(double In, double Out, double? Cache, string? Subscription, double?
 
 record JobCost(string Project, string Kind, string? Phase, bool Rearbitration, DateTimeOffset Created, bool Succeeded, double? Seconds,
     int Repairs, double? MatchingSeconds, double? MatchingCpu, bool MatchingMeasuredLater, List<RunCost> Runs, string Id = "");
+
+// Consumption of OpenCode Go not recorded by the platform, from its console (step 130).
+record GoAdjustment(DateTimeOffset Date, string Model, double LimitCost, double ListCost, string Reason);

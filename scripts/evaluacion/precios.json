@@ -6,7 +6,12 @@
     "_nota": "Límites del plan Go (10 $ al mes), en dólares a precio de lista, por modelo (documentación de OpenCode Go, 10-11-2026): el mensual va en cada modelo como 'limite_mes_go'; el de 5 horas es el 20 % y el semanal el 50 %. 'inicio_suscripcion' es el día en que se contrata (paso 129): el mes de Go empieza ese día de cada mes. OpenCode no dice si la semana y las 5 horas son ventanas móviles o fijas: se toman móviles (los últimos 7 días y las últimas 5 horas) y se comprueba con la consola de OpenCode.",
     "inicio_suscripcion": "2026-11-11T00:00:00+01:00",
     "semana": 0.5,
-    "cinco_horas": 0.2
+    "cinco_horas": 0.2,
+    "_nota_ajustes": "Consumo de Go que la plataforma no registra (ejecuciones canceladas o cortadas, sin evento final), tomado de la consola de OpenCode. 'coste_limite' es lo que descuenta del límite (con el descuento de Argon) y 'coste_lista', lo que pagaría una empresa.",
+    "ajustes": [
+      { "fecha": "2026-11-12T08:47:00+01:00", "modelo": "gemini-4-argon", "coste_limite": 1.71, "coste_lista": 3.42,
+        "motivo": "Paso 130: 3 intentos cortados del catálogo de Argon (cada 5 minutos, unos 44.000 tokens de salida cada uno), parado a las 09:06" }
+    ]
   },
   "SS - GPT-6-SOL": { "entrada": 2.00, "salida": 10.00, "cache": 0.20 },
   "SS - GPT-6-LUNA": { "entrada": 0.10, "salida": 0.50, "cache": 0.01 },

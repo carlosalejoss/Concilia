@@ -35,7 +35,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 128 hecho (11-11-2026):** un proveedor por papel, el proveedor `OpenCodeGo` y los tokens de caché guardados aparte, con los dos cálculos del coste.
 - **Paso 144 hecho (11-11-2026):** `docs/costes/consumo.md`, con todo el consumo por proyecto y tarea y lo que queda de cada límite de Go.
 - **Paso 129 hecho (11-11-2026):** Go contratado por el autor el 11-11-2026. Los tres candidatos funcionan por OpenCode Go a la primera (`docs/opencode-go/humo.md`).
-- **Siguiente:** el paso 130 (elegir el modelo con clínicas).
+- **Paso 130 hecho (12-11-2026):** el autor elige **Kimi K3.1 Pro** como modelo B (`docs/opencode-go/seleccion.md`).
+- **Siguiente:** el paso 131 (el flujo de clínicas con Kimi frente al de LUNA).
 
 ### Lo que queda, en orden
 
@@ -49,7 +50,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 2. ~~**128,** un proveedor por papel en el runner (código y tests)~~ (hecho el 11-11-2026).
 3. ~~**144,** todo el consumo (SOL y OpenCode Go) en un solo fichero, por proyecto y con el coste de cada tarea, antes del primer uso de Go~~ (hecho el 11-11-2026).
 4. ~~**129,** la cuenta, la clave y la prueba de humo~~ (hecho el 11-11-2026).
-5. **130,** elegir el modelo con la ronda de preguntas y el catálogo de clínicas. Decide el autor.
+5. ~~**130,** elegir el modelo con la ronda de preguntas y el catálogo de clínicas~~ (hecho el 12-11-2026): Kimi K3.1 Pro.
 6. **131,** el flujo de clínicas con el modelo elegido, frente al de LUNA.
 7. **132,** cerrar el cambio: revisar con datos las medidas que se tomaron por LUNA, los valores por defecto y la documentación.
 
@@ -1086,7 +1087,23 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
   - que el límite de cada modelo es independiente: la documentación de Go lo da a entender, pero no lo dice.
 
   Coste: céntimos.
-- [ ] 130. **Elegir el modelo** con el proyecto de clínicas y los prompts de siempre (v0.12).
+- [x] 130. **Elegir el modelo** con el proyecto de clínicas y los prompts de siempre (v0.12).
+  - **Hecho el 11 y el 12-11-2026** (`docs/opencode-go/seleccion.md`). **El autor elige Kimi K3.1 Pro** (`kimi-k3.1-pro`), como recomendaba Claude.
+  - **Montaje:**
+    - una ronda de preguntas por candidato en su proyecto («Clínicas B Kimi» y «Clínicas B Argon»), con la ronda de «Clínicas SOL 6» del paso 145 como referencia de LUNA;
+    - los tres catálogos (Kimi, Argon y LUNA) en «Clínicas SOL 6», con sus 45 respuestas.
+  - **Preguntas solo de B en la unión:** Kimi 13, Argon 8 y LUNA 1.
+  - **Catálogo:**
+    - requisitos de SOL sin pareja en B: Kimi 6, Argon 37 y LUNA 41;
+    - acuerdo del árbitro con los embeddings: 95,8, 86,4 y 91,9 %;
+    - B escribe 225, 107 y 208 requisitos;
+    - minutos de B: 15,4, 24,3 y 8,5;
+    - coste de B a precio de lista: 0,61, 2,19 y 0,03 $.
+  - **Incidente de Argon:** su primer catálogo se cortó cada 5 minutos, porque Claude Code aborta una respuesta sin bytes durante 5 minutos y la ruta de Google de OpenCode no envía nada mientras genera. Cada intento cortado se pagó (3,42 $ a precio de lista, que van como ajuste manual en `precios.json`).
+    - Arreglo, con la decisión dejada a Claude por el autor: `CLAUDE_STREAM_IDLE_TIMEOUT_MS=900000` y `API_FORCE_IDLE_TIMEOUT=0`, solo en los procesos de OpenCode Go (commit `dc30d8b`).
+    - Con él, Argon terminó, pero tardó 29,1 minutos.
+  - **Revisión de una muestra de 8 requisitos de B:** los de Kimi, fieles, atómicos y en buen español; los de Argon, fieles pero juntan varias reglas en cada uno; los de LUNA convierten dudas en requisitos.
+  - **La consola de OpenCode** cuadra con lo registrado. El descuento de Argon (hasta el 30-11) se aplica a su límite (`descuento_go`), y lo que la plataforma no registra va en `_go.ajustes`.
   - **Candidatos:** Kimi K3.1 Pro y Gemini 4 Argon. Claude Haiku 5.5 entra solo si uno de los dos falla en el paso 129, y solo puede ser B si fallan los dos (autor, 10-11-2026).
   - **Preguntas:** una ronda por candidato, cada una en un proyecto propio, porque una segunda ronda ve las preguntas de la primera.
   - **Catálogo:** en un proyecto con las preguntas respondidas una vez, el catálogo con cada candidato como B y una vez con LUNA, como referencia en las mismas condiciones. Entre uno y otro se cambia `RUNNER_MODEL_B` y se reinicia la API.

@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 11-11-2026 13:44, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 12-11-2026 10:33, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -143,7 +143,8 @@ Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ron
 | **LasCuarenta** | **Total** | 33 | **9.948.356*** | **708.261*** | **21,95*** | **21,95*** | **80** |
 | Clínicas SOL 6 | Preguntas | 1 | 420.028 | 51.106 | 1,01 | 1,01 | 8 |
 | Clínicas SOL 6 | Sugerencias de respuesta | 1 | 145.805 | 13.000 | 0,42 | 0,42 | 2 |
-| **Clínicas SOL 6** | **Total** | 2 | **565.833** | **64.106** | **1,43** | **1,43** | **10** |
+| Clínicas SOL 6 | Catálogo | 4 | 2.126.971* | 430.522* | 8,31* | 9,15* | 87 |
+| **Clínicas SOL 6** | **Total** | 6 | **2.692.804*** | **494.628*** | **9,74*** | **10,59*** | **97** |
 | Clínicas SOL 6.1 | Preguntas | 1 | 971.640 | 72.931 | 2,37 | 2,37 | 25 |
 | Clínicas SOL 6.1 | Sugerencias de respuesta | 1 | 177.257 | 26.360 | 0,62 | 0,62 | 11 |
 | Clínicas SOL 6.1 | Catálogo | 3 | 2.348.462* | 306.396* | 5,45* | 5,45* | 48 |
@@ -155,6 +156,10 @@ Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ron
 | **ReservaSalas humo Argon** | **Total** | 1 | **51.385** | **26.991** | **0,54** | **0,60** | **6** |
 | ReservaSalas humo Haiku | Preguntas | 1 | 83.213 | 14.114 | 0,14 | 0,20 | 2 |
 | **ReservaSalas humo Haiku** | **Total** | 1 | **83.213** | **14.114** | **0,14** | **0,20** | **2** |
+| Clínicas B Kimi | Preguntas | 1 | 438.734 | 51.136 | 0,89 | 1,39 | 14 |
+| **Clínicas B Kimi** | **Total** | 1 | **438.734** | **51.136** | **0,89** | **1,39** | **14** |
+| Clínicas B Argon | Preguntas | 2 | 459.989* | 64.895* | 1,50* | 2,03* | 11 |
+| **Clínicas B Argon** | **Total** | 2 | **459.989*** | **64.895*** | **1,50*** | **2,03*** | **11** |
 
 ## 4. Antes y después: la misma fase con distintas versiones del prompt
 

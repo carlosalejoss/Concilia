@@ -3609,3 +3609,38 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - **Ronda con Argon:** lanzada a las 13:00 (hora peninsular, 12:59 UTC). Estimación: unos 1,85 $ a precio de lista (0,92 $ del límite con el descuento) y unos 20–25 minutos.
 - **El autor tiene que irse:** se deja guardado aquí. Pendiente de la ronda de Argon, los tres catálogos y el documento `docs/opencode-go/seleccion.md`.
 - **Ronda de Argon parada** a petición del autor, que tenía que irse: se reinició la API con la configuración de `.env` (B = Kimi), y la plataforma la cerró como fallida («Cancelada: la API se estaba deteniendo»). Llevaba unos 2 minutos, sin datos de consumo. Mañana se repite desde el principio, en el mismo proyecto «Clínicas B Argon», antes de los catálogos.
+
+## 12-11-2026, 10:32 (sesión, hito 25, paso 130)
+
+- **El paso 130 sigue** (el autor: «seguimos»). Docker estaba parado por el apagado del equipo; se arrancó con `.env` (B = Kimi).
+- **Ronda de Argon repetida** en «Clínicas B Argon» (08:35, hora de España): válida a la primera, en 8,9 minutos (B 5,6).
+  - B propone 17 preguntas y aporta 8 solo suyas.
+  - Coste de B: 0,72 $ a precio de lista (0,36 $ del límite).
+- **Catálogos en «Clínicas SOL 6»** (45 respuestas). El de LUNA como referencia se lanzó sin esperar a la decisión sobre Argon, porque solo gasta de la pasarela.
+  - **Argon, primer intento (08:44–09:06):**
+    - la petición que escribe el catálogo se cortaba cada 5 minutos y se reintentaba (08:52, 08:57 y 09:02);
+    - Claude lo paró con el permiso del autor («haz lo que consideres mejor»);
+    - la consola de OpenCode mostró que los intentos cortados cobran: 8 peticiones y 2,07 $ hoy, de ellos unos 1,71 $ del límite (3,42 $ a precio de lista) sin resultado. Van como ajuste manual en `precios.json` (`_go.ajustes`), que `costes.cs` suma al límite con la marca `†`.
+  - **Kimi:** válido a la primera en 21,8 minutos (B 15,4, detenido al compactar con la salida escrita y aceptado).
+    - A 270 requisitos, B 225; unión 223: 210 de ambos, 6 solo de A y 7 solo de B.
+    - Acuerdo con los embeddings: 95,8 %.
+    - B, 0,53 $ según la consola (0,61 $ estimado).
+  - **LUNA:** válido en 14,6 minutos.
+    - B 208; unión 235: 187 / 41 / 7. Acuerdo: 91,9 %.
+    - Volvió a necesitar `REF-LINEA`.
+- **La causa del corte de Argon** (opción b, elegida por el autor tras la explicación de Claude: investigar antes de repetir):
+  - según la documentación de Claude Code («Streaming idle watchdogs»), con `ANTHROPIC_BASE_URL` propio aborta una respuesta tras 5 minutos sin bytes;
+  - la ruta de Google de OpenCode no envía nada mientras Argon genera.
+- **Arreglo** (el autor lo aprueba tras preguntar a Claude si era buena idea, y le deja decidir sobre Argon): `CLAUDE_STREAM_IDLE_TIMEOUT_MS=900000` y `API_FORCE_IDLE_TIMEOUT=0`, solo en los procesos de OpenCode Go (`GatewaySettings.ExtraChildVariables`). Con su test; 1.053 en verde. Commit `dc30d8b`.
+- **Argon con el arreglo:** válido a la primera, pero en 29,1 minutos (B 24,3, con una compactación).
+  - B solo 107 requisitos, que juntan varias reglas; unión 144: 105 / 37 / 2. Acuerdo: 86,4 %.
+  - Coste de B: 2,19 $ a precio de lista.
+- **Revisión de una muestra de 8 requisitos de B** por catálogo (semilla 130), contra el texto de la documentación:
+  - Kimi, los 8 fieles y atómicos;
+  - Argon, fieles pero largos;
+  - LUNA, 5 fieles, 3 dudas convertidas en requisito y uno con un dato que no está en la documentación.
+- **El autor pidió** llevar la comparación Kimi frente a LUNA a la justificación del cambio en la memoria: punto 1, con una tabla.
+- **Horas:** Claude dio horas en UTC sin avisar y el autor lo notó («no tenía ni Docker encendido»). Desde entonces, en hora de España.
+- **Decisión del autor: Kimi K3.1 Pro como modelo B,** como recomendaba Claude (`docs/opencode-go/seleccion.md`). Argon y Haiku, descartados.
+- **Documentación:** plan, `CLAUDE.md` (estado, decisión vigente y la abierta cerrada), trazabilidad, `docs/evolucion-prompt-requisitos.md`, `costes.md` y `consumo.md` regenerados, y la memoria (puntos 1 y 10; compila).
+- **Pendiente:** el paso 131 (el flujo de clínicas con Kimi frente al de LUNA). Antes del backlog, mirar el tamaño del catálogo validado.

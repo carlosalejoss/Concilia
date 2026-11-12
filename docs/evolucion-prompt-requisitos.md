@@ -508,6 +508,16 @@ En palabras sencillas: antes, el árbitro tenía que copiar a mano cada condici�
 - **Lo que aporta B a la unión:** 1, 0 y 4 preguntas solo suyas.
 - **Salida de B:** 4.732, 20.490 y 5.704 tokens.
 
+**Con clínicas, para elegir el modelo B (paso 130, 11 y 12-11-2026, `docs/opencode-go/seleccion.md`).** A y árbitro SOL; los catálogos, con las mismas 45 respuestas.
+- **Preguntas solo de B en la unión:** Kimi 13, Gemini 4 Argon 8 y LUNA 1.
+- **Catálogo:**
+  - B escribe 225, 107 y 208 requisitos;
+  - requisitos de SOL sin pareja en B: 6, 37 y 41;
+  - acuerdo del árbitro con los embeddings: 95,8, 86,4 y 91,9 %.
+- **Fiabilidad:** todo a la primera, sin reparaciones. Solo LUNA necesitó la corrección `REF-LINEA`.
+- **El primer catálogo de Argon se cortó:** Claude Code aborta a los 5 minutos sin bytes. Con el arreglo, terminó.
+- **El autor elige Kimi K3.1 Pro.**
+
 ### Qué hay que mejorar
 
 - **Que el árbitro del backlog quepa con catálogos grandes** (paso 145): en la v0.14 (paso 143), que lea solo los requisitos que citan las historias que tiene que decidir, como el del catálogo con `input/fuentes.txt`.
