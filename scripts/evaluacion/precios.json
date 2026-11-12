@@ -3,7 +3,7 @@
   "_nota_gemini": "Gemini 4 Argon: precio de lista, que es lo que pagaría una empresa. Hasta el 30-11-2026 OpenCode le aplica un 50 % de descuento (2 / 10 / 0,10), y descuenta del límite de Go el precio rebajado (comprobado con su consola el 11-11-2026): 'descuento_go' solo se aplica al cálculo de lo que queda de los límites.",
   "_nota_haiku": "Claude Haiku 5.5 cobra según el contexto de cada petición: 0,10 / 0,50 / 0,01 hasta 100.000 tokens y 0,50 / 2,50 / 0,05 por encima. Claude Code solo da el total, así que se usa el precio alto: es un techo.",
   "_go": {
-    "_nota": "Límites del plan Go (10 $ al mes), en dólares a precio de lista, por modelo (documentación de OpenCode Go, 10-11-2026): el mensual va en cada modelo como 'limite_mes_go'; el de 5 horas es el 20 % y el semanal el 50 %. 'inicio_suscripcion' es el día en que se contrata (paso 129): el mes de Go empieza ese día de cada mes. OpenCode no dice si la semana y las 5 horas son ventanas móviles o fijas: se toman móviles (los últimos 7 días y las últimas 5 horas) y se comprueba con la consola de OpenCode.",
+    "_nota": "Límite del plan Go (10 $ al mes). Es uno solo para toda la cuenta (comprobado con la consola de OpenCode el 12-11-2026): cada modelo gasta de él su coste a precio de lista dividido por su 'limite_mes_go'. El de 5 horas es el 20 % y el semanal el 50 %. Ventanas fijas, como las muestra la consola: el mes, desde el día de la suscripción ('inicio_suscripcion'); la semana, desde el lunes a las 00:00 UTC; las 5 horas, desde la primera petición después de cerrarse la anterior.",
     "inicio_suscripcion": "2026-11-11T00:00:00+01:00",
     "semana": 0.5,
     "cinco_horas": 0.2,

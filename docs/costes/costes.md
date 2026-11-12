@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 12-11-2026 10:33, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 12-11-2026 10:43, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -157,7 +157,8 @@ Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ron
 | ReservaSalas humo Haiku | Preguntas | 1 | 83.213 | 14.114 | 0,14 | 0,20 | 2 |
 | **ReservaSalas humo Haiku** | **Total** | 1 | **83.213** | **14.114** | **0,14** | **0,20** | **2** |
 | Clínicas B Kimi | Preguntas | 1 | 438.734 | 51.136 | 0,89 | 1,39 | 14 |
-| **Clínicas B Kimi** | **Total** | 1 | **438.734** | **51.136** | **0,89** | **1,39** | **14** |
+| Clínicas B Kimi | Sugerencias de respuesta | 1 | 155.858 | 15.387 | 0,28 | 0,47 | 3 |
+| **Clínicas B Kimi** | **Total** | 2 | **594.592** | **66.523** | **1,16** | **1,85** | **17** |
 | Clínicas B Argon | Preguntas | 2 | 459.989* | 64.895* | 1,50* | 2,03* | 11 |
 | **Clínicas B Argon** | **Total** | 2 | **459.989*** | **64.895*** | **1,50*** | **2,03*** | **11** |
 

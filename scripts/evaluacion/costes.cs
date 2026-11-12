@@ -252,31 +252,63 @@ cm.AppendLine("- **OpenCode Go** se paga con la suscripción Go (10 $ al mes), c
 cm.AppendLine("- `*`: con ejecuciones sin dato de consumo, estimadas a partir de su consola (paso 95). `≥`: con ejecuciones sin dato ni estimación, así que es un mínimo.");
 cm.AppendLine();
 
-cm.AppendLine("## 1. Lo que queda de cada límite de OpenCode Go");
+// The limits of Go are ONE allowance for the whole account, not one per model (checked
+// against the OpenCode console on 12-11-2026): each model counts its spend divided by its
+// monthly limit ('limite_mes_go'), so a dollar of Kimi (15 $) uses twice as much as a dollar
+// of Argon (30 $). The windows are fixed, as the console shows: the month from the day of
+// the subscription, the week from Monday 00:00 UTC, and the 5 hours from the first request
+// after the previous window ended.
+// Every spend of Go, with its date and what it takes from the limit (with the discount).
+var goSpends = allRuns.Where(r => OnGo(r) && r.StartedAt is not null && prices.ContainsKey(r.Model) && prices[r.Model].GoMonthlyLimit is not null)
+    .Select(r => (Date: r.StartedAt!.Value, Model: r.Model,
+        Cost: (CostOf(r) ?? 0) * (r.StartedAt <= prices[r.Model].GoDiscountUntil ? prices[r.Model].GoDiscount!.Value : 1),
+        Estimated: r.Estimated, Adjusted: false))
+    .Concat(goAdjustments.Select(a => (Date: a.Date, Model: a.Model, Cost: a.LimitCost, Estimated: false, Adjusted: true)))
+    .OrderBy(s => s.Date).ToList();
+var weekStart = new DateTimeOffset(now.UtcDateTime.Date.AddDays(-(((int)now.UtcDateTime.DayOfWeek + 6) % 7)), TimeSpan.Zero);
+// The current 5-hour window: it opens with the first spend after the previous one closed.
+DateTimeOffset? fiveHourStart = null;
+foreach (var spend in goSpends)
+    if (fiveHourStart is null || spend.Date >= fiveHourStart.Value.AddHours(5)) fiveHourStart = spend.Date;
+if (fiveHourStart is { } open && now >= open.AddHours(5)) fiveHourStart = null; // closed: nothing used now
+
+cm.AppendLine("## 1. Lo que queda del límite de OpenCode Go");
 cm.AppendLine();
+cm.AppendLine("Un solo límite para toda la cuenta (comprobado con la consola de OpenCode el 12-11-2026): cada modelo gasta de él su coste dividido por su límite mensual (`limite_mes_go` en `precios.json`), así que un dólar de Kimi (15 $) gasta el doble que uno de Argon (30 $). La semana es el 50 % del mes y las 5 horas, el 20 %.");
+cm.AppendLine();
+cm.AppendLine("| Ventana | Desde | Se reinicia | Usado | Queda | Queda, en dólares de cada modelo |");
+cm.AppendLine("| --- | --- | --- | --- | --- | --- |");
+void Row(string name, DateTimeOffset? from, DateTimeOffset? until, double share)
+{
+    if (from is null)
+    {
+        cm.AppendLine($"| {name} | — | — | 0 % | 100 % | {string.Join(", ", goModels.Select(m => $"{m} {(prices[m].GoMonthlyLimit!.Value * share).ToString("F2", es)} $"))} |");
+        return;
+    }
+    var spends = goSpends.Where(s => s.Date >= from).ToList();
+    var used = spends.Sum(s => s.Cost / (prices[s.Model].GoMonthlyLimit!.Value * share));
+    var mark = (spends.Any(s => s.Estimated) ? "*" : "") + (spends.Any(s => s.Adjusted) ? "†" : "");
+    var left = Math.Max(0, 1 - used);
+    cm.AppendLine($"| {name} | {from.Value.ToLocalTime():dd-MM HH:mm} | {(until is { } u ? u.ToLocalTime().ToString("dd-MM HH:mm") : "—")} | " +
+        $"{(used * 100).ToString("F0", es)} %{mark} | {(left * 100).ToString("F0", es)} % | " +
+        $"{string.Join(", ", goModels.Select(m => $"{m} {(left * prices[m].GoMonthlyLimit!.Value * share).ToString("F2", es)} $"))} |");
+}
 if (goMonthStart is null)
-    cm.AppendLine("Sin suscripción todavía: se contrata en el paso 129 y su fecha va en `precios.json` (`_go.inicio_suscripcion`). Hasta entonces no hay mes de Go; la semana y las 5 horas se calculan igual.");
+    cm.AppendLine("| Mes | sin suscripción (se contrata en el paso 129) | | | | |");
 else
-    cm.AppendLine($"Mes de Go desde el {goMonthStart:dd-MM-yyyy} (suscripción del {goStart:dd-MM-yyyy}). La semana son los últimos 7 días y las 5 horas, las últimas 5 horas: OpenCode no dice si sus ventanas son móviles o fijas, y se comprueba con su consola.");
+    Row("Mes", goMonthStart, goMonthStart.Value.AddMonths(1), 1);
+Row("Semana", weekStart, weekStart.AddDays(7), goWeekShare);
+Row("5 horas", fiveHourStart, fiveHourStart?.AddHours(5), goFiveHourShare);
 cm.AppendLine();
-cm.AppendLine("| Modelo | Mes: gastado / límite | Mes: queda | Semana: gastado / límite | Semana: queda | 5 horas: gastado / límite | 5 horas: queda |");
-cm.AppendLine("| --- | --- | --- | --- | --- | --- | --- |");
+cm.AppendLine("Lo gastado en cada ventana, por modelo (en dólares de su límite, con el descuento de Argon):");
+cm.AppendLine();
+cm.AppendLine("| Modelo | Mes | Semana | 5 horas |");
+cm.AppendLine("| --- | --- | --- | --- |");
 foreach (var model in goModels)
 {
-    var monthly = prices[model].GoMonthlyLimit!.Value;
-    string Window(DateTimeOffset? from, double limit)
-    {
-        if (from is null) return "— | —";
-        var runs = allRuns.Where(r => OnGo(r) && r.Model == model && r.StartedAt >= from).ToList();
-        // What OpenCode takes from the limit: a temporary discount applies (Argon until 30-11-2026).
-        var spent = runs.Sum(r => (CostOf(r) ?? 0) * (r.StartedAt <= prices[model].GoDiscountUntil ? prices[model].GoDiscount!.Value : 1));
-        // Plus what the platform did not record (cut or cancelled runs), from the OpenCode console.
-        var adjusted = goAdjustments.Where(a => a.Model == model && a.Date >= from).ToList();
-        spent += adjusted.Sum(a => a.LimitCost);
-        var mark = (runs.Any(r => r.Estimated) ? "*" : "") + (adjusted.Count > 0 ? "†" : "");
-        return $"{spent.ToString("F2", es)}{mark} / {limit.ToString("F2", es)} | {Math.Max(0, limit - spent).ToString("F2", es)}";
-    }
-    cm.AppendLine($"| {model} | {Window(goMonthStart, monthly)} | {Window(now.AddDays(-7), monthly * goWeekShare)} | {Window(now.AddHours(-5), monthly * goFiveHourShare)} |");
+    string Spent(DateTimeOffset? from) => from is null ? "—"
+        : goSpends.Where(s => s.Model == model && s.Date >= from).Sum(s => s.Cost).ToString("F2", es) + " $";
+    cm.AppendLine($"| {model} | {Spent(goMonthStart)} | {Spent(weekStart)} | {Spent(fiveHourStart)} |");
 }
 cm.AppendLine();
 if (goAdjustments.Count > 0)
