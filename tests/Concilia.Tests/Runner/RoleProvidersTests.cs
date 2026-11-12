@@ -194,6 +194,9 @@ public class RoleProvidersTests
         // Same conditions as SOL: the 128k window and the output cap.
         Assert.Equal("128000", environment["CLAUDE_CODE_MAX_CONTEXT_TOKENS"]);
         Assert.Equal("64000", environment["CLAUDE_CODE_MAX_OUTPUT_TOKENS"]);
+        // Step 130: Claude Code waits up to 15 minutes for a silent response instead of 5.
+        Assert.Equal("900000", environment["CLAUDE_STREAM_IDLE_TIMEOUT_MS"]);
+        Assert.Equal("0", environment["API_FORCE_IDLE_TIMEOUT"]);
     }
 
     [Fact]
@@ -207,6 +210,9 @@ public class RoleProvidersTests
         Assert.Equal(GatewayKey, environment["ANTHROPIC_AUTH_TOKEN"]);
         Assert.DoesNotContain(environment.Values, v => v.Contains(OpenCodeKey));
         Assert.False(environment.ContainsKey("OPENCODE_GO_API_KEY"));
+        // The gateway children keep Claude Code's default waits (step 130).
+        Assert.False(environment.ContainsKey("CLAUDE_STREAM_IDLE_TIMEOUT_MS"));
+        Assert.False(environment.ContainsKey("API_FORCE_IDLE_TIMEOUT"));
     }
 
     [Fact]

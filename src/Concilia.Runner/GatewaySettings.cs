@@ -7,7 +7,11 @@ namespace Concilia.Runner;
 // gateway key. Both are secrets: never log them (see SecretRedactor).
 public record GatewaySettings(string BaseUrl, string AuthToken) : IModelAccess
 {
-    public IReadOnlyDictionary<string, string> ChildVariables => new Dictionary<string, string>
+    // Other variables this gateway needs in the child, besides the address and
+    // the key (none for the LiteLLM gateway; see OpenCodeGoProvider).
+    public IReadOnlyDictionary<string, string> ExtraChildVariables { get; init; } = new Dictionary<string, string>();
+
+    public IReadOnlyDictionary<string, string> ChildVariables => new Dictionary<string, string>(ExtraChildVariables)
     {
         ["ANTHROPIC_BASE_URL"] = BaseUrl,
         ["ANTHROPIC_AUTH_TOKEN"] = AuthToken,

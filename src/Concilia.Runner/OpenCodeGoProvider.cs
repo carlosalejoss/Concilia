@@ -40,6 +40,20 @@ public class OpenCodeGoProvider(string claudeExecutable, GatewaySettings gateway
         {
             throw new InvalidOperationException($"{BaseUrlVariable} no es una dirección http(s) válida.");
         }
-        return new GatewaySettings(url, apiKey.Trim());
+        return new GatewaySettings(url, apiKey.Trim()) { ExtraChildVariables = StreamTimeouts };
     }
+
+    // Step 130 (12-11-2026): Claude Code aborts a response when no byte arrives for
+    // 5 minutes, with three timers (its "streaming idle watchdogs"). Through
+    // OpenCode, Gemini 4 Argon sends nothing while it generates a long answer,
+    // neither text nor keep-alive pings, so its catalog was cut and retried every
+    // 5 minutes, and each cut attempt was paid. These variables, documented by
+    // Claude Code, raise the wait to 15 minutes, the same time without output the
+    // runner already allows a phase, and turn off the third timer. Only the
+    // children of OpenCode Go get them: the gateway children keep the defaults.
+    public static readonly IReadOnlyDictionary<string, string> StreamTimeouts = new Dictionary<string, string>
+    {
+        ["CLAUDE_STREAM_IDLE_TIMEOUT_MS"] = "900000",
+        ["API_FORCE_IDLE_TIMEOUT"] = "0",
+    };
 }
