@@ -3781,3 +3781,17 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Tests:** dos nuevos en `ArbiterDeviationsTests`; 1.073 en verde, el test intermitente del mockup no falló.
 - **Documentación:** plan, `CLAUDE.md`, trazabilidad, `docs/api/openapi.json` (el valor nuevo del tipo de desviación) y la memoria, punto 16.
 - **Siguiente:** el 142, que empieza por lo que tiene que preparar el autor.
+
+## 13-11-2026, 12:10 (sesión, análisis de seguridad con VibeBreach, fuera del plan)
+
+- **Qué pidió el autor:** analizar el README de VibeBreach (`docs/vibebreach/`, plataforma de seguridad de la empresa a la que le dieron acceso) y el informe de su análisis del repositorio de GitHub, y añadir a la sección temporal de la memoria qué se hizo, por qué y qué se consiguió.
+- **El informe:** SARIF 2.1.0 de las 10:58, con dos motores, Semgrep (reglas sobre el código) y OSV-Scanner (dependencias). 293 avisos de 13 reglas. `docs/vibebreach/` está en `.gitignore` (commit del autor), así que no se enlaza desde la documentación.
+- **Revisión de cada tipo de aviso contra el código (Claude):**
+  - 7 dependencias reales: 6 de Vite 8.3.1 (corregidas en 8.3.3) y 1 de `source-map-js` 1.2.1 (corregida en 1.2.2), gravedad de 2,5 a 7,5; las versiones coinciden con `package-lock.json`. Solo afectan al servidor de desarrollo y a la compilación: la imagen de la web sirve estáticos con nginx.
+  - 6 de buena práctica: los `FROM` de los dos `Dockerfile` usan etiquetas, no hash. Contrapartida de fijarlos: dejan de recibir solas las correcciones de seguridad.
+  - 22 falsos positivos de `Path.Combine`: las rutas salen de GUID de trabajos y ejecuciones, ids de proyecto y nombres fijos; el nombre subido pasa por `Path.GetFileName`; el `.zip` de estilo ya descarta rutas absolutas, `..` y ocultas (`StyleReference.SafePath`), limpia el nombre de la carpeta y comprueba que cada recurso incrustado sigue dentro de la carpeta.
+  - 158 falsos positivos de `return` fuera de función, en lambdas de `test_validador.py` y `test_v0.py` (los dos se analizan sin errores con `ast`), y 1 de React en `usePersistentState` (valor inicial, como `useState`).
+  - 99 informativos (menciones a Anthropic y OpenAI; en `.env.example`, solo nombres). Ningún secreto en el informe.
+  - En total, 13 reales (4 %), 181 falsos positivos (62 %) y 99 informativos (34 %).
+- **Memoria:** punto 17 de «Cosas que añadir a la memoria», con la tabla `tab:vibebreach`, qué es VibeBreach, por qué se hizo (Concilia es código escrito con IA, con credenciales, procesos hijo y `.zip` subidos; y la misma idea del TFG: no fiarse de un único revisor), qué se consiguió, lo que el análisis estático no ve (sin autenticación; inyección de instrucciones en los documentos subidos), pendiente, en palabras sencillas y dónde va. Compila sin cajas desbordadas en la sección.
+- **Sin cambios en el código.** Pendiente, lo decide el autor: subir Vite y `source-map-js` y repetir el análisis; fijar las imágenes por hash, opcional. Al llevarlo al texto principal, confirmar con la empresa cómo citar VibeBreach.
