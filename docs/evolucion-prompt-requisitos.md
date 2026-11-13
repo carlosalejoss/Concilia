@@ -518,9 +518,15 @@ En palabras sencillas: antes, el árbitro tenía que copiar a mano cada condici�
 - **El primer catálogo de Argon se cortó:** Claude Code aborta a los 5 minutos sin bytes. Con el arreglo, terminó.
 - **El autor elige Kimi K3.1 Pro.**
 
+**El flujo de clínicas con Kimi como B (paso 131, 12 y 13-11-2026, `docs/opencode-go/flujo-kimi.md`).** A, árbitro y sugerencias SOL; frente a LUNA fase a fase.
+- **Preguntas:** a la primera; 35 de B y 59 en la unión, 13 solo de B (LUNA, 1).
+- **Catálogo:** a la primera, sin correcciones automáticas en B; unión de 228, con 7 requisitos solo de A (LUNA, 41) y 17 solo de B (LUNA, 7); acuerdo con los embeddings del 95,7 % (LUNA, 91,9 %).
+- **Tiempo y coste para una empresa:** preguntas y catálogo, 40 minutos frente a 22; 0,89 $ frente a 1,01 $ las preguntas y 2,18 $ frente a 1,87 $ el catálogo.
+- **Backlog: falla.** A (140 historias) y B (105) salen válidos, pero el árbitro compacta en cuanto termina de leer sus entradas y no escribe la salida, tres veces (2,22 $). Con LUNA, el mismo árbitro cupo con un catálogo mayor (235 requisitos) y propuestas menores (96 y 85 historias): lo que lo llena no es solo el catálogo.
+
 ### Qué hay que mejorar
 
-- **Que el árbitro del backlog quepa con catálogos grandes** (paso 145): en la v0.14 (paso 143), que lea solo los requisitos que citan las historias que tiene que decidir, como el del catálogo con `input/fuentes.txt`.
+- **Que el árbitro del backlog quepa con catálogos grandes** (paso 145): en la v0.14 (paso 143), que lea solo los requisitos que citan las historias que tiene que decidir, como el del catálogo con `input/fuentes.txt`. Con Kimi como B ya no es un caso raro: el backlog de clínicas no cabe (paso 131).
 - **Que la plataforma no marque como desviación un par «mismo» con cifras distintas** que el árbitro separa: los embeddings no ven la diferencia entre «un año» y «ocho años», y esos avisos son falsos. Es el mismo criterio de cifras que ya usa `fuentes.txt`.
 - Repetir el arbitraje del catálogo para saber si la unión más atómica se mantiene o es variación del árbitro.
 - Que el árbitro no lea su propia conversación guardada después de compactar (`claude-config/`): no es un fichero de `LECTURA`. Hoy le ayuda a recuperar lo resumido, pero no está previsto ni medido.

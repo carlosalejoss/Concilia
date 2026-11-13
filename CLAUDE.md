@@ -39,7 +39,11 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
     - es lento: 15,4 minutos de B en el catálogo.
 
     Argon necesitó un arreglo: Claude Code corta una respuesta sin bytes durante 5 minutos, y ahora los procesos de OpenCode Go esperan hasta 15 (commit `dc30d8b`). Sus intentos cortados se pagaron.
-  - Siguiente: el paso 131.
+  - Paso 131 hecho el 12 y el 13-11-2026 (`docs/opencode-go/flujo-kimi.md`): el flujo de clínicas con Kimi como B y la v0.12, frente a LUNA.
+    - Preguntas y catálogo, a la primera, sin correcciones en B. B aporta mucho más: 13 preguntas solo suyas frente a 1, y solo 7 requisitos de SOL sin pareja frente a 41.
+    - Más lento: 40 minutos frente a 22. El coste para una empresa, parecido: 0,89 $ frente a 1,01 $ las preguntas y 2,18 $ frente a 1,87 $ el catálogo.
+    - **El backlog falla:** A y B salen válidos, pero el árbitro de la v0.12 no cabe en 128.000 tokens con las propuestas de Kimi (140 y 105 historias), aunque el catálogo tenga 228 requisitos. El aviso por tamaño del catálogo no sirve. Hasta la v0.14 (paso 143), ningún backlog de clínicas con el nuevo B.
+  - Siguiente: el paso 132.
 
   Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`; los pasos del hito 23 explican qué hace el autor y qué hace Claude. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El proyecto se llama Concilia desde el 13-10-2026 (antes ReqArbiter, nombre provisional).
 
@@ -171,7 +175,7 @@ Del hito 23: ninguna. La referencia del catálogo y del backlog del paso 120 la 
 Abiertas desde el 10-11-2026 (las decide el autor):
 - ~~qué modelo de OpenCode Go es el nuevo B~~: cerrado por el autor el 12-11-2026 en el paso 130, Kimi K3.1 Pro (`kimi-k3.1-pro`);
 - ~~para el paso 128: el precio de la caché~~: cerrado por el autor el 10-11-2026. Dos cálculos: el principal, con las lecturas de caché a su precio (el de la memoria), y otro a precio completo, solo para comparar con lo de antes. Precios de caché de lista: SOL 6 0,20 $, SOL 6.1 0,10 $ y LUNA 0,01 $ por millón;
-- ~~el backlog de un catálogo grande~~ (paso 145): decidido el 11-11-2026 (el autor lo deja a Claude). El árbitro del backlog leerá solo los requisitos que necesita, en los prompts v0.14 (paso 143); hasta entonces, antes de cada backlog de los pasos 130 y 131, se avisa al autor si el catálogo validado pasa de unos 250 requisitos. La comprobación previa en la plataforma, en «Después»;
+- ~~el backlog de un catálogo grande~~ (paso 145): decidido el 11-11-2026 (el autor lo deja a Claude). El árbitro del backlog leerá solo los requisitos que necesita, en los prompts v0.14 (paso 143); hasta entonces, antes de cada backlog de los pasos 130 y 131, se avisa al autor si el catálogo validado pasa de unos 250 requisitos (corregido el 13-11-2026 tras el paso 131: con Kimi no cupo con 228, porque también pesan las propuestas; hasta la v0.14 no se lanza ningún backlog de clínicas con el nuevo B). La comprobación previa en la plataforma, en «Después», que debería hacerse tras A y B y antes del árbitro;
 
 Cerradas el 10-11-2026: lo demás de «Después», punto por punto (ver el plan); del paso 142, los issue types en las organizaciones, GitHub Projects y los comentarios del nivel 3 (sin token en Concilia), y el botón «Subir a GitHub» de la web pasa a «Después» como mejora futura; el hito 7 (catálogo v2), quitado del plan, con su idea del inventario de funcionalidades como candidata a los prompts v0.14; y que el nuevo B haga de árbitro en el experimento del sesgo (paso 136), solo en los nuevos arbitrajes y con tope de consumo de Go.
 

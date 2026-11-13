@@ -3644,3 +3644,43 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Decisión del autor: Kimi K3.1 Pro como modelo B,** como recomendaba Claude (`docs/opencode-go/seleccion.md`). Argon y Haiku, descartados.
 - **Documentación:** plan, `CLAUDE.md` (estado, decisión vigente y la abierta cerrada), trazabilidad, `docs/evolucion-prompt-requisitos.md`, `costes.md` y `consumo.md` regenerados, y la memoria (puntos 1 y 10; compila).
 - **Pendiente:** el paso 131 (el flujo de clínicas con Kimi frente al de LUNA). Antes del backlog, mirar el tamaño del catálogo validado.
+
+## 13-11-2026, 09:40 (sesión, hito 25, paso 131)
+
+- **El límite de Go es uno solo** (12-11, commit `c620db8`): las cifras de `consumo.md` no cuadraban con la consola de OpenCode que pasó el autor.
+  - Cada modelo gasta del límite común su coste dividido por su `limite_mes_go`.
+  - Las ventanas son fijas: el mes desde el día de la suscripción, la semana desde el lunes a las 00:00 UTC y las 5 horas desde la primera petición tras cerrarse la anterior.
+  - `costes.cs` lo calcula así y cuadra con la consola. Antes se suponían límites por modelo y ventanas móviles.
+- **El paso 131,** en «Clínicas B Kimi», repartido en torno a la ventana de 5 horas de Go, como propuso Claude y aceptó el autor («me parece bien así»):
+  - **preguntas:** la ronda de Kimi del paso 130;
+  - **sugerencias:** solo SOL, 2,7 minutos y 0,28 $;
+  - **catálogo:** válido a la primera en 25,8 minutos, 2,18 $;
+    - unión de 228: 204 de ambos, 7 solo de A y 17 solo de B;
+    - acuerdo con los embeddings del 95,7 %;
+    - validado sin editar, solo con sus 7 discrepancias marcadas como revisadas;
+  - **muestra de 8 requisitos de B** (semilla 131): se apoyan en la documentación. Las facturas separadas entre varios titulares no están en ella y probablemente salen de las respuestas.
+- **Backlog** (12-11, 13:39, tras reiniciarse la ventana de 5 horas):
+  - antes de lanzarlo se estimó entre 0,5 y 0,7 $ de Kimi frente a los 3,00 $ que quedaban de la ventana;
+  - **falló:** A (140 historias, 4,0 minutos) y B (105, 22,0 minutos) válidos. El árbitro compactó en cuanto terminó de leer y no escribió la salida; los intentos 2 y 3 se pararon por compactar dos veces sin salida;
+  - costó 2,22 $ (0,81 $ de Kimi).
+- **Por qué no cupo:** Claude comparó las líneas leídas con las del árbitro de LUNA del 23-10, que sí cupo.
+  - Catálogo: 232 líneas frente a 239.
+  - Propuestas: 235 + 193 frente a 205 + 173.
+  - Emparejamiento: 168 frente a 122.
+  - Respuestas: 59 frente a 45.
+
+  El catálogo de LUNA era mayor (235 requisitos frente a 228): lo que llena el contexto son también las propuestas. El aviso del paso 145 por tamaño del catálogo (más de unos 250 requisitos) no sirve.
+- **Decisiones del autor** (13-11), como recomendaba Claude:
+  - el fallo se anota como hallazgo y el paso 131 se da por hecho;
+  - no se repite el arbitraje: tendría las mismas entradas y no deja el backlog en el proyecto;
+  - el backlog con Kimi se mide en el paso 143, con el árbitro de la v0.14.
+- **Corrección del criterio** (sin borrar el anterior):
+  - el aviso por tamaño del catálogo se sustituye por no lanzar ningún backlog de clínicas con el nuevo B hasta la v0.14;
+  - la comprobación previa de «Después», punto 10, tendría que hacerse tras A y B, antes del árbitro;
+  - los pasos 141 y 143 recogen que lo de las historias atómicas no se pudo medir y el nuevo caso de prueba.
+- **El «Hecho cuando» del hito 25** («un flujo de clínicas termina con el nuevo B») se cumple hasta el catálogo. Lo decide el autor al cerrar el hito.
+- **Documentación:**
+  - `docs/opencode-go/flujo-kimi.md`, plan, `CLAUDE.md` y trazabilidad;
+  - `docs/evolucion-prompt-requisitos.md`, y `costes.md` y `consumo.md` regenerados;
+  - la memoria, punto 11.
+- **Pendiente:** el paso 132, cerrar el cambio.

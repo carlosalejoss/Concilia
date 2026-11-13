@@ -36,7 +36,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 144 hecho (11-11-2026):** `docs/costes/consumo.md`, con todo el consumo por proyecto y tarea y lo que queda de cada límite de Go.
 - **Paso 129 hecho (11-11-2026):** Go contratado por el autor el 11-11-2026. Los tres candidatos funcionan por OpenCode Go a la primera (`docs/opencode-go/humo.md`).
 - **Paso 130 hecho (12-11-2026):** el autor elige **Kimi K3.1 Pro** como modelo B (`docs/opencode-go/seleccion.md`).
-- **Siguiente:** el paso 131 (el flujo de clínicas con Kimi frente al de LUNA).
+- **Paso 131 hecho (12 y 13-11-2026):** con Kimi, preguntas, sugerencias y catálogo salen a la primera y B aporta mucho más que LUNA. El backlog falla: el árbitro de la v0.12 no cabe en 128.000 tokens con las propuestas de Kimi (`docs/opencode-go/flujo-kimi.md`). Se arregla en la v0.14 (paso 143).
+- **Siguiente:** el paso 132 (cerrar el cambio).
 
 ### Lo que queda, en orden
 
@@ -51,7 +52,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 3. ~~**144,** todo el consumo (SOL y OpenCode Go) en un solo fichero, por proyecto y con el coste de cada tarea, antes del primer uso de Go~~ (hecho el 11-11-2026).
 4. ~~**129,** la cuenta, la clave y la prueba de humo~~ (hecho el 11-11-2026).
 5. ~~**130,** elegir el modelo con la ronda de preguntas y el catálogo de clínicas~~ (hecho el 12-11-2026): Kimi K3.1 Pro.
-6. **131,** el flujo de clínicas con el modelo elegido, frente al de LUNA.
+6. ~~**131,** el flujo de clínicas con el modelo elegido, frente al de LUNA~~ (hecho el 13-11-2026): todo a la primera salvo el backlog, cuyo árbitro no cabe.
 7. **132,** cerrar el cambio: revisar con datos las medidas que se tomaron por LUNA, los valores por defecto y la documentación.
 
 **Hito 26, antes de la evaluación 2:**
@@ -88,7 +89,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 - la licencia del repositorio, por acordar con la tutora y con la empresa (README);
 - ~~el backlog de un catálogo grande~~ (329 requisitos, paso 145): su árbitro compacta dos veces sin escribir la salida, con SOL 6 y con SOL 6.1. Decidido el 11-11-2026 (el autor lo deja a Claude):
   - el árbitro del backlog leerá solo los requisitos que necesita, en los prompts v0.14 (paso 143);
-  - hasta entonces, antes de cada backlog de los pasos 130 y 131, se mira el tamaño del catálogo;
+  - hasta entonces, antes de cada backlog de los pasos 130 y 131, se mira el tamaño del catálogo (corregido el 13-11-2026: en el paso 131 el árbitro no cupo con 228 requisitos, porque también pesan las propuestas; hasta la v0.14 no se lanza ningún backlog de clínicas con el nuevo B);
   - la comprobación previa en la plataforma, en «Después», punto 10.
 - Quitados del plan el 10-11-2026 (autor: no se hacen): abaratar las pantallas del mockup y el mockup con la suscripción y la skill `frontend-design`.
 
@@ -1000,7 +1001,7 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
     La prueba costó 18,10 $.
   - **Decisión del autor:** se mantiene SOL 6, como recomendaba Claude. Se vigila que la empresa no lo retire.
   - **Hallazgos:**
-    - el árbitro del backlog no cabe en 128.000 tokens con un catálogo de 329 requisitos, con ninguno de los dos modelos. Se arregla en los prompts v0.14 (paso 143) y, hasta entonces, se vigila el tamaño del catálogo;
+    - el árbitro del backlog no cabe en 128.000 tokens con un catálogo de 329 requisitos, con ninguno de los dos modelos. Se arregla en los prompts v0.14 (paso 143) y, hasta entonces, se vigila el tamaño del catálogo (en el paso 131 se vio que no basta: con Kimi no cupo con 228);
     - la plataforma toma el nombre del proyecto como nombre del sistema, y con una respuesta pendiente sobre la identidad del sistema SOL 6.1 se bloquea.
 - [x] 128. **Un proveedor por papel en el runner** (código). Hoy los papeles A, B, árbitro y sugerencias comparten el proveedor `LiteLlm`; solo el mockup tiene el suyo.
   - **Hecho el 11-11-2026.**
@@ -1116,11 +1117,19 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
     - una revisión rápida de una muestra: si es fiel a la fuente y si está en buen español.
   - **Coste estimado:** unos 12–15 $ de SOL por la pasarela, más el uso de B dentro de Go.
   - **Resultados** en `docs/opencode-go/seleccion.md`, `docs/evolucion-prompt-requisitos.md` y `docs/costes/costes.md`. **Decide el autor.**
-- [ ] 131. **El flujo de clínicas con el modelo elegido:** preguntas, sugerencias, catálogo y backlog. El mockup no, porque es de SOL y no depende de B.
+- [x] 131. **El flujo de clínicas con el modelo elegido:** preguntas, sugerencias, catálogo y backlog. El mockup no, porque es de SOL y no depende de B.
   - **Comparación** con el mismo flujo con LUNA y la v0.12 («Clinicas Veterinarias v0.11»), fase a fase: coste para una empresa, minutos, reparaciones, correcciones automáticas y lo que aporta B.
   - **Además,** si el árbitro del backlog sigue juntando historias atómicas de una misma propuesta («Después», punto 7).
   - **Antes de lanzar el backlog** (aquí y en el paso 130), Claude mira cuántos requisitos tiene el catálogo validado. Por encima de unos 250, avisa al autor antes de gastar: con 329, el árbitro del backlog no cupo (paso 145).
+    - **Corregido el 13-11-2026:** el aviso no sirve. Con Kimi, el árbitro no cupo con 228 requisitos, y con LUNA sí con 235: lo que lo llena son también las propuestas y el emparejamiento, que solo se conocen después de A y B. Hasta la v0.14 (paso 143) no se lanza ningún backlog de clínicas con el nuevo B y la v0.12, porque se sabe que no cabe.
   - **Resultados** en `docs/evolucion-prompt-requisitos.md`, en `docs/costes/costes.md` y en la sección «Cosas que añadir a la memoria».
+  - **Hecho el 12 y el 13-11-2026** (`docs/opencode-go/flujo-kimi.md`), en «Clínicas B Kimi», frente a LUNA fase a fase:
+    - **preguntas:** a la primera, con 13 preguntas solo de B frente a 1; 14,1 minutos frente a 7,6 y 0,89 $ frente a 1,01 $;
+    - **sugerencias** (solo SOL): 2,7 minutos y 0,28 $;
+    - **catálogo:** a la primera y sin correcciones automáticas en B; solo 7 requisitos de SOL sin pareja frente a 41, y 17 solo de B frente a 7; acuerdo con los embeddings del 95,7 %; 25,8 minutos frente a 14,6 y 2,18 $ frente a 1,87 $;
+    - **backlog: falla.** A (140 historias) y B (105) salen válidos, pero el árbitro de la v0.12 no cabe en 128.000 tokens: compacta en cuanto termina de leer y no escribe la salida, tres veces. Costó 2,22 $. No se repite: se mide en el paso 143.
+    - **historias atómicas juntadas:** sin unión, no se pueden contar; se miden en el paso 143.
+  - **Con esto, el «Hecho cuando» del hito** («un flujo de clínicas termina con el nuevo B») **se cumple hasta el catálogo:** el backlog con el nuevo B termina con la v0.14. Lo decide el autor al cerrar el hito.
 - [ ] 132. **Cerrar el cambio.**
   - **Revisar con datos las medidas que se tomaron por LUNA:**
     - una tabla con cuántas veces actuó cada una con SOL, con LUNA y con el nuevo B (tope de salida de 64.000, corte del `Write` incompleto, reintento por inactividad, `offset`/`limit` exactos, pista de `REF-FRAG`, claves repetidas, `REF-LINEA`, `TIPO`, `ARB-FALTA`, `ID-SEQ`, reparar editando y línea del error de esquema);
@@ -1163,7 +1172,7 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
 - [ ] 141. **Que la plataforma marque las historias de la unión que juntan varias de una misma propuesta** («Después», punto 7, la parte sin IA; pasos 104 y 105).
   - **El problema:** en PURE, las 6 historias de la unión con dos acciones juntan cada una 2 o 3 historias atómicas de SOL. En los demás backlogs, el árbitro junta varias de A en una de un 0 % a un 57 % de las veces.
   - **Qué se hace:** la plataforma marca esa historia como discrepancia, como ya hace con las demás desviaciones del árbitro (paso 88).
-  - **Antes,** en el paso 131 se mira si sigue pasando con el nuevo B, porque los datos de ahora son con LUNA.
+  - **Antes,** en el paso 131 se mira si sigue pasando con el nuevo B, porque los datos de ahora son con LUNA. (No se pudo: el backlog del paso 131 falló sin unión. Se mira en el paso 143.)
   - **Cómo se comprueba:** un test de `ArbiterDeviations` con una historia de la unión que junta dos de A.
 - [ ] 142. **Mejoras del backlog en GitHub** («Después», punto 9; hito 24). Elegidas por el autor el 10-11-2026, con la explicación de Claude delante; las tres siguen en el script que lanza el usuario con `gh`, así que Concilia sigue sin recibir ningún token:
   - **Issue types en las organizaciones.**
@@ -1186,9 +1195,9 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
   - **Qué se mejora** se decide con lo que fallen SOL y el nuevo B en los pasos 130 y 131, más lo ya conocido:
     - que el árbitro del backlog no junte historias de A que ya son atómicas solo porque B tiene una que las cubre («Después», punto 7);
     - **que el árbitro del backlog quepa con catálogos grandes** (paso 145; el autor deja la decisión a Claude, 11-11-2026). Decidido: va en la v0.14 aunque no falle en los pasos 130 y 131, porque un B que aporte más agranda la unión.
-      - **Hoy:** lee entero el catálogo validado, además de las dos propuestas y el emparejamiento, con las respuestas en el prompt. Con 329 requisitos no cabe en 128.000 tokens, con SOL 6 ni con SOL 6.1.
+      - **Hoy:** lee entero el catálogo validado, además de las dos propuestas y el emparejamiento, con las respuestas en el prompt. Con 329 requisitos no cabe en 128.000 tokens, con SOL 6 ni con SOL 6.1. Con Kimi como B tampoco cabe con 228 (paso 131), porque sus propuestas son mayores: ya no es un caso raro, sino el flujo normal con el nuevo B.
       - **Cambio:** que lea solo los requisitos que citan las historias que tiene que decidir, como el árbitro del catálogo con `input/fuentes.txt` (paso 107). La cobertura de cada requisito ya la comprueba la plataforma (aviso `COB`).
-      - **Cómo se comprueba:** con el flujo de clínicas del paso 143 y, además, con el catálogo de 329 requisitos de «Clínicas SOL 6.1» (paso 145), donde hoy falla;
+      - **Cómo se comprueba:** con el flujo de clínicas del paso 143 y, además, con el catálogo de 329 requisitos de «Clínicas SOL 6.1» (paso 145) y el backlog de «Clínicas B Kimi» (paso 131), donde hoy falla;
     - 39 de las 40 sugerencias de PURE eran suposiciones (paso 105);
     - solo si faltan funcionalidades en los pasos 130 y 131: la idea del hito 7, que el modelo haga primero un inventario de funcionalidades y después los requisitos de cada una.
   - **Cómo se trabaja,** como en los pasos 112 a 114: Claude propone los cambios, el autor los revisa antes del código, y se actualizan `prompts/v0/CHANGELOG.md` y `docs/evolucion-prompt-requisitos.md`.
@@ -1283,3 +1292,4 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 10. **Comprobar antes de lanzar el backlog si su árbitro cabrá** (paso 145; el autor deja la decisión a Claude, 11-11-2026).
     - **Qué haría:** la plataforma estima los tokens que leerá el árbitro (catálogo validado, propuestas y respuestas) y avisa, o no deja lanzarlo, por encima de un umbral, como el tope de documentación de 300.000 tokens.
     - **Por qué después:** con el cambio del árbitro en el paso 143, el límite sube mucho y la comprobación pierde utilidad. Se retoma si el problema vuelve a aparecer con la v0.14.
+    - **Lo que enseñó el paso 131:** el tamaño del catálogo no basta para saber si cabe, porque también pesan las propuestas y el emparejamiento. La comprobación útil sería después de A y B y antes del árbitro: si lo que tiene que leer no cabe, el trabajo falla con un mensaje claro en lugar de gastar tres intentos del árbitro (0,96 $ en el paso 131).
