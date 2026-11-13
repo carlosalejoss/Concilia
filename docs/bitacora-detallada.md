@@ -3715,7 +3715,7 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - el autor decide si cierra el hito 25 con el backlog de Kimi pendiente de la v0.14;
   - después, el hito 26 en otra sesión.
 
-## 13-11-2026, 09:20 (sesión, hito 26, paso 126)
+## 13-11-2026, 10:15 (sesión, hito 26, paso 126)
 
 - **El autor** cierra el hito 25 con el backlog de Kimi pendiente de la v0.14 y pide el hito 26, un paso cada vez, con un commit por paso, esperando a que cierre cada uno.
 - **Paso 126:** que el aviso de un par «mismo» separado (`SplitSame`) diga en qué elemento está el otro.
@@ -3728,7 +3728,7 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Sin ejecuciones con modelos ni Docker:** el paso no cambia nada que haya que probar en real; la imagen de la API se reconstruirá en el primer paso que lo necesite.
 - **Pendiente:** que el autor cierre el 126; después, el 138.
 
-## 13-11-2026, 09:30 (sesión, hito 26, paso 138)
+## 13-11-2026, 10:30 (sesión, hito 26, paso 138)
 
 - **El autor** cierra el 126 («haz lo que tengas que hacer y sigue»).
 - **Paso 138:** la duración real de cada repetición de una tarea («Después», punto 5c).
@@ -3741,7 +3741,7 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Sin modelos ni Docker:** no hace falta probarlo en real.
 - **Pendiente:** que el autor cierre el 138; después, el 139.
 
-## 13-11-2026, 09:40 (sesión, hito 26, paso 139)
+## 13-11-2026, 10:40 (sesión, hito 26, paso 139)
 
 - **El autor** cierra el 138 y pide seguir avanzando, lanzando lo que haga falta.
 - **Paso 139:** renombrar en el código la «opción C» como «lectura relacionada» (y la «opción A», «lectura completa»).
@@ -3752,7 +3752,7 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Sin entrada en la memoria:** es un cambio de nombres que la memoria ya usa.
 - **Siguiente:** el 140.
 
-## 13-11-2026, 11:15 (sesión, hito 26, paso 140)
+## 13-11-2026, 11:05 (sesión, hito 26, paso 140)
 
 - **Paso 140:** los textos de la plataforma en el idioma del proyecto («Después», punto 6; hallazgo del paso 105 con PURE).
 - **Inventario** de lo que pone la plataforma en español: la narrativa de las historias (web, comparación, trazabilidad, Gherkin, CSV y GitHub), «Tarea», «(sin indicar)», las cabeceras de la descripción en Jira y en GitHub, los títulos, leyenda, anexos, marcas y pie de Word y PDF, el nombre `catalogo-…`, las etiquetas y el prefijo «A decidir por el cliente:» del prompt de sugerencias.
@@ -3771,7 +3771,7 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Documentación:** plan, `CLAUDE.md` (una decisión vigente nueva), trazabilidad, `prompts/v0/CHANGELOG.md`, `docs/evolucion-prompt-requisitos.md` (nota en la v0.12, sin versión nueva), README, `docs/api/openapi.json` (descripciones de las exportaciones) y la memoria, punto 15.
 - **Siguiente:** el 141, que tiene una parada del autor.
 
-## 13-11-2026, 11:35 (sesión, hito 26, paso 141)
+## 13-11-2026, 11:40 (sesión, hito 26, paso 141)
 
 - **Paso 141:** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta («Después», punto 7, la parte sin IA).
 - **Datos antes de la parada del autor** (sin lanzar nada: los `resultado-arbitro.json` de los 13 backlogs arbitrados que hay, por la API): 147 de 848 historias de la unión (17 %) juntan 2 o más de una misma propuesta; 98 juntan 2 y 49, 3 o más; solo 2 juntan varias de las dos a la vez. Por backlog, del 0 % al 57 %; en PURE, 14 de 34 (11 juntan 2 y 3 juntan 3 o más).
@@ -3796,7 +3796,7 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Memoria:** punto 17 de «Cosas que añadir a la memoria», con la tabla `tab:vibebreach`, qué es VibeBreach, por qué se hizo (Concilia es código escrito con IA, con credenciales, procesos hijo y `.zip` subidos; y la misma idea del TFG: no fiarse de un único revisor), qué se consiguió, lo que el análisis estático no ve (sin autenticación; inyección de instrucciones en los documentos subidos), pendiente, en palabras sencillas y dónde va. Compila sin cajas desbordadas en la sección.
 - **Sin cambios en el código.** Pendiente, lo decide el autor: subir Vite y `source-map-js` y repetir el análisis; fijar las imágenes por hash, opcional. Al llevarlo al texto principal, confirmar con la empresa cómo citar VibeBreach.
 
-## 13-11-2026, 12:45 (sesión, hito 26, paso 142, código)
+## 13-11-2026, 11:55 (sesión, hito 26, paso 142, código)
 
 - **Paso 142:** mejoras del backlog en GitHub (issue types, GitHub Projects y nivel 3 de las iteraciones), todo en el script que lanza el usuario, sin token en Concilia.
 - **Comprobado en la documentación de GitHub** (13-11): `gh issue create` tiene `--type` (tipo por nombre), `--parent` y `--project`; `GET /orgs/{org}/issue-types` lista los tipos (con `read:org`, que `gh` pide por defecto); una organización trae Task, Bug y Feature; `gh project create/list/view/link/field-list/field-create/item-list/item-add/item-edit` con `--format json`; los tableros piden el permiso `project` (`gh auth refresh -s project`).
