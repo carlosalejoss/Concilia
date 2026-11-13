@@ -164,7 +164,7 @@ public class PhaseJobTests
         Assert.Null(created.Error);
         Assert.Equal("questions", created.Job!.Kind);
         Assert.Equal(["A", "B", "ARB"], created.Runs.Select(r => r.Slot));
-        Assert.Equal(["SS - GPT-6-SOL", "SS - GPT-6-LUNA", "SS - GPT-6-SOL"], created.Runs.Select(r => r.Model));
+        Assert.Equal(["SS - GPT-6-SOL", "kimi-k3.1-pro", "SS - GPT-6-SOL"], created.Runs.Select(r => r.Model));
         Assert.Equal(["A", "B"], created.Plan!.ProposalOrder.Order());
         Assert.Equal(14, created.Plan.Fragments.Count);
         Assert.Equal("el sistema ReservaSalas", created.Plan.Input.SystemName);
@@ -257,7 +257,7 @@ public class PhaseJobTests
     [Fact]
     public async Task If_only_one_model_ends_well_the_job_fails_without_its_output()
     {
-        using var setup = new Setup(new FailingModels("SS - GPT-6-LUNA"));
+        using var setup = new Setup(new FailingModels("kimi-k3.1-pro"));
 
         var result = await setup.RunAsync(setup.Create(PhaseKind.Questions));
 
@@ -286,7 +286,7 @@ public class PhaseJobTests
     [Fact]
     public async Task If_both_models_fail_the_job_fails_and_the_arbiter_is_not_called()
     {
-        using var setup = new Setup(new FailingModels("SS - GPT-6-SOL", "SS - GPT-6-LUNA"));
+        using var setup = new Setup(new FailingModels("SS - GPT-6-SOL", "kimi-k3.1-pro"));
 
         var result = await setup.RunAsync(setup.Create(PhaseKind.Questions));
 

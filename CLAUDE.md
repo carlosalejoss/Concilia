@@ -43,7 +43,12 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
     - Preguntas y catálogo, a la primera, sin correcciones en B. B aporta mucho más: 13 preguntas solo suyas frente a 1, y solo 7 requisitos de SOL sin pareja frente a 41.
     - Más lento: 40 minutos frente a 22. El coste para una empresa, parecido: 0,89 $ frente a 1,01 $ las preguntas y 2,18 $ frente a 1,87 $ el catálogo.
     - **El backlog falla:** A y B salen válidos, pero el árbitro de la v0.12 no cabe en 128.000 tokens con las propuestas de Kimi (140 y 105 historias), aunque el catálogo tenga 228 requisitos. El aviso por tamaño del catálogo no sirve. Hasta la v0.14 (paso 143), ningún backlog de clínicas con el nuevo B.
-  - Siguiente: el paso 132.
+  - Paso 132 hecho el 13-11-2026 (`docs/opencode-go/medidas-luna.md`):
+    - se mantienen todas las medidas tomadas por LUNA (autor): Kimi no disparó ninguna en sus 5 ejecuciones, SOL usa varias y ninguna estorba;
+    - por defecto B es `kimi-k3.1-pro` por OpenCode Go, salvo en modo `Fake` (autor; `RunnerSetup.ProviderOfB`); 1.060 tests.
+
+    Con él están hechos todos los pasos del hito 25. El backlog con Kimi espera a la v0.14, y cerrar el hito así lo decide el autor.
+  - Siguiente: el hito 26, empezando por el paso 126, en otra sesión.
 
   Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`; los pasos del hito 23 explican qué hace el autor y qué hace Claude. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El proyecto se llama Concilia desde el 13-10-2026 (antes ReqArbiter, nombre provisional).
 
@@ -53,7 +58,7 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
 - Patrón: cada tarea se lanza a Modelo A y Modelo B en paralelo; un Árbitro compara, pregunta al usuario si hay discrepancias graves y fusiona. Se aplica a tres fases: dudas, catálogo de requisitos y backlog.
 - Modelos: solo a través de la pasarela LiteLLM de la empresa. Excepción desde el 08-10-2026: el mockup (ver «Iteración v0»). Ids exactos: `SS - GPT-6-SOL` y `SS - GPT-6-LUNA` (llevan prefijo y espacios). El reparto de roles es configuración. (Cambiada el 10-11-2026, autor: el modelo B pasa de LUNA a un modelo de otro fabricante contratado con OpenCode Go, con el plan Go de 10 $ al mes; se elige entre 3 candidatos en los pasos 127 a 130.)
   - **Solo B:** A, el árbitro, las sugerencias y el mockup siguen siendo `SS - GPT-6-SOL` por la pasarela.
-  - **El nuevo B es Kimi K3.1 Pro** (`kimi-k3.1-pro`, de Moonshot AI), elegido por el autor el 12-11-2026 en el paso 130.
+  - **El nuevo B es Kimi K3.1 Pro** (`kimi-k3.1-pro`, de Moonshot AI), elegido por el autor el 12-11-2026 en el paso 130. Desde el paso 132 (13-11-2026, autor) es el valor por defecto, y va por OpenCode Go si `RUNNER_PROVIDER_B` está vacío, salvo en modo `Fake`. Para B en la pasarela (LUNA, o SOL ‖ SOL en el paso 121), `RUNNER_PROVIDER_B=LiteLlm`.
   - **Norma:** el autor puede usar ese proveedor externo, solo con documentos ficticios o públicos (sin bloqueo en la plataforma; nunca el documento B interno).
   - **Mismas condiciones para B:** 128.000 tokens de contexto, los mismos prompts y planes de lectura.
   - **Capacidad obligatoria:** el nuevo B tiene que razonar como SOL; nunca otro modelo flojo como LUNA. El precio solo decide entre los que cumplen.

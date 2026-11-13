@@ -40,15 +40,17 @@ services:
       Storage__RootPath: /data
       # Fake (default) or LiteLlm. With LiteLlm the two LITELLM_* variables are required.
       Runner__Provider: ${RUNNER_PROVIDER:-Fake}
-      # Provider of each role (empty = Runner__Provider). Model B goes through
-      # OpenCode Go since 10-11-2026: RUNNER_PROVIDER_B=OpenCodeGo (step 128).
+      # Provider of each role (empty = Runner__Provider). Model B, when empty,
+      # goes through OpenCode Go (Fake in Fake mode; step 132). For B on the
+      # gateway (LUNA, or SOL against SOL): RUNNER_PROVIDER_B=LiteLlm.
       Runner__ProviderA: ${RUNNER_PROVIDER_A:-}
       Runner__ProviderB: ${RUNNER_PROVIDER_B:-}
       Runner__ProviderArbiter: ${RUNNER_PROVIDER_ARBITER:-}
       Runner__ProviderSuggestions: ${RUNNER_PROVIDER_SUGGESTIONS:-}
-      # Models A and B of every job (roles are configuration).
+      # Models A and B of every job (roles are configuration). B: Kimi K3.1 Pro
+      # since step 130 (LUNA before).
       Runner__ModelA: "${RUNNER_MODEL_A:-SS - GPT-6-SOL}"
-      Runner__ModelB: "${RUNNER_MODEL_B:-SS - GPT-6-LUNA}"
+      Runner__ModelB: "${RUNNER_MODEL_B:-kimi-k3.1-pro}"
       Runner__ModelArbiter: "${RUNNER_MODEL_ARBITER:-SS - GPT-6-SOL}"
       Runner__ModelSuggestions: "${RUNNER_MODEL_SUGGESTIONS:-SS - GPT-6-SOL}"
       # Fake only: "true" makes the first attempt of each lot invalid, to see a repair.

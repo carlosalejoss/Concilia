@@ -76,28 +76,26 @@ Sin más configuración funciona en **modo simulado**: el proveedor `Fake` imita
 
 ### Usar modelos reales
 
-Añade a `.env` los datos de tu pasarela LiteLLM y aplica los cambios con `docker compose up -d`:
+Añade a `.env` los datos de tu pasarela LiteLLM y la clave de [OpenCode Go](https://opencode.ai/docs/go), y aplica los cambios con `docker compose up -d`:
 
 ```text
 RUNNER_PROVIDER=LiteLlm
 LITELLM_BASE_URL=<dirección de la pasarela>
 LITELLM_API_KEY=<clave de la pasarela>
-RUNNER_MODEL_A=<id del modelo A>
-RUNNER_MODEL_B=<id del modelo B>
-RUNNER_MODEL_ARBITER=<id del modelo árbitro>
-RUNNER_MODEL_SUGGESTIONS=<id del modelo de las sugerencias>
+OPENCODE_GO_API_KEY=<clave de un espacio de trabajo con Go>
 MOCKUP_PROVIDER=LiteLlm
 MOCKUP_MODEL=<id del modelo del prototipo>
 ```
 
+Por defecto, A, el árbitro y las sugerencias son `SS - GPT-6-SOL`, por la pasarela, y el modelo B es Kimi K3.1 Pro (`kimi-k3.1-pro`), por OpenCode Go. Para cambiarlos, `RUNNER_MODEL_A`, `_B`, `_ARBITER` y `_SUGGESTIONS`.
+
 [`.env.example`](.env.example) explica todas las variables. Con modelos reales cada tarea tiene coste: el flujo completo de un proyecto grande ronda los 22 $ ([detalle por fase](docs/costes/costes.md)).
 
-**Un proveedor por papel.** Cada papel puede ir por un proveedor distinto (`RUNNER_PROVIDER_A`, `_B`, `_ARBITER` y `_SUGGESTIONS`; vacíos, el de `RUNNER_PROVIDER`). Desde el hito 25, el modelo B va por [OpenCode Go](https://opencode.ai/docs/go) y el resto sigue en la pasarela:
+**Un proveedor por papel.** Cada papel puede ir por un proveedor distinto (`RUNNER_PROVIDER_A`, `_B`, `_ARBITER` y `_SUGGESTIONS`). Vacíos, usan el de `RUNNER_PROVIDER`, salvo B, que va por OpenCode Go (en modo simulado, también simulado). Para llevar B a la pasarela, por ejemplo con LUNA, el B de antes del hito 25:
 
 ```text
-RUNNER_PROVIDER_B=OpenCodeGo
-RUNNER_MODEL_B=<id del modelo en OpenCode Go, por ejemplo kimi-k3.1-pro>
-OPENCODE_GO_API_KEY=<clave de un espacio de trabajo con Go>
+RUNNER_PROVIDER_B=LiteLlm
+RUNNER_MODEL_B=SS - GPT-6-LUNA
 ```
 
 El runner sigue siendo Claude Code: para B solo cambian la dirección (la pública de OpenCode Go para Claude Code, por defecto) y la clave. La clave de OpenCode solo llega a los procesos de B, y la de la pasarela nunca llega a ellos. Sin la clave, la API arranca, pero no deja lanzar las tareas que usan B y dice qué variable falta. Úsalo solo con documentos ficticios o públicos.
@@ -225,7 +223,7 @@ concilia/
 
 ## Evaluación
 
-La primera evaluación (modelo B = LUNA, versión [descrita aquí](docs/evaluacion/version.md)) se interrumpió el 10-11-2026. El modelo B pasa a un modelo de otro fabricante, y la evaluación se repetirá desde cero con él. La tabla recoge lo que dio la primera.
+La primera evaluación (modelo B = LUNA, versión [descrita aquí](docs/evaluacion/version.md)) se interrumpió el 10-11-2026. El modelo B pasó a Kimi K3.1 Pro, de otro fabricante ([elección](docs/opencode-go/seleccion.md) y [primer flujo frente a LUNA](docs/opencode-go/flujo-kimi.md)), y la evaluación se repetirá desde cero con él. La tabla recoge lo que dio la primera.
 
 | Pregunta | Estado |
 | --- | --- |

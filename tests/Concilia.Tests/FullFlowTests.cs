@@ -308,17 +308,17 @@ public class FullFlowTests
         var questions = (await Json(await client.GetAsync($"/projects/{id}/questions"))).AsArray().Count;
 
         var models = (await Json(await client.GetAsync("/jobs/arbiter-models"))).AsArray().Select(m => m!.GetValue<string>()).ToList();
-        Assert.Equal(["SS - GPT-6-SOL", "SS - GPT-6-LUNA"], models);
+        Assert.Equal(["SS - GPT-6-SOL", "kimi-k3.1-pro"], models);
         var unknown = await client.PostAsJsonAsync($"/jobs/{round}/rearbitrate", new { model = "otro" });
         Assert.Equal(HttpStatusCode.BadRequest, unknown.StatusCode);
 
-        var again = await Launch(client, $"/jobs/{round}/rearbitrate", id, new { model = "SS - GPT-6-LUNA" });
+        var again = await Launch(client, $"/jobs/{round}/rearbitrate", id, new { model = "kimi-k3.1-pro" });
 
         Assert.Equal(questions, (await Json(await client.GetAsync($"/projects/{id}/questions"))).AsArray().Count);
         var report = await Json(await client.GetAsync($"/jobs/{again}/report"));
         Assert.Equal("rearbitration", report["kind"]!.GetValue<string>());
         Assert.Equal("Questions", report["phase"]!.GetValue<string>());
-        Assert.Equal("SS - GPT-6-LUNA", report["arbiterModel"]!.GetValue<string>());
+        Assert.Equal("kimi-k3.1-pro", report["arbiterModel"]!.GetValue<string>());
         Assert.Equal(round, report["rearbitrationOf"]!.GetValue<string>());
         Assert.True(report["elements"]!["merged"]!.GetValue<int>() > 0);
         Assert.NotNull(report["elements"]!["a"]);
@@ -328,7 +328,7 @@ public class FullFlowTests
 
         var csv = Encoding.UTF8.GetString(await (await client.GetAsync($"/projects/{id}/report.csv")).Content.ReadAsByteArrayAsync());
         Assert.Contains($"{again};rearbitration;ok", csv);
-        Assert.Contains($";Questions;SS - GPT-6-LUNA;{round};", csv);
+        Assert.Contains($";Questions;kimi-k3.1-pro;{round};", csv);
     }
 
     // "Cerrar documentación" of an iteration (step 109).

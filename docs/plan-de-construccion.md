@@ -37,7 +37,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 129 hecho (11-11-2026):** Go contratado por el autor el 11-11-2026. Los tres candidatos funcionan por OpenCode Go a la primera (`docs/opencode-go/humo.md`).
 - **Paso 130 hecho (12-11-2026):** el autor elige **Kimi K3.1 Pro** como modelo B (`docs/opencode-go/seleccion.md`).
 - **Paso 131 hecho (12 y 13-11-2026):** con Kimi, preguntas, sugerencias y catálogo salen a la primera y B aporta mucho más que LUNA. El backlog falla: el árbitro de la v0.12 no cabe en 128.000 tokens con las propuestas de Kimi (`docs/opencode-go/flujo-kimi.md`). Se arregla en la v0.14 (paso 143).
-- **Siguiente:** el paso 132 (cerrar el cambio).
+- **Paso 132 hecho (13-11-2026):** se mantienen todas las medidas tomadas por LUNA, y por defecto B es Kimi por OpenCode Go, salvo en modo simulado (`docs/opencode-go/medidas-luna.md`). Con él están hechos todos los pasos del hito 25. Su «Hecho cuando» se cumple hasta el catálogo: el backlog con Kimi espera a la v0.14 (paso 143), y el autor decide si cierra el hito así.
+- **Siguiente:** el hito 26, empezando por el paso 126, en otra sesión.
 
 ### Lo que queda, en orden
 
@@ -53,7 +54,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 4. ~~**129,** la cuenta, la clave y la prueba de humo~~ (hecho el 11-11-2026).
 5. ~~**130,** elegir el modelo con la ronda de preguntas y el catálogo de clínicas~~ (hecho el 12-11-2026): Kimi K3.1 Pro.
 6. ~~**131,** el flujo de clínicas con el modelo elegido, frente al de LUNA~~ (hecho el 13-11-2026): todo a la primera salvo el backlog, cuyo árbitro no cabe.
-7. **132,** cerrar el cambio: revisar con datos las medidas que se tomaron por LUNA, los valores por defecto y la documentación.
+7. ~~**132,** cerrar el cambio: revisar con datos las medidas que se tomaron por LUNA, los valores por defecto y la documentación~~ (hecho el 13-11-2026): se mantienen todas, y B es Kimi por defecto.
 
 **Hito 26, antes de la evaluación 2:**
 
@@ -1130,12 +1131,17 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
     - **backlog: falla.** A (140 historias) y B (105) salen válidos, pero el árbitro de la v0.12 no cabe en 128.000 tokens: compacta en cuanto termina de leer y no escribe la salida, tres veces. Costó 2,22 $. No se repite: se mide en el paso 143.
     - **historias atómicas juntadas:** sin unión, no se pueden contar; se miden en el paso 143.
   - **Con esto, el «Hecho cuando» del hito** («un flujo de clínicas termina con el nuevo B») **se cumple hasta el catálogo:** el backlog con el nuevo B termina con la v0.14. Lo decide el autor al cerrar el hito.
-- [ ] 132. **Cerrar el cambio.**
+- [x] 132. **Cerrar el cambio.**
   - **Revisar con datos las medidas que se tomaron por LUNA:**
     - una tabla con cuántas veces actuó cada una con SOL, con LUNA y con el nuevo B (tope de salida de 64.000, corte del `Write` incompleto, reintento por inactividad, `offset`/`limit` exactos, pista de `REF-FRAG`, claves repetidas, `REF-LINEA`, `TIPO`, `ARB-FALTA`, `ID-SEQ`, reparar editando y línea del error de esquema);
     - por defecto se mantienen todas; solo se quita una si estorba, y lo decide el autor.
   - **Valores por defecto** (`RunnerSetup`, `docker-compose.yml`, `.env.example`).
   - **Documentación:** `CLAUDE.md`, README, la tabla de precios y la sección de la memoria.
+  - **Hecho el 13-11-2026** (`docs/opencode-go/medidas-luna.md`):
+    - **las medidas:** con la v0.12 y la v0.13, Kimi no disparó ninguna en sus 5 ejecuciones. LUNA disparó `REF-FRAG`, `REF-LINEA`, `ID-SEQ` y errores de esquema, y SOL el tope de salida, el reintento por inactividad y las reparaciones. Kimi usó en 3 de 5 la parada al compactar después de escribir, que no estaba en la lista. Ninguna estorba. **Decisión del autor: se mantienen todas**, y se vuelven a contar en la evaluación 2;
+    - **los valores por defecto** (decisión del autor): B es `kimi-k3.1-pro` y va por OpenCode Go si `RUNNER_PROVIDER_B` está vacío, salvo en modo `Fake`, que sigue igual (`RunnerSetup.ProviderOfB`). Para B en la pasarela, `RUNNER_PROVIDER_B=LiteLlm`. Con sus tests; 1.060 en verde;
+    - **la documentación:** `CLAUDE.md`, README, `.env.example`, `docker-compose.yml`, `docs/costes/README.md` y la memoria. `precios.json` ya estaba al día.
+  - **Test intermitente:** `MockupTaskTests.Problems_between_the_screens_are_fixed_one_part_at_a_time` falló 1 de 4 vueltas, sin relación con este cambio. Anotado en «Después».
 
 **Hecho cuando:** un flujo de clínicas termina con el nuevo B por OpenCode Go, sin que ninguna clave llegue donde no debe. Y su comparación con LUNA (coste para una empresa, fiabilidad y aportación de B) está documentada.
 
@@ -1292,4 +1298,8 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 10. **Comprobar antes de lanzar el backlog si su árbitro cabrá** (paso 145; el autor deja la decisión a Claude, 11-11-2026).
     - **Qué haría:** la plataforma estima los tokens que leerá el árbitro (catálogo validado, propuestas y respuestas) y avisa, o no deja lanzarlo, por encima de un umbral, como el tope de documentación de 300.000 tokens.
     - **Por qué después:** con el cambio del árbitro en el paso 143, el límite sube mucho y la comprobación pierde utilidad. Se retoma si el problema vuelve a aparecer con la v0.14.
-    - **Lo que enseñó el paso 131:** el tamaño del catálogo no basta para saber si cabe, porque también pesan las propuestas y el emparejamiento. La comprobación útil sería después de A y B y antes del árbitro: si lo que tiene que leer no cabe, el trabajo falla con un mensaje claro en lugar de gastar tres intentos del árbitro (0,96 $ en el paso 131).
+    - **Lo que enseñó el paso 131 (13-11-2026):** el tamaño del catálogo no basta para saber si cabe, porque también pesan las propuestas y el emparejamiento. La comprobación útil sería después de A y B y antes del árbitro: si lo que tiene que leer no cabe, el trabajo falla con un mensaje claro en lugar de gastar tres intentos del árbitro (0,96 $ en el paso 131).
+11. **Un test intermitente del mockup** (paso 132, 13-11-2026). `MockupTaskTests.Problems_between_the_screens_are_fixed_one_part_at_a_time` falló 1 de cada 4 vueltas de toda la batería, y pasa solo.
+    - Usa su propio proveedor y no tiene que ver con el cambio del paso 132. Probablemente depende del orden en que terminan las pantallas en paralelo.
+    - Hay otro anotado del runner (`Compacting_after_writing_the_output_stops_the_run_at_once`, 23-10-2026).
+    - Se mira antes de congelar la versión de la evaluación 2 (paso 133), para que el CI no falle al azar.

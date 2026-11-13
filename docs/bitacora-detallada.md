@@ -3684,3 +3684,33 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - `docs/evolucion-prompt-requisitos.md`, y `costes.md` y `consumo.md` regenerados;
   - la memoria, punto 11.
 - **Pendiente:** el paso 132, cerrar el cambio.
+
+## 13-11-2026, 10:00 (sesión, hito 25, paso 132)
+
+- **El autor pidió** anotar el fallo del backlog como hallazgo, corregir el aviso, hacer el commit del paso 131 (`b19b066`) y empezar el 132.
+- **Las medidas tomadas por LUNA, contadas** sin lanzar nada:
+  - **datos:** las 696 ejecuciones guardadas en los 18 proyectos que quedan, desde la API local;
+  - **qué se cuenta:** los avisos de las salidas aceptadas y el primer error de las no válidas;
+  - **con la v0.12 y la v0.13:**
+    - LUNA: `REF-FRAG` 4, `REF-LINEA` 3, `ID-SEQ` 4, errores de esquema 2 y 9 reparaciones (7 válidas);
+    - SOL como A: salida de más de 32.000 tokens 4, reintento por inactividad 1 y 2 reparaciones;
+    - Kimi: ninguna en 5 ejecuciones, pero en 3 actuó la parada al compactar después de escribir, que no estaba en la lista.
+- **Decisiones del autor** (13-11), las dos como recomendaba Claude:
+  - se mantienen todas las medidas;
+  - por defecto B es Kimi por OpenCode Go, salvo en modo `Fake`.
+- **Código:**
+  - `RunnerOptions.ModelB` pasa a `kimi-k3.1-pro`;
+  - `RunnerSetup.ProviderOfB`: `RUNNER_PROVIDER_B` si tiene valor; si no, OpenCode Go, o `Fake` en modo simulado;
+  - `docker-compose.yml` y `.env.example`, con lo mismo;
+  - tests nuevos: `ProviderOfB`, los valores por defecto y B en la pasarela cuando su proveedor lo dice;
+  - los tests que daban por hecho a LUNA, actualizados. 1.060 en verde.
+- **Test intermitente:** `MockupTaskTests.Problems_between_the_screens_are_fixed_one_part_at_a_time` falló 1 de 4 vueltas, sin relación con el cambio. Va en «Después», punto 11.
+- **Documentación:**
+  - `docs/opencode-go/medidas-luna.md`, plan, `CLAUDE.md` y trazabilidad;
+  - README: la puesta en marcha con B por defecto y la evaluación;
+  - `docs/costes/README.md`: Kimi, y el límite común de Go con ventanas fijas, que aún decía ventanas móviles;
+  - la memoria, punto 12.
+- **Docker:** se arrancó con `docker compose up -d` (el equipo se había apagado; no había nada en marcha). No se reconstruyó: la imagen sigue con el código de antes del 132. El cambio solo afecta a los valores por defecto, y el `.env` del autor ya pone Kimi por Go.
+- **Pendiente:**
+  - el autor decide si cierra el hito 25 con el backlog de Kimi pendiente de la v0.14;
+  - después, el hito 26 en otra sesión.

@@ -9,9 +9,9 @@ public class RunnerOptions
     // "Fake" (default: no model, no secrets) or "LiteLlm" (the real gateway).
     public string Provider { get; set; } = "Fake";
 
-    // The provider of each role (step 128): empty means Provider. Besides Fake and
-    // LiteLlm, "OpenCodeGo" (model B since 10-11-2026). RUNNER_PROVIDER_A, _B,
-    // _ARBITER and _SUGGESTIONS.
+    // The provider of each role (step 128): empty means Provider, except for B
+    // (see RunnerSetup.ProviderOfB). Besides Fake and LiteLlm, "OpenCodeGo"
+    // (model B since 10-11-2026). RUNNER_PROVIDER_A, _B, _ARBITER and _SUGGESTIONS.
     public string? ProviderA { get; set; }
     public string? ProviderB { get; set; }
     public string? ProviderArbiter { get; set; }
@@ -26,9 +26,10 @@ public class RunnerOptions
 
     // The two models that run every job in parallel, and the arbiter that joins
     // their outputs in the v0 phases (RUNNER_MODEL_ARBITER). Which model plays
-    // each role is configuration.
+    // each role is configuration. B is Kimi K3.1 Pro on OpenCode Go since the
+    // author chose it (step 130, 12-11-2026); LUNA before (step 132 changed the default).
     public string ModelA { get; set; } = "SS - GPT-6-SOL";
-    public string ModelB { get; set; } = "SS - GPT-6-LUNA";
+    public string ModelB { get; set; } = "kimi-k3.1-pro";
     public string ModelArbiter { get; set; } = "SS - GPT-6-SOL";
 
     // The model that suggests answers to the pending questions of a round
@@ -135,7 +136,7 @@ public static class RunnerSetup
         var roles = new List<(string Role, string Model, RunnerProviders.Entry Entry)>
         {
             ("A", options.ModelA, EntryFor("A", options.ProviderA)),
-            ("B", options.ModelB, EntryFor("B", options.ProviderB)),
+            ("B", options.ModelB, EntryFor("B", ProviderOfB(options))),
             ("Arbiter", options.ModelArbiter, EntryFor("Arbiter", options.ProviderArbiter)),
             ("Suggestions", options.ModelSuggestions, EntryFor("Suggestions", options.ProviderSuggestions)),
         };
@@ -147,6 +148,18 @@ public static class RunnerSetup
             ?? roles.Select(r => r.Entry.Provider).FirstOrDefault(p => p is not null)
             ?? new FakeProvider();
         return new RunnerProviders(fallback, roles);
+    }
+
+    // The provider of model B (step 132, author, 13-11-2026). RUNNER_PROVIDER_B
+    // if it is set. If not, OpenCode Go, where the default B (Kimi) runs, except
+    // when the general provider is Fake: then B is Fake too, so the start without
+    // secrets stays as it was. To run B on the gateway (LUNA, or SOL against SOL),
+    // RUNNER_PROVIDER_B=LiteLlm.
+    public static string ProviderOfB(RunnerOptions options)
+    {
+        if (!string.IsNullOrWhiteSpace(options.ProviderB))
+            return options.ProviderB.Trim();
+        return options.Provider.Equals("Fake", StringComparison.OrdinalIgnoreCase) ? options.Provider : "OpenCodeGo";
     }
 
     // OpenCode Go (model B since 10-11-2026). Without its key the role has no

@@ -41,8 +41,10 @@ public class RoleProvidersTests
         return settings;
     }
 
+    // Step 132: the default B is Kimi on OpenCode Go; A, the arbiter and the
+    // suggestions stay on the general provider.
     [Fact]
-    public void Without_configuring_the_roles_every_role_uses_the_general_provider()
+    public void Without_configuring_the_roles_b_is_kimi_on_opencode_and_the_rest_use_the_general_provider()
     {
         var options = new RunnerOptions();
         var providers = Providers(new()
@@ -50,11 +52,42 @@ public class RoleProvidersTests
             ["Runner:Provider"] = "LiteLlm",
             ["LITELLM_BASE_URL"] = GatewayUrl,
             ["LITELLM_API_KEY"] = GatewayKey,
+            ["OPENCODE_GO_API_KEY"] = OpenCodeKey,
         });
 
-        Assert.All([options.ModelA, options.ModelB, options.ModelArbiter, options.ModelSuggestions],
+        Assert.Equal(ModelB, options.ModelB);
+        Assert.Equal("OpenCodeGo", providers.NameFor(options.ModelB));
+        Assert.All([options.ModelA, options.ModelArbiter, options.ModelSuggestions],
             model => Assert.Equal("LiteLlm", providers.NameFor(model)));
         Assert.Null(providers.ErrorFor([options.ModelA, options.ModelB, options.ModelArbiter]));
+    }
+
+    [Fact]
+    public void B_can_still_run_on_the_gateway_when_its_provider_says_so()
+    {
+        var providers = Providers(new()
+        {
+            ["Runner:Provider"] = "LiteLlm",
+            ["Runner:ProviderB"] = "LiteLlm",
+            ["Runner:ModelB"] = "SS - GPT-6-LUNA",
+            ["LITELLM_BASE_URL"] = GatewayUrl,
+            ["LITELLM_API_KEY"] = GatewayKey,
+        });
+
+        Assert.Equal("LiteLlm", providers.NameFor("SS - GPT-6-LUNA"));
+        Assert.Null(providers.ErrorFor("SS - GPT-6-LUNA"));
+    }
+
+    [Theory]
+    [InlineData("Fake", null, "Fake")]
+    [InlineData("fake", null, "fake")]
+    [InlineData("LiteLlm", null, "OpenCodeGo")]
+    [InlineData("LiteLlm", " ", "OpenCodeGo")]
+    [InlineData("LiteLlm", "LiteLlm", "LiteLlm")]
+    [InlineData("Fake", "OpenCodeGo", "OpenCodeGo")]
+    public void The_provider_of_b_is_its_own_setting_or_opencode_except_in_fake_mode(string general, string? ofB, string expected)
+    {
+        Assert.Equal(expected, RunnerSetup.ProviderOfB(new RunnerOptions { Provider = general, ProviderB = ofB }));
     }
 
     [Fact]

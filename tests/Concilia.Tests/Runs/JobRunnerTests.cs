@@ -214,11 +214,11 @@ public class JobRunnerTests
     }
 
     [Fact]
-    public void Models_a_and_b_default_to_sol_and_luna()
+    public void Models_a_and_b_default_to_sol_and_kimi()
     {
         var options = new RunnerOptions();
 
         Assert.Equal(ModelA, options.ModelA);
-        Assert.Equal(ModelB, options.ModelB);
+        Assert.Equal("kimi-k3.1-pro", options.ModelB); // step 132; LUNA before
     }
 }
