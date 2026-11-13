@@ -39,8 +39,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 131 hecho (12 y 13-11-2026):** con Kimi, preguntas, sugerencias y catálogo salen a la primera y B aporta mucho más que LUNA. El backlog falla: el árbitro de la v0.12 no cabe en 128.000 tokens con las propuestas de Kimi (`docs/opencode-go/flujo-kimi.md`). Se arregla en la v0.14 (paso 143).
 - **Paso 132 hecho (13-11-2026):** se mantienen todas las medidas tomadas por LUNA, y por defecto B es Kimi por OpenCode Go, salvo en modo simulado (`docs/opencode-go/medidas-luna.md`). Con él están hechos todos los pasos del hito 25. Su «Hecho cuando» se cumple hasta el catálogo: el backlog con Kimi espera a la v0.14 (paso 143), y el autor decide si cierra el hito así.
 - **Hito 25 cerrado por el autor (13-11-2026)** con el backlog de Kimi pendiente de la v0.14 (paso 143).
-- **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) 139 (la «lectura relacionada» en el código) 140 (los textos de la plataforma en el idioma del proyecto) y 141 (la marca de las historias que juntan varias de una propuesta) hechos el 13-11-2026.
-- **Siguiente:** el paso 142, que empieza por lo que tiene que preparar el autor (una organización de GitHub y un repositorio de prueba).
+- **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) 139 (la «lectura relacionada» en el código) 140 (los textos de la plataforma en el idioma del proyecto) 141 (la marca de las historias que juntan varias de una propuesta) hechos el 13-11-2026. Del 142, el código y sus tests, el mismo día.
+- **Siguiente:** la prueba real del 142, cuando el autor prepare la organización de GitHub, los repositorios de prueba y el permiso de tableros de `gh`.
 
 ### Lo que queda, en orden
 
@@ -1218,6 +1218,12 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
   **Cómo se comprueba:** con el `gh` simulado del paso 124 y una prueba real en un repositorio de prueba del autor (personal y de organización), que después se borra.
 
   **No se hace:** el botón «Subir a GitHub» en la web (el camino B). Pasa a «Después» como mejora futura (autor, 10-11-2026), porque obligaría a que Concilia recibiera un token de GitHub.
+
+  **Código hecho el 13-11-2026** (detalles de Claude, sin decisiones nuevas del autor); falta la prueba real:
+  - **Tipos de issue:** si el propietario es una organización y `gh` tiene `--type`, el script lee sus tipos (`gh api orgs/…/issue-types`) y usa, por nivel, épica → Epic, historia → User Story, Story o Feature (el primero que haya) y tarea → Task, sin la etiqueta del nivel. Una épica no toma Feature, porque no se distinguiría de una historia: sin Epic, sigue con su etiqueta.
+  - **Tablero:** «Backlog de…» (en el idioma del proyecto), el mismo si ya existe, unido al repositorio. Cada issue que no esté en él se añade con el estado *Todo* (el campo Status que trae cada tablero) y dos campos de texto, la épica y las iteraciones. Comprueba el permiso `project` con `gh auth status`; sin él, crea los issues y explica cómo añadirlo. `--sin-tablero` para no usarlo.
+  - **Nivel 3:** en cada issue abierto que cambió (otro hash) o se eliminó, un comentario en el idioma del proyecto con el motivo de la iteración si lo hay (el último `modificada` del historial de la historia, o su entrada en `eliminadas`). Una marca invisible al final (`<!-- concilia-aviso:HU-001 hash=… -->` o `… eliminado -->`) evita repetirlo; un cambio nuevo, con otro hash, vuelve a avisar. Sigue sin cambiar ni cerrar nada.
+  - **Tests:** `GitHubScriptTests` ejecuta `importar.sh` con bash y un `gh` falso que guarda issues, tableros y comentarios y apunta cada llamada (6 casos: cuenta personal con tablero y repetición, organización con y sin Epic, sin permiso de tableros, segunda iteración con comentarios que no se repiten y `--simular`). Se saltan si no hay bash. 1.079 en verde.
 - [ ] 143. **Los prompts mejorados (v0.14)** («Después», punto 1; autor, 10-11-2026). Se hace después del paso 131 y se mide aparte, para saber qué mejora viene del cambio de B y qué de los prompts.
   - **Qué se mejora** se decide con lo que fallen SOL y el nuevo B en los pasos 130 y 131, más lo ya conocido:
     - que el árbitro del backlog no junte historias de A que ya son atómicas solo porque B tiene una que las cubre («Después», punto 7);

@@ -7,13 +7,22 @@ public record ExportCriterion(string Id, string Scenario, string Given, string W
 
 public record ExportTask(string Id, string Title);
 
+// A change made by an update of the backlog (step 114), from the history of
+// the story: in which iterations and why. For the comments the GitHub script
+// leaves on an issue that changed or was deleted (step 142).
+public record ExportChange(string Id, IReadOnlyList<int> Iterations, string Reason);
+
 public record ExportStory(
     string Id, string Title, string As, string Want, string SoThat,
     IReadOnlyList<string> Requirements, IReadOnlyList<ExportCriterion> Criteria, IReadOnlyList<ExportTask> Tasks,
     // A discrepancy the user has not reviewed (only in a draft).
     bool PendingDiscrepancy,
     // The iterations of the project it comes from (step 111): those of its requirements.
-    IReadOnlyList<int> Iterations);
+    IReadOnlyList<int> Iterations)
+{
+    // The last modification an update made to it (step 142), if any.
+    public ExportChange? LastChange { get; init; }
+}
 
 public record ExportEpic(string Id, string Title, string Description, IReadOnlyList<ExportStory> Stories)
 {
@@ -29,6 +38,9 @@ public record BacklogExport(string Project, bool Validated, DateTimeOffset Date,
 {
     // Step 140: the language of the project, for the texts the platform adds.
     public ExportLanguage Language { get; init; } = ExportLanguage.Spanish;
+
+    // The stories an update deleted and the user accepted (step 142), with why.
+    public IReadOnlyList<ExportChange> Deleted { get; init; } = [];
 
     public string Status => Validated
         ? Language.Text($"validado el {Language.Date(ValidatedAt ?? Date)}", $"validated on {Language.Date(ValidatedAt ?? Date)}")
@@ -47,7 +59,8 @@ public record BacklogExport(string Project, bool Validated, DateTimeOffset Date,
     public static BacklogExport Build(string project, bool validated, DateTimeOffset date, DateTimeOffset? validatedAt, string backlogJson,
         IReadOnlyDictionary<string, IReadOnlyList<int>>? requirementIterations = null, string language = "es")
     {
-        var epics = Items(JsonNode.Parse(backlogJson)!.AsObject(), "epicas")
+        var root = JsonNode.Parse(backlogJson)!.AsObject();
+        var epics = Items(root, "epicas")
             .Select(e => new ExportEpic(Text(e, "id"), Text(e, "titulo"), Text(e, "descripcion"),
                 Items(e, "historias").Select(h => new ExportStory(
                     Text(h, "id"), Text(h, "titulo"), Text(h, "como"), Text(h, "quiero"), Text(h, "para"),
@@ -55,9 +68,23 @@ public record BacklogExport(string Project, bool Validated, DateTimeOffset Date,
                     Items(h, "criterios").Select(c => new ExportCriterion(Text(c, "id"), Text(c, "escenario"), Text(c, "dado"), Text(c, "cuando"), Text(c, "entonces"))).ToList(),
                     Items(h, "tareas").Select(t => new ExportTask(Text(t, "id"), Text(t, "titulo"))).ToList(),
                     PendingDiscrepancy: Flag(h, "discrepancia") && !Flag(h, "revisada"),
-                    Iterations: requirementIterations is null ? [] : ElementIterations.OfStory(RequirementIds(h), requirementIterations))).ToList()))
+                    Iterations: requirementIterations is null ? [] : ElementIterations.OfStory(RequirementIds(h), requirementIterations))
+                    { LastChange = LastEntry(h, "modificada") }).ToList()))
             .ToList();
-        return new BacklogExport(project, validated, date, validatedAt, epics) { Language = new ExportLanguage(language) };
+        var deleted = Items(root, "eliminadas").Select(h => LastEntry(h, "eliminada")).OfType<ExportChange>().ToList();
+        return new BacklogExport(project, validated, date, validatedAt, epics) { Language = new ExportLanguage(language), Deleted = deleted };
+    }
+
+    // The last entry of the history of a story with this action ("modificada"
+    // or "eliminada"), if it has one: a story edited by hand has none.
+    private static ExportChange? LastEntry(JsonObject story, string action)
+    {
+        var entry = (story["historial"] as JsonArray ?? []).OfType<JsonObject>().LastOrDefault(e => Text(e, "accion") == action);
+        if (entry is null)
+            return null;
+        var iterations = (entry["iteraciones"] as JsonArray ?? []).OfType<JsonValue>()
+            .Select(v => v.TryGetValue<int>(out var n) ? n : 0).Where(n => n > 0).ToList();
+        return new ExportChange(Text(story, "id"), iterations, Text(entry, "motivo"));
     }
 
     // The requirements of a story, without spaces: they become tags (Gherkin)

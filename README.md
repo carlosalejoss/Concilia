@@ -175,7 +175,7 @@ Si superas los 1.000 elementos, divide el CSV por épicas, como en Jira.
 
 GitHub no importa archivos, así que Concilia da un `.zip` con un script que lanzas tú con tu cuenta; Concilia no recibe ningún token.
 
-Una sola vez, instala [GitHub CLI](https://cli.github.com) 2.94 o superior, inicia sesión con `gh auth login` y crea un repositorio, mejor privado y sin seguidores, porque cada issue creado envía una notificación. En Windows, usa Git Bash, que viene con Git.
+Una sola vez, instala [GitHub CLI](https://cli.github.com) 2.94 o superior, inicia sesión con `gh auth login` y crea un repositorio, mejor privado y sin seguidores, porque cada issue y cada comentario envían una notificación. Para el tablero, dale también el permiso de los tableros con `gh auth refresh -s project`. En Windows, usa Git Bash, que viene con Git.
 
 1. Descarga el `.zip` con **GitHub** y descomprímelo.
 2. Abre un terminal en esa carpeta, donde está `importar.sh`. En Windows: clic derecho en un hueco vacío y **Open Git Bash here** (si no aparece, en **Mostrar más opciones**).
@@ -194,7 +194,10 @@ Una sola vez, instala [GitHub CLI](https://cli.github.com) 2.94 o superior, inic
 
 Si se corta a medias, vuelve a lanzarlo: sigue por donde iba y no duplica nada. Si lo ha cortado GitHub por sus límites, espera unos minutos antes.
 
-Tras una iteración, descarga el `.zip` de nuevo y lanza el mismo comando. Crea solo lo nuevo; lo modificado o eliminado no se toca, y el script da el comando que aplica cada cambio. Un backlog generado otra vez desde cero vuelve a numerar sus ids y necesita otro repositorio: si lo detecta, el script se para sin crear nada. No borres la última línea del cuerpo de un issue, invisible al leerlo (`<!-- concilia:… -->`), porque es la que lo identifica.
+- **En una organización,** cada nivel lleva su tipo de issue de GitHub en lugar de su etiqueta: épica → Epic, historia → User Story, Story o Feature, y tarea → Task. Una organización trae Task, Bug y Feature; para las épicas, crea el tipo «Epic» en *Settings → Planning → Issue types*.
+- **El tablero:** los issues se añaden a un tablero de GitHub Projects («Backlog de…»), unido al repositorio, con el estado *Todo* y los campos de la épica y las iteraciones. Sin el permiso de los tableros, el script crea los issues y te dice cómo añadirlo; para no usarlo, añade `--sin-tablero`.
+
+Tras una iteración, descarga el `.zip` de nuevo y lanza el mismo comando. Crea solo lo nuevo; lo modificado o eliminado no se toca, y el script da el comando que aplica cada cambio y deja un comentario en ese issue, con el motivo de la iteración si lo hay, una sola vez. Un backlog generado otra vez desde cero vuelve a numerar sus ids y necesita otro repositorio: si lo detecta, el script se para sin crear nada. No borres la última línea del cuerpo de un issue, invisible al leerlo (`<!-- concilia:… -->`), porque es la que lo identifica.
 
 ## Desarrollo
 

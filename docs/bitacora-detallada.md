@@ -3795,3 +3795,18 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - En total, 13 reales (4 %), 181 falsos positivos (62 %) y 99 informativos (34 %).
 - **Memoria:** punto 17 de «Cosas que añadir a la memoria», con la tabla `tab:vibebreach`, qué es VibeBreach, por qué se hizo (Concilia es código escrito con IA, con credenciales, procesos hijo y `.zip` subidos; y la misma idea del TFG: no fiarse de un único revisor), qué se consiguió, lo que el análisis estático no ve (sin autenticación; inyección de instrucciones en los documentos subidos), pendiente, en palabras sencillas y dónde va. Compila sin cajas desbordadas en la sección.
 - **Sin cambios en el código.** Pendiente, lo decide el autor: subir Vite y `source-map-js` y repetir el análisis; fijar las imágenes por hash, opcional. Al llevarlo al texto principal, confirmar con la empresa cómo citar VibeBreach.
+
+## 13-11-2026, 12:45 (sesión, hito 26, paso 142, código)
+
+- **Paso 142:** mejoras del backlog en GitHub (issue types, GitHub Projects y nivel 3 de las iteraciones), todo en el script que lanza el usuario, sin token en Concilia.
+- **Comprobado en la documentación de GitHub** (13-11): `gh issue create` tiene `--type` (tipo por nombre), `--parent` y `--project`; `GET /orgs/{org}/issue-types` lista los tipos (con `read:org`, que `gh` pide por defecto); una organización trae Task, Bug y Feature; `gh project create/list/view/link/field-list/field-create/item-list/item-add/item-edit` con `--format json`; los tableros piden el permiso `project` (`gh auth refresh -s project`).
+- **Lo que necesita el autor para la prueba real**, pedido el mismo día: una organización gratuita, un repositorio privado vacío en ella con el tipo «Epic» creado, otro repositorio privado vacío en su cuenta personal (el del paso 124 ya tiene su proyecto) y `gh auth refresh -s project`.
+- **Detalles decididos por Claude** (sin parada del autor; no cambian ninguna decisión):
+  - una épica solo toma el tipo Epic: con Feature, el que sustituye en las historias, no se distinguiría; sin Epic, conserva su etiqueta (corregido tras el primer test, que daba Feature a las dos);
+  - el tablero va por defecto, con `--sin-tablero` para no usarlo, y sin el permiso `project` el script sigue sin tablero y dice cómo añadirlo; al relanzarlo, añade lo que falte;
+  - el estado es el campo *Status* que trae cada tablero (*Todo*), en lugar de crear «Pendiente, En curso, Hecho»; la épica y las iteraciones, como campos de texto;
+  - el comentario lleva una marca con el hash del cambio, así que un cambio posterior vuelve a avisar; el motivo sale del último `modificada` del historial de la historia o de su entrada en `eliminadas` (las épicas, las tareas y lo editado a mano no lo tienen);
+  - en bash, con `pipefail`, `… | grep -q` puede dar un falso negativo, y con él un comentario repetido: la salida se guarda primero en una variable. El texto del comentario se concatena en lugar de sustituirse con `${…//…}`, porque en bash 5.2 `&` es especial en la sustitución.
+- **Tests:** `GitHubScriptTests`, la primera vez que los tests ejecutan `importar.sh`, con Git Bash (o el bash del sistema en Linux; se saltan si no hay) y un `gh` falso en bash que guarda issues, tableros y comentarios y apunta cada llamada. 6 casos; unos 65 s en Windows. 1.079 en verde.
+- **Documentación:** plan, `CLAUDE.md`, trazabilidad, README (la guía de GitHub), el README del `.zip` y la descripción del endpoint (`docs/api/openapi.json`). La memoria, con la prueba real.
+- **Pendiente:** la prueba real del 142, cuando el autor diga que tiene lo pedido; después, el 143.
