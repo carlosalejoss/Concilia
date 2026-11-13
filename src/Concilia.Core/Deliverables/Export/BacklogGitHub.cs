@@ -150,7 +150,8 @@ public static class BacklogGitHub
     // (only the stories an update changed have it; null without it).
     public static string? ChangeDetail(ExportLanguage language, ExportChange change)
     {
-        var reason = BacklogCsv.OneLine(change.Reason);
+        // Without its final period: it goes inside a parenthesis that ends a sentence.
+        var reason = BacklogCsv.OneLine(change.Reason).TrimEnd('.');
         var iterations = change.Iterations.Count switch
         {
             0 => "",
@@ -257,11 +258,15 @@ public static class BacklogGitHub
         # Los tipos de issue de GitHub (Epic, Feature, Task…) solo existen en las
         # organizaciones: allí, cada nivel lleva el que tenga la organización en
         # lugar de su etiqueta. En una cuenta personal, la etiqueta.
+        # Las dos consultas van en una asignación propia: si fallan (un corte de
+        # red), el script se para, en lugar de tomar la organización por una
+        # cuenta personal y crear issues con etiquetas (prueba real del paso 142).
         declare -A TIPO=()
-        if [[ "$(gh api "users/$PROPIETARIO" --jq .type | tr -d '\r')" == "Organization" ]]; then
+        propietario=$(gh api "users/$PROPIETARIO" --jq .type | tr -d '\r')
+        if [[ "$propietario" == "Organization" ]]; then
           ayuda=$(gh issue create --help 2>&1 || true)
           if [[ "$ayuda" == *--type* ]]; then
-            tipos=$(gh api "orgs/$PROPIETARIO/issue-types" --jq '.[] | select(.is_enabled != false) | .name' 2>/dev/null | tr -d '\r' || true)
+            tipos=$(gh api "orgs/$PROPIETARIO/issue-types" --jq '.[] | select(.is_enabled != false) | .name' | tr -d '\r')
             # El primero de la lista que tenga la organización, con su nombre exacto.
             elegir() {
               local tipo
@@ -282,10 +287,11 @@ public static class BacklogGitHub
           fi
         fi
         for nivel in epica historia tarea; do
+          nombre=${nivel/epica/épica} # el nivel, escrito para el usuario
           if [[ -n "${TIPO[$nivel]:-}" ]]; then
-            echo "Cada $nivel será un issue de tipo «${TIPO[$nivel]}»."
+            echo "Cada $nombre será un issue de tipo «${TIPO[$nivel]}»."
           else
-            echo "Cada $nivel llevará la etiqueta «${ETIQUETA_NIVEL[$nivel]}»."
+            echo "Cada $nombre llevará la etiqueta «${ETIQUETA_NIVEL[$nivel]}»."
           fi
         done
 
@@ -409,6 +415,7 @@ public static class BacklogGitHub
         # repositorio. Cada issue que no esté en él se añade con su estado
         # (Todo) y los campos de la épica y las iteraciones.
         en_tablero=0
+        completados=0
         if [[ -z "$SIN_TABLERO" && -n "$SIMULAR" ]]; then
           echo "Se añadirían al tablero «$TABLERO» los issues que no estén ya en él."
         elif [[ -z "$SIN_TABLERO" ]]; then
@@ -449,27 +456,51 @@ public static class BacklogGitHub
             fi
           done <<< "$opciones"
 
-          declare -A YA_EN_TABLERO=()
-          items=$(gh project item-list "$proyecto" --owner "$PROPIETARIO" --limit 5000 --format json --jq '.items[] | .content.url // empty' | tr -d '\r')
-          while IFS= read -r url; do
+          # Lo que ya está en el tablero: su elemento, su estado y sus iteraciones.
+          # gh da cada campo con su nombre en minúsculas («iteración»).
+          declare -A ITEM=() ESTADO_TABLERO=() ITERACIONES_TABLERO=()
+          clave=${CAMPO_ITERACION,,}
+          items=$(gh project item-list "$proyecto" --owner "$PROPIETARIO" --limit 5000 --format json \
+            --jq ".items[] | select(.content.url != null) | [.content.url, .id, (.status // \"\"), (.[\"$clave\"] // \"\")] | @tsv" | tr -d '\r')
+          while IFS=$'\t' read -r url item estado iteraciones; do
             if [[ -n "$url" ]]; then
-              YA_EN_TABLERO[$url]=1
+              ITEM[$url]=$item
+              ESTADO_TABLERO[$url]=$estado
+              ITERACIONES_TABLERO[$url]=$iteraciones
             fi
           done <<< "$items"
 
+          # Cada issue: se añade si no está; se pone en Todo si no tiene estado
+          # (el que le haya dado el equipo se respeta), y la épica y las
+          # iteraciones se escriben si es nuevo o si sus iteraciones no son las
+          # de Concilia. Así, una ejecución cortada por la red, o un sub-issue que
+          # GitHub añadió solo al tablero, se completan al repetirlo (prueba real
+          # del paso 142), y una iteración nueva se ve en el tablero.
           for id in ${ORDEN[@]+"${ORDEN[@]}"}; do
             url=${URL[$id]:-}
-            [[ -n "$url" && -z "${YA_EN_TABLERO[$url]:-}" ]] || continue
-            item=$(gh project item-add "$proyecto" --owner "$PROPIETARIO" --url "$url" --format json --jq .id | tr -d '\r')
-            if [[ -n "${CAMPO[Status]:-}" && -n "$pendiente" ]]; then
+            [[ -n "$url" ]] || continue
+            item=${ITEM[$url]:-}
+            nuevo=""
+            if [[ -z "$item" ]]; then
+              item=$(gh project item-add "$proyecto" --owner "$PROPIETARIO" --url "$url" --format json --jq .id | tr -d '\r')
+              nuevo=1
+            fi
+            if [[ -z "${ESTADO_TABLERO[$url]:-}" && -n "${CAMPO[Status]:-}" && -n "$pendiente" ]]; then
               gh project item-edit --id "$item" --project-id "$proyecto_id" --field-id "${CAMPO[Status]}" --single-select-option-id "$pendiente" > /dev/null
             fi
-            gh project item-edit --id "$item" --project-id "$proyecto_id" --field-id "${CAMPO[$CAMPO_EPICA]}" --text "${EPICA[$id]}" > /dev/null
-            if [[ -n "${ITERACIONES[$id]}" ]]; then
-              gh project item-edit --id "$item" --project-id "$proyecto_id" --field-id "${CAMPO[$CAMPO_ITERACION]}" --text "${ITERACIONES[$id]}" > /dev/null
+            if [[ -n "$nuevo" || "${ITERACIONES_TABLERO[$url]:-}" != "${ITERACIONES[$id]}" ]]; then
+              gh project item-edit --id "$item" --project-id "$proyecto_id" --field-id "${CAMPO[$CAMPO_EPICA]}" --text "${EPICA[$id]}" > /dev/null
+              if [[ -n "${ITERACIONES[$id]}" ]]; then
+                gh project item-edit --id "$item" --project-id "$proyecto_id" --field-id "${CAMPO[$CAMPO_ITERACION]}" --text "${ITERACIONES[$id]}" > /dev/null
+              fi
+              if [[ -z "$nuevo" ]]; then
+                completados=$((completados + 1))
+              fi
             fi
-            en_tablero=$((en_tablero + 1))
-            sleep "$PAUSA"
+            if [[ -n "$nuevo" ]]; then
+              en_tablero=$((en_tablero + 1))
+              sleep "$PAUSA"
+            fi
           done
         fi
 
@@ -498,7 +529,10 @@ public static class BacklogGitHub
             printf ' (%s)' "$1"
           fi
         }
-        AVISO=$(mktemp)
+        # El texto del comentario va a un fichero de esta carpeta, con ruta
+        # relativa: en Windows, gh no ve el /tmp de Git Bash (prueba real del
+        # paso 142).
+        AVISO=$(mktemp ./aviso.XXXXXX)
         trap 'rm -f "$AVISO"' EXIT
         for id in "${!CAMBIADO[@]}"; do
           avisar "${URL[$id]}" "$id hash=${CAMBIADO[$id]}" "${AVISO_CAMBIO[0]}$(detalle "${MOTIVO_CAMBIO[$id]:-}")${AVISO_CAMBIO[1]}"
@@ -511,6 +545,9 @@ public static class BacklogGitHub
         echo "Creados: $creados. Sin cambios: $iguales. Modificados en Concilia: ${#modificados[@]}. Eliminados en Concilia: ${#eliminados[@]}."
         if [[ -z "$SIN_TABLERO" && -z "$SIMULAR" ]]; then
           echo "Añadidos al tablero «$TABLERO»: $en_tablero."
+          if (( completados > 0 )); then
+            echo "Completados en el tablero (épica e iteraciones): $completados."
+          fi
         fi
         if (( comentados > 0 )); then
           echo "Comentarios nuevos en los issues que cambiaron o se eliminaron: $comentados."
@@ -552,10 +589,10 @@ public static class BacklogGitHub
         bash importar.sh propietario/repositorio
         ```
 
-        El primero solo dice qué se crearía. El segundo crea los issues, con una pausa entre uno y otro. Si GitHub lo corta por sus límites, vuelve a lanzarlo unos minutos después: seguirá por donde iba.
+        El primero solo dice qué se crearía. El segundo crea los issues, con una pausa entre uno y otro. Si se corta, por la red o por los límites de GitHub, vuelve a lanzarlo unos minutos después: seguirá por donde iba, sin duplicar nada.
 
         - **En una organización,** cada nivel lleva el tipo de issue de GitHub que tenga la organización en lugar de su etiqueta: una épica, Epic; una historia, User Story, Story o Feature (el primero que haya), y una tarea, Task. Por defecto, una organización tiene Task, Bug y Feature: para que las épicas tengan el suyo, crea el tipo «Epic» (*Settings → Planning → Issue types*). Lo que no tenga tipo va con su etiqueta, como en una cuenta personal.
-        - **El tablero:** el script añade los issues a un tablero de GitHub Projects, «Backlog de…», unido al repositorio, con el estado *Todo* y los campos de la épica y las iteraciones. Si ya existe, lo reutiliza y solo añade lo que falte. Para no usarlo, añade `--sin-tablero`.
+        - **El tablero:** el script añade los issues a un tablero de GitHub Projects, «Backlog de…», unido al repositorio, con el estado *Todo* y los campos de la épica y las iteraciones. Si ya existe, lo reutiliza: añade lo que falte, completa los campos vacíos y pone al día las iteraciones, sin cambiar el estado que le haya dado el equipo. Para no usarlo, añade `--sin-tablero`.
 
         ## Después de una iteración
 

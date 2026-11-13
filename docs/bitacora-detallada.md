@@ -3824,3 +3824,13 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Comprobado:** un nuevo arbitraje solo exige que A y B terminaran bien, así que se puede hacer sobre los backlogs fallidos de los pasos 131 y 145; el validador admite una historia en el `de` de varias.
 - **Pendiente:** que el autor revise la propuesta.
 
+
+## 13-11-2026, 14:42 (sesión, hito 26, prueba real del paso 142, parada a medias)
+
+- **Lo preparado por el autor:** la organización `concilia-pruebas-backlog` con el repositorio privado `backlog-pruebas` y el tipo «Epic»; un repositorio privado `backlog-pruebas` en su cuenta; `gh` 2.103.3 con el permiso `project`.
+- **Imagen de la API** reconstruida (sin nada en marcha), tras un primer intento que falló porque Docker no llegaba al registro de Microsoft.
+- **Backlog de la prueba:** «ReservaSalas analista» (67 issues). Ningún proyecto tiene historias modificadas por una actualización, así que la segunda iteración se simula con el exportador de la plataforma (`docs/resultados-paso-142/iteracion2.cs`): HU-004 modificada, HU-008 eliminada y HU-013 nueva, con sus motivos.
+- **Organización, terminada:** 67 issues con sus tipos (Epic, Feature, Task), jerarquía y tablero completos; la repetición no duplica nada; la segunda iteración crea 2, lista 1 modificado y 4 eliminados y deja 5 comentarios, que no se repiten.
+- **Tres fallos del script encontrados y arreglados**, cada uno con un test que falla sin el arreglo: el corte de red al consultar el propietario (creaba T-014 con etiqueta; ahora se para), los issues que GitHub añade solo al tablero sin sus campos (ahora se completan, y las iteraciones se ponen al día sin tocar el estado) y los comentarios con `gh.exe`, que no ve el `/tmp` de Git Bash (ahora el fichero es relativo). Además, «Cada épica» con tilde y sin el punto doble del motivo. 1.083 tests en verde.
+- **La red** se cortó a menudo con `api.github.com`; el script, relanzado en bucle, siguió por donde iba.
+- **Pendiente:** la cuenta personal (parada con 49 de 67 issues), reconstruir la imagen de la API con los arreglos, borrar lo de prueba, completar `docs/resultados-paso-142/README.md`, la trazabilidad y la memoria (sección 17). Después, el 143, cuando el autor revise su propuesta.

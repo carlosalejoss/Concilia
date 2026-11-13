@@ -30,7 +30,7 @@ public class GitHubScriptTests
              {"id": "HU-001", "titulo": "Reservar una sala por horas", "como": "empleado", "quiero": "reservar una sala por horas", "para": "tenerla asegurada",
               "requisitos": ["RF-001"], "criterios": [], "tareas": [],
               "origen": "ambas", "discrepancia": false, "explicacion": "interna", "revisada": false,
-              "historial": [{"accion": "modificada", "iteraciones": [2], "motivo": "La iteración 2 reserva por horas & no por días"}]}
+              "historial": [{"accion": "modificada", "iteraciones": [2], "motivo": "La iteración 2 reserva por horas & no por días."}]}
            ]}
         ]}
         """;
@@ -85,6 +85,7 @@ public class GitHubScriptTests
         Assert.DoesNotContain(gh.Calls("label create"), c => c.Contains("label create epica") || c.Contains("label create historia"));
         Assert.Contains(gh.Calls("label create"), c => c.Contains("label create discrepancia-sin-revisar"));
         Assert.Contains("Cada historia será un issue de tipo «Feature».", output);
+        Assert.Contains("Cada épica será un issue de tipo «Epic».", output);
     }
 
     [BashFact]
@@ -93,8 +94,10 @@ public class GitHubScriptTests
         // The default types of an organization: no Epic.
         using var gh = new FakeGitHub(owner: "Organization", projectScope: true, issueTypes: ["Task", "Bug", "Feature"]);
 
-        gh.Run(Zip(Backlog));
+        var output = gh.Run(Zip(Backlog));
 
+        // The message names the level as the user writes it, with its accent.
+        Assert.Contains("Cada épica llevará la etiqueta «epica».", output);
         // An epic does not take Feature, which would not tell it from a story.
         Assert.Contains(gh.Calls("issue create"), c => c.Contains("--title EP-01") && c.Contains("--label epica") && !c.Contains("--type"));
         Assert.Contains(gh.Calls("issue create"), c => c.Contains("--title HU-001") && c.Contains("--type Feature"));
@@ -149,6 +152,54 @@ public class GitHubScriptTests
         Assert.Contains("Se añadirían al tablero «Backlog de Reserva Salas»", output);
     }
 
+    // The real test of step 142: 7 issues ended on the board without their
+    // epic and iterations, and running again did not fill them. Now it does,
+    // without adding them twice; the status is set only where there is none.
+    [BashTheory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Issues_on_the_board_without_their_fields_are_completed_when_run_again(bool withoutStatus)
+    {
+        using var gh = new FakeGitHub(owner: "User", projectScope: true);
+        gh.Run(Zip(Backlog));
+        gh.EmptyBoardFields(status: withoutStatus);
+        gh.ClearCalls();
+
+        var output = gh.Run(Zip(Backlog));
+
+        Assert.Empty(gh.Calls("project item-add"));
+        Assert.Equal(3, gh.Calls("project item-edit").Count(c => c.EndsWith("--text 1")));
+        Assert.Contains(gh.Calls("project item-edit"), c => c.Contains("--text EP-01 · Reserva de salas"));
+        Assert.Equal(withoutStatus ? 3 : 0, gh.Calls("project item-edit").Count(c => c.Contains("OPT_TODO")));
+        Assert.Contains("Completados en el tablero (épica e iteraciones): 3.", output);
+
+        // Complete now: a third run edits nothing.
+        gh.ClearCalls();
+        gh.Run(Zip(Backlog));
+        Assert.Empty(gh.Calls("project item-edit"));
+    }
+
+    // The real test of step 142: a cut in the network while asking whether the
+    // owner is an organization made the script create a task with its label
+    // instead of its type. Now it stops, and run again it goes on with types.
+    [BashTheory]
+    [InlineData("api users/")]
+    [InlineData("api orgs/")]
+    public void A_network_failure_while_finding_the_issue_types_stops_without_creating_anything(string failingCall)
+    {
+        using var gh = new FakeGitHub(owner: "Organization", projectScope: true, issueTypes: ["Task", "Feature", "Epic"]);
+        gh.Failing = failingCall;
+
+        var output = gh.RunFailing(Zip(Backlog));
+
+        Assert.DoesNotContain(gh.Calls("issue create"), c => !c.Contains("--help"));
+        Assert.Contains("Se ha parado antes de terminar", output);
+
+        gh.Failing = null;
+        gh.Run(Zip(Backlog));
+        Assert.Contains(gh.Calls("issue create"), c => c.Contains("--title EP-01") && c.Contains("--type Epic"));
+    }
+
     // A repository behind a fake gh: the .zip is unpacked in a folder of its
     // own and run there with bash; the state of the fake stays between runs.
     private sealed class FakeGitHub : IDisposable
@@ -165,7 +216,7 @@ public class GitHubScriptTests
             _bin = Directory.CreateDirectory(Path.Combine(_temp.Path, "bin")).FullName;
             File.WriteAllText(Path.Combine(_bin, "gh"), FakeGh.ReplaceLineEndings("\n"));
             File.WriteAllText(Path.Combine(_state, "tipos.txt"), string.Join("\n", issueTypes ?? []) + "\n");
-            foreach (var file in new[] { "llamadas.log", "issues.tsv", "proyectos.tsv", "campos.tsv", "items.txt" })
+            foreach (var file in new[] { "llamadas.log", "issues.tsv", "proyectos.tsv", "campos.tsv", "items.tsv" })
                 File.WriteAllText(Path.Combine(_state, file), "");
             _environment = new()
             {
@@ -177,8 +228,30 @@ public class GitHubScriptTests
             };
         }
 
+        // The calls to gh that fail from now on, as a cut in the network would
+        // ("api users/"); null, none.
+        public string? Failing
+        {
+            set => _environment["FAKE_FALLA"] = value ?? "";
+        }
+
         // Runs importar.sh against "autor/repo"; its output and errors, together.
         public string Run(byte[] zip, params string[] options)
+        {
+            var (exitCode, text) = Start(zip, options);
+            Assert.True(exitCode == 0, $"importar.sh ended with {exitCode}:\n{text}");
+            return text;
+        }
+
+        // The same, for a run that has to stop with an error.
+        public string RunFailing(byte[] zip)
+        {
+            var (exitCode, text) = Start(zip, []);
+            Assert.True(exitCode != 0, $"importar.sh should have stopped:\n{text}");
+            return text;
+        }
+
+        private (int ExitCode, string Text) Start(byte[] zip, string[] options)
         {
             var folder = Path.Combine(_temp.Path, $"run{++_runs}");
             ZipFile.ExtractToDirectory(new MemoryStream(zip), folder);
@@ -195,9 +268,7 @@ public class GitHubScriptTests
             var output = process.StandardOutput.ReadToEndAsync();
             var errors = process.StandardError.ReadToEndAsync();
             Assert.True(process.WaitForExit(60_000), "importar.sh did not end in 60 s.");
-            var text = output.Result + errors.Result;
-            Assert.True(process.ExitCode == 0, $"importar.sh ended with {process.ExitCode}:\n{text}");
-            return text.ReplaceLineEndings("\n");
+            return (process.ExitCode, (output.Result + errors.Result).ReplaceLineEndings("\n"));
         }
 
         // The calls to gh that start with these words ("issue create").
@@ -205,6 +276,18 @@ public class GitHubScriptTests
             File.ReadAllLines(Path.Combine(_state, "llamadas.log")).Where(l => l.StartsWith("gh " + command, StringComparison.Ordinal)).ToList();
 
         public void ClearCalls() => File.WriteAllText(Path.Combine(_state, "llamadas.log"), "");
+
+        // The board items lose their iterations (and their status, if asked),
+        // as when a run is cut or GitHub adds a sub-issue to the board itself.
+        public void EmptyBoardFields(bool status)
+        {
+            var file = Path.Combine(_state, "items.tsv");
+            File.WriteAllLines(file, File.ReadAllLines(file).Select(line =>
+            {
+                var columns = line.Split('\t');
+                return string.Join('\t', columns[0], columns[1], status ? "" : columns[2], "");
+            }));
+        }
 
         public List<string> Comments() =>
             Directory.Exists(Path.Combine(_state, "comentarios"))
@@ -221,6 +304,11 @@ public class GitHubScriptTests
         set -u
         S="$FAKE_GH"
         echo "gh $*" >> "$S/llamadas.log"
+        # A cut in the network: the calls that start with FAKE_FALLA fail.
+        if [[ -n "${FAKE_FALLA:-}" && "$1 ${2:-}" == "$FAKE_FALLA"* ]]; then
+          echo "dial tcp: connectex: simulated network failure" >&2
+          exit 1
+        fi
         opcion() { # opcion --title args...
           local nombre=$1
           shift
@@ -233,6 +321,12 @@ public class GitHubScriptTests
           done
         }
         lineas() { wc -l < "$1" | tr -d ' '; }
+        # The real gh on Windows is not a bash program and cannot open bash's
+        # own paths (/tmp/…): every file it gets has to be relative.
+        if [[ "$(opcion --body-file "$@")" == /* ]]; then
+          echo "open $(opcion --body-file "$@"): El sistema no puede encontrar la ruta especificada." >&2
+          exit 1
+        fi
         case "$1 ${2:-}" in
           "--version ")
             echo "gh version 2.103.3 (2026-10-26)" ;;
@@ -286,13 +380,25 @@ public class GitHubScriptTests
             printf '%s\t%s\n' "$campo" "$(opcion --name "$@")" >> "$S/campos.tsv"
             echo "$campo" ;;
           "project item-list")
-            cat "$S/items.txt" ;;
+            # What importar.sh asks with --jq: url, item, status, iterations.
+            cat "$S/items.tsv" ;;
           "project item-add")
-            opcion --url "$@" >> "$S/items.txt"
-            echo >> "$S/items.txt"
-            echo "ITEM_$(lineas "$S/items.txt")" ;;
+            item="ITEM_$(( $(lineas "$S/items.tsv") + 1 ))"
+            printf '%s\t%s\t\t\n' "$(opcion --url "$@")" "$item" >> "$S/items.tsv"
+            echo "$item" ;;
           "project item-edit")
-            ;;
+            # The status (Todo) and the iterations are kept; the epic, not.
+            item=$(opcion --id "$@")
+            campo=$(awk -F'\t' -v id="$(opcion --field-id "$@")" '$1 == id { print $2 }' "$S/campos.tsv")
+            if [[ -n "$(opcion --single-select-option-id "$@")" ]]; then
+              columna=3 valor=Todo
+            elif [[ "$campo" == Iteraci* ]]; then
+              columna=4 valor=$(opcion --text "$@")
+            else
+              exit 0
+            fi
+            awk -F'\t' -v OFS='\t' -v item="$item" -v c="$columna" -v v="$valor" '$2 == item { $c = v } { print }' "$S/items.tsv" > "$S/items.tmp"
+            mv "$S/items.tmp" "$S/items.tsv" ;;
           *)
             echo "gh simulado: no sabe hacer «$*»" >&2
             exit 1 ;;
@@ -329,6 +435,15 @@ public static class GitBash
 public sealed class BashFactAttribute : FactAttribute
 {
     public BashFactAttribute()
+    {
+        if (GitBash.Path is null)
+            Skip = "No hay bash (en Windows, Git Bash).";
+    }
+}
+
+public sealed class BashTheoryAttribute : TheoryAttribute
+{
+    public BashTheoryAttribute()
     {
         if (GitBash.Path is null)
             Skip = "No hay bash (en Windows, Git Bash).";
