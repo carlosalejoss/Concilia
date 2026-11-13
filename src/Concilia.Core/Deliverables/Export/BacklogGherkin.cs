@@ -58,7 +58,9 @@ public static class BacklogGherkin
     public static string Feature(BacklogExport backlog, ExportEpic epic)
     {
         var text = new StringBuilder();
-        text.Append($"# Backlog de {Line(backlog.Project)} · {backlog.Status} · {backlog.Generated}\n");
+        var language = backlog.Language;
+        var title = language.Text($"Backlog de {Line(backlog.Project)}", $"Backlog of {Line(backlog.Project)}");
+        text.Append($"# {title} · {backlog.Status} · {backlog.Generated}\n");
         text.Append($"@{epic.Id}\n");
         text.Append($"Feature: {Name(epic.Title, epic.Id)}\n");
         Description(text, "  ", [epic.Description]);
@@ -67,18 +69,18 @@ public static class BacklogGherkin
             text.Append('\n');
             var tags = new[] { story.Id }.Concat(story.Requirements).Select(Tag);
             if (story.PendingDiscrepancy)
-                tags = tags.Append("@discrepancia-sin-revisar");
+                tags = tags.Append(Tag(language.PendingDiscrepancyLabel));
             text.Append($"  {string.Join(' ', tags)}\n");
             text.Append($"  Rule: {Name(story.Title, story.Id)}\n");
-            Description(text, "    ", [story.Narrative, .. story.Tasks.Select(t => $"Tarea {t.Id}: {t.Title}")]);
+            Description(text, "    ", [backlog.Narrative(story), .. story.Tasks.Select(t => $"{language.Text("Tarea", "Task")} {t.Id}: {t.Title}")]);
             foreach (var c in story.Criteria)
             {
                 text.Append('\n');
                 text.Append($"    {Tag(c.Id)}\n");
                 text.Append($"    Scenario: {Name(c.Scenario, c.Id)}\n");
-                Steps(text, "Given", c.Given);
-                Steps(text, "When", c.When);
-                Steps(text, "Then", c.Then);
+                Steps(text, language, "Given", c.Given);
+                Steps(text, language, "When", c.When);
+                Steps(text, language, "Then", c.Then);
             }
         }
         return text.ToString();
@@ -102,11 +104,11 @@ public static class BacklogGherkin
     // A step per line of the text: the first with its keyword, the rest with
     // And. A text with nothing to say still gives a step, so the scenario
     // keeps its three parts.
-    internal static void Steps(StringBuilder text, string keyword, string value, string indent = "      ")
+    internal static void Steps(StringBuilder text, ExportLanguage language, string keyword, string value, string indent = "      ")
     {
         var lines = Lines(value);
         if (lines.Count == 0)
-            lines = ["(sin indicar)"];
+            lines = [language.Text("(sin indicar)", "(not stated)")];
         for (var i = 0; i < lines.Count; i++)
             text.Append($"{indent}{(i == 0 ? keyword : "And")} {lines[i]}\n");
     }

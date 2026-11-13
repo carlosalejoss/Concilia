@@ -42,9 +42,9 @@ public class BacklogGitHubTests
     {
         var issues = Issues();
 
-        Assert.Equal([BacklogGitHub.EpicLabel], issues["EP-01"].Labels);
-        Assert.Equal([BacklogGitHub.StoryLabel, BacklogCsv.PendingDiscrepancyLabel], issues["HU-001"].Labels);
-        Assert.Equal([BacklogGitHub.TaskLabel], issues["T-001"].Labels);
+        Assert.Equal(["epica"], issues["EP-01"].Labels);
+        Assert.Equal(["historia", "discrepancia-sin-revisar"], issues["HU-001"].Labels);
+        Assert.Equal(["tarea"], issues["T-001"].Labels);
     }
 
     [Fact]

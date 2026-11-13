@@ -16,7 +16,7 @@ public static class CatalogPdf
     {
         ExportFonts.Register();
         var document = new Document();
-        document.Info.Title = $"{CatalogExport.Title}: {c.Project}";
+        document.Info.Title = $"{c.Title}: {c.Project}";
         document.Info.Author = "Concilia";
         DefineStyles(document);
 
@@ -26,9 +26,9 @@ public static class CatalogPdf
         page.PageSetup.LeftMargin = page.PageSetup.RightMargin = Unit.FromCentimeter(2.5);
         var footer = page.Footers.Primary.AddParagraph();
         footer.Style = "Pie";
-        footer.AddText($"{c.Footer} · página ");
+        footer.AddText($"{c.Footer} · {c.Page} ");
         footer.AddPageField();
-        footer.AddText(" de ");
+        footer.AddText($" {c.PageOf} ");
         footer.AddNumPagesField();
 
         Cover(page, c);
@@ -36,7 +36,7 @@ public static class CatalogPdf
         {
             page.AddParagraph($"{section.Title} ({section.Requirements.Count})", StyleNames.Heading1);
             foreach (var r in section.Requirements)
-                Requirement(page, r);
+                Requirement(page, c, r);
         }
         Sources(page, c);
         Questions(page, c);
@@ -50,39 +50,39 @@ public static class CatalogPdf
 
     private static void Cover(Section page, CatalogExport c)
     {
-        page.AddParagraph(CatalogExport.Title, "Titulo");
+        page.AddParagraph(c.Title, "Titulo");
         page.AddParagraph(c.Project, "Subtitulo");
         var status = page.AddParagraph();
         var text = status.AddFormattedText(c.Status, TextFormat.Bold);
         if (!c.Validated)
             text.Color = Warn;
         page.AddParagraph(c.Generated, "Detalle");
-        page.AddParagraph().AddFormattedText($"{c.Total} requisitos:", TextFormat.Bold);
+        page.AddParagraph().AddFormattedText(c.Count, TextFormat.Bold);
         foreach (var section in c.Sections)
             page.AddParagraph($"{section.Title}: {section.Requirements.Count}", "Lista");
-        page.AddParagraph(CatalogExport.Legend);
+        page.AddParagraph(c.Legend);
         page.AddPageBreak();
     }
 
-    private static void Requirement(Section page, ExportRequirement r)
+    private static void Requirement(Section page, CatalogExport c, ExportRequirement r)
     {
         page.AddParagraph(r.Id, StyleNames.Heading2);
         var text = page.AddParagraph();
         text.Format.KeepWithNext = true; // with its details, on the same page
         AddLines(text, r.Text);
-        var references = CatalogExport.References(r);
-        page.AddParagraph(references.Length > 0 ? $"{CatalogExport.Details(r)} · {references}" : CatalogExport.Details(r), "Detalle");
+        var references = c.References(r);
+        page.AddParagraph(references.Length > 0 ? $"{c.Details(r)} · {references}" : c.Details(r), "Detalle");
         if (r.AiGuess)
-            page.AddParagraph(CatalogExport.AiGuessMark, "Detalle").Format.Font.Color = Warn;
+            page.AddParagraph(c.AiGuessMark, "Detalle").Format.Font.Color = Warn;
         if (r.PendingDiscrepancy)
-            page.AddParagraph(CatalogExport.DiscrepancyMark, "Detalle").Format.Font.Color = Warn;
+            page.AddParagraph(c.DiscrepancyMark, "Detalle").Format.Font.Color = Warn;
     }
 
     private static void Sources(Section page, CatalogExport c)
     {
-        page.AddParagraph(CatalogExport.SourcesTitle, StyleNames.Heading1).Format.PageBreakBefore = true;
+        page.AddParagraph(c.SourcesTitle, StyleNames.Heading1).Format.PageBreakBefore = true;
         if (c.Sources.Count == 0)
-            page.AddParagraph("Ningún requisito cita fragmentos de la documentación.");
+            page.AddParagraph(c.NoSources);
         foreach (var document in c.Sources.GroupBy(s => s.Document))
         {
             page.AddParagraph(document.Key, StyleNames.Heading2);
@@ -94,7 +94,7 @@ public static class CatalogPdf
                     paragraph.AddFormattedText($" ({s.Section})").Color = Grey;
                 paragraph.AddText(" ");
                 if (s.Text is null)
-                    paragraph.AddFormattedText("No está en la documentación de la que salió el catálogo.", TextFormat.Italic);
+                    paragraph.AddFormattedText(c.NotInDocumentation, TextFormat.Italic);
                 else
                     AddLines(paragraph, s.Text);
             }
@@ -103,16 +103,16 @@ public static class CatalogPdf
 
     private static void Questions(Section page, CatalogExport c)
     {
-        page.AddParagraph(CatalogExport.QuestionsTitle, StyleNames.Heading1).Format.PageBreakBefore = true;
+        page.AddParagraph(c.QuestionsTitle, StyleNames.Heading1).Format.PageBreakBefore = true;
         if (c.Questions.Count == 0)
-            page.AddParagraph("Ningún requisito cita preguntas al cliente.");
+            page.AddParagraph(c.NoQuestions);
         foreach (var q in c.Questions)
         {
             var question = page.AddParagraph("", "Pregunta");
             question.AddFormattedText(q.Id, TextFormat.Bold);
             AddLines(question, $" {q.Text}");
             var answer = page.AddParagraph();
-            AddLines(answer, CatalogExport.Answer(q));
+            AddLines(answer, c.Answer(q));
             if (q.AiGuess)
                 answer.Format.Font.Color = Warn;
         }

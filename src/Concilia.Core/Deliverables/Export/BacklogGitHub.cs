@@ -15,7 +15,8 @@ namespace Concilia.Core.Deliverables.Export;
 //   README.md         how to use it
 //
 // Epics, stories and tasks are issues, joined as sub-issues. As it is a
-// personal repository, the type goes as a label (`epica`, `historia`, `tarea`):
+// personal repository, the type goes as a label (`epica`, `historia`, `tarea`;
+// `epic`, `story`, `task` in a project in English, step 140):
 // issue types only exist in organizations. The requirements go in the body, not
 // as labels: a project would fill the repository with hundreds of them.
 //
@@ -37,9 +38,9 @@ namespace Concilia.Core.Deliverables.Export;
 // story. If the repository holds another generation, the script stops.
 public static class BacklogGitHub
 {
-    public const string EpicLabel = "epica";
-    public const string StoryLabel = "historia";
-    public const string TaskLabel = "tarea";
+    public static string EpicLabel(ExportLanguage language) => language.Text("epica", "epic");
+    public static string StoryLabel(ExportLanguage language) => language.Text("historia", "story");
+    public static string TaskLabel(ExportLanguage language) => language.Text("tarea", "task");
 
     // An issue of the export. Parent: the id of its parent, empty in an epic.
     public record Issue(string Id, string Parent, string Title, string Body, IReadOnlyList<string> Labels, string Hash);
@@ -68,17 +69,18 @@ public static class BacklogGitHub
     public static IReadOnlyList<Issue> Issues(BacklogExport backlog, string generation)
     {
         var issues = new List<Issue>();
+        var language = backlog.Language;
         foreach (var epic in backlog.Epics)
         {
             issues.Add(Build(generation, epic.Id, "", epic.Title, Text(epic.Description),
-                [EpicLabel, .. BacklogCsv.IterationLabels(epic.Iterations)]));
+                [EpicLabel(language), .. language.IterationLabels(epic.Iterations)]));
             foreach (var story in epic.Stories)
             {
-                issues.Add(Build(generation, story.Id, epic.Id, story.Title, StoryBody(story),
-                    [StoryLabel, .. story.PendingDiscrepancy ? new[] { BacklogCsv.PendingDiscrepancyLabel } : [], .. BacklogCsv.IterationLabels(story.Iterations)]));
+                issues.Add(Build(generation, story.Id, epic.Id, story.Title, StoryBody(backlog, story),
+                    [StoryLabel(language), .. story.PendingDiscrepancy ? new[] { language.PendingDiscrepancyLabel } : [], .. language.IterationLabels(story.Iterations)]));
                 foreach (var task in story.Tasks)
-                    issues.Add(Build(generation, task.Id, story.Id, task.Title, $"Tarea de la historia {story.Id}.",
-                        [TaskLabel, .. BacklogCsv.IterationLabels(story.Iterations)]));
+                    issues.Add(Build(generation, task.Id, story.Id, task.Title, language.Text($"Tarea de la historia {story.Id}.", $"Task of the story {story.Id}."),
+                        [TaskLabel(language), .. language.IterationLabels(story.Iterations)]));
             }
         }
         return issues;
@@ -94,19 +96,20 @@ public static class BacklogGitHub
         return new Issue(id, parent, fullTitle, body.Length > 0 ? $"{body}\n\n{mark}\n" : $"{mark}\n", labels, hash);
     }
 
-    private static string StoryBody(ExportStory story)
+    private static string StoryBody(BacklogExport backlog, ExportStory story)
     {
-        var text = new StringBuilder(Text(story.Narrative)).Append("\n\n## Criterios de aceptación\n");
+        var language = backlog.Language;
+        var text = new StringBuilder(Text(backlog.Narrative(story))).Append($"\n\n## {language.Text("Criterios de aceptación", "Acceptance criteria")}\n");
         foreach (var c in story.Criteria)
         {
             var gherkin = new StringBuilder($"Scenario: {c.Id} {BacklogCsv.OneLine(c.Scenario)}\n");
-            BacklogGherkin.Steps(gherkin, "Given", c.Given, "  ");
-            BacklogGherkin.Steps(gherkin, "When", c.When, "  ");
-            BacklogGherkin.Steps(gherkin, "Then", c.Then, "  ");
+            BacklogGherkin.Steps(gherkin, language, "Given", c.Given, "  ");
+            BacklogGherkin.Steps(gherkin, language, "When", c.When, "  ");
+            BacklogGherkin.Steps(gherkin, language, "Then", c.Then, "  ");
             var fence = Fence(gherkin.ToString());
             text.Append($"\n{fence}gherkin\n{gherkin}{fence}\n");
         }
-        return text.Append($"\n## Requisitos\n\n{string.Join(", ", story.Requirements)}").ToString();
+        return text.Append($"\n## {language.Text("Requisitos", "Requirements")}\n\n{string.Join(", ", story.Requirements)}").ToString();
     }
 
     // A code block is closed by a run of backticks as long as the one that
@@ -130,7 +133,7 @@ public static class BacklogGitHub
         var labels = issues.SelectMany(i => i.Labels).Distinct().Select(Quote);
         return ScriptTemplate
             .Replace("{{PROYECTO}}", BacklogCsv.OneLine(backlog.Project))
-            .Replace("{{ESTADO}}", backlog.Status)
+            .Replace("{{ESTADO}}", (backlog with { Language = ExportLanguage.Spanish }).Status) // the script is for the analyst (step 140)
             .Replace("{{GENERACION}}", Quote(generation))
             .Replace("{{ETIQUETAS}}", string.Join(' ', labels))
             .Replace("{{ISSUES}}", string.Join('\n', lines));
@@ -268,10 +271,13 @@ public static class BacklogGitHub
         fi
         """;
 
-    private static string Readme(BacklogExport backlog, IReadOnlyList<Issue> issues) => $"""
+    // The README is for the analyst, so it stays in Spanish (step 140).
+    private static string Readme(BacklogExport backlog, IReadOnlyList<Issue> issues) => Readme(backlog with { Language = ExportLanguage.Spanish }, issues.Count);
+
+    private static string Readme(BacklogExport backlog, int count) => $"""
         # Backlog de {BacklogCsv.OneLine(backlog.Project)} para GitHub
 
-        {backlog.Status}, {backlog.Generated}. {issues.Count} issues: épicas, historias y tareas, unidas como sub-issues.
+        {backlog.Status}, {backlog.Generated}. {count} issues: épicas, historias y tareas, unidas como sub-issues.
 
         ## Antes de empezar
 

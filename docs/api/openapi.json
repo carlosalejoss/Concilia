@@ -95,7 +95,7 @@
           "Entregables"
         ],
         "summary": "Exporta el catálogo a Word o PDF",
-        "description": "El catálogo guardado, validado o en borrador (con «BORRADOR» en la portada y el pie). Una sección por tipo de requisito, cada uno con sus fuentes, sus preguntas y las iteraciones del proyecto de las que sale, y dos anexos con el texto de cada fragmento y cada pregunta citados. Lleva las marcas «Suposición de la IA» y «Discrepancia sin revisar».",
+        "description": "El catálogo guardado, validado o en borrador (con «BORRADOR» en la portada y el pie). Una sección por tipo de requisito, cada uno con sus fuentes, sus preguntas y las iteraciones del proyecto de las que sale, y dos anexos con el texto de cada fragmento y cada pregunta citados. Lleva las marcas «Suposición de la IA» y «Discrepancia sin revisar». En un proyecto en inglés, los textos que pone la plataforma (títulos, leyenda, anexos, marcas y pie) y el nombre del archivo (`catalog-…`) van en inglés.",
         "parameters": [
           {
             "name": "projectId",
@@ -144,7 +144,7 @@
           "Entregables"
         ],
         "summary": "Exporta el backlog a Gherkin",
-        "description": "Un `.zip` con un fichero `.feature` por épica, comprobado con el analizador oficial de Gherkin. Palabras clave en inglés: cada épica es una `Feature`, cada historia una `Rule` (con su «Como… quiero… para…» y sus tareas) y cada criterio de aceptación un `Scenario`. Los ids van como etiquetas (`@EP-01`, `@HU-001 @RF-001`, `@CA-001`), y una historia con una discrepancia sin revisar lleva `@discrepancia-sin-revisar`. Del backlog guardado, validado o en borrador (lo dice la primera línea de cada fichero).",
+        "description": "Un `.zip` con un fichero `.feature` por épica, comprobado con el analizador oficial de Gherkin. Palabras clave en inglés: cada épica es una `Feature`, cada historia una `Rule` (con su «Como… quiero… para…» y sus tareas) y cada criterio de aceptación un `Scenario`. Los ids van como etiquetas (`@EP-01`, `@HU-001 @RF-001`, `@CA-001`), y una historia con una discrepancia sin revisar lleva `@discrepancia-sin-revisar`. Del backlog guardado, validado o en borrador (lo dice la primera línea de cada fichero). En un proyecto en inglés, la narrativa («As… I want to… so that I can…»), las tareas y la etiqueta (`@unreviewed-discrepancy`) van en inglés.",
         "parameters": [
           {
             "name": "projectId",
@@ -179,7 +179,7 @@
           "Entregables"
         ],
         "summary": "Exporta el backlog a CSV para Jira o Azure DevOps",
-        "description": "Un CSV para importar el backlog guardado en cada herramienta, con una fila por épica, historia y tarea, cada una detrás de su padre. **Jira:** la jerarquía va con `Issue ID` y `Parent ID` (épica → `Story` → `Sub-task`), con `Epic Name` en las épicas y los ids de Concilia en columnas `Labels`; la descripción de cada historia lleva su «Como… quiero… para…», los criterios de aceptación en Gherkin y los requisitos. **Azure DevOps** (proceso Agile): `ID` vacío y el título en `Title 1`, `Title 2` o `Title 3` según el nivel (`Epic` → `User Story` → `Task`), los criterios en `Acceptance Criteria` y los ids en `Tags`. Separado por comas, UTF-8 sin BOM. Una historia con una discrepancia sin revisar lleva también `discrepancia-sin-revisar`, y cada elemento, `iteracion-N` por cada iteración del proyecto de la que sale (una épica, las de sus historias; una tarea, las de su historia).",
+        "description": "Un CSV para importar el backlog guardado en cada herramienta, con una fila por épica, historia y tarea, cada una detrás de su padre. **Jira:** la jerarquía va con `Issue ID` y `Parent ID` (épica → `Story` → `Sub-task`), con `Epic Name` en las épicas y los ids de Concilia en columnas `Labels`; la descripción de cada historia lleva su «Como… quiero… para…», los criterios de aceptación en Gherkin y los requisitos. **Azure DevOps** (proceso Agile): `ID` vacío y el título en `Title 1`, `Title 2` o `Title 3` según el nivel (`Epic` → `User Story` → `Task`), los criterios en `Acceptance Criteria` y los ids en `Tags`. Separado por comas, UTF-8 sin BOM. Una historia con una discrepancia sin revisar lleva también `discrepancia-sin-revisar`, y cada elemento, `iteracion-N` por cada iteración del proyecto de la que sale (una épica, las de sus historias; una tarea, las de su historia). En un proyecto en inglés, la narrativa, los títulos de la descripción y las etiquetas van en inglés (`unreviewed-discrepancy`, `iteration-N`).",
         "parameters": [
           {
             "name": "projectId",
@@ -223,7 +223,7 @@
           "Entregables"
         ],
         "summary": "Exporta el backlog para importarlo en GitHub",
-        "description": "GitHub no importa archivos, así que es un `.zip` con `importar.sh`, que crea los issues con GitHub CLI desde el equipo del usuario (Concilia no recibe ningún token), un cuerpo por issue en `cuerpos/` y un `README.md`. Épicas, historias y tareas son issues unidos como sub-issues, con las etiquetas `epica`, `historia` y `tarea`, `iteracion-N` y `discrepancia-sin-revisar`. Cada historia lleva su «Como… quiero… para…», sus criterios en Gherkin y sus requisitos. La última línea de cada cuerpo, invisible, identifica el issue: al repetir el script solo se crea lo nuevo, y lo modificado o eliminado en Concilia se lista con el comando que lo aplica, sin tocarlo. Si el repositorio tiene issues de otra generación desde cero, el script se para. Del backlog guardado, validado o en borrador.",
+        "description": "GitHub no importa archivos, así que es un `.zip` con `importar.sh`, que crea los issues con GitHub CLI desde el equipo del usuario (Concilia no recibe ningún token), un cuerpo por issue en `cuerpos/` y un `README.md`. Épicas, historias y tareas son issues unidos como sub-issues, con las etiquetas `epica`, `historia` y `tarea`, `iteracion-N` y `discrepancia-sin-revisar`. Cada historia lleva su «Como… quiero… para…», sus criterios en Gherkin y sus requisitos. La última línea de cada cuerpo, invisible, identifica el issue: al repetir el script solo se crea lo nuevo, y lo modificado o eliminado en Concilia se lista con el comando que lo aplica, sin tocarlo. Si el repositorio tiene issues de otra generación desde cero, el script se para. Del backlog guardado, validado o en borrador. En un proyecto en inglés, los issues van en inglés (etiquetas `epic`, `story`, `task`, `iteration-N` y `unreviewed-discrepancy`); el script y el README, que lee el analista, siguen en español.",
         "parameters": [
           {
             "name": "projectId",

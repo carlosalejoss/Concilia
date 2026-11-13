@@ -3752,3 +3752,21 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Sin entrada en la memoria:** es un cambio de nombres que la memoria ya usa.
 - **Siguiente:** el 140.
 
+## 13-11-2026, 11:15 (sesión, hito 26, paso 140)
+
+- **Paso 140:** los textos de la plataforma en el idioma del proyecto («Después», punto 6; hallazgo del paso 105 con PURE).
+- **Inventario** de lo que pone la plataforma en español: la narrativa de las historias (web, comparación, trazabilidad, Gherkin, CSV y GitHub), «Tarea», «(sin indicar)», las cabeceras de la descripción en Jira y en GitHub, los títulos, leyenda, anexos, marcas y pie de Word y PDF, el nombre `catalogo-…`, las etiquetas y el prefijo «A decidir por el cliente:» del prompt de sugerencias.
+- **Comprobado con datos** antes de proponer la plantilla: en el backlog de PURE, el campo `como` trae su artículo (22 «an», 10 «a», 2 «the» de 34) y `quiero` y `para` empiezan por un verbo; en español, «empleado» sin artículo. Una traducción literal («As an authorized user, I want create vouchers, so that supply…») no es gramatical.
+- **Decisiones del autor** (13-11), las tres como recomendaba Claude:
+  - la narrativa en inglés, con la plantilla del paso 104: «As {como}, I want to {quiero}, so that I can {para}.»;
+  - las etiquetas, traducidas: `unreviewed-discrepancy`, `iteration-N`, `epic`/`story`/`task`;
+  - en inglés lo que recibe el cliente; en español lo que lee solo el analista (la web y el script y el README de GitHub).
+- **Decidido por Claude, sin parada** (no era una de las del autor y no cambia nada que se haya decidido):
+  - el prefijo, con una variable del prompt (`{{DECISION_CLIENTE}}`), para que el prompt en español salga idéntico y no afecte a sus proyectos;
+  - en la comparación de A, B y el árbitro, solo cambia lo que se muestra: el texto que comparan los embeddings sigue con «Como… quiero… para…», para no cambiar el emparejamiento que recibe el árbitro en los proyectos en inglés;
+  - las fechas en inglés como `2026-11-13`, porque `13-11-2026` se puede leer al revés.
+- **Código:** `ExportLanguage` (cada texto con sus dos versiones, en el sitio donde se usa); `CatalogExport` y `BacklogExport` llevan el idioma; Word con `en-US` para el corrector; `JobComparison` recibe el idioma y las propuestas; `frontend/src/narrative.ts`, con la misma plantilla, en el editor del backlog y el historial de versiones.
+- **Tests:** los de siempre siguen con el mismo contenido en español (solo cambian las llamadas); 7 nuevos en `ProjectLanguageTests`. 1.071 en verde. El test intermitente del mockup falló en 1 de las 2 baterías completas del paso y pasó al repetirla (anotado en «Después», punto 11).
+- **Docker:** sin nada en marcha (`/jobs/active` 204), se reconstruyeron la API y la web con el código del paso; la imagen era anterior al paso 132. Las exportaciones de «PURE · microcare» salen en inglés (`catalog-pure-microcare.docx`, «Appendix A», Gherkin, Jira y los issues de GitHub), y el README de GitHub en español.
+- **Documentación:** plan, `CLAUDE.md` (una decisión vigente nueva), trazabilidad, `prompts/v0/CHANGELOG.md`, `docs/evolucion-prompt-requisitos.md` (nota en la v0.12, sin versión nueva), README, `docs/api/openapi.json` (descripciones de las exportaciones) y la memoria, punto 15.
+- **Siguiente:** el 141, que tiene una parada del autor.

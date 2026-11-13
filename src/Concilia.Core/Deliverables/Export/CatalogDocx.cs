@@ -20,9 +20,9 @@ public static class CatalogDocx
         using (var word = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
         {
             var main = word.AddMainDocumentPart();
-            main.AddNewPart<StyleDefinitionsPart>().Styles = Styles();
+            main.AddNewPart<StyleDefinitionsPart>().Styles = Styles(c.WordLanguage);
             var footer = main.AddNewPart<FooterPart>();
-            footer.Footer = new Footer(Paragraph("Pie", Run($"{c.Footer} · página "), PageNumber()));
+            footer.Footer = new Footer(Paragraph("Pie", Run($"{c.Footer} · {c.Page} "), PageNumber()));
 
             var body = new Body();
             Cover(body, c);
@@ -30,7 +30,7 @@ public static class CatalogDocx
             {
                 body.Append(Paragraph("Heading1", Run($"{section.Title} ({section.Requirements.Count})")));
                 foreach (var r in section.Requirements)
-                    Requirement(body, r);
+                    Requirement(body, c, r);
             }
             Sources(body, c);
             Questions(body, c);
@@ -45,34 +45,34 @@ public static class CatalogDocx
 
     private static void Cover(Body body, CatalogExport c)
     {
-        body.Append(Paragraph("Title", Run(CatalogExport.Title)));
+        body.Append(Paragraph("Title", Run(c.Title)));
         body.Append(Paragraph("Subtitulo", Run(c.Project)));
         body.Append(Paragraph(null, Run(c.Status, bold: true, color: c.Validated ? null : Warn)));
         body.Append(Paragraph("Detalle", Run(c.Generated)));
-        body.Append(Paragraph(null, Run($"{c.Total} requisitos:", bold: true)));
+        body.Append(Paragraph(null, Run(c.Count, bold: true)));
         foreach (var section in c.Sections)
             body.Append(Paragraph("Lista", Run($"{section.Title}: {section.Requirements.Count}")));
-        body.Append(Paragraph(null, Run(CatalogExport.Legend)));
+        body.Append(Paragraph(null, Run(c.Legend)));
         body.Append(new Paragraph(new Run(new Break { Type = BreakValues.Page })));
     }
 
-    private static void Requirement(Body body, ExportRequirement r)
+    private static void Requirement(Body body, CatalogExport c, ExportRequirement r)
     {
         body.Append(Paragraph("Heading2", Run(r.Id)));
         body.Append(Paragraph(null, new ParagraphProperties { KeepNext = new KeepNext() }, Run(r.Text))); // with its details, on the same page
-        var references = CatalogExport.References(r);
-        body.Append(Paragraph("Detalle", Run(references.Length > 0 ? $"{CatalogExport.Details(r)} · {references}" : CatalogExport.Details(r))));
+        var references = c.References(r);
+        body.Append(Paragraph("Detalle", Run(references.Length > 0 ? $"{c.Details(r)} · {references}" : c.Details(r))));
         if (r.AiGuess)
-            body.Append(Paragraph("Detalle", Run(CatalogExport.AiGuessMark, color: Warn)));
+            body.Append(Paragraph("Detalle", Run(c.AiGuessMark, color: Warn)));
         if (r.PendingDiscrepancy)
-            body.Append(Paragraph("Detalle", Run(CatalogExport.DiscrepancyMark, color: Warn)));
+            body.Append(Paragraph("Detalle", Run(c.DiscrepancyMark, color: Warn)));
     }
 
     private static void Sources(Body body, CatalogExport c)
     {
-        body.Append(Paragraph("Heading1", PageBreakBefore(), Run(CatalogExport.SourcesTitle)));
+        body.Append(Paragraph("Heading1", PageBreakBefore(), Run(c.SourcesTitle)));
         if (c.Sources.Count == 0)
-            body.Append(Paragraph(null, Run("Ningún requisito cita fragmentos de la documentación.")));
+            body.Append(Paragraph(null, Run(c.NoSources)));
         foreach (var document in c.Sources.GroupBy(s => s.Document))
         {
             body.Append(Paragraph("Heading2", Run(document.Key)));
@@ -81,20 +81,20 @@ public static class CatalogDocx
                 var section = s.Section.Length > 0 ? $" ({s.Section})" : "";
                 body.Append(Paragraph(null,
                     Run(s.Id, bold: true), Run(section, color: Grey), Run(" "),
-                    s.Text is null ? Run("No está en la documentación de la que salió el catálogo.", italic: true) : Run(s.Text)));
+                    s.Text is null ? Run(c.NotInDocumentation, italic: true) : Run(s.Text)));
             }
         }
     }
 
     private static void Questions(Body body, CatalogExport c)
     {
-        body.Append(Paragraph("Heading1", PageBreakBefore(), Run(CatalogExport.QuestionsTitle)));
+        body.Append(Paragraph("Heading1", PageBreakBefore(), Run(c.QuestionsTitle)));
         if (c.Questions.Count == 0)
-            body.Append(Paragraph(null, Run("Ningún requisito cita preguntas al cliente.")));
+            body.Append(Paragraph(null, Run(c.NoQuestions)));
         foreach (var q in c.Questions)
         {
             body.Append(Paragraph("Pregunta", Run(q.Id, bold: true), Run($" {q.Text}")));
-            body.Append(Paragraph(null, Run(CatalogExport.Answer(q), color: q.AiGuess ? Warn : null)));
+            body.Append(Paragraph(null, Run(c.Answer(q), color: q.AiGuess ? Warn : null)));
         }
     }
 
@@ -142,13 +142,13 @@ public static class CatalogDocx
     private static string XmlSafe(string text) =>
         new(text.Where(ch => ch is '\t' or '\n' or '\r' || ch >= ' ').ToArray());
 
-    private static Styles Styles()
+    private static Styles Styles(string language)
     {
         var styles = new Styles(new DocDefaults(
             new RunPropertiesDefault(new RunPropertiesBaseStyle(
                 new RunFonts { Ascii = "Calibri", HighAnsi = "Calibri", ComplexScript = "Calibri", EastAsia = "Calibri" },
                 new FontSize { Val = "22" }, new FontSizeComplexScript { Val = "22" },
-                new Languages { Val = "es-ES" })),
+                new Languages { Val = language })),
             new ParagraphPropertiesDefault(new ParagraphPropertiesBaseStyle(
                 new SpacingBetweenLines { After = "120", Line = "264", LineRule = LineSpacingRuleValues.Auto }))));
         styles.Append(

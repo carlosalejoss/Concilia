@@ -81,7 +81,8 @@ public static class MatchingEndpoints
             var matching = ProposalMatcher.Classify(similarities,
                 new MatchThresholds(options.SameThreshold, options.SimilarThreshold), input.ArbiterPairs);
             var deviations = ArbiterDeviations.Find(input.Plan.Kind, input.ArbiterOutput, matching, input.Plan.ProposalOrder);
-            return Results.Ok(JobComparison.Build(input.Plan.Kind, input.ArbiterOutput, input.Plan.ProposalOrder, matching, deviations));
+            return Results.Ok(JobComparison.Build(input.Plan.Kind, input.ArbiterOutput, input.Plan.ProposalOrder, matching, deviations,
+                input.Plan.Input.Language, input.ProposalA, input.ProposalB));
         })
             .WithTags(ApiTags.Reports)
             .WithSummary("Comparación de A, B y el árbitro")

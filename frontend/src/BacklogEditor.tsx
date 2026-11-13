@@ -3,6 +3,7 @@ import { ChevronRight, ChevronsDownUp, ChevronsUpDown, Layers, Plus, Search, Tra
 import { historyKey, type BacklogContent, type CatalogContent, type Criterion, type Deliverable, type Epic, type Project, type Story } from './api.ts'
 import DeliverableBar from './DeliverableBar.tsx'
 import VersionHistory from './VersionHistory.tsx'
+import { narrative, soThatText, storyWords, wantText } from './narrative.ts'
 import ListInput from './ListInput.tsx'
 import TracePanel, { type TraceTarget } from './TracePanel.tsx'
 import { useDeliverable } from './useDeliverable.ts'
@@ -130,7 +131,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
         ]}
       />
 
-      <VersionHistory projectId={project.id} kind="backlog" refreshKey={historyKey(state.deliverable)} dirty={state.dirty} onRestored={onChange} />
+      <VersionHistory projectId={project.id} language={project.language} kind="backlog" refreshKey={historyKey(state.deliverable)} dirty={state.dirty} onRestored={onChange} />
 
       {functional.length > 0 && <Coverage functional={functional} uncovered={uncovered} storiesOf={storiesOf} projectId={project.id} />}
 
@@ -195,6 +196,7 @@ function BacklogEditor({ project, version, onChange }: { project: Project; versi
                       <StoryItem
                         key={j}
                         story={h}
+                        language={project.language}
                         iterations={iterationsOfStory(h)}
                         previous={markOf(previous, h.id)}
                         readOnly={readOnly}
@@ -298,6 +300,7 @@ function Coverage({
 // the acceptance criteria in Gherkin and the tasks.
 function StoryItem({
   story: h,
+  language,
   iterations,
   previous,
   onDecide,
@@ -309,6 +312,8 @@ function StoryItem({
   onRemove,
 }: {
   story: Story
+  // Of the project, for the narrative (step 140).
+  language: string
   iterations: number[]
   previous: MarkedElement | null
   onDecide?: (accept: boolean) => void
@@ -333,7 +338,7 @@ function StoryItem({
         <span className="w-14 shrink-0 pt-0.5 text-sm font-medium text-muted">{h.id}</span>
         <span className="min-w-0 flex-1">
           <span className={`block ${h.titulo === '' ? 'text-faint italic' : ''}`}>{h.titulo || 'Historia sin título'}</span>
-          {!open && h.quiero && <span className="line-clamp-1 font-serif text-sm text-muted">Como {h.como}, quiero {h.quiero}</span>}
+          {!open && h.quiero && <span className="line-clamp-1 font-serif text-sm text-muted">{narrative(language, h.como, h.quiero)}</span>}
         </span>
         <span className="flex shrink-0 flex-wrap justify-end gap-1">
           <IterationBadge numbers={iterations} />
@@ -363,7 +368,7 @@ function StoryItem({
               </p>
               {h.cambio.accion === 'modificar' && h.cambio.antes && (
                 <p className="text-xs">
-                  Antes: Como {h.cambio.antes.como}, quiero {h.cambio.antes.quiero}, para {h.cambio.antes.para} ({h.cambio.antes.criterios?.length ?? 0} criterios y{' '}
+                  Antes: {narrative(language, h.cambio.antes.como ?? '', h.cambio.antes.quiero ?? '', h.cambio.antes.para ?? '')} ({h.cambio.antes.criterios?.length ?? 0} criterios y{' '}
                   {h.cambio.antes.tareas?.length ?? 0} tareas).
                 </p>
               )}
@@ -403,7 +408,8 @@ function StoryItem({
           {readOnly ? (
             <>
               <p className="max-w-prose font-serif">
-                Como <span className="font-semibold">{h.como}</span>, quiero {h.quiero}, para {h.para}.
+                {storyWords(language).as} <span className="font-semibold">{h.como}</span>, {storyWords(language).want} {wantText(language, h.quiero)},{' '}
+                {storyWords(language).soThat} {soThatText(language, h.para)}.
               </p>
               <p className="text-sm text-muted">Requisitos: {h.requisitos.join(', ') || 'ninguno'}</p>
             </>

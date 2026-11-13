@@ -125,6 +125,8 @@ Reconstruir la API interrumpe los trabajos en curso: al arrancar quedan cerrados
 
 En la barra de **Backlog** están las descargas: **Gherkin** (un `.feature` por épica), **CSV Jira**, **CSV Azure DevOps** y **GitHub**. Salen de la versión guardada, así que conviene revisar y validar el backlog antes.
 
+En un proyecto en inglés, todo lo que se exporta (también el Word y el PDF del catálogo) va en inglés, salvo el script y el README del `.zip` de GitHub, que lee quien lo importa.
+
 Cada importación en Jira o Azure DevOps crea elementos nuevos: repetirla, por ejemplo tras una iteración, los duplica. Solo el script de GitHub distingue lo que ya está.
 
 | Destino | Qué crea | Límite por importación | Probado en real |

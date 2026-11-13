@@ -56,7 +56,15 @@ public static class PhasePrompt
         ["PREGUNTAS"] = input.PendingQuestions,
         ["LECTURA"] = input.Reading,
         ["ITERACIONES"] = input.Iterations,
+        ["DECISION_CLIENTE"] = ClientDecisionPrefix(input.Language),
     });
+
+    // Step 140: how a suggestion that only the client can decide begins, in
+    // the language of the suggestions. In Spanish the prompt says the same as
+    // before, word for word; in English the model wrote the Spanish prefix as
+    // it was (step 105).
+    public static string ClientDecisionPrefix(string language) =>
+        language == "en" ? "To be decided by the client:" : "A decidir por el cliente:";
 
     // The repair is the ORIGINAL prompt plus the annex with the previous output
     // and the errors, one per line (not the previous prompt, so annexes do not

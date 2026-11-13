@@ -1,5 +1,14 @@
 # Cambios de los prompts v0
 
+## Paso 140, el prefijo de una decisión del cliente en el idioma de las sugerencias (2026-11-13)
+
+Hito 26. Sin versión nueva: las ejecuciones siguen guardando `v0.12`.
+
+- **`sugerir_respuestas.md`:** «La sugerencia empieza por "A decidir por el cliente:"» pasa a ser «La sugerencia empieza por "{{DECISION_CLIENTE}}"». La plataforma la rellena según el idioma del proyecto (`PhasePrompt.ClientDecisionPrefix`).
+  - **En español** el prompt sale idéntico, palabra por palabra: «A decidir por el cliente:». Su hash (`PromptSha256`) es el mismo.
+  - **En inglés** dice «To be decided by the client:». En PURE (paso 105) el modelo copiaba el prefijo en español.
+  - Lo comprueba `ProjectLanguageTests`.
+
 ## v0.13, preguntas centradas en unas iteraciones (2026-10-26)
 
 Hito 22, paso 112. Prompts nuevos, redactados por Claude y revisados por el autor antes del código; los de siempre no cambian (lo comprueba `V012SnapshotTests`):

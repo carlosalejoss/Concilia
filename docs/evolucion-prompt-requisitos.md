@@ -406,6 +406,8 @@ Paso 116, 27-10 y 03-11-2026: «Clinicas Veterinarias v0.11» (catálogo de 235 
 
 Hito 18b, a partir de la prueba real de la v0.11. Cambian los prompts del árbitro del catálogo y del backlog. Detalle en `prompts/v0/CHANGELOG.md`.
 
+**Cambio del paso 140 (13-11-2026), sin versión nueva:** el prompt de sugerencias toma el prefijo de una decisión del cliente de una variable, según el idioma del proyecto. En español sale idéntico; en inglés dice «To be decided by the client:» (en PURE, paso 105, el modelo lo copiaba en español). Sin medición con modelos: no cambia nada en español, y en inglés se verá en el paso 134.
+
 ### Qué hace
 
 - **El árbitro del catálogo consulta solo las fuentes que necesita (paso 107).** En la prueba real de la v0.11 consultó 34 tramos de la documentación (1.242 líneas), llenó su contexto, compactó y tuvo que repetirse desde cero, aunque el prompt le decía que no la leyera entera. El problema es que no sabe qué fragmentos le hacen falta.

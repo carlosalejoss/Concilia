@@ -13,11 +13,7 @@ public record ExportStory(
     // A discrepancy the user has not reviewed (only in a draft).
     bool PendingDiscrepancy,
     // The iterations of the project it comes from (step 111): those of its requirements.
-    IReadOnlyList<int> Iterations)
-{
-    // "Como empleado, quiero reservar una sala, para tenerla asegurada."
-    public string Narrative => $"Como {As}, quiero {Want}, para {SoThat}.";
-}
+    IReadOnlyList<int> Iterations);
 
 public record ExportEpic(string Id, string Title, string Description, IReadOnlyList<ExportStory> Stories)
 {
@@ -31,16 +27,25 @@ public record ExportEpic(string Id, string Title, string Description, IReadOnlyL
 // arbiter's explanation are internal and are left out.
 public record BacklogExport(string Project, bool Validated, DateTimeOffset Date, DateTimeOffset? ValidatedAt, IReadOnlyList<ExportEpic> Epics)
 {
-    public string Status => Validated
-        ? $"validado el {ValidatedAt ?? Date:dd-MM-yyyy}"
-        : "BORRADOR, todavía no está validado";
+    // Step 140: the language of the project, for the texts the platform adds.
+    public ExportLanguage Language { get; init; } = ExportLanguage.Spanish;
 
-    public string Generated => $"exportado desde Concilia el {Date:dd-MM-yyyy} a las {Date:HH:mm}";
+    public string Status => Validated
+        ? Language.Text($"validado el {Language.Date(ValidatedAt ?? Date)}", $"validated on {Language.Date(ValidatedAt ?? Date)}")
+        : Language.Text("BORRADOR, todavía no está validado", "DRAFT, not validated yet");
+
+    public string Generated => Language.Text(
+        $"exportado desde Concilia el {Language.Date(Date)} a las {Date:HH:mm}",
+        $"exported from Concilia on {Language.Date(Date)} at {Date:HH:mm}");
+
+    // "Como empleado, quiero reservar una sala, para tenerla asegurada."
+    public string Narrative(ExportStory story) => Language.Narrative(story.As, story.Want, story.SoThat);
 
     // requirementIterations: the iterations of each requirement of the catalog
-    // (step 111); without them, no story says its iteration.
+    // (step 111); without them, no story says its iteration. language: that
+    // of the project, "es" or "en" (step 140).
     public static BacklogExport Build(string project, bool validated, DateTimeOffset date, DateTimeOffset? validatedAt, string backlogJson,
-        IReadOnlyDictionary<string, IReadOnlyList<int>>? requirementIterations = null)
+        IReadOnlyDictionary<string, IReadOnlyList<int>>? requirementIterations = null, string language = "es")
     {
         var epics = Items(JsonNode.Parse(backlogJson)!.AsObject(), "epicas")
             .Select(e => new ExportEpic(Text(e, "id"), Text(e, "titulo"), Text(e, "descripcion"),
@@ -52,7 +57,7 @@ public record BacklogExport(string Project, bool Validated, DateTimeOffset Date,
                     PendingDiscrepancy: Flag(h, "discrepancia") && !Flag(h, "revisada"),
                     Iterations: requirementIterations is null ? [] : ElementIterations.OfStory(RequirementIds(h), requirementIterations))).ToList()))
             .ToList();
-        return new BacklogExport(project, validated, date, validatedAt, epics);
+        return new BacklogExport(project, validated, date, validatedAt, epics) { Language = new ExportLanguage(language) };
     }
 
     // The requirements of a story, without spaces: they become tags (Gherkin)

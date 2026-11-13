@@ -10,9 +10,10 @@ import {
 } from './api.ts'
 import Badge from './ui/Badge.tsx'
 import Banner from './ui/Banner.tsx'
+import { narrative } from './narrative.ts'
 
 // A requirement or a story, as one line of a list: what tells it apart.
-function Element({ element, kind }: { element: CatalogRequirement | Story; kind: string }) {
+function Element({ element, kind, language }: { element: CatalogRequirement | Story; kind: string; language: string }) {
   if (kind === 'catalog') {
     const r = element as CatalogRequirement
     return (
@@ -28,7 +29,7 @@ function Element({ element, kind }: { element: CatalogRequirement | Story; kind:
         <span className="font-medium">{h.id}</span> {h.titulo}
       </p>
       <p className="text-muted">
-        Como {h.como}, quiero {h.quiero}, para {h.para}. {h.criterios.length} criterios, {h.tareas.length} tareas.
+        {narrative(language, h.como, h.quiero, h.para)} {h.criterios.length} criterios, {h.tareas.length} tareas.
       </p>
     </div>
   )
@@ -50,7 +51,7 @@ function useJson<T>(url: string): { data: T | null; error: string | null } {
 }
 
 // Step 102: what a version of the catalog or the backlog had, to read only.
-export function VersionContent({ projectId, kind, number }: { projectId: number; kind: string; number: number }) {
+export function VersionContent({ projectId, language, kind, number }: { projectId: number; language: string; kind: string; number: number }) {
   const { data, error } = useJson<DeliverableVersion<CatalogContent & BacklogContent>>(`/projects/${projectId}/deliverables/${kind}/versions/${number}`)
   if (error) return <Banner tone="danger">{error}</Banner>
   if (!data?.content) return <p className="text-sm text-muted">Cargando…</p>
@@ -60,7 +61,7 @@ export function VersionContent({ projectId, kind, number }: { projectId: number;
       <ul className="space-y-2">
         {data.content.requisitos.map((r) => (
           <li key={r.id}>
-            <Element element={r} kind={kind} />
+            <Element element={r} kind={kind} language={language} />
           </li>
         ))}
       </ul>
@@ -75,7 +76,7 @@ export function VersionContent({ projectId, kind, number }: { projectId: number;
           <ul className="mt-1 space-y-2 border-l border-line pl-3">
             {epic.historias.map((h) => (
               <li key={h.id}>
-                <Element element={h} kind={kind} />
+                <Element element={h} kind={kind} language={language} />
               </li>
             ))}
           </ul>
@@ -88,7 +89,7 @@ export function VersionContent({ projectId, kind, number }: { projectId: number;
 // Step 102: what changed from a version to the current catalog or backlog,
 // paired by content as in the report of a job (the ids are renumbered when
 // saving, so a "modified" one is the one with the same id and another content).
-export function VersionDiff({ projectId, kind, number }: { projectId: number; kind: string; number: number }) {
+export function VersionDiff({ projectId, language, kind, number }: { projectId: number; language: string; kind: string; number: number }) {
   const { data, error } = useJson<ElementDiff<CatalogRequirement | Story>>(`/projects/${projectId}/deliverables/${kind}/versions/${number}/comparison`)
   if (error) return <Banner tone="danger">{error}</Banner>
   if (!data) return <p className="text-sm text-muted">Cargando…</p>
@@ -110,9 +111,9 @@ export function VersionDiff({ projectId, kind, number }: { projectId: number; ki
           {data.modified.map(({ before, after }) => (
             <div key={after.id} className="space-y-1 rounded border border-line p-2">
               <p className="text-xs font-medium text-muted">En la versión {number}</p>
-              <Element element={before} kind={kind} />
+              <Element element={before} kind={kind} language={language} />
               <p className="text-xs font-medium text-muted">Ahora</p>
-              <Element element={after} kind={kind} />
+              <Element element={after} kind={kind} language={language} />
             </div>
           ))}
         </section>
@@ -123,7 +124,7 @@ export function VersionDiff({ projectId, kind, number }: { projectId: number; ki
             Añadidos después <Badge tone="ok">{data.added.length}</Badge>
           </h3>
           {data.added.map((e) => (
-            <Element key={e.id} element={e} kind={kind} />
+            <Element key={e.id} element={e} kind={kind} language={language} />
           ))}
         </section>
       )}
@@ -133,7 +134,7 @@ export function VersionDiff({ projectId, kind, number }: { projectId: number; ki
             Borrados después <Badge tone="danger">{data.deleted.length}</Badge>
           </h3>
           {data.deleted.map((e) => (
-            <Element key={e.id} element={e} kind={kind} />
+            <Element key={e.id} element={e} kind={kind} language={language} />
           ))}
         </section>
       )}

@@ -35,7 +35,7 @@ public record Traceability(
     public static Traceability Build(CatalogExport catalog, BacklogExport? backlog)
     {
         var stories = (backlog?.Epics ?? [])
-            .SelectMany(e => e.Stories.Select(h => new TraceStory(h.Id, h.Title, h.Narrative, e.Id, e.Title, h.Requirements, h.PendingDiscrepancy, h.Iterations)))
+            .SelectMany(e => e.Stories.Select(h => new TraceStory(h.Id, h.Title, backlog!.Narrative(h), e.Id, e.Title, h.Requirements, h.PendingDiscrepancy, h.Iterations)))
             .ToList();
 
         var requirements = catalog.Sections

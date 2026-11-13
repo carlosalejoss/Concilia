@@ -19,7 +19,7 @@ public static class TraceabilityEndpoints
             {
                 return Results.NotFound();
             }
-            var catalogExport = await ExportEndpoints.CatalogAsync(db, storage, project.Name, catalog);
+            var catalogExport = await ExportEndpoints.CatalogAsync(db, storage, project, catalog);
             var (_, backlogExport) = await ExportEndpoints.BacklogAsync(db, projectId);
             return Results.Ok(Traceability.Build(catalogExport, backlogExport));
         })

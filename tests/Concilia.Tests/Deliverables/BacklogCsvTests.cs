@@ -65,7 +65,7 @@ public class BacklogCsvTests
         Assert.Equal("Reserva de salas", epic[4]); // Epic Name
         var story = items[1];
         Assert.Equal("Reservar una sala \"grande\", con catering", story[3]); // quotes and commas survive
-        Assert.Equal(["HU-001", "RF-001", "RNF-001", BacklogCsv.PendingDiscrepancyLabel], story[6..]);
+        Assert.Equal(["HU-001", "RF-001", "RNF-001", "discrepancia-sin-revisar"], story[6..]);
         Assert.Contains("Como empleado, quiero reservar una sala, para tenerla asegurada.", story[5]);
         Assert.Contains("CA-001 Sala libre\nGiven una sala libre\nWhen confirma la reserva\nThen queda registrada", story[5]);
         Assert.Contains("Requisitos: RF-001, RNF-001", story[5]);
@@ -90,7 +90,7 @@ public class BacklogCsvTests
         var story = items[1];
         Assert.Equal("Como empleado, quiero reservar una sala, para tenerla asegurada.<br><br>Requisitos: RF-001, RNF-001", story[5]);
         Assert.Equal("CA-001 Sala libre<br>Given una sala libre<br>When confirma la reserva<br>Then queda registrada", story[6]);
-        Assert.Equal("HU-001; RF-001; RNF-001; " + BacklogCsv.PendingDiscrepancyLabel, story[7]);
+        Assert.Equal("HU-001; RF-001; RNF-001; discrepancia-sin-revisar", story[7]);
         Assert.Equal("HU-002; RF-002", items[5][7]);
         Assert.Equal("T-002", items[3][7]);
     }

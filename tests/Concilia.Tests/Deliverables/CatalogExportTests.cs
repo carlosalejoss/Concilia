@@ -53,8 +53,8 @@ public class CatalogExportTests
         Assert.Equal(["RF-001", "RF-002"], export.Sections[0].Requirements.Select(r => r.Id));
         Assert.Equal(3, export.Total);
         var rf1 = export.Sections[0].Requirements[0];
-        Assert.Equal("EARS · shall (obligatorio)", CatalogExport.Details(rf1));
-        Assert.Equal("Fuentes: DOC-01#F001, DOC-01#F002 · Preguntas: P-002", CatalogExport.References(rf1));
+        Assert.Equal("EARS · shall (obligatorio)", export.Details(rf1));
+        Assert.Equal("Fuentes: DOC-01#F001, DOC-01#F002 · Preguntas: P-002", export.References(rf1));
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class CatalogExportTests
         Assert.Null(export.Sources[2].Text);
 
         Assert.Equal(["P-001", "P-002"], export.Questions.Select(q => q.Id));
-        Assert.Equal("Respuesta (suposición de la IA): Sí, al momento.", CatalogExport.Answer(export.Questions[1]));
+        Assert.Equal("Respuesta (suposición de la IA): Sí, al momento.", export.Answer(export.Questions[1]));
     }
 
     [Fact]
@@ -104,8 +104,8 @@ public class CatalogExportTests
         Assert.Contains("Requisitos funcionales (2)", text);
         Assert.Contains("RNF-001", text);
         Assert.Contains("Solo su autor.", text);
-        Assert.Contains(CatalogExport.AiGuessMark, text);
-        Assert.Contains(CatalogExport.SourcesTitle, text);
+        Assert.Contains(Build().AiGuessMark, text);
+        Assert.Contains("Anexo A. Fuentes citadas", text);
         Assert.Contains("La confirmación llega al momento.", text);
         Assert.Contains("¿Quién puede anular una reserva?", text);
         Assert.DoesNotContain("interna", text); // the arbiter's explanation is left out

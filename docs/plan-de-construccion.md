@@ -39,8 +39,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 131 hecho (12 y 13-11-2026):** con Kimi, preguntas, sugerencias y catálogo salen a la primera y B aporta mucho más que LUNA. El backlog falla: el árbitro de la v0.12 no cabe en 128.000 tokens con las propuestas de Kimi (`docs/opencode-go/flujo-kimi.md`). Se arregla en la v0.14 (paso 143).
 - **Paso 132 hecho (13-11-2026):** se mantienen todas las medidas tomadas por LUNA, y por defecto B es Kimi por OpenCode Go, salvo en modo simulado (`docs/opencode-go/medidas-luna.md`). Con él están hechos todos los pasos del hito 25. Su «Hecho cuando» se cumple hasta el catálogo: el backlog con Kimi espera a la v0.14 (paso 143), y el autor decide si cierra el hito así.
 - **Hito 25 cerrado por el autor (13-11-2026)** con el backlog de Kimi pendiente de la v0.14 (paso 143).
-- **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) y 139 (la «lectura relacionada» en el código) hechos el 13-11-2026.
-- **Siguiente:** el paso 140.
+- **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) 139 (la «lectura relacionada» en el código) y 140 (los textos de la plataforma en el idioma del proyecto) hechos el 13-11-2026.
+- **Siguiente:** el paso 141.
 
 ### Lo que queda, en orden
 
@@ -63,7 +63,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 8. ~~**126,** que el aviso de un par «mismo» separado diga en qué elemento está el otro~~ (hecho el 13-11-2026).
 9. ~~**138,** la duración real de cada repetición de una tarea~~ (hecho el 13-11-2026).
 10. ~~**139,** renombrar en el código la «opción C» como «lectura relacionada»~~ (hecho el 13-11-2026).
-11. **140,** los textos de la plataforma en el idioma del proyecto.
+11. ~~**140,** los textos de la plataforma en el idioma del proyecto~~ (hecho el 13-11-2026).
 12. **141,** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta.
 13. **142,** mejoras del backlog en GitHub: issue types en las organizaciones, GitHub Projects y comentarios en los issues afectados por una iteración.
 14. **143,** los prompts mejorados (v0.14), medidos frente al paso 131.
@@ -1174,12 +1174,24 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
   - Para encontrarlos: `grep -rn "option C\|opción C" src scripts`.
   - No cambia el comportamiento.
   - **Hecho el 13-11-2026.** En los comentarios, «the related reading» y «the full reading»; en la descripción de `POST /projects/{id}/question-rounds/read-all` y en el script, «lectura relacionada» y «lectura completa». La búsqueda ya no encuentra nada en `src`, `scripts`, `web/src` ni `docs/api/openapi.json`. 1.064 tests en verde.
-- [ ] 140. **Los textos de la plataforma en el idioma del proyecto** («Después», punto 6; paso 105). En un proyecto en inglés, el contenido de los modelos sale en inglés, pero no lo que pone la plataforma:
+- [x] 140. **Los textos de la plataforma en el idioma del proyecto** («Después», punto 6; paso 105). En un proyecto en inglés, el contenido de los modelos sale en inglés, pero no lo que pone la plataforma:
   - la narrativa de las historias («Como… quiero… para…») y «Tarea», en la web, la comparación y Gherkin;
   - los títulos, leyendas y anexos de Word y PDF;
   - el prefijo «A decidir por el cliente:», que pide así el prompt de sugerencias.
 
   **Por qué antes:** la evaluación 2 repite PURE en inglés (paso 134). Así la web y las exportaciones salen enteras en inglés, y AQUSA lee la narrativa tal cual. No cambia ninguna salida de los modelos, salvo el prefijo de las sugerencias, que va en su prompt.
+
+  **Hecho el 13-11-2026.** Decisiones del autor, las tres como recomendaba Claude:
+  - **la narrativa en inglés** es la plantilla del paso 104: «As {como}, I want to {quiero}, so that I can {para}.», sin doblar un «to» que ya traiga el campo;
+  - **las etiquetas se traducen** en los proyectos en inglés: `unreviewed-discrepancy`, `iteration-N` y `epic`/`story`/`task`;
+  - **pasa a inglés lo que recibe el cliente:** Word y PDF (títulos, leyenda, anexos, marcas, pie y nombre del archivo, `catalog-…`), Gherkin, los CSV, los issues de GitHub, la narrativa en la web (editor del backlog, historial y trazabilidad) y la comparación de A, B y el árbitro. Siguen en español el resto de la web y el script y el README del `.zip` de GitHub, que lee el analista.
+
+  Cómo:
+  - `ExportLanguage` guarda cada texto con sus dos versiones juntas, en el sitio donde se usa; `CatalogExport` y `BacklogExport` llevan el idioma del proyecto, y la web tiene la misma plantilla (`frontend/src/narrative.ts`);
+  - el prefijo es la variable `{{DECISION_CLIENTE}}` del prompt de sugerencias: en español el prompt sale idéntico, palabra por palabra, y en inglés dice «To be decided by the client:»;
+  - en la comparación cambia solo lo que se muestra: el texto que comparan los embeddings sigue igual, así que el emparejamiento que recibe el árbitro no cambia.
+
+  Tests: los de siempre, en español, sin cambios de contenido, y 7 nuevos en inglés (`ProjectLanguageTests`); 1.071 en verde. Comprobado en Docker con las exportaciones de «PURE · microcare».
 - [ ] 141. **Que la plataforma marque las historias de la unión que juntan varias de una misma propuesta** («Después», punto 7, la parte sin IA; pasos 104 y 105).
   - **El problema:** en PURE, las 6 historias de la unión con dos acciones juntan cada una 2 o 3 historias atómicas de SOL. En los demás backlogs, el árbitro junta varias de A en una de un 0 % a un 57 % de las veces.
   - **Qué se hace:** la plataforma marca esa historia como discrepancia, como ya hace con las demás desviaciones del árbitro (paso 88).
@@ -1308,3 +1320,4 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
     - Usa su propio proveedor y no tiene que ver con el cambio del paso 132. Probablemente depende del orden en que terminan las pantallas en paralelo.
     - Hay otro anotado del runner (`Compacting_after_writing_the_output_stops_the_run_at_once`, 23-10-2026).
     - Se mira antes de congelar la versión de la evaluación 2 (paso 133), para que el CI no falle al azar.
+    - Volvió a fallar el 13-11-2026, 1 de las 2 baterías completas del paso 140, y pasó al repetirla.

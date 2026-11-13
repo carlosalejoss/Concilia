@@ -96,12 +96,13 @@ public class ElementIterationsTests
         var export = Export(Iterations);
         var requirements = export.Sections.Single().Requirements;
 
-        Assert.Equal("Fuentes: DOC-01#F001 · Iteración: 1", CatalogExport.References(requirements[0]));
-        Assert.Equal("Fuentes: DOC-03#F001 · Preguntas: P-001 · Iteraciones: 1, 2", CatalogExport.References(requirements[1]));
+        Assert.Equal("Fuentes: DOC-01#F001 · Iteración: 1", export.References(requirements[0]));
+        Assert.Equal("Fuentes: DOC-03#F001 · Preguntas: P-001 · Iteraciones: 1, 2", export.References(requirements[1]));
         Assert.Equal([1, 2], export.Sources.Select(s => s.Iteration));
         Assert.Equal([1], export.Questions.Single().Iterations!);
         // Without the iterations, the references are as before.
-        Assert.Equal("Fuentes: DOC-01#F001", CatalogExport.References(Export(null).Sections.Single().Requirements[0]));
+        var plain = Export(null);
+        Assert.Equal("Fuentes: DOC-01#F001", plain.References(plain.Sections.Single().Requirements[0]));
     }
 
     [Fact]

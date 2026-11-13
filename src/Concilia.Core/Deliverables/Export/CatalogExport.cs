@@ -36,92 +36,125 @@ public record CatalogExport(
     string Project, bool Validated, DateTimeOffset Date, DateTimeOffset? ValidatedAt,
     IReadOnlyList<ExportSection> Sections, IReadOnlyList<ExportSource> Sources, IReadOnlyList<ExportQuestion> Questions)
 {
-    // The order and names of the web (CatalogEditor.tsx).
-    public static readonly (string Type, string Title)[] Types =
+    // Step 140: the language of the project, for the texts of the platform.
+    public ExportLanguage Language { get; init; } = ExportLanguage.Spanish;
+
+    // The order and names of the web (CatalogEditor.tsx), in Spanish and in English.
+    public static readonly (string Type, string Spanish, string English)[] Types =
     [
-        ("RF", "Requisitos funcionales"),
-        ("RNF", "Requisitos no funcionales"),
-        ("RI", "Requisitos de integración"),
-        ("RA", "Requisitos de arquitectura"),
-        ("RT", "Requisitos técnicos"),
+        ("RF", "Requisitos funcionales", "Functional requirements"),
+        ("RNF", "Requisitos no funcionales", "Non-functional requirements"),
+        ("RI", "Requisitos de integración", "Integration requirements"),
+        ("RA", "Requisitos de arquitectura", "Architecture requirements"),
+        ("RT", "Requisitos técnicos", "Technical requirements"),
     ];
 
     public int Total => Sections.Sum(s => s.Requirements.Count);
 
     // The texts both files share, so the Word and the PDF say the same.
-    public const string Title = "Catálogo de requisitos";
+    public string Title => Language.Text("Catálogo de requisitos", "Requirements catalog");
+
+    // The name of the downloaded file, without its extension.
+    public string FileName(string slug) => Language.Text($"catalogo-{slug}", $"catalog-{slug}");
 
     public string Status => Validated
-        ? $"Validado el {ValidatedAt ?? Date:dd-MM-yyyy}"
-        : "Borrador: todavía no está validado";
+        ? Language.Text($"Validado el {Language.Date(ValidatedAt ?? Date)}", $"Validated on {Language.Date(ValidatedAt ?? Date)}")
+        : Language.Text("Borrador: todavía no está validado", "Draft: not validated yet");
 
-    public string Generated => $"Exportado desde Concilia el {Date:dd-MM-yyyy} a las {Date:HH:mm}.";
+    public string Generated => Language.Text(
+        $"Exportado desde Concilia el {Language.Date(Date)} a las {Date:HH:mm}.",
+        $"Exported from Concilia on {Language.Date(Date)} at {Date:HH:mm}.");
 
-    public string Footer => $"{Project} · {Title} · {(Validated ? "validado" : "BORRADOR")}";
+    public string Footer => $"{Project} · {Title} · {(Validated ? Language.Text("validado", "validated") : Language.Text("BORRADOR", "DRAFT"))}";
 
-    public const string Legend =
+    // "· página 3 de 10" in the footer: the number of the page and the total go between them.
+    public string Page => Language.Text("página", "page");
+    public string PageOf => Language.Text("de", "of");
+
+    // "27 requisitos:" on the cover, before the count of each type.
+    public string Count => Language.Text($"{Total} requisitos:", $"{Total} requirements:");
+
+    public string Legend => Language.Text(
         "Cada requisito está escrito en EARS o en MASTeR, con su obligatoriedad: shall (obligatorio), should " +
         "(recomendable) o may (opcional). Las fuentes, como DOC-01#F007, son fragmentos de la documentación del " +
         "proyecto: su texto está en el anexo A. Las preguntas, como P-003, se hicieron al cliente: están en el anexo B " +
-        "con su respuesta.";
+        "con su respuesta.",
+        "Each requirement is written in EARS or in MASTeR, with its obligation: shall (mandatory), should " +
+        "(recommended) or may (optional). The sources, such as DOC-01#F007, are fragments of the documentation of the " +
+        "project: their text is in appendix A. The questions, such as P-003, were asked to the client: they are in appendix B " +
+        "with their answer.");
 
-    public const string AiGuessMark = "Suposición de la IA: cita una pregunta respondida con una suposición de la IA aceptada sin cambios.";
-    public const string DiscrepancyMark = "Discrepancia sin revisar: los dos modelos no coincidían y todavía no se ha revisado.";
+    public string AiGuessMark => Language.Text(
+        "Suposición de la IA: cita una pregunta respondida con una suposición de la IA aceptada sin cambios.",
+        "AI assumption: it cites a question answered with an assumption of the AI accepted without changes.");
+    public string DiscrepancyMark => Language.Text(
+        "Discrepancia sin revisar: los dos modelos no coincidían y todavía no se ha revisado.",
+        "Unreviewed discrepancy: the two models did not agree and it has not been reviewed yet.");
 
-    public const string SourcesTitle = "Anexo A. Fuentes citadas";
-    public const string QuestionsTitle = "Anexo B. Preguntas y respuestas";
+    public string SourcesTitle => Language.Text("Anexo A. Fuentes citadas", "Appendix A. Cited sources");
+    public string QuestionsTitle => Language.Text("Anexo B. Preguntas y respuestas", "Appendix B. Questions and answers");
+    public string NoSources => Language.Text("Ningún requisito cita fragmentos de la documentación.", "No requirement cites fragments of the documentation.");
+    public string NotInDocumentation => Language.Text("No está en la documentación de la que salió el catálogo.", "It is not in the documentation the catalog was generated from.");
+    public string NoQuestions => Language.Text("Ningún requisito cita preguntas al cliente.", "No requirement cites questions to the client.");
 
-    public static string Obligation(string value) => value switch
+    // The language of the text of the Word file, for its spelling checker.
+    public string WordLanguage => Language.Text("es-ES", "en-US");
+
+    public string Obligation(string value) => value switch
     {
-        "shall" => "shall (obligatorio)",
-        "should" => "should (recomendable)",
-        "may" => "may (opcional)",
+        "shall" => Language.Text("shall (obligatorio)", "shall (mandatory)"),
+        "should" => Language.Text("should (recomendable)", "should (recommended)"),
+        "may" => Language.Text("may (opcional)", "may (optional)"),
         _ => value,
     };
 
-    public static string Details(ExportRequirement r) => $"{r.Notation} · {Obligation(r.Obligation)}";
+    public string Details(ExportRequirement r) => $"{r.Notation} · {Obligation(r.Obligation)}";
 
     // "Fuentes: DOC-01#F003, DOC-01#F007 · Preguntas: P-002 · Iteración: 1" (what it has).
-    public static string References(ExportRequirement r) => string.Join(" · ", new[]
+    public string References(ExportRequirement r) => string.Join(" · ", new[]
     {
-        r.Sources.Count > 0 ? $"Fuentes: {string.Join(", ", r.Sources)}" : null,
-        r.Questions.Count > 0 ? $"Preguntas: {string.Join(", ", r.Questions)}" : null,
+        r.Sources.Count > 0 ? $"{Language.Text("Fuentes", "Sources")}: {string.Join(", ", r.Sources)}" : null,
+        r.Questions.Count > 0 ? $"{Language.Text("Preguntas", "Questions")}: {string.Join(", ", r.Questions)}" : null,
         Iterations(r.Iterations),
     }.Where(s => s is not null));
 
     // "Iteración: 2" or "Iteraciones: 1, 2" (step 111); null without any.
-    public static string? Iterations(IReadOnlyList<int> numbers) => numbers.Count switch
+    public string? Iterations(IReadOnlyList<int> numbers) => numbers.Count switch
     {
         0 => null,
-        1 => $"Iteración: {numbers[0]}",
-        _ => $"Iteraciones: {string.Join(", ", numbers)}",
+        1 => $"{Language.Text("Iteración", "Iteration")}: {numbers[0]}",
+        _ => $"{Language.Text("Iteraciones", "Iterations")}: {string.Join(", ", numbers)}",
     };
 
     // The iterations of each requirement, by id: those of the stories of the backlog.
     public IReadOnlyDictionary<string, IReadOnlyList<int>> IterationsById =>
         Sections.SelectMany(s => s.Requirements).GroupBy(r => r.Id).ToDictionary(g => g.Key, g => g.First().Iterations);
 
-    public static string Answer(ExportQuestion q) =>
+    public string Answer(ExportQuestion q) =>
         q.Answer is { Length: > 0 } answer
-            ? q.AiGuess ? $"Respuesta (suposición de la IA): {answer}" : $"Respuesta: {answer}"
-            : "Sin respuesta.";
+            ? q.AiGuess
+                ? Language.Text($"Respuesta (suposición de la IA): {answer}", $"Answer (assumption of the AI): {answer}")
+                : Language.Text($"Respuesta: {answer}", $"Answer: {answer}")
+            : Language.Text("Sin respuesta.", "No answer.");
 
     // catalogJson: the working copy (CatalogDraft). fragments and
     // documentation: those of the plan of the job that generated it.
     // questions: all those of the project. iterations: those of the elements
     // of the project (step 111); without them, no element says its iteration.
+    // language: that of the project, "es" or "en" (step 140).
     public static CatalogExport Build(
         string project, bool validated, DateTimeOffset date, DateTimeOffset? validatedAt, string catalogJson,
         IReadOnlyList<Fragment> fragments, string documentation, IReadOnlyList<ExportQuestion> questions,
-        ElementIterations? iterations = null)
+        ElementIterations? iterations = null, string language = "es")
     {
+        var exportLanguage = new ExportLanguage(language);
         if (iterations is not null)
             questions = questions.Select(q => q with { Iterations = iterations.OfQuestion(q.Id) }).ToList();
         var guesses = questions.Where(q => q.AiGuess).Select(q => q.Id).ToHashSet();
         var requirements = (JsonNode.Parse(catalogJson)!["requisitos"] as JsonArray ?? []).OfType<JsonObject>().ToList();
 
         var sections = new List<ExportSection>();
-        foreach (var (type, title) in Types)
+        foreach (var (type, spanish, english) in Types)
         {
             var ofType = requirements
                 .Where(r => Text(r, "tipo") == type)
@@ -133,7 +166,7 @@ public record CatalogExport(
                     Iterations: iterations?.OfRequirement(List(r, "fuentes"), List(r, "preguntas")) ?? []))
                 .ToList();
             if (ofType.Count > 0)
-                sections.Add(new ExportSection(type, title, ofType));
+                sections.Add(new ExportSection(type, exportLanguage.Text(spanish, english), ofType));
         }
 
         // Each cited fragment once, in the order of the documentation; those
@@ -150,7 +183,7 @@ public record CatalogExport(
         var citedQuestions = sections.SelectMany(s => s.Requirements).SelectMany(r => r.Questions).ToHashSet();
         var shownQuestions = questions.Where(q => citedQuestions.Contains(q.Id)).OrderBy(q => q.Id, StringComparer.Ordinal).ToList();
 
-        return new CatalogExport(project, validated, date, validatedAt, sections, sources, shownQuestions);
+        return new CatalogExport(project, validated, date, validatedAt, sections, sources, shownQuestions) { Language = exportLanguage };
     }
 
     // "DOC-01" → "DOC-01 · requisitos.docx", from the "=== DOC-01 · name ==="

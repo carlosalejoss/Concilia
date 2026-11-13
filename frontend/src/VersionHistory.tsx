@@ -35,6 +35,8 @@ const KINDS: Record<string, { one: string; many: string; name: string }> = {
 
 type VersionHistoryProps = {
   projectId: number
+  // Of the project, for the narrative of the stories (step 140).
+  language?: string
   // "catalog", "backlog" or "mockup".
   kind: string
   // Changes when the deliverable does, so the list is read again.
@@ -50,7 +52,7 @@ type VersionHistoryProps = {
 // first, with the one it has now marked. Each other one can be read, compared
 // with the current one (not the mockup, which is opened instead) and brought
 // back, as a draft: that is a new version, so it can be undone.
-function VersionHistory({ projectId, kind, refreshKey, dirty = false, onRestored }: VersionHistoryProps) {
+function VersionHistory({ projectId, language = 'es', kind, refreshKey, dirty = false, onRestored }: VersionHistoryProps) {
   const [versions, setVersions] = useState<DeliverableVersion[]>([])
   const [shown, setShown] = useState<{ number: number; compare: boolean } | null>(null)
   const [confirming, setConfirming] = useState<number | null>(null)
@@ -174,9 +176,9 @@ function VersionHistory({ projectId, kind, refreshKey, dirty = false, onRestored
       >
         {shown &&
           (shown.compare ? (
-            <VersionDiff key={shown.number} projectId={projectId} kind={kind} number={shown.number} />
+            <VersionDiff key={shown.number} projectId={projectId} language={language} kind={kind} number={shown.number} />
           ) : (
-            <VersionContent key={shown.number} projectId={projectId} kind={kind} number={shown.number} />
+            <VersionContent key={shown.number} projectId={projectId} language={language} kind={kind} number={shown.number} />
           ))}
       </Drawer>
     </Collapsible>

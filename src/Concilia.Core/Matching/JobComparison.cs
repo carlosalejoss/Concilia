@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using Concilia.Core.Deliverables.Export;
 using Concilia.Core.Phases;
 using Concilia.Core.Reports;
 
@@ -46,11 +47,22 @@ public record JobComparison(
 {
     // matching: classified with the pairs of this arbiter output
     // (ProposalMatcher.Classify), so each element knows whether it was joined.
+    // language, proposalA and proposalB (step 140): the stories are shown with
+    // the narrative in the language of the project. The text the embeddings
+    // compared stays as it was ("Como… quiero… para…"), so the matching the
+    // arbiter gets does not change; only what is shown does.
     public static JobComparison Build(
         PhaseKind kind, string arbiterOutput, IReadOnlyList<string> proposalOrder,
-        MatchingResult matching, IReadOnlyList<ArbiterDeviation> deviations)
+        MatchingResult matching, IReadOnlyList<ArbiterDeviation> deviations,
+        string language = "es", string? proposalA = null, string? proposalB = null)
     {
         var root = JsonNode.Parse(arbiterOutput);
+        var exportLanguage = new ExportLanguage(language);
+        var shown = new Dictionary<(string Slot, string Id), string>();
+        foreach (var (slot, proposal) in new[] { ("A", proposalA), ("B", proposalB) })
+            if (proposal is not null)
+                foreach (var element in JobReports.Elements(kind, JsonNode.Parse(proposal)))
+                    shown.TryAdd((slot, Text(element, "id")), Shown(kind, element, exportLanguage));
         var bySlot = matching.Elements.ToLookup(e => e.Slot);
         var elements = new Dictionary<(string Slot, string Id), ElementMatch>();
         foreach (var e in matching.Elements)
@@ -59,7 +71,7 @@ public record JobComparison(
         // "propuesta_1" or the number 1 → the slot ("A" or "B") of the plan.
         string SlotOf(int number) => proposalOrder[number - 1];
         ComparedElement Compared(string slot, string id) => elements.TryGetValue((slot, id), out var e)
-            ? new ComparedElement(id, e.Text, e.BestId, e.Similarity, e.Level, e.ArbiterJoined == true)
+            ? new ComparedElement(id, shown.GetValueOrDefault((slot, id), e.Text), e.BestId, e.Similarity, e.Level, e.ArbiterJoined == true)
             // An id that is not in the proposal (the validator does not let it through).
             : new ComparedElement(id, "", null, 0, MatchLevel.Different, false);
 
@@ -77,7 +89,7 @@ public record JobComparison(
                 foreach (var cited in ids[slot])
                     placed.Add((slot, cited));
             var origin = ids["A"].Count > 0 && ids["B"].Count > 0 ? "ambas" : ids["A"].Count > 0 ? "A" : ids["B"].Count > 0 ? "B" : null;
-            rows.Add(new ComparisonRow(ComparisonRowKind.Merged, id, ProposalMatcher.TextOf(kind, element), origin,
+            rows.Add(new ComparisonRow(ComparisonRowKind.Merged, id, Shown(kind, element, exportLanguage), origin,
                 ids["A"].Select(x => Compared("A", x)).ToList(), ids["B"].Select(x => Compared("B", x)).ToList(),
                 element["discrepancia"] is JsonValue d && d.TryGetValue<bool>(out var yes) && yes,
                 Text(element, "explicacion"),
@@ -109,6 +121,13 @@ public record JobComparison(
 
         return new JobComparison(kind.ToString(), matching.Thresholds, matching.Counts, matching.Agreement, rows);
     }
+
+    // A story with its title and its narrative in the language of the project;
+    // any other element, the text the embeddings compared.
+    private static string Shown(PhaseKind kind, JsonObject element, ExportLanguage language) =>
+        kind is PhaseKind.Backlog or PhaseKind.BacklogUpdate
+            ? $"{Text(element, "titulo")}. {language.Narrative(Text(element, "como"), Text(element, "quiero"), Text(element, "para"))}"
+            : ProposalMatcher.TextOf(kind, element);
 
     private static List<string> Ids(JsonNode? list) =>
         (list as JsonArray ?? []).OfType<JsonValue>().Select(v => v.TryGetValue<string>(out var s) ? s : null).OfType<string>().ToList();
