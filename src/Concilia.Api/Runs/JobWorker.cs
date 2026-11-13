@@ -209,7 +209,11 @@ public class JobWorker(
             else
             {
                 // The first attempt updates this run; each retry becomes a new
-                // linked run in the same job and slot.
+                // linked run in the same job and slot. They are all saved now,
+                // when the task ends, but each one keeps the times of its own
+                // attempt (step 138; before, every retry took the start of the
+                // first one and they all ended now, with the whole duration).
+                // The first one keeps the start it got when it began to run.
                 var attempts = outcome.Attempts;
                 for (var i = 0; i < attempts.Count; i++)
                 {
@@ -226,9 +230,9 @@ public class JobWorker(
                         Provider = run.Provider,
                         Model = run.Model,
                         CreatedAt = DateTimeOffset.UtcNow,
-                        StartedAt = run.StartedAt,
+                        StartedAt = attempts[i].StartedAt ?? run.StartedAt,
                     };
-                    Apply(target, attempts[i].Result);
+                    Apply(target, attempts[i].Result, attempts[i].FinishedAt ?? DateTimeOffset.UtcNow);
                     target.PromptVersion = outcome.PromptVersion;
                     target.PromptSha256 = attempts[i].Request.Prompt.Length > 0 ? PromptBuilder.Sha256(attempts[i].Request.Prompt) : null;
                     if (i > 0)
@@ -246,7 +250,7 @@ public class JobWorker(
         }
     }
 
-    private static void Apply(Run run, RunResult result)
+    private static void Apply(Run run, RunResult result, DateTimeOffset finishedAt)
     {
         run.State = result.Status switch
         {
@@ -256,7 +260,7 @@ public class JobWorker(
             RunStatus.HeartbeatLost => RunState.HeartbeatLost,
             _ => RunState.Failed,
         };
-        run.FinishedAt = DateTimeOffset.UtcNow;
+        run.FinishedAt = finishedAt;
         run.VerdictState = result.Verdict?.State switch
         {
             VerdictState.Done => "hecho",

@@ -3727,3 +3727,17 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Documentación:** plan, `CLAUDE.md`, trazabilidad (etapa 18, hito 26) y la memoria, punto 13 (compila).
 - **Sin ejecuciones con modelos ni Docker:** el paso no cambia nada que haya que probar en real; la imagen de la API se reconstruirá en el primer paso que lo necesite.
 - **Pendiente:** que el autor cierre el 126; después, el 138.
+
+## 13-11-2026, 09:30 (sesión, hito 26, paso 138)
+
+- **El autor** cierra el 126 («haz lo que tengas que hacer y sigue»).
+- **Paso 138:** la duración real de cada repetición de una tarea («Después», punto 5c).
+  - **La causa:** `JobWorker.SaveOutcomeAsync` guarda todos los intentos de una tarea al terminar. A cada repetición le copiaba la hora de inicio del primer intento, y a todos les ponía como fin la hora del guardado.
+  - **El arreglo:** `RetryRunner` anota en cada `RunAttempt` cuándo empezó y cuándo terminó, con la revisión de su salida incluida, como antes se incluía en la única ejecución. `JobWorker` guarda cada ejecución con las suyas. El primer intento conserva la hora de inicio que recibe al empezar a ejecutarse, así que una tarea sin repeticiones dura lo mismo que antes. Si un intento no llegó a ejecutarse (un prompt que no se pudo construir), se usan las horas de antes.
+  - **Tests:** uno de `RetryRunner` (cada intento con su duración, y la repetición empieza al terminar el anterior) y otro por la API (`RunDurationTests`): una ronda de preguntas con el proveedor simulado y `Runner:SimulateRepair`, en la que A, B y el árbitro se reparan una vez. Se comprobó que falla sin el arreglo. 1.064 en verde; el test intermitente del mockup no falló.
+  - **Lo que no cambia:** la duración de cada trabajo (desde su creación hasta su fin), las salidas de los modelos y la API. `costes.cs` saca los minutos de cada trabajo, así que sus tablas no cambian; el consumo de Go por ventana se coloca con la hora de inicio de cada ejecución, que ahora es exacta también en las repeticiones.
+  - **Datos de antes:** las ejecuciones ya guardadas no se corrigen; sus repeticiones siguen con la duración total.
+- **Documentación:** plan, `CLAUDE.md` (estado y una decisión vigente nueva), trazabilidad y la memoria, punto 14 (compila).
+- **Sin modelos ni Docker:** no hace falta probarlo en real.
+- **Pendiente:** que el autor cierre el 138; después, el 139.
+

@@ -39,8 +39,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 131 hecho (12 y 13-11-2026):** con Kimi, preguntas, sugerencias y catálogo salen a la primera y B aporta mucho más que LUNA. El backlog falla: el árbitro de la v0.12 no cabe en 128.000 tokens con las propuestas de Kimi (`docs/opencode-go/flujo-kimi.md`). Se arregla en la v0.14 (paso 143).
 - **Paso 132 hecho (13-11-2026):** se mantienen todas las medidas tomadas por LUNA, y por defecto B es Kimi por OpenCode Go, salvo en modo simulado (`docs/opencode-go/medidas-luna.md`). Con él están hechos todos los pasos del hito 25. Su «Hecho cuando» se cumple hasta el catálogo: el backlog con Kimi espera a la v0.14 (paso 143), y el autor decide si cierra el hito así.
 - **Hito 25 cerrado por el autor (13-11-2026)** con el backlog de Kimi pendiente de la v0.14 (paso 143).
-- **Hito 26 en curso:** paso 126 hecho el 13-11-2026 (el aviso de un par «mismo» separado dice en qué elemento está el otro).
-- **Siguiente:** el paso 138, cuando el autor cierre el 126.
+- **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro) y 138 (la duración real de cada repetición) hechos el 13-11-2026.
+- **Siguiente:** el paso 139, cuando el autor cierre el 138.
 
 ### Lo que queda, en orden
 
@@ -61,7 +61,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 **Hito 26, antes de la evaluación 2:**
 
 8. ~~**126,** que el aviso de un par «mismo» separado diga en qué elemento está el otro~~ (hecho el 13-11-2026).
-9. **138,** la duración real de cada repetición de una tarea.
+9. ~~**138,** la duración real de cada repetición de una tarea~~ (hecho el 13-11-2026).
 10. **139,** renombrar en el código la «opción C» como «lectura relacionada».
 11. **140,** los textos de la plataforma en el idioma del proyecto.
 12. **141,** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta.
@@ -1161,11 +1161,12 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
   - **Cómo se comprueba:** un test de `ArbiterDeviations` con un par «mismo» separado que comprueba el id del otro elemento en la explicación de cada uno.
   - **Hecho el 13-11-2026.** La desviación guarda el id del otro elemento en la salida del árbitro y su texto (`OtherElementId`, `OtherText`); cada borrador lo traduce al id que tiene en él (`ArbiterDeviations.FinalIds` al generar desde cero; en las actualizaciones, el id que la plataforma da a cada nuevo, de `N-001` a `RF-231`). El `resultado-arbitro.json` y la comparación de A, B y el árbitro citan el id del árbitro, que es el que se ve allí. Tres tests: el del par separado, el borrador renumerado y una actualización; 1.062 en verde. La API del emparejamiento devuelve los dos campos nuevos (`docs/api/openapi.json`).
 
-- [ ] 138. **La duración real de cada repetición de una tarea** («Después», punto 5c).
+- [x] 138. **La duración real de cada repetición de una tarea** («Después», punto 5c).
   - **Hoy:** las repeticiones se guardan al final, con la hora de inicio del primer intento, y todas salen con la duración total. La del trabajo sí es real (pasos 116 y 123).
   - **Por qué antes:** con el coste y el tiempo como parte central de la memoria, las duraciones deben ser reales.
   - **Qué se queda igual:** las salidas de los modelos y la duración de cada trabajo.
   - **Cómo se comprueba:** un test con un trabajo que repite una tarea, en el que cada intento tiene su propia duración.
+  - **Hecho el 13-11-2026.** `RetryRunner` anota en cada intento (`RunAttempt`) cuándo empezó y cuándo terminó, con la revisión de su salida incluida, y `JobWorker` guarda cada ejecución con las suyas. El primer intento conserva la hora a la que empezó a ejecutarse. Tests: uno de `RetryRunner` y otro con una ronda de preguntas por la API con `Runner:SimulateRepair`, en el que la reparación de A, de B y del árbitro empieza cuando ha terminado el primer intento; sin el arreglo, falla. 1.064 en verde. Las ejecuciones ya guardadas no se corrigen: sus repeticiones siguen con la duración total.
 - [ ] 139. **Renombrar en el código la «opción C» como «lectura relacionada»** («Después», punto 8; autor, 04-11-2026).
   - La documentación ya usa los nombres nuevos (y la «opción A» es la «lectura completa»), pero el código sigue diciendo «option C» u «opción C»:
     - los comentarios de `FocusedRoundInput`, `FocusedRound`, `CatalogUpdateRound`, `RelatedContext` y `scripts/evaluacion/medir-fragmentos-relacionados.cs`;

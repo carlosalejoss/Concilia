@@ -66,6 +66,33 @@ public class RetryRunnerTests
         Assert.True(File.Exists(Path.Combine(retry.WorkDirectory, "input", "doc.md")));
     }
 
+    // Step 138: each attempt says when it began and ended, so a retry has its own duration.
+    [Fact]
+    public async Task Each_attempt_keeps_when_it_began_and_ended()
+    {
+        using var temp = new TempDirectory();
+        var provider = new SlowProvider(TimeSpan.FromMilliseconds(50), NoVerdict, Done);
+
+        var attempts = await new RetryRunner(provider).RunAsync(FirstRequest(temp.Path), _ => _ => { }, CancellationToken.None);
+
+        Assert.Equal(2, attempts.Count);
+        Assert.All(attempts, a => Assert.True(a.FinishedAt - a.StartedAt >= TimeSpan.FromMilliseconds(40)));
+        Assert.True(attempts[1].StartedAt >= attempts[0].FinishedAt);
+    }
+
+    // Like ScriptedProvider, but each answer takes a while.
+    private sealed class SlowProvider(TimeSpan delay, params RunResult[] answers) : IRunnerProvider
+    {
+        private int _next;
+        public string Name => "Slow";
+
+        public async Task<RunResult> RunAsync(RunRequest request, Action<RunEvent> onEvent, CancellationToken cancellationToken)
+        {
+            await Task.Delay(delay, cancellationToken);
+            return answers[_next++];
+        }
+    }
+
     // The mockup carries output/mockup/ too, so a repair only rewrites the
     // parts with errors; other tasks carry only input/.
     [Fact]

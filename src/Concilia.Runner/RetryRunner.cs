@@ -3,7 +3,14 @@ using Concilia.Core.Runner;
 namespace Concilia.Runner;
 
 // One attempt of a task. PreviousRunId links a retry to the attempt it repeats.
-public record RunAttempt(RunRequest Request, RunResult Result, Guid? PreviousRunId);
+public record RunAttempt(RunRequest Request, RunResult Result, Guid? PreviousRunId)
+{
+    // Step 138: when this attempt began and ended (the review of its output
+    // included), so each repetition keeps its own duration. Null if it did
+    // not run (a prompt that could not be built).
+    public DateTimeOffset? StartedAt { get; init; }
+    public DateTimeOffset? FinishedAt { get; init; }
+}
 
 // What the caller decides after each attempt: the result to keep for it (the
 // caller may turn a Done into a Failed, for example when the file the model
@@ -60,10 +67,11 @@ public class RetryRunner(IRunnerProvider provider, int maxRetries = RetryRunner.
 
         while (true)
         {
+            var startedAt = DateTimeOffset.UtcNow;
             var result = await provider.RunAsync(request, eventsFor(request), cancellationToken);
             var repeats = heartbeatRepeated ? 1 : 0;
             var decision = review(new RunAttempt(request, result, previousRunId), attempts.Count + 1 - repeats);
-            attempts.Add(new RunAttempt(request, decision.Result, previousRunId));
+            attempts.Add(new RunAttempt(request, decision.Result, previousRunId) { StartedAt = startedAt, FinishedAt = DateTimeOffset.UtcNow });
 
             if (IsLost(result) && !heartbeatRepeated)
             {
