@@ -131,6 +131,74 @@ public class ArbiterDeviationsTests
         Assert.Equal("Unidos.", draft["requisitos"]![0]!["explicacion"]!.GetValue<string>());
     }
 
+    // Step 141: a story of the union that joins two or more stories of the
+    // same proposal is a discrepancy (decision of the author: always, from two).
+    private const string StoriesA = """
+        {"epicas": [{"id": "EP-01", "titulo": "Salas", "descripcion": "", "historias": [
+          {"id": "HU-001", "titulo": "Reservar", "como": "empleado", "quiero": "reservar una sala", "para": "usarla", "requisitos": [], "criterios": [], "tareas": []},
+          {"id": "HU-002", "titulo": "Anular", "como": "empleado", "quiero": "anular una reserva", "para": "liberarla", "requisitos": [], "criterios": [], "tareas": []}
+        ]}]}
+        """;
+
+    private const string StoriesB = """
+        {"epicas": [{"id": "EP-01", "titulo": "Salas", "descripcion": "", "historias": [
+          {"id": "HU-001", "titulo": "Gestionar reservas", "como": "empleado", "quiero": "reservar y anular salas", "para": "organizarse", "requisitos": [], "criterios": [], "tareas": []}
+        ]}]}
+        """;
+
+    [Fact]
+    public void A_story_that_joins_two_of_the_same_proposal_is_a_discrepancy_of_the_backlog_draft()
+    {
+        // The arbiter joined A's HU-001 and HU-002 with B's HU-001 in one story.
+        var output = Backlog(("HU-001", ["HU-001", "HU-002"], ["HU-001"]));
+        var matching = new ArbiterMatching(_embedder, Thresholds).Compute(PhaseKind.Backlog, StoriesA, StoriesB);
+
+        var deviations = ArbiterDeviations.Find(PhaseKind.Backlog, output, matching, ["A", "B"]);
+
+        var several = Assert.Single(deviations, d => d.Kind == DeviationKind.JoinedSeveral);
+        Assert.Equal("HU-001", several.ElementId);
+        Assert.Equal("El árbitro juntó aquí 2 historias de A (HU-001, HU-002). Comprueba que no eran historias distintas que conviene mantener separadas.", several.Explanation);
+        var plan = new PhasePlan(PhaseKind.Backlog, new PhaseInput { SystemName = "", Language = "" }, [], [], ["A", "B"]);
+        var story = JsonNode.Parse(BacklogDraft.FromResult(new PhaseJobResult("ARB", true, output, "") { Deviations = deviations }, plan))!["epicas"]![0]!["historias"]![0]!;
+        Assert.True(story["discrepancia"]!.GetValue<bool>());
+        Assert.Contains("[Plataforma] El árbitro juntó aquí 2 historias de A", story["explicacion"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void Joining_one_story_of_each_proposal_or_several_requirements_is_not_joining_several()
+    {
+        var matching = new ArbiterMatching(_embedder, Thresholds).Compute(PhaseKind.Backlog, StoriesA, StoriesB);
+        var oneOfEach = Backlog(("HU-001", ["HU-001"], ["HU-001"]), ("HU-002", ["HU-002"], []));
+        Assert.DoesNotContain(ArbiterDeviations.Find(PhaseKind.Backlog, oneOfEach, matching, ["A", "B"]), d => d.Kind == DeviationKind.JoinedSeveral);
+
+        // Only stories: in the catalog, joining two requirements of A is not marked.
+        var catalog = Arbiter(("RF-001", ["RF-001", "RF-002"], ["RF-001"]));
+        Assert.DoesNotContain(ArbiterDeviations.Find(PhaseKind.Catalog, catalog, Matching(), ["A", "B"]), d => d.Kind == DeviationKind.JoinedSeveral);
+    }
+
+    // An arbiter's backlog: one epic, each story with the ids of A and B it comes from (order A, B).
+    private static string Backlog(params (string Id, string[] A, string[] B)[] stories) =>
+        new JsonObject
+        {
+            ["epicas"] = new JsonArray(new JsonObject
+            {
+                ["id"] = "EP-01", ["titulo"] = "Salas", ["descripcion"] = "",
+                ["historias"] = new JsonArray(stories.Select(h => (JsonNode)new JsonObject
+                {
+                    ["id"] = h.Id, ["titulo"] = "x", ["como"] = "empleado", ["quiero"] = "x", ["para"] = "x",
+                    ["requisitos"] = new JsonArray(), ["criterios"] = new JsonArray(), ["tareas"] = new JsonArray(),
+                    ["de"] = new JsonObject
+                    {
+                        ["propuesta_1"] = new JsonArray(h.A.Select(id => (JsonNode)id).ToArray()),
+                        ["propuesta_2"] = new JsonArray(h.B.Select(id => (JsonNode)id).ToArray()),
+                    },
+                    ["discrepancia"] = false,
+                    ["explicacion"] = "Unidas.",
+                }).ToArray()),
+            }),
+            ["descartadas"] = new JsonArray(),
+        }.ToJsonString();
+
     // An arbiter's catalog: each requirement with the ids of A and B it comes from (order A, B).
     private static string Arbiter(params (string Id, string[] A, string[] B)[] requirements) =>
         new JsonObject

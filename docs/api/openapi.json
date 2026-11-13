@@ -3681,7 +3681,8 @@
       "DeviationKind": {
         "enum": [
           "JoinedDifferent",
-          "SplitSame"
+          "SplitSame",
+          "JoinedSeveral"
         ]
       },
       "DiscardRequest": {

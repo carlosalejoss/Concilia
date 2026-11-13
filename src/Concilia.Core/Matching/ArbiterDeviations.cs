@@ -14,16 +14,24 @@ namespace Concilia.Core.Matching;
 // other: "1 hora" and "24 horas" are close, and only the LLM sees that). In
 // the questions they are only counted in the report.
 //
-// Two kinds of deviation:
+// Three kinds of deviation:
 //   joined-different  the arbiter put in one element something that has
 //                     nothing "mismo" or "parecido" in the other proposal
 //   split-same        two elements the numbers see as "lo mismo" ended in two
 //                     different elements of the arbiter (if it discarded one
 //                     of them, it is not a deviation: it kept one of the two)
-public enum DeviationKind { JoinedDifferent, SplitSame }
+//   joined-several    (step 141, only stories) a story of the union joins two
+//                     or more stories of the same proposal (decision of the
+//                     author of 13-11-2026: always, from two). The arbiter of
+//                     the backlog joined atomic stories of A because B had one
+//                     that covered them (steps 104 and 105): in PURE, each of
+//                     the 6 stories with two actions joined 2 or 3 of A.
+public enum DeviationKind { JoinedDifferent, SplitSame, JoinedSeveral }
 
 // ElementId: the id of the element in the arbiter's output (before the
 // platform renumbers the draft). Explanation: for the user, in Spanish.
+// Similarity: that of the pair behind the deviation (0 in joined-several,
+// which does not come from the numbers).
 public record ArbiterDeviation(string ElementId, DeviationKind Kind, double Similarity, string Explanation)
 {
     // Split-same (step 126): the arbiter's element where the other one of the
@@ -42,14 +50,20 @@ public static class ArbiterDeviations
     {
         // Where each element of A and of B ended: the id of the arbiter's element whose `de` cites it.
         var endedIn = new Dictionary<(string Slot, string Id), string>();
+        // What each element of the arbiter joins of each proposal (A and B).
+        var joinedBy = new List<(string ElementId, string Slot, List<string> Ids)>();
         foreach (var element in JobReports.Elements(kind, JsonNode.Parse(arbiterOutput)))
         {
             if (element["de"] is not JsonObject de || element["id"] is not JsonValue v || !v.TryGetValue<string>(out var elementId))
                 continue;
             for (var n = 1; n <= 2; n++)
-                foreach (var id in (de[$"propuesta_{n}"] as JsonArray ?? []).OfType<JsonValue>()
-                             .Select(x => x.TryGetValue<string>(out var s) ? s : null).OfType<string>())
+            {
+                var ids = (de[$"propuesta_{n}"] as JsonArray ?? []).OfType<JsonValue>()
+                    .Select(x => x.TryGetValue<string>(out var s) ? s : null).OfType<string>().Distinct().ToList();
+                foreach (var id in ids)
                     endedIn.TryAdd((proposalOrder[n - 1], id), elementId);
+                joinedBy.Add((elementId, proposalOrder[n - 1], ids));
+            }
         }
         var joined = ProposalMatcher.ArbiterPairs(kind, arbiterOutput, proposalOrder);
         bool Joined(ElementMatch e) => e.Slot == "A" ? joined.Any(p => p.A == e.Id) : joined.Any(p => p.B == e.Id);
@@ -69,6 +83,12 @@ public static class ArbiterDeviations
             deviations.Add(Split(inA, inB, p.Similarity, p.BText));
             deviations.Add(Split(inB, inA, p.Similarity, p.AText));
         }
+
+        if (kind is PhaseKind.Backlog or PhaseKind.BacklogUpdate)
+            foreach (var (elementId, slot, ids) in joinedBy.Where(j => j.Ids.Count >= 2))
+                deviations.Add(new ArbiterDeviation(elementId, DeviationKind.JoinedSeveral, 0,
+                    $"El árbitro juntó aquí {ids.Count} historias de {slot} ({string.Join(", ", ids)}). " +
+                    "Comprueba que no eran historias distintas que conviene mantener separadas."));
 
         // One deviation of each kind per element is enough to mark it.
         return deviations.DistinctBy(d => (d.ElementId, d.Kind, d.Explanation)).ToList();

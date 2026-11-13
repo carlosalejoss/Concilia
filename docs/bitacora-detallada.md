@@ -3770,3 +3770,14 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Docker:** sin nada en marcha (`/jobs/active` 204), se reconstruyeron la API y la web con el código del paso; la imagen era anterior al paso 132. Las exportaciones de «PURE · microcare» salen en inglés (`catalog-pure-microcare.docx`, «Appendix A», Gherkin, Jira y los issues de GitHub), y el README de GitHub en español.
 - **Documentación:** plan, `CLAUDE.md` (una decisión vigente nueva), trazabilidad, `prompts/v0/CHANGELOG.md`, `docs/evolucion-prompt-requisitos.md` (nota en la v0.12, sin versión nueva), README, `docs/api/openapi.json` (descripciones de las exportaciones) y la memoria, punto 15.
 - **Siguiente:** el 141, que tiene una parada del autor.
+
+## 13-11-2026, 11:35 (sesión, hito 26, paso 141)
+
+- **Paso 141:** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta («Después», punto 7, la parte sin IA).
+- **Datos antes de la parada del autor** (sin lanzar nada: los `resultado-arbitro.json` de los 13 backlogs arbitrados que hay, por la API): 147 de 848 historias de la unión (17 %) juntan 2 o más de una misma propuesta; 98 juntan 2 y 49, 3 o más; solo 2 juntan varias de las dos a la vez. Por backlog, del 0 % al 57 %; en PURE, 14 de 34 (11 juntan 2 y 3 juntan 3 o más).
+- **Decisión del autor** (13-11), como recomendaba Claude: siempre, desde 2. Desde 3 se marcarían 49 (6 %), pero en PURE solo 3 de las 14. La tercera opción (desde 2, salvo si las historias juntadas son «lo mismo» entre sí) se descartó por más cálculo y más código.
+- **Código:** `DeviationKind.JoinedSeveral`, solo en el backlog y su actualización; en `resultado-arbitro.json`, `junta-varias`. La explicación dice cuántas historias juntó, de qué propuesta y sus ids. La discrepancia y la explicación pasan al borrador por la vía de siempre (`BacklogDraft`, `BacklogUpdate`).
+- **Efecto en lo de antes:** los borradores guardados no cambian; la comparación de A, B y el árbitro y la vista del emparejamiento calculan las desviaciones al pedirlas, así que ya muestran las nuevas también en los trabajos antiguos.
+- **Tests:** dos nuevos en `ArbiterDeviationsTests`; 1.073 en verde, el test intermitente del mockup no falló.
+- **Documentación:** plan, `CLAUDE.md`, trazabilidad, `docs/api/openapi.json` (el valor nuevo del tipo de desviación) y la memoria, punto 16.
+- **Siguiente:** el 142, que empieza por lo que tiene que preparar el autor.

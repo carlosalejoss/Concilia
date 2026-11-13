@@ -132,7 +132,12 @@ public static class PhaseJobs
             ["desviaciones"] = new JsonArray(result.Deviations.Select(d => (JsonNode)new JsonObject
             {
                 ["id"] = d.ElementId,
-                ["tipo"] = d.Kind == DeviationKind.JoinedDifferent ? "junta-distintos" : "separa-iguales",
+                ["tipo"] = d.Kind switch
+                {
+                    DeviationKind.JoinedDifferent => "junta-distintos",
+                    DeviationKind.SplitSame => "separa-iguales",
+                    _ => "junta-varias", // step 141
+                },
                 ["similitud"] = Math.Round(d.Similarity, 3),
                 ["explicacion"] = d.Explanation,
             }).ToArray()),

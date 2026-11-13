@@ -39,8 +39,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 131 hecho (12 y 13-11-2026):** con Kimi, preguntas, sugerencias y catálogo salen a la primera y B aporta mucho más que LUNA. El backlog falla: el árbitro de la v0.12 no cabe en 128.000 tokens con las propuestas de Kimi (`docs/opencode-go/flujo-kimi.md`). Se arregla en la v0.14 (paso 143).
 - **Paso 132 hecho (13-11-2026):** se mantienen todas las medidas tomadas por LUNA, y por defecto B es Kimi por OpenCode Go, salvo en modo simulado (`docs/opencode-go/medidas-luna.md`). Con él están hechos todos los pasos del hito 25. Su «Hecho cuando» se cumple hasta el catálogo: el backlog con Kimi espera a la v0.14 (paso 143), y el autor decide si cierra el hito así.
 - **Hito 25 cerrado por el autor (13-11-2026)** con el backlog de Kimi pendiente de la v0.14 (paso 143).
-- **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) 139 (la «lectura relacionada» en el código) y 140 (los textos de la plataforma en el idioma del proyecto) hechos el 13-11-2026.
-- **Siguiente:** el paso 141.
+- **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) 139 (la «lectura relacionada» en el código) 140 (los textos de la plataforma en el idioma del proyecto) y 141 (la marca de las historias que juntan varias de una propuesta) hechos el 13-11-2026.
+- **Siguiente:** el paso 142, que empieza por lo que tiene que preparar el autor (una organización de GitHub y un repositorio de prueba).
 
 ### Lo que queda, en orden
 
@@ -64,7 +64,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 9. ~~**138,** la duración real de cada repetición de una tarea~~ (hecho el 13-11-2026).
 10. ~~**139,** renombrar en el código la «opción C» como «lectura relacionada»~~ (hecho el 13-11-2026).
 11. ~~**140,** los textos de la plataforma en el idioma del proyecto~~ (hecho el 13-11-2026).
-12. **141,** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta.
+12. ~~**141,** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta~~ (hecho el 13-11-2026).
 13. **142,** mejoras del backlog en GitHub: issue types en las organizaciones, GitHub Projects y comentarios en los issues afectados por una iteración.
 14. **143,** los prompts mejorados (v0.14), medidos frente al paso 131.
 
@@ -1192,11 +1192,15 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
   - en la comparación cambia solo lo que se muestra: el texto que comparan los embeddings sigue igual, así que el emparejamiento que recibe el árbitro no cambia.
 
   Tests: los de siempre, en español, sin cambios de contenido, y 7 nuevos en inglés (`ProjectLanguageTests`); 1.071 en verde. Comprobado en Docker con las exportaciones de «PURE · microcare».
-- [ ] 141. **Que la plataforma marque las historias de la unión que juntan varias de una misma propuesta** («Después», punto 7, la parte sin IA; pasos 104 y 105).
+- [x] 141. **Que la plataforma marque las historias de la unión que juntan varias de una misma propuesta** («Después», punto 7, la parte sin IA; pasos 104 y 105).
   - **El problema:** en PURE, las 6 historias de la unión con dos acciones juntan cada una 2 o 3 historias atómicas de SOL. En los demás backlogs, el árbitro junta varias de A en una de un 0 % a un 57 % de las veces.
   - **Qué se hace:** la plataforma marca esa historia como discrepancia, como ya hace con las demás desviaciones del árbitro (paso 88).
   - **Antes,** en el paso 131 se mira si sigue pasando con el nuevo B, porque los datos de ahora son con LUNA. (No se pudo: el backlog del paso 131 falló sin unión. Se mira en el paso 143.)
   - **Cómo se comprueba:** un test de `ArbiterDeviations` con una historia de la unión que junta dos de A.
+  - **Hecho el 13-11-2026.** Antes de decidir, Claude contó en los 13 backlogs arbitrados guardados cuántas historias de la unión juntan varias de una misma propuesta: 147 de 848 (un 17 %), 98 juntan 2 y 49, 3 o más; del 0 % al 57 % por backlog, y en PURE 14 de 34. **Decisión del autor:** siempre, desde 2, como recomendaba Claude (desde 3 se perdían casi todos los casos de PURE).
+    - Tercera desviación del árbitro, `JoinedSeveral` («junta-varias» en `resultado-arbitro.json`), solo en el backlog y su actualización. Como las demás, marca la historia como discrepancia y añade la explicación de la plataforma: «El árbitro juntó aquí 2 historias de A (HU-001, HU-002). Comprueba que no eran historias distintas que conviene mantener separadas.»
+    - Vale para los trabajos nuevos; la comparación de A, B y el árbitro y la vista del emparejamiento, que calculan las desviaciones al pedirlas, ya las muestran también en los antiguos.
+    - Dos tests; 1.073 en verde. Si el cambio del prompt del paso 143 lo reduce, se verá en su medición.
 - [ ] 142. **Mejoras del backlog en GitHub** («Después», punto 9; hito 24). Elegidas por el autor el 10-11-2026, con la explicación de Claude delante; las tres siguen en el script que lanza el usuario con `gh`, así que Concilia sigue sin recibir ningún token:
   - **Issue types en las organizaciones.**
     - Cuando el repositorio es de una organización, el tipo nativo de GitHub (Epic, Feature, Task…, según los que tenga configurados) en lugar de la etiqueta. En un repositorio personal, la etiqueta, como hoy.
