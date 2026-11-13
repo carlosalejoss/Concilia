@@ -70,6 +70,27 @@ public class ArbiterDeviationsTests
         Assert.Equal(["RF-001", "RF-002"], deviations.Select(d => d.ElementId).Order());
         Assert.All(deviations, d => Assert.Equal(DeviationKind.SplitSame, d.Kind));
         Assert.Contains("«reservar una sala»", deviations[0].Explanation);
+        // Step 126: each one says in which element the other one ended, besides its text.
+        Assert.EndsWith("que el árbitro dejó en RF-002. Comprueba que no está repetido.", deviations.Single(d => d.ElementId == "RF-001").Explanation);
+        Assert.EndsWith("que el árbitro dejó en RF-001. Comprueba que no está repetido.", deviations.Single(d => d.ElementId == "RF-002").Explanation);
+    }
+
+    [Fact]
+    public void The_draft_cites_the_other_element_with_its_id_in_the_draft()
+    {
+        var output = Arbiter(("RF-001", ["RF-001"], []), ("RF-002", [], ["RF-001"]), ("RF-003", ["RF-002"], []), ("RF-004", [], ["RF-002"]));
+        var deviations = ArbiterDeviations.Find(PhaseKind.Catalog, output, Matching(), ["A", "B"]);
+        var plan = new PhasePlan(PhaseKind.Catalog, new PhaseInput { SystemName = "", Language = "" }, [], [], ["A", "B"]);
+        // The platform numbers the draft by type: the RNF goes apart and RF-002 becomes RF-001.
+        var withRnf = JsonNode.Parse(output)!;
+        withRnf["requisitos"]![0]!["tipo"] = "RNF";
+
+        var draft = JsonNode.Parse(CatalogDraft.FromResult(new PhaseJobResult("ARB", true, withRnf.ToJsonString(), "") { Deviations = deviations }, plan))!;
+
+        var requirements = draft["requisitos"]!.AsArray();
+        Assert.Equal(["RNF-001", "RF-001"], requirements.Take(2).Select(r => r!["id"]!.GetValue<string>()));
+        Assert.Contains("que el árbitro dejó en RF-001.", requirements[0]!["explicacion"]!.GetValue<string>());
+        Assert.Contains("que el árbitro dejó en RNF-001.", requirements[1]!["explicacion"]!.GetValue<string>());
     }
 
     [Fact]

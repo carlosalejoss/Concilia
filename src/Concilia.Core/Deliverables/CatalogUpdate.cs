@@ -36,6 +36,10 @@ public static class CatalogUpdate
         var output = JsonNode.Parse(result.Output)!;
         var iterations = new JsonArray((plan.Focus?.Iterations ?? []).Select(n => (JsonNode)n).ToArray());
         var ids = new StableIds(CatalogDraft.Ids(workingCopy), used);
+        // Step 126: the id each new requirement takes (N-001 → RF-231), so the
+        // explanation of a split-same pair cites the other one by its id here.
+        var finalIds = new Dictionary<string, string>();
+        var explained = new List<(JsonObject Copy, string Arbiter, List<ArbiterDeviation> Deviations)>();
 
         foreach (var n in (output["nuevos"] as JsonArray ?? []).OfType<JsonObject>())
         {
@@ -45,11 +49,15 @@ public static class CatalogUpdate
             var deviations = result.Deviations.Where(d => d.ElementId == n["id"]!.GetValue<string>()).ToList();
             copy["origen"] = origin;
             copy["discrepancia"] = n["discrepancia"]!.GetValue<bool>() || deviations.Count > 0;
-            copy["explicacion"] = ArbiterDeviations.Explain(n["explicacion"]!.GetValue<string>(), deviations);
+            copy["explicacion"] = ""; // written below, once every new requirement has its id
             copy["revisada"] = false;
             copy["historial"] = new JsonArray(Entry("creado", iterations, null, n["motivo"]!.GetValue<string>(), origin, n["explicacion"]!.GetValue<string>(), jobId, now));
             requirements.Add(copy);
+            finalIds[n["id"]!.GetValue<string>()] = copy["id"]!.GetValue<string>();
+            explained.Add((copy, n["explicacion"]!.GetValue<string>(), deviations));
         }
+        foreach (var (copy, arbiter, deviations) in explained)
+            copy["explicacion"] = ArbiterDeviations.Explain(arbiter, deviations, finalIds.GetValueOrDefault);
 
         foreach (var c in (output["cambios"] as JsonArray ?? []).OfType<JsonObject>())
         {

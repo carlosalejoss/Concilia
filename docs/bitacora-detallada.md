@@ -3714,3 +3714,16 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Pendiente:**
   - el autor decide si cierra el hito 25 con el backlog de Kimi pendiente de la v0.14;
   - después, el hito 26 en otra sesión.
+
+## 13-11-2026, 09:20 (sesión, hito 26, paso 126)
+
+- **El autor** cierra el hito 25 con el backlog de Kimi pendiente de la v0.14 y pide el hito 26, un paso cada vez, con un commit por paso, esperando a que cierre cada uno.
+- **Paso 126:** que el aviso de un par «mismo» separado (`SplitSame`) diga en qué elemento está el otro.
+  - **Lo que había que resolver:** la desviación se calcula con los ids de la salida del árbitro, y el borrador los puede cambiar. Al generar desde cero no los cambia, porque la plataforma solo acepta salidas del árbitro con los ids seguidos (`ID-SEQ`) y la renumeración da los mismos. En una actualización sí: lo nuevo llega como `N-001` y la plataforma le da el siguiente id libre.
+  - **Cómo se hizo:** la desviación guarda el id del otro elemento y su texto (`OtherElementId`, `OtherText`). Su explicación, la que va a `resultado-arbitro.json` y a la comparación de A, B y el árbitro, cita el id del árbitro, que es el que se ve allí. Cada borrador la vuelve a escribir con el id final: `ArbiterDeviations.FinalIds` empareja por posición la salida antes y después de renumerar, y las actualizaciones escriben las explicaciones cuando todos los nuevos tienen ya su id. Si el otro no está en el borrador, dice «en otro elemento», como antes.
+  - **Qué se queda igual:** cuándo y cuántas desviaciones se marcan, los prompts y las salidas; las explicaciones ya guardadas no se reescriben.
+  - **Tests:** el del par separado comprueba el id del otro en cada explicación; uno nuevo con un borrador que la plataforma renumera (un RNF delante) y otro con una actualización (`N-001` y `N-002` pasan a `RF-004` y `RF-005`). 1.062 en verde a la primera; el test intermitente del mockup no falló.
+  - **API:** el emparejamiento (`GET /jobs/{id}/matching`) devuelve los dos campos nuevos, con su descripción; `docs/api/openapi.json` regenerado.
+- **Documentación:** plan, `CLAUDE.md`, trazabilidad (etapa 18, hito 26) y la memoria, punto 13 (compila).
+- **Sin ejecuciones con modelos ni Docker:** el paso no cambia nada que haya que probar en real; la imagen de la API se reconstruirá en el primer paso que lo necesite.
+- **Pendiente:** que el autor cierre el 126; después, el 138.

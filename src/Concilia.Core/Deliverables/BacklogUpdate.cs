@@ -55,6 +55,10 @@ public static class BacklogUpdate
             return items;
         }
 
+        // Step 126: the id each new story takes (N-001 → HU-087), so the
+        // explanation of a split-same pair cites the other one by its id here.
+        var finalIds = new Dictionary<string, string>();
+        var explained = new List<(JsonObject Story, string Arbiter, List<ArbiterDeviation> Deviations)>();
         var newEpics = new Dictionary<string, JsonObject>(); // by title, so two new stories of the same new epic share it
         foreach (var n in (output["nuevas"] as JsonArray ?? []).OfType<JsonObject>())
         {
@@ -93,12 +97,16 @@ public static class BacklogUpdate
                 ["tareas"] = Items(n["tareas"], null, "tareas", "T"),
                 ["origen"] = origin,
                 ["discrepancia"] = n["discrepancia"]!.GetValue<bool>() || deviations.Count > 0,
-                ["explicacion"] = ArbiterDeviations.Explain(n["explicacion"]!.GetValue<string>(), deviations),
+                ["explicacion"] = "", // written below, once every new story has its id
                 ["revisada"] = false,
                 ["historial"] = new JsonArray(Entry("creada", iterations, null, n["motivo"]!.GetValue<string>(), origin, n["explicacion"]!.GetValue<string>(), jobId, now)),
             };
             (epic["historias"] as JsonArray)!.Add(story);
+            finalIds[n["id"]!.GetValue<string>()] = story["id"]!.GetValue<string>();
+            explained.Add((story, n["explicacion"]!.GetValue<string>(), deviations));
         }
+        foreach (var (story, arbiter, deviations) in explained)
+            story["explicacion"] = ArbiterDeviations.Explain(arbiter, deviations, finalIds.GetValueOrDefault);
 
         foreach (var c in (output["cambios"] as JsonArray ?? []).OfType<JsonObject>())
         {

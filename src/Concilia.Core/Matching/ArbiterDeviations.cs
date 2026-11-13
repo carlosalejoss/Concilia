@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Globalization;
 using System.Text.Json.Nodes;
 using Concilia.Core.Phases;
@@ -23,7 +24,16 @@ public enum DeviationKind { JoinedDifferent, SplitSame }
 
 // ElementId: the id of the element in the arbiter's output (before the
 // platform renumbers the draft). Explanation: for the user, in Spanish.
-public record ArbiterDeviation(string ElementId, DeviationKind Kind, double Similarity, string Explanation);
+public record ArbiterDeviation(string ElementId, DeviationKind Kind, double Similarity, string Explanation)
+{
+    // Split-same (step 126): the arbiter's element where the other one of the
+    // pair ended, and the text of that other one, so the explanation can say
+    // where to find it with the id it has in the draft.
+    [Description("Solo si separa iguales: el id, en la salida del árbitro, del elemento donde acabó el otro del par.")]
+    public string? OtherElementId { get; init; }
+    [Description("Solo si separa iguales: el texto del otro elemento del par, en su propuesta.")]
+    public string? OtherText { get; init; }
+}
 
 public static class ArbiterDeviations
 {
@@ -56,8 +66,8 @@ public static class ArbiterDeviations
         {
             if (!endedIn.TryGetValue(("A", p.AId), out var inA) || !endedIn.TryGetValue(("B", p.BId), out var inB) || inA == inB)
                 continue;
-            deviations.Add(new ArbiterDeviation(inA, DeviationKind.SplitSame, p.Similarity, SplitExplanation(p.Similarity, p.BText)));
-            deviations.Add(new ArbiterDeviation(inB, DeviationKind.SplitSame, p.Similarity, SplitExplanation(p.Similarity, p.AText)));
+            deviations.Add(Split(inA, inB, p.Similarity, p.BText));
+            deviations.Add(Split(inB, inA, p.Similarity, p.AText));
         }
 
         // One deviation of each kind per element is enough to mark it.
@@ -68,12 +78,45 @@ public static class ArbiterDeviations
     public static int ElementCount(IReadOnlyList<ArbiterDeviation> deviations) => deviations.Select(d => d.ElementId).Distinct().Count();
 
     // The explanation of an element: the arbiter's own one, followed by those of the platform.
-    public static string Explain(string arbiterExplanation, IEnumerable<ArbiterDeviation> deviations) =>
-        string.Join(" ", new[] { arbiterExplanation }.Concat(deviations.Select(d => $"[Plataforma] {d.Explanation}")).Where(s => s.Length > 0));
+    // finalId (step 126): the id an element of the arbiter's output has in the
+    // draft, so a split-same says where the other one is; null if it is not there.
+    public static string Explain(string arbiterExplanation, IEnumerable<ArbiterDeviation> deviations, Func<string, string?>? finalId = null) =>
+        string.Join(" ", new[] { arbiterExplanation }.Concat(deviations.Select(d => $"[Plataforma] {Text(d, finalId)}")).Where(s => s.Length > 0));
 
-    private static string SplitExplanation(double similarity, string otherText) =>
+    // The id each element of the arbiter's output keeps in the draft, by
+    // position: before and after are the same output, before and after the
+    // platform gives the ids of the draft.
+    public static Func<string, string?> FinalIds(PhaseKind kind, string before, string after)
+    {
+        static IEnumerable<string?> Ids(PhaseKind kind, string json) =>
+            JobReports.Elements(kind, JsonNode.Parse(json)).Select(e => e["id"] is JsonValue v && v.TryGetValue<string>(out var id) ? id : null);
+        var map = new Dictionary<string, string>();
+        foreach (var (old, @new) in Ids(kind, before).Zip(Ids(kind, after)))
+            if (old is not null && @new is not null)
+                map.TryAdd(old, @new);
+        return id => map.GetValueOrDefault(id);
+    }
+
+    private static string Text(ArbiterDeviation d, Func<string, string?>? finalId) =>
+        d is { Kind: DeviationKind.SplitSame, OtherElementId: { } other, OtherText: { } otherText } && finalId is not null
+            ? SplitExplanation(d.Similarity, otherText, finalId(other))
+            : d.Explanation;
+
+    // The explanation of the deviation as the arbiter's output has it: it
+    // cites the other element with its id there.
+    private static ArbiterDeviation Split(string elementId, string otherElementId, double similarity, string otherText) =>
+        new(elementId, DeviationKind.SplitSame, similarity, SplitExplanation(similarity, otherText, otherElementId))
+        {
+            OtherElementId = otherElementId,
+            OtherText = otherText,
+        };
+
+    // where: the id of the element the arbiter left the other one in (step
+    // 126: its text alone is not enough if the arbiter rewrote it or joined
+    // it with others); null if that element is not in the draft.
+    private static string SplitExplanation(double similarity, string otherText, string? where) =>
         $"La plataforma ve este elemento como lo mismo (similitud {Number(similarity)}) que «{Excerpt(otherText)}», " +
-        "que el árbitro dejó en otro elemento. Comprueba que no está repetido.";
+        $"que el árbitro dejó {(where is null ? "en otro elemento" : $"en {where}")}. Comprueba que no está repetido.";
 
     private static string Excerpt(string text) => text.Length <= 120 ? text : text[..117].TrimEnd() + "…";
 

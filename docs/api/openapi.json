@@ -3057,6 +3057,20 @@
           },
           "explanation": {
             "type": "string"
+          },
+          "otherElementId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Solo si separa iguales: el id, en la salida del árbitro, del elemento donde acabó el otro del par."
+          },
+          "otherText": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Solo si separa iguales: el texto del otro elemento del par, en su propuesta."
           }
         }
       },

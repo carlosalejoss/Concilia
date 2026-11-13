@@ -180,6 +180,29 @@ public class CatalogUpdateTests
     }
 
     [Fact]
+    public void A_new_requirement_split_from_its_pair_cites_the_id_the_other_one_takes()
+    {
+        // A and B propose the same new requirement, and the arbiter leaves them in N-001 and N-002.
+        const string proposal = """{"nuevos": [{"id": "N-001", "tipo": "RF", "texto": "enviar un recordatorio"}], "modificados": [], "eliminados": []}""";
+        var matching = new ArbiterMatching(new FakeTextEmbedder(), new MatchThresholds(Same: 0.9, Similar: 0.7)).Compute(PhaseKind.CatalogUpdate, proposal, proposal);
+        static string New(string id, string[] one, string[] two) => new JsonObject
+        {
+            ["id"] = id, ["tipo"] = "RF", ["notacion"] = "EARS", ["obligatoriedad"] = "shall", ["texto"] = "x", ["fuentes"] = new JsonArray(), ["preguntas"] = new JsonArray(),
+            ["motivo"] = "x", ["de"] = new JsonObject { ["propuesta_1"] = new JsonArray(one.Select(i => (JsonNode)i).ToArray()), ["propuesta_2"] = new JsonArray(two.Select(i => (JsonNode)i).ToArray()) },
+            ["discrepancia"] = false, ["explicacion"] = "x",
+        }.ToJsonString();
+        var output = $$"""{"nuevos": [{{New("N-001", ["N-001"], [])}}, {{New("N-002", [], ["N-001"])}}], "descartados": [], "cambios": []}""";
+        var deviations = ArbiterDeviations.Find(PhaseKind.CatalogUpdate, output, matching, Plan.ProposalOrder);
+
+        var content = CatalogUpdate.Apply(WorkingCopy, new PhaseJobResult("ARB", true, output, "") { Deviations = deviations }, Plan, Guid.Empty, ["RF-001", "RF-002", "RF-003"], DateTimeOffset.UnixEpoch);
+
+        // RF-003 was given before in the history: N-001 is RF-004 and N-002 is RF-005.
+        Assert.Contains("que el árbitro dejó en RF-005.", Requirement(content, "RF-004")["explicacion"]!.GetValue<string>());
+        Assert.Contains("que el árbitro dejó en RF-004.", Requirement(content, "RF-005")["explicacion"]!.GetValue<string>());
+        Assert.True(Requirement(content, "RF-004")["discrepancia"]!.GetValue<bool>());
+    }
+
+    [Fact]
     public void Accepting_or_rejecting_a_change_keeps_or_gives_back_the_requirement_with_its_history()
     {
         const string modify = """

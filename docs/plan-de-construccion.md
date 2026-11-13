@@ -38,7 +38,9 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 130 hecho (12-11-2026):** el autor elige **Kimi K3.1 Pro** como modelo B (`docs/opencode-go/seleccion.md`).
 - **Paso 131 hecho (12 y 13-11-2026):** con Kimi, preguntas, sugerencias y catálogo salen a la primera y B aporta mucho más que LUNA. El backlog falla: el árbitro de la v0.12 no cabe en 128.000 tokens con las propuestas de Kimi (`docs/opencode-go/flujo-kimi.md`). Se arregla en la v0.14 (paso 143).
 - **Paso 132 hecho (13-11-2026):** se mantienen todas las medidas tomadas por LUNA, y por defecto B es Kimi por OpenCode Go, salvo en modo simulado (`docs/opencode-go/medidas-luna.md`). Con él están hechos todos los pasos del hito 25. Su «Hecho cuando» se cumple hasta el catálogo: el backlog con Kimi espera a la v0.14 (paso 143), y el autor decide si cierra el hito así.
-- **Siguiente:** el hito 26, empezando por el paso 126, en otra sesión.
+- **Hito 25 cerrado por el autor (13-11-2026)** con el backlog de Kimi pendiente de la v0.14 (paso 143).
+- **Hito 26 en curso:** paso 126 hecho el 13-11-2026 (el aviso de un par «mismo» separado dice en qué elemento está el otro).
+- **Siguiente:** el paso 138, cuando el autor cierre el 126.
 
 ### Lo que queda, en orden
 
@@ -58,7 +60,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Hito 26, antes de la evaluación 2:**
 
-8. **126,** que el aviso de un par «mismo» separado diga en qué elemento está el otro.
+8. ~~**126,** que el aviso de un par «mismo» separado diga en qué elemento está el otro~~ (hecho el 13-11-2026).
 9. **138,** la duración real de cada repetición de una tarea.
 10. **139,** renombrar en el código la «opción C» como «lectura relacionada».
 11. **140,** los textos de la plataforma en el idioma del proyecto.
@@ -1153,10 +1155,11 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
 - Primero lo que no cambia ninguna salida de los modelos.
 - Los prompts mejorados (143) van los últimos, porque se miden con el flujo completo y con la plataforma ya cambiada.
 
-- [ ] 126. Que el aviso de un par «mismo» separado diga en qué elemento de la unión está el otro. Hoy (`ArbiterDeviations`, desviación `SplitSame`) el aviso cita el texto de la propuesta original: «… que el árbitro dejó en otro elemento». Si el árbitro lo reescribió o lo unió con otros, esa frase ya no está en el catálogo y no se puede encontrar. En LasCuarenta, el aviso de RF-068 (Guiñote) citaba una regla de Tute que parecía faltar y estaba en RF-081, unida con otras dos. El aviso añadirá el id del elemento donde acabó («… que el árbitro dejó en RF-081») y seguirá citando el texto.
+- [x] 126. Que el aviso de un par «mismo» separado diga en qué elemento de la unión está el otro. Hoy (`ArbiterDeviations`, desviación `SplitSame`) el aviso cita el texto de la propuesta original: «… que el árbitro dejó en otro elemento». Si el árbitro lo reescribió o lo unió con otros, esa frase ya no está en el catálogo y no se puede encontrar. En LasCuarenta, el aviso de RF-068 (Guiñote) citaba una regla de Tute que parecía faltar y estaba en RF-081, unida con otras dos. El aviso añadirá el id del elemento donde acabó («… que el árbitro dejó en RF-081») y seguirá citando el texto.
   - **Qué se queda igual:** cuándo se marca una desviación, cuántas hay, los prompts y las salidas de los modelos.
   - **Qué cambia:** solo el texto de la explicación de la plataforma, en el catálogo y el backlog. Vale para los trabajos nuevos; las explicaciones ya guardadas no se reescriben.
   - **Cómo se comprueba:** un test de `ArbiterDeviations` con un par «mismo» separado que comprueba el id del otro elemento en la explicación de cada uno.
+  - **Hecho el 13-11-2026.** La desviación guarda el id del otro elemento en la salida del árbitro y su texto (`OtherElementId`, `OtherText`); cada borrador lo traduce al id que tiene en él (`ArbiterDeviations.FinalIds` al generar desde cero; en las actualizaciones, el id que la plataforma da a cada nuevo, de `N-001` a `RF-231`). El `resultado-arbitro.json` y la comparación de A, B y el árbitro citan el id del árbitro, que es el que se ve allí. Tres tests: el del par separado, el borrador renumerado y una actualización; 1.062 en verde. La API del emparejamiento devuelve los dos campos nuevos (`docs/api/openapi.json`).
 
 - [ ] 138. **La duración real de cada repetición de una tarea** («Después», punto 5c).
   - **Hoy:** las repeticiones se guardan al final, con la hora de inicio del primer intento, y todas salen con la duración total. La del trabajo sí es real (pasos 116 y 123).

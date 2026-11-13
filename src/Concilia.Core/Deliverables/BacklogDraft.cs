@@ -22,6 +22,8 @@ public static class BacklogDraft
     public static string FromResult(PhaseJobResult result, PhasePlan plan)
     {
         var crossChecked = result.Source == "ARB";
+        // Step 126: the id each story of the arbiter will have, for the explanations that cite one.
+        var finalIds = ArbiterDeviations.FinalIds(PhaseKind.Backlog, result.Output!, Renumber(result.Output!));
         var epics = new JsonArray();
         foreach (var e in JsonNode.Parse(result.Output!)!["epicas"]!.AsArray().Select(x => x!.AsObject()))
         {
@@ -35,7 +37,7 @@ public static class BacklogDraft
                 var deviations = result.Deviations.Where(d => d.ElementId == h["id"]!.GetValue<string>()).ToList();
                 story["discrepancia"] = crossChecked && (h["discrepancia"]!.GetValue<bool>() || deviations.Count > 0);
                 story["explicacion"] = crossChecked
-                    ? ArbiterDeviations.Explain(h["explicacion"]!.GetValue<string>(), deviations)
+                    ? ArbiterDeviations.Explain(h["explicacion"]!.GetValue<string>(), deviations, finalIds)
                     : $"Sin verificación cruzada: solo terminó bien {result.Source}.";
                 story["revisada"] = false;
                 stories.Add(story);

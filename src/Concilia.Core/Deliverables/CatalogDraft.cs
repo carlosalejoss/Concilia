@@ -27,6 +27,8 @@ public static class CatalogDraft
     public static string FromResult(PhaseJobResult result, PhasePlan plan)
     {
         var crossChecked = result.Source == "ARB";
+        // Step 126: the id each requirement of the arbiter will have, for the explanations that cite one.
+        var finalIds = ArbiterDeviations.FinalIds(PhaseKind.Catalog, result.Output!, Renumber(result.Output!));
         var requirements = new JsonArray();
         foreach (var r in JsonNode.Parse(result.Output!)!["requisitos"]!.AsArray().Select(x => x!.AsObject()))
         {
@@ -35,7 +37,7 @@ public static class CatalogDraft
             var deviations = result.Deviations.Where(d => d.ElementId == r["id"]!.GetValue<string>()).ToList();
             copy["discrepancia"] = crossChecked && (r["discrepancia"]!.GetValue<bool>() || deviations.Count > 0);
             copy["explicacion"] = crossChecked
-                ? ArbiterDeviations.Explain(r["explicacion"]!.GetValue<string>(), deviations)
+                ? ArbiterDeviations.Explain(r["explicacion"]!.GetValue<string>(), deviations, finalIds)
                 : $"Sin verificación cruzada: solo terminó bien {result.Source}.";
             copy["revisada"] = false;
             requirements.Add(copy);
