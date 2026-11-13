@@ -40,7 +40,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 132 hecho (13-11-2026):** se mantienen todas las medidas tomadas por LUNA, y por defecto B es Kimi por OpenCode Go, salvo en modo simulado (`docs/opencode-go/medidas-luna.md`). Con él están hechos todos los pasos del hito 25. Su «Hecho cuando» se cumple hasta el catálogo: el backlog con Kimi espera a la v0.14 (paso 143), y el autor decide si cierra el hito así.
 - **Hito 25 cerrado por el autor (13-11-2026)** con el backlog de Kimi pendiente de la v0.14 (paso 143).
 - **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) 139 (la «lectura relacionada» en el código) 140 (los textos de la plataforma en el idioma del proyecto) 141 (la marca de las historias que juntan varias de una propuesta) hechos el 13-11-2026. Del 142, el código y sus tests, el mismo día.
-- **Siguiente:** la prueba real del 142, cuando el autor prepare la organización de GitHub, los repositorios de prueba y el permiso de tableros de `gh`.
+- **Siguiente:** la prueba real del 142, cuando el autor prepare la organización de GitHub, los repositorios de prueba y el permiso de tableros de `gh`. Mientras, la propuesta de los prompts v0.14 (paso 143) está en `docs/propuesta-prompts-v0.14.md`, a la espera de que el autor la revise antes de tocar código.
 
 ### Lo que queda, en orden
 
@@ -1234,6 +1234,7 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
     - 39 de las 40 sugerencias de PURE eran suposiciones (paso 105);
     - solo si faltan funcionalidades en los pasos 130 y 131: la idea del hito 7, que el modelo haga primero un inventario de funcionalidades y después los requisitos de cada una.
   - **Cómo se trabaja,** como en los pasos 112 a 114: Claude propone los cambios, el autor los revisa antes del código, y se actualizan `prompts/v0/CHANGELOG.md` y `docs/evolucion-prompt-requisitos.md`.
+  - **Propuesta de Claude (13-11-2026), pendiente de revisión:** `docs/propuesta-prompts-v0.14.md`. A, el árbitro del backlog lee las propuestas en forma compacta (unos 100 tokens por historia en lugar de 378), consulta por tramos el texto de los criterios y recibe solo los requisitos de las historias sin par «mismo»; B, no junta historias atómicas de una misma propuesta; C (opcional, solo plataforma), un par «mismo» con cifras distintas no es desviación. Sugerencias e inventario de funcionalidades, sin cambios, con los datos que lo justifican. Mediciones: dos nuevos arbitrajes con SOL (329 requisitos y «Clínicas B Kimi») y el backlog de «Clínicas B Kimi» como trabajo normal.
   - **Cómo se comprueba:** el flujo de clínicas con la v0.14 y el nuevo B, frente al paso 131 (misma B, prompts v0.12): calidad, reparaciones, correcciones automáticas, coste para una empresa y minutos. Los modos de siempre tienen una instantánea de la v0.12 (`V012SnapshotTests`), que se actualiza a propósito.
 
 **Hecho cuando:** están hechos los pasos 126 y 138 a 143, y los prompts v0.14 están medidos frente al paso 131.

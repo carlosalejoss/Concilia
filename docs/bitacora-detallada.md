@@ -3810,3 +3810,17 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Tests:** `GitHubScriptTests`, la primera vez que los tests ejecutan `importar.sh`, con Git Bash (o el bash del sistema en Linux; se saltan si no hay) y un `gh` falso en bash que guarda issues, tableros y comentarios y apunta cada llamada. 6 casos; unos 65 s en Windows. 1.079 en verde.
 - **Documentación:** plan, `CLAUDE.md`, trazabilidad, README (la guía de GitHub), el README del `.zip` y la descripción del endpoint (`docs/api/openapi.json`). La memoria, con la prueba real.
 - **Pendiente:** la prueba real del 142, cuando el autor diga que tiene lo pedido; después, el 143.
+
+## 13-11-2026, 12:05 (sesión, hito 26, propuesta del paso 143)
+
+- **Mientras el autor prepara lo de GitHub** (prueba real del 142), Claude redacta la propuesta de los prompts v0.14, sin tocar código: `docs/propuesta-prompts-v0.14.md`.
+- **Datos que la sostienen**, con el estimador de la plataforma (3,5 caracteres por token) sobre lo que da la API:
+  - un catálogo validado de 228 requisitos ocupa unos 24.200 tokens y uno de 329, unos 29.900;
+  - una historia entera, unos 378 tokens (backlog de clínicas v0.11, 89 historias): las propuestas de Kimi (140 + 105 historias) serían unas 93.000 y las de LUNA (96 + 85) unas 68.000, que cupieron justo;
+  - en forma compacta (título, narrativa, requisitos, nombre de cada escenario e ids), unos 100 tokens por historia; con el «Entonces» de cada criterio, unos 255.
+  - Conclusión: leer solo los requisitos necesarios, como pedía el plan, no basta con Kimi; hace falta también que el árbitro lea las propuestas en forma compacta.
+- **Sugerencias de PURE:** 39 de 40 suposiciones, todas con fragmentos citados (de 1 a 10) y una explicación del hueco o del conflicto de la documentación; coherente, como dijo el paso 105. No se propone cambiarlas.
+- **Inventario de funcionalidades:** sin la referencia del autor (paso 118) no hay forma de medir si faltan; no se propone.
+- **Comprobado:** un nuevo arbitraje solo exige que A y B terminaran bien, así que se puede hacer sobre los backlogs fallidos de los pasos 131 y 145; el validador admite una historia en el `de` de varias.
+- **Pendiente:** que el autor revise la propuesta.
+
