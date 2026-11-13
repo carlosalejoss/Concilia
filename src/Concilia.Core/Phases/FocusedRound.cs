@@ -27,7 +27,7 @@ public record FocusPlan(IReadOnlyList<int> Iterations, IReadOnlyList<string> New
     public IReadOnlySet<string> AnsweredCodes => Questions.Where(q => q.Status == "respondida").Select(q => q.Code).ToHashSet();
 }
 
-// The input files of a round centred on some iterations (option C, decision
+// The input files of a round centred on some iterations (the related reading, decision
 // of the author of 26-10-2026): A and B read entirely the documentation of
 // those iterations, the earlier fragments related to it and, if there is a
 // validated catalog, its related requirements (RelatedContext); the whole

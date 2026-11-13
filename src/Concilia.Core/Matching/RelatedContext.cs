@@ -7,7 +7,7 @@ using Concilia.Core.Runner;
 namespace Concilia.Core.Matching;
 
 // What a round centred on some iterations reads entirely besides the new
-// documentation (option C, decisions of the author of 26-10-2026): the
+// documentation (the related reading, decisions of the author of 26-10-2026): the
 // earlier fragments related to it and the related requirements of the
 // validated catalog, chosen by the platform with embeddings, without AI.
 // - A fragment is related if it is "parecido" (0,70) or more to some new

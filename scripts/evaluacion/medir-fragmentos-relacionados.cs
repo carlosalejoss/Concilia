@@ -3,7 +3,7 @@
 #:project ../../src/Concilia.Core/Concilia.Core.csproj
 
 // Paso 112 (hito 22): mide cuántos fragmentos anteriores se parecen a los de
-// una iteración nueva, para proponer al autor el tope de la opción C
+// una iteración nueva, para proponer al autor el tope de la lectura relacionada
 // (RelatedFragments: obligatorio leer lo nuevo y los fragmentos anteriores
 // relacionados, desde «parecido», 0,70, con un tope por decidir).
 //

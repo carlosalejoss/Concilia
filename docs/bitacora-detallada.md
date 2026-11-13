@@ -3741,3 +3741,14 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Sin modelos ni Docker:** no hace falta probarlo en real.
 - **Pendiente:** que el autor cierre el 138; después, el 139.
 
+## 13-11-2026, 09:40 (sesión, hito 26, paso 139)
+
+- **El autor** cierra el 138 y pide seguir avanzando, lanzando lo que haga falta.
+- **Paso 139:** renombrar en el código la «opción C» como «lectura relacionada» (y la «opción A», «lectura completa»).
+  - Comentarios de `FocusedRoundInput`, `FocusedRound`, `CatalogUpdateRound`, `RelatedContext`, `ReadAllRound` y `QuestionEndpoints`, en inglés: «the related reading» y «the full reading».
+  - La descripción de `POST /projects/{id}/question-rounds/read-all`, en español, y con ella `docs/api/openapi.json`, regenerado.
+  - El comentario de `scripts/evaluacion/medir-fragmentos-relacionados.cs`.
+  - La búsqueda del plan ya no encuentra nada en `src`, `scripts`, `web/src` ni `docs/api`. Sin cambios de comportamiento; 1.064 tests en verde.
+- **Sin entrada en la memoria:** es un cambio de nombres que la memoria ya usa.
+- **Siguiente:** el 140.
+

@@ -13,12 +13,12 @@ using Concilia.Core.Questions;
 namespace Concilia.Api.Questions;
 
 // What a round of questions centred on some iterations reads, built when it is
-// launched (step 112, option C): the documentation of those iterations, the
+// launched (step 112, the related reading): the documentation of those iterations, the
 // earlier fragments related to it and, if the catalog is validated, its
 // related requirements (RelatedContext, with embeddings in local), and the
 // block of the iterations. The documentation is numbered as always
 // (PhaseJobs.LoadDocumentsAsync), so the ids are the same in every mode.
-// Step 116 (readAll, ReadAllRound): option A, every earlier fragment is read
+// Step 116 (readAll, ReadAllRound): the full reading, every earlier fragment is read
 // entirely instead of the related ones; the related requirements stay the
 // same, so only the reading of the documentation changes.
 public static class FocusedRoundInput

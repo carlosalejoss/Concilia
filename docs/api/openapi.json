@@ -1564,7 +1564,7 @@
           "Preguntas"
         ],
         "summary": "Lanza una ronda centrada que lo lee todo (experimental)",
-        "description": "Para medir la lectura de la opción C frente a leerlo todo (opción A, paso 116): la misma ronda centrada en `focus`, con los mismos prompts v0.13 y las mismas entradas, salvo que A y B leen entera toda la documentación anterior en lugar de solo los fragmentos relacionados con la nueva. Es un experimento, como el nuevo arbitraje: un trabajo `questions-read-all` que deja su resultado y su informe, no cuenta como ronda del proyecto y no añade sus preguntas. Exige lo mismo que una ronda.",
+        "description": "Para medir la lectura relacionada frente a la lectura completa (paso 116): la misma ronda centrada en `focus`, con los mismos prompts v0.13 y las mismas entradas, salvo que A y B leen entera toda la documentación anterior en lugar de solo los fragmentos relacionados con la nueva. Es un experimento, como el nuevo arbitraje: un trabajo `questions-read-all` que deja su resultado y su informe, no cuenta como ronda del proyecto y no añade sus preguntas. Exige lo mismo que una ronda.",
         "parameters": [
           {
             "name": "projectId",

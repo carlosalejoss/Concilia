@@ -6,7 +6,7 @@ namespace Concilia.Core.Phases;
 
 // The inputs of an update of the validated catalog with some iterations
 // (milestone 22, step 113, prompts v0.13). A and B read as in a centred round
-// (option C): the documentation of those iterations, the earlier fragments
+// (the related reading): the documentation of those iterations, the earlier fragments
 // related to it and the related requirements, entirely; the whole catalog and
 // documentation, only to consult. The arbiter reads the two proposals, the
 // matching of the new requirements (also against the catalog) and the

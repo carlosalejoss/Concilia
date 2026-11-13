@@ -48,7 +48,7 @@ public static class QuestionEndpoints
             .WithDescription("A ‖ B → árbitro sobre toda la documentación y las preguntas ya hechas, para no repetirlas. Al terminar, las preguntas del árbitro se guardan como pendientes, numeradas tras las que ya tiene el proyecto. Exige al menos un documento con texto. Con `focus` (paso 112), la ronda se centra en esas iteraciones, cerradas y con documentos: lee entera su documentación, los fragmentos anteriores relacionados y los requisitos validados relacionados, y además de preguntas nuevas (también por contradicciones con una respuesta o con un requisito validado) propone revisiones de las pendientes: reformularlas, o que la documentación nueva las resuelve o las deja obsoletas.")
             .LaunchesJob();
 
-        // Step 116: the same centred round reading everything (option A), an
+        // Step 116: the same centred round with the full reading, an
         // experiment whose questions are not added to the project (ReadAllRound).
         questions.MapPost("/projects/{projectId:int}/question-rounds/read-all",
             async (int projectId, QuestionRoundRequest request, AppDbContext db, JobQueue queue, RunnerProviders provider,
@@ -61,7 +61,7 @@ public static class QuestionEndpoints
             return await LaunchRoundAsync(projectId, request.Focus, readAll: true, db, queue, provider, options, storage, embedder);
         })
             .WithSummary("Lanza una ronda centrada que lo lee todo (experimental)")
-            .WithDescription("Para medir la lectura de la opción C frente a leerlo todo (opción A, paso 116): la misma ronda centrada en `focus`, con los mismos prompts v0.13 y las mismas entradas, salvo que A y B leen entera toda la documentación anterior en lugar de solo los fragmentos relacionados con la nueva. Es un experimento, como el nuevo arbitraje: un trabajo `questions-read-all` que deja su resultado y su informe, no cuenta como ronda del proyecto y no añade sus preguntas. Exige lo mismo que una ronda.")
+            .WithDescription("Para medir la lectura relacionada frente a la lectura completa (paso 116): la misma ronda centrada en `focus`, con los mismos prompts v0.13 y las mismas entradas, salvo que A y B leen entera toda la documentación anterior en lugar de solo los fragmentos relacionados con la nueva. Es un experimento, como el nuevo arbitraje: un trabajo `questions-read-all` que deja su resultado y su informe, no cuenta como ronda del proyecto y no añade sus preguntas. Exige lo mismo que una ronda.")
             .LaunchesJob();
 
         // The catalog v0: A ‖ B → arbiter over all the documentation and the
@@ -105,7 +105,7 @@ public static class QuestionEndpoints
             .LaunchesJob();
 
         // Step 113: update the validated catalog with some iterations (prompts
-        // v0.13). A ‖ B write a set of changes, with the reading of option C and
+        // v0.13). A ‖ B write a set of changes, with the related reading and
         // the answers marked as new when given after validating the catalog; the
         // arbiter joins them, and the platform applies them to the working copy.
         phases.MapPost("/projects/{projectId:int}/catalog-update-jobs",
@@ -516,7 +516,7 @@ public static class QuestionEndpoints
             PreviousQuestions = PhasePrompt.PreviousQuestionsBlock(previous.Select(QuestionRules.ForPrompt)),
         };
         var documents = await PhaseJobs.LoadDocumentsAsync(db, storage, projectId);
-        // Step 112: centred on some iterations, with the prompts v0.13 and the reading of option C.
+        // Step 112: centred on some iterations, with the prompts v0.13 and the related reading.
         FocusPlan? focus = null;
         var focusNumbers = focusRequest?.Distinct().Order().ToList() ?? [];
         if (focusNumbers.Count > 0)

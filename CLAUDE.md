@@ -49,7 +49,7 @@ Hitos 0 a 5 completados. Hito 6 (catálogo v1.3) cerrado tras medir la v1.4 (ver
 
     Con él están hechos todos los pasos del hito 25. El backlog con Kimi espera a la v0.14, y cerrar el hito así lo decide el autor.
   - Hito 25 cerrado por el autor el 13-11-2026, con el backlog de Kimi pendiente de la v0.14 (paso 143).
-  - Hito 26 en curso (orden 126, 138, 139, 140, 141, 142 y 143; cada paso, cuando el autor cierra el anterior). Paso 126 hecho el 13-11-2026: el aviso de un par «mismo» separado dice el id, en el borrador, del elemento donde acabó el otro. Paso 138 hecho el mismo día: cada repetición de una tarea se guarda con su propia hora de inicio y de fin (`RunAttempt.StartedAt`/`FinishedAt`); las ejecuciones de antes no se corrigen.
+  - Hito 26 en curso (orden 126, 138, 139, 140, 141, 142 y 143; cada paso, cuando el autor cierra el anterior). Paso 126 hecho el 13-11-2026: el aviso de un par «mismo» separado dice el id, en el borrador, del elemento donde acabó el otro. Paso 138 hecho el mismo día: cada repetición de una tarea se guarda con su propia hora de inicio y de fin (`RunAttempt.StartedAt`/`FinishedAt`); las ejecuciones de antes no se corrigen. Paso 139 hecho el mismo día: el código dice «related reading» / «full reading» (y la API, «lectura relacionada» / «lectura completa») en lugar de «opción C» / «opción A».
 
   Todo lo pendiente, en orden, está en «Lo que queda, en orden» de `docs/plan-de-construccion.md`; los pasos del hito 23 explican qué hace el autor y qué hace Claude. Se trabaja siguiendo `docs/plan-de-construccion.md`, un paso cada vez. El proyecto se llama Concilia desde el 13-10-2026 (antes ReqArbiter, nombre provisional).
 

@@ -39,8 +39,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 131 hecho (12 y 13-11-2026):** con Kimi, preguntas, sugerencias y catálogo salen a la primera y B aporta mucho más que LUNA. El backlog falla: el árbitro de la v0.12 no cabe en 128.000 tokens con las propuestas de Kimi (`docs/opencode-go/flujo-kimi.md`). Se arregla en la v0.14 (paso 143).
 - **Paso 132 hecho (13-11-2026):** se mantienen todas las medidas tomadas por LUNA, y por defecto B es Kimi por OpenCode Go, salvo en modo simulado (`docs/opencode-go/medidas-luna.md`). Con él están hechos todos los pasos del hito 25. Su «Hecho cuando» se cumple hasta el catálogo: el backlog con Kimi espera a la v0.14 (paso 143), y el autor decide si cierra el hito así.
 - **Hito 25 cerrado por el autor (13-11-2026)** con el backlog de Kimi pendiente de la v0.14 (paso 143).
-- **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro) y 138 (la duración real de cada repetición) hechos el 13-11-2026.
-- **Siguiente:** el paso 139, cuando el autor cierre el 138.
+- **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) y 139 (la «lectura relacionada» en el código) hechos el 13-11-2026.
+- **Siguiente:** el paso 140.
 
 ### Lo que queda, en orden
 
@@ -62,7 +62,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 8. ~~**126,** que el aviso de un par «mismo» separado diga en qué elemento está el otro~~ (hecho el 13-11-2026).
 9. ~~**138,** la duración real de cada repetición de una tarea~~ (hecho el 13-11-2026).
-10. **139,** renombrar en el código la «opción C» como «lectura relacionada».
+10. ~~**139,** renombrar en el código la «opción C» como «lectura relacionada»~~ (hecho el 13-11-2026).
 11. **140,** los textos de la plataforma en el idioma del proyecto.
 12. **141,** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta.
 13. **142,** mejoras del backlog en GitHub: issue types en las organizaciones, GitHub Projects y comentarios en los issues afectados por una iteración.
@@ -1167,12 +1167,13 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
   - **Qué se queda igual:** las salidas de los modelos y la duración de cada trabajo.
   - **Cómo se comprueba:** un test con un trabajo que repite una tarea, en el que cada intento tiene su propia duración.
   - **Hecho el 13-11-2026.** `RetryRunner` anota en cada intento (`RunAttempt`) cuándo empezó y cuándo terminó, con la revisión de su salida incluida, y `JobWorker` guarda cada ejecución con las suyas. El primer intento conserva la hora a la que empezó a ejecutarse. Tests: uno de `RetryRunner` y otro con una ronda de preguntas por la API con `Runner:SimulateRepair`, en el que la reparación de A, de B y del árbitro empieza cuando ha terminado el primer intento; sin el arreglo, falla. 1.064 en verde. Las ejecuciones ya guardadas no se corrigen: sus repeticiones siguen con la duración total.
-- [ ] 139. **Renombrar en el código la «opción C» como «lectura relacionada»** («Después», punto 8; autor, 04-11-2026).
+- [x] 139. **Renombrar en el código la «opción C» como «lectura relacionada»** («Después», punto 8; autor, 04-11-2026).
   - La documentación ya usa los nombres nuevos (y la «opción A» es la «lectura completa»), pero el código sigue diciendo «option C» u «opción C»:
     - los comentarios de `FocusedRoundInput`, `FocusedRound`, `CatalogUpdateRound`, `RelatedContext` y `scripts/evaluacion/medir-fragmentos-relacionados.cs`;
     - las descripciones de la API de `QuestionEndpoints` (con ellas, `docs/api/openapi.json`, que se regenera al compilar en Debug).
   - Para encontrarlos: `grep -rn "option C\|opción C" src scripts`.
   - No cambia el comportamiento.
+  - **Hecho el 13-11-2026.** En los comentarios, «the related reading» y «the full reading»; en la descripción de `POST /projects/{id}/question-rounds/read-all` y en el script, «lectura relacionada» y «lectura completa». La búsqueda ya no encuentra nada en `src`, `scripts`, `web/src` ni `docs/api/openapi.json`. 1.064 tests en verde.
 - [ ] 140. **Los textos de la plataforma en el idioma del proyecto** («Después», punto 6; paso 105). En un proyecto en inglés, el contenido de los modelos sale en inglés, pero no lo que pone la plataforma:
   - la narrativa de las historias («Como… quiero… para…») y «Tarea», en la web, la comparación y Gherkin;
   - los títulos, leyendas y anexos de Word y PDF;
