@@ -18,9 +18,10 @@ Compara las propuestas 1 y 2, escribe el backlog unido en `output/backlog.json` 
 - `respuestas`: lo mismo que recibieron los product owners.
 - `input/propuesta_1.txt` e `input/propuesta_2.txt`: las dos propuestas, resumidas, una línea por épica y una por historia, cada historia debajo de su épica:
   - `1:EP-01 «título» · descripción`
-  - `1:HU-012 «Anular una cita» · como recepcionista · quiero anular una cita · para liberar el hueco · requisitos: RF-031, RNF-004 · criterios: 1:CA-027 «Anulación con aviso», 1:CA-028 «Cita ya pasada» · tareas: 1:T-044, 1:T-045 · texto en criterios.txt, líneas 61–64`
+  - `1:HU-012 «Anular una cita» · como recepcionista · quiero anular una cita · para liberar el hueco · requisitos: RF-031, RNF-004 · criterios: 1:CA-027 «Anulación con aviso» (cifras: 24), 1:CA-028 «Cita ya pasada» · tareas: 1:T-044, 1:T-045 · texto en criterios.txt, líneas 61–64`
+  - `(cifras: …)`: los números que aparecen en el texto del criterio, para que veas si dos criterios no coinciden sin leerlos.
 - `input/criterios.txt`: el texto de cada criterio (`1:CA-027 «escenario» · Dado … · Cuando … · Entonces …`) y de cada tarea (`1:T-044 título`), una línea por cada uno. Cada historia dice en qué líneas están los suyos.
-- `input/requisitos.txt`: los requisitos del catálogo validado por el cliente que tienes que comprobar, uno por línea (`RF-031 texto`): los que citan las historias sin un par `mismo` en el emparejamiento. El catálogo es la fuente de lo que hace el sistema; lo leyeron entero los product owners. La plataforma comprueba después que cada requisito funcional está en alguna historia.
+- `input/requisitos.txt`: los requisitos del catálogo validado por el cliente que citan las historias sin un par `mismo` en el emparejamiento, uno por línea (`RF-031 texto`). El catálogo es la fuente de lo que hace el sistema; lo leyeron entero los product owners. La plataforma comprueba después que cada requisito funcional está en alguna historia.
 - `input/emparejamiento.txt`: el emparejamiento por significado que ha calculado la plataforma, sin IA, comparando el texto de cada historia (su título y su «como… quiero… para…») de las dos propuestas. Una línea por par: `1:HU-003 2:HU-001 mismo 0.94` (dicen lo mismo) o `1:HU-010 2:HU-007 parecido 0.78` (se parecen, pero no son lo mismo); y `1:HU-020 sin-par` para cada historia que no tiene nada parecido en la otra propuesta. Mide cuánto se parecen los textos, no si se contradicen.
 - En los ficheros, el id de cada épica, historia, criterio y tarea lleva delante el número de su propuesta (`1:HU-001`, `1:CA-003` y `1:T-005` en la 1; `2:HU-001` en la 2): así no se confunden, aunque el mismo id exista en las dos.
 - No sabes quién escribió cada propuesta y su orden es aleatorio: júzgalas solo por su contenido.
@@ -35,9 +36,11 @@ Los ficheros de `input/` no van en este mensaje: léelos con Read, por partes, a
 - Haz exactamente esas llamadas a Read, con esos `offset` y `limit`: la primera línea de cada fichero es la 1, no la 0. Si una llamada falla por tamaño, divide ese tramo en dos.
 - No te saltes ningún tramo de un fichero que hay que leer entero: la plataforma comprueba qué líneas has leído y, si falta alguna, te pide repetir.
 - Lee solo los ficheros de esta lista.
-- De `input/criterios.txt`, lee las líneas que dice cada historia (con `offset` y `limit`):
-  - siempre, las de las historias que unes con un par `parecido` o `sin-par` y las de una historia que repartes (§2): tienes que combinar sus criterios o ver si se contradicen;
-  - en un par `mismo`, solo si dos escenarios parecen el mismo y tienes que decidir si uno repite al otro.
+- `input/criterios.txt` y `input/requisitos.txt` son para consultar: el resumen de las propuestas basta para unir casi todas las historias, porque los criterios que conservas se citan por su id. Lee de `input/criterios.txt` las líneas que dice una historia (con `offset` y `limit`) solo cuando:
+  - dos escenarios de las historias que unes parecen el mismo, o se contradicen, y tienes que decidir;
+  - sus cifras no coinciden;
+  - vas a combinar dos criterios en uno o a marcar una discrepancia.
+- Busca en `input/requisitos.txt` un requisito solo cuando necesites su texto para decidir qué historia es más fiel al catálogo.
 
 # §2 CÓMO UNIR
 

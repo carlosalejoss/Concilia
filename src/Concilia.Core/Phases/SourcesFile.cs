@@ -120,8 +120,12 @@ public static partial class SourcesFile
     }
 
     // The numbers of a text, with "," and "." as the same decimal mark: "24" and "1,5".
-    public static HashSet<string> Numbers(string text) =>
-        Number().Matches(text).Select(m => m.Value.Replace(',', '.')).ToHashSet();
+    public static HashSet<string> Numbers(string text) => NumbersInOrder(text).ToHashSet();
+
+    // The same, each one once, in the order they appear (step 143: the
+    // compact lines of the arbiter of the backlog show them).
+    public static IReadOnlyList<string> NumbersInOrder(string text) =>
+        Number().Matches(text).Select(m => m.Value.Replace(',', '.')).Distinct().ToList();
 
     private static void Add(Dictionary<string, List<string>> pairs, string from, string to)
     {

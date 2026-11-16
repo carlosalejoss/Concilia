@@ -50,7 +50,7 @@ public class BacklogArbiterFilesTests
             [
                 "1:EP-01 «Citas» · Pedir y anular citas.",
                 "1:HU-001 «Anular una cita» · como recepcionista · quiero anular una cita · para liberar el hueco · requisitos: RF-001, RNF-001 · " +
-                "criterios: 1:CA-001 «Con aviso», 1:CA-002 «Cita pasada» · tareas: 1:T-001 · texto en criterios.txt, líneas 1–3",
+                "criterios: 1:CA-001 «Con aviso» (cifras: 1), 1:CA-002 «Cita pasada» · tareas: 1:T-001 · texto en criterios.txt, líneas 1–3",
                 "1:HU-002 «Ver citas» · como cliente · quiero ver mis citas · para recordarlas · requisitos: RF-002 · criterios: (ninguno) · tareas: (ninguno)",
             ],
             Content(files, BacklogArbiterFiles.Proposal1File).TrimEnd('\n').Split('\n'));
@@ -68,12 +68,12 @@ public class BacklogArbiterFilesTests
     }
 
     [Fact]
-    public void The_proposals_and_the_requirements_are_read_entirely_and_the_criteria_only_consulted()
+    public void The_proposals_are_read_entirely_and_the_criteria_and_the_requirements_only_consulted()
     {
         var files = BacklogArbiterFiles.Build(Proposal1, Proposal2, Catalog, "");
 
         Assert.Equal(
-            [(BacklogArbiterFiles.Proposal1File, true), (BacklogArbiterFiles.Proposal2File, true), (BacklogArbiterFiles.CriteriaFile, false), (BacklogArbiterFiles.RequirementsFile, true)],
+            [(BacklogArbiterFiles.Proposal1File, true), (BacklogArbiterFiles.Proposal2File, true), (BacklogArbiterFiles.CriteriaFile, false), (BacklogArbiterFiles.RequirementsFile, false)],
             files.Select(f => (f.Path, f.Required)));
     }
 
@@ -133,7 +133,7 @@ public class BacklogArbiterFilesTests
         Assert.DoesNotContain("propuesta_1.json", prompt);
         Assert.DoesNotContain("catalogo.json", prompt);
         Assert.Contains("input/propuesta_1.txt", prompt);
-        Assert.Equal([BacklogArbiterFiles.Proposal1File, BacklogArbiterFiles.Proposal2File, BacklogArbiterFiles.RequirementsFile], request.RequiredReads);
+        Assert.Equal([BacklogArbiterFiles.Proposal1File, BacklogArbiterFiles.Proposal2File], request.RequiredReads);
         var context = PhaseTask.LoadContext(temp.Path, new HashSet<string>());
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(input.Proposal1), JsonNode.Parse(context.Proposal1!)));
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(input.Catalog), JsonNode.Parse(context.Catalog!)));

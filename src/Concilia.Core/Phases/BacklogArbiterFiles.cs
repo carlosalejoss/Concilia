@@ -18,13 +18,24 @@ namespace Concilia.Core.Phases;
 //
 // So the arbiter gets:
 //   input/propuesta_1.txt and _2.txt  one line per epic and per story: its
-//       title, "como… quiero… para…", requirements, the name and id of each
-//       criterion, the ids of its tasks and the lines of criterios.txt with
-//       their text (about 100 tokens per story); read entirely
+//       title, "como… quiero… para…", requirements, the name, id and numbers
+//       of each criterion, the ids of its tasks and the lines of
+//       criterios.txt with their text (about 100 tokens per story); read
+//       entirely
 //   input/criterios.txt  the text of every criterion and task, one per line,
 //       grouped by story; only to consult what it needs
 //   input/requisitos.txt  the requirements cited by the stories without any
-//       pair "mismo" in the matching (those it has to decide); read entirely
+//       pair "mismo" in the matching (those it has to decide); only to consult
+//
+// The first proposal (approved by the author on 16-11-2026) had the arbiter
+// read entirely the requirements, and the criteria of every story without a
+// pair "mismo". But in the two backlogs that did not fit, almost every story
+// is "parecido" (B Kimi: 22 "mismo" of 245; SOL 6 and LUNA: 18 of 210), so it
+// would have read almost everything again: about 120,000 to 140,000 tokens
+// with Kimi. The author chose the same day to adjust it: both files only to
+// consult, and the numbers of each criterion in the compact line, so the
+// arbiter sees a conflict of numbers ("24" against "48") without reading the
+// text (the embeddings do not see it either).
 //
 // The whole proposals and the catalog are still written to input/ with their
 // names of always (PhaseTask.Proposal1File…), outside the reading plan: the
@@ -53,7 +64,7 @@ public static class BacklogArbiterFiles
             new InputFile(Proposal1File, compact1, Required: true),
             new InputFile(Proposal2File, compact2, Required: true),
             new InputFile(CriteriaFile, criteria.ToString(), Required: false),
-            new InputFile(RequirementsFile, Requirements(catalog, ToCheck(proposal1, proposal2, matching)), Required: true),
+            new InputFile(RequirementsFile, Requirements(catalog, ToCheck(proposal1, proposal2, matching)), Required: false),
         ];
     }
 
@@ -61,7 +72,7 @@ public static class BacklogArbiterFiles
     // added to criteria (line: the last line written there, shared by the two
     // proposals because they go in the same file).
     //   1:EP-01 «Reserva de salas» · Reservar salas y recibir la confirmación.
-    //   1:HU-001 «Reservar una sala» · como empleado · quiero reservar una sala · para tenerla asegurada · requisitos: RF-001, RNF-001 · criterios: 1:CA-001 «Sala libre», 1:CA-002 «Sala ocupada» · tareas: 1:T-001, 1:T-002 · texto en criterios.txt, líneas 1–4
+    //   1:HU-001 «Reservar una sala» · como empleado · quiero reservar una sala · para tenerla asegurada · requisitos: RF-001, RNF-001 · criterios: 1:CA-001 «Sala libre» (cifras: 1), 1:CA-002 «Sala ocupada» · tareas: 1:T-001, 1:T-002 · texto en criterios.txt, líneas 1–4
     public static string Compact(string proposal, int n, StringBuilder criteria, ref int line)
     {
         var text = new StringBuilder();
@@ -75,7 +86,8 @@ public static class BacklogArbiterFiles
                 var tasks = new List<string>();
                 foreach (var c in Items(story, "criterios"))
                 {
-                    names.Add($"{n}:{Id(c)} «{Str(c, "escenario")}»");
+                    var numbers = SourcesFile.NumbersInOrder($"{Str(c, "dado")} {Str(c, "cuando")} {Str(c, "entonces")}");
+                    names.Add($"{n}:{Id(c)} «{Str(c, "escenario")}»{(numbers.Count > 0 ? $" (cifras: {string.Join(", ", numbers)})" : "")}");
                     criteria.Append($"{n}:{Id(c)} «{Str(c, "escenario")}» · Dado {Str(c, "dado")} · Cuando {Str(c, "cuando")} · Entonces {Str(c, "entonces")}\n");
                     line++;
                 }
