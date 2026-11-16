@@ -18,7 +18,7 @@ Se subió de verdad a GitHub el backlog de un proyecto de prueba, primero en una
   dotnet run docs/resultados-paso-142/iteracion2.cs -- <carpeta con backlog41.json> 4edfe632
   ```
 
-## Resultados hasta ahora
+## Resultados
 
 **Organización** (épica → Epic, historia → Feature, tarea → Task), terminado:
 
@@ -54,7 +54,6 @@ Dos detalles más: el script escribía «Cada epica» (ahora «épica») y el co
 
 **La red:** durante la prueba se cortó varias veces la conexión con `api.github.com` (y, al principio, con el registro de imágenes de Docker), y GitHub devolvió un 504; en todos los casos, relanzar el script siguió por donde iba sin duplicar nada.
 
-## Pendiente
+## Cierre
 
-- Que el autor mire los dos repositorios y los dos tableros y cierre el paso.
-- Después, borrar los issues y los tableros de prueba (con ellos, los comentarios), o que el autor borre los dos repositorios y la organización.
+El autor revisó los resultados y cerró el paso el 16-11-2026. Borró los dos repositorios y la organización (con ellos, los issues, los comentarios y el tablero de la organización), y Claude borró el tablero de la cuenta personal, que no va con el repositorio.

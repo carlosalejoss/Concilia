@@ -3843,3 +3843,8 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Documentación:** `docs/resultados-paso-142/README.md` completo, plan, `CLAUDE.md`, trazabilidad y la memoria (sección 18 de «Cosas que añadir», detrás de la 17 de VibeBreach, que añadió otra sesión); compila.
 - **Lo lanzado no tiene coste de modelos:** solo `gh` contra GitHub.
 - **Pendiente:** que el autor mire los repositorios y cierre el 142; borrar después los issues y tableros de prueba; el 143, cuando el autor revise su propuesta.
+
+## 16-11-2026, 11:11 (sesión, hito 26, cierre del paso 142)
+
+- **El autor revisó los resultados de la prueba real y cerró el paso 142.** Borró los dos repositorios de prueba y la organización; Claude borró el tablero de la cuenta personal, que no se va con el repositorio (vacío ya, sin elementos). No queda nada de prueba en GitHub.
+- **Pendiente:** el paso 143, cuando el autor revise `docs/propuesta-prompts-v0.14.md` (A, B, C y el orden de las mediciones). El autor pidió que se le explicara mejor la propuesta.
