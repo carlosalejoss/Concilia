@@ -342,15 +342,17 @@ public class PhaseTaskTests
             Assert.Contains(review.Validation.Errors, e => e.StartsWith("RF-004 ARB-FALTA"));
     }
 
-    // A and B read their input entirely; the arbiter, the two proposals (and
-    // the catalog in the backlog), and may only consult the documentation or,
-    // in the catalog, the sources it needs (step 107).
+    // A and B read their input entirely; the arbiter, the two proposals, and
+    // may only consult the documentation or, in the catalog, the sources it
+    // needs (step 107). The arbiter of the backlog (step 143) reads the
+    // proposals in compact form and the requirements it has to check, and
+    // consults the text of the criteria.
     [Theory]
     [InlineData(PhaseKind.Questions, PhaseRole.Proposal, "input/documentacion.txt", "")]
     [InlineData(PhaseKind.Questions, PhaseRole.Arbiter, "input/propuesta_1.json input/propuesta_2.json", "input/documentacion.txt")]
     [InlineData(PhaseKind.Catalog, PhaseRole.Arbiter, "input/propuesta_1.json input/propuesta_2.json", "input/fuentes.txt")]
     [InlineData(PhaseKind.Backlog, PhaseRole.Proposal, "input/catalogo.json", "")]
-    [InlineData(PhaseKind.Backlog, PhaseRole.Arbiter, "input/catalogo.json input/propuesta_1.json input/propuesta_2.json", "")]
+    [InlineData(PhaseKind.Backlog, PhaseRole.Arbiter, "input/propuesta_1.txt input/propuesta_2.txt input/requisitos.txt", "input/criterios.txt")]
     [InlineData(PhaseKind.Suggestions, PhaseRole.Proposal, "input/documentacion.txt", "")]
     public void Each_role_reads_its_files(PhaseKind kind, PhaseRole role, string required, string optional)
     {

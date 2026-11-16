@@ -268,7 +268,7 @@ public class JobRunner(RunExecutor executor, CatalogOptions options, PhaseExecut
         RunOutcome outcome;
         try
         {
-            // The version the run was created with: v0.13 in a centred round (step 112), v0.12 in the rest.
+            // The version the run was created with: v0.13 in a centred round (step 112) and in the updates, the version of always in the rest (v0.14 since step 143).
             outcome = new RunOutcome(run, await execute(), null, run.PromptVersion ?? PhaseExecutor.PromptVersion);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)

@@ -20,6 +20,12 @@ namespace Concilia.Core.Phases;
 // out, so the schema does not report it again. A warning says how many were
 // cited and how many criteria of the joined stories were left out, so the
 // report and the evaluation can measure it.
+//
+// Step 143 (prompts v0.14): the arbiter may share out the criteria of a big
+// story among several small ones, with the big one in the `de` of each. So
+// what is left out is counted over the whole backlog, each criterion once:
+// those of the joined stories cited by no story. Before, it was counted story
+// by story, and a story in several `de` would count its criteria several times.
 public static class CriteriaReferences
 {
     public record Expanded(string Output, IReadOnlyList<string> Warnings, IReadOnlyList<string> Errors);
@@ -48,8 +54,8 @@ public static class CriteriaReferences
         var errors = new List<string>();
         var cited = Lists.ToDictionary(l => l.List, _ => 0);
         var written = Lists.ToDictionary(l => l.List, _ => 0);
-        var offered = Lists.ToDictionary(l => l.List, _ => 0); // of the stories each story joins
-        var leftOut = Lists.ToDictionary(l => l.List, _ => 0);
+        var offered = Lists.ToDictionary(l => l.List, _ => new HashSet<string>()); // of the stories the backlog joins
+        var citedAnywhere = Lists.ToDictionary(l => l.List, _ => new HashSet<string>());
 
         foreach (var story in Stories(root))
         {
@@ -58,7 +64,6 @@ public static class CriteriaReferences
             {
                 if (story[list] is not JsonArray items)
                     continue;
-                var citedHere = new HashSet<string>();
                 for (var i = items.Count - 1; i >= 0; i--)
                 {
                     if (items[i] is not JsonValue v || !v.TryGetValue<string>(out var reference))
@@ -69,7 +74,7 @@ public static class CriteriaReferences
                     if (Find(proposals, list, reference) is { } item)
                     {
                         items[i] = item.DeepClone();
-                        citedHere.Add(reference);
+                        citedAnywhere[list].Add(reference);
                         cited[list]++;
                     }
                     else
@@ -79,16 +84,12 @@ public static class CriteriaReferences
                         items.RemoveAt(i);
                     }
                 }
-                // The criteria (or tasks) of the stories this one joins that it does not cite.
+                // The criteria (or tasks) of the stories this one joins.
                 foreach (var source in Sources(story))
-                    foreach (var id in ItemsOf(proposals, source, list))
-                    {
-                        offered[list]++;
-                        if (!citedHere.Contains(id))
-                            leftOut[list]++;
-                    }
+                    offered[list].UnionWith(ItemsOf(proposals, source, list));
             }
         }
+        var leftOut = Lists.ToDictionary(l => l.List, l => offered[l.List].Except(citedAnywhere[l.List]).Count());
 
         foreach (var (list, prefix, _) in Lists)
             Renumber(Stories(root), list, prefix);
@@ -97,7 +98,7 @@ public static class CriteriaReferences
         if (cited.Values.Sum() + leftOut.Values.Sum() > 0)
             warnings.Add($"{phase.OutputFile} ARB-CITA: la plataforma pone el texto de {cited["criterios"]} criterios y {cited["tareas"]} tareas citados por su id; " +
                          $"el árbitro escribió enteros {written["criterios"]} criterios y {written["tareas"]} tareas. " +
-                         $"De los {offered["criterios"]} criterios y {offered["tareas"]} tareas de las historias que une, no cita {leftOut["criterios"]} criterios y {leftOut["tareas"]} tareas " +
+                         $"De los {offered["criterios"].Count} criterios y {offered["tareas"].Count} tareas de las historias que une, no cita {leftOut["criterios"]} criterios y {leftOut["tareas"]} tareas " +
                          "(pueden estar repetidos o combinados en uno nuevo).");
         return new Expanded(root.ToJsonString(Indented), warnings, errors);
     }

@@ -28,7 +28,10 @@ public class PhaseExecutor(IRunnerProvider provider, RunEventStore events, FileS
     // a direction of style per project for the mockup without a style reference.
     // v0.12 (22-10-2026): the arbiter of the catalog consults only the sources it needs (input/fuentes.txt),
     // and the arbiter of the backlog cites by their id the criteria and tasks it keeps.
-    public const string PromptVersion = "v0.12";
+    // v0.14 (16-11-2026, step 143): the arbiter of the backlog reads the proposals in compact
+    // form and only the requirements it needs, and keeps the small stories of a proposal
+    // instead of joining them. The rest of the prompts do not change.
+    public const string PromptVersion = "v0.14";
 
     // The matching of A and B by meaning that the arbiter gets (step 88).
     public ArbiterMatching Matching => matching;

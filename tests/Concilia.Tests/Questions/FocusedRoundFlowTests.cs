@@ -89,9 +89,9 @@ public class FocusedRoundFlowTests
         Assert.Equal(("propuesta-resuelta", "ambas"), (change["action"]!.GetValue<string>(), change["origin"]!.GetValue<string>()));
         Assert.Equal([2], change["iterations"]!.AsArray().Select(n => n!.GetValue<int>()));
 
-        // A round with all the iterations is still the one of always.
+        // A round with all the iterations is still the one of always (v0.14 since step 143).
         var always = await Launch(client, $"/projects/{id}/question-rounds", new { focus = Array.Empty<int>() });
-        Assert.All((await Json(await client.GetAsync($"/jobs/{always}")))["runs"]!.AsArray(), r => Assert.Equal("v0.12", r!["promptVersion"]!.GetValue<string>()));
+        Assert.All((await Json(await client.GetAsync($"/jobs/{always}")))["runs"]!.AsArray(), r => Assert.Equal("v0.14", r!["promptVersion"]!.GetValue<string>()));
     }
 
     // Step 116: the same centred round reading everything (option A) is an

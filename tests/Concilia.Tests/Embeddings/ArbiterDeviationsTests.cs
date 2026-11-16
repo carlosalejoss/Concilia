@@ -75,6 +75,23 @@ public class ArbiterDeviationsTests
         Assert.EndsWith("que el árbitro dejó en RF-001. Comprueba que no está repetido.", deviations.Single(d => d.ElementId == "RF-002").Explanation);
     }
 
+    // Step 143: the embeddings see "12 meses" and "18 meses" as the same, but
+    // keeping them apart is what the arbiter should do: not a deviation.
+    [Fact]
+    public void Leaving_apart_a_pair_mismo_whose_numbers_differ_is_not_a_deviation()
+    {
+        const string text = "el sistema deberá conservar el historial clínico de cada mascota atendida en la clínica veterinaria durante {0} meses desde su última visita";
+        string Proposal(int months) => new JsonObject { ["requisitos"] = new JsonArray(new JsonObject { ["id"] = "RF-001", ["texto"] = string.Format(text, months) }) }.ToJsonString();
+        var matching = new ArbiterMatching(_embedder, Thresholds).Compute(PhaseKind.Catalog, Proposal(12), Proposal(18));
+        var output = Arbiter(("RF-001", ["RF-001"], []), ("RF-002", [], ["RF-001"]));
+
+        Assert.Equal(MatchLevel.Same, Assert.Single(matching.Pairs, p => p.Level != MatchLevel.Different).Level);
+        Assert.Empty(ArbiterDeviations.Find(PhaseKind.Catalog, output, matching, ["A", "B"]));
+        // With the same number it is still one.
+        var same = new ArbiterMatching(_embedder, Thresholds).Compute(PhaseKind.Catalog, Proposal(12), Proposal(12));
+        Assert.NotEmpty(ArbiterDeviations.Find(PhaseKind.Catalog, output, same, ["A", "B"]));
+    }
+
     [Fact]
     public void The_draft_cites_the_other_element_with_its_id_in_the_draft()
     {

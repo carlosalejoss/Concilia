@@ -56,7 +56,7 @@ public static class PhaseTask
     // The files of input/ the model reads by parts (decision of 09-10-2026):
     // A and B read the documentation entirely (the backlog, the validated
     // catalog instead); the arbiter reads the two proposals entirely and may
-    // consult the documentation or, in the backlog, must read the catalog.
+    // consult the documentation (in the backlog, see BacklogArbiterFilesOf).
     public static IReadOnlyList<InputFile> InputFilesOf(PhaseDefinition phase, PhaseInput input)
     {
         if (phase.Focused)
@@ -65,6 +65,8 @@ public static class PhaseTask
             return CatalogUpdateRound.InputFilesOf(phase, input);
         if (phase.Kind == PhaseKind.BacklogUpdate)
             return BacklogUpdateRound.InputFilesOf(phase, input);
+        if (phase.Kind == PhaseKind.Backlog && phase.IsArbiter)
+            return BacklogArbiterFilesOf(input);
         var files = new List<InputFile>();
         if (phase.Kind == PhaseKind.Backlog)
             files.Add(new InputFile(CatalogFile, ReadingPlan.OnePerLine(input.Catalog), Required: true));
@@ -81,6 +83,33 @@ public static class PhaseTask
         }
         return files;
     }
+
+    // Step 143 (prompts v0.14): the arbiter of the backlog reads the two
+    // proposals in compact form, the requirements of the stories it has to
+    // decide and the matching, and consults the text of the criteria and
+    // tasks (BacklogArbiterFiles), instead of the two whole proposals and the
+    // whole catalog.
+    private static IReadOnlyList<InputFile> BacklogArbiterFilesOf(PhaseInput input)
+    {
+        var files = BacklogArbiterFiles.Build(input.Proposal1, input.Proposal2, input.Catalog, input.Matching).ToList();
+        if (input.Matching.Length > 0)
+            files.Add(new InputFile(MatchingFile.Path, input.Matching, Required: true));
+        return files;
+    }
+
+    // The files the platform writes to input/ for itself, outside the reading
+    // plan (step 143): the validator, the citations by id and FakeProvider of
+    // the arbiter of the backlog need the whole proposals and the catalog,
+    // which it no longer reads. The prompt does not name them.
+    public static IReadOnlyList<InputFile> PlatformFilesOf(PhaseDefinition phase, PhaseInput input) =>
+        phase.Kind == PhaseKind.Backlog && phase.IsArbiter
+            ?
+            [
+                new InputFile(CatalogFile, ReadingPlan.OnePerLine(input.Catalog), Required: false),
+                new InputFile(Proposal1File, ProposalIds.Prefix(phase.Kind, input.Proposal1, 1), Required: false),
+                new InputFile(Proposal2File, ProposalIds.Prefix(phase.Kind, input.Proposal2, 2), Required: false),
+            ]
+            : [];
 
     // The documentation a phase sees (not the backlog, which reads the catalog):
     // A and B read it entirely and the arbiter of the questions consults it.
@@ -120,7 +149,7 @@ public static class PhaseTask
         Write(workDirectory, FragmentsFile, JsonSerializer.Serialize(new { input.SystemName, input.Language, Fragments = fragments }, Json));
         if (pendingQuestionIds is not null)
             Write(workDirectory, PendingFile, JsonSerializer.Serialize(pendingQuestionIds, Json));
-        foreach (var file in files)
+        foreach (var file in files.Concat(PlatformFilesOf(phase, input)))
             Write(workDirectory, file.Path, file.Content);
 
         return new PhaseRequest(new RunRequest

@@ -15,7 +15,9 @@ namespace Concilia.Tests.Phases;
 // the milestone). If one of these tests fails, a mode of always has changed:
 // the fix is in the code, never in the snapshot. Only for a new version of the
 // prompts of always would they be recorded again, with
-// CONCILIA_UPDATE_SNAPSHOTS=1.
+// CONCILIA_UPDATE_SNAPSHOTS=1. Step 143 (prompts v0.14, 16-11-2026): the arbiter of the
+// backlog was recorded again on purpose, because its prompt and its files
+// change; the whole proposals and the catalog of its input/ stay the same.
 public class V012SnapshotTests
 {
     private static string Example(string file) => File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "prompts-v0", "ejemplo", file));

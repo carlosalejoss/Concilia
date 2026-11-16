@@ -1,0 +1,38 @@
+1:CA-001 «Reserva de una sala libre» · Dado una sala libre en la franja elegida · Cuando el empleado confirma la reserva con fecha, hora de inicio, hora de fin y número de asistentes · Entonces la reserva queda registrada y el empleado recibe un correo de confirmación en menos de 1 minuto
+1:CA-002 «Sala ya reservada» · Dado una sala ya reservada en la franja elegida · Cuando el empleado intenta reservarla · Entonces el sistema rechaza la reserva e informa al empleado
+1:CA-003 «Sala en mantenimiento» · Dado una sala en mantenimiento · Cuando el empleado intenta reservarla · Entonces el sistema impide la reserva
+1:CA-004 «Tiempo de respuesta» · Dado un empleado con sesión iniciada · Cuando busca o reserva una sala · Entonces la respuesta llega en menos de 2 s
+1:T-001 Pantalla de nueva reserva
+1:T-002 Servicio de reservas con comprobación de solapamiento y mantenimiento
+1:T-003 Envío del correo de confirmación
+1:T-004 Pruebas de reserva solapada y en mantenimiento en Chrome y Edge
+1:CA-005 «Catering contratado» · Dado que la empresa ha contratado el módulo de catering · Cuando el empleado crea o edita una reserva · Entonces puede añadirle catering
+1:T-005 Opción de catering en la pantalla de reserva, visible solo con el módulo contratado
+1:CA-006 «Reserva con el modo festivo activado» · Dado el modo festivo activado · Cuando el empleado intenta reservar una sala · Entonces el sistema muestra un aviso de día festivo
+1:T-006 Aviso de día festivo en la pantalla de reserva
+1:CA-007 «Reserva grande» · Dado una reserva de más de 4 horas y más de 20 asistentes · Cuando el empleado la confirma · Entonces queda pendiente de aprobación y la sala queda bloqueada en esa franja
+1:T-007 Estado «pendiente de aprobación» y bloqueo de la franja
+1:CA-008 «Aprobación» · Dado una reserva pendiente de aprobación · Cuando el administrador la aprueba · Entonces la reserva queda confirmada
+1:CA-009 «Rechazo» · Dado una reserva pendiente de aprobación · Cuando el administrador la rechaza · Entonces la reserva se anula y la franja queda libre
+1:T-008 Lista de reservas pendientes con aprobar y rechazar
+1:CA-010 «Exportación» · Dado reservas en el histórico · Cuando el administrador exporta el histórico · Entonces obtiene un CSV con la fecha, la sala, el empleado, la hora de inicio, la hora de fin y el número de asistentes de cada reserva
+1:T-009 Exportación del histórico a CSV
+2:CA-001 «Reserva correcta» · Dado una sala libre y fuera de mantenimiento · Cuando el empleado confirma la reserva · Entonces la reserva se guarda y llega un correo de confirmación en menos de 1 minuto
+2:CA-002 «Franja ocupada» · Dado una sala reservada en esa franja · Cuando el empleado intenta reservarla · Entonces se rechaza la reserva y se informa al empleado
+2:T-001 Formulario de reserva
+2:T-002 Lógica de reserva
+2:T-003 Correo de confirmación
+2:CA-003 «Con módulo de catering» · Dado el módulo de catering contratado · Cuando el empleado reserva · Entonces puede añadir catering
+2:T-004 Opción de catering
+2:CA-004 «Modo festivo» · Dado el modo festivo activado · Cuando el empleado intenta reservar · Entonces aparece un aviso de día festivo
+2:T-005 Aviso de festivo
+2:CA-005 «Reservas del día» · Dado un empleado con sesión iniciada y el calendario corporativo sincronizado · Cuando abre la aplicación · Entonces ve sus reservas del día
+2:T-006 Vista de reservas del día
+2:T-007 Comprobación de la sincronización del calendario corporativo
+2:CA-006 «Reserva grande» · Dado una reserva de más de 4 horas y más de 20 asistentes · Cuando el empleado la confirma · Entonces queda pendiente de aprobación y la sala bloqueada
+2:CA-007 «Decisión del administrador» · Dado una reserva pendiente · Cuando el administrador la aprueba o la rechaza · Entonces la reserva queda confirmada o anulada
+2:T-008 Bandeja de reservas pendientes
+2:CA-008 «Exportar» · Dado reservas en el histórico · Cuando el administrador pulsa exportar · Entonces se descarga un CSV con las reservas
+2:T-009 Exportación CSV
+2:CA-009 «Revisión mensual» · Dado un mes con reservas no utilizadas · Cuando el administrador abre la revisión · Entonces ve las reservas no utilizadas
+2:T-010 Informe de reservas no utilizadas

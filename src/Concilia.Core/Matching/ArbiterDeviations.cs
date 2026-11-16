@@ -19,7 +19,13 @@ namespace Concilia.Core.Matching;
 //                     nothing "mismo" or "parecido" in the other proposal
 //   split-same        two elements the numbers see as "lo mismo" ended in two
 //                     different elements of the arbiter (if it discarded one
-//                     of them, it is not a deviation: it kept one of the two)
+//                     of them, it is not a deviation: it kept one of the two).
+//                     Step 143 (decision of the author of 16-11-2026): nor if
+//                     their texts carry different numbers. The embeddings see
+//                     "1 año" and "8 años" as the same, and keeping them apart
+//                     is what the arbiter should do; it was a false warning
+//                     for the user. The same rule as input/fuentes.txt (step
+//                     107, SourcesFile.Numbers).
 //   joined-several    (step 141, only stories) a story of the union joins two
 //                     or more stories of the same proposal (decision of the
 //                     author of 13-11-2026: always, from two). The arbiter of
@@ -76,7 +82,8 @@ public static class ArbiterDeviations
                     $"La plataforma ve distintos los elementos que el árbitro unió aquí: lo más parecido que encuentra en la otra propuesta llega a {Number(e.Similarity)}, " +
                     $"por debajo de «parecido» ({Number(matching.Thresholds.Similar)}). Comprueba que no se han mezclado dos cosas."));
 
-        foreach (var p in matching.Pairs.Where(p => p.Level == MatchLevel.Same && !joined.Contains((p.AId, p.BId))))
+        foreach (var p in matching.Pairs.Where(p => p.Level == MatchLevel.Same && !joined.Contains((p.AId, p.BId))
+                                                    && SourcesFile.Numbers(p.AText).SetEquals(SourcesFile.Numbers(p.BText))))
         {
             if (!endedIn.TryGetValue(("A", p.AId), out var inA) || !endedIn.TryGetValue(("B", p.BId), out var inB) || inA == inB)
                 continue;

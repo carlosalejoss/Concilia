@@ -78,6 +78,58 @@ public class CriteriaReferencesTests
         Assert.Contains("De los 6 criterios y 7 tareas de las historias que une, no cita 4 criterios y 6 tareas", warning);
     }
 
+    // Step 143 (prompts v0.14): a big story shared out among several small
+    // ones is in the `de` of each; its criteria count once, and none of them
+    // is left out if each one is cited in some story.
+    [Fact]
+    public void A_story_shared_out_among_several_counts_its_criteria_once()
+    {
+        var output = SharedOut(onlyThose: true);
+
+        var warning = Assert.Single(CriteriaReferences.Apply(Arbiter, output, Context()).Warnings);
+
+        // 1:HU-001 (4 and 4, all cited) and 2:HU-001 (2 and 3, none cited).
+        // Story by story it would have counted 10 criteria and 6 left out.
+        Assert.Contains("De los 6 criterios y 7 tareas de las historias que une, no cita 2 criterios y 3 tareas", warning);
+    }
+
+    [Fact]
+    public void The_review_accepts_a_story_in_the_de_of_several()
+    {
+        var review = PhaseTask.Review(Arbiter, SharedOut(onlyThose: false), Context(), "PROMPT", 1);
+
+        Assert.DoesNotContain(review.Validation.Errors, e => e.Contains("HU-001") || e.Contains("HU-002"));
+    }
+
+    // The example of the arbiter whose first story (1:HU-001, 4 criteria and
+    // 4 tasks) is shared out between two stories, HU-001 and a new HU-002;
+    // the rest of the stories are numbered again after them. onlyThose: the
+    // backlog has only those two stories, to count exactly.
+    private static string SharedOut(bool onlyThose)
+    {
+        var root = JsonNode.Parse(Example("backlog_arbitro.json"))!;
+        var stories = root["epicas"]![0]!["historias"]!.AsArray();
+        var first = stories[0]!;
+        first["de"] = new JsonObject { ["propuesta_1"] = new JsonArray("1:HU-001"), ["propuesta_2"] = new JsonArray("2:HU-001") };
+        var second = first.DeepClone();
+        first["criterios"] = new JsonArray("1:CA-001", "1:CA-002");
+        first["tareas"] = new JsonArray("1:T-001", "1:T-002");
+        second["criterios"] = new JsonArray("1:CA-003", "1:CA-004");
+        second["tareas"] = new JsonArray("1:T-003", "1:T-004");
+        second["de"] = new JsonObject { ["propuesta_1"] = new JsonArray("1:HU-001"), ["propuesta_2"] = new JsonArray() };
+        stories.Insert(1, second);
+        if (onlyThose)
+        {
+            while (stories.Count > 2)
+                stories.RemoveAt(2);
+            root["epicas"] = new JsonArray(root["epicas"]![0]!.DeepClone());
+        }
+        var number = 0;
+        foreach (var story in root["epicas"]!.AsArray().SelectMany(e => e!["historias"]!.AsArray()))
+            story!["id"] = $"HU-{++number:000}";
+        return root.ToJsonString();
+    }
+
     [Fact]
     public void A_cited_id_that_is_not_in_its_proposal_is_an_error_and_is_taken_out()
     {
