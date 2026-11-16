@@ -1,6 +1,6 @@
-# Prueba real del paso 142 (en curso)
+# Prueba real del paso 142
 
-Prueba del script `importar.sh` del backlog en GitHub, con los tipos de issue de una organización, el tablero de GitHub Projects y los comentarios de una iteración (nivel 3). Empezada el 13-11-2026 por Claude, con lo que preparó el autor; **sin terminar**: el autor tuvo que parar.
+Prueba del script `importar.sh` del backlog en GitHub, con los tipos de issue de una organización, el tablero de GitHub Projects y los comentarios de una iteración (nivel 3). Hecha por Claude el 13 y el 16-11-2026, con lo que preparó el autor.
 
 ## En palabras sencillas
 
@@ -29,7 +29,18 @@ Se subió de verdad a GitHub el backlog de un proyecto de prueba, primero en una
 | Segunda iteración | Creados 2 (HU-013 Feature y T-050 Task, con `iteracion-2`); 1 modificado y 4 eliminados (HU-008 y sus 3 tareas), cada uno con su comando, y 5 comentarios: los de HU-004 y HU-008 con el motivo de la iteración. En el tablero, 69 elementos, y EP-02, HU-004, T-013, T-014 y EP-04 pasan a «1, 2» |
 | Repetición | Ningún comentario nuevo; ningún fichero temporal suelto |
 
-**Cuenta personal** (etiquetas): parada a mitad de la primera iteración, con 49 de los 67 issues creados. Falta relanzarla (sigue por donde iba), repetirla, la segunda iteración y su repetición.
+**Cuenta personal** (etiquetas `epica`, `historia` y `tarea`), terminado el 16-11-2026:
+
+| Ejecución | Resultado |
+| --- | --- |
+| Primera iteración | Parada el 13-11 por el autor: al detener la tarea se cerró el bucle de reintentos, pero el `importar.sh` en curso siguió, creó los 67 issues y el tablero y murió al cerrar la sesión de Windows. El 16-11, un primer intento lo cortó GitHub con un 504 tras 7 minutos; el segundo completó en el tablero los 11 elementos que quedaron a medias |
+| Repetición | Creados 0, sin cambios 67, nada que completar |
+| Segunda iteración | Creados 2, 1 modificado y 4 eliminados con su comando, 5 comentarios; añadidos al tablero 0 y completados 7: HU-013 y T-050, que GitHub metió solo en el tablero, y los 5 que pasan a «1, 2» |
+| Repetición | Ningún comentario nuevo |
+
+Al final: 69 issues sin repetidos, solo las 6 épicas sin padre, las etiquetas de nivel y de iteración (`iteracion-2` en los 2 nuevos), el tablero con los 69 elementos en *Todo*, con su épica y sus iteraciones, y los 5 comentarios en HU-004, HU-008 y las 3 tareas de HU-008.
+
+**El `.zip` de la web:** con la imagen de la API reconstruida el 16-11, el `.zip` del proyecto 41 lleva los cuatro arreglos, con la misma generación y los mismos issues.
 
 ## Los fallos que encontró
 
@@ -41,11 +52,9 @@ Dos detalles más: el script escribía «Cada epica» (ahora «épica») y el co
 
 **Tests:** `GitHubScriptTests` gana 5 casos (los dos cortes de red, el tablero sin campos con y sin estado, y la ruta relativa en el de los comentarios); cada uno falla sin su arreglo. 1.083 en verde.
 
-**La red:** durante la prueba se cortó varias veces la conexión con `api.github.com` (y, al principio, con el registro de imágenes de Docker), sin relación con el script.
+**La red:** durante la prueba se cortó varias veces la conexión con `api.github.com` (y, al principio, con el registro de imágenes de Docker), y GitHub devolvió un 504; en todos los casos, relanzar el script siguió por donde iba sin duplicar nada.
 
 ## Pendiente
 
-- Terminar la cuenta personal: relanzar la primera iteración, repetirla, la segunda iteración y su repetición.
-- Reconstruir la imagen de la API y comprobar que el `.zip` de la web lleva los arreglos.
-- Borrar los issues, comentarios y tableros de prueba (o que el autor borre los repositorios y la organización).
-- Completar este documento, el plan, la trazabilidad y la memoria.
+- Que el autor mire los dos repositorios y los dos tableros y cierre el paso.
+- Después, borrar los issues y los tableros de prueba (con ellos, los comentarios), o que el autor borre los dos repositorios y la organización.

@@ -3834,3 +3834,12 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Tres fallos del script encontrados y arreglados**, cada uno con un test que falla sin el arreglo: el corte de red al consultar el propietario (creaba T-014 con etiqueta; ahora se para), los issues que GitHub añade solo al tablero sin sus campos (ahora se completan, y las iteraciones se ponen al día sin tocar el estado) y los comentarios con `gh.exe`, que no ve el `/tmp` de Git Bash (ahora el fichero es relativo). Además, «Cada épica» con tilde y sin el punto doble del motivo. 1.083 tests en verde.
 - **La red** se cortó a menudo con `api.github.com`; el script, relanzado en bucle, siguió por donde iba.
 - **Pendiente:** la cuenta personal (parada con 49 de 67 issues), reconstruir la imagen de la API con los arreglos, borrar lo de prueba, completar `docs/resultados-paso-142/README.md`, la trazabilidad y la memoria (sección 17). Después, el 143, cuando el autor revise su propuesta.
+
+## 16-11-2026, 09:26 (sesión, hito 26, prueba real del paso 142, terminada)
+
+- **Lo que pasó al parar el 13-11:** detener la tarea cerró el bucle de reintentos, pero no el `importar.sh` en curso, que siguió, creó los 67 issues de la cuenta personal y el tablero y murió al cerrar la sesión de Windows (`fork: Resource temporarily unavailable`). Se le contó al autor: se le había dicho que estaba parado.
+- **Cuenta personal, terminada:** un primer intento lo cortó GitHub con un 504 tras 7 minutos; el segundo completó en el tablero los 11 elementos a medias. Repetición sin cambios; segunda iteración con 2 creados, 1 modificado, 4 eliminados, 5 comentarios y 7 elementos del tablero completados (HU-013 y T-050, que GitHub añadió solo, y los 5 que pasan a «1, 2»); repetición sin comentarios nuevos. Al final: 69 issues, jerarquía, etiquetas, tablero completo y 5 comentarios.
+- **Imagen de la API reconstruida** (Concilia estaba parado tras el reinicio del equipo, sin nada en marcha): el `.zip` del proyecto 41 lleva los cuatro arreglos, con la misma generación y los mismos issues.
+- **Documentación:** `docs/resultados-paso-142/README.md` completo, plan, `CLAUDE.md`, trazabilidad y la memoria (sección 18 de «Cosas que añadir», detrás de la 17 de VibeBreach, que añadió otra sesión); compila.
+- **Lo lanzado no tiene coste de modelos:** solo `gh` contra GitHub.
+- **Pendiente:** que el autor mire los repositorios y cierre el 142; borrar después los issues y tableros de prueba; el 143, cuando el autor revise su propuesta.
