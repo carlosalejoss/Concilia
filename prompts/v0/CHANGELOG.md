@@ -1,5 +1,20 @@
 # Cambios de los prompts v0
 
+## v0.14, el árbitro del backlog lee menos y no junta historias pequeñas (2026-11-16)
+
+Hito 26, paso 143. Propuesta de Claude (`docs/propuesta-prompts-v0.14.md`), aprobada por el autor el 16-11-2026 con un ajuste el mismo día. Solo cambia `arbitro_backlog.md`; los demás prompts de siempre no cambian, pero todas las ejecuciones de las fases de siempre guardan `v0.14` (las rondas centradas y las actualizaciones siguen en `v0.13`).
+
+- **A. Lee menos (`BacklogArbiterFiles`):** en lugar de las dos propuestas y el catálogo enteros, el árbitro recibe:
+  - `input/propuesta_1.txt` e `input/propuesta_2.txt`, que lee enteros: una línea por épica y una por historia, con su título, «como… quiero… para…», requisitos, el nombre, el id y las cifras de cada criterio (`1:CA-027 «Anulación con aviso» (cifras: 24)`), los ids de sus tareas y las líneas donde está su texto;
+  - `input/criterios.txt`, solo para consultar: el texto de cada criterio y tarea, una línea por cada uno. Lo lee cuando dos escenarios parecen el mismo o se contradicen, sus cifras no coinciden, o va a combinar criterios o marcar una discrepancia;
+  - `input/requisitos.txt`, solo para consultar: los requisitos que citan las historias sin un par `mismo`;
+  - sale del prompt la comprobación de la cobertura, que ya hace la plataforma (`COB`).
+  - Los JSON completos siguen en `input/` con sus nombres de siempre, fuera del plan de lectura, para el validador, las citas por id y `FakeProvider`.
+  - Por qué: en el paso 131 el árbitro de la v0.12 no cupo en 128.000 tokens con las propuestas de Kimi (140 y 105 historias): unos 93.000 tokens de propuestas, 24.000 de catálogo y el resto del prompt.
+  - El ajuste: la propuesta aprobada hacía leer enteros los requisitos y los criterios de toda historia sin par `mismo`. Pero casi todas las historias son `parecido` (Kimi: 22 `mismo` de 245), así que habría leído casi todo otra vez; el autor eligió dejar los dos ficheros solo para consultar y poner las cifras en la línea resumida.
+- **B. No juntar historias pequeñas (§2):** una historia unida no junta varias de una misma propuesta. Si una historia de una propuesta cubre varias de la otra, el árbitro mantiene las pequeñas y reparte entre ellas los criterios y las tareas de la grande, que va en el `de` de cada una. Por qué: el 17 % de las historias de los backlogs guardados juntaba 2 o más de una misma propuesta; desde el paso 141 la plataforma las marca, pero el árbitro seguía haciéndolo. El aviso `ARB-CITA` cuenta ahora lo no citado sobre todo el backlog, cada criterio una vez.
+- **C. Solo la plataforma:** un par `mismo` cuyos textos llevan cifras distintas, si el árbitro lo deja en dos elementos, ya no es una desviación «separa iguales» (en el catálogo y en el backlog). Es el criterio de cifras de `input/fuentes.txt` (paso 107).
+
 ## Paso 140, el prefijo de una decisión del cliente en el idioma de las sugerencias (2026-11-13)
 
 Hito 26. Sin versión nueva: las ejecuciones siguen guardando `v0.12`.

@@ -2,6 +2,8 @@
 
 Propuesta de Claude del 13-11-2026, para que el autor la revise antes de tocar código, como en los pasos 112 a 114. El paso pide decidir qué se mejora con lo que fallaron SOL y el nuevo B en los pasos 130 y 131, más lo ya conocido. Lo de las otras fases se ha mirado con datos, y en ellas no se propone cambiar nada.
 
+> **Decisión del autor (16-11-2026):** A y B, sí; C, en este paso; las mediciones, en el orden propuesto. **Ajuste del mismo día**, antes de medir: el emparejamiento real de los dos backlogs que fallaron tiene casi todas las historias como `parecido` (B Kimi: 22 `mismo` de 245; SOL 6 y LUNA: 18 de 210), así que con los puntos 2 y 3 de A el árbitro habría leído casi todos los criterios y casi todo el catálogo (unos 120.000–140.000 tokens con Kimi). El autor eligió, como recomendaba Claude, que `criterios.txt` y `requisitos.txt` sean solo para consultar y que la línea resumida lleve las cifras de cada criterio. La estimación de «Cuánto leería» de A suponía muchos pares `mismo` y no se cumple. Lo hecho y medido está en `prompts/v0/CHANGELOG.md` y en `docs/evolucion-prompt-requisitos.md` (v0.14).
+
 ## En palabras sencillas
 
 El árbitro del backlog ya no cabe en la memoria del modelo con el nuevo B, porque B propone muchas más historias y el árbitro lee las dos propuestas enteras, con todos sus criterios, además del catálogo entero. La propuesta es que lea un resumen de cada historia, consulte el texto completo de un criterio solo cuando lo necesite y reciba únicamente los requisitos que tiene que comprobar. Así leería menos de la mitad. Además, se le pide que no junte en una historia varias historias pequeñas que un modelo había separado. El resto de los prompts no cambia.

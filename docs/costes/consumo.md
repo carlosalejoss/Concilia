@@ -1,6 +1,6 @@
 # Consumo de los modelos
 
-Generado por `scripts/evaluacion/costes.cs` el 16-11-2026 13:12, con los datos guardados de cada ejecución (paso 144). Se regenera tras cada tarea, junto con `costes.md`.
+Generado por `scripts/evaluacion/costes.cs` el 16-11-2026 13:33, con los datos guardados de cada ejecución (paso 144). Se regenera tras cada tarea, junto con `costes.md`.
 
 **Cómo leer las cifras:**
 - **Todo lo que se ha ejecutado,** también los experimentos y los intentos fallidos: todo cuenta en el límite.
@@ -14,17 +14,17 @@ Un solo límite para toda la cuenta (comprobado con la consola de OpenCode el 12
 
 | Ventana | Desde | Se reinicia | Usado | Queda | Queda, en dólares de cada modelo |
 | --- | --- | --- | --- | --- | --- |
-| Mes | 11-11 00:00 | 11-12 00:00 | 28 %*† | 72 % | kimi-k3.1-pro 10,83 $, gemini-4-argon 21,66 $, claude-haiku-5-5 10,83 $ |
-| Semana | 16-11 01:00 | 23-11 01:00 | 0 % | 100 % | kimi-k3.1-pro 7,50 $, gemini-4-argon 15,00 $, claude-haiku-5-5 7,50 $ |
-| 5 horas | — | — | 0 % | 100 % | kimi-k3.1-pro 3,00 $, gemini-4-argon 6,00 $, claude-haiku-5-5 3,00 $ |
+| Mes | 11-11 00:00 | 11-12 00:00 | 33 %*† | 67 % | kimi-k3.1-pro 10,07 $, gemini-4-argon 20,14 $, claude-haiku-5-5 10,07 $ |
+| Semana | 16-11 01:00 | 23-11 01:00 | 10 %* | 90 % | kimi-k3.1-pro 6,74 $, gemini-4-argon 13,48 $, claude-haiku-5-5 6,74 $ |
+| 5 horas | 16-11 13:19 | 16-11 18:19 | 25 %* | 75 % | kimi-k3.1-pro 2,24 $, gemini-4-argon 4,48 $, claude-haiku-5-5 2,24 $ |
 
 Lo gastado en cada ventana, por modelo (en dólares de su límite, con el descuento de Argon):
 
 | Modelo | Mes | Semana | 5 horas |
 | --- | --- | --- | --- |
-| kimi-k3.1-pro | 2,42 $ | 0,00 $ | — |
-| gemini-4-argon | 3,44 $ | 0,00 $ | — |
-| claude-haiku-5-5 | 0,02 $ | 0,00 $ | — |
+| kimi-k3.1-pro | 3,18 $ | 0,76 $ | 0,76 $ |
+| gemini-4-argon | 3,44 $ | 0,00 $ | 0,00 $ |
+| claude-haiku-5-5 | 0,02 $ | 0,00 $ | 0,00 $ |
 
 `†`: incluye consumo que la plataforma no registra (ejecuciones cortadas o canceladas, sin evento final), tomado de la consola de OpenCode (`_go.ajustes` en `precios.json`):
 
@@ -35,11 +35,11 @@ Lo gastado en cada ventana, por modelo (en dólares de su límite, con el descue
 | Proveedor | Modelo | Ejecuciones | Tokens de entrada | Tokens de salida | De ellos, leídos de la caché | Coste (USD) | A precio completo (USD) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | suscripción del autor | claude-sonnet-5-5 | 5 | ≥ 2.459.131 | ≥ 644.901 | — | sin precio | sin precio |
-| pasarela | SS - GPT-6-SOL | 476 | 62.095.548* | 8.855.967* | 1.272.275 | 210,46* | 212,75* |
+| pasarela | SS - GPT-6-SOL | 479 | 63.585.926* | 9.020.129* | 1.636.122 | 214,43* | 217,37* |
 | pasarela | SS - GPT-6.1-SOL | 15 | ≥ 5.819.406 | ≥ 312.408 | — | ≥ 14,76 | ≥ 14,76 |
 | pasarela | SS - GPT-6-LUNA | 111 | ≥ 14.408.431 | ≥ 2.111.683 | 50.155 | ≥ 2,49 | ≥ 2,50 |
 | OpenCode Go (suscripción) | gemini-4-argon | 5 | 237.264* | 137.861* | 62.784 | 3,47* | 3,71* |
-| OpenCode Go (suscripción) | kimi-k3.1-pro | 5 | 521.583* | 147.205* | 51.200 | 2,42* | 2,52* |
+| OpenCode Go (suscripción) | kimi-k3.1-pro | 6 | 615.910* | 204.448* | 51.200 | 3,18* | 3,28* |
 | OpenCode Go (suscripción) | claude-haiku-5-5 | 1 | 42.258 | 5.704 | 24.162 | 0,02 | 0,04 |
 
 «De ellos, leídos de la caché»: solo las ejecuciones desde el paso 128, que lo guardan aparte.
@@ -48,8 +48,8 @@ Lo gastado en cada ventana, por modelo (en dólares de su límite, con el descue
 
 | Proyecto | Tareas | Pasarela (USD) | OpenCode Go (USD) | Total (USD) | A precio completo (USD) | Última tarea |
 | --- | --- | --- | --- | --- | --- | --- |
+| Clínicas B Kimi | 6 | 7,78* | 2,51* | 10,29* | 12,03* | 16-11-2026 13:19 |
 | Clínicas SOL 6.1 | 8 | 19,24* | — | 19,24* | 19,24* | 16-11-2026 13:02 |
-| Clínicas B Kimi | 4 | 3,81* | 1,75* | 5,56* | 6,64* | 12-11-2026 13:39 |
 | Clínicas SOL 6 | 6 | 6,89* | 2,85* | 9,74* | 10,59* | 12-11-2026 09:55 |
 | Clínicas B Argon | 2 | 0,73* | 0,77* | 1,50* | 2,03* | 12-11-2026 08:35 |
 | ReservaSalas humo Haiku | 1 | 0,12 | 0,02 | 0,14 | 0,20 | 11-11-2026 13:25 |
@@ -70,6 +70,31 @@ Lo gastado en cada ventana, por modelo (en dólares de su límite, con el descue
 ## 4. Cada tarea, por proyecto
 
 De la más reciente a la más antigua. Una fila por papel; «Ejecuciones» cuenta también los intentos repetidos.
+
+### Clínicas B Kimi
+
+| Fecha | Tarea | Resultado | Papel | Modelo | Proveedor | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 16-11-2026 13:19 | Backlog (`1a30d5f6`) | válido | A | SS - GPT-6-SOL | pasarela | 1 | 163.853 | 33.469 | 0,48 |
+|  | |  | Árbitro | SS - GPT-6-SOL | pasarela | 1 | 978.853* | 91.314* | 2,87* |
+|  | |  | B | kimi-k3.1-pro | OpenCode Go (suscripción) | 1 | 94.327* | 57.243* | 0,76* |
+| | **Total de la tarea** | | | | | 3 | **1.237.033*** | **182.026*** | **4,11*** |
+| 16-11-2026 13:12 | Nuevo arbitraje (backlog) (`918c05e5`) | válido | Árbitro | SS - GPT-6-SOL | pasarela | 1 | 347.672 | 39.379 | 0,61 |
+| | **Total de la tarea** | | | | | 1 | **347.672** | **39.379** | **0,61** |
+| 12-11-2026 13:39 | Backlog (`14fe7af0`) | fallido, 2 repeticiones | A | SS - GPT-6-SOL | pasarela | 1 | 161.083 | 30.852 | 0,45 |
+|  | |  | Árbitro | SS - GPT-6-SOL | pasarela | 3 | 433.824* | 8.944* | 0,96* |
+|  | |  | B | kimi-k3.1-pro | OpenCode Go (suscripción) | 1 | 135.602* | 54.033* | 0,81* |
+| | **Total de la tarea** | | | | | 5 | **730.509*** | **93.829*** | **2,22*** |
+| 12-11-2026 10:43 | Catálogo (`1bc81509`) | válido | A | SS - GPT-6-SOL | pasarela | 1 | 186.964 | 29.776 | 0,46 |
+|  | |  | Árbitro | SS - GPT-6-SOL | pasarela | 1 | 267.260* | 56.580* | 1,10* |
+|  | |  | B | kimi-k3.1-pro | OpenCode Go (suscripción) | 1 | 132.976* | 35.040* | 0,62* |
+| | **Total de la tarea** | | | | | 3 | **587.200*** | **121.396*** | **2,18*** |
+| 12-11-2026 10:39 | Sugerencias de respuesta (`b97d7410`) | válido | Sugerencias | SS - GPT-6-SOL | pasarela | 1 | 155.858 | 15.387 | 0,28 |
+| | **Total de la tarea** | | | | | 1 | **155.858** | **15.387** | **0,28** |
+| 11-11-2026 13:44 | Preguntas (`4f20286c`) | válido | A | SS - GPT-6-SOL | pasarela | 1 | 124.608 | 12.653 | 0,23 |
+|  | |  | Árbitro | SS - GPT-6-SOL | pasarela | 1 | 209.453 | 19.323 | 0,34 |
+|  | |  | B | kimi-k3.1-pro | OpenCode Go (suscripción) | 1 | 104.673 | 19.160 | 0,32 |
+| | **Total de la tarea** | | | | | 3 | **438.734** | **51.136** | **0,89** |
 
 ### Clínicas SOL 6.1
 
@@ -102,25 +127,6 @@ De la más reciente a la más antigua. Una fila por papel; «Ejecuciones» cuent
 |  | |  | Árbitro | SS - GPT-6.1-SOL | pasarela | 1 | 765.547 | 26.166 | 1,79 |
 |  | |  | B | SS - GPT-6-LUNA | pasarela | 1 | 75.422 | 16.285 | 0,02 |
 | | **Total de la tarea** | | | | | 3 | **971.640** | **72.931** | **2,37** |
-
-### Clínicas B Kimi
-
-| Fecha | Tarea | Resultado | Papel | Modelo | Proveedor | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 12-11-2026 13:39 | Backlog (`14fe7af0`) | fallido, 2 repeticiones | A | SS - GPT-6-SOL | pasarela | 1 | 161.083 | 30.852 | 0,45 |
-|  | |  | Árbitro | SS - GPT-6-SOL | pasarela | 3 | 433.824* | 8.944* | 0,96* |
-|  | |  | B | kimi-k3.1-pro | OpenCode Go (suscripción) | 1 | 135.602* | 54.033* | 0,81* |
-| | **Total de la tarea** | | | | | 5 | **730.509*** | **93.829*** | **2,22*** |
-| 12-11-2026 10:43 | Catálogo (`1bc81509`) | válido | A | SS - GPT-6-SOL | pasarela | 1 | 186.964 | 29.776 | 0,46 |
-|  | |  | Árbitro | SS - GPT-6-SOL | pasarela | 1 | 267.260* | 56.580* | 1,10* |
-|  | |  | B | kimi-k3.1-pro | OpenCode Go (suscripción) | 1 | 132.976* | 35.040* | 0,62* |
-| | **Total de la tarea** | | | | | 3 | **587.200*** | **121.396*** | **2,18*** |
-| 12-11-2026 10:39 | Sugerencias de respuesta (`b97d7410`) | válido | Sugerencias | SS - GPT-6-SOL | pasarela | 1 | 155.858 | 15.387 | 0,28 |
-| | **Total de la tarea** | | | | | 1 | **155.858** | **15.387** | **0,28** |
-| 11-11-2026 13:44 | Preguntas (`4f20286c`) | válido | A | SS - GPT-6-SOL | pasarela | 1 | 124.608 | 12.653 | 0,23 |
-|  | |  | Árbitro | SS - GPT-6-SOL | pasarela | 1 | 209.453 | 19.323 | 0,34 |
-|  | |  | B | kimi-k3.1-pro | OpenCode Go (suscripción) | 1 | 104.673 | 19.160 | 0,32 |
-| | **Total de la tarea** | | | | | 3 | **438.734** | **51.136** | **0,89** |
 
 ### Clínicas SOL 6
 

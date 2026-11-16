@@ -14,6 +14,7 @@ El detalle técnico de cada cambio está en `prompts/generacion_requisitos/CHANG
 | v1.3 | 02-10-2026 | Independencia, cobertura, un requisito por capacidad, tipos, reparación parcial | Sí | En el documento grande: un 60–67 % menos de requisitos, la mitad de tokens y casi sin salida perdida; quedan detalles técnicos y lotes perdidos de LUNA |
 | v1.4 | 05-10-2026 | Observabilidad, nivel del inventario, sin descartes enteros de lo citado, R-h, N4 por funcionalidad, una sola escritura | Sí | 255 y 214 requisitos y 118 y 86 preguntas: aún muy lejos de lo revisable; el límite es el proceso por lotes, no el prompt (se pasa a la v2, de arriba abajo) |
 | v2 | 05-10-2026 | De arriba abajo: inventario global de funcionalidades (fase 1) y requisitos por funcionalidad, cada una en un solo lote (fase 2) | Pendiente | Pendiente |
+| v0.14 | 16-11-2026 | El árbitro del backlog lee las propuestas resumidas (una línea por historia, con las cifras de cada criterio) y solo consulta el texto de los criterios y los requisitos; mantiene las historias pequeñas en lugar de juntarlas; un par «mismo» con cifras distintas no es desviación | Sí (proyecto grande de ejemplo: dos nuevos arbitrajes y el backlog con Kimi, 16-11-2026) | Los tres backlogs que con la v0.12 no cabían salen válidos a la primera: el de Kimi del paso 131, en 4,6 min y por 0,61 $, con 349 de 350 criterios y ninguna historia que junte varias de una propuesta. Pero dos de los tres llegan al límite del contexto justo al escribir, y en el backlog nuevo con Kimi el árbitro no cita 175 de 467 criterios (pueden ser repetidos) |
 | v0.13 | 26 y 27-10-2026 | Iteraciones del proyecto: ronda centrada en la documentación nueva (lo nuevo y lo relacionado, lectura relacionada) y actualización del catálogo y del backlog como un conjunto de cambios que el usuario revisa | Sí (proyecto grande de ejemplo con una segunda iteración, 27-10 y 03-11-2026) | Las dos rondas (C y leyéndolo todo) detectan las 8 preguntas esperadas y enlazan las 4 que contradicen una respuesta; actualizar recoge los 14 cambios del catálogo y conserva idéntico el 91 % de los requisitos y el 95 % de las historias (desde cero, el 0 %), pero cuesta lo mismo (5,85 $ frente a 5,44 $) y leerlo todo sale más barato que la lectura relacionada (0,95 $ frente a 1,67 $); con una documentación grande (paso 123, unos 96.000 tokens), leerlo todo no cabe y solo funciona la lectura relacionada (0,87 $) |
 | v0.12 | 22-10-2026 | El árbitro del catálogo consulta solo las fuentes de los requisitos que tiene que decidir (`input/fuentes.txt`); el del backlog cita por su id los criterios y las tareas que conserva, y la plataforma pone su texto | Sí (nuevos arbitrajes del proyecto grande de ejemplo, 22-10-2026) | Catálogo: 298 líneas de documentación consultadas en lugar de 1.242, a la primera y por 1,43 $ en lugar de 3,20 $. Backlog: 239 criterios en lugar de 121, por 1,23 $ en lugar de 1,05 $ |
 | v0.11 | 19-10-2026 | La reparación corrige con Edit la salida anterior en su fichero, con la línea de cada error, en lugar de llevarla pegada y reescribirla; sugerencias más prudentes; estilo propio del mockup por proyecto | Sí (proyecto grande de ejemplo y banco de alimentos, 20 a 22-10-2026) | Preguntas a 0,94 $ (antes 2,31 $). Las reparaciones de LUNA y del árbitro caben y corrigen con Edit. Catálogo de 235 requisitos con 12 discrepancias, todas de la plataforma; unos 3,9 $ (antes 2,70 $) porque el árbitro lee demasiada documentación. Backlog de 121 historias sin reparaciones, 1,67 $ (antes 1,43 $), pero con un solo criterio por historia. Mockups de 40 y 24 pantallas a la primera, con el mismo coste por pantalla que antes y estilos distintos en cada proyecto |
@@ -346,6 +347,55 @@ Cada vez que cambie el prompt de requisitos (su texto, su anexo, su esquema o el
 2. **Resultados:** las mismas métricas de "Cómo se mide", con fecha, documento, modelos y si fue una sola ejecución o varias.
 3. **Lo que había que mejorar en la versión anterior** se enlaza con lo que cambia en la nueva.
 4. **Documentos internos:** solo cifras agregadas y anonimizadas.
+
+## v0.14 (16-11-2026)
+
+Hito 26, paso 143. Solo cambia el prompt del árbitro del backlog, más una comprobación de la plataforma. Propuesta en `docs/propuesta-prompts-v0.14.md`, aprobada por el autor el 16-11-2026 con un ajuste el mismo día; detalle en `prompts/v0/CHANGELOG.md`.
+
+### Qué hace
+
+- **A. El árbitro del backlog lee menos.** En el paso 131 no cupo en 128.000 tokens con las propuestas de Kimi (140 y 105 historias): una historia entera ocupa unos 378 tokens, así que las dos propuestas eran unos 93.000, más unos 24.000 del catálogo y el resto del prompt.
+  - Ahora lee enteras las dos propuestas **resumidas**, una línea por historia (unos 100 tokens): título, «como… quiero… para…», requisitos, el nombre, el id y las cifras de cada criterio (`1:CA-027 «Anulación con aviso» (cifras: 24)`), los ids de las tareas y dónde está su texto.
+  - El texto de los criterios y las tareas (`input/criterios.txt`) y los requisitos de las historias sin par «mismo» (`input/requisitos.txt`) son **solo para consultar**: un criterio se lee cuando dos escenarios parecen el mismo o se contradicen, sus cifras no coinciden, o va a combinar o a marcar una discrepancia.
+  - **El ajuste del autor**, antes de medir: la propuesta hacía leer enteros los requisitos y los criterios de toda historia sin par «mismo». Pero en los backlogs reales casi todas las historias son «parecido» (Kimi: 22 «mismo» de 245), así que habría vuelto a leer casi todo.
+  - En palabras sencillas: en vez de leerse los dos backlogs enteros, el árbitro lee un índice de cada uno, con las cifras a la vista, y abre el detalle solo cuando lo necesita.
+- **B. No junta historias pequeñas.** Si una historia de una propuesta cubre varias de la otra, mantiene las pequeñas y les reparte los criterios y las tareas de la grande. El 17 % de las historias de los backlogs guardados juntaba 2 o más de una misma propuesta.
+- **C. Un falso aviso menos (solo la plataforma).** Un par «mismo» con cifras distintas («12 meses» y «18 meses») que el árbitro deja separado ya no es la desviación «separa iguales».
+
+### Resultados
+
+16-11-2026, proyecto grande de ejemplo (clínicas veterinarias), árbitro `SS - GPT-6-SOL`. Las preguntas y el catálogo no se vuelven a medir: sus prompts no cambian.
+
+| | 1. Nuevo arbitraje, «Clínicas SOL 6.1» | 2. Nuevo arbitraje, «Clínicas B Kimi» | 3. Backlog de «Clínicas B Kimi» |
+| --- | --- | --- | --- |
+| Propuestas | A SOL 6 (128 historias), B LUNA (82); catálogo de 329 requisitos | Las del paso 131: A SOL (140), B Kimi (105); catálogo de 228 | Nuevas: A SOL (92), B Kimi (87) |
+| Con la v0.12 | No cabía (paso 145) | No cupo en 3 intentos (paso 131) | — |
+| Con la v0.14 | **Válido a la primera**, 7 min | **Válido a la primera**, 4,6 min | **Válido a la primera**; 13 min el trabajo, 6,4 el árbitro |
+| Contexto del árbitro | Se detuvo al empezar a compactar, con la salida ya escrita | Sin compactar | Se detuvo al empezar a compactar, con la salida ya escrita |
+| Consultado de `criterios.txt` | 398 líneas | 246 de unas 700 | 688 de 733 |
+| Unión | 129 historias | 152 | 112 |
+| Criterios de las historias unidas sin citar | 0 de 210 | 1 de 350 | **175 de 467** |
+| Tareas sin citar | 79 de 210 | 42 de 350 | 74 de 266 |
+| Historias que juntan varias de una propuesta | 17 | **0** | 12 |
+| Elementos con desviación | 41 | 38 | 24 |
+| Discrepancias | 1 | 4 | 5 |
+| Coste del árbitro | 2,57 $* | **0,61 $** (347.672 tokens de entrada, 264.062 de caché; 39.379 de salida) | 2,87 $* |
+| Coste de la tarea | 2,57 $* | 0,61 $ | 4,11 $* (A 0,48 $, B 0,76 $* de Go, árbitro 2,87 $*) |
+
+\* Estimado a partir de la consola (paso 95), a precio completo: cuando la plataforma detiene una ejecución no hay dato de consumo ni de caché, así que el coste real es menor.
+
+- **El objetivo se cumple:** los tres backlogs que no cabían salen a la primera, sin reparaciones. El flujo de clínicas con Kimi queda completo: preguntas 0,89 $, sugerencias 0,28 $, catálogo 2,18 $* y backlog 4,11 $*, unos 7,5 $ para una empresa. Kimi tardó 6,6 minutos en su propuesta de backlog.
+- **Pero el árbitro va justo.** Dos de los tres llegan al límite del contexto justo al escribir, y solo la red de seguridad de siempre (aceptar la salida ya escrita) los salva. Aunque solo tenía que consultar, en las mediciones 1 y 3 leyó casi todos los criterios.
+- **Criterios no citados en el backlog nuevo con Kimi:** 175 de 467. Pueden ser repetidos: la unión conserva 292, más de los que tiene cada propuesta sola (entre las dos suman 467, unos 233 cada una), y en el nuevo arbitraje de Kimi conservó 349 de 350. No se puede saber sin revisarlo; se verá en la evaluación 2, con las repeticiones (paso 119) y la referencia del autor (pasos 118 y 120).
+- **B funciona a medias:** ninguna historia junta varias con las propuestas de Kimi del paso 131, pero 17 y 12 en las otras dos. La plataforma las sigue marcando (paso 141).
+
+En palabras sencillas: el árbitro del backlog ya cabe con el nuevo modelo B, que propone muchas más historias, y lo hace a la primera; en el mejor caso cuesta 0,61 $. Pero sigue yendo al límite, y en una de las tres pruebas dejó fuera muchos criterios, que pueden ser repetidos o pérdidas.
+
+### Qué hay que mejorar
+
+- **Que el árbitro no lea casi todos los criterios** cuando solo tiene que consultarlos: va al límite del contexto. Candidatos: un tope de líneas consultadas, o dejarle solo los criterios de las historias que une con un par «parecido» y de cifras distintas.
+- **Saber si los criterios sin citar son repetidos o pérdidas**, con la referencia del autor y las repeticiones de la evaluación 2.
+- **B con LUNA como B:** sigue juntando historias (17); con Kimi, que es el B del proyecto, varía entre 0 y 12.
 
 ## v0.13 (26 y 27-10-2026)
 

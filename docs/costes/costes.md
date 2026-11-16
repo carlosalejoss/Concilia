@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 16-11-2026 13:12, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 16-11-2026 13:33, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -159,8 +159,8 @@ Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ron
 | Clínicas B Kimi | Preguntas | 1 | 438.734 | 51.136 | 0,89 | 1,39 | 14 |
 | Clínicas B Kimi | Sugerencias de respuesta | 1 | 155.858 | 15.387 | 0,28 | 0,47 | 3 |
 | Clínicas B Kimi | Catálogo | 1 | 587.200* | 121.396* | 2,18* | 2,39* | 26 |
-| Clínicas B Kimi | Backlog | 1 | 730.509* | 93.829* | 2,22* | 2,40* | 25 |
-| **Clínicas B Kimi** | **Total** | 4 | **1.912.301*** | **281.748*** | **5,56*** | **6,64*** | **68** |
+| Clínicas B Kimi | Backlog | 2 | 1.967.542* | 275.855* | 6,33* | 6,69* | 38 |
+| **Clínicas B Kimi** | **Total** | 5 | **3.149.334*** | **463.774*** | **9,68*** | **10,94*** | **81** |
 | Clínicas B Argon | Preguntas | 2 | 459.989* | 64.895* | 1,50* | 2,03* | 11 |
 | **Clínicas B Argon** | **Total** | 2 | **459.989*** | **64.895*** | **1,50*** | **2,03*** | **11** |
 
@@ -172,6 +172,8 @@ Medias por trabajo, para la misma fase del mismo proyecto. Los nuevos arbitrajes
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Banco De Alimentos | Mockup | Mockup 6-SOL | v0.9 | 1 (1) | 1.568.036 | 333.966 | 6,48 | 6,48–6,48 | 36 | 0,0 | — |
 | Banco De Alimentos | Mockup | Mockup 6-SOL | v0.11 | 1 (1) | 1.666.670 | 389.231 | 7,23 | 7,23–7,23 | 20 | 0,0 | — |
+| Clínicas B Kimi | Backlog | A 6-SOL · Árbitro 6-SOL · B kimi-k3.1-pro | v0.12 | 1 (0) | 730.509* | 93.829* | 2,22 | 2,22–2,22 | 25 | 2,0 | — |
+| Clínicas B Kimi | Backlog | A 6-SOL · Árbitro 6-SOL · B kimi-k3.1-pro | v0.14 | 1 (1) | 1.237.033* | 182.026* | 4,11 | 4,11–4,11 | 13 | 0,0 | 9,0 |
 | Clinicas Veterinarias | Nuevo arbitraje (catálogo) | Árbitro 6-SOL | v0.9 | 2 (2) | 565.296* | 64.840* | 1,78 | 1,58–1,98 | 6 | 0,0 | — |
 | Clinicas Veterinarias | Nuevo arbitraje (catálogo) | Árbitro 6-SOL | v0.10 | 3 (3) | 902.371* | 63.718* | 2,44 | 1,39–4,53 | 7 | 0,3 | — |
 | Clinicas Veterinarias v0.11 | Backlog | A 6-SOL · Árbitro 6-SOL · B 6-LUNA | v0.11 | 1 (1) | 447.072* | 120.292* | 1,67 | 1,67–1,67 | 8 | 0,0 | 35,7 |
