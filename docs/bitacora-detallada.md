@@ -3862,3 +3862,10 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **El flujo de clínicas con Kimi queda completo:** preguntas 0,89 $, sugerencias 0,28 $, catálogo 2,18 $* y backlog 4,11 $*, unos 7,5 $ para una empresa.
 - **Documentación:** `prompts/v0/CHANGELOG.md` (v0.14), `docs/evolucion-prompt-requisitos.md` (sección v0.14 y su fila del resumen), la decisión y el ajuste en `docs/propuesta-prompts-v0.14.md`, plan (143 hecho), `CLAUDE.md`, `README.md`, trazabilidad, costes regenerados y la sección 19 de la memoria (compila).
 - **Pendiente:** que el autor revise los resultados y cierre el paso 143, con el que termina el hito 26. A vigilar en la evaluación 2: el árbitro del backlog va al límite del contexto (2 de 3) y los criterios sin citar del backlog nuevo. El hito 27 va en otra sesión.
+
+## 16-11-2026, 14:05 (sesión, hito 26 cerrado)
+
+- **El autor cierra el paso 143 y, con él, el hito 26.** Al revisar el backlog de «Clínicas B Kimi» vio criterios repetidos en la unión: el árbitro conserva a la vez el de A y el de B que dicen casi lo mismo («Historia única del grupo» y «Historia y alertas compartidas»), porque con la v0.14 solo ve el nombre de cada escenario. Explica en parte los 175 criterios sin citar: no son el problema, sino lo contrario en otras historias. Se vigila en la evaluación 2, sin cambiar los prompts; la idea de emparejar también los criterios por embeddings va a «Después», punto 12.
+- **Seguridad:** `System.Security.Cryptography.Pkcs` fijado en la 10.0.15 en `Concilia.Core`. La 10.0.12, que traían MsgReader, MimeKit y PDFsharp, tenía dos vulnerabilidades de denegación de servicio (CVE-2026-84008, alta, y CVE-2026-70162, moderada; corregidas en la 10.0.13). `dotnet list package --vulnerable` ya no encuentra ninguna y `npm audit` de la web, tampoco. 1.093 tests en verde; imagen de la API reconstruida con `--pull` (runtime de .NET al día), sin nada en marcha.
+- **Plan:** el paso 133 recuerda mirar antes los dos tests intermitentes («Después», punto 11).
+- **Siguiente:** el hito 27 (evaluación 2), en otra sesión, empezando por el paso 133. El autor pedirá el prompt para esa sesión.

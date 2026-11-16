@@ -40,7 +40,7 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 132 hecho (13-11-2026):** se mantienen todas las medidas tomadas por LUNA, y por defecto B es Kimi por OpenCode Go, salvo en modo simulado (`docs/opencode-go/medidas-luna.md`). Con él están hechos todos los pasos del hito 25. Su «Hecho cuando» se cumple hasta el catálogo: el backlog con Kimi espera a la v0.14 (paso 143), y el autor decide si cierra el hito así.
 - **Hito 25 cerrado por el autor (13-11-2026)** con el backlog de Kimi pendiente de la v0.14 (paso 143).
 - **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) 139 (la «lectura relacionada» en el código) 140 (los textos de la plataforma en el idioma del proyecto) 141 (la marca de las historias que juntan varias de una propuesta) hechos el 13-11-2026. Del 142, el código y sus tests, el mismo día.
-- **Siguiente:** que el autor revise los resultados del paso 143 (prompts v0.14, hecho el 16-11-2026) y lo cierre; con él se termina el hito 26. Después, el hito 27 (evaluación 2), en otra sesión.
+- **Siguiente:** el hito 27 (evaluación 2), en otra sesión, empezando por el paso 133 (congelar la versión). El hito 26 lo cerró el autor el 16-11-2026, con el 143.
 
 ### Lo que queda, en orden
 
@@ -66,7 +66,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 11. ~~**140,** los textos de la plataforma en el idioma del proyecto~~ (hecho el 13-11-2026).
 12. ~~**141,** que la plataforma marque las historias de la unión que juntan varias de una misma propuesta~~ (hecho el 13-11-2026).
 13. ~~**142,** mejoras del backlog en GitHub: issue types en las organizaciones, GitHub Projects y comentarios en los issues afectados por una iteración~~ (cerrado el 16-11-2026).
-14. ~~**143,** los prompts mejorados (v0.14), medidos frente al paso 131~~ (hecho el 16-11-2026, a falta de que el autor lo cierre).
+14. ~~**143,** los prompts mejorados (v0.14), medidos frente al paso 131~~ (cerrado el 16-11-2026). **Hito 26 completado.**
 
 **Hito 27, evaluación 2** (en este orden):
 
@@ -1147,7 +1147,7 @@ Además, SOL y LUNA son de la misma familia (GPT-6). Con un modelo de otro fabri
 
 **Hecho cuando:** un flujo de clínicas termina con el nuevo B por OpenCode Go, sin que ninguna clave llegue donde no debe. Y su comparación con LUNA (coste para una empresa, fiabilidad y aportación de B) está documentada.
 
-## Hito 26: antes de la evaluación 2
+## Hito 26: antes de la evaluación 2 (completado el 16-11-2026)
 
 Lo que cambia el código o los prompts y debe estar hecho antes de congelar la versión de la evaluación 2, para no tener que evaluar dos veces. El paso 126 lo pidió el autor el 09-11-2026 para después de la evaluación; el 10-11-2026 pide no dejarlo fuera y pasa aquí. Los puntos de «Después» que el autor decidió hacer antes (10-11-2026) son los pasos 138 a 143.
 
@@ -1236,7 +1236,7 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
     - 39 de las 40 sugerencias de PURE eran suposiciones (paso 105);
     - solo si faltan funcionalidades en los pasos 130 y 131: la idea del hito 7, que el modelo haga primero un inventario de funcionalidades y después los requisitos de cada una.
   - **Cómo se trabaja,** como en los pasos 112 a 114: Claude propone los cambios, el autor los revisa antes del código, y se actualizan `prompts/v0/CHANGELOG.md` y `docs/evolucion-prompt-requisitos.md`.
-  - **Hecho el 16-11-2026** (`docs/evolucion-prompt-requisitos.md`, v0.14), a falta de que el autor lo cierre. El autor aprobó A, B y C, con un ajuste antes de medir (casi todas las historias son «parecido»: criterios y requisitos, solo para consultar, y las cifras de cada criterio en la línea resumida). Los tres backlogs que no cabían salen válidos a la primera: el nuevo arbitraje de «Clínicas SOL 6.1» (329 requisitos, 2,57 $*), el de las propuestas de Kimi del paso 131 (4,6 min, 0,61 $, 349 de 350 criterios, ninguna historia que junte varias) y el backlog nuevo de «Clínicas B Kimi» (13 min, 4,11 $*, Kimi 0,76 $* de Go). El flujo de clínicas con Kimi queda completo. Pendiente de vigilar: dos de los tres árbitros llegan al límite del contexto justo al escribir, y en el backlog nuevo no cita 175 de 467 criterios (pueden ser repetidos); se verá en la evaluación 2. 1.093 tests.
+  - **Hecho y cerrado por el autor el 16-11-2026** (`docs/evolucion-prompt-requisitos.md`, v0.14). Al cerrarlo, el autor encontró criterios repetidos en la unión: revisando el backlog de «Clínicas B Kimi», el autor vio que el árbitro conserva a la vez el criterio de A y el de B que dicen casi lo mismo (por ejemplo, «Historia única del grupo» y «Historia y alertas compartidas»), porque solo ve el nombre de cada escenario y el prompt le pide conservar todos salvo los que repiten otro. Se vigila en la evaluación 2 (pasos 118 a 120), sin cambiar los prompts. El autor aprobó A, B y C, con un ajuste antes de medir (casi todas las historias son «parecido»: criterios y requisitos, solo para consultar, y las cifras de cada criterio en la línea resumida). Los tres backlogs que no cabían salen válidos a la primera: el nuevo arbitraje de «Clínicas SOL 6.1» (329 requisitos, 2,57 $*), el de las propuestas de Kimi del paso 131 (4,6 min, 0,61 $, 349 de 350 criterios, ninguna historia que junte varias) y el backlog nuevo de «Clínicas B Kimi» (13 min, 4,11 $*, Kimi 0,76 $* de Go). El flujo de clínicas con Kimi queda completo. Pendiente de vigilar: dos de los tres árbitros llegan al límite del contexto justo al escribir, y en el backlog nuevo no cita 175 de 467 criterios (pueden ser repetidos); se verá en la evaluación 2. 1.093 tests.
   - **Propuesta de Claude (13-11-2026), aprobada el 16-11-2026:** `docs/propuesta-prompts-v0.14.md`. A, el árbitro del backlog lee las propuestas en forma compacta (unos 100 tokens por historia en lugar de 378), consulta por tramos el texto de los criterios y recibe solo los requisitos de las historias sin par «mismo»; B, no junta historias atómicas de una misma propuesta; C (opcional, solo plataforma), un par «mismo» con cifras distintas no es desviación. Sugerencias e inventario de funcionalidades, sin cambios, con los datos que lo justifican. Mediciones: dos nuevos arbitrajes con SOL (329 requisitos y «Clínicas B Kimi») y el backlog de «Clínicas B Kimi» como trabajo normal.
   - **Cómo se comprueba:** el flujo de clínicas con la v0.14 y el nuevo B, frente al paso 131 (misma B, prompts v0.12): calidad, reparaciones, correcciones automáticas, coste para una empresa y minutos. Los modos de siempre tienen una instantánea de la v0.12 (`V012SnapshotTests`), que se actualiza a propósito.
 
@@ -1258,6 +1258,7 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 
 - [ ] 133. **Congelar la versión** (como el 117), con los hitos 25 y 26 terminados.
   - **Una prueba barata en inglés** antes de congelar: la ronda de preguntas de PURE con el nuevo B, porque en inglés no se ha probado.
+  - **Mirar antes los dos tests intermitentes** («Después», punto 11), para que el CI no falle al azar con la versión congelada.
   - **Comprobar que todo está guardado:** `git status` limpio, tests en verde y Docker reconstruido con ese código.
   - **Etiqueta `evaluacion-2`,** solo en local.
   - **`docs/evaluacion-2/version.md`** con:
@@ -1335,3 +1336,6 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
     - Hay otro anotado del runner (`Compacting_after_writing_the_output_stops_the_run_at_once`, 23-10-2026).
     - Se mira antes de congelar la versión de la evaluación 2 (paso 133), para que el CI no falle al azar.
     - Volvió a fallar el 13-11-2026, 1 de las 2 baterías completas del paso 140, y pasó al repetirla.
+12. **Criterios repetidos en la unión del backlog** (paso 143, 16-11-2026; lo vio el autor al revisar el backlog de «Clínicas B Kimi»). El árbitro conserva a la vez el criterio de A y el de B que dicen casi lo mismo («Historia única del grupo» y «Historia y alertas compartidas»), porque con la v0.14 solo ve el nombre de cada escenario.
+    - **Qué haría:** la plataforma empareja también los criterios de las historias que se unen, con los mismos embeddings, y le marca al árbitro los pares casi iguales para que se quede con uno o los combine.
+    - **Por qué después:** se mide primero cuánto pasa en la evaluación 2 (pasos 118 a 120), sin cambiar los prompts de la versión congelada.

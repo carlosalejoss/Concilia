@@ -396,6 +396,7 @@ En palabras sencillas: el árbitro del backlog ya cabe con el nuevo modelo B, qu
 - **Que el árbitro no lea casi todos los criterios** cuando solo tiene que consultarlos: va al límite del contexto. Candidatos: un tope de líneas consultadas, o dejarle solo los criterios de las historias que une con un par «parecido» y de cifras distintas.
 - **Saber si los criterios sin citar son repetidos o pérdidas**, con la referencia del autor y las repeticiones de la evaluación 2.
 - **B con LUNA como B:** sigue juntando historias (17); con Kimi, que es el B del proyecto, varía entre 0 y 12.
+- **Criterios repetidos en la unión** (lo vio el autor al revisar el backlog de «Clínicas B Kimi»): el árbitro conserva a la vez el criterio de A y el de B que dicen casi lo mismo, como «Historia única del grupo» y «Historia y alertas compartidas», que describen el mismo acceso a la historia compartida. Con la v0.14 solo ve el nombre de cada escenario, y el prompt le pide conservar todos salvo los que repiten otro. Candidato: que la plataforma empareje también los criterios por embeddings y le marque los pares casi iguales, como ya hace con las historias.
 
 ## v0.13 (26 y 27-10-2026)
 

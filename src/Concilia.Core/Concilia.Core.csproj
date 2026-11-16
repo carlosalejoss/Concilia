@@ -20,6 +20,10 @@
     <PackageReference Include="PDFsharp-MigraDoc" Version="[6.2.4]" />
     <!-- The official Gherkin parser (cucumber/gherkin, MIT): checks the .feature files of the backlog (step 97). -->
     <PackageReference Include="Gherkin" Version="42.0.1" />
+    <!-- Not used directly: MsgReader, MimeKit and PDFsharp bring it. Their version
+         (10.0.12) has two denial of service vulnerabilities (CVE-2026-84008 and
+         CVE-2026-70162, fixed in 10.0.13), so the fixed one is pinned here (16-11-2026). -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.15" />
   </ItemGroup>
 
   <ItemGroup>
