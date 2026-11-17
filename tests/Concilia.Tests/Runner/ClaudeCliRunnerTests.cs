@@ -198,10 +198,15 @@ public class ClaudeCliRunnerTests
     public async Task Compacting_after_writing_the_output_stops_the_run_at_once(string expected, bool stops)
     {
         using var temp = new TempDirectory();
-        var request = Request(temp.Path, Directive("synthetic-compacta-tras-escribir.jsonl", sleepAfterMs: 3_000), expected) with
+        // When it must stop, the total time is long and the test checks that it
+        // stopped long before: with 2 s, a fake that took longer to start on a
+        // loaded machine ran out of time first (step 133). Without the expected
+        // output it goes on, so a short total time is enough.
+        var request = Request(temp.Path, Directive("synthetic-compacta-tras-escribir.jsonl", sleepAfterMs: stops ? 30_000 : 3_000), expected) with
         {
-            TotalTimeout = TimeSpan.FromSeconds(2),
+            TotalTimeout = TimeSpan.FromSeconds(stops ? 60 : 2),
         };
+        var clock = System.Diagnostics.Stopwatch.StartNew();
 
         var (result, events) = await Run(request);
 
@@ -210,8 +215,8 @@ public class ClaudeCliRunnerTests
             Assert.Equal(RunStatus.Failed, result.Status);
             Assert.Equal(ClaudeCliRunner.CompactingAfterOutput, result.ErrorMessage);
             // The console does not say "Failed": the platform reviews the output next.
-            // (Not waiting for the timeout is shown by the message: a timeout has another one.)
             Assert.Equal(ClaudeCliRunner.StoppedAfterOutputLine, events.Last().Text);
+            Assert.True(clock.Elapsed < TimeSpan.FromSeconds(15), $"Tardó {clock.Elapsed}");
         }
         else
         {
@@ -226,16 +231,19 @@ public class ClaudeCliRunnerTests
     public async Task Compacting_twice_before_writing_the_output_stops_the_run()
     {
         using var temp = new TempDirectory();
-        var request = Request(temp.Path, Directive("synthetic-compacta-sin-escribir.jsonl", sleepAfterMs: 3_000), "output/resumen.md") with
+        // Long total time, as in the test above (step 133).
+        var request = Request(temp.Path, Directive("synthetic-compacta-sin-escribir.jsonl", sleepAfterMs: 30_000), "output/resumen.md") with
         {
-            TotalTimeout = TimeSpan.FromSeconds(2),
+            TotalTimeout = TimeSpan.FromSeconds(60),
         };
+        var clock = System.Diagnostics.Stopwatch.StartNew();
 
         var (result, _) = await Run(request);
 
         Assert.Equal(RunStatus.Failed, result.Status);
         Assert.Equal(ClaudeCliRunner.CompactingBeforeOutput, result.ErrorMessage);
         Assert.Equal(1, result.Compactions);
+        Assert.True(clock.Elapsed < TimeSpan.FromSeconds(15), $"Tardó {clock.Elapsed}");
     }
 
     // The real arbiter of 20-10-2026: Claude Code said "compacting" twice for

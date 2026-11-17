@@ -40,7 +40,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Paso 132 hecho (13-11-2026):** se mantienen todas las medidas tomadas por LUNA, y por defecto B es Kimi por OpenCode Go, salvo en modo simulado (`docs/opencode-go/medidas-luna.md`). Con él están hechos todos los pasos del hito 25. Su «Hecho cuando» se cumple hasta el catálogo: el backlog con Kimi espera a la v0.14 (paso 143), y el autor decide si cierra el hito así.
 - **Hito 25 cerrado por el autor (13-11-2026)** con el backlog de Kimi pendiente de la v0.14 (paso 143).
 - **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) 139 (la «lectura relacionada» en el código) 140 (los textos de la plataforma en el idioma del proyecto) 141 (la marca de las historias que juntan varias de una propuesta) hechos el 13-11-2026. Del 142, el código y sus tests, el mismo día.
-- **Siguiente:** el hito 27 (evaluación 2), en otra sesión, empezando por el paso 133 (congelar la versión). El hito 26 lo cerró el autor el 16-11-2026, con el 143.
+- **Hito 27 en curso:** paso 133 hecho el 17-11-2026 (versión congelada, etiqueta `evaluacion-2`, `docs/evaluacion-2/version.md`). El hito 26 lo cerró el autor el 16-11-2026, con el 143.
+- **Siguiente:** el paso 118, la referencia del autor, cuando el autor cierre el 133.
 
 ### Lo que queda, en orden
 
@@ -70,7 +71,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 
 **Hito 27, evaluación 2** (en este orden):
 
-15. **133,** congelar la versión (`evaluacion-2`), con los hitos 25 y 26 terminados.
+15. ~~**133,** congelar la versión (`evaluacion-2`), con los hitos 25 y 26 terminados~~ (hecho el 17-11-2026).
 16. **118,** la referencia del autor: revisar las trampas y hacer la lista de funcionalidades. No depende del modelo.
 17. **134,** el flujo con el documento de PURE, en inglés, con el nuevo B (repite el 105).
 18. **135,** AQUSA y `vale-ears` sobre lo del 134 (repite el 104).
@@ -1256,7 +1257,12 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
     - Todo antes del depósito (finales de enero de 2027). Go Plus solo si, a pocas semanas del depósito, falta uso y el TFG no está acabado (autor, 10-11-2026).
     - Se confirma con el modelo elegido en el paso 130, antes de congelar.
 
-- [ ] 133. **Congelar la versión** (como el 117), con los hitos 25 y 26 terminados.
+- [x] 133. **Congelar la versión** (como el 117), con los hitos 25 y 26 terminados.
+  **Hecho el 16 y el 17-11-2026** por Claude, a petición del autor; detalle en `docs/evaluacion-2/version.md`.
+  - **Tests intermitentes:** el del runner (2 s de tiempo total con un proceso falso lento en arrancar; reproducido, 1 de 4) pasa a 60 s y comprueba que se para antes de 15; el del mockup no se reprodujo, pero destapó una carrera real entre las correcciones en paralelo y la copia de vuelta de sus partes, arreglada con un cerrojo (autor, como recomendaba Claude). Además, los 10 de `GitHubScriptTests` fallaban si se lanzaban desde PowerShell (el test no ponía la carpeta de `bash` en el PATH).
+  - **Prueba en inglés** (proyecto 51, que no se borra, para que su consumo de Go siga contando; autor): la ronda de preguntas de microcare con Kimi, válida a la primera, en 5,5 minutos y por 0,54 $ para una empresa (Kimi 0,16 $). B propone 29 preguntas (LUNA 20 en el paso 117) y la unión toma 7 solo suyas (LUNA 2). No hizo falta corregir nada.
+  - **Comprobado:** 1.093 tests en verde (desde PowerShell y tres veces desde Git Bash), la web y los scripts de Python; imagen de la API reconstruida con ese código (`2eb89aab59a6`) y los 30 prompts y esquemas, byte a byte en ella. Claude Code 2.1.283.
+  - **Etiqueta `evaluacion-2`** en el commit de este paso, solo en local.
   - **Una prueba barata en inglés** antes de congelar: la ronda de preguntas de PURE con el nuevo B, porque en inglés no se ha probado.
   - **Mirar antes los dos tests intermitentes** («Después», punto 11), para que el CI no falle al azar con la versión congelada.
   - **Comprobar que todo está guardado:** `git status` limpio, tests en verde y Docker reconstruido con ese código.
@@ -1331,7 +1337,7 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
     - **Qué haría:** la plataforma estima los tokens que leerá el árbitro (catálogo validado, propuestas y respuestas) y avisa, o no deja lanzarlo, por encima de un umbral, como el tope de documentación de 300.000 tokens.
     - **Por qué después:** con el cambio del árbitro en el paso 143, el límite sube mucho y la comprobación pierde utilidad. Se retoma si el problema vuelve a aparecer con la v0.14.
     - **Lo que enseñó el paso 131 (13-11-2026):** el tamaño del catálogo no basta para saber si cabe, porque también pesan las propuestas y el emparejamiento. La comprobación útil sería después de A y B y antes del árbitro: si lo que tiene que leer no cabe, el trabajo falla con un mensaje claro en lugar de gastar tres intentos del árbitro (0,96 $ en el paso 131).
-11. **Un test intermitente del mockup** (paso 132, 13-11-2026). `MockupTaskTests.Problems_between_the_screens_are_fixed_one_part_at_a_time` falló 1 de cada 4 vueltas de toda la batería, y pasa solo.
+11. ~~**Un test intermitente del mockup**~~ (paso 132, 13-11-2026). **Resuelto en el paso 133 (17-11-2026),** con los otros dos: el del runner tenía un tiempo total demasiado corto, el del mockup destapó una carrera real entre las correcciones en paralelo (arreglada con un cerrojo), y `GitHubScriptTests` fallaba desde PowerShell (detalle en `docs/evaluacion-2/version.md`). `MockupTaskTests.Problems_between_the_screens_are_fixed_one_part_at_a_time` falló 1 de cada 4 vueltas de toda la batería, y pasa solo.
     - Usa su propio proveedor y no tiene que ver con el cambio del paso 132. Probablemente depende del orden en que terminan las pantallas en paralelo.
     - Hay otro anotado del runner (`Compacting_after_writing_the_output_stops_the_run_at_once`, 23-10-2026).
     - Se mira antes de congelar la versión de la evaluación 2 (paso 133), para que el CI no falle al azar.

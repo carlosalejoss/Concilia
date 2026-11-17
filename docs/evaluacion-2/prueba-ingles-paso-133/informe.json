@@ -1,0 +1,112 @@
+{
+  "jobId": "cc4d94ae-0c85-415b-a975-fb863d51715b",
+  "kind": "questions",
+  "createdAt": "2026-11-16T13:16:43.191087+00:00",
+  "finishedAt": "2026-11-16T13:22:15.4237+00:00",
+  "succeeded": true,
+  "message": "UniÃ³n del Ã¡rbitro.",
+  "inputTokens": 199622,
+  "outputTokens": 37440,
+  "runsWithoutUsage": 0,
+  "repairs": 0,
+  "seconds": 332.232613,
+  "runs": [
+    {
+      "slot": "A",
+      "lot": null,
+      "attempt": 1,
+      "model": "SS - GPT-6-SOL",
+      "state": "Done",
+      "inputTokens": 50216,
+      "outputTokens": 9311,
+      "turns": 4,
+      "seconds": 95.490935,
+      "error": null,
+      "estimatedInputTokens": null,
+      "estimatedOutputTokens": null,
+      "cacheReadTokens": 30697,
+      "cacheCreationTokens": 19327,
+      "provider": "LiteLlm"
+    },
+    {
+      "slot": "ARB",
+      "lot": null,
+      "attempt": 1,
+      "model": "SS - GPT-6-SOL",
+      "state": "Done",
+      "inputTokens": 90184,
+      "outputTokens": 16755,
+      "turns": 15,
+      "seconds": 132.651643,
+      "error": null,
+      "estimatedInputTokens": null,
+      "estimatedOutputTokens": null,
+      "cacheReadTokens": 58055,
+      "cacheCreationTokens": 31921,
+      "provider": "LiteLlm"
+    },
+    {
+      "slot": "B",
+      "lot": null,
+      "attempt": 1,
+      "model": "kimi-k3.1-pro",
+      "state": "Done",
+      "inputTokens": 59222,
+      "outputTokens": 11374,
+      "turns": 4,
+      "seconds": 193.179227,
+      "error": null,
+      "estimatedInputTokens": null,
+      "estimatedOutputTokens": null,
+      "cacheReadTokens": 42210,
+      "cacheCreationTokens": 0,
+      "provider": "OpenCodeGo"
+    }
+  ],
+  "elements": {
+    "a": 34,
+    "b": 29,
+    "merged": 40,
+    "both": 22,
+    "onlyA": 11,
+    "onlyB": 7,
+    "discrepancies": 0,
+    "discarded": 1,
+    "deviations": 4
+  },
+  "changes": null,
+  "changesNote": null,
+  "questions": {
+    "total": 40,
+    "answered": 0,
+    "discarded": 0,
+    "pending": 40,
+    "byUser": 0,
+    "byAi": 0,
+    "byAiEdited": 0
+  },
+  "phase": "Questions",
+  "arbiterModel": "SS - GPT-6-SOL",
+  "rearbitrationOf": null,
+  "estimatedInputTokens": 0,
+  "estimatedOutputTokens": 0,
+  "matchingTime": {
+    "seconds": 5.39,
+    "cpuSeconds": 13.42
+  },
+  "assumedRequirements": null,
+  "embeddings": {
+    "onlyA": 14,
+    "onlyB": 10,
+    "agreement": {
+      "bothYes": 36,
+      "onlyEmbeddings": 3,
+      "onlyArbiter": 8,
+      "bothNo": 16,
+      "total": 63,
+      "rate": 0.8253968253968254
+    }
+  },
+  "update": null,
+  "previous": null
+}

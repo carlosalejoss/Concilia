@@ -175,51 +175,55 @@ public static class MockupTask
         string template;
         IReadOnlyList<string> outputs;
         IReadOnlyList<string> tools = ["Read", "Write"];
-        switch (step.Stage)
+        // What it takes from the job's folder, with the lock of Keep (see JobFolderLock).
+        lock (JobFolderLock)
         {
-            case MockupStage.Design:
-                template = DesignPrompt;
-                reads = [new InputFile(BacklogFile, ReadingPlan.OnePerLine(plan.Backlog), Required: true)];
-                outputs = [MapFile, AppFile];
-                break;
+            switch (step.Stage)
+            {
+                case MockupStage.Design:
+                    template = DesignPrompt;
+                    reads = [new InputFile(BacklogFile, ReadingPlan.OnePerLine(plan.Backlog), Required: true)];
+                    outputs = [MapFile, AppFile];
+                    break;
 
-            case MockupStage.Screen:
-                var screen = step.Screen ?? throw new ArgumentException("A screen step needs its screen.", nameof(step));
-                template = ScreenPrompt;
-                reads =
-                [
-                    new InputFile(MapInput, ReadingPlan.OnePerLine(File.ReadAllText(Path.Combine(prototype, "mapa.json"))), Required: true),
-                    new InputFile(AppInput, File.ReadAllText(Path.Combine(prototype, "app.html")), Required: true),
-                    new InputFile(StoriesInput, ReadingPlan.OnePerLine(StoriesOf(plan.Backlog, screen.StoryIds)), Required: true),
-                ];
-                outputs = [ScreenFile(screen.Id)];
-                values["PANTALLA"] = screen.Id;
-                values["TITULO"] = screen.Title;
-                values["FICHERO"] = ScreenFile(screen.Id);
-                values["HISTORIAS"] = screen.StoryIds.Count > 0 ? string.Join(", ", screen.StoryIds) : "ninguna";
-                values["NAVEGACION"] = NavigationOf(MockupMap.Load(File.ReadAllText(Path.Combine(prototype, "mapa.json")), plan.StoryIds), screen);
-                break;
+                case MockupStage.Screen:
+                    var screen = step.Screen ?? throw new ArgumentException("A screen step needs its screen.", nameof(step));
+                    template = ScreenPrompt;
+                    reads =
+                    [
+                        new InputFile(MapInput, ReadingPlan.OnePerLine(File.ReadAllText(Path.Combine(prototype, "mapa.json"))), Required: true),
+                        new InputFile(AppInput, File.ReadAllText(Path.Combine(prototype, "app.html")), Required: true),
+                        new InputFile(StoriesInput, ReadingPlan.OnePerLine(StoriesOf(plan.Backlog, screen.StoryIds)), Required: true),
+                    ];
+                    outputs = [ScreenFile(screen.Id)];
+                    values["PANTALLA"] = screen.Id;
+                    values["TITULO"] = screen.Title;
+                    values["FICHERO"] = ScreenFile(screen.Id);
+                    values["HISTORIAS"] = screen.StoryIds.Count > 0 ? string.Join(", ", screen.StoryIds) : "ninguna";
+                    values["NAVEGACION"] = NavigationOf(MockupMap.Load(File.ReadAllText(Path.Combine(prototype, "mapa.json")), plan.StoryIds), screen);
+                    break;
 
-            default:
-                // A fix: the part as it was goes to input/original.html and the
-                // rest of the prototype to output/prototipo/, so the platform can
-                // check the fixed part against the others. The part itself is not
-                // there: the model writes it new (Write cannot overwrite a file
-                // it has not read).
-                template = FixPrompt;
-                var target = TargetOf(step);
-                CopyFolder(prototype, Path.Combine(workDirectory, PrototypeFolder));
-                File.Delete(Path.Combine(workDirectory, target));
-                var original = File.ReadAllText(Path.Combine(prototype, Path.GetRelativePath(PrototypeFolder, target)));
-                reads = [new InputFile(MapInput, ReadingPlan.OnePerLine(File.ReadAllText(Path.Combine(prototype, "mapa.json"))), Required: true)];
-                if (step.Screen is not null)
-                    reads.Add(new InputFile(AppInput, File.ReadAllText(Path.Combine(prototype, "app.html")), Required: true));
-                reads.Add(new InputFile(FixInput, original, Required: true));
-                outputs = [target];
-                values["PARTE"] = step.Screen is { } fixedScreen ? $"la pantalla {fixedScreen.Id} «{fixedScreen.Title}»" : "el armazón de la aplicación (`app.html`)";
-                values["FICHERO"] = target;
-                values["PROBLEMAS"] = string.Join("\n", (step.Problems ?? []).Select(problem => $"- {problem}"));
-                break;
+                default:
+                    // A fix: the part as it was goes to input/original.html and the
+                    // rest of the prototype to output/prototipo/, so the platform can
+                    // check the fixed part against the others. The part itself is not
+                    // there: the model writes it new (Write cannot overwrite a file
+                    // it has not read).
+                    template = FixPrompt;
+                    var target = TargetOf(step);
+                    CopyFolder(prototype, Path.Combine(workDirectory, PrototypeFolder));
+                    File.Delete(Path.Combine(workDirectory, target));
+                    var original = File.ReadAllText(Path.Combine(prototype, Path.GetRelativePath(PrototypeFolder, target)));
+                    reads = [new InputFile(MapInput, ReadingPlan.OnePerLine(File.ReadAllText(Path.Combine(prototype, "mapa.json"))), Required: true)];
+                    if (step.Screen is not null)
+                        reads.Add(new InputFile(AppInput, File.ReadAllText(Path.Combine(prototype, "app.html")), Required: true));
+                    reads.Add(new InputFile(FixInput, original, Required: true));
+                    outputs = [target];
+                    values["PARTE"] = step.Screen is { } fixedScreen ? $"la pantalla {fixedScreen.Id} «{fixedScreen.Title}»" : "el armazón de la aplicación (`app.html`)";
+                    values["FICHERO"] = target;
+                    values["PROBLEMAS"] = string.Join("\n", (step.Problems ?? []).Select(problem => $"- {problem}"));
+                    break;
+            }
         }
 
         foreach (var input in reads)
@@ -300,13 +304,25 @@ public static class MockupTask
     {
         var prototype = JobPrototypeFolder(jobFolder);
         IEnumerable<string> files = step.Stage == MockupStage.Design ? [MapFile, AppFile] : [TargetOf(step)];
-        foreach (var file in files)
+        lock (JobFolderLock)
         {
-            var target = Path.Combine(prototype, Path.GetRelativePath(PrototypeFolder, file));
-            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-            File.Copy(Path.Combine(workDirectory, file), target, overwrite: true);
+            foreach (var file in files)
+            {
+                var target = Path.Combine(prototype, Path.GetRelativePath(PrototypeFolder, file));
+                Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                File.Copy(Path.Combine(workDirectory, file), target, overwrite: true);
+            }
         }
     }
+
+    // The steps that run at the same time (up to MaxParallelScreens) share the
+    // job's folder: a fix copies the whole prototype (and app.html) while
+    // another step, just accepted, writes its part back with Keep. On Windows
+    // the copy then failed with a file in use, or read a part half written
+    // (step 133: a test failed 1 time in 4). Taking from that folder and
+    // writing back to it go one at a time; they only copy a few small files,
+    // and one job runs at a time in the whole platform.
+    private static readonly object JobFolderLock = new();
 
     private static void CopyFolder(string from, string to)
     {

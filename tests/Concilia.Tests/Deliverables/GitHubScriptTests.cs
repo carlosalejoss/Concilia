@@ -224,7 +224,10 @@ public class GitHubScriptTests
                 ["FAKE_OWNER_TYPE"] = owner,
                 ["FAKE_PROJECT_SCOPE"] = projectScope ? "1" : "",
                 ["CONCILIA_PAUSA"] = "0",
-                ["PATH"] = _bin + Path.PathSeparator + Environment.GetEnvironmentVariable("PATH"),
+                // Bash's own folder too: Git Bash's usr\bin\bash.exe does not add
+                // it, and without it importar.sh has no dirname, sort or sed when
+                // the tests run from PowerShell (step 133).
+                ["PATH"] = string.Join(Path.PathSeparator, _bin, Path.GetDirectoryName(GitBash.Path!), Environment.GetEnvironmentVariable("PATH")),
             };
         }
 

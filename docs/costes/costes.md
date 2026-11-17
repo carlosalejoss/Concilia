@@ -1,6 +1,6 @@
 # Coste en tiempo y en dinero
 
-Generado por `scripts/evaluacion/costes.cs` el 16-11-2026 13:33, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
+Generado por `scripts/evaluacion/costes.cs` el 16-11-2026 14:55, con los datos guardados de cada ejecución. Material para justificar los cambios del TFG también por lo que cuestan.
 
 **Cómo leer las cifras:**
 - **Tokens:** los que da Claude Code al terminar cada ejecución. Una ejecución que la plataforma detuvo antes del final no tiene dato y se **estima** a partir de su consola (paso 95; error en `estimador.md`). Las cifras con estimación llevan `*`; las que tienen ejecuciones sin dato ni estimación son un mínimo y llevan `≥`.
@@ -163,6 +163,8 @@ Solo los trabajos del flujo, no los experimentos (los nuevos arbitrajes y la ron
 | **Clínicas B Kimi** | **Total** | 5 | **3.149.334*** | **463.774*** | **9,68*** | **10,94*** | **81** |
 | Clínicas B Argon | Preguntas | 2 | 459.989* | 64.895* | 1,50* | 2,03* | 11 |
 | **Clínicas B Argon** | **Total** | 2 | **459.989*** | **64.895*** | **1,50*** | **2,03*** | **11** |
+| PURE · prueba en inglés (paso 133) | Preguntas | 1 | 199.622 | 37.440 | 0,54 | 0,77 | 6 |
+| **PURE · prueba en inglés (paso 133)** | **Total** | 1 | **199.622** | **37.440** | **0,54** | **0,77** | **6** |
 
 ## 4. Antes y después: la misma fase con distintas versiones del prompt
 

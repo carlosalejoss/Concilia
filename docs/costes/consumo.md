@@ -1,6 +1,6 @@
 # Consumo de los modelos
 
-Generado por `scripts/evaluacion/costes.cs` el 16-11-2026 13:33, con los datos guardados de cada ejecución (paso 144). Se regenera tras cada tarea, junto con `costes.md`.
+Generado por `scripts/evaluacion/costes.cs` el 16-11-2026 14:55, con los datos guardados de cada ejecución (paso 144). Se regenera tras cada tarea, junto con `costes.md`.
 
 **Cómo leer las cifras:**
 - **Todo lo que se ha ejecutado,** también los experimentos y los intentos fallidos: todo cuenta en el límite.
@@ -14,15 +14,15 @@ Un solo límite para toda la cuenta (comprobado con la consola de OpenCode el 12
 
 | Ventana | Desde | Se reinicia | Usado | Queda | Queda, en dólares de cada modelo |
 | --- | --- | --- | --- | --- | --- |
-| Mes | 11-11 00:00 | 11-12 00:00 | 33 %*† | 67 % | kimi-k3.1-pro 10,07 $, gemini-4-argon 20,14 $, claude-haiku-5-5 10,07 $ |
-| Semana | 16-11 01:00 | 23-11 01:00 | 10 %* | 90 % | kimi-k3.1-pro 6,74 $, gemini-4-argon 13,48 $, claude-haiku-5-5 6,74 $ |
-| 5 horas | 16-11 13:19 | 16-11 18:19 | 25 %* | 75 % | kimi-k3.1-pro 2,24 $, gemini-4-argon 4,48 $, claude-haiku-5-5 2,24 $ |
+| Mes | 11-11 00:00 | 11-12 00:00 | 34 %*† | 66 % | kimi-k3.1-pro 9,91 $, gemini-4-argon 19,83 $, claude-haiku-5-5 9,91 $ |
+| Semana | 16-11 01:00 | 23-11 01:00 | 12 %* | 88 % | kimi-k3.1-pro 6,58 $, gemini-4-argon 13,17 $, claude-haiku-5-5 6,58 $ |
+| 5 horas | 16-11 13:19 | 16-11 18:19 | 31 %* | 69 % | kimi-k3.1-pro 2,08 $, gemini-4-argon 4,17 $, claude-haiku-5-5 2,08 $ |
 
 Lo gastado en cada ventana, por modelo (en dólares de su límite, con el descuento de Argon):
 
 | Modelo | Mes | Semana | 5 horas |
 | --- | --- | --- | --- |
-| kimi-k3.1-pro | 3,18 $ | 0,76 $ | 0,76 $ |
+| kimi-k3.1-pro | 3,34 $ | 0,92 $ | 0,92 $ |
 | gemini-4-argon | 3,44 $ | 0,00 $ | 0,00 $ |
 | claude-haiku-5-5 | 0,02 $ | 0,00 $ | 0,00 $ |
 
@@ -35,11 +35,11 @@ Lo gastado en cada ventana, por modelo (en dólares de su límite, con el descue
 | Proveedor | Modelo | Ejecuciones | Tokens de entrada | Tokens de salida | De ellos, leídos de la caché | Coste (USD) | A precio completo (USD) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | suscripción del autor | claude-sonnet-5-5 | 5 | ≥ 2.459.131 | ≥ 644.901 | — | sin precio | sin precio |
-| pasarela | SS - GPT-6-SOL | 479 | 63.585.926* | 9.020.129* | 1.636.122 | 214,43* | 217,37* |
+| pasarela | SS - GPT-6-SOL | 481 | 63.726.326* | 9.046.195* | 1.724.874 | 214,81* | 217,91* |
 | pasarela | SS - GPT-6.1-SOL | 15 | ≥ 5.819.406 | ≥ 312.408 | — | ≥ 14,76 | ≥ 14,76 |
 | pasarela | SS - GPT-6-LUNA | 111 | ≥ 14.408.431 | ≥ 2.111.683 | 50.155 | ≥ 2,49 | ≥ 2,50 |
 | OpenCode Go (suscripción) | gemini-4-argon | 5 | 237.264* | 137.861* | 62.784 | 3,47* | 3,71* |
-| OpenCode Go (suscripción) | kimi-k3.1-pro | 6 | 615.910* | 204.448* | 51.200 | 3,18* | 3,28* |
+| OpenCode Go (suscripción) | kimi-k3.1-pro | 7 | 675.132* | 215.822* | 93.410 | 3,34* | 3,51* |
 | OpenCode Go (suscripción) | claude-haiku-5-5 | 1 | 42.258 | 5.704 | 24.162 | 0,02 | 0,04 |
 
 «De ellos, leídos de la caché»: solo las ejecuciones desde el paso 128, que lo guardan aparte.
@@ -48,6 +48,7 @@ Lo gastado en cada ventana, por modelo (en dólares de su límite, con el descue
 
 | Proyecto | Tareas | Pasarela (USD) | OpenCode Go (USD) | Total (USD) | A precio completo (USD) | Última tarea |
 | --- | --- | --- | --- | --- | --- | --- |
+| PURE · prueba en inglés (paso 133) | 1 | 0,38 | 0,16 | 0,54 | 0,77 | 16-11-2026 14:16 |
 | Clínicas B Kimi | 6 | 7,78* | 2,51* | 10,29* | 12,03* | 16-11-2026 13:19 |
 | Clínicas SOL 6.1 | 8 | 19,24* | — | 19,24* | 19,24* | 16-11-2026 13:02 |
 | Clínicas SOL 6 | 6 | 6,89* | 2,85* | 9,74* | 10,59* | 12-11-2026 09:55 |
@@ -70,6 +71,15 @@ Lo gastado en cada ventana, por modelo (en dólares de su límite, con el descue
 ## 4. Cada tarea, por proyecto
 
 De la más reciente a la más antigua. Una fila por papel; «Ejecuciones» cuenta también los intentos repetidos.
+
+### PURE · prueba en inglés (paso 133)
+
+| Fecha | Tarea | Resultado | Papel | Modelo | Proveedor | Ejecuciones | Tokens de entrada | Tokens de salida | Coste (USD) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 16-11-2026 14:16 | Preguntas (`cc4d94ae`) | válido | A | SS - GPT-6-SOL | pasarela | 1 | 50.216 | 9.311 | 0,14 |
+|  | |  | Árbitro | SS - GPT-6-SOL | pasarela | 1 | 90.184 | 16.755 | 0,24 |
+|  | |  | B | kimi-k3.1-pro | OpenCode Go (suscripción) | 1 | 59.222 | 11.374 | 0,16 |
+| | **Total de la tarea** | | | | | 3 | **199.622** | **37.440** | **0,54** |
 
 ### Clínicas B Kimi
 
