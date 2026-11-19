@@ -1202,7 +1202,7 @@ Lo que cambia el código o los prompts y debe estar hecho antes de congelar la v
     - Tercera desviación del árbitro, `JoinedSeveral` («junta-varias» en `resultado-arbitro.json`), solo en el backlog y su actualización. Como las demás, marca la historia como discrepancia y añade la explicación de la plataforma: «El árbitro juntó aquí 2 historias de A (HU-001, HU-002). Comprueba que no eran historias distintas que conviene mantener separadas.»
     - Vale para los trabajos nuevos; la comparación de A, B y el árbitro y la vista del emparejamiento, que calculan las desviaciones al pedirlas, ya las muestran también en los antiguos.
     - Dos tests; 1.073 en verde. Si el cambio del prompt del paso 143 lo reduce, se verá en su medición.
-- [ ] 142. **Mejoras del backlog en GitHub** («Después», punto 9; hito 24). Elegidas por el autor el 10-11-2026, con la explicación de Claude delante; las tres siguen en el script que lanza el usuario con `gh`, así que Concilia sigue sin recibir ningún token:
+- [x] 142. **Mejoras del backlog en GitHub** («Después», punto 9; hito 24). Elegidas por el autor el 10-11-2026, con la explicación de Claude delante; las tres siguen en el script que lanza el usuario con `gh`, así que Concilia sigue sin recibir ningún token:
   - **Issue types en las organizaciones.**
     - Cuando el repositorio es de una organización, el tipo nativo de GitHub (Epic, Feature, Task…, según los que tenga configurados) en lugar de la etiqueta. En un repositorio personal, la etiqueta, como hoy.
     - Para probarlo hace falta una organización gratuita de GitHub (la crea el autor).
