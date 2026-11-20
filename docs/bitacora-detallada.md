@@ -3884,3 +3884,17 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Documentación:** `docs/evaluacion-2/version.md` (con la prueba en inglés en `prueba-ingles-paso-133/`), plan, `CLAUDE.md`, `README.md`, trazabilidad, costes regenerados y la sección 20 de la memoria (compila).
 - **Etiqueta `evaluacion-2`** en el commit de este paso, solo en local.
 - **Pendiente:** que el autor cierre el 133. Después, el 118: la referencia del autor (revisar las 26 trampas de clínicas, la lista de funcionalidades sin mirar catálogos y la lista de cambios de la segunda iteración).
+
+## 20-11-2026, 09:53 (sesión, memoria: diagramas al día)
+
+- **Petición del autor:** revisar la memoria y los docs y actualizar los diagramas al contexto actual (versión `evaluacion-2`).
+- **Revisado contra el código** (`docker-compose.yml`, `OpenCodeGoProvider`, `DeliverableRules`, `AppDbContextModelSnapshot`, migración `AddRunCacheTokens`) y contra `CLAUDE.md`, el plan y la sección temporal de la memoria (puntos 1 a 20).
+- **Despliegue:** la pasarela solo con SOL (A, árbitro, sugerencias y mockup); nuevo servicio externo OpenCode Go, con Kimi K3.1 Pro (B), su propia clave y su conexión HTTPS desde el proceso de Claude Code; «solo la clave de su proveedor»; `Concilia.Runner` con un proveedor por papel; prompts v0.14 y v0.13; configuración con el proveedor de cada papel y OpenCode Go. Como la web solo se publica en `127.0.0.1:8080` desde el 11-11, el navegador y Docker se dibujan como dos entornos de ejecución dentro de un único «Equipo del usuario» (antes, equipo del usuario y servidor). El lienzo crece 60 px.
+- **Secuencia:** regenerada con un script que reproduce el estilo, porque no cabía otra línea de vida: OpenCode Go (Kimi K3.1 Pro) recibe los turnos de B; la pasarela, los de A y el árbitro (GPT-6-SOL). Las cajas pasan de 166 a 160 px y las líneas de vida se juntan; misma altura.
+- **Estados:** faltaba recuperar una versión (paso 102, 23-10): de *validada* o *borrador* a *borrador* («reabrir o recuperar una versión», «editar y guardar o recuperar una versión»), y en la vigencia «generado, recuperado, validado o reabierto».
+- **Alto nivel:** «Exportable a Gherkin, Jira, Azure y GitHub».
+- **Modelo de datos (TikZ, en `memoria.tex` y `anexos/modelo-datos.tex`):** `Run` con `CacheRead/CreationTokens`.
+- **Archivos:** SVG editados con un script y PNG a doble tamaño con Edge sin ventana, copiados a `memoria/tfg/img/`. Los anteriores, en `memoria/` con el sufijo `-evaluacion-1`. La memoria compila sin errores.
+- **Texto principal sin tocar** (criterio del 10-11): el punto 21 de la sección temporal dice qué cambió en cada diagrama y qué frases del texto quedan por alinear (B es LUNA, «un mismo servidor», el puerto, tres servicios externos, la clave de OpenCode, recuperar una versión, el paso 4 de la secuencia y los tokens de caché del anexo).
+- **Pendiente:** que el autor revise los diagramas, sobre todo el despliegue con un solo equipo (si prefiere el dibujo cliente-servidor, se recupera con la nota de `127.0.0.1`).
+
