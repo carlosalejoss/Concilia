@@ -1250,6 +1250,9 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 - **Orden:** 133, 118, 134, 135, 119, 120, 121, 136 y 137.
 - **Las instrucciones de los pasos 118 a 121** son las del hito 23: donde dicen LUNA, se lee el nuevo B, y donde dicen `evaluacion-1`, `evaluacion-2`.
 - **Resultados** en `docs/evaluacion-2/`, aparte de los de la evaluación 1, que se quedan en `docs/evaluacion/`.
+- **Scripts de los pasos 119 a 121** (preparados el 23-11-2026, a petición del autor, mientras hace el 118; probados con los trabajos de «Clinicas Veterinarias v0.11», que no cuentan):
+  - `scripts/evaluacion/repeticiones.cs -- "Clínicas eval"`: solo por la API; escribe `docs/evaluacion-2/repeticiones-tablas.md` (informe de cada repetición, coste por papel, cuánto se parecen las repeticiones de A, de B y de la unión, historias que juntan varias y criterios sin citar del aviso `ARB-CITA`). El análisis va en `repeticiones.md`.
+  - `scripts/evaluacion/un-solo-modelo.cs`: `extraer "Clínicas eval" kimi` la lanza el autor, porque lee `data/` (la API no da las propuestas de A y B con sus fuentes); `hojas kimi` y `calcular kimi`, Claude. Hojas en `docs/evaluacion-2/revision/<tanda>/` (CSV con «;», a ciegas, con `claves.json`) y resultados en `docs/evaluacion-2/un-solo-modelo-<tanda>.md`. SOL ‖ SOL es la tanda `sol-sol`: su muestra trae ya rellenos «fiel» y «sobra» de los requisitos con el mismo texto revisados en otra tanda.
 - **Coste estimado:**
   - **SOL por la pasarela:** unos 20–30 $ el 119, 30–50 $ el 121, unos 9 $ el 134 y unos 7 $ el 136.
   - **El nuevo B, a precio de lista:** unos 10–15 $ en total. Supera los 7,5 $ semanales de Go y ronda sus 15 $ mensuales.
