@@ -3910,3 +3910,16 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Pendiente:** el 118 (autor); Claude prepara los scripts de los pasos 119 y 120 (`repeticiones.cs` y `un-solo-modelo.cs`) con permiso del autor, sin lanzar nada con modelos.
 - **Respuesta del tutor (23-11-2026):** el planteamiento le parece bien. Un proyecto ficticio más un documento público es «el mínimo imprescindible»; lo deseable serían más proyectos y más revisores de la referencia. No le convence generar referencias con IA (el mismo problema de confianza). Con lo propuesto cree que el trabajo se puede defender; pide las secciones de la memoria que ya estén escritas para ir revisándolas. Sugiere justificar el alcance por lo que autorizó la empresa: Claude advierte al autor de que en la memoria solo puede decirse lo que sea cierto (el proyecto de clínicas es ficticio, y la empresa autorizó un documento interno solo para desarrollar y probar). Pendiente que el autor decida si amplía (por ejemplo, el proyecto mediano de `ejemplos/` o un segundo revisor para una parte de la muestra).
 - **Scripts de los pasos 119 y 120 preparados** (con permiso del autor): `repeticiones.cs` y `un-solo-modelo.cs` (`extraer`, que lanza el autor porque lee `data/`; `hojas` y `calcular`). Probados con «Clinicas Veterinarias v0.11»: tablas de repeticiones, hojas (57, 63, 18, 90 y 29 filas con 3 funcionalidades de prueba), `calcular` con respuestas al azar y la reutilización de la muestra en una segunda tanda (90 de 90, tras dar a la muestra su propio generador con la semilla fija). Las salidas de prueba se borraron. No se lanzó nada con modelos ni se tocó la aplicación.
+
+## 23-11-2026, 10:40 (sesión, memoria: el texto de los diagramas)
+
+- **Petición del autor:** alinear con los diagramas nuevos la explicación del capítulo 2, que la sesión del 20-11 dejó sin tocar (solo anotada en el punto 21 de la sección temporal).
+- **Cambiado en el texto principal de la memoria:**
+  - 2.1, «Modelos A, B y C»: B es Kimi K3.1 Pro, de otro fabricante (Moonshot AI), para que las propuestas sean más independientes; el almacenamiento compartido, en una carpeta «del equipo».
+  - 2.2.1: los tres contenedores, en el mismo equipo que el navegador; el puerto 8080, solo en `127.0.0.1`, porque no hay autenticación y las tareas gastan dinero; el runner elige el proveedor de cada modelo; cada proceso, solo con la dirección y la clave de su proveedor; tres servicios externos, con OpenCode Go (mismas condiciones que A, solo documentos ficticios o públicos); «servidor» → «equipo» o «contenedor» donde tocaba.
+  - 2.2.2: recuperar una versión vuelve a *borrador* y desactualiza lo siguiente; la vigencia, con «recuperar».
+  - 2.2.3, paso 4: B con Kimi, y cada modelo contra su proveedor.
+  - Anexo del modelo de datos (también en `anexos/modelo-datos.tex`): `Run` con los tokens de la caché aparte.
+- **Sección temporal:** el punto 21 dice ya qué se cambió, y el punto 1 marca como hecha la parte del capítulo 2. Sigue pendiente la introducción (las condiciones de la empresa y la tabla de herramientas, con SOL y LUNA). Los anexos de coste e incidencias hablan de mediciones con LUNA y no se tocan.
+- **Compila** sin errores; los tres `Overfull \hbox` menores ya estaban.
+
