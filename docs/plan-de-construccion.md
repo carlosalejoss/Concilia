@@ -86,7 +86,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 - **Empezada el 04-11-2026.**
 - **Lo que hay que llevar a su sitio** está en su sección temporal «Cosas que añadir a la memoria», al final de `memoria.tex` (10-11-2026).
 
-**Después de la evaluación:** lo que queda en «Después»: la aprobación por umbral, leerlo todo cuando la documentación es pequeña, el CSV solo con lo nuevo de una iteración y el botón «Subir a GitHub» en la web.
+**Trabajo futuro, fuera del TFG:** lo que queda en «Después» (la aprobación por umbral, leerlo todo cuando la documentación es pequeña, el CSV solo con lo nuevo de una iteración, el botón «Subir a GitHub» en la web, la comprobación previa del árbitro del backlog y los criterios repetidos de su unión). No forma parte del trabajo y va a la memoria como trabajo futuro. Si al terminar la evaluación sobra tiempo, el autor decidirá entonces, con el proyecto terminado, si hace alguna que sea fácil o que aporte mucho valor (24-11-2026).
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
 - ~~si se hace un CSV solo con lo nuevo de una iteración~~ (cerrado el 04-11-2026 sin hacerlo, como mejora futura);
@@ -1313,7 +1313,7 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 
 **Decidido por el autor el 10-11-2026, punto por punto,** con la recomendación de Claude delante:
 - **pasan al hito 26, antes de la evaluación 2:** los puntos 1, 5c, 6, 7, 8 y 9 (este, salvo el botón de la web);
-- **se quedan aquí, para después:** los puntos 3, 5a y 5b y el botón «Subir a GitHub» del punto 9, que van a la memoria como trabajo futuro;
+- **se quedan aquí, para después:** los puntos 3, 5a y 5b y el botón «Subir a GitHub» del punto 9, que van a la memoria como trabajo futuro (24-11-2026, autor: no se hacen en el TFG; si al terminar la evaluación sobra tiempo, se decide entonces si se hace alguno fácil o de mucho valor);
 - **quitados del plan:** el hito 7 (punto 1b), abaratar las pantallas del mockup y el mockup con la suscripción y la skill `frontend-design` (autor: no se hacen).
 
 1. ~~Mejorar los prompts fase a fase sobre el flujo que ya funciona.~~ Pasa al hito 26, paso 143 (10-11-2026, autor).
