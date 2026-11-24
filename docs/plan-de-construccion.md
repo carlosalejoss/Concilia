@@ -1311,6 +1311,8 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 
 ## Después
 
+**Qué es esta sección (24-11-2026, autor):** lo que sigue abierto aquí (puntos 3, 5a, 5b, el botón del punto 9, 10 y 12) no se hace en el TFG: son mejoras futuras de la plataforma, que van a la memoria como trabajo futuro. Si al terminar la evaluación sobra tiempo, el autor decidirá entonces, con el proyecto terminado, si hace alguna que sea fácil o que aporte mucho valor. Lo tachado ya se hizo o se quitó.
+
 **Decidido por el autor el 10-11-2026, punto por punto,** con la recomendación de Claude delante:
 - **pasan al hito 26, antes de la evaluación 2:** los puntos 1, 5c, 6, 7, 8 y 9 (este, salvo el botón de la web);
 - **se quedan aquí, para después:** los puntos 3, 5a y 5b y el botón «Subir a GitHub» del punto 9, que van a la memoria como trabajo futuro (24-11-2026, autor: no se hacen en el TFG; si al terminar la evaluación sobra tiempo, se decide entonces si se hace alguno fácil o de mucho valor);
@@ -1338,7 +1340,7 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
    - Es la mayor de las mejoras (1–2 días): rehacer en C# lo que hace el script.
 10. **Comprobar antes de lanzar el backlog si su árbitro cabrá** (paso 145; el autor deja la decisión a Claude, 11-11-2026).
     - **Qué haría:** la plataforma estima los tokens que leerá el árbitro (catálogo validado, propuestas y respuestas) y avisa, o no deja lanzarlo, por encima de un umbral, como el tope de documentación de 300.000 tokens.
-    - **Por qué después:** con el cambio del árbitro en el paso 143, el límite sube mucho y la comprobación pierde utilidad. Se retoma si el problema vuelve a aparecer con la v0.14.
+    - **Por qué después:** con el cambio del árbitro en el paso 143, el límite sube mucho y la comprobación pierde utilidad. Trabajo futuro, fuera del TFG (24-11-2026, autor).
     - **Lo que enseñó el paso 131 (13-11-2026):** el tamaño del catálogo no basta para saber si cabe, porque también pesan las propuestas y el emparejamiento. La comprobación útil sería después de A y B y antes del árbitro: si lo que tiene que leer no cabe, el trabajo falla con un mensaje claro en lugar de gastar tres intentos del árbitro (0,96 $ en el paso 131).
 11. ~~**Un test intermitente del mockup**~~ (paso 132, 13-11-2026). **Resuelto en el paso 133 (17-11-2026),** con los otros dos: el del runner tenía un tiempo total demasiado corto, el del mockup destapó una carrera real entre las correcciones en paralelo (arreglada con un cerrojo), y `GitHubScriptTests` fallaba desde PowerShell (detalle en `docs/evaluacion-2/version.md`). `MockupTaskTests.Problems_between_the_screens_are_fixed_one_part_at_a_time` falló 1 de cada 4 vueltas de toda la batería, y pasa solo.
     - Usa su propio proveedor y no tiene que ver con el cambio del paso 132. Probablemente depende del orden en que terminan las pantallas en paralelo.
@@ -1347,4 +1349,4 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
     - Volvió a fallar el 13-11-2026, 1 de las 2 baterías completas del paso 140, y pasó al repetirla.
 12. **Criterios repetidos en la unión del backlog** (paso 143, 16-11-2026; lo vio el autor al revisar el backlog de «Clínicas B Kimi»). El árbitro conserva a la vez el criterio de A y el de B que dicen casi lo mismo («Historia única del grupo» y «Historia y alertas compartidas»), porque con la v0.14 solo ve el nombre de cada escenario.
     - **Qué haría:** la plataforma empareja también los criterios de las historias que se unen, con los mismos embeddings, y le marca al árbitro los pares casi iguales para que se quede con uno o los combine.
-    - **Por qué después:** se mide primero cuánto pasa en la evaluación 2 (pasos 118 a 120), sin cambiar los prompts de la versión congelada.
+    - **Por qué después:** no se cambian los prompts de la versión congelada. La evaluación 2 (pasos 118 a 120) mide cuánto pasa; corregirlo es trabajo futuro, fuera del TFG (24-11-2026, autor).
