@@ -86,7 +86,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 - **Empezada el 04-11-2026.**
 - **Lo que hay que llevar a su sitio** está en su sección temporal «Cosas que añadir a la memoria», al final de `memoria.tex` (10-11-2026).
 
-**Trabajo futuro, fuera del TFG:** lo que queda en «Después» (la aprobación por umbral, leerlo todo cuando la documentación es pequeña, el CSV solo con lo nuevo de una iteración, el botón «Subir a GitHub» en la web, la comprobación previa del árbitro del backlog y los criterios repetidos de su unión). No forma parte del trabajo y va a la memoria como trabajo futuro. Si al terminar la evaluación sobra tiempo, el autor decidirá entonces, con el proyecto terminado, si hace alguna que sea fácil o que aporte mucho valor (24-11-2026).
+**Trabajo futuro, fuera del TFG:** lo que queda en «Trabajo futuro» (la aprobación por umbral, leerlo todo cuando la documentación es pequeña, el CSV solo con lo nuevo de una iteración, el botón «Subir a GitHub» en la web, la comprobación previa del árbitro del backlog y los criterios repetidos de su unión). No forma parte del trabajo y va a la memoria como trabajo futuro. Si al terminar la evaluación sobra tiempo, el autor decidirá entonces, con el proyecto terminado, si hace alguna que sea fácil o que aporte mucho valor (24-11-2026).
 
 **Abierto, sin paso todavía** (en `docs/trazabilidad-proyecto.md`, «Decisiones que siguen abiertas»):
 - ~~si se hace un CSV solo con lo nuevo de una iteración~~ (cerrado el 04-11-2026 sin hacerlo, como mejora futura);
@@ -94,7 +94,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 - ~~el backlog de un catálogo grande~~ (329 requisitos, paso 145): su árbitro compacta dos veces sin escribir la salida, con SOL 6 y con SOL 6.1. Decidido el 11-11-2026 (el autor lo deja a Claude):
   - el árbitro del backlog leerá solo los requisitos que necesita, en los prompts v0.14 (paso 143);
   - hasta entonces, antes de cada backlog de los pasos 130 y 131, se mira el tamaño del catálogo (corregido el 13-11-2026: en el paso 131 el árbitro no cupo con 228 requisitos, porque también pesan las propuestas; hasta la v0.14 no se lanza ningún backlog de clínicas con el nuevo B);
-  - la comprobación previa en la plataforma, en «Después», punto 10.
+  - la comprobación previa en la plataforma, en «Trabajo futuro», punto 10.
 - Quitados del plan el 10-11-2026 (autor: no se hacen): abaratar las pantallas del mockup y el mockup con la suscripción y la skill `frontend-design`.
 
 ## Hito 0: preparación y prueba de humo (completado)
@@ -1309,7 +1309,7 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
 - el coste para una empresa;
 - y la comparación con la evaluación 1, que dice qué se ganó con el cambio de B.
 
-## Después
+## Trabajo futuro (antes «Después»)
 
 **Qué es esta sección (24-11-2026, autor):** lo que sigue abierto aquí (puntos 3, 5a, 5b, el botón del punto 9, 10 y 12) no se hace en el TFG: son mejoras futuras de la plataforma, que van a la memoria como trabajo futuro. Si al terminar la evaluación sobra tiempo, el autor decidirá entonces, con el proyecto terminado, si hace alguna que sea fácil o que aporte mucho valor. Lo tachado ya se hizo o se quitó.
 
@@ -1323,19 +1323,19 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
    - La evaluación completa se hace una sola vez, al final.
    - **1b. ~~El hito 7~~** (catálogo v2 de arriba abajo): quitado del plan el 10-11-2026. Su idea del inventario de funcionalidades pasa como candidata al paso 143 (ver el hito 7).
 2. ~~Árbitro con embeddings.~~ Pasa al hito 17 (16-10-2026).
-3. **Aprobación por umbral:** aprobar sin revisión lo que A y B dicen igual por encima de un umbral. En parte ya lo hacen los umbrales del paso 88. **Después** (autor, 10-11-2026): cambia cómo revisa el usuario, no lo que generan los modelos, y la evaluación 2 no lo mide. (La evaluación con precision, recall y F1 pasó al paso 120 el 27-10-2026.)
+3. **Aprobación por umbral:** aprobar sin revisión lo que A y B dicen igual por encima de un umbral. En parte ya lo hacen los umbrales del paso 88. **Trabajo futuro** (autor, 10-11-2026): cambia cómo revisa el usuario, no lo que generan los modelos, y la evaluación 2 no lo mide. (La evaluación con precision, recall y F1 pasó al paso 120 el 27-10-2026.)
 4. Redactar la memoria: sin capítulo de Metodología; 3.1 especificación de la solución, 3.2 implementación y 4 evaluación. (Sustituido el 22-10-2026 por el autor: 1 Introducción; 2 Desarrollo, con 2.1 especificación del sistema, 2.2 construcción del sistema y 2.3 validación de la solución; 3 Conclusiones. Empezada el 04-11-2026. Desde el 10-11-2026 se trabaja en paralelo: ver «Lo que queda, en orden».)
 5. **Mejoras futuras de las iteraciones del proyecto** (04-11-2026):
-   - **Leer todo cuando la documentación es pequeña y la lectura relacionada cuando es grande.** **Después** (autor, 10-11-2026).
+   - **Leer todo cuando la documentación es pequeña y la lectura relacionada cuando es grande.** **Trabajo futuro** (autor, 10-11-2026).
      - Con unos 26.000 tokens, leerlo todo costó 0,95 $ frente a 1,67 $ con la misma detección (paso 116). Con unos 96.000, leerlo todo no cabe y solo funciona la lectura relacionada (paso 123).
      - Solo afecta a las rondas centradas y a las actualizaciones, que la evaluación 2 no usa, y habría que medir un umbral.
-   - **Un CSV para Jira o Azure DevOps solo con lo nuevo de una iteración,** para no duplicar lo ya importado. **Después** (autor, 10-11-2026): trabajo futuro.
+   - **Un CSV para Jira o Azure DevOps solo con lo nuevo de una iteración,** para no duplicar lo ya importado. **Trabajo futuro** (autor, 10-11-2026).
    - ~~La duración real de cada repetición de una tarea.~~ Pasa al hito 26, paso 138 (10-11-2026, autor).
 6. ~~Los textos de la plataforma en el idioma del proyecto.~~ Pasa al hito 26, paso 140 (10-11-2026, autor).
 7. ~~Que el árbitro del backlog no junte historias atómicas de una misma propuesta.~~ Pasa al hito 26 (10-11-2026, autor): la marca de la plataforma, en el paso 141, y el cambio del prompt, dentro de los prompts mejorados del paso 143.
 8. ~~Renombrar en el código la «opción C» como «lectura relacionada».~~ Pasa al hito 26, paso 139 (10-11-2026, autor).
 9. ~~Mejoras del backlog en GitHub.~~ Pasan al hito 26, paso 142 (10-11-2026, autor), salvo una:
-   - **El botón «Subir a GitHub» en la web** (el camino B): Concilia llamaría a la API de GitHub, sin `gh` ni Git Bash, para cualquier usuario de la web. **Después** (autor, 10-11-2026): mejora futura.
+   - **El botón «Subir a GitHub» en la web** (el camino B): Concilia llamaría a la API de GitHub, sin `gh` ni Git Bash, para cualquier usuario de la web. **Trabajo futuro** (autor, 10-11-2026).
    - Obligaría a que Concilia recibiera un token de GitHub, en contra de la decisión del 06-11-2026. Para un solo usuario iría en `.env`, como las demás claves.
    - Es la mayor de las mejoras (1–2 días): rehacer en C# lo que hace el script.
 10. **Comprobar antes de lanzar el backlog si su árbitro cabrá** (paso 145; el autor deja la decisión a Claude, 11-11-2026).
