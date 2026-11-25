@@ -4020,3 +4020,20 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
 - **Tipo de letra (decisión del autor):** Latin Modern para el texto, que es la letra por defecto de LaTeX (Computer Modern) en versión vectorial, e Inconsolata para el texto monoespaciado. Se queda así. La plantilla oficial usa Carlito; el cambio a Latin Modern se hizo fuera de las sesiones de Claude, e Inconsolata la puso una sesión anterior. En esta sesión el preámbulo no ha cambiado.
 - **Compila:** 116 páginas, sin referencias ni citas sin definir y sin avisos de biber. Texto corrido: 10.776 palabras (antes 10.630: +148 en la introducción y −2 en las conclusiones).
 - **Pendiente:** que el autor revise los cambios; la línea del O3 que se sale 2,4 pt del margen, para la revisión final; sigue el recorte de la extensión antes de escribir la 2.3.
+
+## 25-11-2026, 12:24 (sesión, memoria: revisión antes de enviarla al tutor)
+
+- **Petición del autor:** analizar `docs/` y revisar `memoria/memoria-TFG-primera-version-sin-anexos.pdf` (46 páginas: portada, resumen, índices, capítulos 1 a 3 y referencias) para saber si se puede enviar al tutor. Solo revisión: no se cambia la memoria.
+- **Comprobado contra la normativa** (`memoria/anexo_iv_instrucciones_tfg_tfm_eina.pdf`, tipo B) y contra `docs/` y el código: 64 operaciones en `docs/api/openapi.json`, 1.093 tests, 321 commits hasta `evaluacion-2`, PostgreSQL 18, Node.js 24, los 37 de 48 pares y el 99 % de la calibración, los datos de Artificial Analysis y Terminal-Bench y los avisos de VibeBreach (293 = 181 + 99 + 13). Todo cuadra.
+- **Lo que hay que arreglar antes de enviarla:**
+  - los metadatos del PDF dicen «palabra clave 1, palabra clave 2, palabra clave 3» (`pdfkeywords` en `memoria.tex`);
+  - «Integra Tecnología» aparece en la 2.2.6 y en el anexo M, y la normativa (2.5) solo admite referencias corporativas en la introducción y los agradecimientos;
+  - la 1.2 dice que Kimi es B «desde el 10 de noviembre», pero el 10-11 se decidió cambiar de fabricante y Kimi se eligió el 12-11 (la 2.2.2 lo dice bien);
+  - la versión sin anexos tiene en el índice y en las listas de figuras, tablas y listados entradas de anexos que no están (páginas 37 a 93), y el texto remite a ellos: o se envía completa (sin la sección temporal), o se avisa en el correo.
+- **Lo que hay que resolver antes de la versión final:**
+  - extensión: 10.776 palabras de texto corrido sin la 2.3, con un máximo de 10.000; para dejar unas 1.500 a la 2.3, el resto tiene que bajar a unas 8.500. Propuesta de recorte por sección (unas 2.300 palabras): estados del flujo, secuencia, elección de los modelos (ya está en el anexo G), contenedores, calidad del software, estructura de la memoria, resumen del trabajo y la historia LUNA → Kimi, que se cuenta en el resumen, la 1.2, la 2.2.2 y las conclusiones;
+  - las amenazas a la validez (sobre todo que la misma IA que desarrolló la plataforma escribió los proyectos ficticios y sus trampas) deben ir en la 2.3 o en el anexo de evaluación; la 3.4 lo dice de pasada;
+  - SOL y LUNA se presentan como nombres internos, pero los diagramas y el anexo G muestran `GPT-6-SOL`, y sus cifras son de pruebas públicas: decidir si se dice una vez qué modelos son;
+  - opcional: los requisitos de la propia Concilia (o sus casos de uso) en un anexo, las fechas exactas del cuerpo al anexo de cronología, alguna captura al anexo para acercarse a las 20 páginas, y las lecciones de `contenido-memoria.md` que no están (los modelos fallan más en el formato que en el criterio).
+- **Documentos de seguimiento desactualizados** (no afectan a la memoria): la cabecera de `trazabilidad-proyecto.md` dice «del 28-09-2026 al 26-10-2026» y sus cifras, 269 commits al 05-11; `contenido-memoria.md` habla de 9.550 palabras, los hitos 0 a 23, 259 commits y que B es el 0,5 % del coste (dato de LUNA).
+- **Pendiente (autor):** decidir qué arreglos se hacen antes de enviarla y cómo citar VibeBreach sin el nombre de la empresa.
