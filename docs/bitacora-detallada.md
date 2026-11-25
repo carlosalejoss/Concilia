@@ -4037,3 +4037,9 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - opcional: los requisitos de la propia Concilia (o sus casos de uso) en un anexo, las fechas exactas del cuerpo al anexo de cronología, alguna captura al anexo para acercarse a las 20 páginas, y las lecciones de `contenido-memoria.md` que no están (los modelos fallan más en el formato que en el criterio).
 - **Documentos de seguimiento desactualizados** (no afectan a la memoria): la cabecera de `trazabilidad-proyecto.md` dice «del 28-09-2026 al 26-10-2026» y sus cifras, 269 commits al 05-11; `contenido-memoria.md` habla de 9.550 palabras, los hitos 0 a 23, 259 commits y que B es el 0,5 % del coste (dato de LUNA).
 - **Pendiente (autor):** decidir qué arreglos se hacen antes de enviarla y cómo citar VibeBreach sin el nombre de la empresa.
+- **Arreglados a petición del autor (25-11-2026; copia previa de `memoria.tex` en el scratchpad de la sesión):**
+  - `pdfkeywords`: las palabras clave del resumen;
+  - VibeBreach, sin el nombre de la empresa: en la 2.2.6, «una herramienta de análisis de seguridad no pública a la que el autor tuvo acceso durante las prácticas»; en el anexo M, «No es pública: el autor tuvo acceso a ella durante las prácticas». «Integra Tecnología» queda solo en la 1.2;
+  - 1.2: «desde noviembre de 2026 el segundo modelo es Kimi K3.1 Pro», en lugar de «desde el 10 de noviembre».
+  - Compila: 116 páginas, sin referencias sin definir. Texto corrido: 10.782 palabras (+6). La versión sin anexos la regenera el autor a partir de `memoria.pdf`.
+  - **El recorte de la extensión** (recomendación de Claude): después de los comentarios del tutor a esta versión y antes de escribir la 2.3, en una sola pasada; se le avisa en el correo de que se sabe que pasa del límite.
