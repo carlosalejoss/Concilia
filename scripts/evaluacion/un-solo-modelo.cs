@@ -28,7 +28,7 @@
 //            minutos de A solo, B solo y Concilia, cada cifra con sus casos.
 //
 // Cómo se calcula:
-//   - cobertura = (sí + ½·en parte) / funcionalidades revisadas;
+//   - cobertura = (sí + ½·en parte) / funcionalidades revisadas, sin las que terminan en «(fuera de alcance)»;
 //   - precisión = (bien + ½·en parte) / requisitos de la muestra, donde «bien»
 //     es fiel, no repetido y no sobra, y «en parte» es fiel en parte y no
 //     repetido ni sobra;
@@ -186,8 +186,12 @@ async Task Sheets(string batch)
         : [];
 
     var traps = Traps();
-    var features = Features(Option("--referencia", Path.Combine("docs", "evaluacion-2", "referencia-clinicas.md")));
-    Console.WriteLine($"{traps.Count} trampas y {features.Count} funcionalidades de la referencia.");
+    var allFeatures = Features(Option("--referencia", Path.Combine("docs", "evaluacion-2", "referencia-clinicas.md")));
+    // What the documents leave out of scope stays in the reference, but not in the coverage: a catalog
+    // that rightly leaves it out would count as "not covered". The traps G3, G14 and G26 measure it.
+    var features = allFeatures.Where(f => !f.OutOfScope).ToList();
+    Console.WriteLine($"{traps.Count} trampas y {features.Count} funcionalidades de la referencia " +
+        $"(sin las {allFeatures.Count - features.Count} «fuera de alcance», que no cuentan en la cobertura).");
     if (features.Count == 0)
         Console.WriteLine("Aviso: referencia-clinicas.md no tiene funcionalidades todavía; cobertura.csv sale vacía.");
 
@@ -577,4 +581,7 @@ static string? Answer(string? value)
 
 record Item(string Id, string Text, JsonNode Element);
 record Trap(string Id, string Kind, string Topic, string Says, string ResolvedIn);
-record Feature(string Id, string Name, string Document);
+record Feature(string Id, string Name, string Document)
+{
+    public bool OutOfScope => Name.EndsWith("(fuera de alcance)", StringComparison.OrdinalIgnoreCase);
+}

@@ -41,7 +41,8 @@ Plan por hitos, con una web mínima operativa desde el hito 1. Cada hito termina
 - **Hito 25 cerrado por el autor (13-11-2026)** con el backlog de Kimi pendiente de la v0.14 (paso 143).
 - **Hito 26 en curso:** pasos 126 (el aviso de un par «mismo» separado dice en qué elemento está el otro), 138 (la duración real de cada repetición) 139 (la «lectura relacionada» en el código) 140 (los textos de la plataforma en el idioma del proyecto) 141 (la marca de las historias que juntan varias de una propuesta) hechos el 13-11-2026. Del 142, el código y sus tests, el mismo día.
 - **Hito 27 en curso:** paso 133 hecho el 17-11-2026 (versión congelada, etiqueta `evaluacion-2`, `docs/evaluacion-2/version.md`). El hito 26 lo cerró el autor el 16-11-2026, con el 143.
-- **Siguiente:** el paso 118, la referencia del autor, cuando el autor cierre el 133.
+- **Paso 118 hecho (26-11-2026):** la referencia del autor (`docs/evaluacion-2/referencia.md`): 82 funcionalidades, 75 sin las de fuera de alcance; G13, G15, G17 y G25 corregidas; I2-1, I2-2 e I2-3 corregidas. El autor cerró el 133 el 17-11-2026.
+- **Siguiente:** el paso 134 (PURE en inglés), cuando el autor cierre el 118, con su coste estimado antes de lanzar.
 
 ### Lo que queda, en orden
 
@@ -72,7 +73,7 @@ Lista única de todo lo pendiente, para no dejarse nada. Cada paso del plan tien
 **Hito 27, evaluación 2** (en este orden):
 
 15. ~~**133,** congelar la versión (`evaluacion-2`), con los hitos 25 y 26 terminados~~ (hecho el 17-11-2026).
-16. **118,** la referencia del autor: revisar las trampas y hacer la lista de funcionalidades. No depende del modelo.
+16. ~~**118,** la referencia del autor: revisar las trampas y hacer la lista de funcionalidades. No depende del modelo~~ (hecho el 26-11-2026).
 17. **134,** el flujo con el documento de PURE, en inglés, con el nuevo B (repite el 105).
 18. **135,** AQUSA y `vale-ears` sobre lo del 134 (repite el 104).
 19. **119,** las 9 ejecuciones de clínicas.
@@ -1275,7 +1276,11 @@ Decidido por el autor el 10-11-2026: una evaluación nueva, desde cero, con el m
     - el modelo y el proveedor de cada papel;
     - los umbrales y `Catalog:MaxParallelLots`;
     - la versión de Claude Code.
-- [ ] 118. La referencia del autor (instrucciones en el hito 23). No depende del modelo.
+- [x] 118. La referencia del autor (instrucciones en el hito 23). No depende del modelo. Hecho el 26-11-2026 (`docs/evaluacion-2/referencia.md`).
+  - **Lista de funcionalidades** (`docs/evaluacion-2/referencia-clinicas.md`): 82, de las que 75 cuentan en la cobertura. Las 7 marcadas «(fuera de alcance)» no cuentan, porque un catálogo que las deja fuera hace bien; `un-solo-modelo.cs` las quita de la hoja (autor, como recomendaba Claude).
+  - **Trampas:** G13 pasa a resuelta y G17 a hueco; G15 y G25, descripción completada. Quedan 15 resueltas, 4 abiertas, 6 huecos y 1 fuera de alcance.
+  - **Segunda iteración:** I2-1, I2-2 e I2-3 corregidas por el autor.
+  - **Revisión:** Claude lo comprobó todo contra los documentos, sin mirar salidas de los modelos, y no añadió ni quitó funcionalidades. Los cuatro retoques los aprobó el autor.
 - [ ] 134. **El flujo con el documento de PURE, en inglés** (repite el 105, con el mismo documento y el mismo protocolo: sin editar, sugerencias aprobadas y la primera opción en las decisiones del cliente).
   - Resultados en `docs/evaluacion-2/pure.md`, comparados con `docs/evaluacion/pure.md`.
   - El mockup es de SOL y no cambia con B: se genera solo si el autor lo aprueba, por su coste.

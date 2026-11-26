@@ -4043,3 +4043,18 @@ Propuesta del TFG revisada tras el hito 24 (GitHub) y el cambio del modelo B a O
   - 1.2: «desde noviembre de 2026 el segundo modelo es Kimi K3.1 Pro», en lugar de «desde el 10 de noviembre».
   - Compila: 116 páginas, sin referencias sin definir. Texto corrido: 10.782 palabras (+6). La versión sin anexos la regenera el autor a partir de `memoria.pdf`.
   - **El recorte de la extensión** (recomendación de Claude): después de los comentarios del tutor a esta versión y antes de escribir la 2.3, en una sola pasada; se le avisa en el correo de que se sabe que pasa del límite.
+
+## 26-11-2026, 10:12 (sesión, hito 27, paso 118: la referencia del autor)
+
+- **El autor hizo el 118** sin mirar ninguna salida de los modelos:
+  - la lista de funcionalidades de clínicas, con 82 líneas y notas de sus criterios (`docs/evaluacion-2/referencia-clinicas.md`);
+  - la revisión de las trampas G1–G26: corrigió G13 (las fotos también están en el protocolo de urgencias y en CU-06, opcionales; pasa a resuelta), G15 (CU-02, huecos preferentes) y G25 (el depósito, también en CU-07);
+  - la revisión de los cambios I2-1 a I2-18: la teleconsulta choca con la videoconsulta fuera de alcance, los pedidos con la tienda en línea fuera de alcance, y Huellas Puerto tendrá peluquería.
+- **Revisión de Claude, a petición del autor:** cada línea, comprobada contra los 27 documentos extraídos a texto en el scratchpad, sin mirar salidas de los modelos y sin añadir ni quitar funcionalidades. Todo es cierto, las 82 líneas se leen bien y no falta nada importante. Cuatro retoques, aprobados por el autor («sí a los cuatro»):
+  - G15: «CU-03 no la menciona», en lugar de «no da prioridad»;
+  - F09: «la prioridad para clientes con plan, sin decidir», para que no contradiga a G15;
+  - las 7 líneas «(fuera de alcance)» no cuentan en la cobertura: un catálogo que las deja fuera hace bien. `un-solo-modelo.cs` las quita de la hoja (`Feature.OutOfScope`). Es un cambio en un script de evaluación, no en Concilia: la versión `evaluacion-2` no cambia;
+  - G17 pasa de «No» (abierta) a «—» (hueco): no hay contradicción que preguntar, y el autor ya la tenía como funcionalidad (F82).
+- **Resultado:** 75 funcionalidades en la cobertura y 26 trampas (15 resueltas, 4 abiertas, 6 huecos y 1 fuera de alcance; antes, 14, 5, 6 y 1). La hoja de cobertura del 120 tendrá 450 filas (unas 2–3 horas del autor). El script compila.
+- **Docs:** `docs/evaluacion-2/referencia.md` con el bloque en palabras sencillas; plan, CLAUDE.md, trazabilidad y punto 23 de la memoria. El autor cerró el 133 el 17-11-2026.
+- **Pendiente:** que el autor cierre el 118; después, el 134 (PURE en inglés), con el coste estimado antes de lanzar y la decisión sobre un documento más de PURE.

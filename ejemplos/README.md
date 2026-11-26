@@ -99,11 +99,11 @@ Como en un proyecto real, los documentos no siempre coinciden. Esta lista es la 
 | G10 | Protocolos de vacunación por clínica | Especificación: por especie y edad. Veterinarios y JSON: Montaña añade leishmaniosis. | JSON |
 | G11 | Resultados visibles para el cliente | Especificación: se notifica «resultado disponible». Recepción y CU-05: solo tras revisarlos el veterinario. | Casos de uso |
 | G12 | Resultados del laboratorio | Especificación: pregunta abierta. Correo de LabVet: estructurados solo hematología y bioquímica; PDF 24 h; sin webhooks. | Correo de LabVet |
-| G13 | Fotos en el informe de hospitalización | Solo en la reunión con veterinarios. | — |
+| G13 | Fotos en el informe de hospitalización | Especificación: el informe diario no las menciona. Veterinarios: las piden. Protocolo de urgencias y CU-06: fotos opcionales que publica el veterinario. | Protocolo de urgencias y CU-06: fotos opcionales |
 | G14 | Señal económica para quien no se presenta | Recepción: 10 € a partir de tres faltas. | Reunión con gerencia: no en la primera versión |
-| G15 | Prioridad en la lista de espera para clientes con plan | Solo en el correo de gerencia. | — |
+| G15 | Prioridad en la lista de espera para clientes con plan | Correo de gerencia: prioridad en la lista de espera. CU-02 lo convierte en huecos preferentes que los clientes con plan ven primero en la app, si la clínica los define; CU-03 no la menciona. | — |
 | G16 | Segundo factor de autenticación | Especificación: gerencia y contabilidad. Sistemas: todos los que accedan desde fuera de las clínicas. | No |
-| G17 | Funcionamiento sin conexión | Especificación: nada. Sistemas: consulta de la agenda y fichas del día si cae la conexión (Montaña tiene cortes). | No |
+| G17 | Funcionamiento sin conexión | Especificación: nada. Sistemas: consulta de la agenda y fichas del día si cae la conexión (Montaña tiene cortes). | — |
 | G18 | Idioma de las comunicaciones | Especificación: app en castellano e inglés. Recepción: recordatorios en el idioma del cliente. | No |
 | G19 | Informes comparados con el año anterior | Gerencia los pide, pero las facturas antiguas no se migran. | Reunión con gerencia: el primer año, con la semana anterior |
 | G20 | Margen de los productos | Requiere el precio de compra por lote, que hoy no se guarda. | Reunión con gerencia: anotarlo al dar entrada |
@@ -111,8 +111,10 @@ Como en un proyecto real, los documentos no siempre coinciden. Esta lista es la 
 | G22 | Doble cierre de caja en Huellas Centro | Solo en el acta de contabilidad. | — |
 | G23 | Cita para varias mascotas a la vez | Solo en el taller de agenda. | — |
 | G24 | Animales sin propietario identificado | Solo en el protocolo de urgencias; se facturan al ayuntamiento o a la protectora. | — |
-| G25 | Depósito del 50 % al ingresar | Solo en el protocolo de urgencias, con excepciones. | — |
+| G25 | Depósito del 50 % al ingresar | Protocolo de urgencias: 50 % del presupuesto estimado, salvo plan Senior o aseguradora con convenio, y se descuenta de la factura final. CU-07: el cliente puede pagar el depósito desde la app, sin porcentaje. | — |
 | G26 | Programa de puntos | Reunión con gerencia: para el año siguiente. | Fuera de alcance |
+
+Revisado por el autor el 26-11-2026: G13, las fotos también están en el protocolo de urgencias y en CU-06, que las dan por buenas como opcionales, así que sí se resuelve; G15, CU-02 recoge la petición del correo como huecos preferentes en la app, no como prioridad en la lista de espera; G25, el depósito también aparece en CU-07 (pago desde la app); G17 pasa de «No» a «—», porque no hay contradicción que preguntar: solo el documento de sistemas lo pide, y con claridad, como G23 a G25; el resto, sin cambios. Comprobado por Claude contra los documentos (sin mirar salidas de los modelos); los cambios de G15 (CU-03 no menciona la prioridad) y G17 los decidió el autor.
 
 ## Grande: segunda iteración
 
@@ -140,9 +142,9 @@ Las respuestas que se citan son las del proyecto de clínicas de la v0.11 («Cli
 
 | # | Tema | Qué dice la iteración 2 | Contra qué choca | Se espera |
 | --- | --- | --- | --- | --- |
-| I2-1 | Teleconsulta de seguimiento | Correo: videollamada desde la app, solo seguimientos, visita presencial en los 30 días anteriores, 15 min, se paga al reservar, no se graba. Veterinarios: anotar en la historia y dar cita presencial desde la llamada. | Nada: es nueva | N |
-| I2-2 | Pedidos desde la app con recogida en clínica | Correo: alimentación e higiene, pago en la app, reserva de 48 h y devolución si no se recoge; medicamentos no. | Nada: es nueva | N |
-| I2-3 | Quinta clínica, Huellas Puerto | Acta: abre en enero de 2027, sin hospital ni urgencias, mismas tarifas que Centro, en la plataforma desde el primer día. Tarifas: lo mismo. | Los requisitos que hablan de cuatro clínicas | M (y N si hace falta) |
+| I2-1 | Teleconsulta de seguimiento | Correo: videollamada desde la app, solo seguimientos, visita presencial en los 30 días anteriores, 15 min, se paga al reservar, no se graba. Veterinarios: anotar en la historia y dar cita presencial desde la llamada. | La especificación deja fuera de alcance «chat y videoconsulta con la clínica» (apartados 4.11 y 8; G3) | N (y M de lo que la dejaba fuera de alcance) |
+| I2-2 | Pedidos desde la app con recogida en clínica | Correo: alimentación e higiene, pago en la app, reserva de 48 h y devolución si no se recoge; medicamentos no. | La especificación deja fuera de alcance la «tienda en línea de productos» (apartado 8) | N (y M de lo que la dejaba fuera de alcance) |
+| I2-3 | Quinta clínica, Huellas Puerto | Acta: abre en enero de 2027, sin hospital ni urgencias, con consultas, vacunación y peluquería, mismas tarifas que Centro, en la plataforma desde el primer día. Tarifas: lo mismo. | Los requisitos que hablan de cuatro clínicas y los que limitan la peluquería a Huellas Montaña | M (y N si hace falta) |
 | I2-4 | Encuesta de satisfacción | Acta: al día siguiente de cada visita, tres valoraciones de 1 a 5 y un comentario; la media por clínica en el informe mensual. | Nada: es nueva | N |
 | I2-5 | Plazo para cancelar desde la app | Acta: 24 horas, no 12. | La respuesta a P-004 (12 horas) y los requisitos validados de 12 horas (G1) | P enlazada; tras responder, M |
 | I2-6 | Señal para quien no se presenta | Acta: 10 € a partir de la segunda falta sin avisar en seis meses; se paga al reservar la siguiente y se descuenta de su factura. | G14 (decidido: no en la primera versión) | N o M |
@@ -158,6 +160,8 @@ Las respuestas que se citan son las del proyecto de clínicas de la v0.11 («Cli
 | I2-16 | ¿La teleconsulta cuenta para el plan de salud? | Veterinarios: «lo tiene que decidir Elena». | Hueco | P |
 | I2-17 | Plan Adulto | Acta: se confirman las mismas condiciones. | Nada: coincide con G2 resuelto | — |
 | I2-18 | Jaula de aislamiento y disponibilidad | Veterinarios y auditoría repiten lo que ya se decidió (P-036 y P-039). | Nada | — |
+
+Revisado por el autor el 26-11-2026: I2-1, la teleconsulta sí choca: la especificación deja fuera de alcance el chat y la videoconsulta; I2-2, los pedidos desde la app sí chocan: la especificación deja fuera de alcance la tienda en línea; I2-3, el acta dice que Huellas Puerto tendrá peluquería, que hasta ahora era solo de Montaña; el resto, sin cambios.
 
 ## Cómo se generaron
 

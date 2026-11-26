@@ -228,7 +228,7 @@ concilia/
 
 ## Evaluación
 
-La primera evaluación (modelo B = LUNA, versión [descrita aquí](docs/evaluacion/version.md)) se interrumpió el 10-11-2026. El modelo B pasó a Kimi K3.1 Pro, de otro fabricante ([elección](docs/opencode-go/seleccion.md) y [primer flujo frente a LUNA](docs/opencode-go/flujo-kimi.md)), y la evaluación se repetirá desde cero con él. Con los prompts v0.14 (16-11-2026), en los que el árbitro del backlog lee las propuestas resumidas, el flujo completo de clínicas con Kimi ya sale, también el backlog. La evaluación 2 empezó el 17-11-2026 con la versión congelada `evaluacion-2` ([descrita aquí](docs/evaluacion-2/version.md)); sus resultados irán en [`docs/evaluacion-2/`](docs/evaluacion-2/). La tabla recoge lo que dio la primera.
+La primera evaluación (modelo B = LUNA, versión [descrita aquí](docs/evaluacion/version.md)) se interrumpió el 10-11-2026. El modelo B pasó a Kimi K3.1 Pro, de otro fabricante ([elección](docs/opencode-go/seleccion.md) y [primer flujo frente a LUNA](docs/opencode-go/flujo-kimi.md)), y la evaluación se repetirá desde cero con él. Con los prompts v0.14 (16-11-2026), en los que el árbitro del backlog lee las propuestas resumidas, el flujo completo de clínicas con Kimi ya sale, también el backlog. La evaluación 2 empezó el 17-11-2026 con la versión congelada `evaluacion-2` ([descrita aquí](docs/evaluacion-2/version.md)), y la referencia con la que se mide la hizo el autor a mano el 26-11-2026 ([paso 118](docs/evaluacion-2/referencia.md)); sus resultados irán en [`docs/evaluacion-2/`](docs/evaluacion-2/). La tabla recoge lo que dio la primera.
 
 | Pregunta | Estado |
 | --- | --- |
